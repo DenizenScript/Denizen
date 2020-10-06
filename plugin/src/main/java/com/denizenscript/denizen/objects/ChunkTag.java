@@ -291,6 +291,16 @@ public class ChunkTag implements ObjectTag, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <ChunkTag.is_generated>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns true if the chunk has already been generated.
+        // -->
+        registerTag("is_generated", (attribute, object) -> {
+            return new ElementTag(object.getWorld().isChunkGenerated(object.chunkX, object.chunkZ));
+        });
+
+        // <--[tag]
         // @attribute <ChunkTag.is_loaded>
         // @returns ElementTag(Boolean)
         // @description
