@@ -1948,8 +1948,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @group attributes
         // @description
         // Returns whether the entity is collidable.
+        // Returns the persistent collidable value for NPCs.
         // -->
         registerSpawnedOnlyTag("is_collidable", (attribute, object) -> {
+            if (object.isCitizensNPC()) {
+                return new ElementTag(object.getDenizenNPC().getCitizen().data().get(NPC.COLLIDABLE_METADATA, true));
+            }
             return new ElementTag(object.getLivingEntity().isCollidable());
         });
 
@@ -2938,11 +2942,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // @description
         // Sets whether the entity is collidable.
         // NOTE: To disable collision between two entities, set this mechanism to false on both entities.
+        // Sets the persistent collidable value for NPCs.
         // @tags
         // <EntityTag.is_collidable>
         // -->
         if (mechanism.matches("collidable") && mechanism.requireBoolean()) {
-            getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
+            if (isCitizensNPC()) {
+                getDenizenNPC().getCitizen().data().setPersistent(NPC.COLLIDABLE_METADATA, mechanism.getValue().asBoolean());
+            }
+            else {
+                getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
+            }
         }
 
         // <--[mechanism]
