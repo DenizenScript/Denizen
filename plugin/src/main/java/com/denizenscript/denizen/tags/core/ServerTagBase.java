@@ -1630,8 +1630,8 @@ public class ServerTagBase {
             else {
                 ListTag npcs = new ListTag();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
-                            && CoreUtilities.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName(), script.getName())) {
+                    if (npc.hasTrait(AssignmentTrait.class) && npc.getOrAddTrait(AssignmentTrait.class).hasAssignment()
+                            && CoreUtilities.equalsIgnoreCase(npc.getOrAddTrait(AssignmentTrait.class).getAssignment().getName(), script.getName())) {
                         npcs.addObject(new NPCTag(npc));
                     }
                 }

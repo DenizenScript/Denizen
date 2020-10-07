@@ -156,7 +156,7 @@ public class PauseCommand extends AbstractCommand {
     public void pause(NPCTag denizen, PauseType pauseType, boolean pause) {
         switch (pauseType) {
             case WAYPOINTS:
-                denizen.getCitizen().getTrait(Waypoints.class).getCurrentProvider().setPaused(pause);
+                denizen.getCitizen().getOrAddTrait(Waypoints.class).getCurrentProvider().setPaused(pause);
                 if (pause) {
                     denizen.getNavigator().cancelNavigation();
                 }

@@ -88,7 +88,7 @@ public class HeadCommand extends AbstractCommand {
                 if (!entity.getDenizenNPC().getCitizen().hasTrait(Equipment.class)) {
                     entity.getDenizenNPC().getCitizen().addTrait(Equipment.class);
                 }
-                Equipment trait = entity.getDenizenNPC().getCitizen().getTrait(Equipment.class);
+                Equipment trait = entity.getDenizenNPC().getCitizen().getOrAddTrait(Equipment.class);
                 trait.set(1, item);
             }
             else if (entity.isPlayer()) {

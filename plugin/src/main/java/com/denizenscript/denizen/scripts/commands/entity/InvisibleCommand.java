@@ -99,7 +99,7 @@ public class InvisibleCommand extends AbstractCommand {
             if (!npc.hasTrait(InvisibleTrait.class)) {
                 npc.addTrait(InvisibleTrait.class);
             }
-            InvisibleTrait trait = npc.getTrait(InvisibleTrait.class);
+            InvisibleTrait trait = npc.getOrAddTrait(InvisibleTrait.class);
             switch (Action.valueOf(state.asString().toUpperCase())) {
                 case FALSE:
                     trait.setInvisible(false);

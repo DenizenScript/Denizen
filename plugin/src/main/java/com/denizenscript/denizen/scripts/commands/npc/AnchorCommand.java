@@ -114,11 +114,11 @@ public class AnchorCommand extends AbstractCommand {
                     Debug.echoError("Must specify a location!");
                     return;
                 }
-                npc.getCitizen().getTrait(Anchors.class).addAnchor(id.asString(), location);
+                npc.getCitizen().getOrAddTrait(Anchors.class).addAnchor(id.asString(), location);
                 return;
             case ASSUME: {
                 Deprecations.anchorWalk.warn(scriptEntry);
-                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
+                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -129,7 +129,7 @@ public class AnchorCommand extends AbstractCommand {
             return;
             case WALKNEAR: {
                 Deprecations.anchorWalk.warn(scriptEntry);
-                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
+                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -143,7 +143,7 @@ public class AnchorCommand extends AbstractCommand {
             return;
             case WALKTO: {
                 Deprecations.anchorWalk.warn(scriptEntry);
-                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
+                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
@@ -153,12 +153,12 @@ public class AnchorCommand extends AbstractCommand {
             }
             return;
             case REMOVE: {
-                Anchor n = npc.getCitizen().getTrait(Anchors.class).getAnchor(id.asString());
+                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
                 else {
-                    npc.getCitizen().getTrait(Anchors.class).removeAnchor(n);
+                    npc.getCitizen().getOrAddTrait(Anchors.class).removeAnchor(n);
                 }
             }
         }

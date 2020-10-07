@@ -131,9 +131,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             return new ChatContext(false);
         }
         if (HyperDebug) {
-            Debug.log("enabled? " + npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name));
+            Debug.log("enabled? " + npc.getCitizen().getOrAddTrait(TriggerTrait.class).isEnabled(name));
         }
-        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) {
+        if (!npc.getCitizen().getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
             return new ChatContext(false);
         }
 

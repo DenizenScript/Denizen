@@ -282,7 +282,7 @@ public class Utilities {
                 continue;
             }
             Location loc = npc.getStoredLocation();
-            if (npc.hasTrait(TriggerTrait.class) && npc.getTrait(TriggerTrait.class).hasTrigger("CHAT") &&
+            if (npc.hasTrait(TriggerTrait.class) && npc.getOrAddTrait(TriggerTrait.class).hasTrigger("CHAT") &&
                     loc.getWorld().equals(location.getWorld())
                     && loc.distanceSquared(location) < closestDistance) {
                 closestNPC = npc;

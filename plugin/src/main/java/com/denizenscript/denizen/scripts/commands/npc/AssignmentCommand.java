@@ -122,10 +122,10 @@ public class AssignmentCommand extends AbstractCommand {
 
         for (NPCTag npc : npcs) {
             if (action.equals(Action.SET)) {
-                npc.getCitizen().getTrait(AssignmentTrait.class).setAssignment(script.getName(), Utilities.getEntryPlayer(scriptEntry));
+                npc.getCitizen().getOrAddTrait(AssignmentTrait.class).setAssignment(script.getName(), Utilities.getEntryPlayer(scriptEntry));
             }
             else if (action.equals(Action.REMOVE)) {
-                npc.getCitizen().getTrait(AssignmentTrait.class).removeAssignment(Utilities.getEntryPlayer(scriptEntry));
+                npc.getCitizen().getOrAddTrait(AssignmentTrait.class).removeAssignment(Utilities.getEntryPlayer(scriptEntry));
             }
         }
     }

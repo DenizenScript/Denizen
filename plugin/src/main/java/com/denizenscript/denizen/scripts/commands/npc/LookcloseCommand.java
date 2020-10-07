@@ -96,7 +96,7 @@ public class LookcloseCommand extends AbstractCommand {
         }
 
         // Get the instance of the trait that belongs to the target NPC
-        LookClose trait = Utilities.getEntryNPC(scriptEntry).getCitizen().getTrait(LookClose.class);
+        LookClose trait = Utilities.getEntryNPC(scriptEntry).getCitizen().getOrAddTrait(LookClose.class);
 
         // Handle toggle
         if (scriptEntry.hasObject("toggle")) {

@@ -147,7 +147,7 @@ public class HealthCommand extends AbstractCommand {
             if (qty != null) {
                 if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {
-                        HealthTrait trait = target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class);
+                        HealthTrait trait = target.getDenizenNPC().getCitizen().getOrAddTrait(HealthTrait.class);
                         trait.setMaxhealth(qty.asInt());
                         if (heal.asBoolean()) {
                             trait.setHealth(qty.asDouble());

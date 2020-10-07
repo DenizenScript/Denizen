@@ -139,7 +139,7 @@ public class TriggerCommand extends AbstractCommand {
             npc.getCitizen().addTrait(TriggerTrait.class);
         }
 
-        TriggerTrait trait = npc.getCitizen().getTrait(TriggerTrait.class);
+        TriggerTrait trait = npc.getCitizen().getOrAddTrait(TriggerTrait.class);
 
         switch (Toggle.valueOf(toggle.asString().toUpperCase())) {
 

@@ -63,7 +63,7 @@ public class EntityAge implements Property {
             if (!ageable_npc.hasTrait(Age.class)) {
                 ageable_npc.addTrait(Age.class);
             }
-            ageable_npc.getTrait(Age.class).setAge(bool ? -24000 : 0);
+            ageable_npc.getOrAddTrait(Age.class).setAge(bool ? -24000 : 0);
         }
         else {
             if (ageable.getBukkitEntity() instanceof Zombie) {
@@ -81,7 +81,7 @@ public class EntityAge implements Property {
     public void setAge(int val) {
         if (ageable.isCitizensNPC()) {
             NPC ageable_npc = ageable.getDenizenNPC().getCitizen();
-            ageable_npc.getTrait(Age.class).setAge(val);
+            ageable_npc.getOrAddTrait(Age.class).setAge(val);
         }
         else {
             if (ageable.getBukkitEntity() instanceof Zombie) {

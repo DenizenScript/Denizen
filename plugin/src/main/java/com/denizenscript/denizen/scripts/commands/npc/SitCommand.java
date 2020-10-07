@@ -80,7 +80,7 @@ public class SitCommand extends AbstractCommand {
             ((Sittable) entity).setSitting(true);
         }
         else {
-            SittingTrait trait = npc.getCitizen().getTrait(SittingTrait.class);
+            SittingTrait trait = npc.getCitizen().getOrAddTrait(SittingTrait.class);
             if (location != null) {
                 trait.sit(location);
             }

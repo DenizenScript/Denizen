@@ -62,7 +62,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(PushableTrait.class)) {
             npc.addTrait(PushableTrait.class);
         }
-        PushableTrait trait = npc.getTrait(PushableTrait.class);
+        PushableTrait trait = npc.getOrAddTrait(PushableTrait.class);
 
         if (args.hasFlag('r') && !args.hasFlag('t')) {
             trait.setReturnable(!trait.isReturnable());
@@ -152,7 +152,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(ConstantsTrait.class)) {
             npc.addTrait(ConstantsTrait.class);
         }
-        ConstantsTrait trait = npc.getTrait(ConstantsTrait.class);
+        ConstantsTrait trait = npc.getOrAddTrait(ConstantsTrait.class);
         if (args.hasValueFlag("set")) {
             if (!args.hasValueFlag("value")) {
                 throw new CommandException("--SET requires use of the '--VALUE \"constant value\"' argument.");
@@ -205,7 +205,7 @@ public class NPCCommandHandler {
         if (sender instanceof Player) {
             player = (Player) sender;
         }
-        AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
+        AssignmentTrait trait = npc.getOrAddTrait(AssignmentTrait.class);
 
         if (args.hasValueFlag("set")) {
             String script = args.getFlag("set").replace("\"", "");
@@ -263,7 +263,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(TriggerTrait.class)) {
             npc.addTrait(TriggerTrait.class);
         }
-        TriggerTrait trait = npc.getTrait(TriggerTrait.class);
+        TriggerTrait trait = npc.getOrAddTrait(TriggerTrait.class);
         if ((args.hasValueFlag("name") || (args.argsLength() > 1 && (args.getJoinedStrings(1) != null) && !args.getString(1).matches("\\d+")))) {
             // Get the name of the trigger
             String triggerName;
@@ -323,7 +323,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(NicknameTrait.class)) {
             npc.addTrait(NicknameTrait.class);
         }
-        NicknameTrait trait = npc.getTrait(NicknameTrait.class);
+        NicknameTrait trait = npc.getOrAddTrait(NicknameTrait.class);
         if (args.hasValueFlag("set")) {
             trait.setNickname(args.getFlag("set"));
             Messaging.send(sender, "Nickname set.");
@@ -358,7 +358,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(SittingTrait.class)) {
             npc.addTrait(SittingTrait.class);
         }
-        SittingTrait trait = npc.getTrait(SittingTrait.class);
+        SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
         if (args.hasFlag('c')) {
             trait.sit(args.getSenderTargetBlockLocation());
         }
@@ -372,7 +372,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
-                Anchors anchors = npc.getTrait(Anchors.class);
+                Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.sit(anchors.getAnchor(args.getFlag("anchor")).getLocation());
                     Messaging.send(sender, npc.getName() + " is now sitting.");
@@ -403,13 +403,13 @@ public class NPCCommandHandler {
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
         if (npc.hasTrait(SittingTrait.class)) {
-            SittingTrait trait = npc.getTrait(SittingTrait.class);
+            SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
             trait.stand();
             npc.removeTrait(SittingTrait.class);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SneakingTrait.class)) {
-            SneakingTrait trait = npc.getTrait(SneakingTrait.class);
+            SneakingTrait trait = npc.getOrAddTrait(SneakingTrait.class);
             if (!trait.isSneaking()) {
                 npc.removeTrait(SittingTrait.class);
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
@@ -420,7 +420,7 @@ public class NPCCommandHandler {
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SleepingTrait.class)) {
-            SleepingTrait trait = npc.getTrait(SleepingTrait.class);
+            SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
             if (!trait.isSleeping()) {
                 npc.removeTrait(SleepingTrait.class);
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
@@ -447,7 +447,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(SleepingTrait.class)) {
             npc.addTrait(SleepingTrait.class);
         }
-        SleepingTrait trait = npc.getTrait(SleepingTrait.class);
+        SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
 
         if (trait.isSleeping()) {
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
@@ -465,7 +465,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
-                Anchors anchors = npc.getTrait(Anchors.class);
+                Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation());
                     Messaging.send(sender, npc.getName() + " is now sleeping.");
@@ -493,7 +493,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(SleepingTrait.class)) {
             npc.addTrait(SleepingTrait.class);
         }
-        SleepingTrait trait = npc.getTrait(SleepingTrait.class);
+        SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
 
         if (!trait.isSleeping()) {
             npc.removeTrait(SleepingTrait.class);
@@ -518,7 +518,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(FishingTrait.class)) {
             npc.addTrait(FishingTrait.class);
         }
-        FishingTrait trait = npc.getTrait(FishingTrait.class);
+        FishingTrait trait = npc.getOrAddTrait(FishingTrait.class);
 
         if (trait.isFishing()) {
             Messaging.sendError(sender, npc.getName() + " is already fishing! Use '/npc stopfishing' to stop.");
@@ -548,7 +548,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
-                Anchors anchors = npc.getTrait(Anchors.class);
+                Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.startFishing(anchors.getAnchor(args.getFlag("anchor")).getLocation());
                 }
@@ -573,7 +573,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(FishingTrait.class)) {
             npc.addTrait(FishingTrait.class);
         }
-        FishingTrait trait = npc.getTrait(FishingTrait.class);
+        FishingTrait trait = npc.getOrAddTrait(FishingTrait.class);
 
         if (!trait.isFishing()) {
             npc.removeTrait(FishingTrait.class);
@@ -603,7 +603,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(SneakingTrait.class)) {
             npc.addTrait(SneakingTrait.class);
         }
-        SneakingTrait trait = npc.getTrait(SneakingTrait.class);
+        SneakingTrait trait = npc.getOrAddTrait(SneakingTrait.class);
 
         if (trait.isSneaking()) {
             trait.stand();
@@ -632,11 +632,11 @@ public class NPCCommandHandler {
 
         if (!npc.hasTrait(MirrorTrait.class)) {
             npc.addTrait(MirrorTrait.class);
-            npc.getTrait(MirrorTrait.class).enableMirror();
+            npc.getOrAddTrait(MirrorTrait.class).enableMirror();
             Messaging.send(sender, npc.getName() + " is now mirroring player skins.");
             return;
         }
-        MirrorTrait trait = npc.getTrait(MirrorTrait.class);
+        MirrorTrait trait = npc.getOrAddTrait(MirrorTrait.class);
 
         if (trait.mirror) {
             trait.disableMirror();
@@ -659,11 +659,11 @@ public class NPCCommandHandler {
     public void invisible(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(InvisibleTrait.class)) {
             npc.addTrait(InvisibleTrait.class);
-            npc.getTrait(InvisibleTrait.class).setInvisible(true);
+            npc.getOrAddTrait(InvisibleTrait.class).setInvisible(true);
             Messaging.send(sender, npc.getName() + " is now invisible.");
             return;
         }
-        InvisibleTrait trait = npc.getTrait(InvisibleTrait.class);
+        InvisibleTrait trait = npc.getOrAddTrait(InvisibleTrait.class);
 
         trait.toggle();
         if (trait.isInvisible()) {
@@ -686,7 +686,7 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(HealthTrait.class)) {
             npc.addTrait(HealthTrait.class);
         }
-        HealthTrait trait = npc.getTrait(HealthTrait.class);
+        HealthTrait trait = npc.getOrAddTrait(HealthTrait.class);
 
         boolean showMore = true;
 

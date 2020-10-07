@@ -108,7 +108,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,
                     // then just return.
                     //
-                    if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
+                    if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
                         continue;
                     }
                     NPCTag npc = new NPCTag(citizensNPC);

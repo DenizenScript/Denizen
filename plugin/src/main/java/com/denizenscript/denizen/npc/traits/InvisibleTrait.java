@@ -60,7 +60,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
         if (ent.getType() == EntityType.ARMOR_STAND) {
             ((ArmorStand) ent).setVisible(true);
             if (npc != null) {
-                npc.getTrait(ArmorStandTrait.class).setVisible(true);
+                npc.getOrAddTrait(ArmorStandTrait.class).setVisible(true);
             }
         }
     }
@@ -74,7 +74,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
         if (ent.getType() == EntityType.ARMOR_STAND) {
             ((ArmorStand) ent).setVisible(false);
             if (npc != null) {
-                npc.getTrait(ArmorStandTrait.class).setVisible(false);
+                npc.getOrAddTrait(ArmorStandTrait.class).setVisible(false);
             }
         }
         else {

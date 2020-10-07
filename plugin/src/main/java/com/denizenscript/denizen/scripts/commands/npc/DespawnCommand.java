@@ -89,7 +89,7 @@ public class DespawnCommand extends AbstractCommand {
         for (NPCTag npc : npcs) {
             if (npc.isSpawned()) {
                 if (npc.getCitizen().hasTrait(Spawned.class)) {
-                    npc.getCitizen().getTrait(Spawned.class).setSpawned(false);
+                    npc.getCitizen().getOrAddTrait(Spawned.class).setSpawned(false);
                 }
                 npc.getCitizen().despawn(DespawnReason.PLUGIN);
             }

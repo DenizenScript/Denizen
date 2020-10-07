@@ -3171,7 +3171,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 if (!npc.hasTrait(MirrorTrait.class)) {
                     npc.addTrait(MirrorTrait.class);
                 }
-                MirrorTrait mirror = npc.getTrait(MirrorTrait.class);
+                MirrorTrait mirror = npc.getOrAddTrait(MirrorTrait.class);
                 if (mechanism.getValue().asBoolean()) {
                     mirror.enableMirror();
                 }

@@ -137,7 +137,7 @@ public class FeedCommand extends AbstractCommand {
                 Debug.echoError(scriptEntry.getResidingQueue(), "This NPC does not have the HungerTrait enabled! Use /trait hunger");
                 return;
             }
-            npc.getCitizen().getTrait(HungerTrait.class).feed(amount.asInt());
+            npc.getCitizen().getOrAddTrait(HungerTrait.class).feed(amount.asInt());
         }
         else {
             int result = Math.max(0, Math.min(20, player.getPlayerEntity().getFoodLevel() + amount.asInt()));

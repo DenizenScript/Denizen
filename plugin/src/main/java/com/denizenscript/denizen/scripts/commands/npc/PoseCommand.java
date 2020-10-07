@@ -113,7 +113,7 @@ public class PoseCommand extends AbstractCommand {
         if (!npc.getCitizen().hasTrait(Poses.class)) {
             npc.getCitizen().addTrait(Poses.class);
         }
-        Poses poses = npc.getCitizen().getTrait(Poses.class);
+        Poses poses = npc.getCitizen().getOrAddTrait(Poses.class);
         switch (action) {
             case ASSUME:
                 if (!poses.hasPose(id)) {

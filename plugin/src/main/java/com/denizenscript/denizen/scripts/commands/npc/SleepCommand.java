@@ -76,7 +76,7 @@ public class SleepCommand extends AbstractCommand {
                     + (location != null ? location.debug() : ""));
         }
 
-        SleepingTrait trait = npc.getCitizen().getTrait(SleepingTrait.class);
+        SleepingTrait trait = npc.getCitizen().getOrAddTrait(SleepingTrait.class);
         if (location != null) {
             trait.toSleep(location);
         }
