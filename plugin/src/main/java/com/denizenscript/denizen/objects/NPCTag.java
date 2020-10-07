@@ -31,10 +31,7 @@ import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.npc.ai.NPCHolder;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
-import net.citizensnpcs.trait.Anchors;
-import net.citizensnpcs.trait.LookClose;
-import net.citizensnpcs.trait.Poses;
-import net.citizensnpcs.trait.SkinTrait;
+import net.citizensnpcs.trait.*;
 import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
@@ -45,6 +42,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -766,6 +764,69 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }, "get_pose");
 
         // <--[tag]
+        // @attribute <NPCTag.hologram_lines>
+        // @returns ListTag
+        // @mechanism NPCTag.hologram_lines
+        // @description
+        // Returns the list of hologram lines attached to an NPC.
+        // -->
+        registerTag("hologram_lines", (attribute, object) -> {
+            if (!object.getCitizen().hasTrait(HologramTrait.class)) {
+                return null;
+            }
+            HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
+            return new ListTag(hologram.getLines());
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.hologram_direction>
+        // @returns ElementTag
+        // @mechanism NPCTag.hologram_direction
+        // @description
+        // Returns the direction of an NPC's hologram as "BOTTOM_UP" or "TOP_DOWN".
+        // -->
+        registerTag("hologram_direction", (attribute, object) -> {
+            if (!object.getCitizen().hasTrait(HologramTrait.class)) {
+                return null;
+            }
+            HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
+            try {
+                Field directionField = HologramTrait.class.getDeclaredField("direction");
+                directionField.setAccessible(true);
+                HologramTrait.HologramDirection dir = (HologramTrait.HologramDirection) directionField.get(hologram);
+                return new ElementTag(dir.name());
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+                return null;
+            }
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.hologram_line_height>
+        // @returns ElementTag(Decimal)
+        // @mechanism NPCTag.hologram_line_height
+        // @description
+        // Returns the line height for an NPC's hologram. Can be -1, indicating a default value should be used.
+        // -->
+        registerTag("hologram_line_height", (attribute, object) -> {
+            if (!object.getCitizen().hasTrait(HologramTrait.class)) {
+                return null;
+            }
+            HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
+            try {
+                Field lineHeightField = HologramTrait.class.getDeclaredField("lineHeight");
+                lineHeightField.setAccessible(true);
+                double height = lineHeightField.getDouble(hologram);
+                return new ElementTag(height);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+                return null;
+            }
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.is_sneaking>
         // @returns ElementTag(Boolean)
         // @description
@@ -1204,6 +1265,51 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("remove_assignment")) {
             getAssignmentTrait().removeAssignment(null);
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name hologram_lines
+        // @input ListTag
+        // @description
+        // Sets the NPC's hologram line list.
+        // @tags
+        // <NPCTag.hologram_lines>
+        // -->
+        if (mechanism.matches("hologram_lines") && mechanism.requireObject(ListTag.class)) {
+            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
+            hologram.clear();
+            for (String str : mechanism.valueAsType(ListTag.class)) {
+                hologram.addLine(str);
+            }
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name hologram_direction
+        // @input ElementTag
+        // @description
+        // Sets the NPC's hologram direction, as either BOTTOM_UP or TOP_DOWN.
+        // @tags
+        // <NPCTag.hologram_direction>
+        // -->
+        if (mechanism.matches("hologram_direction") && mechanism.requireEnum(false, HologramTrait.HologramDirection.values())) {
+            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
+            hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name hologram_line_height
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the NPC's hologram line height. Can be -1 to indicate a default value.
+        // @tags
+        // <NPCTag.hologram_line_height>
+        // -->
+        if (mechanism.matches("hologram_line_height") && mechanism.requireDouble()) {
+            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
+            hologram.setLineHeight(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
