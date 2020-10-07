@@ -42,7 +42,6 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -790,16 +789,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            try {
-                Field directionField = HologramTrait.class.getDeclaredField("direction");
-                directionField.setAccessible(true);
-                HologramTrait.HologramDirection dir = (HologramTrait.HologramDirection) directionField.get(hologram);
-                return new ElementTag(dir.name());
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-                return null;
-            }
+            return new ElementTag(hologram.getDirection().name());
         });
 
         // <--[tag]
@@ -814,16 +804,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            try {
-                Field lineHeightField = HologramTrait.class.getDeclaredField("lineHeight");
-                lineHeightField.setAccessible(true);
-                double height = lineHeightField.getDouble(hologram);
-                return new ElementTag(height);
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-                return null;
-            }
+            return new ElementTag(hologram.getLineHeight());
         });
 
         // <--[tag]
