@@ -19,6 +19,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -30,14 +31,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -53,6 +54,8 @@ public class TakeCommand extends AbstractCommand {
     // Using 'nbt:' with a key will take items with the specified NBT key, as set by <@link mechanism ItemTag.nbt>.
     //
     // Using 'iteminhand' will take from the player's held item slot.
+    //
+    // Using 'cursoritem' will take from the player's held cursor item (as in, one that's actively being picked up and moved in an inventory screen).
     //
     // Using 'scriptname:' will take items with the specified item script name.
     //
@@ -90,7 +93,7 @@ public class TakeCommand extends AbstractCommand {
     // - take material:emerald quantity:5
     // -->
 
-    private enum Type {MONEY, XP, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL}
+    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -106,6 +109,10 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("item_in_hand", "iteminhand")) {
                 scriptEntry.addObject("type", Type.ITEMINHAND);
+            }
+            else if (!scriptEntry.hasObject("type")
+                    && arg.matches("cursoritem", "cursor_item")) {
+                scriptEntry.addObject("type", Type.CURSORITEM);
             }
             else if (!scriptEntry.hasObject("quantity")
                     && arg.matchesPrefix("q", "qty", "quantity")
@@ -197,11 +204,7 @@ public class TakeCommand extends AbstractCommand {
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         MaterialTag material = scriptEntry.getObjectTag("material");
         Type type = (Type) scriptEntry.getObject("type");
-        Object items_object = scriptEntry.getObject("items");
-        List<ItemTag> items = null;
-        if (items_object != null) {
-            items = (List<ItemTag>) items_object;
-        }
+        List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("items");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                             + quantity.debug()
@@ -220,24 +223,47 @@ public class TakeCommand extends AbstractCommand {
                 break;
             }
             case ITEMINHAND: {
-                int inHandAmt = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInMainHand().getAmount();
+                Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
+                int inHandAmt = player.getEquipment().getItemInMainHand().getAmount();
                 int theAmount = (int) quantity.asDouble();
                 ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
                     Debug.echoDebug(scriptEntry, "...player did not have enough of the item in hand, taking all...");
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
+                    player.getEquipment().setItemInMainHand(newHandItem);
                 }
                 else {
                     // amount is just right!
                     if (theAmount == inHandAmt) {
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
+                        player.getEquipment().setItemInMainHand(newHandItem);
                     }
                     else {
                         // amount is less than what's in hand, need to make a new itemstack of what's left...
-                        newHandItem = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getEquipment().getItemInMainHand().clone();
+                        newHandItem = player.getEquipment().getItemInMainHand().clone();
                         newHandItem.setAmount(inHandAmt - theAmount);
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();
+                        player.getEquipment().setItemInMainHand(newHandItem);
+                        player.updateInventory();
+                    }
+                }
+                break;
+            }
+            case CURSORITEM: {
+                Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
+                int currentAmount = player.getItemOnCursor().getAmount();
+                int takeAmount = (int) quantity.asDouble();
+                ItemStack newItem = new ItemStack(Material.AIR);
+                if (takeAmount > currentAmount) {
+                    Debug.echoDebug(scriptEntry, "...player did not have enough of the item on cursor, taking all...");
+                    player.setItemOnCursor(newItem);
+                }
+                else {
+                    if (takeAmount == currentAmount) {
+                        player.setItemOnCursor(newItem);
+                    }
+                    else {
+                        newItem = player.getItemOnCursor().clone();
+                        newItem.setAmount(currentAmount - takeAmount);
+                        player.setItemOnCursor(newItem);
+                        player.updateInventory();
                     }
                 }
                 break;
