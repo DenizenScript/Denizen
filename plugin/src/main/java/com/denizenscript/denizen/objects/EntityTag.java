@@ -1569,8 +1569,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         // Note that this will return null if there is no solid block in range.
         // -->
         registerSpawnedOnlyTag("cursor_on", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
-            if (range < 1) {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
                 range = 200;
             }
             RayTraceResult traced = object.getWorld().rayTraceBlocks(object.getEyeLocation(), object.getEyeLocation().getDirection(), range);

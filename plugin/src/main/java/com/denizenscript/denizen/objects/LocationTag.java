@@ -1463,8 +1463,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         registerTag("precise_impact_normal", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
-            if (range < 1) {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
                 range = 200;
             }
             RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
@@ -1482,8 +1482,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         registerTag("precise_cursor_on_block", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
-            if (range < 1) {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
                 range = 200;
             }
             RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
@@ -1501,8 +1501,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         registerTag("precise_cursor_on", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
-            if (range < 1) {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
                 range = 200;
             }
             RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
@@ -1520,8 +1520,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
         registerTag("precise_target", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
-            if (range < 1) {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
                 range = 100;
             }
             RayTraceResult result;
@@ -1558,8 +1558,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
         registerTag("precise_target_position", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
-            if (range < 1) {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
                 range = 100;
             }
             RayTraceResult result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
