@@ -22,6 +22,13 @@ public class MaterialCompat {
     }
 
     public static boolean isStandingSign(Material material) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            switch (material) {
+                case CRIMSON_SIGN:
+                case WARPED_SIGN:
+                    return true;
+            }
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             switch (material) {
                 case ACACIA_SIGN:
@@ -39,6 +46,13 @@ public class MaterialCompat {
     }
 
     public static boolean isWallSign(Material material) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            switch (material) {
+                case CRIMSON_WALL_SIGN:
+                case WARPED_WALL_SIGN:
+                    return true;
+            }
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
             switch (material) {
                 case ACACIA_WALL_SIGN:
