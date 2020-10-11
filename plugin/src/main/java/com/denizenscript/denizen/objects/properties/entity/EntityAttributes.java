@@ -194,7 +194,7 @@ public class EntityAttributes implements Property {
         // @input ListTag
         // @description
         // Changes the attributes of an entity.
-        // Specify a list of attributes in the format: name/base/value/(modifier_name/mod_amount/mod_operation/mod_slot|...)
+        // Specify a list of attributes in the format: name/base_value/(modifier_name/mod_amount/mod_operation/mod_slot/...)
         // For example: GENERIC_ARMOR/5/boost/3/add_number/any/reduction/-5/add_number/chest
         // Note that the 'slot' value is probably just ignored.
         //

@@ -168,6 +168,8 @@ public class EntityHealth implements Property {
         // @description
         // Sets the maximum health the entity may have.
         // The entity must be living.
+        // Note to change the current health at the same time as max_health (might be needed when setting max health higher rather than lower),
+        // use <@link mechanism EntityTag.health_data>.
         // @tags
         // <EntityTag.health>
         // <EntityTag.health_max>

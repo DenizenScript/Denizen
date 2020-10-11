@@ -694,6 +694,44 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return -1;
     }
 
+    public static class FloodFiller {
+
+        public Set<LocationTag> result;
+
+        public int iterationLimit;
+
+        public AreaContainmentObject areaLimit;
+
+        public Material requiredMaterial;
+
+        public void run(LocationTag start, AreaContainmentObject area, Material mat) {
+            iterationLimit = Settings.blockTagsMaxBlocks();
+            requiredMaterial = mat;
+            areaLimit = area;
+            result = new HashSet<>();
+            flood(start.getBlockLocation());
+        }
+
+        public void flood(LocationTag loc) {
+            if (iterationLimit-- <= 0 || result.contains(loc) || !areaLimit.doesContainLocation(loc)) {
+                return;
+            }
+            if (!loc.isChunkLoaded()) {
+                return;
+            }
+            if (loc.getBlock().getType() != requiredMaterial) {
+                return;
+            }
+            result.add(loc);
+            flood(loc.clone().add(-1, 0, 0));
+            flood(loc.clone().add(1, 0, 0));
+            flood(loc.clone().add(0, 0, -1));
+            flood(loc.clone().add(0, 0, 1));
+            flood(loc.clone().add(0, -1, 0));
+            flood(loc.clone().add(0, 1, 0));
+        }
+    }
+
     public int compare(Location loc1, Location loc2) {
         if (loc1 == null || loc2 == null || loc1.equals(loc2)) {
             return 0;
@@ -1953,6 +1991,57 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         //   ENTITY AND BLOCK LIST ATTRIBUTES
         /////////////////
 
+        // <--[tag]
+        // @attribute <LocationTag.flood_fill[<limit>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns the set of all blocks, starting at the given location,
+        // that can be directly reached in a way that only travels through blocks of the same type as the starting block.
+        // For example, if starting at an air block inside an enclosed building, this will return all air blocks inside the building (but none outside, and no non-air blocks).
+        // As another example, if starting on a block of iron_ore in the ground, this will find all other blocks of iron ore that are part of the same vein.
+        // This will not travel diagonally, only the 6 cardinal directions (N/E/S/W/Up/Down).
+        // As this is potentially infinite should there be any opening however small, a limit must be given.
+        // The limit value can be: a CuboidTag, an EllipsoidTag, or an ElementTag(Decimal) to use as a radius.
+        // Note that the returned list will not be in any particular order.
+        // -->
+        registerTag("flood_fill", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            AreaContainmentObject area = CuboidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
+            if (area == null) {
+                area = EllipsoidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
+            }
+            if (area == null) {
+                double radius = attribute.getDoubleContext(1);
+                if (radius <= 0) {
+                    return null;
+                }
+                area = new EllipsoidTag(object.clone(), new LocationTag(object.getWorld(), radius, radius, radius));
+            }
+            FloodFiller flooder = new FloodFiller();
+            NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+            try {
+                if (object.getWorld() == null) {
+                    if (!attribute.hasAlternative()) {
+                        Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                    }
+                    return null;
+                }
+                if (!object.isChunkLoaded()) {
+                    if (!attribute.hasAlternative()) {
+                        Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                    }
+                    return null;
+                }
+                flooder.run(object, area, object.getBlock().getType());
+            }
+            finally {
+                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+            }
+            return new ListTag((Collection<LocationTag>) flooder.result);
+        });
+
         registerTag("find", (attribute, object) -> {
             if (!attribute.startsWith("within", 3) || !attribute.hasContext(3)) {
                 return null;
@@ -1981,7 +2070,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 int index = 0;
 
                 attribute.fulfill(2);
-                Location tstart = object.getBlockForTag(attribute).getLocation();
+                Location tstart = object.getBlockLocation();
                 double tstartY = tstart.getY();
                 int radiusInt = (int) radius;
 
