@@ -1153,6 +1153,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
+        // @attribute <CuboidTag.world>
+        // @returns WorldTag
+        // @description
+        // Returns the cuboid's world.
+        // -->
+        registerTag("world", (attribute, cuboid) -> {
+            return new WorldTag(cuboid.pairs.get(0).low.getWorld());
+        });
+
+        // <--[tag]
         // @attribute <CuboidTag.min>
         // @returns LocationTag
         // @description
