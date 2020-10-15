@@ -146,8 +146,8 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world name!");
                     return false;
                 }
-                File newFolder = new File(worldName.asString());
                 File folder = new File(copy_from.asString().replace("w@", ""));
+                final File newFolder = new File(worldName.asString());
                 if (!Utilities.canReadFile(folder)) {
                     Debug.echoError("Cannot copy from that folder path.");
                     return false;
@@ -158,6 +158,10 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
+                    return false;
+                }
+                if (newFolder.exists()) {
+                    Debug.echoError("Cannot copy to new world - that folder already exists.");
                     return false;
                 }
                 CoreUtilities.copyDirectory(folder, newFolder, excludedExtensionsForCopyFrom);
