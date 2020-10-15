@@ -16,6 +16,8 @@ import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.function.Supplier;
 
 public class CreateWorldCommand extends AbstractCommand implements Holdable {
@@ -113,6 +115,8 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
         scriptEntry.defaultObject("environment", new ElementTag("NORMAL"));
     }
 
+    public static HashSet<String> excludedExtensionsForCopyFrom = new HashSet<>(Collections.singleton("lock"));
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag worldName = scriptEntry.getElement("world_name");
@@ -156,7 +160,8 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
                     return false;
                 }
-                CoreUtilities.copyDirectory(folder, newFolder);
+                CoreUtilities.copyDirectory(folder, newFolder, excludedExtensionsForCopyFrom);
+                Debug.echoDebug(scriptEntry, "Copied " + folder.getName() + " to " + newFolder.getName());
                 File file = new File(worldName.asString() + "/uid.dat");
                 if (file.exists()) {
                     file.delete();
@@ -166,7 +171,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                     file2.delete();
                 }
             }
-            catch (Exception ex) {
+            catch (Throwable ex) {
                 Debug.echoError(ex);
                 return false;
             }
@@ -188,7 +193,10 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             }
             world = Bukkit.getServer().createWorld(worldCreator);
             if (world == null) {
-                Debug.echoDebug(scriptEntry, "World is null, something went wrong in creation!");
+                Debug.echoError("World is null, something went wrong in creation!");
+            }
+            else {
+                Debug.echoDebug(scriptEntry, "Created new world " + world.getName());
             }
             scriptEntry.setFinished(true);
         };
@@ -202,6 +210,9 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             });
         }
         else {
+            if (copy_from != null && !copyRunnable.get()) {
+                return;
+            }
             createRunnable.run();
         }
     }
