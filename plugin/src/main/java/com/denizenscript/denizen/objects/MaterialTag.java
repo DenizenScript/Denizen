@@ -113,10 +113,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         }
     }
 
-    public boolean matchesBlock(Block b) {
-        return getMaterial() == b.getType();
-    }
-
     public MaterialTag(Material material) {
         this.material = material;
         if (material.isBlock()) {

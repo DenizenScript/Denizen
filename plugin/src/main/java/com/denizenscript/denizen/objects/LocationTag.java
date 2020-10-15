@@ -2148,7 +2148,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                                 LocationTag l = new LocationTag(blockLoc.clone().add(x, y, z));
                                 if (!materials.isEmpty()) {
                                     for (MaterialTag material : materials) {
-                                        if (material.matchesBlock(l.getBlockForTag(attribute))) {
+                                        if (material.getMaterial() == l.getBlockTypeForTag(attribute)) {
                                             if (new LocationTag(l.clone().add(0, 1, 0)).getBlockTypeForTag(attribute) == Material.AIR
                                                     && new LocationTag(l.clone().add(0, 2, 0)).getBlockTypeForTag(attribute) == Material.AIR
                                                     && l.getBlockTypeForTag(attribute) != Material.AIR) {
