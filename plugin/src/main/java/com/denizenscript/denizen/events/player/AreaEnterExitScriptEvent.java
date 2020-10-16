@@ -240,10 +240,6 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (containedNow == wasContained) {
             return;
         }
-        if (inAreas == null) {
-            inAreas = new HashSet<>();
-            playersInArea.put(player.getUniqueId(), inAreas);
-        }
         if (containedNow) {
             inAreas.add(obj.getNoteName());
         }
@@ -262,6 +258,10 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             return;
         }
         HashSet<String> inAreas = playersInArea.get(player.getUniqueId());
+        if (inAreas == null) {
+            inAreas = new HashSet<>();
+            playersInArea.put(player.getUniqueId(), inAreas);
+        }
         if (doTrackAll || matchers != null) {
             for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
                 if (anyMatch(cuboid.noteName)) {
