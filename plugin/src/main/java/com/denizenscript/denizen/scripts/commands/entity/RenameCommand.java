@@ -137,7 +137,7 @@ public class RenameCommand extends AbstractCommand {
                         continue;
                     }
                     if (name.asString().equals("cancel")) {
-                        customNames.remove(bukkitEntity.getEntityId());
+                        customNames.remove(bukkitEntity.getUniqueId());
                         if (bukkitEntity.isCustomNameVisible()) {
                             if (players == null) {
                                 for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
@@ -157,10 +157,10 @@ public class RenameCommand extends AbstractCommand {
                     }
                     else {
                         final BukkitTagContext originalContext = (BukkitTagContext) scriptEntry.context.clone();
-                        HashMap<UUID, Function<Player, String>> playerToFuncMap = customNames.get(bukkitEntity.getEntityId());
+                        HashMap<UUID, Function<Player, String>> playerToFuncMap = customNames.get(bukkitEntity.getUniqueId());
                         if (playerToFuncMap == null) {
                             playerToFuncMap = new HashMap<>();
-                            customNames.put(bukkitEntity.getEntityId(), playerToFuncMap);
+                            customNames.put(bukkitEntity.getUniqueId(), playerToFuncMap);
                         }
                         Function<Player, String> nameGetter = p -> {
                             originalContext.player = new PlayerTag(p);
@@ -227,21 +227,21 @@ public class RenameCommand extends AbstractCommand {
             }
             else {
                 Entity bukkitEntity = entity.getDenizenEntity().getBukkitEntity();
-                customNames.remove(bukkitEntity.getEntityId());
+                customNames.remove(bukkitEntity.getUniqueId());
                 bukkitEntity.setCustomName(nameString);
                 bukkitEntity.setCustomNameVisible(true);
             }
         }
     }
 
-    public static HashMap<Integer, HashMap<UUID, Function<Player, String>>> customNames = new HashMap<>();
+    public static HashMap<UUID, HashMap<UUID, Function<Player, String>>> customNames = new HashMap<>();
 
     public static boolean hasAnyDynamicRenames() {
         return !customNames.isEmpty();
     }
 
-    public static String getCustomNameFor(int eid, Player player) {
-        HashMap<UUID, Function<Player, String>> map = customNames.get(eid);
+    public static String getCustomNameFor(UUID entityId, Player player) {
+        HashMap<UUID, Function<Player, String>> map = customNames.get(entityId);
         if (map == null) {
             return null;
         }

@@ -169,7 +169,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
         try {
             int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
-            String nameToApply = RenameCommand.getCustomNameFor(eid, player.getBukkitEntity());
+            Entity ent = player.world.getEntity(eid);
+            if (ent == null) {
+                return; // If it doesn't exist on-server, it's definitely not relevant, so move on
+            }
+            String nameToApply = RenameCommand.getCustomNameFor(ent.getUniqueID(), player.getBukkitEntity());
             if (nameToApply == null) {
                 return;
             }
