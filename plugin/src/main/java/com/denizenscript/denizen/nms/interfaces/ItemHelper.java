@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
+import com.denizenscript.denizen.objects.ItemTag;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -71,5 +73,31 @@ public abstract class ItemHelper {
 
     public UUID convertNbtToUuid(IntArrayTag id) {
         throw new UnsupportedOperationException();
+    }
+
+    public String getDisplayName(ItemTag item) {
+        if (!item.getItemMeta().hasDisplayName()) {
+            return null;
+        }
+        return item.getItemMeta().getDisplayName();
+    }
+
+    public List<String> getLore(ItemTag item) {
+        if (!item.getItemMeta().hasLore()) {
+            return null;
+        }
+        return item.getItemMeta().getLore();
+    }
+
+    public void setDisplayName(ItemTag item, String name) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(name);
+        item.setItemMeta(meta);
+    }
+
+    public void setLore(ItemTag item, List<String> lore) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setLore(lore);
+        item.setItemMeta(meta);
     }
 }

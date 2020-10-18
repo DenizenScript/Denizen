@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -235,10 +236,8 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Display Name
             if (contains("display name")) {
-                ItemMeta meta = stack.getItemMeta();
                 String displayName = TagManager.tag(getString("display name"), context);
-                meta.setDisplayName(displayName);
-                stack.setItemMeta(meta);
+                NMSHandler.getItemHelper().setDisplayName(stack, displayName);
             }
             // Set if the object is bound to the player
             if (contains("bound")) {
@@ -247,14 +246,15 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Lore
             if (contains("lore")) {
-                ItemMeta meta = stack.getItemMeta();
-                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                List<String> lore = NMSHandler.getItemHelper().getLore(stack);
+                if (lore == null) {
+                    lore = new ArrayList<>();
+                }
                 for (String line : getStringList("lore")) {
                     line = TagManager.tag(line, context);
                     lore.add(line);
                 }
-                meta.setLore(lore);
-                stack.setItemMeta(meta);
+                NMSHandler.getItemHelper().setLore(stack, lore);
             }
             // Set Durability
             if (contains("durability")) {

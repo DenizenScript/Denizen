@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -11,6 +13,8 @@ import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -262,5 +266,67 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public UUID convertNbtToUuid(IntArrayTag id) {
         return GameProfileSerializer.a(new NBTTagIntArray(id.getValue()));
+    }
+
+    @Override
+    public String getDisplayName(ItemTag item) {
+        if (!item.getItemMeta().hasDisplayName()) {
+            return null;
+        }
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+        String jsonText = ((NBTTagCompound) nmsItemStack.getTag().get("display")).getString("Name");
+        BaseComponent[] nameComponent = ComponentSerializer.parse(jsonText);
+        return FormattedTextHelper.stringify(nameComponent);
+    }
+
+    @Override
+    public List<String> getLore(ItemTag item) {
+        if (!item.getItemMeta().hasLore()) {
+            return null;
+        }
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+        NBTTagList list = ((NBTTagCompound) nmsItemStack.getTag().get("display")).getList("Lore", 8);
+        List<String> outList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            BaseComponent[] lineComponent = ComponentSerializer.parse(list.getString(i));
+            outList.add(FormattedTextHelper.stringify(lineComponent));
+        }
+        return outList;
+    }
+
+    @Override
+    public void setDisplayName(ItemTag item, String name) {
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+        NBTTagCompound tag = nmsItemStack.getOrCreateTag();
+        NBTTagCompound display = tag.getCompound("display");
+        if (!tag.hasKey("display")) {
+            tag.set("display", display);
+        }
+        if (name == null || name.isEmpty()) {
+            display.set("Name", null);
+            return;
+        }
+        display.set("Name", NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(name))));
+        item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
+    }
+
+    @Override
+    public void setLore(ItemTag item, List<String> lore) {
+        net.minecraft.server.v1_16_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+        NBTTagCompound tag = nmsItemStack.getOrCreateTag();
+        NBTTagCompound display = tag.getCompound("display");
+        if (!tag.hasKey("display")) {
+            tag.set("display", display);
+        }
+        if (lore == null || lore.isEmpty()) {
+            display.set("Lore", null);
+            return;
+        }
+        NBTTagList tagList = new NBTTagList();
+        for (String line : lore) {
+            tagList.add(NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(line))));
+        }
+        display.set("Lore", tagList);
+        item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 }

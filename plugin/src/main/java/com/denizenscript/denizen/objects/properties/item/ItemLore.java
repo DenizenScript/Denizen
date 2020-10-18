@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -11,7 +12,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemLore implements Property {
 
@@ -86,9 +86,8 @@ public class ItemLore implements Property {
 
     public ListTag getLoreList() {
         ListTag output = new ListTag();
-        for (String itemLore : item.getItemMeta().getLore()) {
-            if (!itemLore.startsWith(ItemTag.itemscriptIdentifier)
-                    && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
+        for (String itemLore : NMSHandler.getItemHelper().getLore(item)) {
+            if (!itemLore.startsWith(ItemTag.itemscriptIdentifier) && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                 output.add(itemLore);
             }
         }
@@ -124,7 +123,6 @@ public class ItemLore implements Property {
         // <ItemTag.lore>
         // -->
         if (mechanism.matches("lore")) {
-            ItemMeta meta = item.getItemMeta();
             ListTag lore = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(lore);
             if (item.isItemscript()) {
@@ -139,9 +137,7 @@ public class ItemLore implements Property {
                 }
                 lore.set(i, CoreUtilities.clearNBSPs(loreLine));
             }
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+            NMSHandler.getItemHelper().setLore(item, lore);
         }
-
     }
 }

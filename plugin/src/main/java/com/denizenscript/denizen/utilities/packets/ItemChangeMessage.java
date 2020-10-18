@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,9 +37,8 @@ public class ItemChangeMessage implements Listener {
         else {
             item = item.clone();
         }
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(message);
-        item.setItemMeta(meta);
+        ItemTag itemTag = new ItemTag(item);
+        NMSHandler.getItemHelper().setDisplayName(itemTag, message);
         int slot = player.getInventory().getHeldItemSlot() + 36;
         NMSHandler.getPacketHelper().setSlot(player, slot, item, true);
         slotChanged.put(player.getUniqueId(), slot);

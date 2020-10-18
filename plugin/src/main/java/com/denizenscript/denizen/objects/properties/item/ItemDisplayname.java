@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -8,6 +9,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemDisplayname implements Property {
@@ -31,7 +33,7 @@ public class ItemDisplayname implements Property {
     };
 
     public static final String[] handledMechs = new String[] {
-            "display_name"
+            "display", "display_name"
     };
 
     private ItemDisplayname(ItemTag _item) {
@@ -61,7 +63,7 @@ public class ItemDisplayname implements Property {
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
-                return new ElementTag(item.getItemMeta().getDisplayName())
+                return new ElementTag(NMSHandler.getItemHelper().getDisplayName(item))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -85,7 +87,7 @@ public class ItemDisplayname implements Property {
     @Override
     public String getPropertyString() {
         if (hasDisplayName()) {
-            return EscapeTagBase.escape(item.getItemMeta().getDisplayName());
+            return NMSHandler.getItemHelper().getDisplayName(item);
         }
         else {
             return null;
@@ -94,7 +96,7 @@ public class ItemDisplayname implements Property {
 
     @Override
     public String getPropertyId() {
-        return "display_name";
+        return "display";
     }
 
     @Override
@@ -102,15 +104,18 @@ public class ItemDisplayname implements Property {
 
         // <--[mechanism]
         // @object ItemTag
-        // @name display_name
+        // @name display
         // @input ElementTag
         // @description
-        // Changes the items display name.
-        // See <@link language Escape Tags>.
+        // Changes the item's display name.
         // @tags
         // <ItemTag.display>
         // -->
-        if (mechanism.matches("display_name")) {
+        if (mechanism.matches("display")) {
+            NMSHandler.getItemHelper().setDisplayName(item, mechanism.getValue().asString());
+        }
+        else if (mechanism.matches("display_name")) {
+            Deprecations.itemDisplayNameMechanism.warn(mechanism.context);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(mechanism.hasValue() ? CoreUtilities.clearNBSPs(EscapeTagBase.unEscape(mechanism.getValue().asString())) : null);
             item.setItemMeta(meta);

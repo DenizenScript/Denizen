@@ -253,6 +253,11 @@ public class Handler extends NMSHandler {
         }
     }
 
+    public static BaseComponent[] componentToSpigot(IChatMutableComponent nms) {
+        String json = IChatBaseComponent.ChatSerializer.a(nms);
+        return ComponentSerializer.parse(json);
+    }
+
     public static IChatMutableComponent componentToNMS(BaseComponent[] spigot) {
         String json = ComponentSerializer.toString(spigot);
         return IChatBaseComponent.ChatSerializer.b(json);

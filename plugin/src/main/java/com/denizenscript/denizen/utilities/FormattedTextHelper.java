@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.sun.org.apache.regexp.internal.RE;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 
@@ -47,6 +48,9 @@ public class FormattedTextHelper {
         StringBuilder builder = new StringBuilder(128 * components.length);
         for (BaseComponent component : components) {
             builder.append(stringify(component));
+        }
+        while (builder.toString().endsWith(RESET)) {
+            builder.setLength(builder.length() - RESET.length());
         }
         return builder.toString();
     }

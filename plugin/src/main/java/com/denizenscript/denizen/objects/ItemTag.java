@@ -349,11 +349,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
         }
         else {
-            ItemMeta meta = getItemMeta();
-            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+            List<String> lore = meta.hasLore() ? NMSHandler.getItemHelper().getLore(this) : new ArrayList<>();
             lore.add(0, script.getHashID());
-            meta.setLore(lore);
-            setItemMeta(meta);
+            NMSHandler.getItemHelper().setLore(this, lore);
         }
     }
 
