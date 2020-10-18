@@ -240,6 +240,23 @@ public class RenameCommand extends AbstractCommand {
         return !customNames.isEmpty();
     }
 
+    public static void addDynamicRename(Entity bukkitEntity, Player forPlayer, Function<Player, String> getterFunction) {
+        HashMap<UUID, Function<Player, String>> playerToFuncMap = customNames.get(bukkitEntity.getUniqueId());
+        if (playerToFuncMap == null) {
+            playerToFuncMap = new HashMap<>();
+            customNames.put(bukkitEntity.getUniqueId(), playerToFuncMap);
+        }
+        playerToFuncMap.put(forPlayer == null ? null : forPlayer.getUniqueId(), getterFunction);
+        if (forPlayer == null) {
+            for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
+                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "");
+            }
+        }
+        else {
+            NMSHandler.getPacketHelper().sendRename(forPlayer, bukkitEntity, "");
+        }
+    }
+
     public static String getCustomNameFor(UUID entityId, Player player) {
         HashMap<UUID, Function<Player, String>> map = customNames.get(entityId);
         if (map == null) {

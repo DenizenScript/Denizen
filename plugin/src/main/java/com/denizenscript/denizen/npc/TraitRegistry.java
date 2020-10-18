@@ -22,6 +22,7 @@ public class TraitRegistry {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MirrorTrait.class).withName("mirror"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MirrorNameTrait.class).withName("mirrorname"));
 
         // Register Speech AI
         CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");

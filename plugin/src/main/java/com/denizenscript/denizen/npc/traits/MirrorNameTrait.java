@@ -1,37 +1,32 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import net.citizensnpcs.api.event.DespawnReason;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class MirrorTrait extends Trait {
+public class MirrorNameTrait extends Trait {
 
     @Persist("")
     public boolean mirror = true;
 
-    public MirrorTrait() {
-        super("mirror");
-    }
+    public UUID mirroredUUID = null;
 
-    public static UUID getUUID(NPC npc) {
-        UUID uuid = npc.getUniqueId();
-        if (uuid.version() == 4) { // clear version
-            long msb = uuid.getMostSignificantBits();
-            msb &= ~0x0000000000004000L;
-            msb |= 0x0000000000002000L;
-            uuid = new UUID(msb, uuid.getLeastSignificantBits());
-        }
-        return uuid;
+    public MirrorNameTrait() {
+        super("mirrorname");
     }
 
     public void respawn() {
+        if (!npc.isSpawned() || npc.getEntity().getType() != EntityType.PLAYER) {
+            return;
+        }
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
             if (npc.isSpawned()) {
                 Location loc = npc.getEntity().getLocation();
@@ -44,29 +39,33 @@ public class MirrorTrait extends Trait {
     }
 
     public void mirrorOn() {
-        UUID uuid = getUUID(npc);
-        if (!ProfileEditor.mirrorUUIDs.contains(uuid)) {
-            ProfileEditor.mirrorUUIDs.add(uuid);
-            respawn();
+        if (!npc.isSpawned()) {
+            return;
         }
+        mirroredUUID = npc.getEntity().getUniqueId();
+        RenameCommand.addDynamicRename(npc.getEntity(), null, Player::getName);
     }
 
     public void mirrorOff() {
-        UUID uuid = getUUID(npc);
-        if (ProfileEditor.mirrorUUIDs.contains(uuid)) {
-            ProfileEditor.mirrorUUIDs.remove(uuid);
-            respawn();
+        if (mirroredUUID == null) {
+            return;
         }
     }
 
     public void enableMirror() {
         mirror = true;
         mirrorOn();
+        if (npc.isSpawned() && npc.getEntity().getType() == EntityType.PLAYER) {
+            respawn();
+        }
     }
 
     public void disableMirror() {
         mirror = false;
         mirrorOff();
+        if (RenameCommand.customNames.remove(mirroredUUID) != null && npc.isSpawned() && npc.getEntity().getType() == EntityType.PLAYER) {
+            respawn();
+        }
     }
 
     @Override
