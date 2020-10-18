@@ -262,37 +262,23 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         if (item == null) {
             return -1;
         }
-
         int determination = 0;
         ItemStack compared = getItemStack();
-
-        // Will return -1 if these are not the same
-        // Material IDs
-        if (compared.getType().getId() != compared_to.getType().getId()) {
+        if (compared.getType() != compared_to.getType()) {
             return -1;
         }
-
-        // If compared_to has item meta, and compared does not, return -1
         if (compared_to.hasItemMeta()) {
             if (!compared.hasItemMeta()) {
                 return -1;
             }
-
-            // If compared_to has a display name, and compared does not, return -1
-            if (compared_to.getItemMeta().hasDisplayName()) {
-                if (!compared.getItemMeta().hasDisplayName()) {
+            ItemMeta thisMeta = getItemMeta();
+            ItemMeta comparedItemMeta = compared_to.getItemMeta();
+            if (comparedItemMeta.hasDisplayName()) {
+                if (!thisMeta.hasDisplayName()) {
                     return -1;
                 }
-
-                // If compared_to's display name does not at least start with compared's item name,
-                // return -1.
-                if (compared_to.getItemMeta().getDisplayName().toUpperCase()
-                        .startsWith(compared.getItemMeta().getDisplayName().toUpperCase())) {
-
-                    // If the compared item has a longer display name than compared_to,
-                    // it is similar, but modified. Perhaps 'engraved' or something?
-                    if (compared.getItemMeta().getDisplayName().length() >
-                            compared_to.getItemMeta().getDisplayName().length()) {
+                if (comparedItemMeta.getDisplayName().toUpperCase().startsWith(thisMeta.getDisplayName().toUpperCase())) {
+                    if (thisMeta.getDisplayName().length() > comparedItemMeta.getDisplayName().length()) {
                         determination++;
                     }
                 }
@@ -300,57 +286,38 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
                     return -1;
                 }
             }
-
-            // If compared_to has lore, and compared does not, return -1
-            if (compared_to.getItemMeta().hasLore()) {
-                if (!compared.getItemMeta().hasLore()) {
+            if (comparedItemMeta.hasLore()) {
+                if (!thisMeta.hasLore()) {
                     return -1;
                 }
-
-                // If compared doesn't have a piece of lore contained in compared_to, return -1
-                for (String lore : compared_to.getItemMeta().getLore()) {
-                    if (!compared.getItemMeta().getLore().contains(lore)) {
+                for (String lore : comparedItemMeta.getLore()) {
+                    if (!thisMeta.getLore().contains(lore)) {
                         return -1;
                     }
                 }
-
-                // If the compared item has more lore than compared to, it is similar, but modified.
-                // Still qualifies for a match, but it seems the item may be a 'better' item, so increase
-                // the determination.
-                if (compared.getItemMeta().getLore().size() > compared_to.getItemMeta().getLore().size()) {
+                if (thisMeta.getLore().size() > comparedItemMeta.getLore().size()) {
                     determination++;
                 }
             }
-
-            if (!compared_to.getItemMeta().getEnchants().isEmpty()) {
-                if (compared.getItemMeta().getEnchants().isEmpty()) {
+            if (!comparedItemMeta.getEnchants().isEmpty()) {
+                if (thisMeta.getEnchants().isEmpty()) {
                     return -1;
                 }
-
-                for (Map.Entry<Enchantment, Integer> enchant : compared_to.getItemMeta().getEnchants().entrySet()) {
-                    if (!compared.getItemMeta().getEnchants().containsKey(enchant.getKey())
-                            || compared.getItemMeta().getEnchants().get(enchant.getKey()) < enchant.getValue()) {
+                for (Map.Entry<Enchantment, Integer> enchant : comparedItemMeta.getEnchants().entrySet()) {
+                    if (!thisMeta.getEnchants().containsKey(enchant.getKey()) || thisMeta.getEnchants().get(enchant.getKey()) < enchant.getValue()) {
                         return -1;
                     }
                 }
-
-                if (compared.getItemMeta().getEnchants().size() > compared_to.getItemMeta().getEnchants().size()) {
+                if (thisMeta.getEnchants().size() > comparedItemMeta.getEnchants().size()) {
+                    determination++;
+                }
+            }
+            if (isRepairable()) {
+                if (((Damageable) thisMeta).getDamage() < ((Damageable) comparedItemMeta).getDamage()) {
                     determination++;
                 }
             }
         }
-
-        if (isRepairable()) {
-            if (compared.getDurability() < compared_to.getDurability()) {
-                determination++;
-            }
-        }
-        else
-            // Check data
-            if (getItemStack().getData().getData() != item.getData().getData()) {
-                return -1;
-            }
-
         return determination;
     }
 
@@ -382,11 +349,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
         }
         else {
-            ItemMeta meta = item.getItemMeta();
+            ItemMeta meta = getItemMeta();
             List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
             lore.add(0, script.getHashID());
             meta.setLore(lore);
-            item.setItemMeta(meta);
+            setItemMeta(meta);
         }
     }
 

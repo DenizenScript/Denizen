@@ -264,7 +264,6 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Enchantments
             if (contains("enchantments")) {
                 for (String enchantment : getStringList("enchantments")) {
-
                     enchantment = TagManager.tag(enchantment, context);
                     try {
                         // Build enchantment context
@@ -279,7 +278,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         // Add enchantment
                         Enchantment ench = Utilities.getEnchantmentByName(enchantment);
-                        stack.getItemStack().addUnsafeEnchantment(ench, level);
+                        stack.getItemMeta().addEnchant(ench, level, true);
                     }
                     catch (Exception ex) {
                         Debug.echoError("While constructing '" + getName() + "', encountered error: '" + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());

@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -1316,15 +1317,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 int found_items = 0;
                 if (strict) {
                     for (ItemStack item : object.getContents()) {
-                        if (item != null && item.getType() == Material.WRITTEN_BOOK
-                                && ((BookMeta) item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
+                        if (item == null || !item.hasItemMeta()) {
+                            continue;
+                        }
+                        ItemMeta meta = item.getItemMeta();
+                        if (item.getType() == Material.WRITTEN_BOOK && ((BookMeta) meta).getTitle().equalsIgnoreCase(search_string)) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
                                 break;
                             }
                         }
-                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
+                        else if (meta.hasDisplayName() && meta.getDisplayName().equalsIgnoreCase(search_string)) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
                                 break;
@@ -1334,17 +1337,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
                 else {
                     for (ItemStack item : object.getContents()) {
-                        if (item != null && item.getType() == Material.WRITTEN_BOOK
-                                && CoreUtilities.toLowerCase(((BookMeta) item.getItemMeta()).getTitle())
-                                .contains(CoreUtilities.toLowerCase(search_string))) {
+                        if (item == null || !item.hasItemMeta()) {
+                            continue;
+                        }
+                        ItemMeta meta = item.getItemMeta();
+                        if (item.getType() == Material.WRITTEN_BOOK && CoreUtilities.toLowerCase(((BookMeta) meta).getTitle()).contains(CoreUtilities.toLowerCase(search_string))) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
                                 break;
                             }
                         }
-                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                CoreUtilities.toLowerCase(item.getItemMeta().getDisplayName())
-                                        .contains(CoreUtilities.toLowerCase(search_string))) {
+                        else if (meta.hasDisplayName() && CoreUtilities.toLowerCase(meta.getDisplayName()).contains(CoreUtilities.toLowerCase(search_string))) {
                             found_items += item.getAmount();
                             if (found_items >= qty) {
                                 break;
@@ -1398,8 +1401,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 if (strict) {
                     strict_items:
                     for (ItemStack item : object.getContents()) {
-                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                            List<String> item_lore = item.getItemMeta().getLore();
+                        if (item == null || !item.hasItemMeta()) {
+                            continue;
+                        }
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta.hasLore()) {
+                            List<String> item_lore = meta.getLore();
                             if (lore.size() != item_lore.size()) {
                                 continue;
                             }
@@ -1417,8 +1424,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 }
                 else {
                     for (ItemStack item : object.getContents()) {
-                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                            List<String> item_lore = item.getItemMeta().getLore();
+                        if (item == null || !item.hasItemMeta()) {
+                            continue;
+                        }
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta.hasLore()) {
+                            List<String> item_lore = meta.getLore();
                             int loreCount = 0;
                             lines:
                             for (String line : lore) {

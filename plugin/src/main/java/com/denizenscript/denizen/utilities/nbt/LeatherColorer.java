@@ -9,13 +9,10 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class LeatherColorer {
 
     public static void colorArmor(ItemTag item, String colorArg) {
-
         if (item == null) {
             return;
         }
-
         if (ColorTag.matches(colorArg)) {
-
             try {
                 LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
                 meta.setColor(ColorTag.valueOf(colorArg, CoreUtilities.basicContext).getColor());
@@ -25,6 +22,5 @@ public class LeatherColorer {
                 Debug.echoError("Unable to color '" + item.identify() + "'.");
             }
         }
-
     }
 }

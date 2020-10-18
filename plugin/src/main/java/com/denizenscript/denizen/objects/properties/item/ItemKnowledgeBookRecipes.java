@@ -44,9 +44,8 @@ public class ItemKnowledgeBookRecipes implements Property {
 
     public ListTag recipeList() {
         ListTag output = new ListTag();
-        ItemStack itemStack = item.getItemStack();
-        if (itemStack.hasItemMeta() && itemStack.getItemMeta() instanceof KnowledgeBookMeta) {
-            for (NamespacedKey key : ((KnowledgeBookMeta) itemStack.getItemMeta()).getRecipes()) {
+        if (item.getItemMeta() instanceof KnowledgeBookMeta) {
+            for (NamespacedKey key : ((KnowledgeBookMeta) item.getItemMeta()).getRecipes()) {
                 output.add(key.toString());
             }
         }
