@@ -278,6 +278,10 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void sendRename(Player player, Entity entity, String name) {
         try {
+            if (entity.getType() == EntityType.PLAYER) {
+                // TODO: player rename somehow
+                return;
+            }
             PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
             ENTITY_METADATA_EID_SETTER.invoke(packet, entity.getEntityId());
             List<DataWatcher.Item<?>> list = new ArrayList<>();

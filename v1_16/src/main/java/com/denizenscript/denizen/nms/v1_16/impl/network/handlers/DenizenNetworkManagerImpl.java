@@ -174,7 +174,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
-        processMirrorForPacket(packet);
         processBlockLightForPacket(packet);
         processCustomNameForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
@@ -423,7 +422,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public boolean processMirrorForPacket(Packet<?> packet) {
         if (packet instanceof PacketPlayOutPlayerInfo) {
             PacketPlayOutPlayerInfo playerInfo = (PacketPlayOutPlayerInfo) packet;
-            if (!ProfileEditorImpl.handleMirrorProfiles(playerInfo, this)) {
+            if (!ProfileEditorImpl.handleAlteredProfiles(playerInfo, this)) {
                 return true;
             }
             ProfileEditorImpl.updatePlayerProfiles(playerInfo);
