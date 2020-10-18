@@ -847,6 +847,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
         registerTag("target", (attribute, object) -> {
             int range = 50;
+            ListTag filterList = null;
+            if (attribute.hasContext(1)) {
+                filterList = attribute.contextAsType(1, ListTag.class);
+            }
 
             // <--[tag]
             // @attribute <PlayerTag.target[(<entity>|...)].within[(<#>)]>
@@ -860,10 +864,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 range = attribute.getIntContext(2);
                 attribute.fulfill(1);
             }
-
             List<Entity> entities = object.getPlayerEntity().getNearbyEntities(range, range, range);
             ArrayList<LivingEntity> possibleTargets = new ArrayList<>();
-            if (!attribute.hasContext(1)) {
+            if (filterList == null) {
                 for (Entity entity : entities) {
                     if (entity instanceof LivingEntity) {
                         possibleTargets.add((LivingEntity) entity);
@@ -871,10 +874,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 }
             }
             else {
-                ListTag list = ListTag.getListFor(attribute.getContextObject(1), attribute.context);
                 for (Entity entity : entities) {
                     if (entity instanceof LivingEntity) {
-                        for (ObjectTag obj : list.objectForms) {
+                        for (ObjectTag obj : filterList.objectForms) {
                             boolean valid = false;
                             EntityTag filterEntity = null;
                             if (obj instanceof EntityTag) {
@@ -906,7 +908,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                 }
             }
-
             try {
                 NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
                 // Find the valid target
@@ -921,14 +922,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 Location l;
                 int bx, by, bz;
                 double ex, ey, ez;
-
                 // Loop through player's line of sight
                 while (bi.hasNext()) {
                     b = bi.next();
                     bx = b.getX();
                     by = b.getY();
                     bz = b.getZ();
-
                     if (b.getType().isSolid()) {
                         // Line of sight is broken
                         break;
