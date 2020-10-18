@@ -22,77 +22,44 @@ import java.util.Map;
 
 public class Conversion {
 
-    /**
-     * Turn a list of ColorTags into a list of Colors.
-     *
-     * @param colors The list of ColorTags
-     * @return The list of Colors
-     */
     public static List<Color> convertColors(List<ColorTag> colors) {
-
         List<Color> newList = new ArrayList<>();
-
         for (ColorTag color : colors) {
             newList.add(color.getColor());
         }
-
         return newList;
     }
 
-    /**
-     * Turn a list of ItemTags into a list of ItemStacks.
-     *
-     * @param items The list of ItemTags
-     * @return The list of ItemStacks
-     */
     public static List<ItemStack> convertItems(List<ItemTag> items) {
-
         List<ItemStack> newList = new ArrayList<>();
-
         for (ItemTag item : items) {
             newList.add(item.getItemStack());
         }
-
         return newList;
     }
 
-    /**
-     * Turn a list of dEntities into a list of Entities.
-     *
-     * @param entities The list of dEntities
-     * @return The list of Entities
-     */
     public static List<Entity> convertEntities(List<EntityTag> entities) {
-
         List<Entity> newList = new ArrayList<>();
-
         for (EntityTag entity : entities) {
             newList.add(entity.getBukkitEntity());
         }
-
         return newList;
     }
 
-    /**
-     * Gets a InventoryTag from an Object, which can be a
-     * EntityTag, LocationTag, InventoryTag, or a ListTag of ItemTags
-     *
-     * @param arg An argument to parse
-     * @return The InventoryTag retrieved by parsing the argument
-     */
     public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(Argument arg, ScriptEntry scriptEntry) {
-        return getInventory(arg.getValue(), scriptEntry.context);
+        return getInventory(arg, scriptEntry == null ? null : scriptEntry.context);
     }
 
-    public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(String string, TagContext context) {
-        if (InventoryTag.matches(string)) {
-            InventoryTag inv = InventoryTag.valueOf(string, context);
+    public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(Argument arg, TagContext context) {
+        boolean isElement = arg.object instanceof ElementTag;
+        if (arg.object instanceof InventoryTag || (isElement && InventoryTag.matches(arg.getValue()))) {
+            InventoryTag inv = arg.object instanceof InventoryTag ? (InventoryTag) arg.object : InventoryTag.valueOf(arg.getValue(), context);
             if (inv != null) {
                 return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
             }
         }
-        else if (string.startsWith("map@")) {
-            MapTag map = MapTag.valueOf(string, context);
+        else if (arg.object instanceof MapTag || (isElement && arg.getValue().startsWith("map@"))) {
+            MapTag map = arg.object instanceof MapTag ? (MapTag) arg.object : MapTag.valueOf(arg.getValue(), context);
             int maxSlot = 0;
             for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
                 if (!ArgumentHelper.matchesInteger(entry.getKey().str)) {
@@ -117,26 +84,26 @@ public class Conversion {
             }
             return new AbstractMap.SimpleEntry<>(maxSlot, inventory);
         }
-        else if (ListTag.valueOf(string, context).containsObjectsFrom(ItemTag.class)) {
-            List<ItemTag> list = ListTag.valueOf(string, context).filter(ItemTag.class, context);
+        else if (arg.object instanceof LocationTag || (isElement && LocationTag.matches(arg.getValue()))) {
+            InventoryTag inv = (arg.object instanceof LocationTag ? (LocationTag) arg.object : LocationTag.valueOf(arg.getValue(), context)).getInventory();
+            if (inv != null) {
+                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
+            }
+        }
+        else if (arg.object instanceof EntityTag || arg.object instanceof PlayerTag || arg.object instanceof NPCTag || (isElement && EntityTag.matches(arg.getValue()))) {
+            InventoryTag inv = EntityTag.valueOf(arg.getValue(), context).getInventory();
+            if (inv != null) {
+                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
+            }
+        }
+        ListTag asList = ListTag.getListFor(arg.object, context);
+        if (asList.containsObjectsFrom(ItemTag.class)) {
+            List<ItemTag> list = asList.filter(ItemTag.class, context);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             InventoryTag inventory = new InventoryTag(Math.min(InventoryTag.maxSlots, (items.length / 9) * 9 + 9));
             inventory.setContents(items);
             return new AbstractMap.SimpleEntry<>(items.length, inventory);
         }
-        else if (LocationTag.matches(string)) {
-            InventoryTag inv = LocationTag.valueOf(string, context).getInventory();
-            if (inv != null) {
-                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
-            }
-        }
-        else if (EntityTag.matches(string)) {
-            InventoryTag inv = EntityTag.valueOf(string, context).getInventory();
-            if (inv != null) {
-                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
-            }
-        }
-
         return null;
     }
 }

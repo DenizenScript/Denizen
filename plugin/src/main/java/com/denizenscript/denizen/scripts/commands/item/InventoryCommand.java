@@ -136,12 +136,7 @@ public class InventoryCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         boolean isAdjust = false;
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            if (!scriptEntry.hasObject("actions")
-                    && arg.matchesEnumList(Action.values())) {
-                scriptEntry.addObject("actions", arg.asType(ListTag.class).filter(Action.values()));
-                isAdjust = arg.toString().equalsIgnoreCase("adjust");
-            }
-            else if (!scriptEntry.hasObject("origin")
+            if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                     && (arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class, MapTag.class)
                     || arg.matchesArgumentList(ItemTag.class))) {
@@ -155,6 +150,11 @@ public class InventoryCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot", "s")) {
                 scriptEntry.addObject("slot", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("actions")
+                    && arg.matchesEnumList(Action.values())) {
+                scriptEntry.addObject("actions", arg.asType(ListTag.class).filter(Action.values()));
+                isAdjust = arg.toString().equalsIgnoreCase("adjust");
             }
             else if (!scriptEntry.hasObject("mechanism")
                     && isAdjust) {

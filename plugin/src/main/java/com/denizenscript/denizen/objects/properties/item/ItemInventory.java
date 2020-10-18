@@ -5,6 +5,7 @@ import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -114,14 +115,15 @@ public class ItemInventory implements Property {
             if (mechanism.matches("inventory")) {
                 Deprecations.itemInventoryTag.warn(mechanism.context);
             }
-            Map.Entry<Integer, InventoryTag> inventoryPair = Conversion.getInventory(mechanism.getValue().asString(), mechanism.context);
+            Argument argument = new Argument("");
+            argument.unsetValue();
+            argument.object = mechanism.getValue();
+            Map.Entry<Integer, InventoryTag> inventoryPair = Conversion.getInventory(argument, mechanism.context);
             if (inventoryPair == null || inventoryPair.getValue().getInventory() == null) {
                 return;
             }
-
             BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
-
             ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
             if (items.size() > invHolder.getInventory().getSize()) {
                 Debug.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
@@ -131,7 +133,6 @@ public class ItemInventory implements Property {
             for (int i = 0; i < itemArray.length; i++) {
                 itemArray[i] = ((ItemTag) items.objectForms.get(i)).getItemStack().clone();
             }
-
             invHolder.getInventory().setContents(itemArray);
             bsm.setBlockState((BlockState) invHolder);
             item.setItemMeta(bsm);
