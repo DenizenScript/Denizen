@@ -5,6 +5,8 @@ import com.denizenscript.denizen.tags.core.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class CommonRegistries {
@@ -107,7 +109,30 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(ColorTag.class, "co");
         CoreUtilities.registerTypeAsNoOtherTypeCode(CuboidTag.class, "cu");
         CoreUtilities.registerTypeAsNoOtherTypeCode(EllipsoidTag.class, "ellipsoid");
-        // TODO: EntityTag?
+        CoreUtilities.typeCheckers.put(EntityTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but for e@, p@, and n@
+            @Override
+            public boolean canBecome(ObjectTag inp) {
+                if (inp == null) {
+                    return false;
+                }
+                Class<? extends ObjectTag> inpType = inp.getObjectTagClass();
+                if (inpType == EntityTag.class || inpType == PlayerTag.class || inpType == NPCTag.class) {
+                    return true;
+                }
+                else if (inpType == ElementTag.class) {
+                    String simple = inp.identifySimple();
+                    int atIndex = simple.indexOf('@');
+                    if (atIndex != -1) {
+                        String code = simple.substring(0, atIndex);
+                        if (!code.equals("e") && !code.equals("p") && !code.equals("n") && !code.equals("el")) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
         CoreUtilities.registerTypeAsNoOtherTypeCode(InventoryTag.class, "in");
         CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
         CoreUtilities.registerTypeAsNoOtherTypeCode(LocationTag.class, "l");
