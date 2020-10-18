@@ -22,6 +22,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockDispensesScriptEvent());
+        ScriptEvent.registerScriptEvent(new BlockExplodesScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockFadesScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockFallsScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockFormsScriptEvent());
