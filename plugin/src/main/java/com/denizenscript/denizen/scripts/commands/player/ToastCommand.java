@@ -88,7 +88,7 @@ public class ToastCommand extends AbstractCommand {
                 scriptEntry.addObject("background", arg.asElement());
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new ElementTag(arg.raw_value));
+                scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
             }
             else {
                 arg.reportUnhandled();

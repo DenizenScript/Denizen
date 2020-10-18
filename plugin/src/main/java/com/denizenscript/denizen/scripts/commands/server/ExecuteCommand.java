@@ -106,7 +106,7 @@ public class ExecuteCommand extends AbstractCommand {
                 scriptEntry.addObject("silent", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("command")) {
-                scriptEntry.addObject("command", new ElementTag(arg.raw_value));
+                scriptEntry.addObject("command", new ElementTag(arg.getRawValue()));
             }
             else {
                 arg.reportUnhandled();

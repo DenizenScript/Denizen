@@ -144,7 +144,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
-                scriptEntry.addObject("type", new ElementTag(arg.raw_value.toUpperCase()));
+                scriptEntry.addObject("type", new ElementTag(arg.getRawValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("name")
                     && arg.matchesPrefix("name")) {

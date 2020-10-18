@@ -26,8 +26,8 @@ public class NBTCommand extends AbstractCommand {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
 
             if (!scriptEntry.hasObject("key")
-                    && arg.raw_value.split(":", 2).length == 2) {
-                String[] flagArgs = arg.raw_value.split(":", 2);
+                    && arg.getRawValue().split(":", 2).length == 2) {
+                String[] flagArgs = arg.getRawValue().split(":", 2);
                 scriptEntry.addObject("key", new ElementTag(flagArgs[0]));
                 scriptEntry.addObject("value", new ElementTag(flagArgs[1]));
             }

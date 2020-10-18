@@ -98,7 +98,7 @@ public class RenameCommand extends AbstractCommand {
                 scriptEntry.addObject("per_player", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("name")) {
-                scriptEntry.addObject("name", new ElementTag(arg.raw_value));
+                scriptEntry.addObject("name", new ElementTag(arg.getRawValue()));
             }
             else {
                 arg.reportUnhandled();

@@ -86,7 +86,7 @@ public class NarrateCommand extends AbstractCommand {
                 scriptEntry.addObject("per_player", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new ElementTag(arg.raw_value));
+                scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
             }
             else {
                 arg.reportUnhandled();

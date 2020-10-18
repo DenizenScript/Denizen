@@ -179,7 +179,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
             // Check if setting a boolean
             else if (!scriptEntry.hasObject("flag_name") &&
-                    arg.raw_value.split(":", 3).length == 1) {
+                    arg.getRawValue().split(":", 3).length == 1) {
                 scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
                 scriptEntry.addObject("value", new ElementTag(true));
                 scriptEntry.addObject("flag_name", arg.asElement());
@@ -187,9 +187,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
             // Check for flag_name:value/action
             else if (!scriptEntry.hasObject("flag_name") &&
-                    arg.raw_value.split(":", 3).length == 2) {
+                    arg.getRawValue().split(":", 3).length == 2) {
 
-                String[] flagArgs = arg.raw_value.split(":", 2);
+                String[] flagArgs = arg.getRawValue().split(":", 2);
                 scriptEntry.addObject("flag_name", new ElementTag(flagArgs[0].toUpperCase()));
 
                 if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
@@ -217,8 +217,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
             // Check for flag_name:action:value
             else if (!scriptEntry.hasObject("flag_name") &&
-                    arg.raw_value.split(":", 3).length == 3) {
-                String[] flagArgs = arg.raw_value.split(":", 3);
+                    arg.getRawValue().split(":", 3).length == 3) {
+                String[] flagArgs = arg.getRawValue().split(":", 3);
                 scriptEntry.addObject("flag_name", new ElementTag(flagArgs[0].toUpperCase()));
 
                 if (flagArgs[1].equals("->")) {
@@ -247,7 +247,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 }
                 else {
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
-                    scriptEntry.addObject("value", new ElementTag(arg.raw_value.split(":", 2)[1]));
+                    scriptEntry.addObject("value", new ElementTag(arg.getRawValue().split(":", 2)[1]));
                     continue;
                 }
 

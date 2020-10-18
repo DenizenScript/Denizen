@@ -105,13 +105,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")
-                    && (arg.startsWith("cu@") || !arg.raw_value.contains("|"))) {
+                    && (arg.startsWith("cu@") || !arg.getRawValue().contains("|"))) {
                 scriptEntry.addObject("locations", arg.asType(CuboidTag.class).getBlockLocationsUnfiltered());
             }
             else if (arg.matchesArgumentType(EllipsoidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")
-                    && (arg.startsWith("ellipsoid@") || !arg.raw_value.contains("|"))) {
+                    && (arg.startsWith("ellipsoid@") || !arg.getRawValue().contains("|"))) {
                 scriptEntry.addObject("locations", arg.asType(EllipsoidTag.class).getBlockLocationsUnfiltered());
             }
             else if (arg.matchesArgumentList(LocationTag.class)

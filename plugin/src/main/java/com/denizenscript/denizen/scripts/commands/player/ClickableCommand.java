@@ -124,7 +124,7 @@ public class ClickableCommand extends AbstractCommand {
                 scriptEntry.addObject("for_players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("script")) {
-                String scriptName = arg.raw_value;
+                String scriptName = arg.getRawValue();
                 int dotIndex = scriptName.indexOf('.');
                 if (dotIndex > 0) {
                     scriptEntry.addObject("path", new ElementTag(scriptName.substring(dotIndex + 1)));

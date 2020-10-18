@@ -101,7 +101,7 @@ public class AnnounceCommand extends AbstractCommand {
                 scriptEntry.addObject("format", format);
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new ElementTag(arg.raw_value));
+                scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
             }
 
         }

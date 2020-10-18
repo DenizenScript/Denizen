@@ -93,9 +93,9 @@ public class GiveCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
-                    && (arg.matchesArgumentList(ItemTag.class) || arg.startsWith("item:"))) {
-                scriptEntry.addObject("items", ListTag.valueOf(arg.raw_value.startsWith("item:") ?
-                        arg.raw_value.substring("item:".length()) : arg.raw_value, scriptEntry.getContext()).filter(ItemTag.class, scriptEntry));
+                    && (arg.matchesArgumentList(ItemTag.class))) {
+                scriptEntry.addObject("items", ListTag.valueOf(arg.getRawValue().startsWith("item:") ?
+                        arg.getRawValue().substring("item:".length()) : arg.getRawValue(), scriptEntry.getContext()).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("t", "to")

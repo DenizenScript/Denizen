@@ -106,7 +106,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     scriptEntry.addObject("origin_location", arg.asType(LocationTag.class));
                 }
                 else {
-                    Debug.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+                    Debug.echoError("Ignoring unrecognized argument: " + arg.getRawValue());
                 }
             }
             else if (!scriptEntry.hasObject("destination")
