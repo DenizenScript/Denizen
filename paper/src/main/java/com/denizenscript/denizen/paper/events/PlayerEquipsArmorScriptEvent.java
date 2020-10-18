@@ -30,6 +30,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     //
     // @Triggers when a player (un)equips armor.
     //
+    // @Warning This event is not reliable, and may miss some types of equipment changes or fire when equipment hasn't actually changed.
+    //
     // @Context
     // <context.new_item> returns the ItemTag that is now in the slot.
     // <context.old_item> returns the ItemTag that used to be in the slot.

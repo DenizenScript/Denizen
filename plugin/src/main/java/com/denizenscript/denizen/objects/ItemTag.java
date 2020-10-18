@@ -567,6 +567,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
         // If this returns true, it will enable access to:
         // <@link mechanism ItemTag.durability>,
         // <@link tag ItemTag.max_durability>, and <@link tag ItemTag.durability>.
+        // Note that due to odd design choices in Spigot, this is effectively true for all items, even though the durability value of most items is locked at zero.
         // -->
         registerTag("repairable", (attribute, object) -> {
             return new ElementTag(ItemDurability.describes(object));

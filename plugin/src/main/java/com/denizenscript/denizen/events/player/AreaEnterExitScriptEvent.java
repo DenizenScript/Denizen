@@ -171,7 +171,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         super.init();
         doTrackAll = false;
         boolean needsMatchers = false;
-        List<String> exacts = new ArrayList<>();
+        HashSet<String> exacts = new HashSet<>();
         List<MatchHelper> matchList = new ArrayList<>();
         for (ScriptPath path : eventPaths) {
             String area = path.eventArgLowerAt(2);
