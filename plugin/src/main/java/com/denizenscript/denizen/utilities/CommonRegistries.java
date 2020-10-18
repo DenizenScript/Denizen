@@ -5,6 +5,7 @@ import com.denizenscript.denizen.tags.core.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class CommonRegistries {
 
@@ -101,6 +102,21 @@ public class CommonRegistries {
         for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
             debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
         }
+        CoreUtilities.registerTypeAsNoOtherTypeCode(BiomeTag.class, "b");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(ChunkTag.class, "ch");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(ColorTag.class, "co");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(CuboidTag.class, "cu");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(EllipsoidTag.class, "ellipsoid");
+        // TODO: EntityTag?
+        CoreUtilities.registerTypeAsNoOtherTypeCode(InventoryTag.class, "in");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(LocationTag.class, "l");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(MaterialTag.class, "m");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(NPCTag.class, "n");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(PlayerTag.class, "p");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(PluginTag.class, "pl");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(WorldTag.class, "w");
         Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
     }
 }
