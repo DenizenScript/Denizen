@@ -14,6 +14,7 @@ import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
@@ -306,7 +307,12 @@ public class ItemHelperImpl extends ItemHelper {
             display.set("Name", null);
             return;
         }
-        display.set("Name", NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(name))));
+        BaseComponent[] components = FormattedTextHelper.parse(name);
+        TextComponent actualComponent = new TextComponent();
+        for (BaseComponent component : components) {
+            actualComponent.addExtra(component);
+        }
+        display.set("Name", NBTTagString.a(ComponentSerializer.toString(actualComponent)));
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 
