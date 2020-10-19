@@ -50,9 +50,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public CuboidTag clone() {
-        if (noteName != null) {
-            return this;
-        }
         CuboidTag cuboid;
         try {
             cuboid = (CuboidTag) super.clone();
@@ -61,6 +58,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             Debug.echoError(ex);
             cuboid = new CuboidTag();
         }
+        cuboid.noteName = null;
         cuboid.pairs = new ArrayList<>(pairs.size());
         for (LocationPair pair : pairs) {
             cuboid.pairs.add(new LocationPair(pair.low.clone(), pair.high.clone()));
@@ -191,6 +189,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public ObjectTag duplicate() {
+        if (noteName != null) {
+            return this;
+        }
         return clone();
     }
 
