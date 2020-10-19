@@ -25,7 +25,7 @@ public class FishCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Fish
-    // @Syntax fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)
+    // @Syntax fish [<location>/stop] (catch:{none}/default/junk/treasure/fish) (chance:<#>)
     // @Required 1
     // @Maximum 4
     // @Plugin Citizens
@@ -34,29 +34,23 @@ public class FishCommand extends AbstractCommand {
     //
     // @Description
     // Causes an NPC to begin fishing at the specified location.
-    // Setting catch determines what items the NPC may fish up, and
-    // the chance is the odds of the NPC fishing up an item.
-    //
-    // Also note that it seems you must specify the same location initially chosen for the NPC to fish at
-    // when stopping it.
+    // Setting catch determines what items the NPC may fish up, and the chance is the odds of the NPC fishing up an item.
     //
     // @Tags
     // None
     //
     // @Usage
-    // Makes the NPC throw their fishing line out to where the player is looking, with a 50% chance of catching fish
+    // Makes the NPC throw their fishing line out to where the player is looking, with a 50% chance of catching fish.
     // - fish <player.cursor_on> catch:fish chance:50
     //
     // @Usage
-    // Makes the NPC stop fishing
-    // - fish <player.cursor_on> stop
+    // Makes the NPC stop fishing.
+    // - fish stop
     // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
@@ -75,50 +69,36 @@ public class FishCommand extends AbstractCommand {
                     && arg.matchesInteger()) {
                 scriptEntry.addObject("percent", arg.asElement());
             }
-
         }
-
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop")) {
             throw new InvalidArgumentsException("Must specify a valid location!");
         }
-
         scriptEntry.defaultObject("catch", new ElementTag("NONE"))
                 .defaultObject("stop", new ElementTag(false))
                 .defaultObject("percent", new ElementTag(65));
-
         if (!Utilities.entryHasNPC(scriptEntry) || !Utilities.getEntryNPC(scriptEntry).isSpawned()) {
             throw new InvalidArgumentsException("This command requires a linked and spawned NPC!");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag catchtype = scriptEntry.getElement("catch");
         ElementTag stop = scriptEntry.getElement("stop");
         ElementTag percent = scriptEntry.getElement("percent");
-
+        if (scriptEntry.dbCallShouldDebug()) {
+            Debug.report(scriptEntry, getName(), (location == null ? "" : location.debug()) + catchtype.debug() + percent.debug() + stop.debug());
+        }
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         FishingTrait trait = npc.getFishingTrait();
-
-        if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), location.debug() + catchtype.debug() + percent.debug() + stop.debug());
-
-        }
-
         if (stop.asBoolean()) {
             trait.stopFishing();
             return;
         }
-
         npc.getEquipmentTrait().set(0, new ItemStack(Material.FISHING_ROD));
-
         trait.setCatchPercent(percent.asInt());
         trait.setCatchType(FishingHelper.CatchType.valueOf(catchtype.asString().toUpperCase()));
         trait.startFishing(location);
-
     }
 }
