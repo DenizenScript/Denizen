@@ -340,6 +340,11 @@ public class FormattedTextHelper {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     outputList.add(nextText);
                     nextText = new TextComponent();
+                    nextText.setBold(false);
+                    nextText.setItalic(false);
+                    nextText.setStrikethrough(false);
+                    nextText.setUnderlined(false);
+                    nextText.setObfuscated(false);
                     nextText.setColor(ChatColor.getByChar(code));
                 }
                 else if ((code >= 'k' && code <= 'o') || (code >= 'K' && code <= 'O')) {
