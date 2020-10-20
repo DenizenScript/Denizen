@@ -623,6 +623,20 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
             }
             return chunks;
         });
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.note_name>
+        // @returns ElementTag
+        // @description
+        // Gets the name of a noted EllipsoidTag. If the ellipsoid isn't noted, this is null.
+        // -->
+        registerTag("note_name", (attribute, ellipsoid) -> {
+            String noteName = NotableManager.getSavedId(ellipsoid);
+            if (noteName == null) {
+                return null;
+            }
+            return new ElementTag(noteName);
+        });
     }
 
     public static ObjectTagProcessor<EllipsoidTag> tagProcessor = new ObjectTagProcessor<>();
