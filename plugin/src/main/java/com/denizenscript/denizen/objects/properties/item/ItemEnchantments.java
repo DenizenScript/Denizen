@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -242,29 +242,30 @@ public class ItemEnchantments implements Property {
                 }
                 else {
                     String[] data = enchant.split(",", 2);
-                    if (Integer.valueOf(data[1]) == null) {
-                        Debug.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
-                    }
-                    else {
-                        try {
-                            Enchantment ench = Utilities.getEnchantmentByName(data[0]);
-                            if (ench != null) {
-                                if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
-                                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                                    meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
-                                    item.setItemMeta(meta);
-                                }
-                                else {
-                                    item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
-                                    item.meta = null;
-                                }
+                    try {
+                        Enchantment ench = Utilities.getEnchantmentByName(data[0]);
+                        if (ench != null) {
+                            if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+                                meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
+                                item.setItemMeta(meta);
                             }
                             else {
-                                Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                                item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                                item.meta = null;
                             }
                         }
-                        catch (NullPointerException e) {
+                        else {
                             Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                        }
+                    }
+                    catch (NullPointerException e) {
+                        Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
+                        if (Debug.verbose) {
+                            Debug.echoError(ex);
                         }
                     }
                 }

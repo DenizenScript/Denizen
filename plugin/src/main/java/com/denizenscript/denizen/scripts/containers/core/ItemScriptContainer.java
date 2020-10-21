@@ -278,7 +278,8 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         // Add enchantment
                         Enchantment ench = Utilities.getEnchantmentByName(enchantment);
-                        stack.getItemMeta().addEnchant(ench, level, true);
+                        stack.getItemStack().addUnsafeEnchantment(ench, level);
+                        stack.meta = null;
                     }
                     catch (Exception ex) {
                         Debug.echoError("While constructing '" + getName() + "', encountered error: '" + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());
