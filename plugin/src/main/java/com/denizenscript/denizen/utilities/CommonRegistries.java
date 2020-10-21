@@ -125,7 +125,9 @@ public class CommonRegistries {
                     if (atIndex != -1) {
                         String code = simple.substring(0, atIndex);
                         if (!code.equals("e") && !code.equals("p") && !code.equals("n") && !code.equals("el")) {
-                            return false;
+                            if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
+                                return false;
+                            }
                         }
                     }
                     return true;
