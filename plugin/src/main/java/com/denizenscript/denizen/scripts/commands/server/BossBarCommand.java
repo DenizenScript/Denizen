@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -192,7 +193,7 @@ public class BossBarCommand extends AbstractCommand {
                 }
                 BossBar bossBar1 = bossBarMap.get(idString);
                 if (title != null) {
-                    bossBar1.setTitle(title.asString());
+                    NMSHandler.getPlayerHelper().setBossBarTitle(bossBar1, title.asString());
                 }
                 if (progress != null) {
                     bossBar1.setProgress(progress.asDouble());

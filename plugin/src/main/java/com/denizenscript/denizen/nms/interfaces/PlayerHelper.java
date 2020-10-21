@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizencore.objects.Mechanism;
 import org.bukkit.*;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -78,5 +79,9 @@ public abstract class PlayerHelper {
 
     public void setSkinLayers(Player player, byte flags) {
         throw new UnsupportedOperationException();
+    }
+
+    public void setBossBarTitle(BossBar bar, String title) {
+        bar.setTitle(title);
     }
 }

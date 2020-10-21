@@ -1,9 +1,11 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
+import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.AbstractListenerPlayInImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -15,8 +17,10 @@ import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
 import org.bukkit.SoundCategory;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -263,5 +267,11 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void setSkinLayers(Player player, byte flags) {
         ((CraftPlayer) player).getHandle().getDataWatcher().set(ENTITY_HUMAN_SKINLAYERS_DATAWATCHER, flags);
+    }
+
+    @Override
+    public void setBossBarTitle(BossBar bar, String title) {
+        ((CraftBossBar) bar).getHandle().title = Handler.componentToNMS(FormattedTextHelper.parse(title));
+        ((CraftBossBar) bar).getHandle().sendUpdate(PacketPlayOutBoss.Action.UPDATE_NAME);
     }
 }
