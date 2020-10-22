@@ -186,9 +186,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
         // Choose a random entity type if "RANDOM" is used
         if (string.equalsIgnoreCase("RANDOM")) {
-
             EntityType randomType = null;
-
             // When selecting a random entity type, ignore invalid or inappropriate ones
             while (randomType == null ||
                     randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL" +
@@ -197,7 +195,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
                 randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
-
             return new EntityTag(randomType, "RANDOM");
         }
         if (string.startsWith("e@fake:")) {
@@ -229,8 +226,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                     }
                 }
                 else {
-                    Debug.echoError("NPC '" + string
-                            + "' does not exist!");
+                    Debug.echoError("NPC '" + string + "' does not exist!");
                 }
             }
             // Player entity
@@ -980,7 +976,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (isPlayer()) {
                 return getDenizenPlayer().debuggable();
             }
-            if (isSpawnedOrValidForTag()) {
+            else if (isFake) {
+                return "e@FAKE: " + entity.getUniqueId().toString() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
+            }
+            else if (isSpawnedOrValidForTag()) {
                 return "e@ " + entity.getUniqueId().toString() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
@@ -995,40 +994,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     @Override
     public String identify() {
-
-        // Check if entity is an NPC
         if (npc != null) {
             return npc.identify();
         }
-
-        // Check if entity is a Player or is spawned
         if (entity != null) {
             if (isPlayer()) {
                 return getDenizenPlayer().identify();
             }
-
-            // TODO:
-            // Check if entity is a 'notable entity'
-            // if (isSaved(this))
-            //    return "e@" + getSaved(this);
-
-            else if (isSpawnedOrValidForTag()) {
-                return "e@" + entity.getUniqueId().toString();
-            }
-
             else if (isFake) {
                 return "e@fake:" + entity.getUniqueId().toString();
             }
+            else if (isSpawnedOrValidForTag()) {
+                return "e@" + entity.getUniqueId().toString();
+            }
         }
-
-        // Try to identify as an entity script
         if (entityScript != null) {
             return "e@" + entityScript;
         }
-
-        // Check if an entity_type is available
         if (entity_type != null) {
-            // Build the pseudo-property-string, if any
             StringBuilder properties = new StringBuilder();
             for (Mechanism mechanism : mechanisms) {
                 properties.append(mechanism.getName()).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
@@ -1039,45 +1022,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             }
             return "e@" + entity_type.getLowercaseName() + propertyOutput;
         }
-
         return "null";
     }
 
     @Override
     public String identifySimple() {
-
-        // Check if entity is an NPC
         if (npc != null && npc.isValid()) {
             return "n@" + npc.getId();
         }
-
         if (isPlayer()) {
             return "p@" + getPlayer().getName();
         }
-
-        // Try to identify as an entity script
         if (entityScript != null) {
             return "e@" + entityScript;
         }
-
-        // Check if an entity_type is available
         if (entity_type != null) {
             return "e@" + entity_type.getLowercaseName();
         }
-
         return "null";
-    }
-
-    public String identifyType() {
-        if (isCitizensNPC()) {
-            return "npc";
-        }
-        else if (isPlayer()) {
-            return "player";
-        }
-        else {
-            return "e@" + entity_type.getName();
-        }
     }
 
     public String identifySimpleType() {
@@ -1100,7 +1062,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     @Override
     public boolean isUnique() {
         return isPlayer() || isCitizensNPC() || isSpawned() || isLivingEntity()
-                || (entity != null && rememberedEntities.containsKey(entity.getUniqueId()));  // || isSaved()
+                || (entity != null && rememberedEntities.containsKey(entity.getUniqueId())) || isFake;  // || isSaved()
     }
 
     public boolean matchesEntity(String ent) {
