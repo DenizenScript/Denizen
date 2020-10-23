@@ -2842,6 +2842,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.to_ellipsoid[<size>]>
+        // @returns EllipsoidTag
+        // @description
+        // Returns an ellipsoid centered at this location with the specified size.
+        // -->
+        registerTag("to_ellipsoid", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("to_ellipsoid[...] tag must have input.");
+                return null;
+            }
+            return new EllipsoidTag(object.clone(), attribute.getContextObject(1).asType(LocationTag.class, attribute.context));
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.to_cuboid[<location>]>
         // @returns CuboidTag
         // @description
