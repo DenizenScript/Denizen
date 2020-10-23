@@ -2,16 +2,16 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
-import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -19,7 +19,6 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -220,18 +219,8 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("mechanisms")) {
                 YamlConfiguration mechs = getConfigurationSection("mechanisms");
                 for (StringHolder key : mechs.getKeys(false)) {
-                    String val;
-                    if (mechs.isList(key.str)) {
-                        ListTag list = new ListTag();
-                        for (String listVal : mechs.getStringList(key.str)) {
-                            list.add(ScriptBuilder.stripLinePrefix(TagManager.tag(listVal, context)));
-                        }
-                        val = list.identify();
-                    }
-                    else {
-                        val = TagManager.tag(mechs.getString(key.str), context);
-                    }
-                    stack.safeAdjust(new Mechanism(new ElementTag(key.low), new ElementTag(val), context));
+                    ObjectTag obj = CoreUtilities.objectToTagForm(mechs.get(key.low), context, true, true);
+                    stack.safeAdjust(new Mechanism(new ElementTag(key.low), new ElementTag(obj.toString()), context));
                 }
             }
             // Set Display Name

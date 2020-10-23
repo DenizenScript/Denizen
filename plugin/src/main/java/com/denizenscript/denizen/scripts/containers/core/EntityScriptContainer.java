@@ -5,12 +5,14 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 
@@ -78,19 +80,16 @@ public class EntityScriptContainer extends ScriptContainer {
             else {
                 throw new Exception("Missing entity_type argument!");
             }
-
-            Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
+            Set<StringHolder> strings = getContents().getKeys(false);
             for (StringHolder string : strings) {
                 if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
-                    String value = TagManager.tag((getString(string.low, "")), context);
-                    entity.safeAdjust(new Mechanism(new ElementTag(string.low), new ElementTag(value), context));
+                    ObjectTag obj = CoreUtilities.objectToTagForm(getContents().get(string.low), context, true, true);
+                    entity.safeAdjust(new Mechanism(new ElementTag(string.low), new ElementTag(obj.toString()), context));
                 }
             }
-
             if (entity == null || entity.isUnique()) {
                 return null;
             }
-
             entity.setEntityScript(getName());
         }
         catch (Exception e) {
