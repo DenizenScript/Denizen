@@ -312,10 +312,10 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (!center.getWorldName().equals(ellipsoid2.center.getWorldName())) {
             return false;
         }
-        if (center.distanceSquared(ellipsoid2.center) >= 0.25) {
+        if (center.distanceSquaredNoWorld(ellipsoid2.center) >= 0.25) {
             return false;
         }
-        if (size.distanceSquared(ellipsoid2.size) >= 0.25) {
+        if (size.distanceSquaredNoWorld(ellipsoid2.size) >= 0.25) {
             return false;
         }
         return true;

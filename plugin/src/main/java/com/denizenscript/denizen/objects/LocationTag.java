@@ -44,6 +44,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.NumberConversions;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -603,6 +604,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     public LocationTag multiply(double input) {
         super.multiply(input);
         return this;
+    }
+
+    public double distanceSquaredNoWorld(Location loc2) {
+        return NumberConversions.square(getX() - loc2.getX()) + NumberConversions.square(getY() - loc2.getY()) + NumberConversions.square(getZ() - loc2.getZ());
     }
 
     public boolean hasInventory() {
