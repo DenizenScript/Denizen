@@ -151,7 +151,6 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public boolean bound = false;
     String hash = "";
 
     public ItemScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
@@ -231,7 +230,6 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set if the object is bound to the player
             if (contains("bound")) {
                 Deprecations.boundWarning.warn(context);
-                bound = Boolean.valueOf(TagManager.tag(getString("bound"), context));
             }
             // Set Lore
             if (contains("lore")) {

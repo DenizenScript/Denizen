@@ -2138,11 +2138,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Returns the name of the gamemode the player is currently set to.
         // -->
         registerOnlineOnlyTag("gamemode", (attribute, object) -> {
-            if (attribute.startsWith("id", 2)) {
-                Deprecations.playerGamemodeTag.warn(attribute.context);
-                attribute.fulfill(1);
-                return new ElementTag(object.getPlayerEntity().getGameMode().getValue());
-            }
             return new ElementTag(object.getPlayerEntity().getGameMode().name());
         });
 

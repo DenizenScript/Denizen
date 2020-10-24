@@ -20,7 +20,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,7 +46,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             public void run(ReplaceableTagEvent event) {
                 schematicTags(event);
             }
-        }, "schematic", "schem");
+        }, "schematic");
         schematics = new HashMap<>();
         noPhys = false;
         Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
@@ -502,11 +501,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     }
 
     public void schematicTags(ReplaceableTagEvent event) {
-        if (!event.matches("schematic", "schem")) {
+        if (!event.matches("schematic")) {
             return;
-        }
-        if (event.matches("schem")) {
-            Deprecations.schematicShorthand.warn(event.getContext());
         }
         String id = event.hasNameContext() ? event.getNameContext().toUpperCase() : null;
         Attribute attribute = event.getAttributes().fulfill(1);
