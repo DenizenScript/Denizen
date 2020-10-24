@@ -58,10 +58,12 @@ public class ClickableCommand extends AbstractCommand {
     // - clickable test_script save:my_clickable
     // - narrate "Click <blue><element[here].on_click[<entry[my_clickable].command>]><reset>!"
     //
+    // @Usage
     // Use to generate a clickable message that will run a task script named 'reward_drop', that can be used by only the first person to click it.
     // - clickable reward_drop usages:1 save:reward
     // - announce "<blue><bold><element[Reward Here].on_click[<entry[reward].command>]><reset>!"
     //
+    // @Usage
     // Use to generate a clickable message exclusively for the linked player, that must be used within a minute.
     // - clickable your_secret def:quest3 for:<player> until:1m save:secretmessage
     // - narrate "Do you want to know the secret? <blue><element[Yes].on_click[<entry[secretmessage].command>]><reset> / No."
