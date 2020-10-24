@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.sun.org.apache.regexp.internal.RE;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 
@@ -147,11 +146,16 @@ public class FormattedTextHelper {
         }
         builder.append(RESET);
         String output = builder.toString();
+        while (output.contains(RESET + WHITE)) {
+            output = output.replace(RESET + WHITE, RESET);
+        }
         while (output.contains(RESET + RESET)) {
             output = output.replace(RESET + RESET, RESET);
         }
         return output;
     }
+
+    public static final String WHITE = ChatColor.WHITE.toString();
 
     public static final String RESET = ChatColor.RESET.toString();
 
