@@ -57,7 +57,7 @@ public class SittingTrait extends Trait implements Listener {
             return;
         }
         if (npc.getEntity().getVehicle() != null) {
-            npc.getEntity().getVehicle().setPassenger(null);
+            npc.getEntity().getVehicle().eject();
         }
     }
 
@@ -106,7 +106,7 @@ public class SittingTrait extends Trait implements Listener {
             npc.despawn();
             npc.spawn(npc.getStoredLocation().clone().add(0, 0.5, 0));
             if (vehicle != null && vehicle.isValid()) {
-                vehicle.setPassenger(null);
+                vehicle.eject();
                 vehicle.remove();
             }
         }
