@@ -263,46 +263,49 @@ public class PlayEffectCommand extends AbstractCommand {
                         }
                     }
                 }
-                for (Player player : players) {
-                    Class clazz = particleEffect.neededData();
-                    Object dataObject = null;
-                    if (clazz != null) {
-                        if (special_data == null) {
-                            Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
-                        }
-                        else if (clazz == org.bukkit.Particle.DustOptions.class) {
-                            ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
-                            if (dataList.size() != 2) {
-                                Debug.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
-                            }
-                            else {
-                                float size = Float.parseFloat(dataList.get(0));
-                                ColorTag color = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
-                                dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
-                            }
-                        }
-                        else if (clazz == BlockData.class) {
-                            MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
-                            dataObject = blockMaterial.getModernData().data;
-                        }
-                        else if (clazz == ItemStack.class) {
-                            ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());
-                            dataObject = itemType.getItemStack();
+                Class clazz = particleEffect.neededData();
+                Object dataObject = null;
+                if (clazz != null) {
+                    if (special_data == null) {
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
+                    }
+                    else if (clazz == org.bukkit.Particle.DustOptions.class) {
+                        ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                        if (dataList.size() != 2) {
+                            Debug.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
                         }
                         else {
-                            Debug.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
+                            float size = Float.parseFloat(dataList.get(0));
+                            ColorTag color = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
+                            dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                         }
                     }
-                    if (velocity == null) {
-                        particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), dataObject);
+                    else if (clazz == BlockData.class) {
+                        MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                        dataObject = blockMaterial.getModernData().data;
+                    }
+                    else if (clazz == ItemStack.class) {
+                        ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                        dataObject = itemType.getItemStack();
                     }
                     else {
-                        float osX = (float) offset.getX();
-                        float osY = (float) offset.getY();
-                        float osZ = (float) offset.getZ();
-                        int quantity = qty.asInt();
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
+                    }
+                }
+                else if (special_data != null) {
+                    Debug.echoError("Particles of type '" + particleEffect.getName() + "' cannot take special_data as input.");
+                }
+                Random random = CoreUtilities.getRandom();
+                float osX = (float) offset.getX();
+                float osY = (float) offset.getY();
+                float osZ = (float) offset.getZ();
+                int quantity = qty.asInt();
+                for (Player player : players) {
+                    if (velocity == null) {
+                        particleEffect.playFor(player, location, quantity, offset.toVector(), data.asFloat(), dataObject);
+                    }
+                    else {
                         Vector velocityVector = velocity.toVector();
-                        Random random = CoreUtilities.getRandom();
                         for (int i = 0; i < quantity; i++) {
                             LocationTag singleLocation = location.clone().add(random.nextDouble() * osX - osX * 0.5,
                                     random.nextDouble() * osY - osY * 0.5,
