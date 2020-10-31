@@ -51,6 +51,9 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         if (!path.eventLower.equals("horse jumps") && !path.eventLower.endsWith("jumps")) {
             return false;
         }
+        if (path.eventLower.startsWith("player")) {
+            return false;
+        }
         return true;
     }
 

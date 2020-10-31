@@ -296,20 +296,17 @@ public class PlayEffectCommand extends AbstractCommand {
                     Debug.echoError("Particles of type '" + particleEffect.getName() + "' cannot take special_data as input.");
                 }
                 Random random = CoreUtilities.getRandom();
-                float osX = (float) offset.getX();
-                float osY = (float) offset.getY();
-                float osZ = (float) offset.getZ();
                 int quantity = qty.asInt();
                 for (Player player : players) {
                     if (velocity == null) {
-                        particleEffect.playFor(player, location, quantity, offset.toVector(), data.asFloat(), dataObject);
+                        particleEffect.playFor(player, location, quantity, offset.toVector(), data.asDouble(), dataObject);
                     }
                     else {
                         Vector velocityVector = velocity.toVector();
                         for (int i = 0; i < quantity; i++) {
-                            LocationTag singleLocation = location.clone().add(random.nextDouble() * osX - osX * 0.5,
-                                    random.nextDouble() * osY - osY * 0.5,
-                                    random.nextDouble() * osZ - osZ * 0.5);
+                            LocationTag singleLocation = location.clone().add((random.nextDouble() - 0.5) * offset.getX(),
+                                    (random.nextDouble() - 0.5) * offset.getY(),
+                                    (random.nextDouble() - 0.5) * offset.getZ());
                             particleEffect.playFor(player, singleLocation, 0, velocityVector, 1f, dataObject);
                         }
                     }
