@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FormattedTextHelper {
@@ -172,8 +171,23 @@ public class FormattedTextHelper {
 
     public static BaseComponent[] parse(String str) {
         str = CoreUtilities.clearNBSPs(str);
+        int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
+        if (firstChar == -1) {
+            TextComponent base = new TextComponent();
+            base.addExtra(new TextComponent(str)); // This is for compat with how Spigot does parsing of plaintext.
+            return new BaseComponent[] { base };
+        }
+        TextComponent root = new TextComponent(str.substring(0, firstChar));
+        TextComponent base = new TextComponent();
+        base.setBold(false);
+        base.setItalic(false);
+        base.setStrikethrough(false);
+        base.setUnderlined(false);
+        base.setObfuscated(false);
+        base.setColor(ChatColor.WHITE);
+        root.addExtra(base);
+        str = str.substring(firstChar);
         char[] chars = str.toCharArray();
-        List<BaseComponent> outputList = new ArrayList<>(2);
         int started = 0;
         TextComponent nextText = new TextComponent();
         TextComponent lastText = new TextComponent();
@@ -192,7 +206,7 @@ public class FormattedTextHelper {
                     String innardType = CoreUtilities.toLowerCase(innardBase.get(0));
                     if (innardBase.size() == 2) {
                         nextText.setText(nextText.getText() + str.substring(started, i));
-                        outputList.add(nextText);
+                        base.addExtra(nextText);
                         TextComponent doublelasttext = lastText;
                         lastText = nextText;
                         nextText = copyFormatToNewText(lastText);
@@ -342,18 +356,17 @@ public class FormattedTextHelper {
                 }
                 else if ((code >= '0' && code <= '9') || (code >= 'a' && code <= 'f') || (code >= 'A' && code <= 'F')) {
                     nextText.setText(nextText.getText() + str.substring(started, i));
-                    outputList.add(nextText);
+                    if (!nextText.getText().isEmpty()) {
+                        base.addExtra(nextText);
+                    }
                     nextText = new TextComponent();
-                    nextText.setBold(false);
-                    nextText.setItalic(false);
-                    nextText.setStrikethrough(false);
-                    nextText.setUnderlined(false);
-                    nextText.setObfuscated(false);
                     nextText.setColor(ChatColor.getByChar(code));
                 }
                 else if ((code >= 'k' && code <= 'o') || (code >= 'K' && code <= 'O')) {
                     nextText.setText(nextText.getText() + str.substring(started, i));
-                    outputList.add(nextText);
+                    if (!nextText.getText().isEmpty()) {
+                        base.addExtra(nextText);
+                    }
                     nextText = copyFormatToNewText(nextText);
                     if (code == 'k' || code == 'K') {
                         nextText.setObfuscated(true);
@@ -373,13 +386,10 @@ public class FormattedTextHelper {
                 }
                 else if (code == 'r' || code == 'R') {
                     nextText.setText(nextText.getText() + str.substring(started, i));
-                    outputList.add(nextText);
+                    if (!nextText.getText().isEmpty()) {
+                        base.addExtra(nextText);
+                    }
                     nextText = new TextComponent();
-                    nextText.setBold(false);
-                    nextText.setItalic(false);
-                    nextText.setStrikethrough(false);
-                    nextText.setUnderlined(false);
-                    nextText.setObfuscated(false);
                     nextText.setColor(ChatColor.WHITE);
                 }
                 else if (code == 'x') {
@@ -399,13 +409,10 @@ public class FormattedTextHelper {
                         continue;
                     }
                     nextText.setText(nextText.getText() + str.substring(started, i));
-                    outputList.add(nextText);
+                    if (!nextText.getText().isEmpty()) {
+                        base.addExtra(nextText);
+                    }
                     nextText = new TextComponent();
-                    nextText.setBold(false);
-                    nextText.setItalic(false);
-                    nextText.setStrikethrough(false);
-                    nextText.setUnderlined(false);
-                    nextText.setObfuscated(false);
                     nextText.setColor(ChatColor.of(color.toString()));
                     i += 13;
                     started = i + 1;
@@ -426,7 +433,7 @@ public class FormattedTextHelper {
                     }
                     String url = str.substring(i, nextSpace);
                     nextText.setText(nextText.getText() + str.substring(started, i));
-                    outputList.add(nextText);
+                    base.addExtra(nextText);
                     lastText = nextText;
                     nextText = new TextComponent(lastText);
                     nextText.setText("");
@@ -441,8 +448,8 @@ public class FormattedTextHelper {
         }
         nextText.setText(nextText.getText() + str.substring(started));
         if (!nextText.getText().isEmpty()) {
-            outputList.add(nextText);
+            base.addExtra(nextText);
         }
-        return outputList.toArray(new BaseComponent[0]);
+        return new BaseComponent[] { root };
     }
 }
