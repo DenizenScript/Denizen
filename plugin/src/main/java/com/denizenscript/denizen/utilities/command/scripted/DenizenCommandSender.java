@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Used to send commands and record their output.
@@ -46,6 +47,24 @@ public class DenizenCommandSender implements ConsoleCommandSender {
     }
 
     @Override
+    public void sendMessage(UUID uuid, String s) {
+        output.add(s);
+        if (!silent) {
+            Bukkit.getServer().getConsoleSender().sendMessage(uuid, s);
+        }
+    }
+
+    @Override
+    public void sendMessage(UUID uuid, String[] strings) {
+        for (String s : strings) {
+            output.add(s);
+        }
+        if (!silent) {
+            Bukkit.getServer().getConsoleSender().sendMessage(uuid, strings);
+        }
+    }
+
+    @Override
     public Server getServer() {
         return Bukkit.getConsoleSender().getServer();
     }
@@ -57,7 +76,7 @@ public class DenizenCommandSender implements ConsoleCommandSender {
 
     @Override
     public Spigot spigot() {
-        return null; // TODO: ??
+        return Bukkit.getServer().getConsoleSender().spigot();
     }
 
     @Override
@@ -89,6 +108,12 @@ public class DenizenCommandSender implements ConsoleCommandSender {
     public void sendRawMessage(String s) {
         // TODO: Maybe handle this?
         Bukkit.getConsoleSender().sendRawMessage(s);
+    }
+
+    @Override
+    public void sendRawMessage(UUID uuid, String s) {
+        // TODO: Maybe handle this?
+        Bukkit.getConsoleSender().sendRawMessage(uuid, s);
     }
 
     @Override
