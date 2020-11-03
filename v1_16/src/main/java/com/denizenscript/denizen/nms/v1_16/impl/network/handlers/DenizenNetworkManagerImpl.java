@@ -28,7 +28,7 @@ import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import javax.crypto.SecretKey;
+import javax.crypto.Cipher;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -552,8 +552,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    public void a(SecretKey secretkey) {
-        oldManager.a(secretkey);
+    public void a(Cipher cipher, Cipher cipher1) {
+        oldManager.a(cipher, cipher1);
     }
 
     @Override
