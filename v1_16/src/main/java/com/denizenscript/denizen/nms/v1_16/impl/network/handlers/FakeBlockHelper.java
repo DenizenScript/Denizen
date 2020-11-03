@@ -5,8 +5,8 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
-import net.minecraft.server.v1_16_R2.*;
-import org.bukkit.craftbukkit.v1_16_R2.block.data.CraftBlockData;
+import net.minecraft.server.v1_16_R3.*;
+import org.bukkit.craftbukkit.v1_16_R3.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
