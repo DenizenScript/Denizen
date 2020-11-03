@@ -27,16 +27,16 @@ import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_16_R2.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_16_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -80,7 +80,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("09f04031f41cb54f1077c6ac348cc220");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("da85101b34b252659e3ddf10c0c57cc9");
     }
 
     @Override

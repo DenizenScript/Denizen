@@ -4,11 +4,11 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_16_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandle;

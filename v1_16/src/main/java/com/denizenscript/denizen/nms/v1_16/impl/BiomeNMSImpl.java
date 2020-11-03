@@ -2,12 +2,12 @@ package com.denizenscript.denizen.nms.v1_16.impl;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;

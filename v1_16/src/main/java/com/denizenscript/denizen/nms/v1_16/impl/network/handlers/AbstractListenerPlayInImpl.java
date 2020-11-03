@@ -4,9 +4,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import javax.annotation.Nullable;
