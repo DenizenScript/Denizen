@@ -11,18 +11,18 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlockState;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftSkull;
-import org.bukkit.craftbukkit.v1_16_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_16_R2.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_16_R2.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_16_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R2.util.CraftMagicNumbers;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import java.lang.invoke.MethodHandle;
@@ -118,7 +118,7 @@ public class BlockHelperImpl implements BlockHelper {
         te.load(((CraftBlockData) block.getBlockData()).getState(), ((CompoundTagImpl) ctag).toNMSTag());
     }
 
-    private static net.minecraft.server.v1_16_R3.Block getBlockFrom(Material material) {
+    private static net.minecraft.server.v1_16_R2.Block getBlockFrom(Material material) {
         if (material == Material.FLOWER_POT) {
             return Blocks.FLOWER_POT;
         }
@@ -140,22 +140,22 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public boolean setBlockResistance(Material material, float resistance) {
-        net.minecraft.server.v1_16_R3.Block block = getBlockFrom(material);
+        net.minecraft.server.v1_16_R2.Block block = getBlockFrom(material);
         if (block == null) {
             return false;
         }
         // protected final float durability;
-        ReflectionHelper.setFieldValue(net.minecraft.server.v1_16_R3.BlockBase.class, "durability", block, resistance);
+        ReflectionHelper.setFieldValue(net.minecraft.server.v1_16_R2.BlockBase.class, "durability", block, resistance);
         return true;
     }
 
     @Override
     public float getBlockResistance(Material material) {
-        net.minecraft.server.v1_16_R3.Block block = getBlockFrom(material);
+        net.minecraft.server.v1_16_R2.Block block = getBlockFrom(material);
         if (block == null) {
             return 0;
         }
-        return ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R3.BlockBase.class, "durability", block);
+        return ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R2.BlockBase.class, "durability", block);
     }
 
     @Override
@@ -163,19 +163,19 @@ public class BlockHelperImpl implements BlockHelper {
         return new CraftBlockState(mat);
     }
 
-    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_16_R3.BlockBase.class).get("material");
+    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_16_R2.BlockBase.class).get("material");
 
-    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.Material.class, "S");
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R2.Material.class, "S");
 
-    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.BlockBase.BlockData.class, "strength");
+    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R2.BlockBase.BlockData.class, "strength");
 
-    public net.minecraft.server.v1_16_R3.Block getMaterialBlock(Material bukkitMaterial) {
+    public net.minecraft.server.v1_16_R2.Block getMaterialBlock(Material bukkitMaterial) {
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
     }
 
-    public net.minecraft.server.v1_16_R3.Material getInternalMaterial(Material bukkitMaterial) {
+    public net.minecraft.server.v1_16_R2.Material getInternalMaterial(Material bukkitMaterial) {
         try {
-            return (net.minecraft.server.v1_16_R3.Material) BLOCK_MATERIAL.get(getMaterialBlock(bukkitMaterial));
+            return (net.minecraft.server.v1_16_R2.Material) BLOCK_MATERIAL.get(getMaterialBlock(bukkitMaterial));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

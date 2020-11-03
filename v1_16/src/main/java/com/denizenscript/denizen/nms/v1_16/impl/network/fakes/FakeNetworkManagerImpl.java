@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.fakes;
 
-import net.minecraft.server.v1_16_R3.EnumProtocolDirection;
-import net.minecraft.server.v1_16_R3.NetworkManager;
+import net.minecraft.server.v1_16_R2.EnumProtocolDirection;
+import net.minecraft.server.v1_16_R2.NetworkManager;
 
 import java.net.SocketAddress;
 

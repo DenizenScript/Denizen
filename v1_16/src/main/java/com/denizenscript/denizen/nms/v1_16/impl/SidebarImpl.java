@@ -5,7 +5,7 @@ import com.denizenscript.denizen.nms.v1_16.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

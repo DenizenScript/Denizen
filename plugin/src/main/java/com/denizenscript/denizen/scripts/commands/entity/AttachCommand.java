@@ -55,6 +55,8 @@ public class AttachCommand extends AbstractCommand {
     //
     // Optionally specify 'no_rotate' to retain the attached entity's own rotation and ignore the target rotation.
     //
+    // Note that attaches involving a player will not be properly visible to that player, but will still be visible to *other* players.
+    //
     // @Tags
     // None.
     //

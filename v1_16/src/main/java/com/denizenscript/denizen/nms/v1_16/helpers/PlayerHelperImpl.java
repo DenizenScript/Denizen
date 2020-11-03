@@ -13,15 +13,15 @@ import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
 import org.bukkit.SoundCategory;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R2.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -56,7 +56,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void stopSound(Player player, String sound, SoundCategory category) {
         MinecraftKey soundKey = sound == null ? null : new MinecraftKey(sound);
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, net.minecraft.server.v1_16_R3.SoundCategory.valueOf(category.name())));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, net.minecraft.server.v1_16_R2.SoundCategory.valueOf(category.name())));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID) {
         PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
-        net.minecraft.server.v1_16_R3.Entity nmsEntity = ((CraftWorld) location.getWorld()).createEntity(location,  entityType.getEntityClass());
+        net.minecraft.server.v1_16_R2.Entity nmsEntity = ((CraftWorld) location.getWorld()).createEntity(location,  entityType.getEntityClass());
         if (customUUID != null) {
             nmsEntity.e(customId);
             nmsEntity.a_(customUUID);
@@ -96,7 +96,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 ItemStack nmsItemStack = nmsLivingEntity.getEquipment(itemSlot);
                 if (nmsItemStack != null && nmsItemStack.getItem() != Items.AIR) {
                     Pair<EnumItemSlot, ItemStack> pair = new Pair<>(itemSlot, nmsItemStack);
-                    ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack>> pairList = new ArrayList<>();
+                    ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R2.ItemStack>> pairList = new ArrayList<>();
                     pairList.add(pair);
                     conn.sendPacket(new PacketPlayOutEntityEquipment(nmsLivingEntity.getId(), pairList));
                 }
