@@ -112,8 +112,6 @@ public class InventoryContents implements Property {
 
     public static void registerTags() {
 
-
-
         // <--[tag]
         // @attribute <InventoryTag.map_slots>
         // @returns MapTag
@@ -210,7 +208,7 @@ public class InventoryContents implements Property {
         // <InventoryTag.list_contents.with_lore[<lore>]>
         // <InventoryTag.list_contents.with_lore[<lore>].simple>
         // -->
-        if (mechanism.matches("contents") && inventory.getIdType().equals("generic")) {
+        if (mechanism.matches("contents") && (inventory.isGeneric() || !mechanism.isProperty)) {
             inventory.setContents(mechanism.valueAsType(ListTag.class), mechanism.context);
         }
 
