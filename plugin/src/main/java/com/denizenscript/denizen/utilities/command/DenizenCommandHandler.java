@@ -109,7 +109,7 @@ public class DenizenCommandHandler {
     // server will run slower while outputting debug information.
     //
     // There are also several options to further help debugging. To use an option, simply attach them
-    // to the /denizen debug command. One option, or multiple options can be used. For example: /denizen debug -ce
+    // to the /denizen debug command. One option, or multiple options can be used. For example: /denizen debug -sbi
     //
     // '-c' enables/disables color. This is sometimes useful when debugging with a non-color console.
     // '-r' enables recording mode. See also: /denizen submit command

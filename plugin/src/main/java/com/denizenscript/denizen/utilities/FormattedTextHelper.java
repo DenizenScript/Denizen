@@ -170,6 +170,10 @@ public class FormattedTextHelper {
     }
 
     public static BaseComponent[] parse(String str) {
+        return parse(str, true);
+    }
+
+    public static BaseComponent[] parse(String str, boolean cleanBase) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
         if (firstChar == -1) {
@@ -179,12 +183,14 @@ public class FormattedTextHelper {
         }
         TextComponent root = new TextComponent(str.substring(0, firstChar));
         TextComponent base = new TextComponent();
-        base.setBold(false);
-        base.setItalic(false);
-        base.setStrikethrough(false);
-        base.setUnderlined(false);
-        base.setObfuscated(false);
-        base.setColor(ChatColor.WHITE);
+        if (cleanBase) {
+            base.setBold(false);
+            base.setItalic(false);
+            base.setStrikethrough(false);
+            base.setUnderlined(false);
+            base.setObfuscated(false);
+            base.setColor(ChatColor.WHITE);
+        }
         root.addExtra(base);
         str = str.substring(firstChar);
         char[] chars = str.toCharArray();
@@ -228,7 +234,7 @@ public class FormattedTextHelper {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
                             for (String extra : innardParts) {
-                                for (BaseComponent subComponent : parse(unescape(extra))) {
+                                for (BaseComponent subComponent : parse(unescape(extra), false)) {
                                     component.addWith(subComponent);
                                 }
                             }
@@ -245,7 +251,7 @@ public class FormattedTextHelper {
                             }
                             TextComponent clickableText = new TextComponent();
                             clickableText.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(innardBase.get(1).toUpperCase()), unescape(innardParts.get(0))));
-                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex))) {
+                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), false)) {
                                 clickableText.addExtra(subComponent);
                             }
                             lastText.addExtra(clickableText);
@@ -284,11 +290,11 @@ public class FormattedTextHelper {
                                     hoverValue = new BaseComponent[] {new TextComponent(NMSHandler.getEntityHelper().getRawHoverText(entity.getBukkitEntity()))};
                                 }
                                 else {
-                                    hoverValue = parse(unescape(innardParts.get(0)));
+                                    hoverValue = parse(unescape(innardParts.get(0)), false);
                                 }
                                 hoverableText.setHoverEvent(new HoverEvent(action, hoverValue));
                             }
-                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex))) {
+                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), false)) {
                                 hoverableText.addExtra(subComponent);
                             }
                             lastText.addExtra(hoverableText);
@@ -305,7 +311,7 @@ public class FormattedTextHelper {
                             }
                             TextComponent insertableText = new TextComponent();
                             insertableText.setInsertion(unescape(innardBase.get(1)));
-                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex))) {
+                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), false)) {
                                 insertableText.addExtra(subComponent);
                             }
                             lastText.addExtra(insertableText);
@@ -450,6 +456,6 @@ public class FormattedTextHelper {
         if (!nextText.getText().isEmpty()) {
             base.addExtra(nextText);
         }
-        return new BaseComponent[] { root };
+        return new BaseComponent[] { cleanBase ? root : base };
     }
 }
