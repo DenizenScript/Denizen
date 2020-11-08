@@ -35,10 +35,14 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.max_players> returns the number of max players that will show.
     // <context.num_players> returns the number of online players that will show.
     // <context.address> returns the IP address requesting the list.
+    // <context.protocol_version> returns the protocol ID of the server's version (only on Paper).
+    // <context.version_name> returns the name of the server's version (only on Paper).
     //
     // @Determine
     // ElementTag(Number) to change the max player amount that will show.
     // "ICON:" + ElementTag of a file path to an icon image, to change the icon that will display.
+    // "PROTOCOL_VERSION:" + ElementTag(Number) to change the protocol ID number of the server's version (only on Paper).
+    // "VERSION_NAME:" + ElementTag to change the server's version name (only on Paper).
     // ElementTag to change the MOTD that will show.
     //
     // -->
@@ -130,23 +134,26 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onListPing(ServerListPingEvent event) {
-        this.event = event;
-        if (!Bukkit.isPrimaryThread()) {
-            BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
-            Future future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), () -> {
-                altEvent.fire();
-                return null;
-            });
-            try {
-                future.get(5, TimeUnit.SECONDS);
+    public static class ListPingScriptEventSpigotImpl extends ListPingScriptEvent {
+
+        @EventHandler
+        public void onListPing(ServerListPingEvent event) {
+            this.event = event;
+            if (!Bukkit.isPrimaryThread()) {
+                BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
+                Future future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), () -> {
+                    altEvent.fire();
+                    return null;
+                });
+                try {
+                    future.get(5, TimeUnit.SECONDS);
+                }
+                catch (Throwable ex) {
+                    Debug.echoError(ex);
+                }
+                return;
             }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-            }
-            return;
+            fire(event);
         }
-        fire(event);
     }
 }

@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import org.bukkit.event.EventHandler;
 
-public class PlayerJumpsPaperScriptEventImpl extends PlayerJumpScriptEvent {
+public class PlayerJumpsScriptEventPaperImpl extends PlayerJumpScriptEvent {
 
     @EventHandler
     public void onPlayerJumps(PlayerJumpEvent event) {
