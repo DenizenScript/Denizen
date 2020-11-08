@@ -19,11 +19,13 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     // player logs in (for the first time)
     // player (first) login
     //
-    // @Regex ^on player (logs in( for the first time)?|( first)? login)$
+    // @Regex ^on player( logs in( for the first time)?|( first)? login)$
     //
     // @Group Player
     //
     // @Triggers when a player logs in to the server. This is during the authentication process, and should NOT be confused with <@link event player joins>.
+    //
+    // @Warning Generally avoid this event. This is not a way to get a 'first join' event. This is an internal technical event, with specific uses (eg custom whitelisting).
     //
     // @Context
     // <context.hostname> returns an ElementTag of the player's hostname.
