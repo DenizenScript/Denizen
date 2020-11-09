@@ -97,7 +97,6 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
                 event.setServerIcon(icon);
             }
             return true;
-
         }
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             List<String> values = CoreUtilities.split(determination, '|', 2);

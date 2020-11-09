@@ -68,7 +68,8 @@ public class ActionBarCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
-            if (arg.matchesPrefix("format", "f")) {
+            if (!scriptEntry.hasObject("format")
+                    && arg.matchesPrefix("format", "f")) {
                 String formatStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
@@ -76,7 +77,8 @@ public class ActionBarCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("format", new ScriptTag(format));
             }
-            if (arg.matchesPrefix("targets", "target")) {
+            else if (!scriptEntry.hasObject("targets")
+                    && arg.matchesPrefix("targets", "target")) {
                 scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("per_player")
@@ -85,6 +87,9 @@ public class ActionBarCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
+            }
+            else {
+                arg.reportUnhandled();
             }
         }
         if (!scriptEntry.hasObject("text")) {
