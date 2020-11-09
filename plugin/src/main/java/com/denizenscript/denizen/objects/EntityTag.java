@@ -2070,7 +2070,26 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 200;
             }
-            RayTraceResult result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
+            RayTraceResult result;
+            // <--[tag]
+            // @attribute <EntityTag.precise_target[(<range>)].type[<entity_type>|...]>
+            // @returns EntityTag
+            // @description
+            // Returns the entity this entity is looking at, using precise ray trace logic.
+            // Optionally, specify a maximum range to find the entity from (defaults to 200).
+            // Accepts a list of types to trace against (types not listed will be ignored).
+            // -->
+            if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
+                attribute.fulfill(1);
+                Set<EntityType> types = new HashSet<>();
+                for (String str : attribute.contextAsType(1, ListTag.class)) {
+                    types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
+                }
+                result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()) && types.contains(e.getType()));
+            }
+            else {
+                result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
+            }
             if (result != null && result.getHitEntity() != null) {
                 return new EntityTag(result.getHitEntity());
             }
@@ -2089,7 +2108,26 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 200;
             }
-            RayTraceResult result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
+            RayTraceResult result;
+            // <--[tag]
+            // @attribute <EntityTag.precise_target_position[(<range>)].type[<entity_type>|...]>
+            // @returns LocationTag
+            // @description
+            // Returns the location this entity is looking at, using precise ray trace (against entities) logic.
+            // Optionally, specify a maximum range to find the target from (defaults to 200).
+            // Accepts a list of types to trace against (types not listed will be ignored).
+            // -->
+            if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
+                attribute.fulfill(1);
+                Set<EntityType> types = new HashSet<>();
+                for (String str : attribute.contextAsType(1, ListTag.class)) {
+                    types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
+                }
+                result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()) && types.contains(e.getType()));
+            }
+            else {
+                result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
+            }
             if (result != null) {
                 return new LocationTag(object.getWorld(), result.getHitPosition());
             }
