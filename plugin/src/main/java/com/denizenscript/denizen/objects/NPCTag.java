@@ -35,6 +35,7 @@ import net.citizensnpcs.trait.*;
 import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -1588,6 +1589,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("name_visible")) {
             getCitizen().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, mechanism.getValue().asString());
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name glow_color
+        // @input ElementTag
+        // @description
+        // Sets the color the NPC will glow with, when it's glowing. Input must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html>.
+        // @tags
+        // TODO
+        // -->
+        if (mechanism.matches("glow_color") && mechanism.requireEnum(false, ChatColor.values())) {
+            getCitizen().getOrAddTrait(ScoreboardTrait.class).setColor(ChatColor.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
