@@ -79,9 +79,9 @@ public class HealthCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("target", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
-            else if (!scriptEntry.hasObject("qty")
+            else if (!scriptEntry.hasObject("quantity")
                     && arg.matchesFloat()) {
-                scriptEntry.addObject("qty", arg.asElement());
+                scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentList(EntityTag.class)) {
@@ -99,7 +99,7 @@ public class HealthCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action")) {
+        if (!scriptEntry.hasObject("quantity") && !scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a quantity!");
         }
         if (!scriptEntry.hasObject("target")) {
@@ -113,17 +113,17 @@ public class HealthCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        ElementTag qty = scriptEntry.getElement("qty");
+        ElementTag quantity = scriptEntry.getElement("quantity");
         ElementTag action = scriptEntry.getElement("action");
         ElementTag heal = scriptEntry.getElement("heal");
         List<EntityTag> targets = (List<EntityTag>) scriptEntry.getObject("target");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
+            Debug.report(scriptEntry, getName(), (quantity != null ? quantity.debug() : "") +
                     (action != null ? action.debug() : "") +
                     heal.debug() +
                     ArgumentHelper.debugObj("target", targets.toString()));
         }
-        if (qty == null && action == null) {
+        if (quantity == null && action == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
         }
         if (action == null) {
@@ -144,13 +144,13 @@ public class HealthCommand extends AbstractCommand {
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
                 }
             }
-            if (qty != null) {
+            if (quantity != null) {
                 if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {
                         HealthTrait trait = target.getDenizenNPC().getCitizen().getOrAddTrait(HealthTrait.class);
-                        trait.setMaxhealth(qty.asInt());
+                        trait.setMaxhealth(quantity.asInt());
                         if (heal.asBoolean()) {
-                            trait.setHealth(qty.asDouble());
+                            trait.setHealth(quantity.asDouble());
                         }
                     }
                     else {
@@ -158,9 +158,9 @@ public class HealthCommand extends AbstractCommand {
                     }
                 }
                 else if (target.isLivingEntity()) {
-                    target.getLivingEntity().setMaxHealth(qty.asDouble());
+                    target.getLivingEntity().setMaxHealth(quantity.asDouble());
                     if (heal.asBoolean()) {
-                        target.getLivingEntity().setHealth(qty.asDouble());
+                        target.getLivingEntity().setHealth(quantity.asDouble());
                     }
                 }
                 else {

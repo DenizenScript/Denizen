@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -72,6 +73,9 @@ public class GiveCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("quantity")
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesFloat()) {
+                if (arg.matchesPrefix("q", "qty")) {
+                    Deprecations.qtyTags.warn(scriptEntry);
+                }
                 scriptEntry.addObject("quantity", arg.asElement());
                 scriptEntry.addObject("set_quantity", new ElementTag(true));
             }

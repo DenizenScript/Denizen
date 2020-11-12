@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.milkbowl.vault.economy.Economy;
 
@@ -73,14 +74,20 @@ public class MoneyCommand extends AbstractCommand {
             return;
         }
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            if (!scriptEntry.hasObject("action") && arg.matchesEnum(Action.values())) {
+            if (!scriptEntry.hasObject("action")
+                    && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("quantity") && arg.matchesPrefix("quantity", "qty", "q")
+            else if (!scriptEntry.hasObject("quantity")
+                    && arg.matchesPrefix("quantity", "qty", "q")
                     && arg.matchesFloat()) {
+                if (arg.matchesPrefix("q", "qty")) {
+                    Deprecations.qtyTags.warn(scriptEntry);
+                }
                 scriptEntry.addObject("quantity", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&
+            else if (!scriptEntry.hasObject("players")
+                    && arg.matchesPrefix("to", "from", "players", "player") &&
                     arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
