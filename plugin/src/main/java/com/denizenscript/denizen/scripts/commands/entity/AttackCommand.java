@@ -55,7 +55,7 @@ public class AttackCommand extends AbstractCommand {
     //
     // @Usage
     // Use to stop an entity from attacking.
-    // - attack <[entity]> stop
+    // - attack <[entity]> cancel
     // -->
 
     @Override

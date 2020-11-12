@@ -1582,10 +1582,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 for (String str : attribute.contextAsType(1, ListTag.class)) {
                     types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
                 }
-                result = object.getWorld().rayTraceEntities(object, object.getDirection(), range, (e) -> types.contains(e.getType()));
+                result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> types.contains(e.getType()));
             }
             else {
-                result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
+                result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, null);
             }
             if (result != null && result.getHitEntity() != null) {
                 return new EntityTag(result.getHitEntity());
@@ -1620,10 +1620,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 for (String str : attribute.contextAsType(1, ListTag.class)) {
                     types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
                 }
-                result = object.getWorld().rayTraceEntities(object, object.getDirection(), range, (e) -> types.contains(e.getType()));
+                result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> types.contains(e.getType()));
             }
             else {
-                result = object.getWorld().rayTraceEntities(object, object.getDirection(), range);
+                result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, null);
             }
             if (result != null) {
                 return new LocationTag(object.getWorld(), result.getHitPosition());
