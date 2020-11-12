@@ -65,10 +65,6 @@ public class TextTagBase {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplaced(new ElementTag("$").getAttribute(attribute.fulfill(1)));
                 }
-                else if (lower.equals("&at")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("@").getAttribute(attribute.fulfill(1)));
-                }
                 else if (lower.equals("&dot")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplaced(new ElementTag(".").getAttribute(attribute.fulfill(1)));
@@ -92,6 +88,19 @@ public class TextTagBase {
                 event.setReplaced(new ElementTag("").getAttribute(event.getAttributes().fulfill(1)));
             }
         }, "empty");
+
+        // <--[tag]
+        // @attribute <&at>
+        // @returns ElementTag
+        // @description
+        // Returns a at symbol: @
+        // -->
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                event.setReplaced(new ElementTag("@").getAttribute(event.getAttributes().fulfill(1)));
+            }
+        }, "&at");
 
         // <--[tag]
         // @attribute <&pc>
