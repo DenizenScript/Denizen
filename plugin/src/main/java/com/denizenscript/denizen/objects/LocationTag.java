@@ -3243,7 +3243,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Block b = object.getBlockForTag(attribute);
             MaterialTag material = new MaterialTag(b);
             if (MaterialHalf.describes(material)) {
-                return new LocationTag(object.clone().add(MaterialHalf.getFrom(material).getRelativeBlockVector()));
+                Vector vec = MaterialHalf.getFrom(material).getRelativeBlockVector();
+                if (vec != null) {
+                    return new LocationTag(object.clone().add(vec));
+                }
             }
             if (!attribute.hasAlternative()) {
                 Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
