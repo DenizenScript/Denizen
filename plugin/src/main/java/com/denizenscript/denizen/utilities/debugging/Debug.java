@@ -552,6 +552,7 @@ public class Debug {
             else {
                 skipFooter = false;
             }
+            string = string.replace('\0', ' ');
 
             if (reformat) {
                 // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.

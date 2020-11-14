@@ -584,7 +584,8 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns a chat code that makes the following text be the specified color.
-        // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", "&color[#AABB00]", and "&color[co@128,64,0]" are all valid.
+        // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", and "&color[#AABB00]" are all valid.
+        // The ColorTag input option can be used for dynamic color effects, such as automatic rainbows.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
