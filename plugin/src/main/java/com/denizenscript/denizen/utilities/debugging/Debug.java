@@ -4,10 +4,8 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.QueueTag;
+import com.denizenscript.denizencore.events.core.ScriptGeneratesErrorScriptEvent;
+import com.denizenscript.denizencore.events.core.ServerGeneratesExceptionScriptEvent;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.CommandExecutor;
@@ -142,22 +140,6 @@ public class Debug {
                 + ChatColor.WHITE + message, null);
     }
 
-    // <--[event]
-    // @Events
-    // script generates error
-    //
-    // @Regex ^on script generates error$
-    //
-    // @Triggers when a script generates an error.
-    // @Context
-    // <context.message> returns the error message.
-    // <context.queue> returns the queue that caused the error, if any.
-    // <context.script> returns the script that caused the error, if any.
-    // <context.line> returns the line number within the script file that caused the error, if any.
-    //
-    // @Determine
-    // "CANCELLED" to stop the error from showing in the console.
-    // -->
     public static void echoError(String message) {
         echoError(null, message);
     }
@@ -191,31 +173,11 @@ public class Debug {
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            Map<String, ObjectTag> context = new HashMap<>();
-            context.put("message", new ElementTag(message));
-            if (sourceQueue != null) {
-                context.put("queue", new QueueTag(sourceQueue));
-            }
-            if (sourceScript != null) {
-                context.put("script", sourceScript);
-            }
-            if (sourceEntry != null) {
-                context.put("line", new ElementTag(sourceEntry.internal.lineNumber));
-            }
-            List<String> events = new ArrayList<>();
-            events.add("script generates error");
-            if (sourceScript != null) {
-                events.add(sourceScript.identifySimple() + " generates error");
-            }
-            ScriptEntry entry = (sourceQueue != null ? sourceQueue.getLastEntryExecuted() : null);
-            List<String> Determinations = OldEventManager.doEvents(events,
-                    entry != null ? entry.entryData : new BukkitScriptEntryData(null, null), context, true);
+            boolean cancel = ScriptGeneratesErrorScriptEvent.instance.handle(message, sourceQueue, sourceScript, sourceEntry == null ? -1 : sourceEntry.internal.lineNumber);
             throwErrorEvent = true;
-            for (String Determination : Determinations) {
-                if (Determination.equalsIgnoreCase("CANCELLED")) {
-                    errorDuplicatePrevention = false;
-                    return;
-                }
+            if (cancel) {
+                errorDuplicatePrevention = false;
+                return;
             }
         }
         if (!showDebug) {
@@ -266,22 +228,6 @@ public class Debug {
 
     private static boolean throwErrorEvent = true;
 
-    // <--[event]
-    // @Events
-    // server generates exception
-    //
-    // @Regex ^on server generates exception$
-    //
-    // @Triggers when an exception occurs on the server.
-    // @Context
-    // <context.message> returns the Exception message.
-    // <context.full_trace> returns the full exception trace+message output details.
-    // <context.type> returns the type of the error. (EG, NullPointerException).
-    // <context.queue> returns the queue that caused the exception, if any.
-    //
-    // @Determine
-    // "CANCELLED" to stop the exception from showing in the console.
-    // -->
     public static void echoError(Throwable ex) {
         echoError(null, ex);
     }
@@ -293,25 +239,14 @@ public class Debug {
         String errorMessage = getFullExceptionMessage(ex);
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            Map<String, ObjectTag> context = new HashMap<>();
             Throwable thrown = ex;
-            if (ex.getCause() != null) {
-                thrown = ex.getCause();
+            while (thrown.getCause() != null) {
+                thrown = thrown.getCause();
             }
-            context.put("message", new ElementTag(thrown.getMessage()));
-            context.put("full_trace", new ElementTag(errorMessage));
-            context.put("type", new ElementTag(thrown.getClass().getSimpleName()));
-            if (source != null) {
-                context.put("queue", new QueueTag(source));
-            }
-            ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
-            List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
-                    entry == null ? new BukkitScriptEntryData(null, null) : entry.entryData, context);
+            boolean cancel = ServerGeneratesExceptionScriptEvent.instance.handle(thrown, errorMessage, source);
             throwErrorEvent = true;
-            for (String Determination : Determinations) {
-                if (Determination.equalsIgnoreCase("CANCELLED")) {
-                    return;
-                }
+            if (cancel) {
+                return;
             }
         }
         if (!showDebug) {
