@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;

@@ -2,7 +2,6 @@ package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.events.bukkit.ExhaustedNPCEvent;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;

@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.ObjectTag;
 
 public class ServerStartScriptEvent extends BukkitScriptEvent {
 
@@ -34,10 +33,5 @@ public class ServerStartScriptEvent extends BukkitScriptEvent {
     @Override
     public String getName() {
         return "ServerStart";
-    }
-
-    @Override
-    public ObjectTag getContext(String name) {
-        return super.getContext(name);
     }
 }

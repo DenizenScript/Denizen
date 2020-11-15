@@ -2,7 +2,6 @@ package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.EntityType;

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
+import com.denizenscript.denizen.events.server.ServerStopScriptEvent;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
@@ -31,7 +32,6 @@ import com.denizenscript.denizen.utilities.debugging.StatsRecord;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
@@ -44,7 +44,6 @@ import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
@@ -68,8 +67,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,11 +78,7 @@ public class Denizen extends JavaPlugin {
 
     public static boolean supportsPaper = false;
 
-    private CommandManager commandManager;
-
-    public CommandManager getCommandManager() {
-        return commandManager;
-    }
+    public CommandManager commandManager;
 
     /*
      * Denizen Registries
@@ -109,14 +102,10 @@ public class Denizen extends JavaPlugin {
     /*
      * Denizen Managers
      */
-    private FlagManager flagManager = new FlagManager(this);
-    private TagManager tagManager = new TagManager();
-    private NotableManager notableManager = new NotableManager();
-    private OldEventManager eventManager;
-
-    public OldEventManager eventManager() {
-        return eventManager;
-    }
+    public FlagManager flagManager = new FlagManager(this);
+    public TagManager tagManager = new TagManager();
+    public NotableManager notableManager = new NotableManager();
+    public OldEventManager eventManager;
 
     public FlagManager flagManager() {
         return flagManager;
@@ -483,23 +472,7 @@ public class Denizen extends JavaPlugin {
         }
         hasDisabled = true;
 
-        // <--[event]
-        // @Events
-        // shutdown
-        //
-        // @Regex ^on shutdown$
-        //
-        // @Warning not all plugins will be loaded and delayed scripts will be dropped.
-        // Also note that this event is not guaranteed to always run (eg if the server crashes).
-        //
-        // @Triggers when the server is shutting down.
-        //
-        // @Context
-        // None.
-        //
-        // -->
-        HashMap<String, ObjectTag> context = new HashMap<>();
-        OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
+        ServerStopScriptEvent.instance.fire();
 
         // Disable the log interceptor... otherwise bad things on /reload
         /*if (logInterceptor != null) {

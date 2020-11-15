@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEvent;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.containers.core.WorldScriptContainer;
 
 public class ServerPrestartScriptEvent extends BukkitScriptEvent {
@@ -38,11 +37,6 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
     @Override
     public String getName() {
         return "ServerPrestart";
-    }
-
-    @Override
-    public ObjectTag getContext(String name) {
-        return super.getContext(name);
     }
 
     public void specialHackRunEvent() {

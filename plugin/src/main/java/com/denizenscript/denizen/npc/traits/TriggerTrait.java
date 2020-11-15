@@ -8,7 +8,6 @@ import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import net.citizensnpcs.api.command.exception.CommandException;
