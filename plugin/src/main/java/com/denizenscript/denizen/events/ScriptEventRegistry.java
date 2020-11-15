@@ -210,6 +210,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
         ScriptEvent.registerScriptEvent(new SpawnChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new StructureGrowsScriptEvent());
+        ScriptEvent.registerScriptEvent(new TimeChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new WeatherChangesScriptEvent());
         ScriptEvent.registerScriptEvent(new WorldInitsScriptEvent());
         ScriptEvent.registerScriptEvent(new WorldLoadsScriptEvent());
