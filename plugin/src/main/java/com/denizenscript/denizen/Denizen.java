@@ -337,7 +337,6 @@ public class Denizen extends JavaPlugin {
             CommonRegistries.registerMainTagHandlers();
             eventManager = new OldEventManager();
             // Register all the legacy 'Core' SmartEvents.
-            OldEventManager.registerSmartEvent(new FlagSmartEvent());
             OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
             // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();

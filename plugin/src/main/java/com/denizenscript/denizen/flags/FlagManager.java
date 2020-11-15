@@ -4,13 +4,9 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
-import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.events.core.FlagSmartEvent;
 import com.denizenscript.denizencore.DenizenCore;
-import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -222,52 +218,11 @@ public class FlagManager {
         public void clear() {
             String OldOwner = flagOwner;
             String OldName = flagName;
-            ObjectTag OldValue = FlagSmartEvent.isActive() ? (value.size() > 1
-                    ? value.asList()
-                    : value.size() == 1 ? new ElementTag(value.get(0).asString()) : new ElementTag("null")) : null;
 
             denizen.getSaves().set(flagPath, null);
             denizen.getSaves().set(flagPath + "-expiration", null);
             valid = false;
             rebuild();
-
-            if (FlagSmartEvent.isActive()) {
-                List<String> world_script_events = new ArrayList<>();
-
-                Map<String, ObjectTag> context = new HashMap<>();
-                PlayerTag player = null;
-                if (PlayerTag.matches(OldOwner)) {
-                    player = PlayerTag.valueOf(OldOwner, CoreUtilities.basicContext);
-                }
-                NPCTag npc = null;
-                if (Depends.citizens != null && NPCTag.matches(OldOwner)) {
-                    npc = NPCTag.valueOf(OldOwner, CoreUtilities.basicContext);
-                }
-
-                String type;
-
-                if (player != null) {
-                    type = "player";
-                }
-                else if (npc != null) {
-                    type = "npc";
-                }
-                else {
-                    type = "server";
-                }
-                world_script_events.add(type + " flag cleared");
-                world_script_events.add(type + " flag " + OldName + " cleared");
-
-                context.put("owner", new ElementTag(OldOwner));
-                context.put("name", new ElementTag(OldName));
-                context.put("type", new ElementTag(type));
-                context.put("old_value", OldValue);
-
-                world_script_events.add("flag cleared");
-
-                OldEventManager.doEvents(world_script_events,
-                        new BukkitScriptEntryData(player, npc), context);
-            }
         }
 
         /**
@@ -469,15 +424,6 @@ public class FlagManager {
          * if you are extending the usage of Flags yourself.
          */
         public void save() {
-            String oldOwner = flagOwner;
-            String oldName = flagName;
-            ObjectTag oldValue = null;
-            if (FlagSmartEvent.isActive()) {
-                ListTag oldValueList = value.asList();
-                oldValue = oldValueList.size() > 1 ? oldValueList
-                        : oldValueList.size() == 1 ? new ElementTag(oldValueList.get(0)) : new ElementTag("null");
-            }
-
             if (value.values != null) {
                 denizen.getSaves().set(flagPath, value.values);
             }
@@ -485,52 +431,6 @@ public class FlagManager {
                 denizen.getSaves().set(flagPath, value.size == 0 ? null : value.firstValue);
             }
             denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));
-
-            if (FlagSmartEvent.isActive()) {
-                List<String> world_script_events = new ArrayList<>();
-
-                Map<String, ObjectTag> context = new HashMap<>();
-                PlayerTag player = null;
-                if (PlayerTag.matches(oldOwner)) {
-                    player = PlayerTag.valueOf(oldOwner, CoreUtilities.basicContext);
-                }
-                NPCTag npc = null;
-                if (Depends.citizens != null && NPCTag.matches(oldOwner)) {
-                    npc = NPCTag.valueOf(oldOwner, CoreUtilities.basicContext);
-                }
-                EntityTag entity = null;
-                if (EntityTag.matches(oldOwner)) {
-                    entity = EntityTag.valueOf(oldOwner, CoreUtilities.basicContext);
-                }
-
-                String type;
-
-                if (player != null) {
-                    type = "player";
-                }
-                else if (npc != null) {
-                    type = "npc";
-                }
-                else if (entity != null) {
-                    type = "entity";
-                }
-                else {
-                    type = "server";
-                }
-                world_script_events.add(type + " flag changed");
-                world_script_events.add(type + " flag " + oldName + " changed");
-
-                context.put("owner", new ElementTag(oldOwner));
-                context.put("name", new ElementTag(oldName));
-                context.put("type", new ElementTag(type));
-                context.put("old_value", oldValue);
-
-                world_script_events.add("flag changed");
-
-                OldEventManager.doEvents(world_script_events,
-                        new BukkitScriptEntryData(player, npc), context);
-            }
-
         }
 
         @Override
@@ -549,58 +449,11 @@ public class FlagManager {
                 if (expiration > 1 && expiration < DenizenCore.currentTimeMillis) {
                     String oldOwner = flagOwner;
                     String oldName = flagName;
-                    ObjectTag oldValue = FlagSmartEvent.isActive() ? (value.size() > 1
-                            ? value.asList()
-                            : value.size() == 1 ? new ElementTag(value.get(0).asString()) : new ElementTag("null")) : null;
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
                     valid = false;
                     rebuild();
                     //dB.log('\'' + flagName + "' has expired! " + flagPath);
-                    if (FlagSmartEvent.isActive()) {
-                        List<String> world_script_events = new ArrayList<>();
-
-                        Map<String, ObjectTag> context = new HashMap<>();
-                        PlayerTag player = null;
-                        if (PlayerTag.matches(oldOwner)) {
-                            player = PlayerTag.valueOf(oldOwner, CoreUtilities.basicContext);
-                        }
-                        NPCTag npc = null;
-                        if (Depends.citizens != null && NPCTag.matches(oldOwner)) {
-                            npc = NPCTag.valueOf(oldOwner, CoreUtilities.basicContext);
-                        }
-                        EntityTag entity = null;
-                        if (EntityTag.matches(oldOwner)) {
-                            entity = EntityTag.valueOf(oldOwner, CoreUtilities.basicContext);
-                        }
-
-                        String type;
-
-                        if (player != null) {
-                            type = "player";
-                        }
-                        else if (npc != null) {
-                            type = "npc";
-                        }
-                        else if (entity != null) {
-                            type = "entity";
-                        }
-                        else {
-                            type = "server";
-                        }
-                        world_script_events.add(type + " flag expires");
-                        world_script_events.add(type + " flag " + oldName + " expires");
-
-                        context.put("owner", new ElementTag(oldOwner));
-                        context.put("name", new ElementTag(oldName));
-                        context.put("type", new ElementTag(type));
-                        context.put("old_value", oldValue);
-
-                        world_script_events.add("flag expires");
-
-                        OldEventManager.doEvents(world_script_events,
-                                new BukkitScriptEntryData(player, npc), context);
-                    }
                     return true;
                 }
             }
