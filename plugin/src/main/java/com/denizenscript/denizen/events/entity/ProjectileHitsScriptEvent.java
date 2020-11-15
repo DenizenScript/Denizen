@@ -40,9 +40,11 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // <--[event]
     // @Events
     // entity shoots block
-    // entity shoots <material> (with <projectile>)
+    // entity shoots <material>
     // <entity> shoots block
-    // <entity> shoots <material> (with <projectile>)
+    // <entity> shoots <material>
+    //
+    // @Switch with:<projectile>
     //
     // @Regex ^on [^\s]+ shoots [^\s]+$
     //
@@ -86,7 +88,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
         String pTest = "";
-
         if (cmd.equals("hits")) {
             pTest = path.eventArgLowerAt(0);
         }
@@ -101,11 +102,12 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (!pTest.isEmpty() && !pTest.equals("projectile") && !tryEntity(projectile, pTest)) {
             return false;
         }
-
+        if (path.switches.containsKey("with") && !tryEntity(projectile, path.switches.get("with"))) {
+            return false;
+        }
         if (!tryMaterial(material, path.eventArgLowerAt(2))) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
@@ -146,13 +148,10 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (projectile.getLocation() == null) {
             return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
         }
-
         if (Double.isNaN(projectile.getLocation().getDirection().normalize().getX())) {
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
         }
-
         Block block = event.getHitBlock();
-
         if (block == null) {
             return;
         }
