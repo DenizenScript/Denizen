@@ -95,7 +95,7 @@ public class NPCTagBase implements Listener {
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {
 
-        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = new NPCTag(event.getNPC());
 
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive()) {
@@ -139,7 +139,7 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
-        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = new NPCTag(event.getNPC());
 
         // Do world script event 'On NPC Begins Navigation'
         if (NPCNavigationSmartEvent.IsActive()) {
@@ -200,7 +200,7 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler
     public void navCancel(NavigationCancelEvent event) {
-        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = new NPCTag(event.getNPC());
 
         if (NPCNavigationSmartEvent.IsActive()) {
             OldEventManager.doEvents(Arrays.asList
@@ -247,7 +247,7 @@ public class NPCTagBase implements Listener {
     @EventHandler
     public void navStuck(NavigationStuckEvent event) {
 
-        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = new NPCTag(event.getNPC());
 
         Map<String, ObjectTag> context = new HashMap<>();
 

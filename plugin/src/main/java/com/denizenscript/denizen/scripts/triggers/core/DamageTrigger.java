@@ -85,7 +85,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         context.put("damage", new ElementTag(event.getDamage()));
 
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            NPCTag npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
+            NPCTag npc = new NPCTag(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
             if (npc == null) {
                 return;
             }

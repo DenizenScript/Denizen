@@ -68,7 +68,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
         // The rest of the methods beyond this point require a NPCTag object, which can easily be
         // obtained if a valid NPC object is available:
-        NPCTag npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        NPCTag npc = new NPCTag(event.getNPC());
 
         // Now, check if the 'click trigger' specifically is enabled. 'name' is inherited from the
         // super AbstractTrigger and contains the name of the trigger that was use in registration.

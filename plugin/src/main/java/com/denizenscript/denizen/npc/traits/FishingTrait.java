@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -89,7 +90,7 @@ public class FishingTrait extends Trait {
      * @param location the location to fish at
      */
     public void startFishing(Location location) {
-        DenizenAPI.getDenizenNPC(npc).action("start fishing", null);
+        new NPCTag(npc).action("start fishing", null);
         fishingLocation = location.clone();
         cast();
         fishing = true;
@@ -110,7 +111,7 @@ public class FishingTrait extends Trait {
      * Makes the stop fishing.
      */
     public void stopFishing() {
-        DenizenAPI.getDenizenNPC(npc).action("stop fishing", null);
+        new NPCTag(npc).action("stop fishing", null);
         reel();
         reelCount = 100;
         castCount = 0;
@@ -167,7 +168,7 @@ public class FishingTrait extends Trait {
     //
     // -->
     private void cast() {
-        DenizenAPI.getDenizenNPC(npc).action("cast fishing rod", null);
+        new NPCTag(npc).action("cast fishing rod", null);
         if (fishingLocation == null) {
             Debug.echoError("Fishing location not found!");
             return;
@@ -221,7 +222,7 @@ public class FishingTrait extends Trait {
     //
     // -->
     private void reel() {
-        DenizenAPI.getDenizenNPC(npc).action("reel in fishing rod", null);
+        new NPCTag(npc).action("reel in fishing rod", null);
 
         int chance = (int) (Math.random() * 100);
 
@@ -248,7 +249,7 @@ public class FishingTrait extends Trait {
                 double d9 = 0.1D;
                 fish.setVelocity(new Vector(d5 * d9, d6 * d9 + Math.sqrt(d8) * 0.08D, d7 * d9));
             }
-            DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
+            new NPCTag(npc).action("catch fish", null);
         }
 
         if (npc.getEntity() instanceof Player) {

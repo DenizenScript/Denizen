@@ -269,7 +269,7 @@ public class HealthTrait extends Trait implements Listener {
             return;
         }
 
-        TagContext context = new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null);
+        TagContext context = new BukkitTagContext(null, new NPCTag(npc), null, true, null);
         loc = getRespawnLocation();// TODO: debug option?
 
         if (loc == null) {

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
@@ -117,7 +118,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public boolean isEnabled(String triggerName) {
-        if (!DenizenAPI.getDenizenNPC(npc).getAssignmentTrait().hasAssignment()) {
+        if (!new NPCTag(npc).getAssignmentTrait().hasAssignment()) {
             return false;
         }
         if (enabled.containsKey(triggerName.toUpperCase())) {
@@ -238,7 +239,7 @@ public class TriggerTrait extends Trait implements Listener {
             // On Unavailable Action
 
             // TODO: Should this be refactored?
-            if (DenizenNPCHelper.getDenizen(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
+            if (new NPCTag(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
                 // If determined available, continue on...
                 // else, return a 'non-triggered' state.
             }
@@ -252,7 +253,7 @@ public class TriggerTrait extends Trait implements Listener {
                 .setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type), getCooldownType(trigger_type));
 
         // Grab the determination of the action
-        String determination = DenizenNPCHelper.getDenizen(npc).action(trigger_type, player, context);
+        String determination = new NPCTag(npc).action(trigger_type, player, context);
 
         return new TriggerContext(determination, true);
     }

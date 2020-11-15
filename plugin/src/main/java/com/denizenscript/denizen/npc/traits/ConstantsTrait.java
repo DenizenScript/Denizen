@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -48,11 +49,11 @@ public class ConstantsTrait extends Trait {
         if (constants.containsKey(CoreUtilities.toLowerCase(name))) // TODO: shouldDebug
         {
             return TagManager.tag(constants.get(CoreUtilities.toLowerCase(name)),
-                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null));
+                    new BukkitTagContext(null, new NPCTag(npc), null, true, null));
         }
         else if (getAssignmentConstants().containsKey(CoreUtilities.toLowerCase(name))) {
             return TagManager.tag(assignmentConstants.get(CoreUtilities.toLowerCase(name)),
-                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null));
+                    new BukkitTagContext(null, new NPCTag(npc), null, true, null));
         }
         return null;
     }

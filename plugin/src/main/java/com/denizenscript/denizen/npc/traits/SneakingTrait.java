@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -35,7 +36,7 @@ public class SneakingTrait extends Trait implements Listener {
      * Makes the NPC sneak
      */
     public void sneak() {
-        DenizenAPI.getDenizenNPC(npc).action("sneak", null);
+        new NPCTag(npc).action("sneak", null);
 
         if (npc.getEntity().getType() != EntityType.PLAYER) {
             return;
@@ -51,7 +52,7 @@ public class SneakingTrait extends Trait implements Listener {
      */
     public void stand() {
         // Notated in SittingTrait
-        DenizenAPI.getDenizenNPC(npc).action("stand", null);
+        new NPCTag(npc).action("stand", null);
 
         NMSHandler.getEntityHelper().setSneaking(((Player) npc.getEntity()), false);
 

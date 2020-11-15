@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -54,7 +55,7 @@ public class NicknameTrait extends Trait implements Listener {
         }
         else {
             return TagManager.tag(nickname, // TODO: debug option?
-                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), null, true, null));
+                    new BukkitTagContext(null, new NPCTag(npc), null, true, null));
         }
     }
 

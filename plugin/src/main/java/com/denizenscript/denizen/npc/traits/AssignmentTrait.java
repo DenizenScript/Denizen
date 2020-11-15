@@ -2,6 +2,7 @@ package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.DenizenAPI;
@@ -97,7 +98,7 @@ public class AssignmentTrait extends Trait {
             // Reset Constants
             npc.getOrAddTrait(ConstantsTrait.class).rebuildAssignmentConstants();
             // 'On Assignment' action.
-            DenizenNPCHelper.getDenizen(npc).action("assignment", player);
+            new NPCTag(npc).action("assignment", player);
             return true;
         }
         else {
@@ -156,7 +157,7 @@ public class AssignmentTrait extends Trait {
      * @param player the player removing the assignment, can be null
      */
     public void removeAssignment(PlayerTag player) {
-        DenizenNPCHelper.getDenizen(npc).action("remove assignment", player);
+        new NPCTag(npc).action("remove assignment", player);
         cachedContainer = null;
         assignment = "";
     }
@@ -271,17 +272,17 @@ public class AssignmentTrait extends Trait {
                     if (shooter instanceof Player) {
                         player = PlayerTag.mirrorBukkitPlayer((Player) shooter);
                     }
-                    DenizenAPI.getDenizenNPC(npc).action("death by " + ((LivingEntity) shooter).getType().toString(), player, context);
+                    new NPCTag(npc).action("death by " + ((LivingEntity) shooter).getType().toString(), player, context);
                 }
             }
-            DenizenAPI.getDenizenNPC(npc).action("death by entity", player, context);
-            DenizenAPI.getDenizenNPC(npc).action("death by " + killerEntity.getType().toString(), player, context);
+            new NPCTag(npc).action("death by entity", player, context);
+            new NPCTag(npc).action("death by " + killerEntity.getType().toString(), player, context);
         }
         else if (event instanceof EntityDamageByBlockEvent) {
-            DenizenAPI.getDenizenNPC(npc).action("death by block", null, context);
+            new NPCTag(npc).action("death by block", null, context);
         }
-        DenizenAPI.getDenizenNPC(npc).action("death", player, context);
-        DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player, context);
+        new NPCTag(npc).action("death", player, context);
+        new NPCTag(npc).action("death by " + deathCause, player, context);
     }
 
     private UUID entityId;
@@ -328,12 +329,12 @@ public class AssignmentTrait extends Trait {
             player = PlayerTag.mirrorBukkitPlayer((Player) event.getEntity());
         }
         // TODO: Context containing the entity hit
-        DenizenAPI.getDenizenNPC(npc).action("hit", player);
-        DenizenAPI.getDenizenNPC(npc).action("hit on " + event.getEntityType().name(), player);
+        new NPCTag(npc).action("hit", player);
+        new NPCTag(npc).action("hit on " + event.getEntityType().name(), player);
         if (event.getEntity() instanceof LivingEntity) {
             if (((LivingEntity) event.getEntity()).getHealth() - event.getFinalDamage() <= 0) {
-                DenizenAPI.getDenizenNPC(npc).action("kill", player);
-                DenizenAPI.getDenizenNPC(npc).action("kill of " + event.getEntityType().name(), player);
+                new NPCTag(npc).action("kill", player);
+                new NPCTag(npc).action("kill of " + event.getEntityType().name(), player);
             }
         }
     }

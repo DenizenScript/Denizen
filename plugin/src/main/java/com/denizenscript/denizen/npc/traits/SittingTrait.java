@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
@@ -80,7 +81,7 @@ public class SittingTrait extends Trait implements Listener {
             return;
         }
 
-        DenizenAPI.getDenizenNPC(npc).action("sit", null);
+        new NPCTag(npc).action("sit", null);
 
         sit(npc.getEntity().getLocation());
     }
@@ -115,7 +116,7 @@ public class SittingTrait extends Trait implements Listener {
     }
 
     public void sitInternal(Location location) {
-        DenizenAPI.getDenizenNPC(npc).action("sit", null);
+        new NPCTag(npc).action("sit", null);
 
         /*
          * Teleport NPC to the location before
@@ -151,7 +152,7 @@ public class SittingTrait extends Trait implements Listener {
      * Makes the NPC stand
      */
     public void stand() {
-        DenizenAPI.getDenizenNPC(npc).action("stand", null);
+        new NPCTag(npc).action("stand", null);
 
         standInternal();
         standInternal();

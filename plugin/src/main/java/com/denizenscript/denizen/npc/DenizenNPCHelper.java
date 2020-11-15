@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.npc;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.actions.ActionHandler;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.events.OldEventManager;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -55,21 +55,6 @@ public class DenizenNPCHelper implements Listener {
     }
 
     /**
-     * Returns a NPCTag object when given a valid NPC. DenizenNPCs have some methods
-     * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
-     *
-     * @param npc the Citizens NPC
-     * @return a NPCTag
-     */
-    public static NPCTag getDenizen(NPC npc) {
-        return new NPCTag(npc);
-    }
-
-    public static NPCTag getDenizen(int id) {
-        return new NPCTag(CitizensAPI.getNPCRegistry().getById(id));
-    }
-
-    /**
      * Returns a InventoryTag object from the Inventory trait of a valid NPC.
      *
      * @param npc the Citizens NPC
@@ -88,14 +73,15 @@ public class DenizenNPCHelper implements Listener {
         }
         else {
             try {
-                Inventory inv = (Inventory) INVENTORY_TRAIT_VIEW.get(getDenizen(npc).getInventoryTrait());
+                NPCTag npcTag = new NPCTag(npc);
+                Inventory inv = (Inventory) INVENTORY_TRAIT_VIEW.get(npcTag.getInventoryTrait());
                 if (inv != null) {
                     return inv;
                 }
                 else {
                     // TODO: ???
-                    Inventory npcInventory = Bukkit.getServer().createInventory(getDenizen(npc), InventoryType.PLAYER);
-                    npcInventory.setContents(Arrays.copyOf(getDenizen(npc).getInventoryTrait().getContents(), npcInventory.getSize()));
+                    Inventory npcInventory = Bukkit.getServer().createInventory(npcTag, InventoryType.PLAYER);
+                    npcInventory.setContents(Arrays.copyOf(npcTag.getInventoryTrait().getContents(), npcInventory.getSize()));
                     return npcInventory;
                 }
             }
@@ -177,7 +163,7 @@ public class DenizenNPCHelper implements Listener {
     @EventHandler
     public void onRemove(NPCRemoveEvent event) {
         NPC npc = event.getNPC();
-        getDenizen(npc).action("remove", null);
+        new NPCTag(npc).action("remove", null);
         FlagManager.clearNPCFlags(npc.getId());
     }
 

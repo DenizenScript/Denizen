@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -159,7 +160,7 @@ public class PushableTrait extends Trait implements Listener {
                     }
                 }
                 if (pusher != null) {
-                    DenizenAPI.getDenizenNPC(npc).action("push", PlayerTag.mirrorBukkitPlayer(pusher));
+                    new NPCTag(npc).action("push", PlayerTag.mirrorBukkitPlayer(pusher));
                     pushedTimer = System.currentTimeMillis() + (delay * 1000);
                 }
             } // End push action
@@ -203,7 +204,7 @@ public class PushableTrait extends Trait implements Listener {
             NMS.setHeadYaw(npcEntity, returnLocation.getYaw());
             pushed = false;
             // Push Return action
-            DenizenAPI.getDenizenNPC(npc).action("push return", null);
+            new NPCTag(npc).action("push return", null);
         }
     }
 
