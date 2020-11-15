@@ -28,7 +28,7 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     //
     // @Context
     // <context.entity> returns the entity that despawned.
-    // <context.cause> returns the reason the entity despawned. Can be: DEATH, CHUNK_UNLOAD, or OTHER
+    // <context.cause> returns the reason the entity despawned. Can be: DEATH, CHUNK_UNLOAD, CITIZENS, or OTHER
     //
     // @NPC when the entity that despawned is an NPC.
     //

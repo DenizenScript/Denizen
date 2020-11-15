@@ -150,14 +150,12 @@ public class DenizenNPCHelper implements Listener {
      */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
-        NPCTag npc = getDenizen(event.getNPC());
+        NPCTag npc = new NPCTag(event.getNPC());
+        if (npc.isValid()) {
+            EntityDespawnScriptEvent.instance.entity = new EntityTag(event.getNPC().getEntity());
+            EntityDespawnScriptEvent.instance.cause = new ElementTag("CITIZENS");
+            EntityDespawnScriptEvent.instance.fire(event);
 
-        // Do world script event 'On NPC Despawns'
-        if (npc != null && npc.isValid()) {
-            OldEventManager.doEvents(Arrays.asList("npc despawns"), new BukkitScriptEntryData(null, npc), null);
-        }
-
-        if (npc != null && npc.isValid()) {
             npc.action("despawn", null);
         }
     }
