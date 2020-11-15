@@ -18,10 +18,8 @@ An implementation of the Denizen Scripting Language for Spigot servers, with str
 - **Discord** - chat room (Modern, strongly recommended): https://discord.gg/Q6pZGSR
 - **Denizen Home Page** - a link directory (Modern): https://denizenscript.com/
 - **Forum** (Modern but not used much): https://forum.denizenscript.com/
-- **Meta documentation** - command/tag/event/etc. search (Modern): https://one.denizenscript.com/denizen/logs/
-- **Textual Beginner's Guide** - text form (Modern): https://guide.denizenscript.com/
-- **Tutorial Videos** (Semi-Modern): https://one.denizenscript.com/denizen/vids
-- ~~**Wiki** (OLD): https://wiki.citizensnpcs.co/Denizen .~~
+- **Meta Documentation** - command/tag/event/etc. search (Modern): https://one.denizenscript.com/denizen/logs/
+- **Beginner's Guide** - text form (Modern): https://guide.denizenscript.com/
 
 #### Also check out:
 

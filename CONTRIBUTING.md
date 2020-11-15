@@ -1,6 +1,8 @@
 Contribution to Denizen
 -----------------------
 
+Please talk to us on Discord @ https://discord.gg/Q6pZGSR prior to contributing.
+
 ## Signing
 
 Please sign [the Contributor License Agreement](https://cla-assistant.io/DenizenScript/Denizen-For-Bukkit).

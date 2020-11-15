@@ -4,7 +4,11 @@ about: Describe an issue with Denizen not working as expected.
 
 ---
 
-<!-- Please fill in the asterisks sections below.
+<!--
+IMPORTANT: Support is on Discord @ https://discord.gg/Q6pZGSR
+You should only post on GitHub if you've been directed here from the Discord.
+
+Please fill in the asterisks sections below.
 Use https://one.denizenscript.com/haste to pastebin any scripts.
  -->
 The output of `/version` on my server is: **paste here**
