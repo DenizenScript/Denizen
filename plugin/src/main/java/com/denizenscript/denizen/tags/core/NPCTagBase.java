@@ -214,22 +214,6 @@ public class NPCTagBase implements Listener {
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
     }
 
-    // <--[event]
-    // @Events
-    // npc stuck
-    //
-    // @Regex ^on npc stuck$
-    //
-    // @Triggers when an NPC's navigator is stuck.
-    //
-    // @Context
-    // <context.action> returns 'teleport' or 'none'
-    //
-    // @Determine
-    // "NONE" to do nothing.
-    // "TELEPORT" to teleport.
-    // -->
-
     // <--[action]
     // @Actions
     // stuck
@@ -246,31 +230,13 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler
     public void navStuck(NavigationStuckEvent event) {
-
-        NPCTag npc = new NPCTag(event.getNPC());
-
-        Map<String, ObjectTag> context = new HashMap<>();
-
-        context.put("action", new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none"));
-
-        // Do world script event 'On NPC stuck'
-        if (NPCNavigationSmartEvent.IsActive()) {
-            List<String> determinations = OldEventManager.doEvents(Arrays.asList
-                    ("npc stuck"), new BukkitScriptEntryData(null, npc), context);
-            for (String determination : determinations) {
-                if (determination.equalsIgnoreCase("none")) {
-                    event.setAction(null);
-                }
-                if (determination.equalsIgnoreCase("teleport")) {
-                    event.setAction(TeleportStuckAction.INSTANCE);
-                }
-            }
-        }
-
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
             return;
         }
+        NPCTag npc = new NPCTag(event.getNPC());
+        Map<String, ObjectTag> context = new HashMap<>();
+        context.put("action", new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none"));
         String determination2 = npc.action("stuck", null, context);
         if (determination2.equalsIgnoreCase("none")) {
             event.setAction(null);

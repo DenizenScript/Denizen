@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.block.*;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.item.*;
 import com.denizenscript.denizen.events.npc.NPCSpawnScriptEvent;
+import com.denizenscript.denizen.events.npc.NPCStuckScriptEvent;
 import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
@@ -98,6 +99,7 @@ public class ScriptEventRegistry {
         // NPC events
         if (Depends.citizens != null) {
             ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
+            ScriptEvent.registerScriptEvent(new NPCStuckScriptEvent());
         }
 
         // Item events
