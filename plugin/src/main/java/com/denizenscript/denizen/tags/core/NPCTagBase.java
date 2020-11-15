@@ -1,15 +1,12 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.events.core.NPCNavigationSmartEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -25,9 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NPCTagBase implements Listener {
@@ -66,21 +61,6 @@ public class NPCTagBase implements Listener {
 
     public static Map<Integer, LocationTag> previousLocations = new HashMap<>();
 
-    // <--[event]
-    // @Events
-    // npc completes navigation
-    //
-    // @Regex ^on npc completes navigation$
-    //
-    // @Warning This event may fire very rapidly.
-    //
-    // @Triggers when an NPC finishes navigating.
-    //
-    // @Context
-    // None
-    //
-    // -->
-
     // <--[action]
     // @Actions
     // complete navigation
@@ -94,37 +74,15 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {
-
-        NPCTag npc = new NPCTag(event.getNPC());
-
-        // Do world script event 'On NPC Completes Navigation'
-        if (NPCNavigationSmartEvent.IsActive()) {
-            OldEventManager.doEvents(Arrays.asList
-                    ("npc completes navigation"), new BukkitScriptEntryData(null, npc), null);
-        }
-
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
             return;
         }
+        NPCTag npc = new NPCTag(event.getNPC());
+
         npc.action("complete navigation", null);
 
     }
-
-    // <--[event]
-    // @Events
-    // npc begins navigation
-    //
-    // @Regex ^on npc begins navigation$
-    //
-    // @Warning This event may fire very rapidly.
-    //
-    // @Triggers when an NPC begins navigating.
-    //
-    // @Context
-    // None
-    //
-    // -->
 
     // <--[action]
     // @Actions
@@ -139,19 +97,11 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
-        NPCTag npc = new NPCTag(event.getNPC());
-
-        // Do world script event 'On NPC Begins Navigation'
-        if (NPCNavigationSmartEvent.IsActive()) {
-            OldEventManager.doEvents(Arrays.asList
-                    ("npc begins navigation"), new BukkitScriptEntryData(null, npc), null);
-        }
-
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
             return;
         }
+        NPCTag npc = new NPCTag(event.getNPC());
         npc.action("begin navigation", null);
-
         if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
             LivingEntity entity = (LivingEntity) event.getNPC().getNavigator().getEntityTarget().getTarget();
 
@@ -200,16 +150,10 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler
     public void navCancel(NavigationCancelEvent event) {
-        NPCTag npc = new NPCTag(event.getNPC());
-
-        if (NPCNavigationSmartEvent.IsActive()) {
-            OldEventManager.doEvents(Arrays.asList
-                    ("npc cancels navigation"), new BukkitScriptEntryData(null, npc), null);
-        }
-
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
             return;
         }
+        NPCTag npc = new NPCTag(event.getNPC());
         npc.action("cancel navigation", null);
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
     }

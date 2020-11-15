@@ -10,6 +10,8 @@ public class ServerStopScriptEvent extends BukkitScriptEvent {
     //
     // @Regex ^on shutdown$
     //
+    // @Group Server
+    //
     // @Warning not all plugins will be loaded and delayed scripts will be dropped.
     // Also note that this event is not guaranteed to always run (eg if the server crashes).
     //

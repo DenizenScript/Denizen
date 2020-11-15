@@ -32,6 +32,9 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     // @Determine
     // "NONE" to do nothing.
     // "TELEPORT" to teleport.
+    //
+    // @NPC Always.
+    //
     // -->
 
     public NPCStuckScriptEvent() {

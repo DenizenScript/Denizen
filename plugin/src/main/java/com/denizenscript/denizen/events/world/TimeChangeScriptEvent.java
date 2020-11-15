@@ -14,6 +14,8 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
     // time changes (in <world>)
     // time <0-23> in <world>
     //
+    // @Group World
+    //
     // @Regex ^on time [^\s]+( in [^\s]+)$
     //
     // @Triggers when the current time changes in a world (once per mine-hour).

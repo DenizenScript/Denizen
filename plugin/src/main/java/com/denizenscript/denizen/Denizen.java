@@ -2,7 +2,6 @@ package com.denizenscript.denizen;
 
 import com.denizenscript.denizen.events.ScriptEventRegistry;
 import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
-import com.denizenscript.denizen.events.core.*;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStopScriptEvent;
@@ -336,8 +335,6 @@ public class Denizen extends JavaPlugin {
             tagManager().registerCoreTags();
             CommonRegistries.registerMainTagHandlers();
             eventManager = new OldEventManager();
-            // Register all the legacy 'Core' SmartEvents.
-            OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
             // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();
             // Register Core ObjectTags with the ObjectFetcher
