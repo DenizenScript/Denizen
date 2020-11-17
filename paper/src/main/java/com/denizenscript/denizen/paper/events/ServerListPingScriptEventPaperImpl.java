@@ -17,9 +17,11 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("protocol_version:") && ArgumentHelper.matchesInteger(determination.substring("protocol_version:".length()))) {
                 ((PaperServerListPingEvent) event).setProtocolVersion(Integer.parseInt(determination.substring("protocol_version:".length())));
+                return true;
             }
             else if (lower.startsWith("version_name:")) {
                 ((PaperServerListPingEvent) event).setVersion(determination.substring("version_name:".length()));
+                return true;
             }
         }
         return super.applyDetermination(path, determinationObj);
@@ -38,7 +40,6 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
 
     @EventHandler
     public void onListPing(PaperServerListPingEvent event) {
-        this.event = event;
-        fire(event);
+        syncFire(event);
     }
 }

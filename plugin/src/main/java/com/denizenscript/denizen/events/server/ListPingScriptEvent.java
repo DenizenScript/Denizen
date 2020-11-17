@@ -3,6 +3,7 @@ package com.denizenscript.denizen.events.server;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -100,8 +101,8 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         }
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             List<String> values = CoreUtilities.split(determination, '|', 2);
-            if (new ElementTag(values.get(0)).isInt()) {
-                event.setMaxPlayers(new ElementTag(values.get(0)).asInt());
+            if (ArgumentHelper.matchesInteger(values.get(0))) {
+                event.setMaxPlayers(Integer.parseInt(values.get(0)));
                 if (values.size() == 2) {
                     event.setMotd(values.get(1));
                 }
@@ -133,26 +134,30 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         return super.getContext(name);
     }
 
+    public void syncFire(ServerListPingEvent event) {
+        this.event = event;
+        if (!Bukkit.isPrimaryThread()) {
+            BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
+            Future future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), () -> {
+                altEvent.fire();
+                return null;
+            });
+            try {
+                future.get(5, TimeUnit.SECONDS);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+            return;
+        }
+        fire(event);
+    }
+
     public static class ListPingScriptEventSpigotImpl extends ListPingScriptEvent {
 
         @EventHandler
         public void onListPing(ServerListPingEvent event) {
-            this.event = event;
-            if (!Bukkit.isPrimaryThread()) {
-                BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
-                Future future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), () -> {
-                    altEvent.fire();
-                    return null;
-                });
-                try {
-                    future.get(5, TimeUnit.SECONDS);
-                }
-                catch (Throwable ex) {
-                    Debug.echoError(ex);
-                }
-                return;
-            }
-            fire(event);
+            syncFire(event);
         }
     }
 }
