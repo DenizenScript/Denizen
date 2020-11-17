@@ -1501,10 +1501,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
             SneakingTrait trait = getCitizen().getOrAddTrait(SneakingTrait.class);
             if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
-                trait.sneak();
+                trait.stand();
             }
             else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
-                trait.stand();
+                trait.sneak();
             }
         }
 
