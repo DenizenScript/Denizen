@@ -56,6 +56,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
             if (!current_time.containsKey(currentWorld.identifySimple())
                     || current_time.get(currentWorld.identifySimple()) != hour) {
+                current_time.put(currentWorld.identifySimple(), hour);
                 TimeChangeScriptEvent.instance.hour = hour;
                 TimeChangeScriptEvent.instance.world = currentWorld;
                 TimeChangeScriptEvent.instance.fire();

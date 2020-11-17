@@ -53,6 +53,10 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
         if (path.eventArgLowerAt(2).equals("in") && !runGenericCheck(path.eventArgLowerAt(3), world.getName())) {
             return false;
         }
+        String arg1 = path.eventArgLowerAt(1);
+        if (!arg1.equals("changes") && !arg1.equals(String.valueOf(hour))) {
+            return false;
+        }
         return super.matches(path);
     }
 
