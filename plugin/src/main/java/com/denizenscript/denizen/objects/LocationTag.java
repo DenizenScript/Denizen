@@ -707,11 +707,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         public AreaContainmentObject areaLimit;
 
-        public Material requiredMaterial;
+        public HashSet<Material> requiredMaterials;
 
-        public void run(LocationTag start, AreaContainmentObject area, Material mat) {
+        public void run(LocationTag start, AreaContainmentObject area) {
             iterationLimit = Settings.blockTagsMaxBlocks();
-            requiredMaterial = mat;
             areaLimit = area;
             result = new HashSet<>();
             flood(start.getBlockLocation());
@@ -724,7 +723,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!loc.isChunkLoaded()) {
                 return;
             }
-            if (loc.getBlock().getType() != requiredMaterial) {
+            if (!requiredMaterials.contains(loc.getBlock().getType())) {
                 return;
             }
             result.add(loc);
@@ -2058,7 +2057,30 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     }
                     return null;
                 }
-                flooder.run(object, area, object.getBlock().getType());
+                flooder.requiredMaterials = new HashSet<>();
+
+                // <--[tag]
+                // @attribute <LocationTag.flood_fill[<limit>].types[<material>|...]>
+                // @returns ListTag(LocationTag)
+                // @description
+                // Returns the set of all blocks, starting at the given location,
+                // that can be directly reached in a way that only travels through blocks of the specified material type(s).
+                // This will not travel diagonally, only the 6 cardinal directions (N/E/S/W/Up/Down).
+                // As this is potentially infinite for some block types (like air, stone, etc.) should there be any opening however small, a limit must be given.
+                // The limit value can be: a CuboidTag, an EllipsoidTag, or an ElementTag(Decimal) to use as a radius.
+                // Note that the returned list will not be in any particular order.
+                // The result will be an empty list if the block at the start location is not one of the input materials.
+                // -->
+                if (attribute.startsWith("types", 2) && attribute.hasContext(2)) {
+                    for (MaterialTag material : attribute.contextAsType(2, ListTag.class).filter(MaterialTag.class, attribute.context)) {
+                        flooder.requiredMaterials.add(material.getMaterial());
+                    }
+                    attribute.fulfill(1);
+                }
+                else {
+                    flooder.requiredMaterials.add(object.getBlock().getType());
+                }
+                flooder.run(object, area);
             }
             finally {
                 NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
