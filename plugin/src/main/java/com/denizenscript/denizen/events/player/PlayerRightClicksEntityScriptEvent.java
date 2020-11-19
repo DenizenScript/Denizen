@@ -26,6 +26,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // @Switch in:<area> to only process the event if it occurred within a specified area.
     // @Switch with:<item> to only process the event when the player is holding a specified item.
     //
+    // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <player> 1t') to prevent doubling actions.
+    //
     // @Cancellable true
     //
     // @Triggers when a player right clicks on an entity.

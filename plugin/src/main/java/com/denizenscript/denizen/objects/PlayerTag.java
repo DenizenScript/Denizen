@@ -3663,6 +3663,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Sends the player to the specified Bungee server.
         // -->
         if (mechanism.matches("send_to") && mechanism.hasValue()) {
+            if (!isOnline()) {
+                Debug.echoError("Cannot use send_to on offline player.");
+                return;
+            }
             Depends.bungeeSendPlayer(getPlayerEntity(), mechanism.getValue().asString());
         }
 
