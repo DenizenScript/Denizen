@@ -100,6 +100,9 @@ public class CuboidBlockSet implements BlockSet {
         if (input.noAir && block.data.getMaterial() == Material.AIR) {
             return;
         }
+        if (block.data.getMaterial() == Material.STRUCTURE_VOID) {
+            return;
+        }
         int finalY = input.centerLocation.getBlockY() + y - center_y;
         if (finalY < 0 || finalY > 255) {
             return;

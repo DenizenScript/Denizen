@@ -266,6 +266,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         return offlinePlayer.getName();
     }
 
+    @Deprecated // TODO: Delete during flag rewrite
     public String getSaveName() {
         if (offlinePlayer == null) {
             return "00.UNKNOWN";
@@ -845,7 +846,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
         // -->
 
-        registerTag("target", (attribute, object) -> {
+        registerOnlineOnlyTag("target", (attribute, object) -> {
             int range = 50;
             ListTag filterList = null;
             if (attribute.hasContext(1)) {
@@ -960,14 +961,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
 
-        // <--[tag]
-        // @attribute <PlayerTag.save_name>
-        // @returns ElementTag
-        // @description
-        // Returns the ID used to save the player in Denizen's saves.yml file.
-        // Works with offline players.
-        // -->
         registerTag("save_name", (attribute, object) -> {
+            Debug.echoError("player.save_name is bound to be removed very soon.");
             return new ElementTag(object.getSaveName());
         });
 
