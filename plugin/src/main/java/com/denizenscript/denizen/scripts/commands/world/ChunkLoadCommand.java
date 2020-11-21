@@ -84,7 +84,6 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (arg.matchesEnum(Action.values())
                     && !scriptEntry.hasObject("action")) {
@@ -109,15 +108,12 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
-
         if (!scriptEntry.hasObject("action")) {
             scriptEntry.addObject("action", new ElementTag("ADD"));
         }
-
         if (!scriptEntry.hasObject("duration")) {
             scriptEntry.addObject("duration", new DurationTag(0));
         }
@@ -128,16 +124,12 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         ElementTag action = scriptEntry.getElement("action");
         ListTag chunklocs = scriptEntry.getObjectTag("location");
         DurationTag length = scriptEntry.getObjectTag("duration");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(),
                     action.debug()
                             + chunklocs.debug()
                             + length.debug());
-
         }
-
         for (String chunkText : chunklocs) {
             Chunk chunk;
             if (ChunkTag.matches(chunkText)) {
@@ -150,8 +142,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 Debug.echoError("Chunk input '" + chunkText + "' is invalid.");
                 return;
             }
-            String chunkString = chunk.getX() + ", " + chunk.getZ() + "," + chunk.getWorld().getName();
-
+            String chunkString = chunk.getX() + "," + chunk.getZ() + "," + chunk.getWorld().getName();
             switch (Action.valueOf(action.asString())) {
                 case ADD:
                     if (length.getSeconds() != 0) {
@@ -207,7 +198,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         if (!(e instanceof Cancellable)) { // Not cancellable in 1.14
             return;
         }
-        String chunkString = e.getChunk().getX() + ", " + e.getChunk().getZ() + "," + e.getChunk().getWorld().getName();
+        String chunkString = e.getChunk().getX() + "," + e.getChunk().getZ() + "," + e.getChunk().getWorld().getName();
         if (chunkDelays.containsKey(chunkString)) {
             if (chunkDelays.get(chunkString) == 0) {
                 ((Cancellable) e).setCancelled(true);
@@ -228,7 +219,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 return;
             }
             Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
-            String chunkString = chnk.getX() + ", " + chnk.getZ();
+            String chunkString = chnk.getX() + "," + chnk.getZ() + "," + chnk.getWorld().getName();
             if (chunkDelays.containsKey(chunkString)) {
                 if (chunkDelays.get(chunkString) == 0) {
                     e.setCancelled(true);
