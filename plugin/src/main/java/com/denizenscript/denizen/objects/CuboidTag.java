@@ -999,11 +999,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
-        // @attribute <CuboidTag.add_member[<cuboid>]>
+        // @attribute <CuboidTag.add_member[<cuboid>|...]>
         // @returns CuboidTag
         // @mechanism CuboidTag.add_member
         // @description
-        // Returns a modified copy of this cuboid, with the input cuboid added at the end.
+        // Returns a modified copy of this cuboid, with the input cuboid(s) added at the end.
         // -->
         registerTag("add_member", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
@@ -1011,15 +1011,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return null;
             }
             cuboid = cuboid.clone();
-            CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
             int member = cuboid.pairs.size() + 1;
 
             // <--[tag]
-            // @attribute <CuboidTag.add_member[<cuboid>].at[<index>]>
+            // @attribute <CuboidTag.add_member[<cuboid>|...].at[<index>]>
             // @returns CuboidTag
             // @mechanism CuboidTag.add_member
             // @description
-            // Returns a modified copy of this cuboid, with the input cuboid added at the specified index.
+            // Returns a modified copy of this cuboid, with the input cuboid(s) added at the specified index.
             // -->
             if (attribute.startsWith("at", 2)) {
                 if (!attribute.hasContext(2)) {
@@ -1035,8 +1034,18 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             if (member > cuboid.pairs.size() + 1) {
                 member = cuboid.pairs.size() + 1;
             }
-            LocationPair pair = subCuboid.pairs.get(0);
-            cuboid.pairs.add(member - 1, new LocationPair(pair.low, pair.high));
+            if (attribute.getContext(1).startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
+                for (CuboidTag subCuboid : attribute.contextAsType(1, ListTag.class).filter(CuboidTag.class, attribute.context)) {
+                    LocationPair pair = subCuboid.pairs.get(0);
+                    cuboid.pairs.add(member - 1, new LocationPair(pair.low, pair.high));
+                    member++;
+                }
+            }
+            else {
+                CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
+                LocationPair pair = subCuboid.pairs.get(0);
+                cuboid.pairs.add(member - 1, new LocationPair(pair.low, pair.high));
+            }
             return cuboid;
         });
 
