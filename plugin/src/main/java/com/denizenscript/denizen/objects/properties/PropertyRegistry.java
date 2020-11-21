@@ -72,6 +72,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPainting.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPickupStatus.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityPlayerCreated.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
