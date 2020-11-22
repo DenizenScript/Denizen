@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,15 +29,15 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     //
     // @Cancellable true
     //
-    // @Triggers when an entity enters a vehicle.
+    // @Triggers when an entity mounts another entity.
     //
     // @Context
-    // <context.vehicle> returns the EntityTag of the vehicle.
+    // <context.vehicle> returns the EntityTag of the mounted vehicle.
     // <context.entity> returns the EntityTag of the entering entity.
     //
-    // @Player when the entity that entered the vehicle is a player.
+    // @Player when the entity that mounted the vehicle is a player.
     //
-    // @NPC when the entity that entered the vehicle is an NPC.
+    // @NPC when the entity that mounted the vehicle is an NPC.
     //
     // -->
 
@@ -48,7 +48,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     public static EntityEntersVehicleScriptEvent instance;
     public EntityTag vehicle;
     public EntityTag entity;
-    public VehicleEnterEvent event;
+    public EntityMountEvent event;
 
     public static HashSet<String> notRelevantEnterables = new HashSet<>(Arrays.asList("notable", "cuboid", "biome", "bed", "portal"));
 
@@ -63,7 +63,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(2))) {
+        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;
@@ -103,9 +103,9 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     }
 
     @EventHandler
-    public void onEntityEntersVehicle(VehicleEnterEvent event) {
-        vehicle = new EntityTag(event.getVehicle());
-        entity = new EntityTag(event.getEntered());
+    public void onEntityEntersVehicle(EntityMountEvent event) {
+        vehicle = new EntityTag(event.getMount());
+        entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
     }
