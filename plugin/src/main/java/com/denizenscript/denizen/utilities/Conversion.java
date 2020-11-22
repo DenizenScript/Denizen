@@ -51,7 +51,7 @@ public class Conversion {
     }
 
     public static AbstractMap.SimpleEntry<Integer, InventoryTag> getInventory(Argument arg, TagContext context) {
-        boolean isElement = arg.object instanceof ElementTag;
+        boolean isElement = arg.object instanceof ElementTag || (arg.object instanceof ListTag && ((ListTag) arg.object).flag != null);
         if (arg.object instanceof InventoryTag || (isElement && InventoryTag.matches(arg.getValue()))) {
             InventoryTag inv = arg.object instanceof InventoryTag ? (InventoryTag) arg.object : InventoryTag.valueOf(arg.getValue(), context);
             if (inv != null) {
