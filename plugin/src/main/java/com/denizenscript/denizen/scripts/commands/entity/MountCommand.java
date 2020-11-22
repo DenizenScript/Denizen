@@ -9,6 +9,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -70,6 +71,7 @@ public class MountCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
+                scriptEntry.addObject("custom_location", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
@@ -103,16 +105,19 @@ public class MountCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
+        boolean hasCustomLocation = scriptEntry.hasObject("custom_location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", true) : "") +
                     ArgumentHelper.debugObj("location", location) +
                     ArgumentHelper.debugObj("entities", entities.toString()));
         }
         if (!cancel) {
             for (EntityTag entity : entities) {
-                entity.spawnAt(location);
+                if (!entity.isSpawned() || hasCustomLocation) {
+                    entity.spawnAt(location);
+                }
             }
             Position.mount(Conversion.convertEntities(entities));
         }
