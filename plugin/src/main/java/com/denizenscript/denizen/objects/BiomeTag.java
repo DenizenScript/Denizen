@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
@@ -188,65 +189,53 @@ public class BiomeTag implements ObjectTag, Adjustable {
             return new ElementTag(object.biome.getTemperature());
         });
         // <--[tag]
-        // @attribute <BiomeTag.spawnable_entities>
+        // @attribute <BiomeTag.spawnable_entities[(<type>)]>
         // @returns ListTag(EntityTag)
         // @description
         // Returns all entities that spawn naturally in this biome.
+        // Optionally specify a type as: AMBIENT, CREATURES, MONSTERS, WATER, or ALL.
+        // (By default, will be "ALL").
+        //
         // -->
         registerTag("spawnable_entities", (attribute, object) -> {
-            BiomeNMS biome = object.biome;
-
             List<EntityType> entityTypes;
-
-            // <--[tag]
-            // @attribute <BiomeTag.spawnable_entities.ambient>
-            // @returns ListTag(EntityTag)
-            // @description
-            // Returns the entities that spawn naturally in ambient locations.
-            // Default examples: BAT
-            // -->
             if (attribute.startsWith("ambient", 2)) {
+                Deprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
-                entityTypes = biome.getAmbientEntities();
+                entityTypes = object.biome.getAmbientEntities();
             }
-
-            // <--[tag]
-            // @attribute <BiomeTag.spawnable_entities.creatures>
-            // @returns ListTag(EntityTag)
-            // @description
-            // Returns the entities that spawn naturally in creature locations.
-            // Default examples: PIG, COW, CHICKEN...
-            // -->
             else if (attribute.startsWith("creatures", 2)) {
+                Deprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
-                entityTypes = biome.getCreatureEntities();
+                entityTypes = object.biome.getCreatureEntities();
             }
-
-            // <--[tag]
-            // @attribute <BiomeTag.spawnable_entities.monsters>
-            // @returns ListTag(EntityTag)
-            // @description
-            // Returns the entities that spawn naturally in monster locations.
-            // Default examples: CREEPER, ZOMBIE, SKELETON...
-            // -->
             else if (attribute.startsWith("monsters", 2)) {
+                Deprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
-                entityTypes = biome.getMonsterEntities();
+                entityTypes = object.biome.getMonsterEntities();
             }
-
-            // <--[tag]
-            // @attribute <BiomeTag.spawnable_entities.water>
-            // @returns ListTag(EntityTag)
-            // @description
-            // Returns the entities that spawn naturally in underwater locations.
-            // Default examples: SQUID
-            // -->
             else if (attribute.startsWith("water", 2)) {
+                Deprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
-                entityTypes = biome.getWaterEntities();
+                entityTypes = object.biome.getWaterEntities();
             }
             else {
-                entityTypes = biome.getAllEntities();
+                String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : "all";
+                if (type.equals("ambient")) {
+                    entityTypes = object.biome.getAmbientEntities();
+                }
+                else if (type.equals("creatures")) {
+                    entityTypes = object.biome.getCreatureEntities();
+                }
+                else if (type.equals("monsters")) {
+                    entityTypes = object.biome.getMonsterEntities();
+                }
+                else if (type.equals("water")) {
+                    entityTypes = object.biome.getWaterEntities();
+                }
+                else {
+                    entityTypes = object.biome.getAllEntities();
+                }
             }
 
             ListTag list = new ListTag();
