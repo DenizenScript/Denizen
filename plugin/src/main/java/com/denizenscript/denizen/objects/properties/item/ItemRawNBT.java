@@ -72,9 +72,9 @@ public class ItemRawNBT implements Property {
                 // Firework specific
                 "Explosion", "Fireworks",
                 // Armor stand specific
-                "EntityTag",
+                // "EntityTag", // Temporarily sent through as raw due to lack of API coverage
                 // Bucket specific
-                "BucketVariantTag",
+                //"BucketVariantTag", // Temporarily sent through as raw due to lack of property coverage
                 // Map specific
                 "map", "map_scale_direction", "Decorations",
                 // Stew specific
