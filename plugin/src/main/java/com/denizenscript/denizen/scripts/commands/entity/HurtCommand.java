@@ -48,6 +48,7 @@ public class HurtCommand extends AbstractCommand {
     // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
     // than using the raw damage input number. See <@link language damage cause> for damage causes.
     // To make the source only be included in the initial damage event, and not the application of damage, specify 'source_once'.
+    // Note that 'cause' values are hacked in, similarly to the 'source' value.
     //
     // @Tags
     // <EntityTag.health>

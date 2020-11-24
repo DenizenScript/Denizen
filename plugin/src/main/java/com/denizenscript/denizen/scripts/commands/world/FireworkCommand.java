@@ -45,8 +45,8 @@ public class FireworkCommand extends AbstractCommand {
     // If no location is given, the linked NPC or player's location will be used by default.
     // The power option, which defaults to 1 if left empty, specifies how high the firework will go before exploding.
     // The type option which specifies the shape the firework will explode with. If unspecified, 'ball' will be used.
-    // The primary option specifies what colour the firework will initially explode as. If unspecified, 'yellow' will be used.
-    // The fade option specifies a colour that the firework will fade into after exploding.
+    // The primary option specifies what color the firework explosion will start with, as a ColorTag. If unspecified, 'yellow' will be used.
+    // The fade option specifies what color the firework explosion will fade into, as a ColorTag.
     // The trail option means the firework will leave a trail behind it.
     // The flicker option means the firework will explode with a flicker effect.
     //

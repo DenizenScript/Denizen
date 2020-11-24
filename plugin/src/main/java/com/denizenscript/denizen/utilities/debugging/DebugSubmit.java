@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class DebugSubmit extends Thread {
     public String recording;
@@ -77,21 +78,35 @@ public class DebugSubmit extends Thread {
             if (playerlist.length() < 2) {
                 playerlist.append("No Online Players, ");
             }
+            int validPl = 0, invalidPl = 0;
+            try {
+                for (UUID id : PlayerTag.getAllPlayers().values()) {
+                    if (id != null && id.version() == 4) {
+                        validPl++;
+                    }
+                    else {
+                        invalidPl++;
+                    }
+                }
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
             // Gather other setting info
             boolean bungee = Bukkit.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                     + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
-                    + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
+                    + "&pastecontents=" + URLEncoder.encode(("Java Version: " + System.getProperty("java.version")
                     + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
                     + "\nServer Version: " + Bukkit.getServer().getName() + " version " + Bukkit.getServer().getVersion()
                     + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().coreImplementation.getImplementationVersion()
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
-                    + "\nOffline Players: " + (PlayerTag.getAllPlayers().size() - playerCount)
-                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline") + (bungee ? " (BungeeCord)" : "")
-                    + "\n\n") + recording)
+                    + "\nTotal Players Ever: " + (PlayerTag.getAllPlayers().size() - playerCount) + " (" + validPl + " valid, " + invalidPl + " invalid)"
+                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
+                    + "\n\n").replace(ChatColor.COLOR_CHAR, (char) 0x01)) + recording)
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
