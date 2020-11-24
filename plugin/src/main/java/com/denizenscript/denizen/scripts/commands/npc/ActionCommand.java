@@ -41,7 +41,7 @@ public class ActionCommand extends AbstractCommand {
     // The script's linked player and the specified NPC will automatically be sent through to the action.
     // To add context information (tags like <context.location>) to the action, simply specify all context values in a list.
     // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
-    // To do this, the best way is to just escape the list value (see <@link language Escape Tags>).
+    // To do this, the best way is to just escape the list value (see <@link language Escaping System>).
     //
     // @Tags
     // None
