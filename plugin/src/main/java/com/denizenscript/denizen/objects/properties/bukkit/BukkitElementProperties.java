@@ -7,6 +7,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -45,6 +46,26 @@ public class BukkitElementProperties implements Property {
     }; // None
 
     ElementTag element;
+
+    public static AsciiMatcher HEX_MATCHER = new AsciiMatcher("abcdefABCDEF0123456789");
+
+    public static String replaceEssentialsHexColors(char prefix, String input) {
+        int hex = input.indexOf(prefix + "#");
+        while (hex != -1 && hex < input.length() + 8) {
+            StringBuilder converted = new StringBuilder(10);
+            converted.append(ChatColor.COLOR_CHAR).append("x");
+            for (int i = 0; i < 6; i++) {
+                char c = input.charAt(hex + 2 + i);
+                if (!HEX_MATCHER.isMatch(c)) {
+                    return input;
+                }
+                converted.append(ChatColor.COLOR_CHAR).append(c);
+            }
+            input = input.substring(0, hex) + converted.toString() + input.substring(hex + 8);
+            hex = input.indexOf(prefix + "#", hex + 2);
+        }
+        return input;
+    }
 
     public static void registerTags() {
 
@@ -299,7 +320,9 @@ public class BukkitElementProperties implements Property {
             if (attribute.hasContext(1)) {
                 prefix = attribute.getContext(1).charAt(0);
             }
-            return new ElementTag(ChatColor.translateAlternateColorCodes(prefix, object.asString()));
+            String parsed = ChatColor.translateAlternateColorCodes(prefix, object.asString());
+            parsed = replaceEssentialsHexColors(prefix, parsed);
+            return new ElementTag(parsed);
         });
 
         // <--[tag]
