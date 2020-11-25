@@ -326,13 +326,14 @@ public class ItemHelperImpl extends ItemHelper {
         }
         if (lore == null || lore.isEmpty()) {
             display.set("Lore", null);
-            return;
         }
-        NBTTagList tagList = new NBTTagList();
-        for (String line : lore) {
-            tagList.add(NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(line))));
+        else {
+            NBTTagList tagList = new NBTTagList();
+            for (String line : lore) {
+                tagList.add(NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(line))));
+            }
+            display.set("Lore", tagList);
         }
-        display.set("Lore", tagList);
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 }
