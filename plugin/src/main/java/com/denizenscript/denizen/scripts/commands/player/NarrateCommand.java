@@ -88,7 +88,7 @@ public class NarrateCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("from")
                     && arg.matchesPrefix("from")) {
-                scriptEntry.addObject("from", arg.asElement());
+                scriptEntry.addObject("from", TagManager.tagObject(arg.getValue(), scriptEntry.getContext()));
             }
             else if (!scriptEntry.hasObject("per_player")
                     && arg.matches("per_player")) {
