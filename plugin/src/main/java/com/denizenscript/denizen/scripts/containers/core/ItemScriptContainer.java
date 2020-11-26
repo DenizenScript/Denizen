@@ -18,7 +18,9 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -265,8 +267,15 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         // Add enchantment
                         Enchantment ench = Utilities.getEnchantmentByName(enchantment);
-                        stack.getItemStack().addUnsafeEnchantment(ench, level);
-                        stack.meta = null;
+                        if (stack.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
+                            meta.addStoredEnchant(ench, level, true);
+                            stack.setItemMeta(meta);
+                        }
+                        else {
+                            stack.getItemStack().addUnsafeEnchantment(ench, level);
+                            stack.meta = null;
+                        }
                     }
                     catch (Exception ex) {
                         Debug.echoError("While constructing '" + getName() + "', encountered error: '" + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());
