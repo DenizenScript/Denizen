@@ -18,7 +18,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     // @Events
     // player animates (<animation>)
     //
-    // @Regex ^on player animates [^\s]+$
+    // @Regex ^on player animates( [^\s]+)?$
     //
     // @Group Player
     //
@@ -29,7 +29,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a player performs an animation.
     //
     // @Context
-    // <context.animation> returns the name of the animation.
+    // <context.animation> returns the name of the animation, from <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/player/PlayerAnimationType.html>.
     //
     // @Player Always.
     //
@@ -48,7 +48,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
         if (!path.eventLower.startsWith("player animates")) {
             return false;
         }
-        if (!couldMatchEnum(path.eventArgLowerAt(2), PlayerAnimationType.values())) {
+        if (!path.eventArgLowerAt(2).isEmpty() && !couldMatchEnum(path.eventArgLowerAt(2), PlayerAnimationType.values())) {
             return false;
         }
         return true;

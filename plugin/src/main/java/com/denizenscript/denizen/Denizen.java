@@ -22,6 +22,7 @@ import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.command.DenizenCommandHandler;
 import com.denizenscript.denizen.utilities.command.ExCommandHandler;
+import com.denizenscript.denizen.utilities.command.ExSustainedCommandHandler;
 import com.denizenscript.denizen.utilities.command.NPCCommandHandler;
 import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
@@ -121,6 +122,8 @@ public class Denizen extends JavaPlugin {
     public BukkitWorldScriptHelper worldScriptHelper;
 
     public ItemScriptHelper itemScriptHelper;
+
+    public ExCommandHandler exCommand;
 
     public final static long startTime = System.currentTimeMillis();
 
@@ -375,8 +378,10 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
-        ExCommandHandler exCommand = new ExCommandHandler();
+        exCommand = new ExCommandHandler();
         exCommand.enableFor(getCommand("ex"));
+        ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
+        exsCommand.enableFor(getCommand("exs"));
         // Load script files without processing.
         DenizenCore.preloadScripts();
         // Load the saves.yml into memory
