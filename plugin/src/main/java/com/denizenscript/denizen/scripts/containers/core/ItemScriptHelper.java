@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -195,9 +194,6 @@ public class ItemScriptHelper implements Listener {
     }
 
     public void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-            return;
-        }
         boolean exact = true;
         if (inputItemString.startsWith("material:")) {
             exact = false;

@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.properties.item.ItemPotion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -24,8 +22,7 @@ public class EntityPotionEffects implements Property {
             return false;
         }
         return ((EntityTag) object).isLivingEntity()
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)
-                    && ((EntityTag) object).getBukkitEntity() instanceof Arrow);
+                || ((EntityTag) object).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityPotionEffects getFrom(ObjectTag object) {

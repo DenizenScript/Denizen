@@ -842,7 +842,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     }
 
     public void remove() {
-        EntityScriptHelper.unlinkEntity(entity);
         entity.remove();
     }
 

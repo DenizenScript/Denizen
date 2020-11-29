@@ -55,7 +55,6 @@ import com.denizenscript.denizencore.utilities.text.ConfigUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -354,14 +353,6 @@ public class Denizen extends JavaPlugin {
         catch (Exception e) {
             Debug.echoError(e);
         }
-        try {
-            for (World world : getServer().getWorlds()) {
-                EntityScriptHelper.linkWorld(world);
-            }
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
         if (Settings.packetInterception()) {
             NMSHandler.getInstance().enablePacketInterception(new DenizenPacketHandler());
         }
@@ -486,9 +477,6 @@ public class Denizen extends JavaPlugin {
         // Save scoreboards
         ScoreboardHelper._saveScoreboards();
 
-        // Save entities
-        EntityScriptHelper.saveEntities();
-
         // Save offline player inventories
         InventoryScriptHelper._savePlayerInventories();
 
@@ -498,10 +486,6 @@ public class Denizen extends JavaPlugin {
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
-
-        for (World world : getServer().getWorlds()) {
-            EntityScriptHelper.unlinkWorld(world);
-        }
 
         saveSaves();
     }
@@ -524,8 +508,6 @@ public class Denizen extends JavaPlugin {
     private File savesConfigFile = null;
     private FileConfiguration scoreboardsConfig = null;
     private File scoreboardsConfigFile = null;
-    private FileConfiguration entityConfig = null;
-    private File entityConfigFile = null;
 
     public void reloadSaves() {
         if (savesConfigFile == null) {
@@ -539,13 +521,6 @@ public class Denizen extends JavaPlugin {
         scoreboardsConfig = YamlConfiguration.loadConfiguration(scoreboardsConfigFile);
         // Reload scoreboards from scoreboards.yml
         ScoreboardHelper._recallScoreboards();
-
-        if (entityConfigFile == null) {
-            entityConfigFile = new File(getDataFolder(), "entities.yml");
-        }
-        entityConfig = YamlConfiguration.loadConfiguration(entityConfigFile);
-        // Load entities from entities.yml
-        EntityScriptHelper.reloadEntities();
 
         // Load maps from maps.yml
         DenizenMapManager.reloadMaps();
@@ -567,13 +542,6 @@ public class Denizen extends JavaPlugin {
         return scoreboardsConfig;
     }
 
-    public FileConfiguration getEntities() {
-        if (entityConfig == null) {
-            reloadSaves();
-        }
-        return entityConfig;
-    }
-
     public void saveSaves() {
         if (savesConfig == null || savesConfigFile == null) {
             return;
@@ -582,8 +550,6 @@ public class Denizen extends JavaPlugin {
         notableManager.saveNotables();
         // Save scoreboards to scoreboards.yml
         ScoreboardHelper._saveScoreboards();
-        // Save entities to entities.yml
-        EntityScriptHelper.saveEntities();
         // Save maps to maps.yml
         DenizenMapManager.saveMaps();
         try {
@@ -597,12 +563,6 @@ public class Denizen extends JavaPlugin {
         }
         catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
-        }
-        try {
-            entityConfig.save(entityConfigFile);
-        }
-        catch (IOException ex) {
-            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + entityConfigFile, ex);
         }
     }
 

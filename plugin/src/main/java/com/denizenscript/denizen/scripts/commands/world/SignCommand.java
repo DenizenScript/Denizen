@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -100,7 +101,7 @@ public class SignCommand extends AbstractCommand {
     }
 
     public void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
-        sign.setType(material == null ? MaterialCompat.WALL_SIGN : material.getMaterial(), false);
+        sign.setType(material == null ? Material.OAK_WALL_SIGN : material.getMaterial(), false);
         MaterialTag signMaterial = new MaterialTag(sign);
         MaterialDirectional.getFrom(signMaterial).setFacing(bf);
         signMaterial.getModernData().setToBlock(sign);
@@ -135,7 +136,7 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf, material);
             }
             else {
-                sign.setType(material == null ? MaterialCompat.SIGN : material.getMaterial(), false);
+                sign.setType(material == null ? Material.OAK_SIGN : material.getMaterial(), false);
                 if (direction != null) {
                     Utilities.setSignRotation(sign.getState(), direction);
                 }
@@ -143,7 +144,7 @@ public class SignCommand extends AbstractCommand {
         }
         else if (!MaterialCompat.isAnySign(sign.getType())) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
-                sign.setType(material == null ? MaterialCompat.SIGN : material.getMaterial(), false);
+                sign.setType(material == null ? Material.OAK_SIGN : material.getMaterial(), false);
             }
             else {
                 BlockFace bf = Utilities.chooseSignRotation(sign);

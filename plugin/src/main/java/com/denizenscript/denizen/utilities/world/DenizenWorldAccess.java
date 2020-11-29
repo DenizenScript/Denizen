@@ -5,7 +5,6 @@ import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.nms.interfaces.WorldAccess;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
-import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -34,6 +33,5 @@ public class DenizenWorldAccess implements WorldAccess {
         catch (Exception e) {
             Debug.echoError(e);
         }
-        EntityScriptHelper.unlinkEntity(entity);
     }
 }

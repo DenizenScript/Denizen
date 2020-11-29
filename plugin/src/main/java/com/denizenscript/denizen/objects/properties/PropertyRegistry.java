@@ -100,19 +100,15 @@ public class PropertyRegistry {
 
         // register core ItemTag properties
         PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-            PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
-        }
+        PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
         PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
         PropertyParser.registerProperty(ItemDisplayname.class, ItemTag.class);
         PropertyParser.registerProperty(ItemDurability.class, ItemTag.class);
         PropertyParser.registerProperty(ItemCanDestroy.class, ItemTag.class);
         PropertyParser.registerProperty(ItemCanPlaceOn.class, ItemTag.class);
         PropertyParser.registerProperty(ItemColor.class, ItemTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-            PropertyParser.registerProperty(ItemCustomModel.class, ItemTag.class);
-            PropertyParser.registerProperty(ItemChargedProjectile.class, ItemTag.class);
-        }
+        PropertyParser.registerProperty(ItemCustomModel.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemChargedProjectile.class, ItemTag.class);
         PropertyParser.registerProperty(ItemEnchantments.class, ItemTag.class);
         PropertyParser.registerProperty(ItemFirework.class, ItemTag.class);
         PropertyParser.registerProperty(ItemHidden.class, ItemTag.class);
@@ -141,9 +137,7 @@ public class PropertyRegistry {
 
         // register core MaterialTag properties
         PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-            PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
-        }
+        PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialCount.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialDelay.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialDirectional.class, MaterialTag.class);
@@ -153,9 +147,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialHinge.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialInstrument.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialLocked.class, MaterialTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14)) {
-            PropertyParser.registerProperty(MaterialLeafSize.class, MaterialTag.class);
-        }
+        PropertyParser.registerProperty(MaterialLeafSize.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialLevel.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialLightable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialMode.class, MaterialTag.class);

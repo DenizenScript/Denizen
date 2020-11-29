@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -21,8 +19,7 @@ public class EntityPotion implements Property {
             return false;
         }
         return ((EntityTag) entity).getBukkitEntity() instanceof ThrownPotion
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) &&
-                    ((EntityTag) entity).getBukkitEntity() instanceof Arrow);
+                || ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityPotion getFrom(ObjectTag entity) {

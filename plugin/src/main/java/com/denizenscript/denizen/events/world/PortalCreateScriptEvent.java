@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.events.world;
 
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
@@ -72,7 +71,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && name.equals("entity") && event.getEntity() != null) {
+        if (name.equals("entity") && event.getEntity() != null) {
             return new EntityTag(event.getEntity());
         }
         else if (name.equals("world")) {

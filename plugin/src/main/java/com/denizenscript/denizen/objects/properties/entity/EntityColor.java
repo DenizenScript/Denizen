@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.CatHelper;
@@ -35,12 +33,12 @@ public class EntityColor implements Property {
                 type == EntityType.PARROT ||
                 type == EntityType.SHULKER ||
                 type == EntityType.MUSHROOM_COW ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.CAT) ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.TRADER_LLAMA) ||
+                type == EntityType.CAT ||
+                type == EntityType.FOX ||
+                type == EntityType.PANDA ||
+                type == EntityType.ARROW ||
+                type == EntityType.VILLAGER ||
+                type == EntityType.TRADER_LLAMA ||
                 type == EntityType.TROPICAL_FISH;
     }
 
@@ -86,7 +84,7 @@ public class EntityColor implements Property {
         else if (type == EntityType.RABBIT) {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
-        else if (type == EntityType.LLAMA || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.TRADER_LLAMA)) {
+        else if (type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA) {
             return ((Llama) colored.getBukkitEntity()).getColor().name();
         }
         else if (type == EntityType.PARROT) {
@@ -96,25 +94,25 @@ public class EntityColor implements Property {
             DyeColor color = ((Shulker) colored.getBukkitEntity()).getColor();
             return color == null ? null : color.name();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.MUSHROOM_COW) {
+        else if (type == EntityType.MUSHROOM_COW) {
             return ((MushroomCow) colored.getBukkitEntity()).getVariant().name();
         }
         else if (type == EntityType.TROPICAL_FISH) {
             return TropicalFishHelper.getColor(colored);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) {
+        else if (type == EntityType.FOX) {
             return FoxHelper.getColor(colored);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.CAT) {
+        else if (type == EntityType.CAT) {
             return CatHelper.getColor(colored);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) {
+        else if (type == EntityType.PANDA) {
             return PandaHelper.getColor(colored);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) {
+        else if (type == EntityType.VILLAGER) {
             return ((Villager) colored.getBukkitEntity()).getVillagerType().name();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
+        else if (type == EntityType.ARROW) {
             try {
                 return new ColorTag(((Arrow) colored.getBukkitEntity()).getColor()).identify();
             }
@@ -231,7 +229,7 @@ public class EntityColor implements Property {
             else if (type == EntityType.RABBIT && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if ((type == EntityType.LLAMA || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.TRADER_LLAMA)) && mechanism.getValue().matchesEnum(Llama.Color.values())) {
+            else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA) && mechanism.getValue().matchesEnum(Llama.Color.values())) {
                 ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.PARROT && mechanism.getValue().matchesEnum(Parrot.Variant.values())) {
@@ -240,25 +238,25 @@ public class EntityColor implements Property {
             else if (type == EntityType.SHULKER && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Shulker) colored.getBukkitEntity()).setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.MUSHROOM_COW) {
+            else if (type == EntityType.MUSHROOM_COW) {
                 ((MushroomCow) colored.getBukkitEntity()).setVariant(MushroomCow.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.TROPICAL_FISH) {
                 TropicalFishHelper.setColor(colored, mechanism.getValue().asString());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.FOX) {
+            else if (type == EntityType.FOX) {
                 FoxHelper.setColor(colored, mechanism.getValue().asString());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.CAT) {
+            else if (type == EntityType.CAT) {
                 CatHelper.setColor(colored, mechanism.getValue().asString());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.PANDA) {
+            else if (type == EntityType.PANDA) {
                 PandaHelper.setColor(colored, mechanism.getValue().asString());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.VILLAGER) {
+            else if (type == EntityType.VILLAGER) {
                 ((Villager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && type == EntityType.ARROW) {
+            else if (type == EntityType.ARROW) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
             }
             else { // Should never happen
