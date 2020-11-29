@@ -67,11 +67,9 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
@@ -98,7 +96,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         if (name.equals("child")) {
             return entity.getDenizenObject();
         }
-        else if (name.equals("breeder")) {
+        else if (name.equals("breeder") && breeder != null) {
             return breeder.getDenizenObject();
         }
         else if (name.equals("father")) {
@@ -107,7 +105,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         else if (name.equals("mother")) {
             return mother.getDenizenObject();
         }
-        else if (name.equals("item")) {
+        else if (name.equals("item") && item != null) {
             return item;
         }
         else if (name.equals("experience")) {
@@ -130,10 +128,10 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     public void onEntityBreeds(EntityBreedEvent event) {
         Entity entity = event.getEntity();
         this.entity = new EntityTag(entity);
-        breeder = new EntityTag(event.getBreeder());
+        breeder = event.getBreeder() == null ? null : new EntityTag(event.getBreeder());
         father = new EntityTag(event.getFather());
         mother = new EntityTag(event.getMother());
-        item = new ItemTag(event.getBredWith());
+        item = event.getBredWith() == null ? null : new ItemTag(event.getBredWith());
         experience = event.getExperience();
         this.event = event;
         EntityTag.rememberEntity(entity);

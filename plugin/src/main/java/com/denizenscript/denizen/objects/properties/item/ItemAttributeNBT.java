@@ -119,6 +119,10 @@ public class ItemAttributeNBT implements Property {
             itemStack = CustomNBT.clearNBT(itemStack, CustomNBT.KEY_ATTRIBUTES);
             for (String string : list) {
                 String[] split = string.split("/");
+                if (split.length != 4) {
+                    Debug.echoError("Invalid nbt_attributes input: must have 4 values per attribute.");
+                    continue;
+                }
                 String attribute = EscapeTagBase.unEscape(split[0]);
                 String slot = EscapeTagBase.unEscape(split[1]);
                 int op = new ElementTag(split[2]).asInt();
