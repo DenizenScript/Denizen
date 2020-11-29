@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizencore.DenizenImplementation;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -120,6 +121,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         if (Depends.vault != null) {
             EconomyScriptContainer.cleanup();
         }
+        // Give map image downloads a new chance
+        DenizenMapManager.failedUrls.clear();
     }
 
     @Override

@@ -200,8 +200,13 @@ public class DenizenMapManager {
         }
     }
 
+    public static HashSet<String> failedUrls = new HashSet<>();
+
     private static String downloadImage(URL url) {
         try {
+            if (failedUrls.contains(url.toString())) {
+                return null;
+            }
             if (!imageDownloads.exists()) {
                 imageDownloads.mkdirs();
             }
@@ -231,6 +236,7 @@ public class DenizenMapManager {
             return output.getPath();
         }
         catch (IOException e) {
+            failedUrls.add(url.toString());
             Debug.echoError(e);
         }
         return null;
