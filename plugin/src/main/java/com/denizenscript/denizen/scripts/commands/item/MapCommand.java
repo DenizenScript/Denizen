@@ -185,6 +185,7 @@ public class MapCommand extends AbstractCommand {
         if (create != null) {
             map = Bukkit.getServer().createMap(create.getWorld());
             scriptEntry.addObject("created_map", new ElementTag(map.getId()));
+            Debug.echoDebug(scriptEntry, "Created map with id " + map.getId() + ".");
         }
         else if (id != null) {
             map = Bukkit.getServer().getMap((short) id.asInt());
