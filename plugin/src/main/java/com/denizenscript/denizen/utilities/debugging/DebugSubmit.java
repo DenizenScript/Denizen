@@ -104,7 +104,7 @@ public class DebugSubmit extends Thread {
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
-                    + "\nTotal Players Ever: " + (PlayerTag.getAllPlayers().size() - playerCount) + " (" + validPl + " valid, " + invalidPl + " invalid)"
+                    + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
                     + "\n\n").replace(ChatColor.COLOR_CHAR, (char) 0x01)) + recording)
                     .getBytes(StandardCharsets.UTF_8));

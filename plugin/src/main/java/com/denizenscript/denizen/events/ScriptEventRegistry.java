@@ -71,9 +71,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityPicksUpItemScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
-        if (!Denizen.supportsPaper) {
-            ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
-        }
+        ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new EntitySwimScriptEvent());
