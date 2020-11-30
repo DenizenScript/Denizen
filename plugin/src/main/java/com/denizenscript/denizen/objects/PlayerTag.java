@@ -3246,6 +3246,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
         // @input EntityTag
         // @description
         // Forces the player to spectate from the entity's point of view.
+        // Note that you may want to force the player into the spectate gamemode prior to using this mechanism.
         // Note: They cannot cancel the spectating without a re-log -- you must make them spectate themselves to cancel the effect.
         // (i.e. - adjust <player> spectate:<player>)
         // -->

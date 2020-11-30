@@ -118,28 +118,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public static String getSaved(LocationTag location) {
-        for (LocationTag saved : NotableManager.getAllType(LocationTag.class)) {
-            if (saved.getX() != location.getX()) {
-                continue;
-            }
-            if (saved.getY() != location.getY()) {
-                continue;
-            }
-            if (saved.getZ() != location.getZ()) {
-                continue;
-            }
-            if (saved.getYaw() != location.getYaw()) {
-                continue;
-            }
-            if (saved.getPitch() != location.getPitch()) {
-                continue;
-            }
-            if ((saved.getWorldName() == null && location.getWorldName() == null)
-                    || (saved.getWorldName() != null && location.getWorldName() != null && saved.getWorldName().equals(location.getWorldName()))) {
-                return NotableManager.getSavedId(saved);
-            }
-        }
-        return null;
+        return NotableManager.getSavedId(location);
     }
 
     public void forget() {
@@ -569,7 +548,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     /**
-     * Indicates whether this location is forced to identify as a notable or not.
+     * Indicates whether this location is forced to identify as not-a-note or not.
      */
     private boolean raw = false;
 
@@ -765,9 +744,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 && !CoreUtilities.equalsIgnoreCase(getWorldName(), other.getWorldName()))) {
             return false;
         }
-        return Math.floor(getX()) == Math.floor(other.getX())
-                && Math.floor(getY()) == Math.floor(other.getY())
-                && Math.floor(getZ()) == Math.floor(other.getZ());
+        return getX() == other.getX()
+                && getY() == other.getY()
+                && getZ() == other.getZ()
+                && getYaw() == other.getYaw()
+                && getPitch() == other.getPitch();
     }
 
     String prefix = "Location";
@@ -790,8 +771,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public String debuggable() {
-        if (isUnique()) {
-            return "<Y>" + getSaved(this) + "<GR> (" + identifyRaw().replace(",", "<G>,<GR> ") + "<GR>)";
+        String saved = getSaved(this);
+        if (saved != null) {
+            return "<Y>" + saved + "<GR> (" + identifyRaw().replace(",", "<G>,<GR> ") + "<GR>)";
         }
         else {
             return "<Y>" + identifyRaw().replace(",", "<G>,<Y> ");
@@ -805,18 +787,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public String identify() {
-        if (!raw && isUnique()) {
-            return "l@" + getSaved(this);
-        }
-        else {
+        if (raw) {
             return identifyRaw();
         }
+        String saved = getSaved(this);
+        if (saved != null) {
+            return saved;
+        }
+        return identifyRaw();
     }
 
     @Override
     public String identifySimple() {
-        if (isUnique()) {
-            return "l@" + getSaved(this);
+        String saved = getSaved(this);
+        if (saved != null) {
+            return saved;
         }
         else if (getWorldName() == null) {
             return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "");
