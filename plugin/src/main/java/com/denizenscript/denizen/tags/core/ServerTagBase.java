@@ -1072,7 +1072,6 @@ public class ServerTagBase {
             event.setReplacedObject(new TimeTag(Denizen.startTime)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
-
         if (attribute.startsWith("start_time")) {
             Deprecations.timeTagRewrite.warn(attribute.context);
             event.setReplacedObject(new DurationTag(Denizen.startTime / 50)

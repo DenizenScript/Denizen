@@ -624,8 +624,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                         loc = new LocationTag(loc_1.clone().add(x, y, z));
                         if (!loc.getBlockTypeForTag(attribute).isSolid()
                                 && !(new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute)).isSolid()
-                                && (new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
-                                || (mats != null && matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)))) {
+                                && ((mats == null ? new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
+                                : matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)))) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
                             loc.add(0.5, 0, 0.5);
