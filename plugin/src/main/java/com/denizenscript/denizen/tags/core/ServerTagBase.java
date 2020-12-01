@@ -19,10 +19,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.DenizenCore;
@@ -1066,12 +1063,18 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.start_time>
-        // @returns DurationTag
+        // @attribute <server.started_time>
+        // @returns TimeTag
         // @description
-        // Returns the time the server started as a duration time.
+        // Returns the time the server started.
         // -->
+        if (attribute.startsWith("started_time")) {
+            event.setReplacedObject(new TimeTag(Denizen.startTime)
+                    .getObjectAttribute(attribute.fulfill(1)));
+        }
+
         if (attribute.startsWith("start_time")) {
+            Deprecations.timeTagRewrite.warn(attribute.context);
             event.setReplacedObject(new DurationTag(Denizen.startTime / 50)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
