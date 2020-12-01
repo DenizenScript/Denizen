@@ -1473,16 +1473,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             getCitizen().getNavigator().getDefaultParameters().speedModifier(mechanism.getValue().asFloat());
         }
 
-        // <--[mechanism]
-        // @object NPCTag
-        // @name despawn
-        // @input None
-        // @description
-        // Despawns the NPC.
-        // @tags
-        // <NPCTag.is_spawned>
-        // -->
         if (mechanism.matches("despawn")) {
+            Deprecations.npcDespawnMech.warn(mechanism.context);
             getCitizen().despawn(DespawnReason.PLUGIN);
         }
 

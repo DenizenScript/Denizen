@@ -35,9 +35,8 @@ public class DespawnCommand extends AbstractCommand {
     // @Group npc
     //
     // @Description
-    // This command will temporarily despawn either the linked NPC or
-    // a list of other NPCs. Despawning means they are no longer visible
-    // or interactable, but they still exist and can be respawned.
+    // This command will temporarily despawn either the linked NPC or a list of other NPCs.
+    // Despawning means they are no longer visible or interactable, but they still exist and can be respawned.
     //
     // @Tags
     // <NPCTag.is_spawned>
@@ -53,9 +52,7 @@ public class DespawnCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("npcs")
                     && arg.matchesArgumentList(NPCTag.class)) {
                 scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(NPCTag.class, scriptEntry));
@@ -64,7 +61,6 @@ public class DespawnCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("npcs")) {
             if (Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("npcs", Arrays.asList(Utilities.getEntryNPC(scriptEntry)));
@@ -73,24 +69,21 @@ public class DespawnCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify a valid list of NPCs!");
             }
         }
-
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("NPCs", npcs.toString()));
         }
-
         for (NPCTag npc : npcs) {
+            if (npc.getCitizen().hasTrait(Spawned.class)) {
+                npc.getCitizen().getOrAddTrait(Spawned.class).setSpawned(false);
+            }
             if (npc.isSpawned()) {
-                if (npc.getCitizen().hasTrait(Spawned.class)) {
-                    npc.getCitizen().getOrAddTrait(Spawned.class).setSpawned(false);
-                }
                 npc.getCitizen().despawn(DespawnReason.PLUGIN);
             }
         }
