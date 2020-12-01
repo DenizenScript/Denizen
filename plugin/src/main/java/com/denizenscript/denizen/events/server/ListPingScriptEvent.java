@@ -75,7 +75,8 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        if (determination.startsWith("icon:")) {
+        String determineLow = CoreUtilities.toLowerCase(determination);
+        if (determineLow.startsWith("icon:")) {
             String iconFile = determination.substring("icon:".length());
             CachedServerIcon icon = iconCache.get(iconFile);
             if (icon != null) {
@@ -99,7 +100,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             }
             return true;
         }
-        if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
+        if (determination.length() > 0 && !determineLow.equalsIgnoreCase("none")) {
             List<String> values = CoreUtilities.split(determination, '|', 2);
             if (ArgumentHelper.matchesInteger(values.get(0))) {
                 event.setMaxPlayers(Integer.parseInt(values.get(0)));
