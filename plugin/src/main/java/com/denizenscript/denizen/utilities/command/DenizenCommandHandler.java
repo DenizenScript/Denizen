@@ -273,7 +273,7 @@ public class DenizenCommandHandler {
     /*
      * DENIZEN RELOAD
      */
-    @Command(aliases = {"denizen"}, usage = "reload (saves|notables|config|scripts) (-a)",
+    @Command(aliases = {"denizen"}, usage = "reload (saves|notes|config|scripts) (-a)",
             desc = "Reloads various Denizen files from disk to memory.", modifiers = {"reload"},
             min = 1, max = 3, permission = "denizen.basic", flags = "a")
     public void reload(CommandContext args, CommandSender sender) throws CommandException {
@@ -284,7 +284,7 @@ public class DenizenCommandHandler {
             DenizenCore.reloadScripts();
             denizen.notableManager().reloadNotables();
             denizen.reloadSaves();
-            Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
+            Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
             }
@@ -294,17 +294,17 @@ public class DenizenCommandHandler {
         if (args.length() > 2) {
             if (args.getString(1).equalsIgnoreCase("saves")) {
                 denizen.reloadSaves();
-                Messaging.send(sender, "Denizen/saves.yml reloaded from disk to memory.");
+                Messaging.send(sender, "Denizen save data reloaded from disk to memory.");
                 return;
             }
-            else if (args.getString(1).equalsIgnoreCase("notables")) {
+            else if (args.getString(1).equalsIgnoreCase("notes")) {
                 denizen.notableManager().reloadNotables();
-                Messaging.send(sender, "Denizen/notables.yml reloaded from disk to memory.");
+                Messaging.send(sender, "Denizen note data reloaded from disk to memory.");
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("config")) {
                 denizen.reloadConfig();
-                Messaging.send(sender, "Denizen/config.yml reloaded from disk to memory.");
+                Messaging.send(sender, "Denizen config file reloaded from disk to memory.");
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("scripts")) {
@@ -319,7 +319,7 @@ public class DenizenCommandHandler {
         }
 
         Messaging.send(sender, "");
-        Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTABLES, CONFIG, SCRIPTS");
+        Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTES, CONFIG, SCRIPTS");
         Messaging.send(sender, "<b>Example: /denizen reload scripts");
         Messaging.send(sender, "<f>Use '-a' to reload all parts.");
         Messaging.send(sender, "");

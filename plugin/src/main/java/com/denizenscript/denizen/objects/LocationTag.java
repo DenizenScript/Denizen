@@ -554,6 +554,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            Debug.echoError("Location flags are only available in 1.16+");
+            return null;
+        }
         MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ());
         if (map == null) {
             map = new MapTag();
@@ -563,6 +567,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            Debug.echoError("Location flags are only available in 1.16+");
+            return;
+        }
         DataPersistenceHelper.setDenizenKey(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ(), ((MapTagFlagTracker) tracker).map);
     }
 

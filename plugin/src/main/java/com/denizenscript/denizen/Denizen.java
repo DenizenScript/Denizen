@@ -532,6 +532,9 @@ public class Denizen extends JavaPlugin {
         else {
             serverFlagMap = new MapTagFlagTracker();
         }
+        if (new File(getDataFolder(), "saves.yml").exists()) {
+            LegacySavesUpdater.updateLegacySaves();
+        }
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
 
