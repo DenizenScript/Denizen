@@ -5,6 +5,10 @@ import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
@@ -42,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ItemTag implements ObjectTag, Notable, Adjustable {
+public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
     // <--[language]
     // @name ItemTag Objects
@@ -222,29 +226,54 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        if (flagTrackerCache == null) {
+            String value = CustomNBT.getCustomNBT(getItemStack(), "flags", CustomNBT.KEY_DENIZEN);
+            if (value == null) {
+                return new MapTagFlagTracker();
+            }
+            flagTrackerCache = new MapTagFlagTracker(value, CoreUtilities.noDebugContext);
+        }
+        return flagTrackerCache;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        setItemStack(CustomNBT.addCustomNBT(getItemStack(), "flags", tracker.toString(), CustomNBT.KEY_DENIZEN));
+        flagTrackerCache = tracker;
+    }
+
     private ItemStack item;
 
-    public ItemMeta meta;
+    public ItemMeta metaCache;
+
+    public AbstractFlagTracker flagTrackerCache;
 
     public ItemStack getItemStack() {
         return item;
     }
 
     public ItemMeta getItemMeta() {
-        if (meta == null) {
-            meta = item.getItemMeta();
+        if (metaCache == null) {
+            metaCache = item.getItemMeta();
         }
-        return meta;
+        return metaCache;
     }
 
     public void setItemMeta(ItemMeta meta) {
-        this.meta = meta;
+        this.metaCache = meta;
         item.setItemMeta(meta);
     }
 
     public void setItemStack(ItemStack item) {
         this.item = item;
-        meta = null;
+        resetCache();
+    }
+
+    public void resetCache() {
+        metaCache = null;
+        flagTrackerCache = null;
     }
 
     // Compare item to item.
@@ -349,7 +378,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
             setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
         }
         else {
-            List<String> lore = meta.hasLore() ? NMSHandler.getItemHelper().getLore(this) : new ArrayList<>();
+            List<String> lore = getItemMeta().hasLore() ? NMSHandler.getItemHelper().getLore(this) : new ArrayList<>();
             lore.add(0, script.getHashID());
             NMSHandler.getItemHelper().setLore(this, lore);
         }
@@ -486,6 +515,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable {
     }
 
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <ItemTag.with[<mechanism>=<value>;...]>

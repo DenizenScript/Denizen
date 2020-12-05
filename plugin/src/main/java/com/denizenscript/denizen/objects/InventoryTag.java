@@ -934,6 +934,22 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         return qty;
     }
 
+    public int countByFlag(String flag) {
+        if (inventory == null) {
+            return 0;
+        }
+        int qty = 0;
+        for (ItemStack invStack : inventory) {
+            if (invStack != null) {
+                ItemTag item = new ItemTag(invStack);
+                if (item.getFlagTracker().hasFlag(flag)) {
+                    qty += invStack.getAmount();
+                }
+            }
+        }
+        return qty;
+    }
+
     public int countByScriptName(String scriptName) {
         if (inventory == null) {
             return 0;
@@ -1498,24 +1514,54 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return new ElementTag(found_items >= qty);
             }
             // <--[tag]
-            // @attribute <InventoryTag.contains.nbt[<key>]>
+            // @attribute <InventoryTag.contains.flagged[<flag_name>|...]>
             // @returns ElementTag(Boolean)
             // @description
-            // Returns whether the inventory contains an item with the specified key.
+            // Returns whether the inventory contains an item with the specified flag(s) set.
             // -->
+            if (attribute.startsWith("flagged", 2)) {
+                if (!attribute.hasContext(2)) {
+                    return null;
+                }
+                ListTag scrNameList = attribute.contextAsType(2, ListTag.class);
+                String[] flags = scrNameList.toArray(new String[0]);
+                int qty = 1;
+
+                // <--[tag]
+                // @attribute <InventoryTag.contains.flagged[<flag_name>|...].quantity[<#>]>
+                // @returns ElementTag(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the specified flag(s) set.
+                // -->
+                if (attribute.startsWith("quantity", 3) && attribute.hasContext(3)) {
+                    qty = attribute.getIntContext(3);
+                    attribute.fulfill(1);
+                }
+                int found_items = 0;
+                for (ItemStack item : object.getContents()) {
+                    if (item != null) {
+                        ItemTag itemTag = new ItemTag(item);
+                        for (String flag : flags) {
+                            if (itemTag.getFlagTracker().hasFlag(flag)) {
+                                found_items += item.getAmount();
+                                break;
+                            }
+                        }
+                        if (found_items >= qty) {
+                            break;
+                        }
+                    }
+                }
+                attribute.fulfill(1);
+                return new ElementTag(found_items >= qty);
+            }
             if (attribute.startsWith("nbt", 2)) {
+                Deprecations.itemNbt.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
                 String keyName = attribute.getContext(2);
                 int qty = 1;
-
-                // <--[tag]
-                // @attribute <InventoryTag.contains.nbt[<key>].quantity[<#>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item with the specified key.
-                // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
                         Deprecations.qtyTags.warn(attribute.context);
@@ -1827,6 +1873,20 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 String scriptName = attribute.getContext(2);
                 attribute.fulfill(1);
                 return new ElementTag(object.countByScriptName(scriptName));
+            }
+            // <--[tag]
+            // @attribute <InventoryTag.quantity.flagged[<flag_name>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the combined quantity of itemstacks that have the specified flag set.
+            // -->
+            if (attribute.startsWith("flagged", 2)) {
+                if (!attribute.hasContext(2)) {
+                    return null;
+                }
+                String flag = attribute.getContext(2);
+                attribute.fulfill(1);
+                return new ElementTag(object.countByFlag(flag));
             }
 
             // <--[tag]

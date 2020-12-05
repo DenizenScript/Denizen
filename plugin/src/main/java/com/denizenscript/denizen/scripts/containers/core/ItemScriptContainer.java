@@ -274,7 +274,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         else {
                             stack.getItemStack().addUnsafeEnchantment(ench, level);
-                            stack.meta = null;
+                            stack.resetCache();
                         }
                     }
                     catch (Exception ex) {

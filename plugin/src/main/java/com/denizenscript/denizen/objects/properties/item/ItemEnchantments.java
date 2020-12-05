@@ -217,7 +217,7 @@ public class ItemEnchantments implements Property {
                     if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName())) ||
                             names.contains(CoreUtilities.toLowerCase(getName(ench)))) {
                         item.getItemStack().removeEnchantment(ench);
-                        item.meta = null;
+                        item.resetCache();
                     }
                 }
             }
@@ -252,7 +252,7 @@ public class ItemEnchantments implements Property {
                             }
                             else {
                                 item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
-                                item.meta = null;
+                                item.resetCache();
                             }
                         }
                         else {

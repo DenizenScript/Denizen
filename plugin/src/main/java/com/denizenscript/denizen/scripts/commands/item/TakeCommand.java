@@ -31,14 +31,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -51,7 +51,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'slot:' will take the items from that specific slot.
     //
-    // Using 'nbt:' with a key will take items with the specified NBT key, as set by <@link mechanism ItemTag.nbt>.
+    // Using 'flagged:' with a flag name will take items with the specified flag name, see <@link language flag system>.
     //
     // Using 'iteminhand' will take from the player's held item slot.
     //
@@ -82,18 +82,21 @@ public class TakeCommand extends AbstractCommand {
     // @Usage
     // Use to take money from the player
     // - take money quantity:10
+    //
     // @Usage
     // Use to take an arrow from the player's enderchest
     // - take material:arrow from:<player.enderchest>
+    //
     // @Usage
     // Use to take the current holding item from the player's hand
     // - take iteminhand
+    //
     // @Usage
     // Use to take 5 emeralds from the player's inventory
     // - take material:emerald quantity:5
     // -->
 
-    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL}
+    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -131,8 +134,15 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && arg.matchesPrefix("nbt")
                     && !scriptEntry.hasObject("type")) {
+                Deprecations.itemNbt.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.NBT);
                 scriptEntry.addObject("nbt_key", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("flagged")
+                    && !scriptEntry.hasObject("type")) {
+                scriptEntry.addObject("type", Type.FLAGGED);
+                scriptEntry.addObject("flag_name", arg.asElement());
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
@@ -205,6 +215,7 @@ public class TakeCommand extends AbstractCommand {
         ElementTag slot = scriptEntry.getElement("slot");
         ListTag titleAuthor = scriptEntry.getObjectTag("cover");
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
+        ElementTag flagName = scriptEntry.getElement("flag_name");
         MaterialTag material = scriptEntry.getObjectTag("material");
         Type type = (Type) scriptEntry.getObject("type");
         List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("items");
@@ -217,6 +228,7 @@ public class TakeCommand extends AbstractCommand {
                             + ArgumentHelper.debugObj("Items", items)
                             + (slot != null ? slot.debug() : "")
                             + (nbtKey != null ? nbtKey.debug() : "")
+                            + (flagName != null ? flagName.debug() : "")
                             + (material != null ? material.debug() : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));
         }
@@ -310,6 +322,14 @@ public class TakeCommand extends AbstractCommand {
                 takeByMatcher(inventory, (item) -> item.hasItemMeta() && item.getItemMeta() instanceof BookMeta
                                 && equalOrNull(titleAuthor.get(0), ((BookMeta) item.getItemMeta()).getTitle())
                                 && (titleAuthor.size() == 1 || equalOrNull(titleAuthor.get(1), ((BookMeta) item.getItemMeta()).getAuthor())), quantity.asInt());
+                break;
+            }
+            case FLAGGED: {
+                if (flagName == null) {
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a flag name!");
+                    return;
+                }
+                takeByMatcher(inventory, (item) -> new ItemTag(item).getFlagTracker().hasFlag(flagName.asString()), quantity.asInt());
                 break;
             }
             case NBT: {
