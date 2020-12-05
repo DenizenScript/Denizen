@@ -225,11 +225,38 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    public static HashMap<UUID, MapTagFlagTracker> playerFlagTrackerCache = new HashMap<>();
+    public static class CachedPlayerFlag {
+
+        public long lastAccessed;
+
+        public MapTagFlagTracker tracker;
+    }
+
+    public static HashMap<UUID, CachedPlayerFlag> playerFlagTrackerCache = new HashMap<>();
+
+    private static ArrayList<UUID> toCleanFromCache = new ArrayList<>();
+
+    public static void cleanCache() {
+        long timeNow = System.currentTimeMillis();
+        for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
+            if (entry.getValue().lastAccessed + (5 * 60 * 1000) < timeNow) {
+                continue;
+            }
+            if (Bukkit.getPlayer(entry.getKey()) == null) {
+                entry.getValue().lastAccessed = timeNow;
+                continue;
+            }
+            toCleanFromCache.add(entry.getKey());
+        }
+        for (UUID id : toCleanFromCache) {
+            playerFlagTrackerCache.remove(id);
+        }
+        toCleanFromCache.clear();
+    }
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        MapTagFlagTracker cached = playerFlagTrackerCache.get(getOfflinePlayer().getUniqueId());
+        CachedPlayerFlag cached = playerFlagTrackerCache.get(getOfflinePlayer().getUniqueId());
         if (cached == null) {
             Player online = getPlayerEntity();
             if (online != null) {
@@ -237,19 +264,23 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (map == null) {
                     map = new MapTag();
                 }
-                cached = new MapTagFlagTracker(map);
-                playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cached);
+                cached.tracker = new MapTagFlagTracker(map);
             }
             else {
                 // TODO: OFFLINE PLAYERS???
             }
+            playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cached);
         }
-        return cached;
+        cached.lastAccessed = System.currentTimeMillis();
+        return cached.tracker;
     }
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), (MapTagFlagTracker) tracker);
+        CachedPlayerFlag cache = new CachedPlayerFlag();
+        cache.lastAccessed = System.currentTimeMillis();
+        cache.tracker = (MapTagFlagTracker) tracker;
+        playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cache);
         Player online = getPlayerEntity();
         if (online != null) {
             DataPersistenceHelper.setDenizenKey(online, "flag_tracker", ((MapTagFlagTracker) tracker).map);
@@ -687,21 +718,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return new ElementTag(messages.get(x - 1));
-        });
-
-        registerTag("current_step", (attribute, object) -> {
-            Deprecations.playerStepTag.warn(attribute.context);
-            String outcome = "null";
-            if (attribute.hasContext(1)) {
-                try {
-                    outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + object.getName() + ".Scripts."
-                            + attribute.contextAsType(1, ScriptTag.class).getName() + ".Current Step");
-                }
-                catch (Exception e) {
-                    outcome = "null";
-                }
-            }
-            return new ElementTag(outcome);
         });
 
         /////////////////////
