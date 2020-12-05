@@ -5,10 +5,7 @@ import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStopScriptEvent;
-import com.denizenscript.denizen.flags.FlagManager;
-import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.PropertyRegistry;
@@ -43,6 +40,7 @@ import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -66,6 +64,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,9 +78,6 @@ public class Denizen extends JavaPlugin {
 
     public CommandManager commandManager;
 
-    /*
-     * Denizen Registries
-     */
     private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private DenizenNPCHelper npcHelper;
@@ -98,17 +94,9 @@ public class Denizen extends JavaPlugin {
         return triggerRegistry;
     }
 
-    /*
-     * Denizen Managers
-     */
-    public FlagManager flagManager = new FlagManager(this);
     public TagManager tagManager = new TagManager();
     public NotableManager notableManager = new NotableManager();
     public OldEventManager eventManager;
-
-    public FlagManager flagManager() {
-        return flagManager;
-    }
 
     public TagManager tagManager() {
         return tagManager;
@@ -127,6 +115,8 @@ public class Denizen extends JavaPlugin {
     public final static long startTime = System.currentTimeMillis();
 
     public DenizenCoreImplementation coreImplementation = new DenizenCoreImplementation();
+
+    public MapTagFlagTracker serverFlagMap;
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -521,10 +511,21 @@ public class Denizen extends JavaPlugin {
         scoreboardsConfig = YamlConfiguration.loadConfiguration(scoreboardsConfigFile);
         // Reload scoreboards from scoreboards.yml
         ScoreboardHelper._recallScoreboards();
-
         // Load maps from maps.yml
         DenizenMapManager.reloadMaps();
-
+        // Reload server flags
+        File serverFlagsFile = new File(getDataFolder(), "server_flags.dat");
+        if (serverFlagsFile.exists()) {
+            try {
+                FileInputStream fis = new FileInputStream(serverFlagsFile);
+                String str = ScriptHelper.convertStreamToString(fis);
+                fis.close();
+                serverFlagMap = new MapTagFlagTracker(str, CoreUtilities.noDebugContext);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+        }
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
 
@@ -552,6 +553,25 @@ public class Denizen extends JavaPlugin {
         ScoreboardHelper._saveScoreboards();
         // Save maps to maps.yml
         DenizenMapManager.saveMaps();
+        // Save server flags
+        File serverFlagsFile = new File(getDataFolder(), "server_flags.dat");
+        try {
+            String flagData = serverFlagMap.toString();
+            Charset charset = ScriptHelper.encoding == null ? null : ScriptHelper.encoding.charset();
+            FileOutputStream fiout = new FileOutputStream(serverFlagsFile);
+            OutputStreamWriter writer;
+            if (charset == null) {
+                writer = new OutputStreamWriter(fiout);
+            }
+            else {
+                writer = new OutputStreamWriter(fiout, charset);
+            }
+            writer.write(flagData);
+            writer.close();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
         try {
             savesConfig.save(savesConfigFile);
         }
@@ -600,58 +620,5 @@ public class Denizen extends JavaPlugin {
             return true;
         }
         return false;
-    }
-
-    public FlagManager.Flag getFlag(String string) {
-        if (string.startsWith("fl")) {
-            FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
-            if (string.indexOf('[') == 2) {
-                int cb = string.indexOf(']');
-                if (cb > 4) {
-                    String owner = string.substring(3, cb);
-                    String flag = string.substring(cb + 2);
-                    if (PlayerTag.matches(owner)) {
-                        PlayerTag player = PlayerTag.valueOf(owner, CoreUtilities.basicContext);
-                        if (FlagManager.playerHasFlag(player, flag)) {
-                            return flag_manager.getPlayerFlag(player, flag);
-                        }
-                        else {
-                            Debug.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
-                        }
-                    }
-                    else if (Depends.citizens != null && NPCTag.matches(owner)) {
-                        NPCTag npc = NPCTag.valueOf(owner, CoreUtilities.basicContext);
-                        if (FlagManager.npcHasFlag(npc, flag)) {
-                            return flag_manager.getNPCFlag(npc.getId(), flag);
-                        }
-                        else {
-                            Debug.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
-                        }
-                    }
-                    else if (EntityTag.matches(owner)) {
-                        EntityTag entity = EntityTag.valueOf(owner, CoreUtilities.basicContext);
-                        if (FlagManager.entityHasFlag(entity, flag)) {
-                            return flag_manager.getEntityFlag(entity, flag);
-                        }
-                        else {
-                            Debug.echoError("Entity '" + owner + "' flag '" + flag + "' not found.");
-                        }
-                    }
-                }
-                else {
-                    Debug.echoError("Invalid dFlag format: " + string);
-                }
-            }
-            else if (string.indexOf('@') == 2) {
-                String flag = string.substring(3);
-                if (FlagManager.serverHasFlag(flag)) {
-                    return flag_manager.getGlobalFlag(flag);
-                }
-                else {
-                    Debug.echoError("Global flag '" + flag + "' not found.");
-                }
-            }
-        }
-        return null;
     }
 }

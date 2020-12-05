@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
@@ -66,7 +65,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class ServerTagBase {
 
@@ -461,69 +459,21 @@ public class ServerTagBase {
             return;
         }
 
-        // <--[tag]
-        // @attribute <server.has_flag[<flag_name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the server has the specified flag, otherwise returns false.
-        // -->
+        // Documented in AbstractFlagTracker
         if (attribute.startsWith("has_flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
-            }
-            else {
-                return;
-            }
-            event.setReplacedObject(new ElementTag(FlagManager.serverHasFlag(flag_name)).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doHasFlagTag(attribute));
             return;
         }
-
-        // <--[tag]
-        // @attribute <server.flag[<name>]>
-        // @returns Flag ListTag
-        // @description
-        // Returns the specified flag from the server.
-        // -->
-        if (attribute.startsWith("flag") && attribute.hasContext(1)) {
-            String flag_name = attribute.getContext(1);
-            attribute.fulfill(1);
-
-            // <--[tag]
-            // @attribute <server.flag[<flag_name>].is_expired>
-            // @returns ElementTag(Boolean)
-            // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
-            // -->
-            if (attribute.startsWith("is_expired")
-                    || attribute.startsWith("isexpired")) {
-                event.setReplacedObject(new ElementTag(!FlagManager.serverHasFlag(flag_name))
-                        .getObjectAttribute(attribute.fulfill(1)));
-                return;
-            }
-            if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
-                event.setReplacedObject(new ElementTag(0).getObjectAttribute(attribute.fulfill(1)));
-                return;
-            }
-            if (FlagManager.serverHasFlag(flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
-                        .getGlobalFlag(flag_name);
-
-                // <--[tag]
-                // @attribute <server.flag[<flag_name>].expiration>
-                // @returns DurationTag
-                // @description
-                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
-                // Works with offline players.
-                // -->
-                if (attribute.startsWith("expiration")) {
-                    event.setReplacedObject(flag.expiration().getObjectAttribute(attribute.fulfill(1)));
-                    return;
-                }
-
-                event.setReplacedObject(new ListTag(flag.toString(), true, flag.values())
-                        .getObjectAttribute(attribute));
-            }
+        if (attribute.startsWith("flag_expiration")) {
+            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doFlagExpirationTag(attribute));
+            return;
+        }
+        if (attribute.startsWith("flag")) {
+            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doFlagTag(attribute));
+            return;
+        }
+        if (attribute.startsWith("list_flags")) {
+            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doListFlagsTag(attribute));
             return;
         }
 
@@ -933,50 +883,6 @@ public class ServerTagBase {
         if (attribute.startsWith("structure_types") || attribute.startsWith("list_structure_types")) {
             listDeprecateWarn(attribute);
             event.setReplacedObject(new ListTag(StructureType.getStructureTypes().keySet()).getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.list_flags[(regex:)<search>]>
-        // @returns ListTag
-        // @description
-        // Returns a list of the server's flag names, with an optional search for names containing a certain pattern.
-        // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
-        // -->
-        if (attribute.startsWith("list_flags")) {
-            FlagManager.listFlagsTagWarning.warn(attribute.context);
-            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listGlobalFlags());
-            ListTag searchFlags = null;
-            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new ListTag();
-                String search = attribute.getContext(1);
-                if (search.startsWith("regex:")) {
-                    try {
-                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                        for (String flag : allFlags) {
-                            if (pattern.matcher(flag).matches()) {
-                                searchFlags.add(flag);
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                    }
-                }
-                else {
-                    search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags) {
-                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
-                            searchFlags.add(flag);
-                        }
-                    }
-                }
-                DenizenAPI.getCurrentInstance().flagManager().shrinkGlobalFlags(searchFlags);
-            }
-            else {
-                DenizenAPI.getCurrentInstance().flagManager().shrinkGlobalFlags(allFlags);
-            }
-            event.setReplacedObject(searchFlags == null ? allFlags.getObjectAttribute(attribute.fulfill(1))
-                    : searchFlags.getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -1608,7 +1514,6 @@ public class ServerTagBase {
                     matchPlayer = entry.getValue();
                 }
             }
-
             if (matchPlayer != null) {
                 event.setReplacedObject(new PlayerTag(matchPlayer).getObjectAttribute(attribute.fulfill(1)));
             }
