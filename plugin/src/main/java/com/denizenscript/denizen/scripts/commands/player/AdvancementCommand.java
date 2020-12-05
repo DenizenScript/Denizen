@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.player;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
@@ -202,14 +201,14 @@ public class AdvancementCommand extends AbstractCommand {
                     + frame.debug() + toast.debug() + announce.debug() + hidden.debug() + x.debug() + y.debug());
         }
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
-        NamespacedKey key = new NamespacedKey(DenizenAPI.getCurrentInstance(), id.asString());
+        NamespacedKey key = new NamespacedKey(Denizen.getInstance(), id.asString());
         if (delete == null && grant == null && revoke == null) {
             NamespacedKey parentKey = null;
             NamespacedKey backgroundKey = null;
             if (parent != null) {
                 List<String> split = CoreUtilities.split(parent.asString(), ':', 2);
                 if (split.size() == 1) {
-                    parentKey = new NamespacedKey(DenizenAPI.getCurrentInstance(), split.get(0));
+                    parentKey = new NamespacedKey(Denizen.getInstance(), split.get(0));
                 }
                 else {
                     parentKey = new NamespacedKey(CoreUtilities.toLowerCase(split.get(0)), CoreUtilities.toLowerCase(split.get(1)));

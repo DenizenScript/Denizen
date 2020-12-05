@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -65,7 +65,7 @@ public class WalkCommandCitizensEvents implements Listener {
             }
             tally.remove(new NPCTag(e.getNPC()));
             if (tally.isEmpty()) {
-                Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), () -> entry.setFinished(true), 1);
+                Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> entry.setFinished(true), 1);
                 WalkCommand.held.remove(i--);
             }
         }

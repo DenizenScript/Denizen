@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.midi.MidiUtil;
@@ -89,7 +88,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("file")) {
 
-                String path = DenizenAPI.getCurrentInstance().getDataFolder() +
+                String path = Denizen.getInstance().getDataFolder() +
                         File.separator + "midi" +
                         File.separator + arg.getValue();
                 if (!path.endsWith(".mid")) {

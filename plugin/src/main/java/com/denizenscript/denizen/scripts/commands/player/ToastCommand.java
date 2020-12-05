@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.player;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -131,7 +130,7 @@ public class ToastCommand extends AbstractCommand {
             backgroundKey = new NamespacedKey(background.asString().substring(0, index), background.asString().substring(index + 1));
         }
         final Advancement advancement = new Advancement(true,
-                new NamespacedKey(DenizenAPI.getCurrentInstance(), UUID.randomUUID().toString()), null,
+                new NamespacedKey(Denizen.getInstance(), UUID.randomUUID().toString()), null,
                 icon.getItemStack(), text.asString(), "", backgroundKey,
                 Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0);
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();

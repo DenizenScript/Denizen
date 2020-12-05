@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.events.server;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -139,7 +139,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         this.event = event;
         if (!Bukkit.isPrimaryThread()) {
             BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
-            Future future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), () -> {
+            Future future = Bukkit.getScheduler().callSyncMethod(Denizen.getInstance(), () -> {
                 altEvent.fire();
                 return null;
             });

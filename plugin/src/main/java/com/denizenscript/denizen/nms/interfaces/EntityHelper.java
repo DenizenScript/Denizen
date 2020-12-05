@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.nms.interfaces;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,7 +97,7 @@ public abstract class EntityHelper {
             for (UUID id : hiddenByDefaultPlayers) {
                 Entity pTarget = Bukkit.getEntity(id);
                 if (pTarget instanceof Player) {
-                    event.getPlayer().hidePlayer(DenizenAPI.getCurrentInstance(), (Player) pTarget);
+                    event.getPlayer().hidePlayer(Denizen.getInstance(), (Player) pTarget);
                 }
             }
             final Player pl = event.getPlayer();

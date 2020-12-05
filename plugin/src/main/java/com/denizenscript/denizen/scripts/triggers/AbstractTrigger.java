@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.scripts.triggers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -26,7 +26,7 @@ public abstract class AbstractTrigger {
     public AbstractTrigger as(String triggerName) {
         this.name = triggerName.toUpperCase();
         // Register command with Registry
-        DenizenAPI.getCurrentInstance().getTriggerRegistry().register(triggerName, this);
+        Denizen.getInstance().getTriggerRegistry().register(triggerName, this);
         onEnable();
         return this;
     }

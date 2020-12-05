@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.maps;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -74,39 +74,41 @@ public class DenizenMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
-        if (!DenizenAPI.getCurrentInstance().isEnabled()) {
-            // Special case for shutdown borko
-            return;
-        }
-        if (active) {
-            try {
-                while (mapCanvas.getCursors().size() > 0) {
-                    mapCanvas.getCursors().removeCursor(mapCanvas.getCursors().getCursor(0));
-                }
-                if (displayOriginal) {
-                    for (MapRenderer oldR : oldMapRenderers) {
-                        oldR.render(mapView, mapCanvas, player);
+        if (Denizen.getInstance().isEnabled()) {
+            if (active) {
+                try {
+                    while (mapCanvas.getCursors().size() > 0) {
+                        mapCanvas.getCursors().removeCursor(mapCanvas.getCursors().getCursor(0));
+                    }
+                    if (displayOriginal) {
+                        for (MapRenderer oldR : oldMapRenderers) {
+                            oldR.render(mapView, mapCanvas, player);
+                        }
+                    }
+                    UUID uuid = player.getUniqueId();
+                    PlayerTag p = PlayerTag.mirrorBukkitPlayer(player);
+                    for (MapObject object : mapObjects) {
+                        if (autoUpdate) {
+                            object.lastMap = mapView;
+                            object.update(p, uuid);
+                        }
+                        if (object.isVisibleTo(p, uuid)) {
+                            object.render(mapView, mapCanvas, p, uuid);
+                        }
                     }
                 }
-                UUID uuid = player.getUniqueId();
-                PlayerTag p = PlayerTag.mirrorBukkitPlayer(player);
-                for (MapObject object : mapObjects) {
-                    if (autoUpdate) {
-                        object.lastMap = mapView;
-                        object.update(p, uuid);
-                    }
-                    if (object.isVisibleTo(p, uuid)) {
-                        object.render(mapView, mapCanvas, p, uuid);
-                    }
+                catch (Exception e) {
+                    Debug.echoError(e);
+                    mapView.removeRenderer(this);
                 }
             }
-            catch (Exception e) {
-                Debug.echoError(e);
+            else {
                 mapView.removeRenderer(this);
             }
         }
         else {
-            mapView.removeRenderer(this);
+            // Special case for shutdown borko
+            return;
         }
     }
 

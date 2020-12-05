@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.item;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -27,7 +26,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         setName("displayitem");
         setSyntax("displayitem [<item>] [<location>] (duration:<value>)");
         setRequiredArguments(2, 3);
-        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         isProcedural = false;
     }
 
@@ -154,7 +153,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         scriptEntry.addObject("dropped", new EntityTag(dropped));
 
         // Remove it later
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                 new Runnable() {
                     @Override
                     public void run() {

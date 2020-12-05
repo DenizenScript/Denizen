@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.world.TimeChangeScriptEvent;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class BukkitWorldScriptHelper implements Listener {
 
     public BukkitWorldScriptHelper() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
     }
 
     /////////////////////
@@ -32,7 +32,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
     public void serverStartEvent() {
         long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(),
                 new Runnable() {
                     @Override
                     public void run() {
@@ -84,7 +84,7 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         final String message = ChatColor.DARK_GREEN + "CHAT: " + event.getPlayer().getName() + ": " + event.getMessage();
-        Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+        Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), new Runnable() {
             @Override
             public void run() {
                 // If currently recording debug information, add the chat message to debug output

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -35,8 +34,8 @@ public class ItemScriptHelper implements Listener {
     public static final Map<String, ItemScriptContainer> recipeIdToItemScript = new HashMap<>();
 
     public ItemScriptHelper() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(this, DenizenAPI.getCurrentInstance());
+        Denizen.getInstance().getServer().getPluginManager()
+                .registerEvents(this, Denizen.getInstance());
     }
 
     public static void removeDenizenRecipes() {

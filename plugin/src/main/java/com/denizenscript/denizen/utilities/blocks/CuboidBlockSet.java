@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.utilities.blocks;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -68,7 +68,7 @@ public class CuboidBlockSet implements BlockSet {
                 cancel();
 
             }
-        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
+        }.runTaskTimer(Denizen.getInstance(), 1, 1);
     }
 
     public FullBlockData[] blocks = null;
@@ -146,7 +146,7 @@ public class CuboidBlockSet implements BlockSet {
                 cancel();
 
             }
-        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
+        }.runTaskTimer(Denizen.getInstance(), 1, 1);
     }
 
     @Override

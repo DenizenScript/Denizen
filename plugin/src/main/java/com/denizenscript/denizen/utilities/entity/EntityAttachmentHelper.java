@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities.entity;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -67,7 +66,7 @@ public class EntityAttachmentHelper {
                         attached.teleport(goal);
                     }
                 }
-            }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
+            }.runTaskTimer(Denizen.getInstance(), 1, 1);
         }
 
         public void removeFrom(PlayerAttachMap map) {

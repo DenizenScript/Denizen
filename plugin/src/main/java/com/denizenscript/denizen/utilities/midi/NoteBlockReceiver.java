@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.utilities.midi;
 
+import com.denizenscript.denizen.Denizen;
 import com.google.common.collect.Maps;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.SoundHelper;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -149,7 +149,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
             return;
         }
         closing = true;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
             MidiUtil.receivers.remove(key);
             if (sequencer != null) {
                 sequencer.close();

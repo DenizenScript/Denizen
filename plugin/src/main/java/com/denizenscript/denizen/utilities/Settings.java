@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -12,7 +13,7 @@ import java.nio.charset.Charset;
 public class Settings {
 
     public static void refillCache() {
-        FileConfiguration config = DenizenAPI.getCurrentInstance().getConfig();
+        FileConfiguration config = Denizen.getInstance().getConfig();
         cache_showDebug = config.getBoolean("Debug.Show", true);
         com.denizenscript.denizen.utilities.debugging.Debug.showDebug = cache_showDebug;
         Debug.verbose = config.getBoolean("Debug.Verbose", false);
@@ -204,7 +205,7 @@ public class Settings {
      * Whether a certain trigger is enabled by default or not
     */
     public static boolean triggerEnabled(String triggerName) {
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getBoolean("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Enabled", true);
     }
@@ -214,7 +215,7 @@ public class Settings {
      * triggered. Not all triggers may use this, it is optional!
     */
     public static double triggerDefaultCooldown(String triggerName) {
-        return DurationTag.valueOf(DenizenAPI.getCurrentInstance().getConfig()
+        return DurationTag.valueOf(Denizen.getInstance().getConfig()
                 .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown", "5s"), CoreUtilities.basicContext).getSeconds();
     }
@@ -226,7 +227,7 @@ public class Settings {
     */
 
     public static double triggerDefaultRange(String triggerName) {
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getDouble("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Range", -1);
     }
@@ -237,7 +238,7 @@ public class Settings {
     */
 
     public static String triggerDefaultCooldownType(String triggerName) {
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown Type", "Player");
     }
@@ -271,22 +272,22 @@ public class Settings {
         // Generally, be aware that if you are not completely clear on exactly how these settings work internally in Java,
         // and what changing them can do, ... you just should not use them.
         // This is for very highly experienced users only.
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getBoolean("Commands.General.Allow unrestricted file access", false);
     }
 
     public static boolean allowStupid2() {
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getBoolean("Commands.General.Confirm allowing unrestricted file access", false);
     }
 
     public static boolean allowStupid3() {
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getBoolean("Commands.General.Unrestricted file access is very bad and dangerous are you sure you want that", false);
     }
 
     public static boolean allowStupidx() {
-        return DenizenAPI.getCurrentInstance().getConfig()
+        return Denizen.getInstance().getConfig()
                 .getBoolean("Commands.General.Don't change this unrestricted file access option though", false);
     }
 

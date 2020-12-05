@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.scripts.triggers.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
@@ -90,7 +90,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
     @Override
     public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
     }
 
     // Technically defined in TriggerTrait, but placing here instead.
@@ -399,7 +399,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
         });
 
-        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
+        Bukkit.getScheduler().runTask(Denizen.getInstance(), futureTask);
 
         try {
             ChatContext context = futureTask.get();

@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.utilities.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import org.bukkit.entity.Entity;
@@ -105,7 +105,7 @@ public class FakeEntity {
                     currentTask = null;
                     cancelEntity();
                 }
-            }.runTaskLater(DenizenAPI.getCurrentInstance(), duration.getTicks());
+            }.runTaskLater(Denizen.getInstance(), duration.getTicks());
         }
     }
 }

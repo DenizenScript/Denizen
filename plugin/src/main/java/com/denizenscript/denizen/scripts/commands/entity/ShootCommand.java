@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Conversion;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.entity.Velocity;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -42,7 +42,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         setName("shoot");
         setSyntax("shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)");
         setRequiredArguments(1, 11);
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
         isProcedural = false;
     }
 
@@ -366,7 +366,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
         };
         if (script != null || !scriptEntry.shouldWaitFor()) {
-            task.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 2);
+            task.runTaskTimer(Denizen.getInstance(), 1, 2);
         }
     }
 

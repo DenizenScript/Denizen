@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.DataPersistenceHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -21,8 +21,8 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 public class EntityScriptHelper implements Listener {
 
     public EntityScriptHelper() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(this, DenizenAPI.getCurrentInstance());
+        Denizen.getInstance().getServer().getPluginManager()
+                .registerEvents(this, Denizen.getInstance());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

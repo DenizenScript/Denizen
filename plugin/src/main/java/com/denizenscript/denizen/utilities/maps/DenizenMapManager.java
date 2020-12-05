@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.maps;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.NaturalOrderComparator;
@@ -24,9 +24,9 @@ public class DenizenMapManager {
 
     private final static Map<Integer, DenizenMapRenderer> mapRenderers = new HashMap<>();
     private final static Map<String, String> downloadedByUrl = new HashMap<>();
-    private final static File imagesFolder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "images");
+    private final static File imagesFolder = new File(Denizen.getInstance().getDataFolder(), "images");
     private final static File imageDownloads = new File(imagesFolder, "downloaded");
-    private final static File mapsFile = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "maps.yml");
+    private final static File mapsFile = new File(Denizen.getInstance().getDataFolder(), "maps.yml");
 
     private static int downloadCount = (imageDownloads.exists() ? imageDownloads.listFiles().length : 0) + 1;
 

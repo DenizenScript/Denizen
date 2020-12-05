@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -49,7 +49,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         }, "schematic");
         schematics = new HashMap<>();
         noPhys = false;
-        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         isProcedural = false;
     }
 
@@ -305,7 +305,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             scriptEntry.setFinished(true);
                         };
                         if (delayed != null && delayed.asBoolean()) {
-                            Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), storeSchem);
+                            Bukkit.getScheduler().runTask(Denizen.getInstance(), storeSchem);
                         }
                         else {
                             storeSchem.run();
@@ -317,7 +317,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             Debug.echoError(scriptEntry.getResidingQueue(), ex);
                         };
                         if (delayed != null && delayed.asBoolean()) {
-                            Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), showError);
+                            Bukkit.getScheduler().runTask(Denizen.getInstance(), showError);
                         }
                         else {
                             showError.run();
@@ -327,7 +327,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                 };
                 if (delayed != null && delayed.asBoolean()) {
-                    Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), loadRunnable);
+                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), loadRunnable);
                 }
                 else {
                     loadRunnable.run();
@@ -368,10 +368,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         ang -= 90;
                         schematics.get(name.asString().toUpperCase()).rotateOne();
                     }
-                    Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> scriptEntry.setFinished(true));
+                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> scriptEntry.setFinished(true));
                 };
                 if (delayed != null && delayed.asBoolean()) {
-                    Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), rotateRunnable);
+                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), rotateRunnable);
                 }
                 else {
                     scriptEntry.setFinished(true);
@@ -477,10 +477,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         SpongeSchematicHelper.saveToSpongeStream(set, fs);
                         fs.flush();
                         fs.close();
-                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> scriptEntry.setFinished(true));
+                        Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> scriptEntry.setFinished(true));
                     }
                     catch (Exception ex) {
-                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), () -> {
+                        Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                             Debug.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + fname + ".");
                             Debug.echoError(scriptEntry.getResidingQueue(), ex);
                         });
@@ -489,7 +489,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                 };
                 if (delayed != null && delayed.asBoolean()) {
-                    Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), saveRunnable);
+                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), saveRunnable);
                 }
                 else {
                     scriptEntry.setFinished(true);

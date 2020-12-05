@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -141,7 +141,7 @@ public class HealthTrait extends Trait implements Listener {
         dying = false;
         setHealth();
 
-        void_watcher_task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        void_watcher_task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
             @Override
             public void run() {
                 if (!npc.isSpawned()) {
@@ -290,7 +290,7 @@ public class HealthTrait extends Trait implements Listener {
         //die();
 
         if (respawn && (getRespawnDelay().getTicks() > 0)) {
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                     new Runnable() {
                         public void run() {
                             if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) {

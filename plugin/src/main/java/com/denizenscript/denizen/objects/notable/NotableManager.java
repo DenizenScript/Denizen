@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.notable;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -110,9 +110,9 @@ public class NotableManager {
         typeTracker.clear();
         reverseObjects.clear();
         // Find each type of notable
-        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
+        for (String key : Denizen.getInstance().notableManager().getNotables().getKeys(false)) {
             Class<? extends ObjectTag> clazz = reverse_objects.get(key);
-            ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables().getConfigurationSection(key);
+            ConfigurationSection section = Denizen.getInstance().notableManager().getNotables().getConfigurationSection(key);
             if (section == null) {
                 continue;
             }
@@ -133,7 +133,7 @@ public class NotableManager {
      * Called on by '/denizen save'.
      */
     private static void _saveNotables() {
-        FileConfiguration notables = DenizenAPI.getCurrentInstance().notableManager().getNotables();
+        FileConfiguration notables = Denizen.getInstance().notableManager().getNotables();
         for (String key : notables.getKeys(false)) {
             notables.set(key, null);
         }
@@ -167,7 +167,7 @@ public class NotableManager {
      */
     public void reloadNotables() {
         if (notablesFile == null) {
-            notablesFile = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "notables.yml");
+            notablesFile = new File(Denizen.getInstance().getDataFolder(), "notables.yml");
         }
         notablesSave = YamlConfiguration.loadConfiguration(notablesFile);
         // Reload notables from notables.yml

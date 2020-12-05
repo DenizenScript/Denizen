@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
@@ -43,9 +43,9 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         setName("modifyblock");
         setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>)");
         setRequiredArguments(2, 7);
-        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
             @Override
             public void run() {
                 tick++;
@@ -285,7 +285,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                         cancel();
                     }
                 }
-            }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
+            }.runTaskTimer(Denizen.getInstance(), 1, 1);
         }
         else {
             LocationTag loc;

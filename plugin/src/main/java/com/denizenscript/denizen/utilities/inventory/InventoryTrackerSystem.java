@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities.inventory;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -56,7 +56,7 @@ public class InventoryTrackerSystem implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerCloseInventory(InventoryCloseEvent event) {
         Inventory inv = event.getInventory();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
             @Override
             public void run() {
                 if (inv.getViewers().isEmpty()) {
@@ -90,7 +90,7 @@ public class InventoryTrackerSystem implements Listener {
     }
 
     public static void setup() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
             @Override
             public void run() {
                 if (idTrackedInventories.size() > 300) {
@@ -106,6 +106,6 @@ public class InventoryTrackerSystem implements Listener {
                 InventoryTrackerSystem.temporaryInventoryLinks.clear();
             }
         }, 20, 20);
-        Bukkit.getPluginManager().registerEvents(new InventoryTrackerSystem(), DenizenAPI.getCurrentInstance());
+        Bukkit.getPluginManager().registerEvents(new InventoryTrackerSystem(), Denizen.getInstance());
     }
 }

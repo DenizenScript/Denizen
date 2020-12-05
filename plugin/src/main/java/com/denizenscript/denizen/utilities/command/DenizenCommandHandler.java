@@ -2,7 +2,6 @@ package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.command.manager.Command;
 import com.denizenscript.denizen.utilities.command.manager.CommandContext;
 import com.denizenscript.denizen.utilities.command.manager.Paginator;
@@ -266,7 +265,7 @@ public class DenizenCommandHandler {
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
 
-        DenizenAPI.getCurrentInstance().saveSaves();
+        Denizen.getInstance().saveSaves();
 
         Messaging.send(sender, "Denizen/saves.yml saved to disk from memory.");
     }

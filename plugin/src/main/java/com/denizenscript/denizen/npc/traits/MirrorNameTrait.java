@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -27,11 +27,11 @@ public class MirrorNameTrait extends Trait {
         if (!npc.isSpawned() || npc.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
             if (npc.isSpawned()) {
                 Location loc = npc.getEntity().getLocation();
                 npc.despawn(DespawnReason.PENDING_RESPAWN);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
                     npc.spawn(loc);
                 });
             }

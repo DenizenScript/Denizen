@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -50,7 +51,7 @@ public class ScoreboardHelper {
         scoreboardMap.clear();
         viewerMap.clear();
 
-        ConfigurationSection rootSection = DenizenAPI.getCurrentInstance()
+        ConfigurationSection rootSection = Denizen.getInstance()
                 .getScoreboards().getConfigurationSection("Scoreboards");
 
         // Go no further if we have no scoreboards saved
@@ -134,7 +135,7 @@ public class ScoreboardHelper {
 
         try {
             // Clear scoreboards.yml
-            DenizenAPI.getCurrentInstance().getScoreboards()
+            Denizen.getInstance().getScoreboards()
                     .set("Scoreboards", null);
 
             // Iterate through scoreboards map
@@ -152,7 +153,7 @@ public class ScoreboardHelper {
                 }
 
                 // Save viewer list
-                DenizenAPI.getCurrentInstance().getScoreboards()
+                Denizen.getInstance().getScoreboards()
                         .set("Scoreboards." + id + ".Viewers", viewerList);
 
                 // Iterate through objectives
@@ -161,7 +162,7 @@ public class ScoreboardHelper {
                             + obj.getName();
 
                     // Save criteria for this objective
-                    DenizenAPI.getCurrentInstance().getScoreboards()
+                    Denizen.getInstance().getScoreboards()
                             .set(objPath + ".Criteria", obj.getCriteria());
 
                     String displaySlot;
@@ -174,7 +175,7 @@ public class ScoreboardHelper {
                         displaySlot = "NONE";
                     }
 
-                    DenizenAPI.getCurrentInstance().getScoreboards()
+                    Denizen.getInstance().getScoreboards()
                             .set(objPath + ".Display slot", displaySlot);
 
                     // There is no method for getting an objective's
@@ -192,7 +193,7 @@ public class ScoreboardHelper {
                         // getScore() will return 0, so ignore scores
                         // of 0
                         if (score != 0) {
-                            DenizenAPI.getCurrentInstance().getScoreboards()
+                            Denizen.getInstance().getScoreboards()
                                     .set(objPath + ".Scores." + player, score);
                         }
                     }

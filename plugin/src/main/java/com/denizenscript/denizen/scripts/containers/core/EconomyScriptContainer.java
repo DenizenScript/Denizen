@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -346,7 +345,7 @@ public class EconomyScriptContainer extends ScriptContainer {
     public DenizenEconomyProvider register() {
         DenizenEconomyProvider provider = new DenizenEconomyProvider();
         provider.backingScript = this;
-        Bukkit.getServer().getServicesManager().register(Economy.class, provider, DenizenAPI.getCurrentInstance(), getPriority());
+        Bukkit.getServer().getServicesManager().register(Economy.class, provider, Denizen.getInstance(), getPriority());
         return provider;
     }
 

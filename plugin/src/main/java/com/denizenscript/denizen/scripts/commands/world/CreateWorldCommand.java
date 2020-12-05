@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -207,12 +206,12 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             scriptEntry.setFinished(true);
         };
         if (scriptEntry.shouldWaitFor() && copy_from != null) {
-            Bukkit.getScheduler().runTaskAsynchronously(DenizenAPI.getCurrentInstance(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), () -> {
                 if (!copyRunnable.get()) {
                     scriptEntry.setFinished(true);
                     return;
                 }
-                Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), createRunnable);
+                Bukkit.getScheduler().runTask(Denizen.getInstance(), createRunnable);
             });
         }
         else {

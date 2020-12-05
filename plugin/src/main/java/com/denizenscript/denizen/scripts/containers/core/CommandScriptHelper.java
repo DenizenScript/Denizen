@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenAliasHelpTopic;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommand;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommandHelpTopic;
@@ -37,7 +36,7 @@ public class CommandScriptHelper implements Listener {
         try {
             Server server = Bukkit.getServer();
 
-            server.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+            server.getPluginManager().registerEvents(this, Denizen.getInstance());
 
             // Get the CommandMap for the server
             Field commandMapField = server.getClass().getDeclaredField("commandMap");
@@ -81,7 +80,7 @@ public class CommandScriptHelper implements Listener {
                         knownCommands.put("help", knownCommands.get("bukkit:help"));
                         helpTopics.put("/help", helpTopics.get("/bukkit:help"));
                     }
-                }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+                }.runTaskLater(Denizen.getInstance(), 1);
             }
         }
         catch (Exception e) {
@@ -171,7 +170,7 @@ public class CommandScriptHelper implements Listener {
                     continue;
                 }
                 forceCommand(alias, command, new DenizenAliasHelpTopic("/" + alias, name,
-                        DenizenAPI.getCurrentInstance().getServer().getHelpMap()));
+                        Denizen.getInstance().getServer().getHelpMap()));
             }
         }
     }

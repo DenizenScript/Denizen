@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.utilities.command;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -244,7 +244,7 @@ public class NPCCommandHandler {
                 triggerName = args.getJoinedStrings(1);
             }
             // Check to make sure trigger exists
-            if (DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName) == null) {
+            if (Denizen.getInstance().getTriggerRegistry().get(triggerName) == null) {
                 Messaging.sendError(sender, "'" + triggerName.toUpperCase() + "' trigger does not exist.");
                 Messaging.send(sender, "<f>Usage: /npc trigger [trigger_name] [(--cooldown #)|(--radius #)|(-t)]");
                 Messaging.send(sender, "");

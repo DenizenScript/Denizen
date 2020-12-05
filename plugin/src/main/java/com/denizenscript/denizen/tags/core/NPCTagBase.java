@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.tags.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -38,7 +38,7 @@ public class NPCTagBase implements Listener {
         // If no input value is specified, returns the linked NPC.
         // -->
         if (Depends.citizens != null) {
-            Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+            Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
             TagManager.registerTagHandler("npc", (attribute) -> {
                 if (!attribute.hasContext(1)) {
                     NPCTag npc = ((BukkitTagContext) attribute.context).npc;

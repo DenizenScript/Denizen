@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -136,7 +136,7 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
     public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
         if (!Bukkit.isPrimaryThread()) {
             PlayerPreLoginScriptEvent altEvent = (PlayerPreLoginScriptEvent) clone();
-            Future future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), () -> {
+            Future future = Bukkit.getScheduler().callSyncMethod(Denizen.getInstance(), () -> {
                 altEvent.onPlayerLogin(event);
                 return null;
             });

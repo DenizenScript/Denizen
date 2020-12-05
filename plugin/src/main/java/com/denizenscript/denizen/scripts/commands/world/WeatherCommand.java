@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.WorldTag;
@@ -169,7 +168,7 @@ public class WeatherCommand extends AbstractCommand {
                 player.resetPlayerWeather();
             }
             if (resetAfter != null) {
-                int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
                     @Override
                     public void run() {
                         player.resetPlayerWeather();

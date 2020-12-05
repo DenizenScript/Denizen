@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -25,7 +25,7 @@ public class PlayerTagBase implements Listener {
         // Refer to <@link language PlayerTag objects>.
         // If no input value is specified, returns the linked player.
         // -->
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
         TagManager.registerTagHandler("player", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 PlayerTag player = ((BukkitTagContext) attribute.context).player;
@@ -51,7 +51,7 @@ public class PlayerTagBase implements Listener {
     public void addMessage(final AsyncPlayerChatEvent event) {
         final int maxSize = Settings.chatHistoryMaxMessages();
         if (maxSize > 0) {
-            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+            Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     List<String> history = playerChatHistory.get(event.getPlayer().getUniqueId());

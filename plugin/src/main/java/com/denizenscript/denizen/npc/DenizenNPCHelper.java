@@ -5,7 +5,6 @@ import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.npc.actions.ActionHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -29,7 +28,7 @@ import java.util.*;
 public class DenizenNPCHelper implements Listener {
 
     public static DenizenNPCHelper getCurrentInstance() {
-        return DenizenAPI.getCurrentInstance().getNPCHelper();
+        return Denizen.getInstance().getNPCHelper();
     }
 
     private Denizen plugin;

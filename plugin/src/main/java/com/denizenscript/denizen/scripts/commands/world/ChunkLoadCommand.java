@@ -1,6 +1,4 @@
 package com.denizenscript.denizen.scripts.commands.world;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.Denizen;
@@ -31,7 +29,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         setName("chunkload");
         setSyntax("chunkload ({add}/remove/removeall) [<chunk>|...] (duration:<value>)");
         setRequiredArguments(1, 3);
-        Denizen denizen = DenizenAPI.getCurrentInstance();
+        Denizen denizen = Denizen.getInstance();
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
         if (Depends.citizens != null) {
             denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
@@ -157,7 +155,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     }
                     chunk.setForceLoaded(true);
                     if (length.getSeconds() > 0) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
                             @Override
                             public void run() {
                                 if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {

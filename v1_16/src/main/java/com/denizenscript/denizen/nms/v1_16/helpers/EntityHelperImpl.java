@@ -7,7 +7,6 @@ import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.server.v1_16_R3.*;
@@ -417,7 +416,7 @@ public class EntityHelperImpl extends EntityHelper {
     public void sendHidePacket(Player pl, Entity entity) {
         if (entity instanceof Player) {
             ensurePlayerHiding();
-            pl.hidePlayer(DenizenAPI.getCurrentInstance(), (Player) entity);
+            pl.hidePlayer(Denizen.getInstance(), (Player) entity);
             return;
         }
         CraftPlayer craftPlayer = (CraftPlayer) pl;
@@ -438,7 +437,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void sendShowPacket(Player pl, Entity entity) {
         if (entity instanceof Player) {
-            pl.showPlayer(DenizenAPI.getCurrentInstance(), (Player) entity);
+            pl.showPlayer(Denizen.getInstance(), (Player) entity);
             return;
         }
         CraftPlayer craftPlayer = (CraftPlayer) pl;

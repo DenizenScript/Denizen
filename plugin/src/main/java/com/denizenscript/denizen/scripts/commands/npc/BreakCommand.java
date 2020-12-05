@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.npc;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -147,7 +146,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
         BlockBreaker breaker = npc.getCitizen().getBlockBreaker(location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);
-            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), run, 0, 1);
+            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), run, 0, 1);
         }
         else {
             se.setFinished(true);

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities.depends;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.citizensnpcs.Citizens;
@@ -31,14 +30,14 @@ public class Depends {
     }
 
     public static void setupBungee() {
-        Bukkit.getMessenger().registerOutgoingPluginChannel(DenizenAPI.getCurrentInstance(), "BungeeCord");
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Denizen.getInstance(), "BungeeCord");
     }
 
     public static void bungeeSendPlayer(Player player, String server) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
         out.writeUTF(server);
-        player.sendPluginMessage(DenizenAPI.getCurrentInstance(), "BungeeCord", out.toByteArray());
+        player.sendPluginMessage(Denizen.getInstance(), "BungeeCord", out.toByteArray());
     }
 
     public static boolean setupEconomy() {

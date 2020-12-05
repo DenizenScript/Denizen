@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities.packets;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,8 +20,8 @@ import java.util.UUID;
 public class ItemChangeMessage implements Listener {
 
     static {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new ItemChangeMessage(),
-                DenizenAPI.getCurrentInstance());
+        Denizen.getInstance().getServer().getPluginManager().registerEvents(new ItemChangeMessage(),
+                Denizen.getInstance());
     }
 
     private static final Map<UUID, Integer> slotChanged = new HashMap<>();

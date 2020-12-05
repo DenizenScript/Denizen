@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Conversion;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
@@ -245,6 +245,6 @@ public class FlyCommand extends AbstractCommand {
                 }
             }
         };
-        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 3);
+        task.runTaskTimer(Denizen.getInstance(), 0, 3);
     }
 }

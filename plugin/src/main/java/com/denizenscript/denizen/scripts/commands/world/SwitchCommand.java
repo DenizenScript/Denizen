@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
@@ -130,7 +129,7 @@ public class SwitchCommand extends AbstractCommand {
                 }
                 Debug.echoDebug(scriptEntry, "Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
-                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                         new Runnable() {
                             public void run() {
                                 switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, player);

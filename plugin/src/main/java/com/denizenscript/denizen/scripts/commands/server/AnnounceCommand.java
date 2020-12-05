@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -136,7 +136,7 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
-            DenizenAPI.getCurrentInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message));
+            Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message));
         }
         else if (type == AnnounceType.TO_OPS) {
             for (Player player : Bukkit.getOnlinePlayers()) {

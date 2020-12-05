@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.server;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommandSender;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -214,7 +213,7 @@ public class ExecuteCommand extends AbstractCommand {
                 dcs.silent = silent.asBoolean();
                 ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
                 Bukkit.getPluginManager().callEvent(sce);
-                DenizenAPI.getCurrentInstance().getServer().dispatchCommand(dcs, sce.getCommand());
+                Denizen.getInstance().getServer().dispatchCommand(dcs, sce.getCommand());
                 scriptEntry.addObject("output", new ListTag(dcs.getOutput()));
                 break;
         }

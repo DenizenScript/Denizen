@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
@@ -197,7 +197,7 @@ public class SittingTrait extends Trait implements Listener {
     public void arrowDismount(final VehicleExitEvent event) {
         // TODO: Move elsewhere so not multi-firing?
         if (event.getVehicle() instanceof FakeArrow) {
-            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+            Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     if (event.getVehicle().isValid()) {

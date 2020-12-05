@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities.debugging;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -17,7 +16,7 @@ public class StatsRecord extends Thread {
         BufferedReader in = null;
         try {
             // Open a connection to the stats server
-            URL url = new URL("http://neo.mcmonkey.org/plugins/public_stats?plugin=Denizen&version=" + URLEncoder.encode(DenizenAPI.getCurrentInstance().coreImplementation.getImplementationVersion()));
+            URL url = new URL("http://neo.mcmonkey.org/plugins/public_stats?plugin=Denizen&version=" + URLEncoder.encode(Denizen.getInstance().coreImplementation.getImplementationVersion()));
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setDoInput(true);
             uc.setDoOutput(true);

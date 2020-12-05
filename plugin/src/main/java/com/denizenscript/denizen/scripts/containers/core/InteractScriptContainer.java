@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -169,7 +168,7 @@ public class InteractScriptContainer extends ScriptContainer {
      * @return true if the trigger is present in the step, false otherwise
      */
     public boolean containsTriggerInStep(String step, Class<? extends AbstractTrigger> trigger) {
-        String triggerName = DenizenAPI.getCurrentInstance().getTriggerRegistry().get(trigger).getName();
+        String triggerName = Denizen.getInstance().getTriggerRegistry().get(trigger).getName();
         return contains("steps." + step + "." + triggerName + " trigger");
     }
 
@@ -213,7 +212,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
     public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger, PlayerTag player, NPCTag npc, String id, boolean quiet) {
         // Get the trigger name
-        String triggerName = DenizenAPI.getCurrentInstance().getTriggerRegistry().get(trigger).getName();
+        String triggerName = Denizen.getInstance().getTriggerRegistry().get(trigger).getName();
         // Check for entries
         String key = "steps." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                 + triggerName + " trigger." + (id == null ? "script" : id + ".script");
@@ -264,7 +263,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
     public Map<String, String> getIdMapFor(Class<? extends AbstractTrigger> trigger, PlayerTag player) {
         // Get the trigger name
-        String triggerName = DenizenAPI.getCurrentInstance().getTriggerRegistry().get(trigger).getName();
+        String triggerName = Denizen.getInstance().getTriggerRegistry().get(trigger).getName();
         // Get the step
         String step = InteractScriptHelper.getCurrentStep(player, getName());
         // Check for entries
@@ -294,7 +293,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
     public String getTriggerOptionFor(Class<? extends AbstractTrigger> trigger, PlayerTag player, String id, String option) {
         // Get the trigger name
-        String triggerName = DenizenAPI.getCurrentInstance().getTriggerRegistry().get(trigger).getName();
+        String triggerName = Denizen.getInstance().getTriggerRegistry().get(trigger).getName();
         // Get the step
         String step = InteractScriptHelper.getCurrentStep(player, getName());
         return getString("steps." + step + "." + triggerName + " trigger"
@@ -303,7 +302,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
     public boolean hasTriggerOptionFor(Class<? extends AbstractTrigger> trigger, PlayerTag player, String id, String option) {
         // Get the trigger name
-        String triggerName = DenizenAPI.getCurrentInstance().getTriggerRegistry().get(trigger).getName();
+        String triggerName = Denizen.getInstance().getTriggerRegistry().get(trigger).getName();
         // Get the step
         String step = InteractScriptHelper.getCurrentStep(player, getName());
         return contains("steps." + step + "." + triggerName + " trigger" + (id == null ? "" : "." + id) + "." + option);

@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.Conversion;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -114,7 +114,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
                 event.setConsumeItem(false);
                 if (entity.isPlayer()) {
                     final Player p = entity.getPlayer();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
                         @Override
                         public void run() {
                             p.updateInventory();
@@ -180,7 +180,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     public void cancellationChanged() {
         if (cancelled && entity.isPlayer()) {
             final Player p = entity.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     p.updateInventory();

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.npc.traits;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
@@ -32,11 +31,11 @@ public class MirrorTrait extends Trait {
     }
 
     public void respawn() {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
             if (npc.isSpawned()) {
                 Location loc = npc.getEntity().getLocation();
                 npc.despawn(DespawnReason.PENDING_RESPAWN);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
                     npc.spawn(loc);
                 });
             }

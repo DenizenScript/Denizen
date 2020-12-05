@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.entity;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -141,7 +140,7 @@ public class LookCommand extends AbstractCommand {
                         }
                     }
                 };
-                BukkitTask newTask = task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
+                BukkitTask newTask = task.runTaskTimer(Denizen.getInstance(), 0, 2);
                 lookTasks.put(entity.getUUID(), newTask);
             }
         }

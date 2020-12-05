@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -39,16 +40,16 @@ public class DataPersistenceHelper {
     public static final DenizenObjectType PERSISTER_TYPE = new DenizenObjectType();
 
     public static void setDenizenKey(PersistentDataHolder holder, String keyName, ObjectTag keyValue) {
-        holder.getPersistentDataContainer().set(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE, keyValue);
+        holder.getPersistentDataContainer().set(new NamespacedKey(Denizen.getInstance(), keyName), PERSISTER_TYPE, keyValue);
     }
 
     public static boolean hasDenizenKey(PersistentDataHolder holder, String keyName) {
-        return holder.getPersistentDataContainer().has(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE);
+        return holder.getPersistentDataContainer().has(new NamespacedKey(Denizen.getInstance(), keyName), PERSISTER_TYPE);
     }
 
     public static ObjectTag getDenizenKey(PersistentDataHolder holder, String keyName) {
         try {
-            return holder.getPersistentDataContainer().get(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE);
+            return holder.getPersistentDataContainer().get(new NamespacedKey(Denizen.getInstance(), keyName), PERSISTER_TYPE);
         }
         catch (NullPointerException ex) {
             return null;

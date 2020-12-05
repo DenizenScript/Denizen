@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -300,7 +300,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 public void run() {
                     altEvent.fire();
                 }
-            }.runTask(DenizenAPI.getCurrentInstance());
+            }.runTask(Denizen.getInstance());
             return;
         }
         super.fire();
@@ -386,7 +386,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (registeredHandlers == null) {
             registeredHandlers = new ArrayList<>();
         }
-        Plugin plugin = DenizenAPI.getCurrentInstance();
+        Plugin plugin = Denizen.getInstance();
         for (Map.Entry<Class<? extends Event>, Set<RegisteredListener>> entry :
                 plugin.getPluginLoader().createRegisteredListeners(listener, plugin).entrySet()) {
             for (RegisteredListener registeredListener : entry.getValue()) {

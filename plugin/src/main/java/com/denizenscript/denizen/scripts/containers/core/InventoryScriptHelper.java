@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
@@ -20,7 +19,7 @@ public class InventoryScriptHelper implements Listener {
     public static Map<Inventory, InventoryTag> notedInventories = new HashMap<>();
 
     public InventoryScriptHelper() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
     }
 
     public static void _savePlayerInventories() {

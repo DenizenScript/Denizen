@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -118,7 +118,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     public void cancellationChanged() {
         if (cancelled) {
             final Player p = event.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     p.updateInventory();

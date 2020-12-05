@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -461,19 +460,19 @@ public class ServerTagBase {
 
         // Documented in AbstractFlagTracker
         if (attribute.startsWith("has_flag")) {
-            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doHasFlagTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doHasFlagTag(attribute));
             return;
         }
         if (attribute.startsWith("flag_expiration")) {
-            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doFlagExpirationTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute));
             return;
         }
         if (attribute.startsWith("flag")) {
-            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doFlagTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagTag(attribute));
             return;
         }
         if (attribute.startsWith("list_flags")) {
-            event.setReplacedObject(DenizenAPI.getCurrentInstance().serverFlagMap.doListFlagsTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doListFlagsTag(attribute));
             return;
         }
 
@@ -993,7 +992,7 @@ public class ServerTagBase {
         // This may be limited below the actual drive capacity by operating system settings.
         // -->
         if (attribute.startsWith("disk_free")) {
-            File folder = DenizenAPI.getCurrentInstance().getDataFolder();
+            File folder = Denizen.getInstance().getDataFolder();
             event.setReplacedObject(new ElementTag(folder.getUsableSpace())
                     .getObjectAttribute(attribute.fulfill(1)));
         }
@@ -1006,7 +1005,7 @@ public class ServerTagBase {
         // This counts only the drive the server folder is on, not any other drives.
         // -->
         if (attribute.startsWith("disk_total")) {
-            File folder = DenizenAPI.getCurrentInstance().getDataFolder();
+            File folder = Denizen.getInstance().getDataFolder();
             event.setReplacedObject(new ElementTag(folder.getTotalSpace())
                     .getObjectAttribute(attribute.fulfill(1)));
         }
@@ -1021,7 +1020,7 @@ public class ServerTagBase {
         // as this tag will not include space "used" by operating system settings that simply deny the server write access.
         // -->
         if (attribute.startsWith("disk_usage")) {
-            File folder = DenizenAPI.getCurrentInstance().getDataFolder();
+            File folder = Denizen.getInstance().getDataFolder();
             event.setReplacedObject(new ElementTag(folder.getTotalSpace() - folder.getFreeSpace())
                     .getObjectAttribute(attribute.fulfill(1)));
         }
@@ -1181,7 +1180,7 @@ public class ServerTagBase {
         // Returns true if the specified file exists. The starting path is /plugins/Denizen.
         // -->
         if (attribute.startsWith("has_file") && attribute.hasContext(1)) {
-            File f = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
+            File f = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(f)) {
                     attribute.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
@@ -1203,7 +1202,7 @@ public class ServerTagBase {
         // Returns a list of all files in the specified directory. The starting path is /plugins/Denizen.
         // -->
         if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
-            File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
+            File folder = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(folder)) {
                     attribute.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
@@ -1263,7 +1262,7 @@ public class ServerTagBase {
         // Returns the version of Denizen currently being used.
         // -->
         if (attribute.startsWith("denizen_version")) {
-            event.setReplacedObject(new ElementTag(DenizenAPI.getCurrentInstance().getDescription().getVersion())
+            event.setReplacedObject(new ElementTag(Denizen.getInstance().getDescription().getVersion())
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -2046,7 +2045,7 @@ public class ServerTagBase {
             else {
                 ScriptEvent scriptEvent = ScriptEvent.eventLookup.get(CoreUtilities.toLowerCase(eventName));
                 if (scriptEvent instanceof Listener) {
-                    Plugin plugin = DenizenAPI.getCurrentInstance();
+                    Plugin plugin = Denizen.getInstance();
                     for (Class eventClass : plugin.getPluginLoader()
                             .createRegisteredListeners((Listener) scriptEvent, plugin).keySet()) {
                         ListTag result = getHandlerPluginList(eventClass);
@@ -2103,7 +2102,7 @@ public class ServerTagBase {
                 Debug.echoError("File deletion disabled by administrator.");
                 return;
             }
-            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), mechanism.getValue().asString());
+            File file = new File(Denizen.getInstance().getDataFolder(), mechanism.getValue().asString());
             if (!Utilities.canWriteToFile(file)) {
                 Debug.echoError("Cannot delete that file (unsafe path).");
                 return;
@@ -2160,7 +2159,7 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("reset_recipes")) {
             Bukkit.resetRecipes();
-            DenizenAPI.getCurrentInstance().itemScriptHelper.rebuildRecipes();
+            Denizen.getInstance().itemScriptHelper.rebuildRecipes();
         }
 
         // <--[mechanism]
@@ -2220,7 +2219,7 @@ public class ServerTagBase {
         // Immediately saves the Denizen saves files.
         // -->
         if (mechanism.matches("save")) {
-            DenizenAPI.getCurrentInstance().saveSaves();
+            Denizen.getInstance().saveSaves();
         }
 
         // <--[mechanism]

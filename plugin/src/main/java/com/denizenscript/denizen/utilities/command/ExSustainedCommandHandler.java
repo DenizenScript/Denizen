@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities.command;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -29,7 +29,7 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
     public void enableFor(PluginCommand command) {
         command.setExecutor(this);
         command.setTabCompleter(this);
-        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
     }
 
     public HashMap<UUID, TimedQueue> playerQueues = new HashMap<>();
@@ -114,6 +114,6 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String cmdName, String[] rawArgs) {
-        return DenizenAPI.getCurrentInstance().exCommand.onTabComplete(sender, cmd, cmdName, rawArgs);
+        return Denizen.getInstance().exCommand.onTabComplete(sender, cmd, cmdName, rawArgs);
     }
 }

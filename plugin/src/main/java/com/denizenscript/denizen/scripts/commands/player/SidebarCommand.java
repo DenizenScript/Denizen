@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.player;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -30,7 +29,7 @@ public class SidebarCommand extends AbstractCommand {
         setSyntax("sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)");
         setRequiredArguments(1, 8);
         setParseArgs(false);
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), DenizenAPI.getCurrentInstance());
+        Denizen.getInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), Denizen.getInstance());
         isProcedural = false;
     }
 

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.npc;
-
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -130,7 +129,7 @@ public class PauseCommand extends AbstractCommand {
         if (duration != null) {
             if (durations.containsKey(npc.getCitizen().getId() + pauseType.name())) {
                 try {
-                    DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(npc.getCitizen().getId() + pauseType.name()));
+                    Denizen.getInstance().getServer().getScheduler().cancelTask(durations.get(npc.getCitizen().getId() + pauseType.name()));
                 }
                 catch (Exception e) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
@@ -140,8 +139,8 @@ public class PauseCommand extends AbstractCommand {
             Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
             final NPCTag theNpc = npc;
             final ScriptEntry se = scriptEntry;
-            durations.put(npc.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
-                    .getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+            durations.put(npc.getId() + pauseType.name(), Denizen.getInstance()
+                    .getServer().getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                             new Runnable() {
                                 @Override
                                 public void run() {
