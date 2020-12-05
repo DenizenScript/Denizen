@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -76,6 +77,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //   enchantments:
     //   - enchantment_name:level
     //   - ...
+    //
+    //   # You can specify flags to be added to the item.
+    //   flags:
+    //     # Each line within the flags section should be a flag name as a key, and the flag value as the value.
+    //     # You can use lists or maps here the way you would expect them to work.
+    //     my_flag: my_value
     //
     //   # You can optionally add crafting recipes for your item script.
     //   # Note that recipes won't show in the recipe book when you add a new item script, until you either reconnect or use the "resend_recipes" mechanism.
@@ -294,6 +301,14 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("book")) {
                 BookScriptContainer book = ScriptRegistry.getScriptContainer(TagManager.tag(getString("book"), context).replace("s@", ""));
                 stack = book.writeBookTo(stack, context);
+            }
+            if (contains("flags")) {
+                YamlConfiguration flagSection = getConfigurationSection("flags");
+                AbstractFlagTracker tracker = stack.getFlagTracker();
+                for (StringHolder key : flagSection.getKeys(false)) {
+                    tracker.setFlag(key.str, CoreUtilities.objectToTagForm(flagSection.get(key.str), context, true, true), null);
+                }
+                stack.reapplyTracker(tracker);
             }
             stack.setItemScript(this);
         }
