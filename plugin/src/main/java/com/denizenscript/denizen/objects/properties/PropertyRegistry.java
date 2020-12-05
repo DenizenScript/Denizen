@@ -61,7 +61,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHealth.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityInfected.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInventory.class, EntityTag.class);
         PropertyParser.registerProperty(EntityIsShowingBottom.class, EntityTag.class);

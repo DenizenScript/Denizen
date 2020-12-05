@@ -89,6 +89,7 @@ public class EntityGravity implements Property {
         // @input ElementTag(Boolean)
         // @description
         // Changes the gravity state of an entity.
+        // When set false (no gravity), side effects may also occur, eg all movement entirely being blocked.
         // @tags
         // <EntityTag.gravity>
         // -->
