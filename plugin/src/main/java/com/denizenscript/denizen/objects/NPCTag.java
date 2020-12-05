@@ -6,12 +6,14 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.tags.core.NPCTagBase;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -47,9 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
-public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject {
+public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject, FlaggableObject {
 
     // <--[language]
     // @name NPCTag Objects
@@ -134,6 +135,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     public boolean isValid() {
         return npc != null && npc.getOwningRegistry().getById(npc.getId()) != null;
+    }
+
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return npc.getOrAddTrait(DenizenFlagsTrait.class).fullFlagData;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        npc.getOrAddTrait(DenizenFlagsTrait.class).fullFlagData = (MapTagFlagTracker) tracker;
     }
 
     public NPC npc;
@@ -397,6 +408,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     public static void registerTags() {
 
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+
         // Defined in EntityTag
         registerTag("is_npc", (attribute, object) -> {
             return new ElementTag(true);
@@ -576,109 +589,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
             return null;
         }, "anchors");
-
-        // <--[tag]
-        // @attribute <NPCTag.has_flag[<flag_name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the NPC has the specified flag, otherwise returns false.
-        // -->
-        registerTag("has_flag", (attribute, object) -> {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
-            }
-            else {
-                return null;
-            }
-            return new ElementTag(FlagManager.npcHasFlag(object, flag_name));
-        });
-
-        // <--[tag]
-        // @attribute <NPCTag.flag[<flag_name>]>
-        // @returns Flag ListTag
-        // @description
-        // Returns the specified flag from the NPC.
-        // -->
-        registerTag("flag", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                return null;
-            }
-            String flag_name = attribute.getContext(1);
-
-            // <--[tag]
-            // @attribute <NPCTag.flag[<flag_name>].is_expired>
-            // @returns ElementTag(Boolean)
-            // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
-            // -->
-            if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 22)) {
-                attribute.fulfill(1);
-                return new ElementTag(!FlagManager.npcHasFlag(object, flag_name));
-            }
-            if (attribute.startsWith("size", 2) && !FlagManager.npcHasFlag(object, flag_name)) {
-                attribute.fulfill(1);
-                return new ElementTag(0);
-            }
-            if (FlagManager.npcHasFlag(object, flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
-                        .getNPCFlag(object.getId(), flag_name);
-
-                // <--[tag]
-                // @attribute <NPCTag.flag[<flag_name>].expiration>
-                // @returns DurationTag
-                // @description
-                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
-                // -->
-                if (attribute.startsWith("expiration", 2)) {
-                    attribute.fulfill(1);
-                    return flag.expiration();
-                }
-
-                return new ListTag(flag.toString(), true, flag.values());
-            }
-            return null;
-        });
-
-        // <--[tag]
-        // @attribute <NPCTag.list_flags[(regex:)<search>]>
-        // @returns ListTag
-        // @description
-        // Returns a list of an NPC's flag names, with an optional search for names containing a certain pattern.
-        // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
-        // -->
-        registerTag("list_flags", (attribute, object) -> {
-            FlagManager.listFlagsTagWarning.warn(attribute.context);
-            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(object.getId()));
-            ListTag searchFlags = null;
-            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new ListTag();
-                String search = attribute.getContext(1);
-                if (search.startsWith("regex:")) {
-                    try {
-                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                        for (String flag : allFlags) {
-                            if (pattern.matcher(flag).matches()) {
-                                searchFlags.add(flag);
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                    }
-                }
-                else {
-                    search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags) {
-                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
-                            searchFlags.add(flag);
-                        }
-                    }
-                }
-            }
-            return searchFlags == null ? allFlags
-                    : searchFlags;
-        });
 
         // <--[tag]
         // @attribute <NPCTag.constant[<constant_name>]>
