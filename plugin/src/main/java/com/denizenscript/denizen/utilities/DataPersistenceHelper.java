@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataAdapterContext;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 
 /**
@@ -37,23 +38,28 @@ public class DataPersistenceHelper {
 
     public static final DenizenObjectType PERSISTER_TYPE = new DenizenObjectType();
 
-    public static void setDenizenKey(Entity entity, String keyName, ObjectTag keyValue) {
-        entity.getPersistentDataContainer().set(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE, keyValue);
+    public static void setDenizenKey(PersistentDataHolder holder, String keyName, ObjectTag keyValue) {
+        holder.getPersistentDataContainer().set(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE, keyValue);
     }
 
-    public static boolean hasDenizenKey(Entity entity, String keyName) {
-        return entity.getPersistentDataContainer().has(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE);
+    public static boolean hasDenizenKey(PersistentDataHolder holder, String keyName) {
+        return holder.getPersistentDataContainer().has(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE);
     }
 
-    public static ObjectTag getDenizenKey(Entity entity, String keyName) {
+    public static ObjectTag getDenizenKey(PersistentDataHolder holder, String keyName) {
         try {
-            return entity.getPersistentDataContainer().get(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE);
+            return holder.getPersistentDataContainer().get(new NamespacedKey(DenizenAPI.getCurrentInstance(), keyName), PERSISTER_TYPE);
         }
         catch (NullPointerException ex) {
             return null;
         }
         catch (IllegalArgumentException ex) {
-            Debug.echoError("Failed to read ObjectTag from entity key '" + keyName + "' for entity " + entity.getUniqueId() + "...");
+            if (holder instanceof Entity) {
+                Debug.echoError("Failed to read ObjectTag from entity key '" + keyName + "' for entity " + ((Entity) holder).getUniqueId() + "...");
+            }
+            else {
+                Debug.echoError("Failed to read ObjectTag from object key '" + keyName + "' for holder '" + holder.toString() + "'...");
+            }
             Debug.echoError(ex);
             return null;
         }

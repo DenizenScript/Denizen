@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
+import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -14,8 +15,10 @@ import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
@@ -53,9 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
-public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
+public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject {
 
     // <--[language]
     // @name PlayerTag Objects
@@ -222,6 +224,40 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
     /////////////////////
     //   INSTANCE FIELDS/METHODS
     /////////////////
+
+    public static HashMap<UUID, MapTagFlagTracker> playerFlagTrackerCache = new HashMap<>();
+
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        MapTagFlagTracker cached = playerFlagTrackerCache.get(getOfflinePlayer().getUniqueId());
+        if (cached == null) {
+            Player online = getPlayerEntity();
+            if (online != null) {
+                MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(online, "flag_tracker");
+                if (map == null) {
+                    map = new MapTag();
+                }
+                cached = new MapTagFlagTracker(map);
+                playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cached);
+            }
+            else {
+                // TODO: OFFLINE PLAYERS???
+            }
+        }
+        return cached;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), (MapTagFlagTracker) tracker);
+        Player online = getPlayerEntity();
+        if (online != null) {
+            DataPersistenceHelper.setDenizenKey(online, "flag_tracker", ((MapTagFlagTracker) tracker).map);
+        }
+        else {
+            // TODO: OFFLINE PLAYERS???
+        }
+    }
 
     OfflinePlayer offlinePlayer;
 
@@ -603,6 +639,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
 
     public static void registerTags() {
 
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+
         /////////////////////
         //   OFFLINE ATTRIBUTES
         /////////////////
@@ -649,114 +687,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject {
                 return null;
             }
             return new ElementTag(messages.get(x - 1));
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.flag[<flag_name>]>
-        // @returns Flag ListTag
-        // @description
-        // Returns the specified flag from the player.
-        // Works with offline players.
-        // -->
-        registerTag("flag", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                return null;
-            }
-            String flag_name = attribute.getContext(1);
-
-            // <--[tag]
-            // @attribute <PlayerTag.flag[<flag_name>].is_expired>
-            // @returns ElementTag(Boolean)
-            // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
-            // Works with offline players.
-            // -->
-            if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 2)) {
-                attribute.fulfill(1);
-                return new ElementTag(!FlagManager.playerHasFlag(object, flag_name));
-            }
-            if (attribute.startsWith("size", 2) && !FlagManager.playerHasFlag(object, flag_name)) {
-                attribute.fulfill(1);
-                return new ElementTag(0);
-            }
-            if (FlagManager.playerHasFlag(object, flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(object, flag_name);
-
-                // <--[tag]
-                // @attribute <PlayerTag.flag[<flag_name>].expiration>
-                // @returns DurationTag
-                // @description
-                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
-                // Works with offline players.
-                // -->
-                if (attribute.startsWith("expiration", 2)) {
-                    attribute.fulfill(1);
-                    return flag.expiration();
-                }
-
-                return new ListTag(flag.toString(), true, flag.values());
-            }
-            return null;
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.has_flag[<flag_name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the Player has the specified flag, otherwise returns false.
-        // Works with offline players.
-        // -->
-        registerTag("has_flag", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                return null;
-            }
-            String flag_name = attribute.getContext(1);
-            return new ElementTag(FlagManager.playerHasFlag(object, flag_name));
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.list_flags[(regex:)<search>]>
-        // @returns ListTag
-        // @description
-        // Returns a list of a player's flag names, with an optional search for names containing a certain pattern.
-        // Works with offline players.
-        // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
-        // -->
-        registerTag("list_flags", (attribute, object) -> {
-            FlagManager.listFlagsTagWarning.warn(attribute.context);
-            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(object));
-            ListTag searchFlags = null;
-            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new ListTag();
-                String search = attribute.getContext(1);
-                if (search.startsWith("regex:")) {
-                    try {
-                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                        for (String flag : allFlags) {
-                            if (pattern.matcher(flag).matches()) {
-                                searchFlags.add(flag);
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                    }
-                }
-                else {
-                    search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags) {
-                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
-                            searchFlags.add(flag);
-                        }
-                    }
-                }
-                DenizenAPI.getCurrentInstance().flagManager().shrinkPlayerFlags(object, searchFlags);
-            }
-            else {
-                DenizenAPI.getCurrentInstance().flagManager().shrinkPlayerFlags(object, allFlags);
-            }
-            return searchFlags == null ? allFlags
-                    : searchFlags;
         });
 
         registerTag("current_step", (attribute, object) -> {

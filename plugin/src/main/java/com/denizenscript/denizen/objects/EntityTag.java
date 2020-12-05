@@ -6,24 +6,23 @@ import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.npc.traits.MirrorTrait;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -47,9 +46,8 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
-public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
+public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject {
 
     // <--[language]
     // @name EntityTag Objects
@@ -267,7 +265,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         List<String> data = CoreUtilities.split(string, ',');
         // Handle custom DenizenEntityTypes
         if (DenizenEntityType.isRegistered(data.get(0))) {
-            return new EntityTag(DenizenEntityType.getByName(data.get(0)), data.size() > 1 ? data.get(1) : null, data.size() > 2 ? data.get(2) : null);
+            return new EntityTag(DenizenEntityType.getByName(data.get(0)), data.size() > 1 ? data.get(1) : null);
         }
         try {
             UUID entityID = UUID.fromString(string);
@@ -367,18 +365,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
         }
     }
 
-    public EntityTag(EntityType entityType, String data1, String data2) {
-        if (entityType != null) {
-            this.entity = null;
-            this.entity_type = DenizenEntityType.getByName(entityType.name());
-            this.data1 = data1;
-            this.data2 = data2;
-        }
-        else {
-            Debug.echoError("Entity_type referenced is null!");
-        }
-    }
-
     public EntityTag(DenizenEntityType entityType) {
         if (entityType != null) {
             this.entity = null;
@@ -399,18 +385,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
             this.entity = null;
             this.entity_type = entityType;
             this.data1 = data1;
-        }
-        else {
-            Debug.echoError("DenizenEntityType referenced is null!");
-        }
-    }
-
-    public EntityTag(DenizenEntityType entityType, String data1, String data2) {
-        if (entityType != null) {
-            this.entity = null;
-            this.entity_type = entityType;
-            this.data1 = data1;
-            this.data2 = data2;
         }
         else {
             Debug.echoError("DenizenEntityType referenced is null!");
@@ -440,10 +414,36 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        Entity ent = getBukkitEntity();
+        if (ent != null) {
+            MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(ent, "flag_tracker");
+            if (map == null) {
+                map = new MapTag();
+            }
+            return new MapTagFlagTracker(map);
+        }
+        else {
+            // TODO: Warning?
+            return null;
+        }
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        Entity ent = getBukkitEntity();
+        if (ent != null) {
+            DataPersistenceHelper.setDenizenKey(ent, "flag_tracker", ((MapTagFlagTracker) tracker).map);
+        }
+        else {
+            // TODO: Warning?
+        }
+    }
+
     private Entity entity = null;
     private DenizenEntityType entity_type = null;
     private String data1 = null;
-    private String data2 = null;
     private DespawnedEntity despawned_entity = null;
     private NPCTag npc = null;
     private UUID uuid = null;
@@ -1100,6 +1100,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
 
     public static void registerTags() {
 
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+
         /////////////////////
         //   UNSPAWNED ATTRIBUTES
         /////////////////
@@ -1192,121 +1194,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject {
                 return null;
             }
             return new ElementTag(object.entityScript);
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.has_flag[<flag_name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the entity has the specified flag, otherwise returns false.
-        // -->
-        registerSpawnedOnlyTag("has_flag", (attribute, object) -> {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
-            }
-            else {
-                return null;
-            }
-            if (object.isPlayer() || object.isCitizensNPC()) {
-                Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
-                return null;
-            }
-            return new ElementTag(FlagManager.entityHasFlag(object, flag_name));
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.flag[<flag_name>]>
-        // @returns Flag ListTag
-        // @description
-        // Returns the specified flag from the entity.
-        // -->
-        registerSpawnedOnlyTag("flag", (attribute, object) -> {
-            String flag_name;
-            if (attribute.hasContext(1)) {
-                flag_name = attribute.getContext(1);
-            }
-            else {
-                return null;
-            }
-            if (object.isPlayer() || object.isCitizensNPC()) {
-                Debug.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
-                return null;
-            }
-            // <--[tag]
-            // @attribute <EntityTag.flag[<flag_name>].is_expired>
-            // @returns ElementTag(Boolean)
-            // @description
-            // returns true if the flag is expired or does not exist, false if it is not yet expired or has no expiration.
-            // -->
-            if (attribute.startsWith("is_expired", 2) || attribute.startsWith("isexpired", 2)) {
-                attribute.fulfill(1);
-                return new ElementTag(!FlagManager.entityHasFlag(object, flag_name));
-            }
-            if (attribute.startsWith("size", 2) && !FlagManager.entityHasFlag(object, flag_name)) {
-                attribute.fulfill(1);
-                return new ElementTag(0);
-            }
-            if (FlagManager.entityHasFlag(object, flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag(object, flag_name);
-
-                // <--[tag]
-                // @attribute <EntityTag.flag[<flag_name>].expiration>
-                // @returns DurationTag
-                // @description
-                // Returns a DurationTag of the time remaining on the flag, if it has an expiration.
-                // -->
-                if (attribute.startsWith("expiration", 2)) {
-                    attribute.fulfill(1);
-                    return flag.expiration();
-                }
-                return new ListTag(flag.toString(), true, flag.values());
-            }
-            return null;
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.list_flags[(regex:)<search>]>
-        // @returns ListTag
-        // @description
-        // Returns a list of an entity's flag names, with an optional search for names containing a certain pattern.
-        // Note that this is exclusively for debug/testing reasons, and should never be used in a real script.
-        // -->
-        registerSpawnedOnlyTag("list_flags", (attribute, object) -> {
-            FlagManager.listFlagsTagWarning.warn(attribute.context);
-            ListTag allFlags = new ListTag(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags(object));
-            ListTag searchFlags = null;
-            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
-                searchFlags = new ListTag();
-                String search = attribute.getContext(1);
-                if (search.startsWith("regex:")) {
-                    try {
-                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                        for (String flag : allFlags) {
-                            if (pattern.matcher(flag).matches()) {
-                                searchFlags.add(flag);
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                    }
-                }
-                else {
-                    search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags) {
-                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
-                            searchFlags.add(flag);
-                        }
-                    }
-                }
-                DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags(object, searchFlags);
-            }
-            else {
-                DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags(object, allFlags);
-            }
-            return searchFlags == null ? allFlags
-                    : searchFlags;
         });
 
         /////////////////////
