@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
@@ -91,11 +91,9 @@ public class InteractScriptHelper {
         if (scriptName == null) {
             return null;
         }
-        // Probe 'saves.yml' for the current step
-        String step = DenizenAPI.getSaves().getString("Players." + player.getSaveName()
-                + "." + "Scripts." + scriptName.toUpperCase() + "." + "Current Step");
+        ObjectTag step = player.getFlagTracker().getFlagValue("__interact_step." + scriptName);
         if (step != null) {
-            return step.toUpperCase();
+            return step.toString().toUpperCase();
         }
         // No saved step found, so we'll just use the default
         return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName().toUpperCase();

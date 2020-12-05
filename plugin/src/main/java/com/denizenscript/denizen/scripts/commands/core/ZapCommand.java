@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.core;
 
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -10,12 +9,10 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.event.Listener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ZapCommand extends AbstractCommand implements Listener {
 
@@ -101,9 +98,6 @@ public class ZapCommand extends AbstractCommand implements Listener {
         }
     }
 
-    //"PlayerName,ScriptName", TaskID
-    private static Map<String, Integer> durations = new HashMap<>();
-
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         final ScriptTag script = scriptEntry.getObjectTag("script");
@@ -137,35 +131,10 @@ public class ZapCommand extends AbstractCommand implements Listener {
             Debug.echoError(scriptEntry.getResidingQueue(), "Zapping to own current step!");
             return;
         }
-        // If the durationsMap already contains an entry for this player/script combination,
-        // cancel the task since it's probably not desired to change back anymore if another ZAP for this script is taking place.
-        String durationKey = Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName();
-        Integer durationObj = durations.get(durationKey);
-        if (durationObj != null) {
-            try {
-                DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durationObj);
-            }
-            catch (Exception ex) {
-                Debug.echoError(ex);
-            }
-        }
+        TimeTag expiration = null;
         if (duration != null && duration.getSeconds() > 0) {
-            scriptEntry.addObject("step", new ElementTag(currentStep));
-            scriptEntry.addObject("duration", new DurationTag(0));
-            long delay = (long) (duration.getSeconds() * 20);
-            Debug.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
-            durations.put(durationKey,
-                    DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    Debug.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
-                                    durations.remove(durationKey);
-                                    execute(scriptEntry);
-                                }
-                            }, delay));
+            expiration = new TimeTag(TimeTag.now().millis() + duration.getMillis());
         }
-        DenizenAPI.getCurrentInstance().getSaves().set("Players." + Utilities.getEntryPlayer(scriptEntry).getSaveName()
-                + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
+        Utilities.getEntryPlayer(scriptEntry).getFlagTracker().setFlag("__interact_step." + script.getName(), new ElementTag(step), expiration);
     }
 }

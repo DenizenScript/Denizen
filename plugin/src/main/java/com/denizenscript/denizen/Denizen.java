@@ -71,6 +71,12 @@ import java.util.logging.Logger;
 
 public class Denizen extends JavaPlugin {
 
+    private static Denizen instance;
+
+    public static Denizen getInstance() {
+        return instance;
+    }
+
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -123,6 +129,7 @@ public class Denizen extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        instance = this;
         try {
             versionTag = this.getDescription().getVersion();
 
@@ -420,6 +427,12 @@ public class Denizen extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
+                PlayerTag.cleanCache();
+            }
+        }.runTaskTimer(this, 100, 20 * 60 * 2);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
                 if (!StrongWarning.recentWarnings.isEmpty()) {
                     StringBuilder warnText = new StringBuilder();
                     warnText.append(ChatColor.YELLOW).append("[Denizen] ").append(ChatColor.RED).append("Recent strong system warnings, scripters need to address ASAP (check earlier console logs for details):");
@@ -490,21 +503,10 @@ public class Denizen extends JavaPlugin {
         SlowWarning.WARNING_RATE = Settings.warningRate();
     }
 
-    /*
-     * Reloads, retrieves and saves progress information in
-     * Denizen/saves.yml and Denizen/scoreboards.yml
-     */
-    private FileConfiguration savesConfig = null;
-    private File savesConfigFile = null;
     private FileConfiguration scoreboardsConfig = null;
     private File scoreboardsConfigFile = null;
 
     public void reloadSaves() {
-        if (savesConfigFile == null) {
-            savesConfigFile = new File(getDataFolder(), "saves.yml");
-        }
-        savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
-
         if (scoreboardsConfigFile == null) {
             scoreboardsConfigFile = new File(getDataFolder(), "scoreboards.yml");
         }
@@ -529,13 +531,6 @@ public class Denizen extends JavaPlugin {
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
 
-    public FileConfiguration getSaves() {
-        if (savesConfig == null) {
-            reloadSaves();
-        }
-        return savesConfig;
-    }
-
     public FileConfiguration getScoreboards() {
         if (scoreboardsConfig == null) {
             reloadSaves();
@@ -544,9 +539,6 @@ public class Denizen extends JavaPlugin {
     }
 
     public void saveSaves() {
-        if (savesConfig == null || savesConfigFile == null) {
-            return;
-        }
         // Save notables
         notableManager.saveNotables();
         // Save scoreboards to scoreboards.yml
@@ -571,12 +563,6 @@ public class Denizen extends JavaPlugin {
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
-        }
-        try {
-            savesConfig.save(savesConfigFile);
-        }
-        catch (IOException ex) {
-            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + savesConfigFile, ex);
         }
         try {
             scoreboardsConfig.save(scoreboardsConfigFile);

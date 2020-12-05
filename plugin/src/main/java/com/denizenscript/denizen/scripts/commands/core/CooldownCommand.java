@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
-import com.denizenscript.denizen.utilities.DenizenAPI;
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -142,42 +143,18 @@ public class CooldownCommand extends AbstractCommand {
      * @return a DurationTag of the time remaining
      */
     public static DurationTag getCooldownDuration(PlayerTag player, String scriptName) {
-
-        // Change to UPPERCASE so there's no case-sensitivity.
-        scriptName = scriptName.toUpperCase();
-
-        DurationTag duration = new DurationTag(0);
-
-        // Check current entry GLOBALLY, reset it if necessary
-        if (DenizenAPI.getSaves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
-            if (System.currentTimeMillis()
-                    < DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
-                duration = new DurationTag((double) (DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName
-                        + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
-            }
+        TimeTag expires = Denizen.getInstance().serverFlagMap.getFlagExpirationTime("__interact_cooldown." + scriptName);
+        if (expires != null) {
+            return new DurationTag((TimeTag.now().millis() - expires.millis()) / 1000.0);
         }
-
-        // No player specified? No need to check any further...
         if (player == null) {
-            return duration;
+            return new DurationTag(0);
         }
-
-        // If no entry for the script, return true
-        if (!DenizenAPI.getSaves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            return duration;
+        expires = player.getFlagTracker().getFlagExpirationTime("__interact_cooldown." + scriptName);
+        if (expires != null) {
+            return new DurationTag((TimeTag.now().millis() - expires.millis()) / 1000.0);
         }
-
-        // If there is an entry, check against the time
-        if (System.currentTimeMillis()
-                <= DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            DurationTag player_dur = new DurationTag((double) (DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts."
-                    + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
-            if (player_dur.getSeconds() > duration.getSeconds()) {
-                return player_dur;
-            }
-        }
-
-        return duration;
+        return new DurationTag(0);
     }
 
     /**
@@ -190,39 +167,11 @@ public class CooldownCommand extends AbstractCommand {
      * @return true if the script is cool
      */
     public static boolean checkCooldown(PlayerTag player, String scriptName) {
-
-        // Change to UPPERCASE so there's no case-sensitivity.
-        scriptName = scriptName.toUpperCase();
-
-        // Check current entry GLOBALLY, reset it if necessary
-        if (DenizenAPI.getSaves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
-            if (System.currentTimeMillis()
-                    < DenizenAPI.getSaves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
-                return false;
-            }
-            else {
-                DenizenAPI.getSaves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
-            }
+        DurationTag cooldown = getCooldownDuration(player, scriptName);
+        if (cooldown.getSeconds() <= 0) {
+            return false;
         }
-
-        // No player specified? No need to check any further...
-        if (player == null) {
-            return true;
-        }
-
-        // If no entry for the script, return true
-        if (!DenizenAPI.getSaves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            return true;
-        }
-
-        // If there is an entry, check against the time
-        if (System.currentTimeMillis()
-                >= DenizenAPI.getSaves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
-            DenizenAPI.getSaves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time", null);
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -234,19 +183,12 @@ public class CooldownCommand extends AbstractCommand {
      * @param global     whether the script should be cooled down globally
      */
     public static void setCooldown(PlayerTag player, DurationTag duration, String scriptName, boolean global) {
-        scriptName = scriptName.toUpperCase();
-        // Set global cooldown
+        TimeTag cooldownTime = new TimeTag(TimeTag.now().millis() + duration.getMillis());
         if (global) {
-            DenizenAPI.getSaves().set("Global.Scripts." + scriptName + ".Cooldown Time",
-                    System.currentTimeMillis()
-                            + (duration.getSecondsAsInt() * 1000));
-
-            // or set Player cooldown
+            Denizen.getInstance().serverFlagMap.setFlag("__interact_cooldown." + scriptName, cooldownTime, cooldownTime);
         }
         else {
-            DenizenAPI.getSaves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time",
-                    System.currentTimeMillis()
-                            + (duration.getSecondsAsInt() * 1000));
+            player.getFlagTracker().setFlag("__interact_cooldown." + scriptName, cooldownTime, cooldownTime);
         }
     }
 }
