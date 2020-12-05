@@ -15,6 +15,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.commands.queue.DetermineCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -347,7 +348,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (id != null) {
             String hideTriggerMessage = script.getString("STEPS." + step + ".CHAT TRIGGER." + id + ".HIDE TRIGGER MESSAGE", "false");
             if (!hideTriggerMessage.equalsIgnoreCase("true")) {
-                Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
+                Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.chatToNpcOverhearingRange(), new ScriptTag(script));
             }
             parse(npc, denizenPlayer, script, id, context);
             if (HyperDebug) {
@@ -357,7 +358,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
         else {
             if (!Settings.chatGloballyIfFailedChatTriggers()) {
-                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
+                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange(), new ScriptTag(script));
                 if (HyperDebug) {
                     Debug.log("Chat globally");
                 }

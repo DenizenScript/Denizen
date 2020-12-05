@@ -140,8 +140,6 @@ public class ProfileEditorImpl extends ProfileEditor {
         return gameProfile;
     }
 
-    public static Field PLAYER_INFO_PLAYERDATA_LIST = ReflectionHelper.getFields(PacketPlayOutPlayerInfo.class).get("b");
-
     public static final Class playerInfoData;
 
     public static final Field playerInfoData_latency,

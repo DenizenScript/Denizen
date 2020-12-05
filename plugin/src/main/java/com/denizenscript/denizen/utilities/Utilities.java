@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -240,7 +241,7 @@ public class Utilities {
      * @param npc    the npc being talked to
      * @param range  the range, in blocks, that 'bystanders' will hear he chat
      */
-    public static void talkToNPC(String message, PlayerTag player, NPCTag npc, double range) {
+    public static void talkToNPC(String message, PlayerTag player, NPCTag npc, double range, ScriptTag script) {
         String replacer = String.valueOf((char) 0x04);
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.chatToNpcFormat()
@@ -248,9 +249,9 @@ public class Utilities {
         String bystanderFormat = Settings.chatToNpcOverheardFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
 
-        // Fill in tags // TODO: Debug option?
-        talkFormat = TagManager.tag(talkFormat, new BukkitTagContext(player, npc, null, true, null)).replace(replacer, message);
-        bystanderFormat = TagManager.tag(bystanderFormat, new BukkitTagContext(player, npc, null, true, null)).replace(replacer, message);
+        // Fill in tags
+        talkFormat = TagManager.tag(talkFormat, new BukkitTagContext(player, npc, script)).replace(replacer, message);
+        bystanderFormat = TagManager.tag(bystanderFormat, new BukkitTagContext(player, npc, script)).replace(replacer, message);
 
         // Send message to player
         player.getPlayerEntity().sendMessage(talkFormat);
@@ -426,16 +427,6 @@ public class Utilities {
         String ret = "";
         for (int i = 0; i < count; i++) {
             ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(colors.length()));
-        }
-        return ret;
-    }
-
-    private final static String colorsLimited = "0123456789abcdef";
-
-    public static String generateRandomColorsWithDots(int count) {
-        String ret = "";
-        for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colorsLimited.charAt(CoreUtilities.getRandom().nextInt(colorsLimited.length())) + ".";
         }
         return ret;
     }

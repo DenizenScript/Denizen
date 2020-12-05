@@ -48,6 +48,8 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     //
     // The 'copy_from' argument is ~waitable. Refer to <@link language ~waitable>.
     //
+    // It's often ideal to put this command inside <@link event server prestart>.
+    //
     // @Tags
     // <server.world_types>
     // <server.worlds>
