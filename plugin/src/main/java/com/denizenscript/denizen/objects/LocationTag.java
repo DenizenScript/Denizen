@@ -6,10 +6,14 @@ import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
+import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -20,6 +24,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -51,7 +56,7 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.Comparator;
 
-public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable {
+public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
     // <--[language]
     // @name LocationTag Objects
@@ -547,6 +552,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return new LocationTag(getWorld(), getBlockX(), getBlockY(), getBlockZ());
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ());
+        if (map == null) {
+            map = new MapTag();
+        }
+        return new MapTagFlagTracker(map);
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        DataPersistenceHelper.setDenizenKey(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ(), ((MapTagFlagTracker) tracker).map);
+    }
+
     /**
      * Indicates whether this location is forced to identify as not-a-note or not.
      */
@@ -832,6 +851,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         /////////////////////
         //   BLOCK ATTRIBUTES
