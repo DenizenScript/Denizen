@@ -2115,16 +2115,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.is_sleeping>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the player is currently sleeping.
-        // -->
-        registerOnlineOnlyTag("is_sleeping", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().isSleeping());
-        });
-
-        // <--[tag]
         // @attribute <PlayerTag.is_sneaking>
         // @returns ElementTag(Boolean)
         // @description
