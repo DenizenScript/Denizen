@@ -229,7 +229,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     @Override
     public AbstractFlagTracker getFlagTracker() {
         if (flagTrackerCache == null) {
-            String value = CustomNBT.getCustomNBT(getItemStack(), "flags", CustomNBT.KEY_DENIZEN);
+            String value = CustomNBT.getCustomNBT(getItemStack(), "flags", "Denizen");
             if (value == null) {
                 return new MapTagFlagTracker();
             }
@@ -240,7 +240,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        setItemStack(CustomNBT.addCustomNBT(getItemStack(), "flags", tracker.toString(), CustomNBT.KEY_DENIZEN));
+        setItemStack(CustomNBT.addCustomNBT(getItemStack(), "flags", tracker.toString(), "Denizen"));
         flagTrackerCache = tracker;
     }
 

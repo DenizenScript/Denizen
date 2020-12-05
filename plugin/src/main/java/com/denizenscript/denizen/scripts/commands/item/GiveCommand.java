@@ -87,10 +87,6 @@ public class GiveCommand extends AbstractCommand {
                     && arg.matches("xp", "exp", "experience")) {
                 scriptEntry.addObject("type", Type.EXP);
             }
-            else if (!scriptEntry.hasObject("engrave")
-                    && arg.matches("engrave")) {
-                scriptEntry.addObject("engrave", new ElementTag(true));
-            }
             else if (!scriptEntry.hasObject("unlimit_stack_size")
                     && arg.matches("unlimit_stack_size")) {
                 scriptEntry.addObject("unlimit_stack_size", new ElementTag(true));
@@ -115,7 +111,6 @@ public class GiveCommand extends AbstractCommand {
             }
         }
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("engrave", new ElementTag(false))
                 .defaultObject("unlimit_stack_size", new ElementTag(false))
                 .defaultObject("quantity", new ElementTag(1))
                 .defaultObject("slot", new ElementTag(1));
@@ -133,7 +128,6 @@ public class GiveCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        ElementTag engrave = scriptEntry.getElement("engrave");
         ElementTag unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
         InventoryTag inventory = scriptEntry.getObjectTag("inventory");
         ElementTag quantity = scriptEntry.getElement("quantity");
@@ -149,7 +143,6 @@ public class GiveCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("Type", type.name())
                             + (inventory != null ? inventory.debug() : "")
                             + quantity.debug()
-                            + engrave.debug()
                             + unlimit_stack_size.debug()
                             + (items != null ? ArgumentHelper.debugObj("Items", items) : "")
                             + slot.debug());
@@ -177,10 +170,6 @@ public class GiveCommand extends AbstractCommand {
                     }
                     if (set_quantity) {
                         is.setAmount(quantity.asInt());
-                    }
-                    // TODO: Should engrave be kept?
-                    if (engrave.asBoolean()) {
-                        is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", Utilities.getEntryPlayer(scriptEntry).getName(), CustomNBT.KEY_DENIZEN);
                     }
                     int slotId = SlotHelper.nameToIndex(slot.asString());
                     if (slotId == -1) {

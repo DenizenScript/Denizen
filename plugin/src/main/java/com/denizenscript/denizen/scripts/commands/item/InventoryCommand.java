@@ -125,6 +125,10 @@ public class InventoryCommand extends AbstractCommand {
     // - inventory adjust slot:5 "lore:Item modified!"
     //
     // @Usage
+    // Use to set a flag on the player's held item.
+    // - inventory adjust slot:<player.held_item_slot> flag:myflag:<player.cursor_on>
+    //
+    // @Usage
     // Use to set a single stick into slot 10 of the player's inventory.
     // - inventory set o:stick slot:10
     // -->

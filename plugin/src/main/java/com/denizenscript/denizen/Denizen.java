@@ -526,7 +526,11 @@ public class Denizen extends JavaPlugin {
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
+                serverFlagMap = new MapTagFlagTracker();
             }
+        }
+        else {
+            serverFlagMap = new MapTagFlagTracker();
         }
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
