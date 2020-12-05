@@ -6,7 +6,6 @@ import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
@@ -15,6 +14,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizencore.DenizenImplementation;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -43,7 +43,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         File file;
         // Get the script directory
         if (Settings.useDefaultScriptPath()) {
-            file = new File(DenizenAPI.getCurrentInstance().getDataFolder() + File.separator + "scripts");
+            file = new File(Denizen.getInstance().getDataFolder() + File.separator + "scripts");
         }
         else {
             file = new File(Settings.getAlternateScriptPath().replace("/", File.separator));
@@ -250,7 +250,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public AbstractFlagTracker getServerFlags() {
-        return DenizenAPI.getCurrentInstance().serverFlagMap;
+        return Denizen.getInstance().serverFlagMap;
     }
 
     @Override
@@ -452,7 +452,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public File getDataFolder() {
-        return DenizenAPI.getCurrentInstance().getDataFolder();
+        return Denizen.getInstance().getDataFolder();
     }
 
     @Override
@@ -496,6 +496,17 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                 }
             }
         };
-        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 5);
+        task.runTaskTimer(Denizen.getInstance(), 0, 5);
+    }
+
+    @Override
+    public FlaggableObject simpleWordToFlaggable(String word, ScriptEntry entry) {
+        if (CoreUtilities.equalsIgnoreCase(word, "player")) {
+            return Utilities.getEntryPlayer(entry);
+        }
+        if (CoreUtilities.equalsIgnoreCase(word, "npc")) {
+            return Utilities.getEntryNPC(entry);
+        }
+        return null;
     }
 }

@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.DataPersistenceHelper;
-import com.denizenscript.denizen.utilities.DenizenAPI;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -259,6 +258,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         CachedPlayerFlag cached = playerFlagTrackerCache.get(getOfflinePlayer().getUniqueId());
         if (cached == null) {
             Player online = getPlayerEntity();
+            cached = new CachedPlayerFlag();
             if (online != null) {
                 MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(online, "flag_tracker");
                 if (map == null) {
@@ -267,7 +267,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 cached.tracker = new MapTagFlagTracker(map);
             }
             else {
-                // TODO: OFFLINE PLAYERS???
+                ImprovedOfflinePlayer helper = NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
+                cached.tracker = new MapTagFlagTracker(helper.getRawFlagMap(), CoreUtilities.noDebugContext);
             }
             playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cached);
         }
@@ -286,7 +287,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             DataPersistenceHelper.setDenizenKey(online, "flag_tracker", ((MapTagFlagTracker) tracker).map);
         }
         else {
-            // TODO: OFFLINE PLAYERS???
+            ImprovedOfflinePlayer helper = NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
+            helper.setRawFlagMap(tracker.toString());
         }
     }
 
