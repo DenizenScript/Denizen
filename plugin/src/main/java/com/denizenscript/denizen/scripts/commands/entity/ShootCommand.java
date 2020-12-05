@@ -246,7 +246,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             if (entity.isProjectile() && (shooter != null || originEntity != null)) {
                 entity.setShooter(shooter != null ? shooter : originEntity);
                 // Also, watch for it hitting a target
-                arrows.put(entity.getUUID(), null);
+                if (script != null) {
+                    arrows.put(entity.getUUID(), null);
+                }
             }
         }
         // Add entities to context so that the specific entities created/spawned
@@ -319,8 +321,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 // Otherwise, if the entity is no longer traveling through
                 // the air, stop the task
                 else if (lastLocation != null && lastVelocity != null) {
-                    if (lastLocation.distanceSquared(lastEntity.getBukkitEntity().getLocation()) < 0.1
-                            && lastVelocity.distanceSquared(lastEntity.getBukkitEntity().getVelocity()) < 0.1) {
+                    if (lastLocation.getWorld() != lastEntity.getBukkitEntity().getWorld()
+                            || (lastLocation.distanceSquared(lastEntity.getBukkitEntity().getLocation()) < 0.1
+                            && lastVelocity.distanceSquared(lastEntity.getBukkitEntity().getVelocity()) < 0.1)) {
                         flying = false;
                     }
                 }
@@ -362,7 +365,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 }
             }
         };
-        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 2);
+        if (script != null || !scriptEntry.shouldWaitFor()) {
+            task.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 2);
+        }
     }
 
     @EventHandler

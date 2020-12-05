@@ -175,7 +175,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                         Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                     }
                     else {
-                        Debug.echoError("Chunk was not on the load list!");
+                        Debug.echoError("Chunk '" + chunkString + "' was not on the load list!");
                     }
                     break;
                 case REMOVEALL:
