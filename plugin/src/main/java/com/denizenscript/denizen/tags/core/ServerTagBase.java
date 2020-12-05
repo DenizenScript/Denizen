@@ -1559,8 +1559,9 @@ public class ServerTagBase {
             String flag = attribute.getContext(1);
             ListTag players = new ListTag();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new PlayerTag(player), flag).size() > 0) {
-                    players.addObject(new PlayerTag(player));
+                PlayerTag plTag = new PlayerTag(player);
+                if (plTag.getFlagTracker().hasFlag(flag)) {
+                    players.addObject(plTag);
                 }
             }
             event.setReplacedObject(players.getObjectAttribute(attribute.fulfill(1)));
@@ -1579,8 +1580,9 @@ public class ServerTagBase {
             String flag = attribute.getContext(1);
             ListTag players = new ListTag();
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
-                if (FlagManager.playerHasFlag(new PlayerTag(entry.getValue()), flag)) {
-                    players.addObject(new PlayerTag(entry.getValue()));
+                PlayerTag plTag = new PlayerTag(entry.getValue());
+                if (plTag.getFlagTracker().hasFlag(flag)) {
+                    players.addObject(plTag);
                 }
             }
             event.setReplacedObject(players.getObjectAttribute(attribute.fulfill(1)));
@@ -1600,7 +1602,7 @@ public class ServerTagBase {
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 NPCTag dNpc = new NPCTag(npc);
-                if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag)) {
+                if (dNpc.isSpawned() && dNpc.hasFlag(flag)) {
                     npcs.addObject(dNpc);
                 }
             }
@@ -1621,7 +1623,7 @@ public class ServerTagBase {
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 NPCTag dNpc = new NPCTag(npc);
-                if (FlagManager.npcHasFlag(dNpc, flag)) {
+                if (dNpc.hasFlag(flag)) {
                     npcs.addObject(dNpc);
                 }
             }

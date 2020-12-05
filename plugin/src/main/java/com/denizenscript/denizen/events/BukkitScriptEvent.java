@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.events;
 
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -515,7 +514,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         for (String flag : CoreUtilities.split(flagged, '|')) {
-            if (!FlagManager.playerHasFlag(player, flag)) {
+            if (!player.getFlagTracker().hasFlag(flag)) {
                 return false;
             }
         }

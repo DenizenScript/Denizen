@@ -142,6 +142,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return npc.getOrAddTrait(DenizenFlagsTrait.class).fullFlagData;
     }
 
+    public boolean hasFlag(String flag) {
+        DenizenFlagsTrait flagTrait = npc.getTraitNullable(DenizenFlagsTrait.class);
+        if (flagTrait == null) {
+            return false;
+        }
+        return flagTrait.fullFlagData.hasFlag(flag);
+    }
+
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
         npc.getOrAddTrait(DenizenFlagsTrait.class).fullFlagData = (MapTagFlagTracker) tracker;

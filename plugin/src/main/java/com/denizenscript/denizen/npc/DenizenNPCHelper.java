@@ -2,7 +2,6 @@ package com.denizenscript.denizen.npc;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.npc.actions.ActionHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -164,7 +163,6 @@ public class DenizenNPCHelper implements Listener {
     public void onRemove(NPCRemoveEvent event) {
         NPC npc = event.getNPC();
         new NPCTag(npc).action("remove", null);
-        FlagManager.clearNPCFlags(npc.getId());
     }
 
     @EventHandler

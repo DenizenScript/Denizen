@@ -3,7 +3,6 @@ package com.denizenscript.denizen.utilities.implementation;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.flags.FlagManager;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -15,6 +14,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizencore.DenizenImplementation;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -249,36 +249,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public ListTag valueOfFlagListTag(String string) {
-        FlagManager.Flag flag = DenizenAPI.getCurrentInstance().getFlag(string);
-        if (flag == null) {
-            return null;
-        }
-        return new ListTag(flag.toString(), true, flag.values());
-    }
-
-    @Override
-    public boolean matchesFlagListTag(String arg) {
-        boolean flag = false;
-        if (arg.startsWith("fl")) {
-            if (arg.indexOf('[') == 2) {
-                int cb = arg.indexOf(']');
-                if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
-                    String owner = arg.substring(3, cb);
-                    flag = arg.substring(cb + 2).length() > 0 && (PlayerTag.matches(owner)
-                            || (Depends.citizens != null && NPCTag.matches(owner)));
-                }
-            }
-            else if (arg.indexOf('@') == 2) {
-                flag = arg.substring(3).length() > 0;
-            }
-        }
-        return flag;
-    }
-
-    @Override
-    public boolean serverHasFlag(String flag) {
-        return FlagManager.serverHasFlag(flag);
+    public AbstractFlagTracker getServerFlags() {
+        return DenizenAPI.getCurrentInstance().serverFlagMap;
     }
 
     @Override

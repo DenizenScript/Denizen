@@ -7,7 +7,6 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class CommonRegistries {
@@ -119,9 +118,6 @@ public class CommonRegistries {
                 Class<? extends ObjectTag> inpType = inp.getObjectTagClass();
                 if (inpType == EntityTag.class || inpType == PlayerTag.class || inpType == NPCTag.class) {
                     return true;
-                }
-                if (inpType == ListTag.class && ((ListTag) inp).flag != null) {
-                    inpType = ElementTag.class;
                 }
                 if (inpType == ElementTag.class) {
                     String simple = inp.identifySimple();
