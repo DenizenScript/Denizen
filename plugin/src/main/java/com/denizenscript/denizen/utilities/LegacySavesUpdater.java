@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.UUID;
@@ -77,24 +78,30 @@ public class LegacySavesUpdater {
             }
         }
         if (saveSection.contains("NPCs")) {
-            Debug.log("==== Update NPC data ====");
-            ConfigurationSection npcsSection = saveSection.getConfigurationSection("NPCs");
-            for (String npcId : npcsSection.getKeys(false)) {
-                ConfigurationSection actual = npcsSection.getConfigurationSection(npcId);
-                NPCTag npc = NPCTag.valueOf(npcId, CoreUtilities.errorButNoDebugContext);
-                if (npc == null) {
-                    Debug.echoError("Cannot update data for NPC with id: " + npcId);
-                    continue;
+            final ConfigurationSection npcsSection = saveSection.getConfigurationSection("NPCs");
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Debug.log("==== Late update NPC data ====");
+                    for (String npcId : npcsSection.getKeys(false)) {
+                        ConfigurationSection actual = npcsSection.getConfigurationSection(npcId);
+                        NPCTag npc = NPCTag.valueOf(npcId, CoreUtilities.errorButNoDebugContext);
+                        if (npc == null) {
+                            Debug.echoError("Cannot update data for NPC with id: " + npcId);
+                            continue;
+                        }
+                        AbstractFlagTracker tracker = npc.getFlagTracker();
+                        if (actual.contains("Flags")) {
+                            applyFlags(tracker, actual.getConfigurationSection("Flags"));
+                        }
+                        npc.reapplyTracker(tracker);
+                        Debug.log("==== Done late-updating NPC data ====");
+                    }
                 }
-                AbstractFlagTracker tracker = npc.getFlagTracker();
-                if (actual.contains("Flags")) {
-                    applyFlags(tracker, actual.getConfigurationSection("Flags"));
-                }
-                npc.reapplyTracker(tracker);
-            }
+            }.runTaskLater(Denizen.getInstance(), 3);
         }
         Denizen.getInstance().saveSaves();
-        Debug.log("==== Done updating legacy saves ====");
+        Debug.log("==== Done updating legacy saves (except NPCs) ====");
     }
 
     public static void applyFlags(AbstractFlagTracker tracker, ConfigurationSection section) {
