@@ -57,7 +57,7 @@ public class ItemNBT implements Property {
         // @returns ElementTag(Boolean)
         // @mechanism ItemTag.nbt
         // @group properties
-        // @Deprecated Use has_flag[...] instead.
+        // @deprecated Use has_flag[...] instead.
         // @description
         // Deprecated: use <@link tag FlaggableObject.has_flag> instead.
         // -->
@@ -78,7 +78,7 @@ public class ItemNBT implements Property {
         // @returns ElementTag
         // @mechanism ItemTag.nbt
         // @group properties
-        // @Deprecated Use flag[...] instead.
+        // @deprecated Use flag[...] instead.
         // @description
         // Deprecated: use <@link tag FlaggableObject.flag> instead.
         // -->
@@ -136,7 +136,7 @@ public class ItemNBT implements Property {
         // @object ItemTag
         // @name remove_nbt
         // @input ListTag
-        // @Deprecated Use 'flag' instead.
+        // @deprecated Use 'flag' instead.
         // @description
         // Deprecated: use <@link mechanism ItemTag.flag> instead.
         // @tags
@@ -167,7 +167,7 @@ public class ItemNBT implements Property {
         // @object ItemTag
         // @name nbt
         // @input ListTag
-        // @Deprecated Use 'flag' instead.
+        // @deprecated Use 'flag' instead.
         // @description
         // Deprecated: use <@link mechanism ItemTag.flag> instead.
         // @tags

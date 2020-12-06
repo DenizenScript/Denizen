@@ -470,7 +470,8 @@ public class ServerTagBase {
             return;
         }
         if (attribute.startsWith("flag")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagTag(attribute)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
         if (attribute.startsWith("list_flags")) {
