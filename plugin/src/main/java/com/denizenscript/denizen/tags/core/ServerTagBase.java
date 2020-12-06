@@ -465,13 +465,19 @@ public class ServerTagBase {
             return;
         }
         if (attribute.startsWith("flag_expiration")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute)
-                .getObjectAttribute(attribute.fulfill(1)));
+            TimeTag exp = Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute);
+            if (exp != null) {
+                event.setReplacedObject(exp
+                        .getObjectAttribute(attribute.fulfill(1)));
+            }
             return;
         }
         if (attribute.startsWith("flag")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagTag(attribute)
-                    .getObjectAttribute(attribute.fulfill(1)));
+            ObjectTag flag = Denizen.getInstance().serverFlagMap.doFlagTag(attribute);
+            if (flag != null) {
+                event.setReplacedObject(flag
+                        .getObjectAttribute(attribute.fulfill(1)));
+            }
             return;
         }
         if (attribute.startsWith("list_flags")) {
