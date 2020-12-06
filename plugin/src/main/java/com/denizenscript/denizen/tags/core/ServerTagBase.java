@@ -460,11 +460,13 @@ public class ServerTagBase {
 
         // Documented in AbstractFlagTracker
         if (attribute.startsWith("has_flag")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doHasFlagTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doHasFlagTag(attribute)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
         if (attribute.startsWith("flag_expiration")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute)
+                .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
         if (attribute.startsWith("flag")) {
@@ -472,7 +474,8 @@ public class ServerTagBase {
             return;
         }
         if (attribute.startsWith("list_flags")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doListFlagsTag(attribute));
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doListFlagsTag(attribute)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
