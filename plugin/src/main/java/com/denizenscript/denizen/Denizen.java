@@ -147,6 +147,10 @@ public class Denizen extends JavaPlugin {
             startedSuccessful = false;
             return;
         }
+        PlayerFlagHandler.dataFolder = new File(getDataFolder(), "player_flags");
+        if (!PlayerFlagHandler.dataFolder.exists()) {
+            PlayerFlagHandler.dataFolder.mkdir();
+        }
         String javaVersion = System.getProperty("java.version");
         if (!javaVersion.startsWith("8") && !javaVersion.startsWith("1.8")) {
             if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10") || javaVersion.startsWith("11")) {
@@ -425,10 +429,6 @@ public class Denizen extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 100, 20 * 60 * 60);
-        PlayerFlagHandler.dataFolder = new File(getDataFolder(), "player_flags");
-        if (!PlayerFlagHandler.dataFolder.exists()) {
-            PlayerFlagHandler.dataFolder.mkdir();
-        }
         Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);
         new BukkitRunnable() {
             @Override
