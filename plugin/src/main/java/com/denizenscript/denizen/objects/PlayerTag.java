@@ -4,7 +4,6 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
-import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -12,6 +11,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
+import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -228,7 +228,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         public long lastAccessed;
 
-        public MapTagFlagTracker tracker;
+        public AbstractFlagTracker tracker;
     }
 
     public static HashMap<UUID, CachedPlayerFlag> playerFlagTrackerCache = new HashMap<>();
@@ -260,11 +260,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Player online = getPlayerEntity();
             cached = new CachedPlayerFlag();
             if (online != null) {
-                MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(online, "flag_tracker");
-                if (map == null) {
-                    map = new MapTag();
-                }
-                cached.tracker = new MapTagFlagTracker(map);
+                cached.tracker = new DataPersistenceFlagTracker(online);
             }
             else {
                 ImprovedOfflinePlayer helper = NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
@@ -280,11 +276,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public void reapplyTracker(AbstractFlagTracker tracker) {
         CachedPlayerFlag cache = new CachedPlayerFlag();
         cache.lastAccessed = System.currentTimeMillis();
-        cache.tracker = (MapTagFlagTracker) tracker;
+        cache.tracker = tracker;
         playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cache);
         Player online = getPlayerEntity();
         if (online != null) {
-            DataPersistenceHelper.setDenizenKey(online, "flag_tracker", ((MapTagFlagTracker) tracker).map);
+            // Nothing to do.
         }
         else {
             ImprovedOfflinePlayer helper = NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());

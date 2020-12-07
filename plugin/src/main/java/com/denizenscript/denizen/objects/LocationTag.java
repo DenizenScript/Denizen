@@ -6,14 +6,13 @@ import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
-import com.denizenscript.denizen.utilities.DataPersistenceHelper;
+import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -24,7 +23,6 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -558,20 +556,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Debug.echoError("Location flags are only available in 1.16+");
             return null;
         }
-        MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ());
-        if (map == null) {
-            map = new MapTag();
-        }
-        return new MapTagFlagTracker(map);
+        return new DataPersistenceFlagTracker(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ() + "_");
     }
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            Debug.echoError("Location flags are only available in 1.16+");
-            return;
-        }
-        DataPersistenceHelper.setDenizenKey(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ(), ((MapTagFlagTracker) tracker).map);
+        // Nothing to do.
     }
 
     /**

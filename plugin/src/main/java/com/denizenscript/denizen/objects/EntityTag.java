@@ -6,16 +6,15 @@ import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
+import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
@@ -418,11 +417,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public AbstractFlagTracker getFlagTracker() {
         Entity ent = getBukkitEntity();
         if (ent != null) {
-            MapTag map = (MapTag) DataPersistenceHelper.getDenizenKey(ent, "flag_tracker");
-            if (map == null) {
-                map = new MapTag();
-            }
-            return new MapTagFlagTracker(map);
+            return new DataPersistenceFlagTracker(ent);
         }
         else {
             // TODO: Warning?
@@ -432,13 +427,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        Entity ent = getBukkitEntity();
-        if (ent != null) {
-            DataPersistenceHelper.setDenizenKey(ent, "flag_tracker", ((MapTagFlagTracker) tracker).map);
-        }
-        else {
-            // TODO: Warning?
-        }
+        // Nothing to do.
     }
 
     private Entity entity = null;
