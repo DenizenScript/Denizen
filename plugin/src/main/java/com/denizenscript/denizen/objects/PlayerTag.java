@@ -11,12 +11,11 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
-import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
+import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -224,68 +223,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    public static class CachedPlayerFlag {
-
-        public long lastAccessed;
-
-        public AbstractFlagTracker tracker;
-    }
-
-    public static HashMap<UUID, CachedPlayerFlag> playerFlagTrackerCache = new HashMap<>();
-
-    private static ArrayList<UUID> toCleanFromCache = new ArrayList<>();
-
-    public static void cleanCache() {
-        long timeNow = System.currentTimeMillis();
-        for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
-            if (entry.getValue().lastAccessed + (5 * 60 * 1000) < timeNow) {
-                continue;
-            }
-            if (Bukkit.getPlayer(entry.getKey()) == null) {
-                entry.getValue().lastAccessed = timeNow;
-                continue;
-            }
-            toCleanFromCache.add(entry.getKey());
-        }
-        for (UUID id : toCleanFromCache) {
-            playerFlagTrackerCache.remove(id);
-        }
-        toCleanFromCache.clear();
-    }
-
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        CachedPlayerFlag cached = playerFlagTrackerCache.get(getOfflinePlayer().getUniqueId());
-        if (cached == null) {
-            Player online = getPlayerEntity();
-            cached = new CachedPlayerFlag();
-            if (online != null) {
-                cached.tracker = new DataPersistenceFlagTracker(online);
-            }
-            else {
-                ImprovedOfflinePlayer helper = NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
-                cached.tracker = new MapTagFlagTracker(helper.getRawFlagMap(), CoreUtilities.noDebugContext);
-            }
-            playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cached);
-        }
-        cached.lastAccessed = System.currentTimeMillis();
-        return cached.tracker;
+        return PlayerFlagHandler.getTrackerFor(getOfflinePlayer().getUniqueId());
     }
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        CachedPlayerFlag cache = new CachedPlayerFlag();
-        cache.lastAccessed = System.currentTimeMillis();
-        cache.tracker = tracker;
-        playerFlagTrackerCache.put(getOfflinePlayer().getUniqueId(), cache);
-        Player online = getPlayerEntity();
-        if (online != null) {
-            // Nothing to do.
-        }
-        else {
-            ImprovedOfflinePlayer helper = NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
-            helper.setRawFlagMap(tracker.toString());
-        }
+        // Nothing to do.
     }
 
     OfflinePlayer offlinePlayer;

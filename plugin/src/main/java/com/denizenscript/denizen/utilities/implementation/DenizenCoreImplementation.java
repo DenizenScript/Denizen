@@ -16,6 +16,8 @@ import com.denizenscript.denizencore.DenizenImplementation;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -506,6 +508,10 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         }
         if (CoreUtilities.equalsIgnoreCase(word, "npc")) {
             return Utilities.getEntryNPC(entry);
+        }
+        ObjectTag obj = ObjectFetcher.pickObjectFor(word, entry.context);
+        if (obj instanceof FlaggableObject) {
+            return (FlaggableObject) obj;
         }
         return null;
     }

@@ -29,6 +29,7 @@ import com.denizenscript.denizen.utilities.debugging.StatsRecord;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
+import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
@@ -40,7 +41,7 @@ import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
-import com.denizenscript.denizencore.flags.MapTagFlagTracker;
+import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -122,7 +123,7 @@ public class Denizen extends JavaPlugin {
 
     public DenizenCoreImplementation coreImplementation = new DenizenCoreImplementation();
 
-    public MapTagFlagTracker serverFlagMap;
+    public SavableMapFlagTracker serverFlagMap;
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -424,12 +425,16 @@ public class Denizen extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 100, 20 * 60 * 60);
+        PlayerFlagHandler.dataFolder = new File(getDataFolder(), "player_flags");
+        if (!PlayerFlagHandler.dataFolder.exists()) {
+            PlayerFlagHandler.dataFolder.mkdir();
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerTag.cleanCache();
+                PlayerFlagHandler.cleanCache();
             }
-        }.runTaskTimer(this, 100, 20 * 60 * 2);
+        }.runTaskTimer(this, 100, 20 * 60);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -522,15 +527,15 @@ public class Denizen extends JavaPlugin {
                 FileInputStream fis = new FileInputStream(serverFlagsFile);
                 String str = ScriptHelper.convertStreamToString(fis);
                 fis.close();
-                serverFlagMap = new MapTagFlagTracker(str, CoreUtilities.noDebugContext);
+                serverFlagMap = new SavableMapFlagTracker(str);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
-                serverFlagMap = new MapTagFlagTracker();
+                serverFlagMap = new SavableMapFlagTracker();
             }
         }
         else {
-            serverFlagMap = new MapTagFlagTracker();
+            serverFlagMap = new SavableMapFlagTracker();
         }
         if (new File(getDataFolder(), "saves.yml").exists()) {
             LegacySavesUpdater.updateLegacySaves();
@@ -577,6 +582,7 @@ public class Denizen extends JavaPlugin {
         catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
+        PlayerFlagHandler.saveAllNow();
     }
 
     @Override

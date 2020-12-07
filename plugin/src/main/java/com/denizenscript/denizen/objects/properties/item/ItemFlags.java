@@ -67,6 +67,7 @@ public class ItemFlags implements Property {
         // @object ItemTag
         // @name flag_map
         // @input MapTag
+        // @Deprecated Internal-usage only.
         // @description
         // Internal-usage direct re-setter for the item's full raw flag data.
         // -->

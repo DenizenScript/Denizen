@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -84,6 +85,7 @@ public class Settings {
         cache_tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
         cache_warningRate = config.getLong("Tags.Warning rate", 10000);
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
+        PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
     }
 
     private static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,

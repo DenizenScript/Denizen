@@ -265,10 +265,8 @@ public class DenizenCommandHandler {
             desc = "Saves the current state of Denizen/saves.yml.", modifiers = {"save"},
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
-
         Denizen.getInstance().saveSaves();
-
-        Messaging.send(sender, "Denizen/saves.yml saved to disk from memory.");
+        Messaging.send(sender, "Denizen save data saved to disk from memory.");
     }
 
     /*

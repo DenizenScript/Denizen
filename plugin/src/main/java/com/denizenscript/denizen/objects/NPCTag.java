@@ -8,7 +8,6 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -152,7 +151,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        npc.getOrAddTrait(DenizenFlagsTrait.class).fullFlagData = (MapTagFlagTracker) tracker;
+        // Nothing to do.
     }
 
     public NPC npc;
