@@ -429,6 +429,7 @@ public class Denizen extends JavaPlugin {
         if (!PlayerFlagHandler.dataFolder.exists()) {
             PlayerFlagHandler.dataFolder.mkdir();
         }
+        Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);
         new BukkitRunnable() {
             @Override
             public void run() {

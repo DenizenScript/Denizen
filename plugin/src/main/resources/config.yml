@@ -182,6 +182,8 @@ Saves:
   # How long (in seconds) before the offline player flag cache times out.
   # Set to -1 to keep offline player flags loaded perpetually, or to 0 to never cache.
   Offline player cache timeout: 300
+  # When set to 'true', player data will be loaded offthread during the login sequence, to avoid adding load to the server while players join.
+  Load async on login: true
 
 Packets:
   # Whether to allow Denizen to intercept packets from and to player clients.

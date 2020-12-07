@@ -218,5 +218,26 @@ public class PlayerFlagHandler implements Listener {
             Debug.echoError(ex);
         }
     }
+
+    @EventHandler
+    public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
+        if (!asyncPreload) {
+            return;
+        }
+        UUID id = event.getUniqueId();
+        if (!Bukkit.isPrimaryThread()) {
+            Future<Future> future = Bukkit.getScheduler().callSyncMethod(Denizen.getInstance(), () -> {
+                return loadAsync(id);
+            });
+            try {
+                Future newFuture = future.get(15, TimeUnit.SECONDS);
+                if (newFuture != null) {
+                    newFuture.get(15, TimeUnit.SECONDS);
+                }
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+        }
     }
 }

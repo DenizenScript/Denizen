@@ -86,6 +86,7 @@ public class Settings {
         cache_warningRate = config.getLong("Tags.Warning rate", 10000);
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
         PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
+        PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
     }
 
     private static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,
