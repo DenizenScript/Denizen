@@ -5,7 +5,9 @@ import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -28,7 +30,8 @@ public class ItemFlags implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-    }; // None: use the standard FlaggableObject flag tags
+            "with_flag"
+    };
 
     public static final String[] handledMechs = new String[] {
             "flag", "flag_map"
@@ -42,7 +45,43 @@ public class ItemFlags implements Property {
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
-        // Handled elsewhere
+
+        if (attribute == null) {
+            return null;
+        }
+
+        // <--[tag]
+        // @attribute <ItemTag.with_flag[<flag_set_action>]>
+        // @returns ElementTag(Boolean)
+        // @mechanism ItemTag.flag
+        // @group properties
+        // @description
+        // Returns a copy of the item with the specified flag data action applied to it.
+        // -->
+        if (attribute.startsWith("with_flag")) {
+            ItemTag item = new ItemTag(this.item.getItemStack().clone());
+            FlagCommand.FlagActionProvider provider = new FlagCommand.FlagActionProvider();
+            provider.tracker = item.getFlagTracker();
+            DataAction action = DataActionHelper.parse(provider, attribute.getContext(1));
+
+            // <--[tag]
+            // @attribute <ItemTag.with_flag[<flag_set_action>].duration[<expire_duration>]>
+            // @returns ElementTag(Boolean)
+            // @mechanism ItemTag.flag
+            // @group properties
+            // @description
+            // Returns a copy of the item with the specified flag data action (and the specified expiration duration) applied to it.
+            // -->
+            if (attribute.startsWith("duration", 2)) {
+                provider.expiration = new TimeTag(TimeTag.now().millis() + attribute.getContextObject(2).asType(DurationTag.class, attribute.context).getMillis());
+                attribute.fulfill(1);
+            }
+            action.execute(attribute.context);
+            item.reapplyTracker(provider.tracker);
+            return item
+                    .getObjectAttribute(attribute.fulfill(1));
+        }
+
         return null;
     }
 

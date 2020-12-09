@@ -8,12 +8,13 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.data.DataAction;
+import com.denizenscript.denizencore.utilities.data.DataActionHelper;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,7 +25,7 @@ public class InventoryCommand extends AbstractCommand {
 
     public InventoryCommand() {
         setName("inventory");
-        setSyntax("inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
+        setSyntax("inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (duration:<duration>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
         setRequiredArguments(1, 6);
         isProcedural = false;
     }
@@ -61,7 +62,7 @@ public class InventoryCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Inventory
-    // @Syntax inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
+    // @Syntax inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (duration:<duration>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
     // @Required 1
     // @Maximum 6
     // @Short Edits the inventory of a player, NPC, or chest.
@@ -83,6 +84,9 @@ public class InventoryCommand extends AbstractCommand {
     //
     // The "adjust" option adjusts mechanisms on an item within a specific slot of an inventory (the "slot" parameter is required).
     // Note that this is only for items, it does NOT adjust the inventory itself. Use <@link command adjust> to adjust an inventory mechanism.
+    //
+    // The "flag" option sets a flag on items, similar to <@link command flag>.
+    // See also <@link language flag system>.
     //
     // Note that to add items to an inventory, you should usually use <@link command give>,
     // and to remove items from an inventory, you should usually use <@link command take>.
@@ -125,20 +129,20 @@ public class InventoryCommand extends AbstractCommand {
     // - inventory adjust slot:5 "lore:Item modified!"
     //
     // @Usage
-    // Use to set a flag on the player's held item.
-    // - inventory adjust slot:<player.held_item_slot> flag:myflag:<player.cursor_on>
-    //
-    // @Usage
     // Use to set a single stick into slot 10 of the player's inventory.
     // - inventory set o:stick slot:10
+    //
+    // @Usage
+    // Use to set a temporary flag on the player's held item.
+    // - inventory flag slot:<player.held_item_slot> flag my_target:<player.cursor_on> duration:1d
     // -->
 
-    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST}
+    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
 
     @SuppressWarnings("unchecked")
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        boolean isAdjust = false;
+        boolean isAdjust = false, isFlag = false;
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
@@ -159,6 +163,7 @@ public class InventoryCommand extends AbstractCommand {
                     && arg.matchesEnumList(Action.values())) {
                 scriptEntry.addObject("actions", arg.asType(ListTag.class).filter(Action.values()));
                 isAdjust = arg.toString().equalsIgnoreCase("adjust");
+                isFlag = arg.toString().equalsIgnoreCase("flag");
             }
             else if (!scriptEntry.hasObject("mechanism")
                     && isAdjust) {
@@ -169,6 +174,15 @@ public class InventoryCommand extends AbstractCommand {
                 else {
                     scriptEntry.addObject("mechanism", arg.asElement());
                 }
+            }
+            else if (!scriptEntry.hasObject("duration")
+                    && arg.matchesArgumentType(DurationTag.class)
+                    && isFlag) {
+                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
+            }
+            else if (!scriptEntry.hasObject("flag_action")
+                    && isFlag) {
+                scriptEntry.addObject("flag_action", DataActionHelper.parse(new FlagCommand.FlagActionProvider(), arg.getRawValue()));
             }
             else {
                 arg.reportUnhandled();
@@ -183,6 +197,9 @@ public class InventoryCommand extends AbstractCommand {
         }
         if (isAdjust && !scriptEntry.hasObject("slot")) {
             throw new InvalidArgumentsException("Inventory adjust must have an explicit slot!");
+        }
+        if (isFlag && !scriptEntry.hasObject("flag_action")) {
+            throw new InvalidArgumentsException("Inventory flag must have a flag action!");
         }
         scriptEntry.defaultObject("slot", new ElementTag(1));
         scriptEntry.defaultObject("destination",
@@ -204,6 +221,8 @@ public class InventoryCommand extends AbstractCommand {
         ElementTag slot = scriptEntry.getElement("slot");
         ElementTag mechanism = scriptEntry.getElement("mechanism");
         ElementTag mechanismValue = scriptEntry.getElement("mechanism_value");
+        DataAction flagAction = (DataAction) scriptEntry.getObject("flag_action");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("actions", actions.toString())
@@ -211,6 +230,8 @@ public class InventoryCommand extends AbstractCommand {
                             + (origin != null ? origin.debug() : "")
                             + (mechanism != null ? mechanism.debug() : "")
                             + (mechanismValue != null ? mechanismValue.debug() : "")
+                            + (flagAction != null ? flagAction.debug() : "")
+                            + (duration != null ? duration.debug() : "")
                             + slot.debug());
         }
         int slotId = SlotHelper.nameToIndex(slot.asString());
@@ -369,6 +390,15 @@ public class InventoryCommand extends AbstractCommand {
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     toAdjust.safeAdjust(new Mechanism(mechanism, mechanismValue, scriptEntry.entryData.getTagContext()));
                     NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
+                    break;
+                case FLAG:
+                    ItemTag toFlag = new ItemTag(destination.getInventory().getItem(slotId));
+                    FlagCommand.FlagActionProvider provider = (FlagCommand.FlagActionProvider) flagAction.provider;
+                    provider.expiration = duration == null ? null : new TimeTag(TimeTag.now().millis() + duration.getMillis());
+                    provider.tracker = toFlag.getFlagTracker();
+                    flagAction.execute(scriptEntry.context);
+                    toFlag.reapplyTracker(provider.tracker);
+                    NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toFlag.getItemStack(), slotId);
                     break;
             }
         }
