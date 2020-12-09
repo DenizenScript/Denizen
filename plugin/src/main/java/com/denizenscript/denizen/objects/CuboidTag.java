@@ -600,14 +600,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return getSpawnableBlocks(null, attribute);
     }
 
-    /**
-     * Returns a ListTag of LocationTags with 2 vertical blocks of air
-     * that are safe for players and similar entities to spawn in,
-     * but ignoring blocks in midair
-     *
-     * @return The ListTag
-     */
-
     public ListTag getSpawnableBlocks(List<MaterialTag> mats, Attribute attribute) {
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
@@ -622,8 +614,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
                         loc = new LocationTag(loc_1.clone().add(x, y, z));
-                        if (!loc.getBlockTypeForTag(attribute).isSolid()
-                                && !(new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute)).isSolid()
+                        if (loc.getBlockTypeForTag(attribute).isAir()
+                                && (new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute)).isAir()
                                 && ((mats == null ? new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
                                 : matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)))) {
                             // Get the center of the block, so the entity won't suffocate
