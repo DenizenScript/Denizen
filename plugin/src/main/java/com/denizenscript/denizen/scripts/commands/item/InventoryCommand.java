@@ -134,7 +134,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // @Usage
     // Use to set a temporary flag on the player's held item.
-    // - inventory flag slot:<player.held_item_slot> flag my_target:<player.cursor_on> duration:1d
+    // - inventory flag slot:<player.held_item_slot> my_target:<player.cursor_on> duration:1d
     // -->
 
     private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}

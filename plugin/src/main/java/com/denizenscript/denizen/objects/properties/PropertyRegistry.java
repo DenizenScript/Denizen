@@ -104,6 +104,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
         PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
         PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemBookGeneration.class, ItemTag.class);
         PropertyParser.registerProperty(ItemDisplayname.class, ItemTag.class);
         PropertyParser.registerProperty(ItemDurability.class, ItemTag.class);
         PropertyParser.registerProperty(ItemCanDestroy.class, ItemTag.class);
