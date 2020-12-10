@@ -2898,6 +2898,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @description
         // Shows the player a previously hidden entity.
+        // To show for everyone, use <@link mechanism EntityTag.show_to_players>.
+        // See also <@link mechanism PlayerTag.hide_entity>.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(EntityTag.class)) {
             NMSHandler.getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
@@ -2909,6 +2911,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @description
         // Hides an entity from the player.
+        // To hide from everyone, use <@link mechanism EntityTag.hide_from_players>.
+        // See also <@link mechanism PlayerTag.show_entity>.
         // -->
         if (mechanism.matches("hide_entity")) {
             if (!mechanism.getValue().asString().isEmpty()) {

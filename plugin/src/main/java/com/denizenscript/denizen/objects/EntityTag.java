@@ -3008,6 +3008,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input None
         // @description
         // Marks the entity as visible to players by default (if it was hidden).
+        // See also <@link mechanism EntityTag.hide_from_players>.
+        // To show to only one player, see <@link mechanism PlayerTag.show_entity>.
         // Works with offline players.
         // -->
         if (mechanism.matches("show_to_players")) {
@@ -3020,6 +3022,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input None
         // @description
         // Hides the entity from players by default.
+        // See also <@link mechanism EntityTag.show_to_players>.
+        // To hide for only one player, see <@link mechanism PlayerTag.hide_entity>.
         // Works with offline players.
         // -->
         if (mechanism.matches("hide_from_players")) {
