@@ -111,6 +111,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # For an empty slot, use "air".
     //           # By default, items require an exact match. For a material-based match, use the format "material:MaterialNameHere" like "material:stick".
     //           # To make multiple different items match for any slot, just separate them with slashes, like "stick/stone". To match multiple materials, use "material:a/b/c".
+    //           # Note that to require multiple of an item as an input, the only option is to use multiple slots. A single slot cannot require a quantity of items, as that is not part of the minecraft recipe system.
     //           # | All recipes must include this key!
     //           input:
     //           - ItemTag|ItemTag|ItemTag

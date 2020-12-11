@@ -485,6 +485,11 @@ public class ServerTagBase {
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
+        if (attribute.startsWith("flag_map")) {
+            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagMapTag(attribute)
+                    .getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
 
         // <--[tag]
         // @attribute <server.traits>
