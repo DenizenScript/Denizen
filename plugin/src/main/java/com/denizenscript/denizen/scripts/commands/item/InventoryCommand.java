@@ -182,7 +182,7 @@ public class InventoryCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("flag_action")
                     && isFlag) {
-                scriptEntry.addObject("flag_action", DataActionHelper.parse(new FlagCommand.FlagActionProvider(), arg.getRawValue()));
+                scriptEntry.addObject("flag_action", DataActionHelper.parse(new FlagCommand.FlagActionProvider(), arg, scriptEntry.context));
             }
             else {
                 arg.reportUnhandled();

@@ -62,7 +62,7 @@ public class ItemFlags implements Property {
             ItemTag item = new ItemTag(this.item.getItemStack().clone());
             FlagCommand.FlagActionProvider provider = new FlagCommand.FlagActionProvider();
             provider.tracker = item.getFlagTracker();
-            DataAction action = DataActionHelper.parse(provider, attribute.getContext(1));
+            DataAction action = DataActionHelper.parse(provider, attribute.getContext(1), attribute.context);
 
             // <--[tag]
             // @attribute <ItemTag.with_flag[<flag_set_action>].duration[<expire_duration>]>
@@ -130,7 +130,7 @@ public class ItemFlags implements Property {
         if (mechanism.matches("flag")) {
             FlagCommand.FlagActionProvider provider = new FlagCommand.FlagActionProvider();
             provider.tracker = item.getFlagTracker();
-            DataAction action = DataActionHelper.parse(provider, mechanism.getValue().asString());
+            DataAction action = DataActionHelper.parse(provider, mechanism.getValue().asString(), mechanism.context);
             action.execute(mechanism.context);
             item.reapplyTracker(provider.tracker);
         }
