@@ -163,6 +163,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerRightClicksEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerShearsScriptEvent());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            ScriptEvent.registerScriptEvent(new PlayersPrepareSmithingTableScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new PlayerSneakScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerSprintScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerStandsOnScriptEvent());

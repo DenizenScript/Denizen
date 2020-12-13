@@ -106,7 +106,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // @Usage
     // Use to open a virtual inventory with a title and some items.
-    // - inventory open d:generic[size=27;title=BestInventory;contents=snow_ball|clay_brick]
+    // - inventory open d:generic[size=27;title=BestInventory;contents=snow_ball|stick]
     //
     // @Usage
     // Use to open another player's inventory.
