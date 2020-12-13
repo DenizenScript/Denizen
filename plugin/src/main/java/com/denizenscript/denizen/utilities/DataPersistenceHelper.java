@@ -39,6 +39,10 @@ public class DataPersistenceHelper {
 
     public static final DenizenObjectType PERSISTER_TYPE = new DenizenObjectType();
 
+    public static void removeDenizenKey(PersistentDataHolder holder, String keyName) {
+        holder.getPersistentDataContainer().remove(new NamespacedKey(Denizen.getInstance(), keyName));
+    }
+
     public static void setDenizenKey(PersistentDataHolder holder, String keyName, ObjectTag keyValue) {
         holder.getPersistentDataContainer().set(new NamespacedKey(Denizen.getInstance(), keyName), PERSISTER_TYPE, keyValue);
     }

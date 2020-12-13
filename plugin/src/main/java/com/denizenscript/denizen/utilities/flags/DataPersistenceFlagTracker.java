@@ -31,6 +31,10 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
 
     @Override
     public void setRootMap(String key, MapTag map) {
+        if (map == null) {
+            DataPersistenceHelper.removeDenizenKey(holder, keyPrefix + CoreUtilities.toLowerCase(key));
+            return;
+        }
         DataPersistenceHelper.setDenizenKey(holder, keyPrefix + CoreUtilities.toLowerCase(key), map);
     }
 
