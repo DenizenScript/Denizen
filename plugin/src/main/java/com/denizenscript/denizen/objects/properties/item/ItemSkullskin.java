@@ -62,6 +62,7 @@ public class ItemSkullskin implements Property {
         // Returns the UUID of the player whose skin a skull item uses.
         // Note: Item must be a 'player_head' with a skin.
         // In format: UUID|Texture|Name.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         if (attribute.startsWith("skull_skin")) {
             String skin = getPropertyString();
@@ -80,6 +81,7 @@ public class ItemSkullskin implements Property {
         // Returns the UUID of the player whose skin a skull item uses.
         // Note: Item must be a 'player_head' with a skin.
         // In format: UUID|Texture|Name.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         if (attribute.startsWith("skin")) {
             String skin = getPropertyString();
@@ -144,6 +146,7 @@ public class ItemSkullskin implements Property {
         // The first ElementTag is a UUID.
         // Optionally, use the second ElementTag for the skin texture cache.
         // Optionally, use the third ElementTag for a player name.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // @tags
         // <ItemTag.skull_skin>
         // <ItemTag.skin>

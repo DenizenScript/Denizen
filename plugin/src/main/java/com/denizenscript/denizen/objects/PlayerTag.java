@@ -1696,10 +1696,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <PlayerTag.skin_blob>
         // @returns ElementTag
+        // @mechanism PlayerTag.skin_blob
         // @description
         // Returns the player's current skin blob.
         // In the format: "texture;signature" (two values separated by a semicolon).
-        // @mechanism PlayerTag.skin_blob
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         registerOnlineOnlyTag("skin_blob", (attribute, object) -> {
             return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity()));
@@ -1711,7 +1712,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the player's current skin blob, formatted for input to a Player Skull item.
         // In the format: "UUID|Texture|Name" (three values separated by pipes).
-        // See also <@link tag PlayerTag.skin_blob>.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         registerOnlineOnlyTag("skull_skin", (attribute, object) -> {
             String skin = NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity());
@@ -3419,6 +3420,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag
         // @description
         // Changes the skin of the player to the skin of the given player name.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         if (mechanism.matches("skin")) {
             String name = mechanism.getValue().asString();
@@ -3437,6 +3439,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Changes the skin of the player to the specified blob.
         // In the format: "texture;signature" (two values separated by a semicolon).
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // @tags
         // <PlayerTag.skin_blob>
         // -->

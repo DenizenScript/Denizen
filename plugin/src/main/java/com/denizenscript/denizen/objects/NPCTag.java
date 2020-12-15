@@ -778,6 +778,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's custom skin blob, if any.
         // In the format: "texture;signature" (two values separated by a semicolon).
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         registerTag("skin_blob", (attribute, object) -> {
             if (object.getCitizen().hasTrait(SkinTrait.class)) {
@@ -798,7 +799,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current skin blob, formatted for input to a Player Skull item.
         // In the format: "UUID|Texture" (two values separated by pipes).
-        // See also <@link tag NPCTag.skin_blob>.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         registerTag("skull_skin", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(SkinTrait.class)) {
@@ -1257,6 +1258,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the skin blob of an NPC, in the form of "texture;signature;name".
         // Call with no value to clear the custom skin value.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // @tags
         // <NPCTag.skin>
         // -->
@@ -1291,6 +1293,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the skin of an NPC by name.
         // Call with no value to clear the custom skin value.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
         // @tags
         // <NPCTag.skin>
         // -->
