@@ -6,13 +6,15 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.PiglinAbstract;
 
 public class EntityImmune implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
-                && ((EntityTag) entity).getBukkitEntity() instanceof PiglinAbstract;
+                && (((EntityTag) entity).getBukkitEntity() instanceof PiglinAbstract
+                || ((EntityTag) entity).getBukkitEntity() instanceof Hoglin);
     }
 
     public static EntityImmune getFrom(ObjectTag entity) {
@@ -38,13 +40,28 @@ public class EntityImmune implements Property {
 
     EntityTag dentity;
 
+    public boolean isHoglin() {
+        return dentity.getBukkitEntity() instanceof Hoglin;
+    }
+
+    public Hoglin getHoglin() {
+        return (Hoglin) dentity.getBukkitEntity();
+    }
+
     public PiglinAbstract getPiglin() {
         return (PiglinAbstract) dentity.getBukkitEntity();
     }
 
+    public boolean getIsImmune() {
+        if (isHoglin()) {
+            return getHoglin().isImmuneToZombification();
+        }
+        return getPiglin().isImmuneToZombification();
+    }
+
     @Override
     public String getPropertyString() {
-        return getPiglin().isImmuneToZombification() ? "true" : "false";
+        return getIsImmune() ? "true" : "false";
     }
 
     @Override
@@ -68,7 +85,7 @@ public class EntityImmune implements Property {
         // Returns whether this piglin entity is immune to zombification.
         // -->
         if (attribute.startsWith("immune")) {
-            return new ElementTag(getPiglin().isImmuneToZombification())
+            return new ElementTag(getIsImmune())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -88,7 +105,12 @@ public class EntityImmune implements Property {
         // <EntityTag.immune>
         // -->
         if (mechanism.matches("immune") && mechanism.requireBoolean()) {
-            getPiglin().setImmuneToZombification(mechanism.getValue().asBoolean());
+            if (isHoglin()) {
+                getHoglin().setImmuneToZombification(mechanism.getValue().asBoolean());
+            }
+            else {
+                getPiglin().setImmuneToZombification(mechanism.getValue().asBoolean());
+            }
         }
     }
 }
