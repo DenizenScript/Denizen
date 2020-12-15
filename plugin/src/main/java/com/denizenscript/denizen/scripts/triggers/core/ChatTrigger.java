@@ -79,8 +79,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //   trigger: /*/
     //   # Add this line to hide the "[Player -> NPC]: hi" initial trigger message.
     //   hide trigger message: true
+    //   # Add this line to show the player chat message in the normal chat.
+    //   show as normal chat: true
     //   script:
-    //   # If you hide the trigger message, you might want to fill that spot with something else.
+    //   # If you hide the trigger message but not show as normal chat, you might want to fill that spot with something else.
     //   - narrate "[Player -> NPC]: I don't know how to type the right thing"
     //   - wait 1
     //   - chat "Well type 'keyword' or any number!"
@@ -345,6 +347,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
         // If there was a match, the id of the match should have been returned.
+        String showNormalChat = script.getString("STEPS." + step + ".CHAT TRIGGER." + id + ".SHOW AS NORMAL CHAT", "false");
         if (id != null) {
             String hideTriggerMessage = script.getString("STEPS." + step + ".CHAT TRIGGER." + id + ".HIDE TRIGGER MESSAGE", "false");
             if (!hideTriggerMessage.equalsIgnoreCase("true")) {
@@ -354,7 +357,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (HyperDebug) {
                 Debug.log("chat to NPC");
             }
-            return new ChatContext(true);
+            return new ChatContext(!showNormalChat.equalsIgnoreCase("true"));
         }
         else {
             if (!Settings.chatGloballyIfFailedChatTriggers()) {
@@ -362,7 +365,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 if (HyperDebug) {
                     Debug.log("Chat globally");
                 }
-                return new ChatContext(true);
+                return new ChatContext(!showNormalChat.equalsIgnoreCase("true"));
             }
             // No matching chat triggers, and the config.yml says we
             // should just ignore the interaction...
