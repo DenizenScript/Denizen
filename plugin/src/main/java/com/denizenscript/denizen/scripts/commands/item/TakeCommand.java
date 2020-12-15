@@ -24,6 +24,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -75,6 +77,8 @@ public class TakeCommand extends AbstractCommand {
     //
     // Optionally using 'from:' to specify a specific inventory to take from. If not specified, the linked player's inventory will be used.
     //
+    // The options 'iteminhand', 'cursoritem', 'money', and 'xp' require a linked player and will ignore the 'from:' inventory.
+    //
     // @Tags
     // <PlayerTag.item_in_hand>
     // <PlayerTag.money>
@@ -97,6 +101,8 @@ public class TakeCommand extends AbstractCommand {
     // -->
 
     private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED}
+
+    public static HashSet<Type> requiresPlayerTypes = new HashSet<>(Arrays.asList(Type.XP, Type.MONEY, Type.ITEMINHAND, Type.CURSORITEM));
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -203,6 +209,9 @@ public class TakeCommand extends AbstractCommand {
         }
         if (type == Type.ITEM && scriptEntry.getObject("items") == null) {
             throw new InvalidArgumentsException("Must specify item/items!");
+        }
+        if (requiresPlayerTypes.contains(type) && !Utilities.entryHasPlayer(scriptEntry)) {
+            throw new InvalidArgumentsException("Cannot take '" + type.name() + "' without a linked player.");
         }
     }
 
