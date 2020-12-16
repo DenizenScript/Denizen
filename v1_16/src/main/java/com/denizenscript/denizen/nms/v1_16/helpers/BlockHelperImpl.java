@@ -165,7 +165,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_16_R3.BlockBase.class).get("material");
 
-    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.Material.class, "S");
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.Material.class, "T");
 
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.BlockBase.BlockData.class, "strength");
 
