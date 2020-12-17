@@ -156,7 +156,7 @@ public class DisguiseCommand extends AbstractCommand {
                                         cancel();
                                         return;
                                     }
-                                    NMSHandler.getEntityHelper().move(fake.entity.getBukkitEntity(), player.getLocation().toVector().subtract(fake.entity.getLocation().toVector()));
+                                    NMSHandler.getEntityHelper().snapPositionTo(fake.entity.getBukkitEntity(), player.getLocation().toVector());
                                     NMSHandler.getEntityHelper().look(fake.entity.getBukkitEntity(), player.getLocation().getYaw(), player.getLocation().getPitch());
                                 }
                             }.runTaskTimer(Denizen.getInstance(), 1, 1);

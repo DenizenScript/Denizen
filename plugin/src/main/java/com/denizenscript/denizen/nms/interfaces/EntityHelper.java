@@ -443,6 +443,8 @@ public abstract class EntityHelper {
         }
     }
 
+    public abstract void snapPositionTo(Entity entity, Vector vector);
+
     public abstract void move(Entity entity, Vector vector);
 
     public abstract void teleport(Entity entity, Vector vector);

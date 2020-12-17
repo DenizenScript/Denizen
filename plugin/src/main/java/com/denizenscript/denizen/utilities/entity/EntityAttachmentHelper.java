@@ -65,7 +65,7 @@ public class EntityAttachmentHelper {
                             goal.setPitch(attachLoc.getPitch());
                         }
                         if (attached.isFake) {
-                            NMSHandler.getEntityHelper().move(attached.getBukkitEntity(), goal.toVector().subtract(attached.getLocation().toVector()));
+                            NMSHandler.getEntityHelper().snapPositionTo(attached.getBukkitEntity(), goal.toVector());
                             NMSHandler.getEntityHelper().look(attached.getBukkitEntity(), goal.getYaw(), goal.getPitch());
                         }
                         else {

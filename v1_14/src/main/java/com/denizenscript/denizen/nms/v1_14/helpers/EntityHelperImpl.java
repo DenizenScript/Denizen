@@ -565,6 +565,11 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
+    public void snapPositionTo(Entity entity, Vector vector) {
+        ((CraftEntity) entity).getHandle().setPosition(vector.getX(), vector.getY(), vector.getZ());
+    }
+
+    @Override
     public void move(Entity entity, Vector vector) {
         ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, new Vec3D(vector.getX(), vector.getY(), vector.getZ()));
     }

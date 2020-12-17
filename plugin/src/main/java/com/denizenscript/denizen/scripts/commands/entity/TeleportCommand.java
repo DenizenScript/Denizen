@@ -102,8 +102,8 @@ public class TeleportCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("entities", entities.toString()));
         }
         for (EntityTag entity : entities) {
-            if (entity.isFake) {
-                NMSHandler.getEntityHelper().move(entity.getBukkitEntity(), location.toVector().subtract(entity.getLocation().toVector()));
+            if (entity.isFake && entity.getWorld().equals(location.getWorld())) {
+                NMSHandler.getEntityHelper().snapPositionTo(entity.getBukkitEntity(), location.toVector());
                 NMSHandler.getEntityHelper().look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
             }
