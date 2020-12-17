@@ -438,6 +438,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     private UUID uuid = null;
     private String entityScript = null;
     public boolean isFake = false;
+    public boolean isFakeValid = false;
 
     public DenizenEntityType getEntityType() {
         return entity_type;
@@ -810,11 +811,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean isSpawned() {
-        return entity != null && entity.isValid();
+        return isValid();
     }
 
     public boolean isValid() {
-        return entity != null && entity.isValid();
+        return entity != null && (entity.isValid() || (isFake && isFakeValid));
     }
 
     public boolean isValidForTag() {
@@ -2471,10 +2472,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         rotateWith = new ElementTag(list.get(2)).asBoolean();
                     }
                 }
-                EntityAttachmentHelper.forceAttachMove(entity, EntityTag.valueOf(list.get(0), mechanism.context).getBukkitEntity(), offset, rotateWith);
+                EntityAttachmentHelper.forceAttachMove(this, EntityTag.valueOf(list.get(0), mechanism.context), offset, rotateWith);
             }
             else {
-                EntityAttachmentHelper.forceAttachMove(entity, null, null, false);
+                EntityAttachmentHelper.forceAttachMove(this, null, null, false);
             }
         }
 

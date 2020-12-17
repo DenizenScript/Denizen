@@ -232,12 +232,12 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
                         if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKENT.setInt(pNew, att.attached.getEntityId());
+                            ENTITY_ID_PACKENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                             if (att.positionalOffset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
                                 boolean isRotate = packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
                                 byte yaw, pitch;
                                 if (att.noRotate) {
-                                    Entity attachedEntity = ((CraftEntity) att.attached).getHandle();
+                                    Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
                                     yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
                                     pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
                                 }
@@ -267,7 +267,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                         || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
                                         || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
                                     PacketPlayOutEntityTeleport newTeleportPacket = new PacketPlayOutEntityTeleport(e);
-                                    ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, att.attached.getEntityId());
+                                    ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, att.attached.getBukkitEntity().getEntityId());
                                     POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
                                     POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
                                     POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
@@ -306,7 +306,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
                         if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getEntityId());
+                            ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                             oldManager.sendPacket(pNew);
                         }
                     }
@@ -325,13 +325,13 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
                         if (attMap.attached.isValid() && att != null) {
                             Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getEntityId());
+                            ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                             Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
                             if (att.positionalOffset != null) {
                                 resultPos = att.fixedForOffset(resultPos, e.yaw, e.pitch);
                                 byte yaw, pitch;
                                 if (att.noRotate) {
-                                    Entity attachedEntity = ((CraftEntity) att.attached).getHandle();
+                                    Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
                                     yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
                                     pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
                                 }

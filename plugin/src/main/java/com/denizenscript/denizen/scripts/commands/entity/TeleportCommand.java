@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -101,6 +102,11 @@ public class TeleportCommand extends AbstractCommand {
                     ArgumentHelper.debugObj("entities", entities.toString()));
         }
         for (EntityTag entity : entities) {
+            if (entity.isFake) {
+                NMSHandler.getEntityHelper().move(entity.getBukkitEntity(), location.toVector().subtract(entity.getLocation().toVector()));
+                NMSHandler.getEntityHelper().look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
+                return;
+            }
             // Call a Bukkit event for compatibility with "on entity teleports"
             // world event and other plugins
             if (entity.isSpawned()) {

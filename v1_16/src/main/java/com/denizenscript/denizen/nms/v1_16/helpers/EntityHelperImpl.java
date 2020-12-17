@@ -503,6 +503,9 @@ public class EntityHelperImpl extends EntityHelper {
             }
             handle.pitch = pitch;
         }
+        else {
+            Debug.echoError("Cannot set look direction for unspawned entitity " + entity.getUniqueId());
+        }
     }
 
     private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {

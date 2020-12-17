@@ -164,8 +164,8 @@ public class AttachCommand extends AbstractCommand {
             }
             else {
                 EntityAttachmentHelper.AttachmentData attachment = new EntityAttachmentHelper.AttachmentData();
-                attachment.attached = entity.getBukkitEntity();
-                attachment.to = target.getBukkitEntity();
+                attachment.attached = entity;
+                attachment.to = target;
                 attachment.positionalOffset = offset == null ? null : offset.clone();
                 attachment.offsetRelative = relative.asBoolean();
                 attachment.yawAngleOffset = yaw_offset.asFloat();
@@ -177,7 +177,7 @@ public class AttachCommand extends AbstractCommand {
             }
         };
         for (EntityTag entity : entities) {
-            if (!entity.isSpawned() && !shouldCancel) {
+            if (!entity.isSpawned() && !entity.isFake && !shouldCancel) {
                 Debug.echoError("Cannot attach entity '" + entity + "': entity is not spawned.");
                 continue;
             }

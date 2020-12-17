@@ -5,6 +5,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.WorldTag;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -89,7 +90,13 @@ public class RemoveCommand extends AbstractCommand {
         }
         for (EntityTag entity : entities) {
             if (!entity.isGeneric()) {
-                if (entity.isCitizensNPC()) {
+                if (entity.isFake) {
+                    FakeEntity fakeEnt = FakeEntity.idsToEntities.get(entity.getUUID());
+                    if (fakeEnt != null) {
+                        fakeEnt.cancelEntity();
+                    }
+                }
+                else if (entity.isCitizensNPC()) {
                     entity.getDenizenNPC().getCitizen().destroy();
                 }
                 else {

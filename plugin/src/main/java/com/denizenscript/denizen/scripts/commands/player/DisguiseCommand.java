@@ -118,8 +118,8 @@ public class DisguiseCommand extends AbstractCommand {
         else {
             for (PlayerTag player : players) {
                 NMSHandler.getPlayerHelper().sendEntityDestroy(player.getPlayerEntity(), entity.getBukkitEntity());
-                NMSHandler.getPlayerHelper().sendEntitySpawn(player.getPlayerEntity(), as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID());
             }
+            NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
         }
     }
 }

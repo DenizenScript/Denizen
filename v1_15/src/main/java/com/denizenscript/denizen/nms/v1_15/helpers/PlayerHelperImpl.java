@@ -1,9 +1,11 @@
 package com.denizenscript.denizen.nms.v1_15.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.v1_15.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.handlers.AbstractListenerPlayInImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -20,12 +22,10 @@ import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerHelperImpl extends PlayerHelper {
 
@@ -67,9 +67,9 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public Entity sendEntitySpawn(Player player, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID) {
-        PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
-        net.minecraft.server.v1_15_R1.Entity nmsEntity = ((CraftWorld) location.getWorld()).createEntity(location,  entityType.getEntityClass());
+    public EntityTag sendEntitySpawn(List<PlayerTag> players, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
+        CraftWorld world = ((CraftWorld) location.getWorld());
+        net.minecraft.server.v1_15_R1.Entity nmsEntity = world.createEntity(location,  entityType.getEntityClass());
         if (customUUID != null) {
             nmsEntity.e(customId);
             nmsEntity.a(customUUID);
@@ -78,36 +78,27 @@ public class PlayerHelperImpl extends PlayerHelper {
         for (Mechanism mechanism : mechanisms) {
             entity.safeAdjust(mechanism);
         }
-        if (nmsEntity instanceof EntityLiving) {
-            EntityLiving nmsLivingEntity = (EntityLiving) nmsEntity;
-            if (nmsEntity instanceof EntityPlayer) {
-                conn.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) nmsEntity));
-                conn.sendPacket(new PacketPlayOutNamedEntitySpawn((EntityHuman) nmsEntity));
+        nmsEntity.dead = false;
+        EntityTag entTag = new EntityTag(entity.getBukkitEntity());
+        for (PlayerTag player : players) {
+            EntityPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
+            PlayerConnection conn = nmsPlayer.playerConnection;
+            final EntityTrackerEntry tracker = new EntityTrackerEntry(world.getHandle(), nmsEntity, 1, true, conn::sendPacket, Collections.singleton(nmsPlayer));
+            tracker.b(nmsPlayer);
+            if (autoTrack) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!entTag.isFakeValid) {
+                            cancel();
+                            return;
+                        }
+                        tracker.a();
+                    }
+                }.runTaskTimer(Denizen.getInstance(), 1, 1);
             }
-            else {
-                conn.sendPacket(new PacketPlayOutSpawnEntityLiving(nmsLivingEntity));
-            }
-            for (EnumItemSlot itemSlot : EnumItemSlot.values()) {
-                ItemStack nmsItemStack = nmsLivingEntity.getEquipment(itemSlot);
-                if (nmsItemStack != null && nmsItemStack.getItem() != Items.AIR) {
-                    conn.sendPacket(new PacketPlayOutEntityEquipment(nmsLivingEntity.getId(), itemSlot, nmsItemStack));
-                }
-            }
         }
-        else if (nmsEntity instanceof EntityExperienceOrb) {
-            conn.sendPacket(new PacketPlayOutSpawnEntityExperienceOrb((EntityExperienceOrb) nmsEntity));
-        }
-        else if (nmsEntity instanceof EntityPainting) {
-            conn.sendPacket(new PacketPlayOutSpawnEntityPainting((EntityPainting) nmsEntity));
-        }
-        else if (nmsEntity instanceof EntityLightning) {
-            conn.sendPacket(new PacketPlayOutSpawnEntityWeather(nmsEntity));
-        }
-        else {
-            conn.sendPacket(new PacketPlayOutSpawnEntity(nmsEntity));
-        }
-        conn.sendPacket(new PacketPlayOutEntityMetadata(nmsEntity.getId(), nmsEntity.getDataWatcher(), true));
-        return entity.getBukkitEntity();
+        return entTag;
     }
 
     @Override
