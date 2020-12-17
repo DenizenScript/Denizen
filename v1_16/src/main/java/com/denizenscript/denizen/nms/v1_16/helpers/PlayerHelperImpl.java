@@ -103,7 +103,6 @@ public class PlayerHelperImpl extends PlayerHelper {
             }
         }
         return entTag;
-
     }
 
     @Override

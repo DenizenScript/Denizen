@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -17,16 +16,6 @@ public class FakeEntity {
     public static class FakeEntityMap {
 
         public Map<Integer, FakeEntity> byId = new HashMap<>();
-
-        public FakeEntity getOrAdd(List<PlayerTag> players, LocationTag location, int id) {
-            FakeEntity entity = byId.get(id);
-            if (entity != null) {
-                return entity;
-            }
-            entity = new FakeEntity(players, location, id);
-            byId.put(id, entity);
-            return entity;
-        }
 
         public void remove(FakeEntity entity) {
             byId.remove(entity.id);
@@ -56,27 +45,23 @@ public class FakeEntity {
         this.id = id;
     }
 
-    public static ListTag showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration) {
-        ListTag result = new ListTag();
+    public static FakeEntity showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration) {
+        EntityTag entTag = NMSHandler.getPlayerHelper().sendEntitySpawn(players, typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null, true);
+        entTag.isFake = true;
+        entTag.isFakeValid = true;
+        FakeEntity fakeEntity = new FakeEntity(players, location, entTag.getBukkitEntity().getEntityId());
+        idsToEntities.put(entTag.getUUID(), fakeEntity);
         for (PlayerTag player : players) {
-            if (!player.isOnline() || !player.isValid()) {
-                continue;
-            }
             UUID uuid = player.getPlayerEntity().getUniqueId();
             FakeEntity.FakeEntityMap playerEntities = playersToEntities.get(uuid);
             if (playerEntities == null) {
                 playerEntities = new FakeEntity.FakeEntityMap();
                 playersToEntities.put(uuid, playerEntities);
             }
-            EntityTag entTag = NMSHandler.getPlayerHelper().sendEntitySpawn(players, typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null, true);
-            FakeEntity fakeEntity = playerEntities.getOrAdd(players, location, entTag.getBukkitEntity().getEntityId());
-            entTag.isFake = true;
-            entTag.isFakeValid = true;
-            fakeEntity.updateEntity(entTag, duration);
-            idsToEntities.put(entTag.getUUID(), fakeEntity);
-            result.addObject(entTag);
+            playerEntities.byId.put(fakeEntity.id, fakeEntity);
         }
-        return result;
+        fakeEntity.updateEntity(entTag, duration);
+        return fakeEntity;
     }
 
     public void cancelEntity() {

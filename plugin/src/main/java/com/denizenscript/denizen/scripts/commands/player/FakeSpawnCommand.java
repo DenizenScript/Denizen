@@ -47,7 +47,7 @@ public class FakeSpawnCommand extends AbstractCommand {
     //
     // @Tags
     // <PlayerTag.fake_entities>
-    // <entry[saveName].faked_entities> returns the list of spawned faked entities (one per player).
+    // <entry[saveName].faked_entity> returns the spawned faked entity.
     //
     // @Usage
     // Use to show a fake creeper in front of the attached player.
@@ -121,8 +121,8 @@ public class FakeSpawnCommand extends AbstractCommand {
             }
         }
         else {
-            ListTag created = FakeEntity.showFakeEntityTo(players, entity, location, duration);
-            scriptEntry.addObject("faked_entities", created);
+            FakeEntity created = FakeEntity.showFakeEntityTo(players, entity, location, duration);
+            scriptEntry.addObject("faked_entity", created.entity);
         }
     }
 }
