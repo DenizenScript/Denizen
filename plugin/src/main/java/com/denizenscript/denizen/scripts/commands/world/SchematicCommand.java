@@ -267,9 +267,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 catch (Exception ex) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Error creating schematic object " + name.asString() + ".");
                     Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                    scriptEntry.setFinished(true);
                     return;
                 }
-                scriptEntry.setFinished(true);
                 break;
             }
             case LOAD: {
