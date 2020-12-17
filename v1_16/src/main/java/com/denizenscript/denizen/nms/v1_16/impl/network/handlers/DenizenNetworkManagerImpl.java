@@ -211,7 +211,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 }
                 DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUniqueID());
                 if (disguise == null) {
-                    return false;
+                    disguise = playerMap.get(null);
+                    if (disguise == null) {
+                        return false;
+                    }
                 }
                 antiDuplicate = true;
                 disguise.sendTo(Collections.singletonList(new PlayerTag(player.getBukkitEntity())));

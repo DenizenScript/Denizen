@@ -611,6 +611,19 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return identify();
     }
 
+    @Override
+    public int hashCode() {
+        return getOfflinePlayer().getUniqueId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof PlayerTag)) {
+            return false;
+        }
+        return getOfflinePlayer().getUniqueId().equals(((PlayerTag) other).getOfflinePlayer().getUniqueId());
+    }
+
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);

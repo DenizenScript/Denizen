@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.world.TimeChangeScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
@@ -103,4 +105,8 @@ public class BukkitWorldScriptHelper implements Listener {
         PlayerTag.notePlayer(event.getPlayer());
     }
 
+    @EventHandler
+    public void playerQuit(PlayerQuitEvent event) {
+        NMSHandler.getPacketHelper().removeNoCollideTeam(event.getPlayer(), null);
+    }
 }

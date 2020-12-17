@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -22,16 +23,16 @@ public class DisguiseCommand extends AbstractCommand {
 
     public DisguiseCommand() {
         setName("disguise");
-        setSyntax("disguise [<entity>] [cancel/as:<type>] (players:<player>|...)");
-        setRequiredArguments(2, 3);
+        setSyntax("disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...)");
+        setRequiredArguments(2, 4);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name disguise
-    // @Syntax disguise [<entity>] [cancel/as:<type>] (players:<player>|...)
+    // @Syntax disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...)
     // @Required 2
-    // @Maximum 3
+    // @Maximum 4
     // @Short Makes the player see an entity as though it were a different type of entity.
     // @Group player
     //
@@ -49,6 +50,7 @@ public class DisguiseCommand extends AbstractCommand {
     //
     // Optionally, specify a list of players to show or cancel the entity to.
     // If unspecified, will default to the linked player.
+    // Or, specify 'global' to make the disguise or cancel apply for all players. If using global, use "players:<player>" to show to the self-player.
     //
     // To remove a disguise, use the 'cancel' argument.
     //
@@ -72,6 +74,10 @@ public class DisguiseCommand extends AbstractCommand {
                     && arg.matchesPrefix("to", "players")) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
+            else if (!scriptEntry.hasObject("global")
+                    && arg.matches("global")) {
+                scriptEntry.addObject("global", new ElementTag(true));
+            }
             else if (arg.matchesPrefix("as")
                     && arg.matchesArgumentType(EntityTag.class)) {
                 scriptEntry.addObject("as", arg.asType(EntityTag.class));
@@ -89,7 +95,12 @@ public class DisguiseCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
-            scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+            if (scriptEntry.hasObject("global")) {
+                scriptEntry.defaultObject("players", new ArrayList<>());
+            }
+            else {
+                scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+            }
         }
         if (!scriptEntry.hasObject("as") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a valid type to disguise as!");
@@ -108,16 +119,23 @@ public class DisguiseCommand extends AbstractCommand {
 
         public EntityTag as;
 
-        public HashSet<UUID> players;
-
         public FakeEntity fake;
 
-        public TrackedDisguise(EntityTag entity, EntityTag as, List<PlayerTag> players) {
+        public TrackedDisguise(EntityTag entity, EntityTag as) {
             this.entity = entity;
             this.as = as;
-            this.players = new HashSet<>();
-            for (PlayerTag player : players ) {
-                this.players.add(player.getOfflinePlayer().getUniqueId());
+        }
+
+        public void removeFor(PlayerTag player) {
+            if (fake != null && player.getOfflinePlayer().getUniqueId().equals(entity.getUUID())) {
+                if (player.isOnline()) {
+                    NMSHandler.getPacketHelper().removeNoCollideTeam(player.getPlayerEntity(), fake.entity.getUUID());
+                }
+                fake.cancelEntity();
+                fake = null;
+            }
+            else if (player.isOnline()) {
+                NMSHandler.getPlayerHelper().deTrackEntity(player.getPlayerEntity(), entity.getBukkitEntity());
             }
         }
 
@@ -133,7 +151,7 @@ public class DisguiseCommand extends AbstractCommand {
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    if (!fake.entity.isFakeValid || !player.isOnline()) {
+                                    if (fake == null || !fake.entity.isFakeValid || !player.isOnline()) {
                                         fake = null;
                                         cancel();
                                         return;
@@ -169,44 +187,73 @@ public class DisguiseCommand extends AbstractCommand {
         EntityTag entity = scriptEntry.getObjectTag("entity");
         EntityTag as = scriptEntry.getObjectTag("as");
         ElementTag cancel = scriptEntry.getElement("cancel");
+        ElementTag global = scriptEntry.getElement("global");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), entity.debug()
                     + (cancel != null ? cancel.debug() : as.debug())
+                    + (global != null ? global.debug() : "")
                     + ArgumentHelper.debugList("players", players));
         }
+        boolean isGlobal = global != null && global.asBoolean();
         if (cancel != null && cancel.asBoolean()) {
-            for (PlayerTag player : players) {
-                HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
-                if (playerMap != null) {
-                    TrackedDisguise disguise = playerMap.remove(player.getOfflinePlayer().getUniqueId());
-                    if (disguise != null) {
-                        if (disguise.fake != null && player.getOfflinePlayer().getUniqueId().equals(entity.getUUID())) {
-                            NMSHandler.getPacketHelper().removeNoCollideTeam(player.getPlayerEntity(), disguise.fake.entity.getUUID());
-                            disguise.fake.cancelEntity();
-                            disguise.fake = null;
+            HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+            if (playerMap != null) {
+                if (isGlobal) {
+                    for (Map.Entry<UUID, TrackedDisguise> entry : playerMap.entrySet()) {
+                        if (entry.getKey() == null) {
+                            for (Player player : entity.getWorld().getPlayers()) {
+                                entry.getValue().removeFor(new PlayerTag(player));
+                            }
                         }
-                        else if (player.isOnline()) {
-                            NMSHandler.getPlayerHelper().deTrackEntity(player.getPlayerEntity(), entity.getBukkitEntity());
+                        else {
+                            PlayerTag player = new PlayerTag(entry.getKey());
+                            entry.getValue().removeFor(player);
                         }
-                        if (playerMap.isEmpty()) {
-                            disguises.remove(entity.getUUID());
+                    }
+                    disguises.remove(entity.getUUID());
+                }
+                else {
+                    for (PlayerTag player : players) {
+                        TrackedDisguise disguise = playerMap.remove(player.getOfflinePlayer().getUniqueId());
+                        if (disguise != null) {
+                            disguise.removeFor(player);
+                            if (playerMap.isEmpty()) {
+                                disguises.remove(entity.getUUID());
+                            }
                         }
                     }
                 }
             }
         }
         else {
-            TrackedDisguise disguise = new TrackedDisguise(entity, as, players);
-            for (PlayerTag player : players) {
+            TrackedDisguise disguise = new TrackedDisguise(entity, as);
+            if (isGlobal) {
                 HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
                 if (playerMap == null) {
                     playerMap = new HashMap<>();
                     disguises.put(entity.getUUID(), playerMap);
                 }
-                playerMap.put(player.getOfflinePlayer().getUniqueId(), disguise);
+                playerMap.put(null, disguise);
+                ArrayList<PlayerTag> playerSet = new ArrayList<>(players);
+                for (Player player : entity.getWorld().getPlayers()) {
+                    if (!playerSet.contains(new PlayerTag(player)) && !player.getUniqueId().equals(entity.getUUID())) {
+                        playerSet.add(new PlayerTag(player));
+                    }
+                }
+                disguise.sendTo(playerSet);
             }
-            disguise.sendTo(players);
+            else {
+                for (PlayerTag player : players) {
+                    HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+                    if (playerMap == null) {
+                        playerMap = new HashMap<>();
+                        disguises.put(entity.getUUID(), playerMap);
+                    }
+                    playerMap.put(player.getOfflinePlayer().getUniqueId(), disguise);
+                }
+                disguise.sendTo(players);
+            }
         }
     }
 }

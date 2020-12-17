@@ -294,7 +294,7 @@ public class PacketHelperImpl implements PacketHelper {
         }
     }
 
-    public static HashMap<String, ScoreboardTeam> noCollideTeamMap = new HashMap<>();
+    public static HashMap<UUID, HashMap<UUID, ScoreboardTeam>> noCollideTeamMap = new HashMap<>();
 
     @Override
     public void generateNoCollideTeam(Player player, UUID noCollide) {
@@ -302,15 +302,31 @@ public class PacketHelperImpl implements PacketHelper {
         ScoreboardTeam team = new ScoreboardTeam(SidebarImpl.dummyScoreboard, Utilities.generateRandomColors(8));
         team.getPlayerNameSet().add(noCollide.toString());
         team.setCollisionRule(ScoreboardTeamBase.EnumTeamPush.NEVER);
-        noCollideTeamMap.put(player.getUniqueId() + "_" + noCollide, team);
+        HashMap<UUID, ScoreboardTeam> map = noCollideTeamMap.get(player.getUniqueId());
+        if (map == null) {
+            map = new HashMap<>();
+            noCollideTeamMap.put(player.getUniqueId(), map);
+        }
+        map.put(noCollide, team);
         sendPacket(player, new PacketPlayOutScoreboardTeam(team, 0));
     }
 
     @Override
     public void removeNoCollideTeam(Player player, UUID noCollide) {
-        ScoreboardTeam team = noCollideTeamMap.remove(player.getUniqueId() + "_" + noCollide);
+        if (noCollide == null || !player.isOnline()) {
+            noCollideTeamMap.remove(player.getUniqueId());
+            return;
+        }
+        HashMap<UUID, ScoreboardTeam> map = noCollideTeamMap.get(player.getUniqueId());
+        if (map == null) {
+            return;
+        }
+        ScoreboardTeam team = map.remove(noCollide);
         if (team != null) {
             sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
+        }
+        if (map.isEmpty()) {
+            noCollideTeamMap.remove(player.getUniqueId());
         }
     }
 
