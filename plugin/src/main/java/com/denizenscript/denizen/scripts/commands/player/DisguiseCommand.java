@@ -42,7 +42,8 @@ public class DisguiseCommand extends AbstractCommand {
     // The entity will still visibly behave the same as the real entity type does.
     //
     // Be warned that the replacement is imperfect, and visual or internal-client errors may arise from using this command.
-    // This command should not be used to disguise players in their own view.
+    //
+    // If you disguise a player to themself, they will see a slightly-lagging-behind copy of the disguise entity.
     //
     // The disguise will last until a server restart, or the cancel option is used.
     //
@@ -132,7 +133,7 @@ public class DisguiseCommand extends AbstractCommand {
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    if (!fake.entity.isFakeValid) {
+                                    if (!fake.entity.isFakeValid || !player.isOnline()) {
                                         fake = null;
                                         cancel();
                                         return;

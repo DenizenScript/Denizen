@@ -89,7 +89,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (!entTag.isFakeValid) {
+                        if (!entTag.isFakeValid || !player.isOnline()) {
                             cancel();
                             return;
                         }
