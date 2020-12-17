@@ -196,7 +196,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
         if (string.startsWith("e@fake:")) {
             try {
-                UUID entityID = UUID.fromString(string);
+                UUID entityID = UUID.fromString(string.substring("e@fake:".length()));
                 FakeEntity entity = FakeEntity.idsToEntities.get(entityID);
                 if (entity != null) {
                     return entity.entity;
