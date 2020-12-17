@@ -67,13 +67,10 @@ public class TeamCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         String name = null;
         String prefix = null;
         String suffix = null;
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesPrefix("id")
                     && !scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
@@ -124,31 +121,25 @@ public class TeamCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (name == null || name.length() == 0 || name.length() > 16) {
             throw new InvalidArgumentsException("Must specify a team name between 1 and 16 characters!");
         }
-
         if (!scriptEntry.hasObject("add") && !scriptEntry.hasObject("remove")
                 && !scriptEntry.hasObject("option") && !scriptEntry.hasObject("color")
                 && !scriptEntry.hasObject("prefix") && !scriptEntry.hasObject("suffix")) {
             throw new InvalidArgumentsException("Must specify something to do with the team!");
         }
-
         if ((prefix != null && prefix.length() > 64) || (suffix != null && suffix.length() > 64)) {
             throw new InvalidArgumentsException("Prefixes and suffixes must be 64 characters or less!");
         }
-
         if (scriptEntry.hasObject("option") != scriptEntry.hasObject("status")) {
             throw new InvalidArgumentsException("Option and Status arguments must go together!");
         }
-
         scriptEntry.defaultObject("id", new ElementTag("main"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag id = scriptEntry.getElement("id");
         ElementTag name = scriptEntry.getElement("name");
         ListTag add = scriptEntry.getObjectTag("add");
@@ -158,7 +149,6 @@ public class TeamCommand extends AbstractCommand {
         ElementTag option = scriptEntry.getElement("option");
         ElementTag status = scriptEntry.getElement("status");
         ElementTag color = scriptEntry.getElement("color");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     id.debug() +

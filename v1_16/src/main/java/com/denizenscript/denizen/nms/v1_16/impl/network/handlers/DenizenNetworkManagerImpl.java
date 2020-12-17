@@ -8,7 +8,9 @@ import com.denizenscript.denizen.nms.v1_16.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
+import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -33,9 +35,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DenizenNetworkManagerImpl extends NetworkManager {
 
@@ -112,6 +112,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field ENTITY_ID_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("a");
     public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(PacketPlayOutEntityVelocity.class).get("a");
     public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("a");
+    public static Field ENTITY_ID_NAMEDENTSPAWN = ReflectionHelper.getFields(PacketPlayOutNamedEntitySpawn.class).get("a");
+    public static Field ENTITY_ID_SPAWNENT = ReflectionHelper.getFields(PacketPlayOutSpawnEntity.class).get("a");
+    public static Field ENTITY_ID_SPAWNENTLIVING = ReflectionHelper.getFields(PacketPlayOutSpawnEntityLiving.class).get("a");
     public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("b");
     public static Field POS_Y_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("c");
     public static Field POS_Z_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("d");
@@ -171,12 +174,53 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processHiddenEntitiesForPacket(packet)
             || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
+            || processDisguiseForPacket(packet)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
         processBlockLightForPacket(packet);
         processCustomNameForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
+    }
+
+    private boolean antiDuplicate = false;
+
+    public boolean processDisguiseForPacket(Packet<?> packet) {
+        if (DisguiseCommand.disguises.isEmpty() || antiDuplicate) {
+            return false;
+        }
+        try {
+            int ider = -1;
+            if (packet instanceof PacketPlayOutNamedEntitySpawn) {
+                ider = ENTITY_ID_NAMEDENTSPAWN.getInt(packet);
+            }
+            else if (packet instanceof PacketPlayOutSpawnEntity) {
+                ider = ENTITY_ID_SPAWNENT.getInt(packet);
+            }
+            else if (packet instanceof PacketPlayOutSpawnEntityLiving) {
+                ider = ENTITY_ID_SPAWNENTLIVING.getInt(packet);
+            }
+            if (ider != -1) {
+                Entity e = player.getWorld().getEntity(ider);
+                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(e.getUniqueID());
+                if (playerMap == null) {
+                    return false;
+                }
+                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUniqueID());
+                if (disguise == null) {
+                    return false;
+                }
+                antiDuplicate = true;
+                disguise.sendTo(Collections.singletonList(new PlayerTag(player.getBukkitEntity())));
+                antiDuplicate = false;
+                return true;
+            }
+        }
+        catch (Throwable ex) {
+            antiDuplicate = false;
+            Debug.echoError(ex);
+        }
+        return false;
     }
 
     public void processCustomNameForPacket(Packet<?> packet) {
@@ -382,22 +426,20 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 }
                 processFakePlayerSpawn(entity);
             }
+            int ider = -1;
             if (packet instanceof PacketPlayOutEntity) {
-                int ider = ENTITY_ID_PACKENT.getInt(packet);
-                Entity e = player.getWorld().getEntity(ider);
-                if (isHidden(e)) {
-                    return true;
-                }
+                ider = ENTITY_ID_PACKENT.getInt(packet);
+            }
+            else if (packet instanceof PacketPlayOutEntityMetadata) {
+                ider = ENTITY_METADATA_EID.getInt(packet);
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
-                int ider = ENTITY_ID_PACKVELENT.getInt(packet);
-                Entity e = player.getWorld().getEntity(ider);
-                if (isHidden(e)) {
-                    return true;
-                }
+                ider = ENTITY_ID_PACKVELENT.getInt(packet);
             }
             else if (packet instanceof PacketPlayOutEntityTeleport) {
-                int ider = ENTITY_ID_PACKTELENT.getInt(packet);
+                ider = ENTITY_ID_PACKTELENT.getInt(packet);
+            }
+            if (ider != -1) {
                 Entity e = player.getWorld().getEntity(ider);
                 if (isHidden(e)) {
                     return true;

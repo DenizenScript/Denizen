@@ -13,8 +13,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class DisguiseCommand extends AbstractCommand {
 
@@ -42,9 +41,9 @@ public class DisguiseCommand extends AbstractCommand {
     // Be warned that the replacement is imperfect, and visual or internal-client errors may arise from using this command.
     // This command should not be used to disguise players in their own view.
     //
-    // The disguise is purely temporary, and lasts only as long as the player is able to render the entity.
+    // The disguise will last until a server restart, or the cancel option is used.
     //
-    // Optionally, specify a list of players to show the entity to.
+    // Optionally, specify a list of players to show or cancel the entity to.
     // If unspecified, will default to the linked player.
     //
     // To remove a disguise, use the 'cancel' argument.
@@ -99,6 +98,33 @@ public class DisguiseCommand extends AbstractCommand {
         }
     }
 
+    public static class TrackedDisguise {
+
+        public EntityTag entity;
+
+        public EntityTag as;
+
+        public HashSet<UUID> players;
+
+        public TrackedDisguise(EntityTag entity, EntityTag as, List<PlayerTag> players) {
+            this.entity = entity;
+            this.as = as;
+            this.players = new HashSet<>();
+            for (PlayerTag player : players ) {
+                this.players.add(player.getOfflinePlayer().getUniqueId());
+            }
+        }
+
+        public void sendTo(List<PlayerTag> players) {
+            for (PlayerTag player : players) {
+                NMSHandler.getPlayerHelper().sendEntityDestroy(player.getPlayerEntity(), entity.getBukkitEntity());
+            }
+            NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
+        }
+    }
+
+    public static HashMap<UUID, HashMap<UUID, TrackedDisguise>> disguises = new HashMap<>();
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
         EntityTag entity = scriptEntry.getObjectTag("entity");
@@ -112,14 +138,30 @@ public class DisguiseCommand extends AbstractCommand {
         }
         if (cancel != null && cancel.asBoolean()) {
             for (PlayerTag player : players) {
-                NMSHandler.getPlayerHelper().deTrackEntity(player.getPlayerEntity(), entity.getBukkitEntity());
+                HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+                if (playerMap != null) {
+                    if (playerMap.remove(player.getOfflinePlayer().getUniqueId()) != null) {
+                        if (player.isOnline()) {
+                            NMSHandler.getPlayerHelper().deTrackEntity(player.getPlayerEntity(), entity.getBukkitEntity());
+                        }
+                        if (playerMap.isEmpty()) {
+                            disguises.remove(entity.getUUID());
+                        }
+                    }
+                }
             }
         }
         else {
+            TrackedDisguise disguise = new TrackedDisguise(entity, as, players);
             for (PlayerTag player : players) {
-                NMSHandler.getPlayerHelper().sendEntityDestroy(player.getPlayerEntity(), entity.getBukkitEntity());
+                HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+                if (playerMap == null) {
+                    playerMap = new HashMap<>();
+                    disguises.put(entity.getUUID(), playerMap);
+                }
+                playerMap.put(player.getOfflinePlayer().getUniqueId(), disguise);
             }
-            NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
+            disguise.sendTo(players);
         }
     }
 }
