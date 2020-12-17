@@ -25,7 +25,7 @@ public interface BlockSet {
 
     FullBlockData[] getBlocks();
 
-    void setBlocksDelayed(final Runnable runme, final InputParams input);
+    void setBlocksDelayed(final Runnable runme, final InputParams input, long maxDelayMs);
 
     void setBlocks(InputParams input);
 }

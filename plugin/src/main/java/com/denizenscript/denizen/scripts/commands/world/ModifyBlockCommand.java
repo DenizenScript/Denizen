@@ -13,9 +13,8 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
-import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
-import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,14 +34,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
     public ModifyBlockCommand() {
         setName("modifyblock");
-        setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>)");
-        setRequiredArguments(2, 7);
+        setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>) (max_delayed_ms:<#>)");
+        setRequiredArguments(2, 8);
         Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
@@ -59,22 +59,29 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     // <--[command]
     // @Name ModifyBlock
-    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>)
+    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>) (max_delayed_ms:<#>)
     // @Required 2
-    // @Maximum 7
+    // @Maximum 8
     // @Short Modifies blocks.
     // @Group world
     //
     // @Description
     // Changes blocks in the world based on the criteria given.
-    // Use 'no_physics' to place the blocks without
-    // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
-    // control physics for an extended period of time.
+    //
+    // Use 'no_physics' to place the blocks without physics taking over the modified blocks.
+    // This is useful for block types such as portals or water. This does NOT control physics for an extended period of time.
+    //
     // Specify (<percent chance>|...) to give a chance of each material being placed (in any material at all).
+    //
     // Use 'naturally:' when setting a block to air to break it naturally, meaning that it will drop items. Specify the tool item that should be used for calculating drops.
+    //
     // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
-    // Note that specify a list of locations will take more time in parsing than in the actual block modification.
+    // Optionally, specify 'max_delayed_ms' to control how many milliseconds the 'delayed' set can run for in any given tick (defaults to 50).
+    //
+    // Note that specifying a list of locations will take more time in parsing than in the actual block modification.
+    //
     // Optionally, specify a script to be ran after the delayed edits finish. (Doesn't fire if delayed is not set.)
+    //
     // Optionally, specify a source player. When set, Bukkit events will fire that identify that player as the source of a change, and potentially cancel the change.
     //
     // The modifyblock command is ~waitable. Refer to <@link language ~waitable>.
@@ -106,13 +113,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")
                     && (arg.startsWith("cu@") || !arg.getRawValue().contains("|"))) {
-                scriptEntry.addObject("locations", arg.asType(CuboidTag.class).getBlockLocationsUnfiltered());
+                scriptEntry.addObject("locations", arg.asType(CuboidTag.class).getBlockLocationsUnfiltered(false));
             }
             else if (arg.matchesArgumentType(EllipsoidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")
                     && (arg.startsWith("ellipsoid@") || !arg.getRawValue().contains("|"))) {
-                scriptEntry.addObject("locations", arg.asType(EllipsoidTag.class).getBlockLocationsUnfiltered());
+                scriptEntry.addObject("locations", arg.asType(EllipsoidTag.class).getBlockLocationsUnfiltered(false));
             }
             else if (arg.matchesArgumentList(LocationTag.class)
                     && !scriptEntry.hasObject("locations")
@@ -146,14 +153,22 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             else if (arg.matches("no_physics")) {
                 scriptEntry.addObject("physics", new ElementTag(false));
             }
-            else if (arg.matches("naturally")) {
+            else if (!scriptEntry.hasObject("natural")
+                    && arg.matches("naturally")) {
                 scriptEntry.addObject("natural", new ItemTag(new ItemStack(Material.AIR)));
             }
-            else if (arg.matchesPrefix("naturally")
+            else if (!scriptEntry.hasObject("natural")
+                    && arg.matchesPrefix("naturally")
                     && arg.matchesArgumentType(ItemTag.class)) {
                 scriptEntry.addObject("natural", arg.asType(ItemTag.class));
             }
-            else if (arg.matches("delayed")) {
+            else if (!scriptEntry.hasObject("max_delay_ms")
+                    && arg.matchesPrefix("max_delay_ms")
+                    && arg.matchesInteger()) {
+                scriptEntry.addObject("max_delay_ms", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("delayed")
+                    && arg.matches("delayed")) {
                 scriptEntry.addObject("delayed", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("script")
@@ -174,6 +189,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             throw new InvalidArgumentsException("Missing location argument!");
         }
         scriptEntry.defaultObject("radius", new ElementTag(0))
+                .defaultObject("max_delay_ms", new ElementTag(50))
                 .defaultObject("height", new ElementTag(0))
                 .defaultObject("depth", new ElementTag(0))
                 .defaultObject("physics", new ElementTag(true))
@@ -196,6 +212,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final ElementTag physics = scriptEntry.getElement("physics");
         final ItemTag natural = scriptEntry.getObjectTag("natural");
         final ElementTag delayed = scriptEntry.getElement("delayed");
+        final ElementTag maxDelayMs = scriptEntry.getElement("max_delay_ms");
         final ElementTag radiusElement = scriptEntry.getElement("radius");
         final ElementTag heightElement = scriptEntry.getElement("height");
         final ElementTag depthElement = scriptEntry.getElement("depth");
@@ -208,17 +225,18 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         final List<MaterialTag> materialList = materials.filter(MaterialTag.class, scriptEntry);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations))
-                    + materials.debug()
+            Debug.report(scriptEntry, getName(), materials.debug()
                     + physics.debug()
                     + radiusElement.debug()
                     + heightElement.debug()
                     + depthElement.debug()
                     + (natural == null ? "" : natural.debug())
                     + delayed.debug()
+                    + maxDelayMs.debug()
                     + (script != null ? script.debug() : "")
                     + (percents != null ? percents.debug() : "")
-                    + (source != null ? source.debug() : ""));
+                    + (source != null ? source.debug() : "")
+                    +  (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations)));
         }
         Player sourcePlayer = source == null ? null : source.getPlayerEntity();
         final boolean doPhysics = physics.asBoolean();
@@ -246,43 +264,46 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
+            final long maxDelay = maxDelayMs.asLong();
             new BukkitRunnable() {
                 int index = 0;
                 @Override
                 public void run() {
-                    long start = System.currentTimeMillis();
-                    LocationTag loc;
-                    if (locations != null) {
-                        loc = locations.get(0);
-                    }
-                    else {
-                        loc = getLocAt(location_list, 0, scriptEntry);
-                    }
-                    boolean was_static = preSetup(loc);
-                    while ((locations != null && locations.size() > index) || (location_list != null && location_list.size() > index)) {
-                        LocationTag nLoc;
+                    try {
+                        long start = System.currentTimeMillis();
+                        LocationTag loc;
                         if (locations != null) {
-                            nLoc = locations.get(index);
+                            loc = locations.get(0);
                         }
                         else {
-                            nLoc = getLocAt(location_list, index, scriptEntry);
+                            loc = getLocAt(location_list, 0, scriptEntry);
                         }
-                        handleLocation(nLoc, index, materialList, doPhysics, natural, radius, height, depth, percs, sourcePlayer, scriptEntry);
-                        index++;
-                        if (System.currentTimeMillis() - start > 50) {
-                            break;
+                        boolean was_static = preSetup(loc);
+                        while ((locations != null && locations.size() > index) || (location_list != null && location_list.size() > index)) {
+                            LocationTag nLoc;
+                            if (locations != null) {
+                                nLoc = locations.get(index);
+                            }
+                            else {
+                                nLoc = getLocAt(location_list, index, scriptEntry);
+                            }
+                            handleLocation(nLoc, index, materialList, doPhysics, natural, radius, height, depth, percs, sourcePlayer, scriptEntry);
+                            index++;
+                            if (System.currentTimeMillis() - start > maxDelay) {
+                                break;
+                            }
+                        }
+                        postComplete(loc, was_static);
+                        if ((locations != null && locations.size() == index) || (location_list != null && location_list.size() == index)) {
+                            if (script != null) {
+                                ScriptUtilities.createAndStartQueue(script.getContainer(), null, scriptEntry.entryData, null, null, null, null, null, scriptEntry);
+                            }
+                            scriptEntry.setFinished(true);
+                            cancel();
                         }
                     }
-                    postComplete(loc, was_static);
-                    if ((locations != null && locations.size() == index) || (location_list != null && location_list.size() == index)) {
-                        if (script != null) {
-                            List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
-                            ScriptQueue queue = new InstantQueue(script.getContainer().getName())
-                                    .addEntries(entries);
-                            queue.start();
-                        }
-                        scriptEntry.setFinished(true);
-                        cancel();
+                    catch (Throwable ex) {
+                        Debug.echoError(ex);
                     }
                 }
             }.runTaskTimer(Denizen.getInstance(), 1, 1);
@@ -402,11 +423,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     public static void setBlock(Location location, MaterialTag material, boolean physics, ItemTag natural) {
         if (physics) {
-            for (int i = 0; i < block_physics.size(); i++) {
-                if (compareloc(block_physics.get(i), location)) {
-                    block_physics.remove(i--);
-                }
-            }
+            block_physics.remove(location);
         }
         else {
             block_physics.add(location);
@@ -426,7 +443,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     public static boolean no_physics = false;
 
-    public static final List<Location> block_physics = new ArrayList<>();
+    public static final HashSet<Location> block_physics = new HashSet<>();
 
     public static long tick = 0;
 
@@ -437,10 +454,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         if (no_physics) {
             event.setCancelled(true);
         }
-        for (Location loc : block_physics) {
-            if (compareloc(event.getBlock().getLocation(), loc)) {
-                event.setCancelled(true);
-            }
+        if (block_physics.contains(event.getBlock().getLocation())) {
+            event.setCancelled(true);
         }
     }
 
@@ -452,15 +467,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         if (no_physics) {
             event.setCancelled(true);
         }
-        for (Location loc : block_physics) {
-            if (compareloc(event.getBlock().getLocation(), loc)) {
-                event.setCancelled(true);
-            }
+        if (block_physics.contains(event.getBlock().getLocation())) {
+            event.setCancelled(true);
         }
-    }
-
-    public static boolean compareloc(Location lone, Location ltwo) {
-        return lone.getBlockX() == ltwo.getBlockX() && lone.getBlockY() == ltwo.getBlockY() &&
-                lone.getBlockZ() == ltwo.getBlockZ() && lone.getWorld().getName().equalsIgnoreCase(ltwo.getWorld().getName());
     }
 }

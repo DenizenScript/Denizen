@@ -161,12 +161,12 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         return list;
     }
 
-    public List<LocationTag> getBlockLocationsUnfiltered() {
+    public List<LocationTag> getBlockLocationsUnfiltered(boolean doMax) {
         List<LocationTag> initial = new CuboidTag(new Location(center.getWorld(),
                 center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ()),
                 new Location(center.getWorld(),
                         center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ()))
-                .getBlockLocationsUnfiltered();
+                .getBlockLocationsUnfiltered(doMax);
         List<LocationTag> locations = new ArrayList<>();
         for (LocationTag loc : initial) {
             if (contains(loc)) {

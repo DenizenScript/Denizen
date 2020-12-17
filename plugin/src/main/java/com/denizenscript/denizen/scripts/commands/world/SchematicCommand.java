@@ -39,8 +39,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed)");
-        setRequiredArguments(2, 10);
+        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delayed_ms:<#>)");
+        setRequiredArguments(2, 11);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
@@ -55,10 +55,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed)
+    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delayed_ms:<#>)
     // @Group World
     // @Required 2
-    // @Maximum 10
+    // @Maximum 11
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
     //
     // @Description
@@ -77,6 +77,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
     // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
+    // Optionally, specify 'max_delayed_ms' to control how many milliseconds the 'delayed' set can run for in any given tick (defaults to 50) (for create/paste only).
     //
     // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
     //
@@ -158,6 +159,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     && arg.matchesInteger()) {
                 scriptEntry.addObject("angle", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("max_delay_ms")
+                    && arg.matchesPrefix("max_delay_ms")
+                    && arg.matchesInteger()) {
+                scriptEntry.addObject("max_delay_ms", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("delayed")
                     && arg.matches("delayed")) {
                 scriptEntry.addObject("delayed", new ElementTag("true"));
@@ -196,6 +202,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         if (scriptEntry.shouldWaitFor()) {
             scriptEntry.addObject("delayed", new ElementTag("true"));
         }
+        scriptEntry.defaultObject("max_delay_ms", new ElementTag(50));
         if (!scriptEntry.hasObject("type")) {
             throw new InvalidArgumentsException("Missing type argument!");
         }
@@ -212,6 +219,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag filename = scriptEntry.getElement("filename");
         ElementTag noair = scriptEntry.getElement("noair");
         ElementTag delayed = scriptEntry.getElement("delayed");
+        ElementTag maxDelayMs = scriptEntry.getElement("max_delay_ms");
         LocationTag location = scriptEntry.getObjectTag("location");
         List<MaterialTag> mask = (List<MaterialTag>) scriptEntry.getObject("mask");
         List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
@@ -225,7 +233,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     + (cuboid != null ? cuboid.debug() : "")
                     + (angle != null ? angle.debug() : "")
                     + (noair != null ? noair.debug() : "")
-                    + (delayed != null ? delayed.debug() : "")
+                    + (delayed != null ? delayed.debug() + maxDelayMs.debug() : "")
                     + (mask != null ? ArgumentHelper.debugList("mask", mask) : "")
                     + (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : "")
                     + (fakeDuration != null ? fakeDuration.debug() : ""));
@@ -256,7 +264,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         set.buildDelayed(cuboid, location, () -> {
                             schematics.put(name.asString().toUpperCase(), set);
                             scriptEntry.setFinished(true);
-                        });
+                        }, maxDelayMs.asLong());
                     }
                     else {
                         scriptEntry.setFinished(true);
@@ -441,7 +449,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             public void run() {
                                 scriptEntry.setFinished(true);
                             }
-                        }, input);
+                        }, input, maxDelayMs.asLong());
                     }
                     else {
                         scriptEntry.setFinished(true);

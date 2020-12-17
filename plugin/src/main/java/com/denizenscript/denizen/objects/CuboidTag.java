@@ -533,7 +533,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     public List<LocationTag> getBlocks_internal(List<MaterialTag> materials, Attribute attribute) {
         if (materials == null) {
-            return getBlockLocationsUnfiltered();
+            return getBlockLocationsUnfiltered(true);
         }
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
@@ -569,12 +569,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return list;
     }
 
-    public List<LocationTag> getBlockLocationsUnfiltered() {
-        int max = Settings.blockTagsMaxBlocks();
-        LocationTag loc;
+    public List<LocationTag> getBlockLocationsUnfiltered(boolean doMax) {
+        int max = doMax ? Settings.blockTagsMaxBlocks() : Integer.MAX_VALUE;
         List<LocationTag> list = new ArrayList<>();
         int index = 0;
-
         for (LocationPair pair : pairs) {
             LocationTag loc_1 = pair.low;
             int y_distance = pair.yDistance();
@@ -583,7 +581,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             for (int x = 0; x <= x_distance; x++) {
                 for (int z = 0; z <= z_distance; z++) {
                     for (int y = 0; y <= y_distance; y++) {
-                        loc = new LocationTag(loc_1.clone().add(x, y, z));
+                        LocationTag loc = new LocationTag(loc_1.clone().add(x, y, z));
                         list.add(loc);
                         index++;
                         if (index > max) {
