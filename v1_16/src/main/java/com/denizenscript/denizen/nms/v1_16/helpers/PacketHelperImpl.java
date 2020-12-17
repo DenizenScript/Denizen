@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
@@ -30,10 +32,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.invoke.MethodHandle;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
 
@@ -292,6 +291,26 @@ public class PacketHelperImpl implements PacketHelper {
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
+        }
+    }
+
+    public static HashMap<String, ScoreboardTeam> noCollideTeamMap = new HashMap<>();
+
+    @Override
+    public void generateNoCollideTeam(Player player, UUID noCollide) {
+        removeNoCollideTeam(player, noCollide);
+        ScoreboardTeam team = new ScoreboardTeam(SidebarImpl.dummyScoreboard, Utilities.generateRandomColors(8));
+        team.getPlayerNameSet().add(noCollide.toString());
+        team.setCollisionRule(ScoreboardTeamBase.EnumTeamPush.NEVER);
+        noCollideTeamMap.put(player.getUniqueId() + "_" + noCollide, team);
+        sendPacket(player, new PacketPlayOutScoreboardTeam(team, 0));
+    }
+
+    @Override
+    public void removeNoCollideTeam(Player player, UUID noCollide) {
+        ScoreboardTeam team = noCollideTeamMap.remove(player.getUniqueId() + "_" + noCollide);
+        if (team != null) {
+            sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
         }
     }
 

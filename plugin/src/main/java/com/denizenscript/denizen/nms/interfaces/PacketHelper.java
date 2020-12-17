@@ -12,6 +12,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PacketHelper {
 
@@ -64,6 +65,14 @@ public interface PacketHelper {
     void forceSpectate(Player player, Entity entity);
 
     default void sendRename(Player player, Entity entity, String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void generateNoCollideTeam(Player player, UUID noCollide) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void removeNoCollideTeam(Player player, UUID noCollide) {
         throw new UnsupportedOperationException();
     }
 }

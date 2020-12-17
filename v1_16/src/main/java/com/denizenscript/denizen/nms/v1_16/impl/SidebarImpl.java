@@ -13,8 +13,8 @@ import java.util.List;
 
 public class SidebarImpl extends Sidebar {
 
-    private static final Scoreboard dummyScoreboard = new Scoreboard();
-    private static final IScoreboardCriteria dummyCriteria = new IScoreboardCriteria("dummy"); // what
+    public static final Scoreboard dummyScoreboard = new Scoreboard();
+    public static final IScoreboardCriteria dummyCriteria = new IScoreboardCriteria("dummy"); // what
 
     private ScoreboardObjective obj1;
     private ScoreboardObjective obj2;

@@ -202,6 +202,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             }
             if (ider != -1) {
                 Entity e = player.getWorld().getEntity(ider);
+                if (e == null) {
+                    return false;
+                }
                 HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(e.getUniqueID());
                 if (playerMap == null) {
                     return false;
