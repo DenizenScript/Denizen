@@ -196,40 +196,38 @@ public class DisguiseCommand extends AbstractCommand {
                     + ArgumentHelper.debugList("players", players));
         }
         boolean isGlobal = global != null && global.asBoolean();
-        if (cancel != null && cancel.asBoolean()) {
-            HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
-            if (playerMap != null) {
-                if (isGlobal) {
-                    for (Map.Entry<UUID, TrackedDisguise> entry : playerMap.entrySet()) {
-                        if (entry.getKey() == null) {
-                            for (Player player : entity.getWorld().getPlayers()) {
-                                entry.getValue().removeFor(new PlayerTag(player));
-                            }
-                        }
-                        else {
-                            PlayerTag player = new PlayerTag(entry.getKey());
-                            entry.getValue().removeFor(player);
+        HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+        if (playerMap != null) {
+            if (isGlobal) {
+                for (Map.Entry<UUID, TrackedDisguise> entry : playerMap.entrySet()) {
+                    if (entry.getKey() == null) {
+                        for (Player player : entity.getWorld().getPlayers()) {
+                            entry.getValue().removeFor(new PlayerTag(player));
                         }
                     }
-                    disguises.remove(entity.getUUID());
+                    else {
+                        PlayerTag player = new PlayerTag(entry.getKey());
+                        entry.getValue().removeFor(player);
+                    }
                 }
-                else {
-                    for (PlayerTag player : players) {
-                        TrackedDisguise disguise = playerMap.remove(player.getOfflinePlayer().getUniqueId());
-                        if (disguise != null) {
-                            disguise.removeFor(player);
-                            if (playerMap.isEmpty()) {
-                                disguises.remove(entity.getUUID());
-                            }
+                disguises.remove(entity.getUUID());
+            }
+            else {
+                for (PlayerTag player : players) {
+                    TrackedDisguise disguise = playerMap.remove(player.getOfflinePlayer().getUniqueId());
+                    if (disguise != null) {
+                        disguise.removeFor(player);
+                        if (playerMap.isEmpty()) {
+                            disguises.remove(entity.getUUID());
                         }
                     }
                 }
             }
         }
-        else {
+        if (cancel == null || !cancel.asBoolean()) {
             TrackedDisguise disguise = new TrackedDisguise(entity, as);
             if (isGlobal) {
-                HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+                playerMap = disguises.get(entity.getUUID());
                 if (playerMap == null) {
                     playerMap = new HashMap<>();
                     disguises.put(entity.getUUID(), playerMap);
@@ -245,7 +243,7 @@ public class DisguiseCommand extends AbstractCommand {
             }
             else {
                 for (PlayerTag player : players) {
-                    HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
+                    playerMap = disguises.get(entity.getUUID());
                     if (playerMap == null) {
                         playerMap = new HashMap<>();
                         disguises.put(entity.getUUID(), playerMap);
