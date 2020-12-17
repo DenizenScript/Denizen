@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -29,6 +30,8 @@ public class ColorTag implements ObjectTag {
     // The identity format for colors is <red>,<green>,<blue> or the name of a color.
     // For example, 'co@50,64,128' or 'co@red'.
     //
+    // Construction a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF'.
+    //
     // A list of accepted color names can be found at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>
     //
@@ -45,13 +48,17 @@ public class ColorTag implements ObjectTag {
         return valueOf(string, null);
     }
 
+
+    public static HashMap<Color, String> nameByColor = new HashMap<>();
     public static HashMap<String, Color> colorsByName = new HashMap<>();
 
     static {
         for (Field field : Color.class.getDeclaredFields()) {
             if (field.getType() == Color.class) {
                 try {
-                    colorsByName.put(CoreUtilities.toLowerCase(field.getName()), (Color) field.get(null));
+                    Color color = (Color) field.get(null);
+                    colorsByName.put(CoreUtilities.toLowerCase(field.getName()), color);
+                    nameByColor.put(color, CoreUtilities.toLowerCase(field.getName()));
                 }
                 catch (Exception ex) {
                     Debug.echoError(ex);
@@ -59,6 +66,8 @@ public class ColorTag implements ObjectTag {
             }
         }
     }
+
+    public static AsciiMatcher HexMatcher = new AsciiMatcher("0123456789abcdefABCDEF");
 
     /**
      * Gets a Color Object from a string form.
@@ -71,23 +80,22 @@ public class ColorTag implements ObjectTag {
         if (string.startsWith("co@")) {
             string = string.substring("co@".length());
         }
-
         if (string.equals("random")) {
             // Get a color using random RGB values
             return new ColorTag(CoreUtilities.getRandom().nextInt(256),
                     CoreUtilities.getRandom().nextInt(256),
                     CoreUtilities.getRandom().nextInt(256));
         }
-
+        if (string.startsWith("#") && string.length() == 7 && HexMatcher.isOnlyMatches(string.substring(1))) {
+            return new ColorTag(Color.fromRGB(Integer.parseInt(string.substring(1), 16)));
+        }
         List<String> split = CoreUtilities.split(string, ',');
         if (split.size() == 3) {
-
             if (!ArgumentHelper.matchesInteger(split.get(0)) || !ArgumentHelper.matchesInteger(split.get(1)) || !ArgumentHelper.matchesInteger(split.get(2))) {
                 return null;
             }
             return new ColorTag(Integer.parseInt(split.get(0)), Integer.parseInt(split.get(1)), Integer.parseInt(split.get(2)));
         }
-
         Color col = colorsByName.get(CoreUtilities.toLowerCase(string));
         if (col != null) {
             return new ColorTag(col);
@@ -160,15 +168,9 @@ public class ColorTag implements ObjectTag {
 
     @Override
     public String identify() {
-        for (Field field : Color.class.getFields()) {
-            try {
-                if (Color.class.isAssignableFrom(field.getType()) && ((Color) field.get(null)).asRGB() == getColor().asRGB()) {
-                    return "co@" + field.getName();
-                }
-            }
-            catch (Exception e) {
-                Debug.echoError("Exception trying to fetch color: " + e.getClass().getCanonicalName() + ": " + e.getMessage());
-            }
+        String name = nameByColor.get(getColor());
+        if (name != null) {
+            return "co@" + name;
         }
         return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
     }
