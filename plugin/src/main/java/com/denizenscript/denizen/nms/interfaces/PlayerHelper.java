@@ -1,8 +1,9 @@
 package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
@@ -16,7 +17,7 @@ public abstract class PlayerHelper {
 
     public abstract void stopSound(Player player, String sound, SoundCategory category);
 
-    public EntityTag sendEntitySpawn(List<PlayerTag> players, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
+    public FakeEntity sendEntitySpawn(List<PlayerTag> players, EntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         throw new UnsupportedOperationException();
     }
 

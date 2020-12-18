@@ -38,19 +38,19 @@ public class FakeEntity {
     public EntityTag entity;
     public LocationTag location;
     public BukkitTask currentTask = null;
+    public Runnable triggerUpdatePacket;
 
-    private FakeEntity(List<PlayerTag> player, LocationTag location, int id) {
+    public FakeEntity(List<PlayerTag> player, LocationTag location, int id) {
         this.players = player;
         this.location = location;
         this.id = id;
     }
 
     public static FakeEntity showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration) {
-        EntityTag entTag = NMSHandler.getPlayerHelper().sendEntitySpawn(players, typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null, true);
-        entTag.isFake = true;
-        entTag.isFakeValid = true;
-        FakeEntity fakeEntity = new FakeEntity(players, location, entTag.getBukkitEntity().getEntityId());
-        idsToEntities.put(entTag.getUUID(), fakeEntity);
+        FakeEntity fakeEntity = NMSHandler.getPlayerHelper().sendEntitySpawn(players, typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null, true);
+        fakeEntity.entity.isFake = true;
+        fakeEntity.entity.isFakeValid = true;
+        idsToEntities.put(fakeEntity.entity.getUUID(), fakeEntity);
         for (PlayerTag player : players) {
             UUID uuid = player.getPlayerEntity().getUniqueId();
             FakeEntity.FakeEntityMap playerEntities = playersToEntities.get(uuid);
@@ -60,7 +60,7 @@ public class FakeEntity {
             }
             playerEntities.byId.put(fakeEntity.id, fakeEntity);
         }
-        fakeEntity.updateEntity(entTag, duration);
+        fakeEntity.updateEntity(fakeEntity.entity, duration);
         return fakeEntity;
     }
 

@@ -5,7 +5,9 @@ import com.denizenscript.denizen.nms.v1_15.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.handlers.AbstractListenerPlayInImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -67,7 +69,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public EntityTag sendEntitySpawn(List<PlayerTag> players, EntityType entityType, Location location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
+    public FakeEntity sendEntitySpawn(List<PlayerTag> players, EntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         CraftWorld world = ((CraftWorld) location.getWorld());
         net.minecraft.server.v1_15_R1.Entity nmsEntity = world.createEntity(location,  entityType.getEntityClass());
         if (customUUID != null) {
@@ -79,26 +81,50 @@ public class PlayerHelperImpl extends PlayerHelper {
             entity.safeAdjust(mechanism);
         }
         nmsEntity.dead = false;
-        EntityTag entTag = new EntityTag(entity.getBukkitEntity());
+        FakeEntity fake = new FakeEntity(players, location, entity.getBukkitEntity().getEntityId());
+        fake.entity = new EntityTag(entity.getBukkitEntity());
+        List<EntityTrackerEntry> trackers = new ArrayList<>();
         for (PlayerTag player : players) {
             EntityPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
             PlayerConnection conn = nmsPlayer.playerConnection;
             final EntityTrackerEntry tracker = new EntityTrackerEntry(world.getHandle(), nmsEntity, 1, true, conn::sendPacket, Collections.singleton(nmsPlayer));
             tracker.b(nmsPlayer);
+            trackers.add(tracker);
             if (autoTrack) {
                 new BukkitRunnable() {
+                    boolean wasOnline = true;
                     @Override
                     public void run() {
-                        if (!entTag.isFakeValid || !player.isOnline()) {
+                        if (!fake.entity.isFakeValid) {
+                            trackers.remove(tracker);
                             cancel();
                             return;
                         }
-                        tracker.a();
+                        if (player.isOnline()) {
+                            if (!wasOnline) {
+                                trackers.add(tracker);
+                                tracker.b(((CraftPlayer) player.getPlayerEntity()).getHandle());
+                                wasOnline = true;
+                            }
+                            tracker.a();
+                        }
+                        else if (wasOnline) {
+                            trackers.remove(tracker);
+                            wasOnline = false;
+                        }
                     }
                 }.runTaskTimer(Denizen.getInstance(), 1, 1);
             }
         }
-        return entTag;
+        fake.triggerUpdatePacket = new Runnable() {
+            @Override
+            public void run() {
+                for (EntityTrackerEntry tracker : trackers) {
+                    tracker.a();
+                }
+            }
+        };
+        return fake;
     }
 
     @Override

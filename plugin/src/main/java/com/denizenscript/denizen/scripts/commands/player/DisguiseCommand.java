@@ -15,12 +15,14 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -152,6 +154,11 @@ public class DisguiseCommand extends AbstractCommand {
             }
         }
 
+        public void moveFakeNow(Location position) {
+            NMSHandler.getEntityHelper().snapPositionTo(fake.entity.getBukkitEntity(), position.toVector());
+            NMSHandler.getEntityHelper().look(fake.entity.getBukkitEntity(), position.getYaw(), position.getPitch());
+        }
+
         public void startFake(PlayerTag player) {
             if (fake != null) {
                 stopFake(player);
@@ -173,8 +180,7 @@ public class DisguiseCommand extends AbstractCommand {
                         cancel();
                         return;
                     }
-                    NMSHandler.getEntityHelper().snapPositionTo(fake.entity.getBukkitEntity(), player.getLocation().toVector());
-                    NMSHandler.getEntityHelper().look(fake.entity.getBukkitEntity(), player.getLocation().getYaw(), player.getLocation().getPitch());
+                    moveFakeNow(player.getLocation());
                 }
             }.runTaskTimer(Denizen.getInstance(), 1, 1);
         }
@@ -213,9 +219,9 @@ public class DisguiseCommand extends AbstractCommand {
             NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
         }
 
-        @EventHandler(priority = EventPriority.MONITOR)
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onJoin(PlayerJoinEvent event) {
-            if (!event.getPlayer().getUniqueId().equals(entity.getUUID()) || !shouldFake) {
+            if (!shouldFake || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
                 return;
             }
             new BukkitRunnable() {
@@ -229,9 +235,9 @@ public class DisguiseCommand extends AbstractCommand {
             }.runTaskLater(Denizen.getInstance(), 2);
         }
 
-        @EventHandler(priority = EventPriority.MONITOR)
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onTeleport(PlayerTeleportEvent event) {
-            if (!event.getPlayer().getUniqueId().equals(entity.getUUID()) || fake == null) {
+            if (fake == null || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
                 return;
             }
             stopFake(new PlayerTag(event.getPlayer()));
@@ -244,6 +250,21 @@ public class DisguiseCommand extends AbstractCommand {
                     startFake(new PlayerTag(event.getPlayer()));
                 }
             }.runTaskLater(Denizen.getInstance(), 2);
+        }
+
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onMove(PlayerMoveEvent event) {
+            if (fake == null || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
+                return;
+            }
+            if (event.getTo() == null) {
+                return;
+            }
+            moveFakeNow(event.getTo());
+            if (fake.triggerUpdatePacket != null) {
+                fake.triggerUpdatePacket.run();
+            }
         }
     }
 
