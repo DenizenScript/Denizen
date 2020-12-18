@@ -174,7 +174,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processHiddenEntitiesForPacket(packet)
             || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
-            || processDisguiseForPacket(packet)
+            || processDisguiseForPacket(packet, genericfuturelistener)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
@@ -185,7 +185,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
 
     private boolean antiDuplicate = false;
 
-    public boolean processDisguiseForPacket(Packet<?> packet) {
+    public boolean processDisguiseForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (DisguiseCommand.disguises.isEmpty() || antiDuplicate) {
             return false;
         }
@@ -216,9 +216,16 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     DataWatcherObject<?> watcherObject = item.a();
                     int watcherId = watcherObject.a();
                     if (watcherId == 0) { // Entity flags
+                        PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata();
+                        copyPacket(metadataPacket, altPacket);
+                        data = new ArrayList<>(data);
+                        ENTITY_METADATA_LIST.set(altPacket, data);
+                        data.remove(item);
                         byte flags = (byte) item.b();
                         flags |= 0x20; // Invisible flag
-                        item.a(flags);
+                        data.add(new DataWatcher.Item(watcherObject, flags));
+                        super.sendPacket(altPacket, genericfuturelistener);
+                        return true;
                     }
                 }
                 return false;
