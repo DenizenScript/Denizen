@@ -91,13 +91,20 @@ public class PlayerHelperImpl extends PlayerHelper {
             tracker.b(nmsPlayer);
             if (autoTrack) {
                 new BukkitRunnable() {
+                    boolean wasOnline = true;
                     @Override
                     public void run() {
-                        if (!entTag.isFakeValid || !player.isOnline()) {
+                        if (!entTag.isFakeValid) {
                             cancel();
                             return;
                         }
-                        tracker.a();
+                        if (player.isOnline()) {
+                            if (!wasOnline) {
+                                tracker.b(nmsPlayer);
+                                wasOnline = true;
+                            }
+                            tracker.a();
+                        }
                     }
                 }.runTaskTimer(Denizen.getInstance(), 1, 1);
             }

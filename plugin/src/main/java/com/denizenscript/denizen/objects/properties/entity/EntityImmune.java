@@ -82,7 +82,7 @@ public class EntityImmune implements Property {
         // @mechanism EntityTag.immune
         // @group properties
         // @description
-        // Returns whether this piglin entity is immune to zombification.
+        // Returns whether this piglin or hoglin entity is immune to zombification.
         // -->
         if (attribute.startsWith("immune")) {
             return new ElementTag(getIsImmune())
@@ -100,7 +100,7 @@ public class EntityImmune implements Property {
         // @name immune
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether this piglin entity is immune to zombification.
+        // Sets whether this piglin or hoglin entity is immune to zombification.
         // @tags
         // <EntityTag.immune>
         // -->
