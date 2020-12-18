@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -41,6 +42,7 @@ public class CreateCommand extends AbstractCommand {
     // Optionally specify a list of traits to immediately apply when creating the NPC.
     //
     // Optionally specify a custom registry to create the NPC into. (Most users, leave this option off).
+    // Will generate a new registry if needed.
     //
     // @Tags
     // <server.npcs>
@@ -115,8 +117,7 @@ public class CreateCommand extends AbstractCommand {
             if (registry != null) {
                 actualRegistry = NPCTag.getRegistryByName(registry.asString());
                 if (actualRegistry == null) {
-                    Debug.echoError("Invalid registry name '" + registry.asString() + "'.");
-                    return;
+                    actualRegistry = CitizensAPI.createNamedNPCRegistry(registry.asString(), new MemoryNPCDataStore());
                 }
             }
             created = new NPCTag(actualRegistry.createNPC(type.getBukkitEntityType(), name.asString()));
