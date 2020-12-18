@@ -151,14 +151,6 @@ public class DisguiseCommand extends AbstractCommand {
             }
             else if (player.isOnline()) {
                 NMSHandler.getPlayerHelper().deTrackEntity(player.getPlayerEntity(), entity.getBukkitEntity());
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (player.isOnline()) {
-                            NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity());
-                        }
-                    }
-                }.runTaskLater(Denizen.getInstance(), 2);
             }
         }
 
@@ -200,6 +192,14 @@ public class DisguiseCommand extends AbstractCommand {
             }
             if (player.isOnline()) {
                 NMSHandler.getPacketHelper().removeNoCollideTeam(player.getPlayerEntity(), fake.entity.getUUID());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (player.isOnline()) {
+                            NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity());
+                        }
+                    }
+                }.runTaskLater(Denizen.getInstance(), 2);
             }
             fake.cancelEntity();
             fake = null;
