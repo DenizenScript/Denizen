@@ -190,6 +190,39 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             return false;
         }
         try {
+            if (packet instanceof PacketPlayOutEntityMetadata) {
+                PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
+                int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
+                Entity ent = player.world.getEntity(eid);
+                if (ent == null) {
+                    return false;
+                }
+                if (ent.getId() != player.getId()) {
+                    return false;
+                }
+                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(ent.getUniqueID());
+                if (playerMap == null) {
+                    return false;
+                }
+                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUniqueID());
+                if (disguise == null) {
+                    disguise = playerMap.get(null);
+                    if (disguise == null) {
+                        return false;
+                    }
+                }
+                List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
+                for (DataWatcher.Item item : data) {
+                    DataWatcherObject<?> watcherObject = item.a();
+                    int watcherId = watcherObject.a();
+                    if (watcherId == 0) { // Entity flags
+                        byte flags = (byte) item.b();
+                        flags |= 0x20; // Invisible flag
+                        item.a(flags);
+                    }
+                }
+                return false;
+            }
             int ider = -1;
             if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                 ider = ENTITY_ID_NAMEDENTSPAWN.getInt(packet);

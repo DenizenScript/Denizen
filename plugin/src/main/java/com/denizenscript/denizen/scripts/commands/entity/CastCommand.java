@@ -49,7 +49,10 @@ public class CastCommand extends AbstractCommand {
     // If no player is present, the command will target the NPC. If an NPC is not present, there will be an error!
     //
     // Optionally, specify "no_ambient" to hide some translucent additional particles, while still rendering the main particles.
+    // "Ambient" effects in vanilla came from a beacon, while non-ambient came from a potion.
+    //
     // Optionally, specify "hide_particles" to remove the particle effects entirely.
+    //
     // Optionally, specify "no_icon" to hide the effect icon in the corner of your screen.
     //
     // @Tags

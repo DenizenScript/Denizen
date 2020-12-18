@@ -38,6 +38,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static final DataWatcherObject<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(EntityHuman.class, "c", null);
 
+    public static final DataWatcherObject<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R3.Entity.class, "S", null);
+
     public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutAbilities.class, "f");
 
     @Override
@@ -328,6 +330,13 @@ public class PacketHelperImpl implements PacketHelper {
         if (map.isEmpty()) {
             noCollideTeamMap.remove(player.getUniqueId());
         }
+    }
+
+    @Override
+    public void sendEntityMetadataFlagsUpdate(Player player) {
+        DataWatcher dw = new DataWatcher(null);
+        dw.register(ENTITY_DATA_WATCHER_FLAGS, ((CraftPlayer) player).getHandle().getDataWatcher().get(ENTITY_DATA_WATCHER_FLAGS));
+        sendPacket(player, new PacketPlayOutEntityMetadata(player.getEntityId(), dw, true));
     }
 
     public static void sendPacket(Player player, Packet packet) {

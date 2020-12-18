@@ -283,6 +283,10 @@ public class PacketHelperImpl implements PacketHelper {
         sendPacket(player, new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
     }
 
+    @Override
+    public void sendEntityMetadataFlagsUpdate(Player player) {
+    }
+
     public static void sendPacket(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }

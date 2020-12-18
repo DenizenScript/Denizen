@@ -75,4 +75,8 @@ public interface PacketHelper {
     default void removeNoCollideTeam(Player player, UUID noCollide) {
         throw new UnsupportedOperationException();
     }
+
+    default void sendEntityMetadataFlagsUpdate(Player player) {
+        throw new UnsupportedOperationException();
+    }
 }
