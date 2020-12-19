@@ -430,8 +430,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Nothing to do.
     }
 
-    private Entity entity = null;
-    private DenizenEntityType entity_type = null;
+    public Entity entity = null;
+    public DenizenEntityType entity_type = null;
     private String data1 = null;
     private DespawnedEntity despawned_entity = null;
     private NPCTag npc = null;

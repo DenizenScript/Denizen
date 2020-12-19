@@ -197,9 +197,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (ent == null) {
                     return false;
                 }
-                if (ent.getId() != player.getId()) {
-                    return false;
-                }
                 HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(ent.getUniqueID());
                 if (playerMap == null) {
                     return false;
@@ -211,25 +208,32 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         return false;
                     }
                 }
-                if (!disguise.shouldFake) {
-                    return false;
-                }
-                List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
-                for (DataWatcher.Item item : data) {
-                    DataWatcherObject<?> watcherObject = item.a();
-                    int watcherId = watcherObject.a();
-                    if (watcherId == 0) { // Entity flags
-                        PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata();
-                        copyPacket(metadataPacket, altPacket);
-                        data = new ArrayList<>(data);
-                        ENTITY_METADATA_LIST.set(altPacket, data);
-                        data.remove(item);
-                        byte flags = (byte) item.b();
-                        flags |= 0x20; // Invisible flag
-                        data.add(new DataWatcher.Item(watcherObject, flags));
-                        super.sendPacket(altPacket, genericfuturelistener);
-                        return true;
+                if (ent.getId() == player.getId()) {
+                    if (!disguise.shouldFake) {
+                        return false;
                     }
+                    List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
+                    for (DataWatcher.Item item : data) {
+                        DataWatcherObject<?> watcherObject = item.a();
+                        int watcherId = watcherObject.a();
+                        if (watcherId == 0) { // Entity flags
+                            PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata();
+                            copyPacket(metadataPacket, altPacket);
+                            data = new ArrayList<>(data);
+                            ENTITY_METADATA_LIST.set(altPacket, data);
+                            data.remove(item);
+                            byte flags = (byte) item.b();
+                            flags |= 0x20; // Invisible flag
+                            data.add(new DataWatcher.Item(watcherObject, flags));
+                            super.sendPacket(altPacket, genericfuturelistener);
+                            return true;
+                        }
+                    }
+                }
+                else {
+                    PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata(ent.getId(), ((CraftEntity) disguise.as.entity).getHandle().getDataWatcher(), true);
+                    super.sendPacket(altPacket, genericfuturelistener);
+                    return true;
                 }
                 return false;
             }

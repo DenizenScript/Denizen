@@ -325,6 +325,7 @@ public class DisguiseCommand extends AbstractCommand {
         }
         if (cancel == null || !cancel.asBoolean()) {
             TrackedDisguise disguise = new TrackedDisguise(entity, as);
+            disguise.as.entity = NMSHandler.getPlayerHelper().sendEntitySpawn(new ArrayList<>(), as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), -1, null, false).entity.getBukkitEntity();
             if (isGlobal) {
                 playerMap = disguises.get(entity.getUUID());
                 if (playerMap == null) {
