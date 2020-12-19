@@ -211,6 +211,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         return false;
                     }
                 }
+                if (!disguise.shouldFake) {
+                    return false;
+                }
                 List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
                 for (DataWatcher.Item item : data) {
                     DataWatcherObject<?> watcherObject = item.a();
