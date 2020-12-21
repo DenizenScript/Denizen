@@ -184,6 +184,9 @@ Saves:
   Offline player cache timeout: 300
   # When set to 'true', player data will be loaded offthread during the login sequence, to avoid adding load to the server while players join.
   Load async on login: true
+  # When set to 'true', all automatic flag cleanups will be skipped.
+  # This might save some processing time on servers that rarely use flag expirations, but otherwise should be left as 'false'.
+  Skip flag cleaning: false
 
 Packets:
   # Whether to allow Denizen to intercept packets from and to player clients.

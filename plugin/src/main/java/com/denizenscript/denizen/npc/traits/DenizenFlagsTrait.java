@@ -25,6 +25,7 @@ public class DenizenFlagsTrait extends Trait {
             for (DataKey key : dataKey.getSubKeys()) {
                 toRet.setRootMap(key.name(), MapTag.valueOf(key.getString(""), CoreUtilities.errorButNoDebugContext));
             }
+            toRet.doTotalClean();
             return toRet;
         }
 

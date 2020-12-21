@@ -7,6 +7,8 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
+import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -17,6 +19,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
@@ -108,5 +111,13 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         NMSHandler.getPacketHelper().removeNoCollideTeam(event.getPlayer(), null);
+    }
+
+    @EventHandler
+    public void chunkLoadEvent(ChunkLoadEvent event) {
+        if (MapTagBasedFlagTracker.skipAllCleanings) {
+            return;
+        }
+        new DataPersistenceFlagTracker(event.getChunk()).doTotalClean();
     }
 }

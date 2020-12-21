@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
@@ -427,10 +428,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        // Nothing to do.
+        if (cleanRateProtect + 60000 > DenizenCore.serverTimeMillis) {
+            ((DataPersistenceFlagTracker) tracker).doTotalClean();
+            cleanRateProtect = DenizenCore.serverTimeMillis;
+        }
     }
 
     public Entity entity = null;
+    public long cleanRateProtect = -60000;
     public DenizenEntityType entity_type = null;
     private String data1 = null;
     private DespawnedEntity despawned_entity = null;
