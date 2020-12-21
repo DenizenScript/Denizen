@@ -67,6 +67,7 @@ public class EntityMarker implements Property {
         // @group properties
         // @description
         // If the entity is an armor stand, returns whether the armor stand is a marker.
+        // Marker armor stands have a tiny hitbox.
         // -->
         if (attribute.startsWith("marker")) {
             return new ElementTag(((ArmorStand) dentity.getBukkitEntity()).isMarker())

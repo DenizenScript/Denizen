@@ -24,7 +24,7 @@ public class EntityAttachmentHelper {
 
         public Location positionalOffset;
 
-        public Vector visiblePosition;
+        public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
 
         public boolean syncServer;
 

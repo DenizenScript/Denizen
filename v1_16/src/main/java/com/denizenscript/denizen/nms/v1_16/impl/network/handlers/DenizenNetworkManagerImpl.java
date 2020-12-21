@@ -225,14 +225,14 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             byte flags = (byte) item.b();
                             flags |= 0x20; // Invisible flag
                             data.add(new DataWatcher.Item(watcherObject, flags));
-                            super.sendPacket(altPacket, genericfuturelistener);
+                            oldManager.sendPacket(altPacket, genericfuturelistener);
                             return true;
                         }
                     }
                 }
                 else {
                     PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata(ent.getId(), ((CraftEntity) disguise.as.entity).getHandle().getDataWatcher(), true);
-                    super.sendPacket(altPacket, genericfuturelistener);
+                    oldManager.sendPacket(altPacket, genericfuturelistener);
                     return true;
                 }
                 return false;
@@ -351,12 +351,12 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                     pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                                 }
                                 Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
-                                Vector oldPos = att.visiblePosition;
+                                Vector oldPos = att.visiblePositions.get(player.getUniqueID());
                                 if (oldPos == null) {
                                     oldPos = att.attached.getLocation().toVector();
                                 }
                                 Vector moveNeeded = goalPosition.clone().subtract(oldPos);
-                                att.visiblePosition = goalPosition.clone();
+                                att.visiblePositions.put(player.getUniqueID(), goalPosition.clone());
                                 int offX = (int) (moveNeeded.getX() * (32 * 128));
                                 int offY = (int) (moveNeeded.getY() * (32 * 128));
                                 int offZ = (int) (moveNeeded.getZ() * (32 * 128));
@@ -444,7 +444,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                 YAW_PACKTELENT.setByte(pNew, yaw);
                                 PITCH_PACKTELENT.setByte(pNew, pitch);
                             }
-                            att.visiblePosition = resultPos.clone();
+                            att.visiblePositions.put(player.getUniqueID(), resultPos.clone());
                             oldManager.sendPacket(pNew);
                         }
                     }
