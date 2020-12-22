@@ -16,6 +16,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagManager;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -158,7 +159,7 @@ public class NarrateCommand extends AbstractCommand {
                     context.player = player;
                     personalText = TagManager.tag(personalText, context);
                 }
-                BaseComponent[] component = FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText);
+                BaseComponent[] component = FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText, ChatColor.WHITE);
                 if (fromId == null) {
                     player.getPlayerEntity().spigot().sendMessage(component);
                 }

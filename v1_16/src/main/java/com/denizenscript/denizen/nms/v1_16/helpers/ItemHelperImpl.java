@@ -13,6 +13,7 @@ import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -277,7 +278,7 @@ public class ItemHelperImpl extends ItemHelper {
         net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
         String jsonText = ((NBTTagCompound) nmsItemStack.getTag().get("display")).getString("Name");
         BaseComponent[] nameComponent = ComponentSerializer.parse(jsonText);
-        return FormattedTextHelper.stringify(nameComponent);
+        return FormattedTextHelper.stringify(nameComponent, ChatColor.WHITE);
     }
 
     @Override
@@ -290,7 +291,7 @@ public class ItemHelperImpl extends ItemHelper {
         List<String> outList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             BaseComponent[] lineComponent = ComponentSerializer.parse(list.getString(i));
-            outList.add(FormattedTextHelper.stringify(lineComponent));
+            outList.add(FormattedTextHelper.stringify(lineComponent, ChatColor.WHITE));
         }
         return outList;
     }
@@ -307,7 +308,7 @@ public class ItemHelperImpl extends ItemHelper {
             display.set("Name", null);
             return;
         }
-        BaseComponent[] components = FormattedTextHelper.parse(name);
+        BaseComponent[] components = FormattedTextHelper.parse(name, ChatColor.WHITE);
         TextComponent actualComponent = new TextComponent();
         for (BaseComponent component : components) {
             actualComponent.addExtra(component);
@@ -330,7 +331,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             NBTTagList tagList = new NBTTagList();
             for (String line : lore) {
-                tagList.add(NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(line))));
+                tagList.add(NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(line, ChatColor.WHITE))));
             }
             display.set("Lore", tagList);
         }

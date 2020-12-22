@@ -54,7 +54,7 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
         queue = new TimedQueue("EX_SUSTAINED_COMMAND", 0);
         if (!quiet && player != null) {
             queue.debugOutput = (s) -> {
-                player.spigot().sendMessage(FormattedTextHelper.parse(s));
+                player.spigot().sendMessage(FormattedTextHelper.parse(s, net.md_5.bungee.api.ChatColor.WHITE));
             };
         }
         queue.waitWhenEmpty = true;

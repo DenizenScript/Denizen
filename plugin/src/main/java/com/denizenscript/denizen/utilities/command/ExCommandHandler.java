@@ -106,7 +106,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
             if (!quiet && sender instanceof Player) {
                 final Player player = (Player) sender;
                 queue.debugOutput = (s) -> {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(s));
+                    player.spigot().sendMessage(FormattedTextHelper.parse(s, net.md_5.bungee.api.ChatColor.WHITE));
                 };
             }
             queue.start();

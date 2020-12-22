@@ -16,6 +16,7 @@ import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
@@ -287,7 +288,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void setBossBarTitle(BossBar bar, String title) {
-        ((CraftBossBar) bar).getHandle().title = Handler.componentToNMS(FormattedTextHelper.parse(title));
+        ((CraftBossBar) bar).getHandle().title = Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE));
         ((CraftBossBar) bar).getHandle().sendUpdate(PacketPlayOutBoss.Action.UPDATE_NAME);
     }
 }

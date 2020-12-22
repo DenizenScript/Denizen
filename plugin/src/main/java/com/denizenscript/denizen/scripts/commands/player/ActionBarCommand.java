@@ -16,6 +16,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagManager;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 
 import java.util.Arrays;
@@ -138,7 +139,7 @@ public class ActionBarCommand extends AbstractCommand {
                     context.player = player;
                     personalText = TagManager.tag(personalText, context);
                 }
-                player.getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText));
+                player.getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText, ChatColor.WHITE));
             }
             else {
                 Debug.echoError("Sent actionbar to non-existent player!?");

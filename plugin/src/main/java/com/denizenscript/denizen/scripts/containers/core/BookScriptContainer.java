@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -85,7 +86,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("text");
             for (String page : pages) {
                 page = TagManager.tag(page, context);
-                bookInfo.spigot().addPage(FormattedTextHelper.parse(page));
+                bookInfo.spigot().addPage(FormattedTextHelper.parse(page, ChatColor.BLACK));
             }
         }
         book.setItemMeta(bookInfo);

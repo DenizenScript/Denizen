@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -129,7 +130,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 ? getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.parent))
                 : null;
         AdvancementDisplay display = new AdvancementDisplay(CraftItemStack.asNMSCopy(advancement.icon),
-                Handler.componentToNMS(FormattedTextHelper.parse(advancement.title)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description)),
+                Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
                 asMinecraftKey(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.a(advancement.xOffset, advancement.yOffset);

@@ -12,6 +12,7 @@ import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -172,8 +173,8 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showTabListHeaderFooter(Player player, String header, String footer) {
         PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-        packet.header = Handler.componentToNMS(FormattedTextHelper.parse(header));
-        packet.footer = Handler.componentToNMS(FormattedTextHelper.parse(footer));
+        packet.header = Handler.componentToNMS(FormattedTextHelper.parse(header, ChatColor.WHITE));
+        packet.footer = Handler.componentToNMS(FormattedTextHelper.parse(footer, ChatColor.WHITE));
         sendPacket(player, packet);
     }
 
@@ -186,10 +187,10 @@ public class PacketHelperImpl implements PacketHelper {
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         sendPacket(player, new PacketPlayOutTitle(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
-            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Handler.componentToNMS(FormattedTextHelper.parse(title))));
+            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
         }
         if (subtitle != null) {
-            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, Handler.componentToNMS(FormattedTextHelper.parse(subtitle))));
+            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
         }
     }
 
@@ -286,7 +287,7 @@ public class PacketHelperImpl implements PacketHelper {
             PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
             ENTITY_METADATA_EID_SETTER.invoke(packet, entity.getEntityId());
             List<DataWatcher.Item<?>> list = new ArrayList<>();
-            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name)))));
+            list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
             list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
             ENTITY_METADATA_LIST_SETTER.invoke(packet, list);
             sendPacket(player, packet);

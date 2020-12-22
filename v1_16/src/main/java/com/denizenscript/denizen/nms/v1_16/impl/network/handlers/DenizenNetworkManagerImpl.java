@@ -23,6 +23,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
@@ -299,7 +300,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 DataWatcherObject<?> watcherObject = item.a();
                 int watcherId = watcherObject.a();
                 if (watcherId == 2) { // 2: Custom name metadata
-                    Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply)));
+                    Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
                     item.a(name);
                 }
                 else if (watcherId == 3) { // 3: custom name visible metadata

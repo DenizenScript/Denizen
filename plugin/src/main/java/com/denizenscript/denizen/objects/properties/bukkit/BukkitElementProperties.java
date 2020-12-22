@@ -378,7 +378,7 @@ public class BukkitElementProperties implements Property {
         // Inverts <@link tag ElementTag.from_raw_json>.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("to_raw_json", (attribute, object) -> {
-            return new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(object.asString())));
+            return new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)));
         });
 
         // <--[tag]
@@ -390,7 +390,7 @@ public class BukkitElementProperties implements Property {
         // Inverts <@link tag ElementTag.to_raw_json>.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("from_raw_json", (attribute, object) -> {
-            return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString())));
+            return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString()), ChatColor.WHITE));
         });
 
         // <--[tag]

@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -136,12 +137,12 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
-            Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message));
+            Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message, ChatColor.WHITE));
         }
         else if (type == AnnounceType.TO_OPS) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(message));
+                    player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
                 }
             }
         }
@@ -149,7 +150,7 @@ public class AnnounceCommand extends AbstractCommand {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerTag plTag = new PlayerTag(player);
                 if (plTag.getFlagTracker().hasFlag(flag.asString())) {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(message));
+                    player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
                 }
             }
         }
