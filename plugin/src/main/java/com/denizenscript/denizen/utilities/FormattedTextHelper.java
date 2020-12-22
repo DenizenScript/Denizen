@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 
@@ -179,7 +180,7 @@ public class FormattedTextHelper {
             base.addExtra(new TextComponent(str)); // This is for compat with how Spigot does parsing of plaintext.
             return new BaseComponent[] { base };
         }
-        TextComponent root = new TextComponent(str.substring(0, firstChar));
+        TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();
         if (cleanBase) {
             base.setBold(false);
@@ -188,6 +189,10 @@ public class FormattedTextHelper {
             base.setUnderlined(false);
             base.setObfuscated(false);
             base.setColor(baseColor);
+            root.setText(str.substring(0, firstChar));
+        }
+        else {
+            base.setText(str.substring(0, firstChar));
         }
         root.addExtra(base);
         str = str.substring(firstChar);
@@ -352,6 +357,11 @@ public class FormattedTextHelper {
                         }
                         else if (innardType.equals("font")) {
                             nextText.setFont(innardBase.get(1));
+                        }
+                        else {
+                            if (Debug.verbose) {
+                                Debug.echoError("Text parse issue: cannot interpret type '" + innardType + "' with " + innardParts.size() + " parts.");
+                            }
                         }
                     }
                     i = endBracket;
