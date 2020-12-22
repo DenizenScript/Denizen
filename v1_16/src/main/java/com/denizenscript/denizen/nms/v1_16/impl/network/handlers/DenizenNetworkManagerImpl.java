@@ -313,6 +313,129 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
     }
 
+    public void tryProcessMovePacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+        if (attList != null) {
+            for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                if (attMap.attached.isValid() && att != null) {
+                    Packet pNew = (Packet) duplo(packet);
+                    ENTITY_ID_PACKENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
+                    if (att.positionalOffset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
+                        boolean isRotate = packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
+                        byte yaw, pitch;
+                        if (att.noRotate) {
+                            Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
+                            yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
+                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
+                        }
+                        else if (isRotate) {
+                            yaw = YAW_PACKENT.getByte(packet);
+                            pitch = PITCH_PACKENT.getByte(packet);
+                        }
+                        else {
+                            yaw = EntityAttachmentHelper.compressAngle(e.yaw);
+                            pitch = EntityAttachmentHelper.compressAngle(e.pitch);
+                        }
+                        if (isRotate) {
+                            yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                            pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
+                        }
+                        Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
+                        Vector oldPos = att.visiblePositions.get(player.getUniqueID());
+                        boolean forceTele = false;
+                        if (oldPos == null) {
+                            oldPos = att.attached.getLocation().toVector();
+                            forceTele = true;
+                        }
+                        Vector moveNeeded = goalPosition.clone().subtract(oldPos);
+                        att.visiblePositions.put(player.getUniqueID(), goalPosition.clone());
+                        int offX = (int) (moveNeeded.getX() * (32 * 128));
+                        int offY = (int) (moveNeeded.getY() * (32 * 128));
+                        int offZ = (int) (moveNeeded.getZ() * (32 * 128));
+                        if (forceTele || offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
+                                || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
+                                || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
+                            PacketPlayOutEntityTeleport newTeleportPacket = new PacketPlayOutEntityTeleport(e);
+                            ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, att.attached.getBukkitEntity().getEntityId());
+                            POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
+                            POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
+                            POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
+                            YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
+                            PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
+                            oldManager.sendPacket(newTeleportPacket);
+                        }
+                        else {
+                            POS_X_PACKENT.setShort(pNew, (short) MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_Y_PACKENT.setShort(pNew, (short) MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_Z_PACKENT.setShort(pNew, (short) MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                            if (isRotate) {
+                                YAW_PACKENT.setByte(pNew, yaw);
+                                PITCH_PACKENT.setByte(pNew, pitch);
+                            }
+                            oldManager.sendPacket(pNew);
+                        }
+                    }
+                    else {
+                        oldManager.sendPacket(pNew);
+                    }
+                }
+            }
+        }
+    }
+
+    public void tryProcessVelocityPacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+        if (attList != null) {
+            for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                if (attMap.attached.isValid() && att != null) {
+                    Packet pNew = (Packet) duplo(packet);
+                    ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
+                    oldManager.sendPacket(pNew);
+                }
+            }
+        }
+    }
+
+    public void tryProcessTeleportPacketForAttach(Packet<?> packet, Entity e, Vector relative) throws IllegalAccessException {
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+        if (attList != null) {
+            for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                if (attMap.attached.isValid() && att != null) {
+                    Packet pNew = (Packet) duplo(packet);
+                    ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
+                    Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew)).add(relative);
+                    if (att.positionalOffset != null) {
+                        resultPos = att.fixedForOffset(resultPos, e.yaw, e.pitch);
+                        byte yaw, pitch;
+                        if (att.noRotate) {
+                            Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
+                            yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
+                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
+                        }
+                        else {
+                            yaw = YAW_PACKTELENT.getByte(packet);
+                            pitch = PITCH_PACKTELENT.getByte(packet);
+                        }
+                        yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                        pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
+                        POS_X_PACKTELENT.setDouble(pNew, resultPos.getX());
+                        POS_Y_PACKTELENT.setDouble(pNew, resultPos.getY());
+                        POS_Z_PACKTELENT.setDouble(pNew, resultPos.getZ());
+                        YAW_PACKTELENT.setByte(pNew, yaw);
+                        PITCH_PACKTELENT.setByte(pNew, pitch);
+                    }
+                    att.visiblePositions.put(player.getUniqueID(), resultPos.clone());
+                    oldManager.sendPacket(pNew);
+                }
+            }
+        }
+    }
+
+    public static Vector VECTOR_ZERO = new Vector(0, 0, 0);
+
     public boolean processAttachToForPacket(Packet<?> packet) {
         if (EntityAttachmentHelper.toEntityToData.isEmpty()) {
             return false;
@@ -324,70 +447,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
-                if (attList != null) {
-                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
-                        if (attMap.attached.isValid() && att != null) {
-                            Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
-                            if (att.positionalOffset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
-                                boolean isRotate = packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
-                                byte yaw, pitch;
-                                if (att.noRotate) {
-                                    Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
-                                    yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
-                                    pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
-                                }
-                                else if (isRotate) {
-                                    yaw = YAW_PACKENT.getByte(packet);
-                                    pitch = PITCH_PACKENT.getByte(packet);
-                                }
-                                else {
-                                    yaw = EntityAttachmentHelper.compressAngle(e.yaw);
-                                    pitch = EntityAttachmentHelper.compressAngle(e.pitch);
-                                }
-                                if (isRotate) {
-                                    yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
-                                    pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
-                                }
-                                Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
-                                Vector oldPos = att.visiblePositions.get(player.getUniqueID());
-                                if (oldPos == null) {
-                                    oldPos = att.attached.getLocation().toVector();
-                                }
-                                Vector moveNeeded = goalPosition.clone().subtract(oldPos);
-                                att.visiblePositions.put(player.getUniqueID(), goalPosition.clone());
-                                int offX = (int) (moveNeeded.getX() * (32 * 128));
-                                int offY = (int) (moveNeeded.getY() * (32 * 128));
-                                int offZ = (int) (moveNeeded.getZ() * (32 * 128));
-                                if (offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
-                                        || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
-                                        || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
-                                    PacketPlayOutEntityTeleport newTeleportPacket = new PacketPlayOutEntityTeleport(e);
-                                    ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, att.attached.getBukkitEntity().getEntityId());
-                                    POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
-                                    POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
-                                    POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
-                                    YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
-                                    PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
-                                    oldManager.sendPacket(newTeleportPacket);
-                                }
-                                else {
-                                    POS_X_PACKENT.setShort(pNew, (short) MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
-                                    POS_Y_PACKENT.setShort(pNew, (short) MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
-                                    POS_Z_PACKENT.setShort(pNew, (short) MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
-                                    if (isRotate) {
-                                        YAW_PACKENT.setByte(pNew, yaw);
-                                        PITCH_PACKENT.setByte(pNew, pitch);
-                                    }
-                                    oldManager.sendPacket(pNew);
-                                }
-                            }
-                            else {
-                                oldManager.sendPacket(pNew);
-                            }
-                        }
+                tryProcessMovePacketForAttach(packet, e);
+                if (e.passengers != null && !e.passengers.isEmpty()) {
+                    for (Entity ent : e.passengers) {
+                        tryProcessMovePacketForAttach(packet, ent);
                     }
                 }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
@@ -398,15 +461,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
-                if (attList != null) {
-                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
-                        if (attMap.attached.isValid() && att != null) {
-                            Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
-                            oldManager.sendPacket(pNew);
-                        }
+                tryProcessVelocityPacketForAttach(packet, e);
+                if (e.passengers != null && !e.passengers.isEmpty()) {
+                    for (Entity ent : e.passengers) {
+                        tryProcessVelocityPacketForAttach(packet, ent);
                     }
                 }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
@@ -417,37 +475,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
-                if (attList != null) {
-                    for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                        EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
-                        if (attMap.attached.isValid() && att != null) {
-                            Packet pNew = (Packet) duplo(packet);
-                            ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
-                            Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
-                            if (att.positionalOffset != null) {
-                                resultPos = att.fixedForOffset(resultPos, e.yaw, e.pitch);
-                                byte yaw, pitch;
-                                if (att.noRotate) {
-                                    Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
-                                    yaw = EntityAttachmentHelper.compressAngle(attachedEntity.yaw);
-                                    pitch = EntityAttachmentHelper.compressAngle(attachedEntity.pitch);
-                                }
-                                else {
-                                    yaw = YAW_PACKTELENT.getByte(packet);
-                                    pitch = PITCH_PACKTELENT.getByte(packet);
-                                }
-                                yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
-                                pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
-                                POS_X_PACKTELENT.setDouble(pNew, resultPos.getX());
-                                POS_Y_PACKTELENT.setDouble(pNew, resultPos.getY());
-                                POS_Z_PACKTELENT.setDouble(pNew, resultPos.getZ());
-                                YAW_PACKTELENT.setByte(pNew, yaw);
-                                PITCH_PACKTELENT.setByte(pNew, pitch);
-                            }
-                            att.visiblePositions.put(player.getUniqueID(), resultPos.clone());
-                            oldManager.sendPacket(pNew);
-                        }
+                tryProcessTeleportPacketForAttach(packet, e, VECTOR_ZERO);
+                if (e.passengers != null && !e.passengers.isEmpty()) {
+                    for (Entity ent : e.passengers) {
+                        tryProcessTeleportPacketForAttach(packet, ent, new Vector(ent.locX() - e.locX(), ent.locY() - e.locY(), ent.locZ() - e.locZ()));
                     }
                 }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
