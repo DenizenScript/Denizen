@@ -39,6 +39,7 @@ public class FakeEntity {
     public LocationTag location;
     public BukkitTask currentTask = null;
     public Runnable triggerUpdatePacket;
+    public Runnable triggerDestroyPacket;
 
     public FakeEntity(List<PlayerTag> player, LocationTag location, int id) {
         this.players = player;
@@ -70,10 +71,17 @@ public class FakeEntity {
             currentTask = null;
         }
         idsToEntities.remove(entity.getUUID());
-        for (PlayerTag player : players) {
-            if (player.isOnline()) {
-                NMSHandler.getPlayerHelper().sendEntityDestroy(player.getPlayerEntity(), entity.getBukkitEntity());
+        if (triggerDestroyPacket != null) {
+            triggerDestroyPacket.run();
+        }
+        else {
+            for (PlayerTag player : players) {
+                if (player.isOnline()) {
+                    NMSHandler.getPlayerHelper().sendEntityDestroy(player.getPlayerEntity(), entity.getBukkitEntity());
+                }
             }
+        }
+        for (PlayerTag player : players) {
             FakeEntity.FakeEntityMap mapping = playersToEntities.get(player.getOfflinePlayer().getUniqueId());
             mapping.remove(this);
         }

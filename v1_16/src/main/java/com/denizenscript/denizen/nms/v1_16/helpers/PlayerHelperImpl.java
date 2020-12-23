@@ -73,6 +73,11 @@ public class PlayerHelperImpl extends PlayerHelper {
         tracker.clear(nmsPlayer);
     }
 
+    public static class TrackerData {
+        public PlayerTag player;
+        public EntityTrackerEntry tracker;
+    }
+
     @Override
     public FakeEntity sendEntitySpawn(List<PlayerTag> players, EntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         CraftWorld world = ((CraftWorld) location.getWorld());
@@ -88,33 +93,33 @@ public class PlayerHelperImpl extends PlayerHelper {
         nmsEntity.dead = false;
         FakeEntity fake = new FakeEntity(players, location, entity.getBukkitEntity().getEntityId());
         fake.entity = new EntityTag(entity.getBukkitEntity());
-        List<EntityTrackerEntry> trackers = new ArrayList<>();
+        List<TrackerData> trackers = new ArrayList<>();
         for (PlayerTag player : players) {
             EntityPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
             PlayerConnection conn = nmsPlayer.playerConnection;
             final EntityTrackerEntry tracker = new EntityTrackerEntry(world.getHandle(), nmsEntity, 1, true, conn::sendPacket, Collections.singleton(nmsPlayer));
             tracker.b(nmsPlayer);
-            trackers.add(tracker);
+            final TrackerData data = new TrackerData();
+            data.player = player;
+            data.tracker = tracker;
+            trackers.add(data);
             if (autoTrack) {
                 new BukkitRunnable() {
                     boolean wasOnline = true;
                     @Override
                     public void run() {
                         if (!fake.entity.isFakeValid) {
-                            trackers.remove(tracker);
                             cancel();
                             return;
                         }
                         if (player.isOnline()) {
                             if (!wasOnline) {
-                                trackers.add(tracker);
                                 tracker.b(((CraftPlayer) player.getPlayerEntity()).getHandle());
                                 wasOnline = true;
                             }
                             tracker.a();
                         }
                         else if (wasOnline) {
-                            trackers.remove(tracker);
                             wasOnline = false;
                         }
                     }
@@ -124,9 +129,22 @@ public class PlayerHelperImpl extends PlayerHelper {
         fake.triggerUpdatePacket = new Runnable() {
             @Override
             public void run() {
-                for (EntityTrackerEntry tracker : trackers) {
-                    tracker.a();
+                for (TrackerData tracker : trackers) {
+                    if (tracker.player.isOnline()) {
+                        tracker.tracker.a();
+                    }
                 }
+            }
+        };
+        fake.triggerDestroyPacket = new Runnable() {
+            @Override
+            public void run() {
+                for (TrackerData tracker : trackers) {
+                    if (tracker.player.isOnline()) {
+                        tracker.tracker.a(((CraftPlayer) tracker.player.getPlayerEntity()).getHandle());
+                    }
+                }
+                trackers.clear();
             }
         };
         return fake;
