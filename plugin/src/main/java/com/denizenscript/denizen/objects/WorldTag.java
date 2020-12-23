@@ -22,9 +22,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WorldTag implements ObjectTag, Adjustable {
 
@@ -32,18 +30,11 @@ public class WorldTag implements ObjectTag, Adjustable {
     //   STATIC METHODS
     /////////////////
 
-    static Map<String, WorldTag> worlds = new HashMap<>();
-
     public static WorldTag mirrorBukkitWorld(World world) {
         if (world == null) {
             return null;
         }
-        if (worlds.containsKey(world.getName())) {
-            return worlds.get(world.getName());
-        }
-        else {
-            return new WorldTag(world);
-        }
+        return new WorldTag(world);
     }
 
     /////////////////////
@@ -92,12 +83,7 @@ public class WorldTag implements ObjectTag, Adjustable {
         }
 
         if (returnable != null) {
-            if (worlds.containsKey(returnable.getName())) {
-                return worlds.get(returnable.getName());
-            }
-            else {
-                return new WorldTag(returnable);
-            }
+            return new WorldTag(returnable);
         }
         else if (announce) {
             Debug.echoError("Invalid World! '" + string
@@ -169,9 +155,6 @@ public class WorldTag implements ObjectTag, Adjustable {
             this.prefix = prefix;
         }
         this.world_name = world.getName();
-        if (!worlds.containsKey(world.getName())) {
-            worlds.put(world.getName(), this);
-        }
     }
 
     @Override

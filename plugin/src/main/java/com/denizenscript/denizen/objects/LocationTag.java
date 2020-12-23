@@ -77,11 +77,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     public String backupWorld;
 
     public String getWorldName() {
+        if (backupWorld != null) {
+            return backupWorld;
+        }
         World w = super.getWorld();
         if (w != null) {
             return w.getName();
         }
-        return backupWorld;
+        return null;
     }
 
     @Override
@@ -339,19 +342,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
      * @param location the Bukkit Location to reference
      */
     public LocationTag(Location location) {
-        // Just save the yaw and pitch as they are; don't check if they are
-        // higher than 0, because Minecraft yaws are weird and can have
-        // negative values
-        super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
-                location.getYaw(), location.getPitch());
+        this(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     public LocationTag(Vector vector) {
-        super(null, vector.getX(), vector.getY(), vector.getZ());
+        this((World) null, vector.getX(), vector.getY(), vector.getZ(), 0, 0);
     }
 
     public LocationTag(World world, Vector vector) {
-        super(world, vector.getX(), vector.getY(), vector.getZ());
+        this(world, vector.getX(), vector.getY(), vector.getZ(), 0, 0);
     }
 
     public LocationTag(World world, double x, double y) {
@@ -369,7 +368,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
      * @param z     z-coordinate of the location
      */
     public LocationTag(World world, double x, double y, double z) {
-        super(world, x, y, z);
+        this(world, x, y, z, 0, 0);
     }
 
     public LocationTag(double x, double y, double z, String worldName) {
@@ -379,6 +378,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     public LocationTag(World world, double x, double y, double z, float pitch, float yaw) {
         super(world, x, y, z, yaw, pitch);
+        if (world != null) {
+            backupWorld = world.getName();
+        }
     }
 
     public LocationTag(String worldName, double x, double y, double z, float pitch, float yaw) {
