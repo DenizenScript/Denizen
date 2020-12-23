@@ -176,6 +176,7 @@ public class InventoryCommand extends AbstractCommand {
                 }
             }
             else if (!scriptEntry.hasObject("duration")
+                    && arg.matchesPrefix("duration")
                     && arg.matchesArgumentType(DurationTag.class)
                     && isFlag) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
