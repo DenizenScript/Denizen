@@ -732,35 +732,37 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         Entity bEntity = entity.getBukkitEntity();
         comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.equals("entity")) {
-            return true;
-        }
-        else if (comparedto.equals("npc")) {
-            return entity.isCitizensNPC();
-        }
-        else if (comparedto.equals("player")) {
-            return entity.isPlayer();
-        }
-        else if (comparedto.equals("vehicle")) {
-            return bEntity instanceof Vehicle;
-        }
-        else if (comparedto.equals("fish")) {
-            return bEntity instanceof Fish;
-        }
-        else if (comparedto.equals("projectile")) {
-            return bEntity instanceof Projectile;
-        }
-        else if (comparedto.equals("hanging")) {
-            return bEntity instanceof Hanging;
-        }
-        else if (comparedto.equals("monster")) {
-            return bEntity instanceof Monster;
-        }
-        else if (comparedto.equals("mob")) {
-            return bEntity instanceof Mob;
-        }
-        else if (comparedto.equals("animal")) {
-            return bEntity instanceof Animals;
+        if (specialEntityMatchables.contains(comparedto)) {
+            if (comparedto.equals("entity")) {
+                return true;
+            }
+            else if (comparedto.equals("npc")) {
+                return entity.isCitizensNPC();
+            }
+            else if (comparedto.equals("player")) {
+                return entity.isPlayer();
+            }
+            else if (comparedto.equals("vehicle")) {
+                return bEntity instanceof Vehicle;
+            }
+            else if (comparedto.equals("fish")) {
+                return bEntity instanceof Fish;
+            }
+            else if (comparedto.equals("projectile")) {
+                return bEntity instanceof Projectile;
+            }
+            else if (comparedto.equals("hanging")) {
+                return bEntity instanceof Hanging;
+            }
+            else if (comparedto.equals("monster")) {
+                return bEntity instanceof Monster;
+            }
+            else if (comparedto.equals("mob")) {
+                return bEntity instanceof Mob;
+            }
+            else if (comparedto.equals("animal")) {
+                return bEntity instanceof Animals;
+            }
         }
         MatchHelper matcher = createMatcher(comparedto);
         if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {

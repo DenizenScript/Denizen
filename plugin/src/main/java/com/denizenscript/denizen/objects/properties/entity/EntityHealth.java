@@ -30,7 +30,7 @@ public class EntityHealth implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "health", "formatted_health", "health_max", "health_percentage"
+            "health", "formatted_health", "health_max", "health_percentage", "health_data"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -45,7 +45,7 @@ public class EntityHealth implements Property {
 
     @Override
     public String getPropertyString() {
-        return entity.getLivingEntity().getHealth() + "/" + entity.getLivingEntity().getMaxHealth();
+        return CoreUtilities.doubleToString(entity.getLivingEntity().getHealth()) + "/" + CoreUtilities.doubleToString(entity.getLivingEntity().getMaxHealth());
     }
 
     @Override
@@ -140,6 +140,19 @@ public class EntityHealth implements Property {
             }
             return new ElementTag((entity.getLivingEntity().getHealth() / maxHealth) * 100)
                     .getObjectAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <EntityTag.health_data>
+        // @returns ElementTag)
+        // @mechanism EntityTag.health
+        // @group attributes
+        // @description
+        // Returns the current health data of the entity, in the format of current/max.
+        // -->
+        if (attribute.startsWith("health_data")) {
+            return new ElementTag(getPropertyString())
+                    .getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
