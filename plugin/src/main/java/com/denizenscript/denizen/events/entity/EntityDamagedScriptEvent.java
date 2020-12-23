@@ -76,7 +76,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     public EntityTag entity;
     public ElementTag cause;
-    public ElementTag final_damage;
     public EntityTag damager;
     public EntityTag projectile;
     public ItemTag held;
@@ -153,7 +152,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return new ElementTag(event.getDamage());
         }
         else if (name.equals("final_damage")) {
-            return final_damage;
+            return new ElementTag(event.getFinalDamage());
         }
         else if (name.equals("cause")) {
             return cause;
@@ -185,7 +184,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onEntityDamaged(EntityDamageEvent event) {
         entity = new EntityTag(event.getEntity());
-        final_damage = new ElementTag(event.getFinalDamage());
         cause = new ElementTag(CoreUtilities.toLowerCase(event.getCause().name()));
         damager = null;
         projectile = null;
