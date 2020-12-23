@@ -109,7 +109,7 @@ public class LegacySavesUpdater {
                 }
             }.runTaskLater(Denizen.getInstance(), 3);
         }
-        Denizen.getInstance().saveSaves();
+        Denizen.getInstance().saveSaves(true);
         Debug.log("==== Done updating legacy saves (except NPCs) ====");
     }
 

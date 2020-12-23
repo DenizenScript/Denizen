@@ -2234,7 +2234,7 @@ public class ServerTagBase {
         // Immediately saves the Denizen saves files.
         // -->
         if (mechanism.matches("save")) {
-            Denizen.getInstance().saveSaves();
+            Denizen.getInstance().saveSaves(true);
         }
 
         // <--[mechanism]

@@ -503,7 +503,7 @@ public class Denizen extends JavaPlugin {
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
 
-        saveSaves();
+        saveSaves(false);
     }
 
     @Override
@@ -558,7 +558,7 @@ public class Denizen extends JavaPlugin {
         return scoreboardsConfig;
     }
 
-    public void saveSaves() {
+    public void saveSaves(boolean canSleep) {
         // Save notables
         notableManager.saveNotables();
         // Save scoreboards to scoreboards.yml
@@ -590,7 +590,7 @@ public class Denizen extends JavaPlugin {
         catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
-        PlayerFlagHandler.saveAllNow();
+        PlayerFlagHandler.saveAllNow(canSleep);
     }
 
     @Override

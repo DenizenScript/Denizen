@@ -115,16 +115,27 @@ public class PlayerFlagHandler implements Listener {
 
     public static void loadFlags(UUID id, CachedPlayerFlag cache) {
         try {
+            File realPath;
             File flagFile = new File(dataFolder, id.toString() + ".dat");
             if (flagFile.exists()) {
-                FileInputStream fis = new FileInputStream(flagFile);
-                String str = ScriptHelper.convertStreamToString(fis);
-                fis.close();
-                cache.tracker = new SavableMapFlagTracker(str);
+                realPath = flagFile;
             }
             else {
-                cache.tracker = new SavableMapFlagTracker();
+                File bakFile = new File(dataFolder, id.toString() + ".dat~2");
+                if (bakFile.exists()) {
+                    realPath = bakFile;
+                }
+                // Note: ~1 are likely corrupted, so ignore them.
+                else {
+                    cache.tracker = new SavableMapFlagTracker();
+                    cache.loadingNow = false;
+                    return;
+                }
             }
+            FileInputStream fis = new FileInputStream(realPath);
+            String str = ScriptHelper.convertStreamToString(fis);
+            fis.close();
+            cache.tracker = new SavableMapFlagTracker(str);
         }
         catch (Throwable ex) {
             Debug.echoError("Failed to load player data for player ID '" + id + "'");
@@ -181,9 +192,12 @@ public class PlayerFlagHandler implements Listener {
         }
     }
 
-    public static void saveAllNow() {
+    public static void saveAllNow(boolean canSleep) {
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
             if (entry.getValue().tracker.modified) {
+                if (!canSleep && entry.getValue().savingNow || entry.getValue().loadingNow) {
+                    continue;
+                }
                 while (entry.getValue().savingNow || entry.getValue().loadingNow) {
                     try {
                         Thread.sleep(10);
@@ -199,10 +213,10 @@ public class PlayerFlagHandler implements Listener {
     }
 
     public static void saveFlags(UUID id, String flagData) {
-        File serverFlagsFile = new File(dataFolder, id.toString() + ".dat");
+        File saveToFile = new File(dataFolder, id.toString() + ".dat~1");
         try {
             Charset charset = ScriptHelper.encoding == null ? null : ScriptHelper.encoding.charset();
-            FileOutputStream fiout = new FileOutputStream(serverFlagsFile);
+            FileOutputStream fiout = new FileOutputStream(saveToFile);
             OutputStreamWriter writer;
             if (charset == null) {
                 writer = new OutputStreamWriter(fiout);
@@ -212,6 +226,15 @@ public class PlayerFlagHandler implements Listener {
             }
             writer.write(flagData);
             writer.close();
+            File bakFile = new File(dataFolder, id.toString() + ".dat~2");
+            File realFile = new File(dataFolder, id.toString() + ".dat");
+            if (realFile.exists()) {
+                realFile.renameTo(bakFile);
+            }
+            saveToFile.renameTo(realFile);
+            if (bakFile.exists()) {
+                bakFile.delete();
+            }
         }
         catch (Throwable ex) {
             Debug.echoError("Failed to save player data for player ID '" + id + "'");
