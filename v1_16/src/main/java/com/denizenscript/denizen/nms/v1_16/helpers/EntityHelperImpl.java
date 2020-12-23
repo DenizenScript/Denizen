@@ -620,4 +620,14 @@ public class EntityHelperImpl extends EntityHelper {
             ((CraftFallingBlock) entity).getHandle().ticksLived = ticks;
         }
     }
+
+    @Override
+    public int getShulkerPeek(Entity entity) {
+        return ((CraftShulker) entity).getHandle().eN();
+    }
+
+    @Override
+    public void setShulkerPeek(Entity entity, int peek) {
+        ((CraftShulker) entity).getHandle().a(peek);
+    }
 }

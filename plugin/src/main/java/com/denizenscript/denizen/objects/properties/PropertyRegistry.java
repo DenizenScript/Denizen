@@ -83,6 +83,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityRotation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            PropertyParser.registerProperty(EntityShulkerPeek.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntitySilent.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySitting.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySize.class, EntityTag.class);

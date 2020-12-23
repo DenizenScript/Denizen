@@ -466,4 +466,12 @@ public abstract class EntityHelper {
     public void setTicksLived(Entity entity, int ticks) {
         entity.setTicksLived(ticks);
     }
+
+    public int getShulkerPeek(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setShulkerPeek(Entity entity, int peek) {
+        throw new UnsupportedOperationException();
+    }
 }
