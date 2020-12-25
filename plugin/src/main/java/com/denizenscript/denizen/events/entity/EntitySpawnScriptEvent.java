@@ -11,6 +11,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 
 public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -31,13 +32,12 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Triggers when a mob spawns. Note that this is specifically for mobs, not any non-mob entity type.
+    // @Triggers when an entity spawns.
     //
     // @Context
     // <context.entity> returns the EntityTag that spawned.
     // <context.location> returns the location the entity will spawn at.
-    // <context.reason> returns the reason the entity spawned.
-    // Reasons: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
+    // <context.reason> returns the reason the entity spawned, can be ENTITY_SPAWN or any of: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //
     // -->
 
@@ -49,7 +49,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public EntityTag entity;
     public LocationTag location;
     public ElementTag reason;
-    public CreatureSpawnEvent event;
+    public EntitySpawnEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -105,11 +105,16 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @EventHandler
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
+    public void onEntitySpawn(EntitySpawnEvent event) {
         Entity entity = event.getEntity();
         this.entity = new EntityTag(entity);
         location = new LocationTag(event.getLocation());
-        reason = new ElementTag(event.getSpawnReason().name());
+        if (event instanceof CreatureSpawnEvent) {
+            reason = new ElementTag(((CreatureSpawnEvent) event).getSpawnReason().name());
+        }
+        else {
+            reason = new ElementTag("ENTITY_SPAWN");
+        }
         this.event = event;
         EntityTag.rememberEntity(entity);
         fire(event);
