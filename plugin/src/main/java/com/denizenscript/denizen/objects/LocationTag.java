@@ -255,12 +255,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // x,y,z,pitch,yaw
         {
             try {
+                float pitch = Float.valueOf(split.get(3));
+                float yaw = Float.valueOf(split.get(4));
                 return new LocationTag((World) null,
                         Double.valueOf(split.get(0)),
                         Double.valueOf(split.get(1)),
                         Double.valueOf(split.get(2)),
-                        Float.valueOf(split.get(3)),
-                        Float.valueOf(split.get(4)));
+                        yaw, pitch);
             }
             catch (Exception e) {
                 if (context == null || context.showErrors()) {
@@ -279,23 +280,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (worldName.startsWith("w@")) {
                     worldName = worldName.substring("w@".length());
                 }
-                World world = Bukkit.getWorld(worldName);
-                if (world != null) {
-                    return new LocationTag(world,
-                            Double.valueOf(split.get(0)),
-                            Double.valueOf(split.get(1)),
-                            Double.valueOf(split.get(2)),
-                            Float.valueOf(split.get(3)),
-                            Float.valueOf(split.get(4)));
-                }
-                LocationTag output = new LocationTag((World) null,
+                float pitch = Float.valueOf(split.get(3));
+                float yaw = Float.valueOf(split.get(4));
+                return new LocationTag(worldName,
                         Double.valueOf(split.get(0)),
                         Double.valueOf(split.get(1)),
                         Double.valueOf(split.get(2)),
-                        Float.valueOf(split.get(3)),
-                        Float.valueOf(split.get(4)));
-                output.backupWorld = worldName;
-                return output;
+                        yaw, pitch);
             }
             catch (Exception e) {
                 if (context == null || context.showErrors()) {
@@ -376,14 +367,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         backupWorld = worldName;
     }
 
-    public LocationTag(World world, double x, double y, double z, float pitch, float yaw) {
+    public LocationTag(World world, double x, double y, double z, float yaw, float pitch) {
         super(world, x, y, z, yaw, pitch);
         if (world != null) {
             backupWorld = world.getName();
         }
     }
 
-    public LocationTag(String worldName, double x, double y, double z, float pitch, float yaw) {
+    public LocationTag(String worldName, double x, double y, double z, float yaw, float pitch) {
         super(worldName == null ? null : Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
         backupWorld = worldName;
     }

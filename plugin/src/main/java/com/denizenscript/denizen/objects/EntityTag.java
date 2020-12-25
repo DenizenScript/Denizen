@@ -1460,7 +1460,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @group location
             // @description
             // Returns the location of what the entity is standing on.
-            // Works with offline players.
             // -->
             if (attribute.startsWith("standing_on", 2)) {
                 attribute.fulfill(1);
