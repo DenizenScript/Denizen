@@ -8,11 +8,15 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+
+import java.util.Map;
 
 public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -38,6 +42,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // <context.item> returns the ItemTag to be enchanted.
     // <context.button> returns which button was pressed to initiate the enchanting.
     // <context.cost> returns the experience level cost of the enchantment.
+    // <context.enchants> returns a MapTag of enchantment names to the level that will be applied.
     //
     // @Determine
     // ElementTag(Number) to set the experience level cost of the enchantment.
@@ -143,6 +148,13 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (name.equals("cost")) {
             return new ElementTag(cost);
+        }
+        else if (name.equals("enchants")) {
+            MapTag map = new MapTag();
+            for (Map.Entry<Enchantment, Integer> enchant : event.getEnchantsToAdd().entrySet()) {
+                map.putObject(enchant.getKey().getKey().getKey(), new ElementTag(enchant.getValue()));
+            }
+            return map;
         }
         return super.getContext(name);
     }
