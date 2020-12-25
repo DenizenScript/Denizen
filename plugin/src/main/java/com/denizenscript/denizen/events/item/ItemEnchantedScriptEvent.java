@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -11,6 +12,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,7 +49,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // @Determine
     // ElementTag(Number) to set the experience level cost of the enchantment.
     // "RESULT:" + ItemTag to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
-    // "ENCHANTS:" + ItemTag to change the resultant enchantments based on an ItemTag.
+    // "ENCHANTS:" + MapTag to change the resultant enchantments.
     //
     // @Player when the enchanter is a player.
     //
@@ -114,10 +116,18 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
                 return true;
             }
             else if (lower.startsWith("enchants:")) {
-                String itemText = determination.substring("enchants:".length());
-                ItemTag enchantsRes = ItemTag.valueOf(itemText, path.container);
                 event.getEnchantsToAdd().clear();
-                event.getEnchantsToAdd().putAll(enchantsRes.getItemMeta().getEnchants());
+                String itemText = determination.substring("enchants:".length());
+                if (itemText.startsWith("map@")) {
+                    MapTag map = MapTag.valueOf(itemText, getTagContext(path));
+                    for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
+                        event.getEnchantsToAdd().put(Utilities.getEnchantmentByName(enchantments.getKey().low), enchantments.getValue().asType(ElementTag.class, getTagContext(path)).asInt());
+                    }
+                }
+                else {
+                    ItemTag enchantsRes = ItemTag.valueOf(itemText, path.container);
+                    event.getEnchantsToAdd().putAll(enchantsRes.getItemMeta().getEnchants());
+                }
                 return true;
             }
         }
