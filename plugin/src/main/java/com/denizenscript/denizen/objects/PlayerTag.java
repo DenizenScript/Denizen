@@ -1837,6 +1837,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         /////////////////
 
         // <--[tag]
+        // @attribute <PlayerTag.ip_address>
+        // @returns ElementTag
+        // @description
+        // Returns the player's IP address, without port or hostname.
+        // -->
+        registerOnlineOnlyTag("ip_address", (attribute, object) -> {
+            return new ElementTag(object.getPlayerEntity().getAddress().getAddress().toString());
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.ip>
         // @returns ElementTag
         // @description
@@ -1847,7 +1857,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @attribute <PlayerTag.ip.address_only>
             // @returns ElementTag
             // @description
-            // Returns the player's IP address.
+            // Returns the player's IP address with port (without triggering an rdns lookup).
             // -->
             if (attribute.startsWith("address_only", 2)) {
                 attribute.fulfill(1);
@@ -1859,7 +1869,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @attribute <PlayerTag.ip.address>
             // @returns ElementTag
             // @description
-            // Returns the player's IP address.
+            // Returns the player's IP address with port (usually including an rdns host path).
             // -->
             if (attribute.startsWith("address", 2)) {
                 attribute.fulfill(1);
