@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -10,6 +12,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -33,7 +36,7 @@ public class ItemEnchantments implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "is_enchanted", "enchantments"
+            "is_enchanted", "enchantments", "enchantment_map"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -70,16 +73,8 @@ public class ItemEnchantments implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.enchantments.with_levels>
-        // @returns ListTag
-        // @mechanism ItemTag.enchantments
-        // @group properties
-        // @description
-        // Returns a list of enchantments on the item, with their levels listed too.
-        // In the format of ENCHANTMENT,LEVEL - For example: sharpness,3
-        // -->
         if (attribute.startsWith("enchantments.with_levels")) {
+            Deprecations.itemEnchantmentTags.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
@@ -87,16 +82,8 @@ public class ItemEnchantments implements Property {
             }
             return enchants.getObjectAttribute(attribute.fulfill(2));
         }
-
-        // <--[tag]
-        // @attribute <ItemTag.enchantments.levels>
-        // @returns ListTag
-        // @mechanism ItemTag.enchantments
-        // @group properties
-        // @description
-        // Returns a list of enchantments on the item, showing only the level.
-        // -->
         if (attribute.startsWith("enchantments.levels")) {
+            Deprecations.itemEnchantmentTags.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
@@ -104,17 +91,8 @@ public class ItemEnchantments implements Property {
             }
             return enchants.getObjectAttribute(attribute.fulfill(2));
         }
-
-        // <--[tag]
-        // @attribute <ItemTag.enchantments.level[<name>]>
-        // @returns ElementTag(Number)
-        // @mechanism ItemTag.enchantments
-        // @group properties
-        // @description
-        // Returns the level of a specified enchantment.
-        // -->
-        if (attribute.startsWith("enchantments.level")
-                && attribute.hasContext(2)) {
+        if (attribute.startsWith("enchantments.level") && attribute.hasContext(2)) {
+            Deprecations.itemEnchantmentTags.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             if (enchantments.size() > 0) {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
@@ -135,7 +113,7 @@ public class ItemEnchantments implements Property {
         // @mechanism ItemTag.enchantments
         // @group properties
         // @description
-        // Returns a list of enchantments on the item.
+        // Returns a list of enchantment names on the item.
         // -->
         if (attribute.startsWith("enchantments")) {
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
@@ -146,7 +124,27 @@ public class ItemEnchantments implements Property {
             return enchants.getObjectAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <ItemTag.enchantment_map>
+        // @returns MapTag
+        // @mechanism ItemTag.enchantments
+        // @group properties
+        // @description
+        // Returns a map of enchantments on the item.
+        // -->
+        if (attribute.startsWith("enchantment_map")) {
+            return getEnchantmentMap().getObjectAttribute(attribute.fulfill(1));
+        }
+
         return null;
+    }
+
+    public MapTag getEnchantmentMap() {
+        MapTag enchants = new MapTag();
+        for (Map.Entry<Enchantment, Integer> enchantment : getEnchantments()) {
+            enchants.putObject(getName(enchantment.getKey()), new ElementTag(enchantment.getValue()));
+        }
+        return enchants;
     }
 
     public Set<Map.Entry<Enchantment, Integer>> getEnchantments() {
@@ -161,17 +159,11 @@ public class ItemEnchantments implements Property {
 
     @Override
     public String getPropertyString() {
-        Set<Map.Entry<Enchantment, Integer>> enchants = getEnchantments();
-        if (enchants.size() > 0) {
-            StringBuilder returnable = new StringBuilder();
-            for (Map.Entry<Enchantment, Integer> enchantment : enchants) {
-                returnable.append(getName(enchantment.getKey())).append(",").append(enchantment.getValue()).append("|");
-            }
-            return returnable.substring(0, returnable.length() - 1);
-        }
-        else {
+        MapTag map = getEnchantmentMap();
+        if (map.map.isEmpty()) {
             return null;
         }
+        return map.toString();
     }
 
     @Override
@@ -226,46 +218,66 @@ public class ItemEnchantments implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name enchantments
-        // @input ListTag
+        // @input MapTag
         // @description
-        // Sets the item's enchantments.
-        // In the format of ENCHANTMENT,LEVEL - For example: sharpness,3
+        // Sets the item's enchantments as a map of enchantment name to level.
         // @tags
-        // <ItemTag.enchantments>
-        // <ItemTag.enchantments.levels>
-        // <ItemTag.enchantments.with_levels>
+        // <ItemTag.enchantment_map>
         // -->
         if (mechanism.matches("enchantments")) {
-            for (String enchant : mechanism.valueAsType(ListTag.class)) {
-                if (!enchant.contains(",")) {
-                    Debug.echoError("Invalid enchantment format, use name,level|...");
-                }
-                else {
-                    String[] data = enchant.split(",", 2);
-                    try {
-                        Enchantment ench = Utilities.getEnchantmentByName(data[0]);
-                        if (ench != null) {
-                            if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
-                                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                                meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
-                                item.setItemMeta(meta);
-                            }
-                            else {
-                                item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
-                                item.resetCache();
-                            }
+            if (mechanism.getValue().asString().startsWith("map@")) {
+                MapTag map = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
+                    Enchantment ench = Utilities.getEnchantmentByName(enchantments.getKey().low);
+                    int level = enchantments.getValue().asType(ElementTag.class, mechanism.context).asInt();
+                    if (ench != null) {
+                        if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+                            meta.addStoredEnchant(ench, level, true);
+                            item.setItemMeta(meta);
                         }
                         else {
-                            Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                            item.getItemStack().addUnsafeEnchantment(ench, level);
+                            item.resetCache();
                         }
                     }
-                    catch (NullPointerException e) {
-                        Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                    else {
+                        Debug.echoError("Unknown enchantment '" + enchantments.getKey().str + "'");
                     }
-                    catch (NumberFormatException ex) {
-                        Debug.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
-                        if (Debug.verbose) {
-                            Debug.echoError(ex);
+                }
+            }
+            else {
+                for (String enchant : mechanism.valueAsType(ListTag.class)) {
+                    if (!enchant.contains(",")) {
+                        Debug.echoError("Invalid enchantment format, use name,level|...");
+                    }
+                    else {
+                        String[] data = enchant.split(",", 2);
+                        try {
+                            Enchantment ench = Utilities.getEnchantmentByName(data[0]);
+                            if (ench != null) {
+                                if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+                                    meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
+                                    item.setItemMeta(meta);
+                                }
+                                else {
+                                    item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                                    item.resetCache();
+                                }
+                            }
+                            else {
+                                Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                            }
+                        }
+                        catch (NullPointerException e) {
+                            Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                        }
+                        catch (NumberFormatException ex) {
+                            Debug.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
+                            if (Debug.verbose) {
+                                Debug.echoError(ex);
+                            }
                         }
                     }
                 }
