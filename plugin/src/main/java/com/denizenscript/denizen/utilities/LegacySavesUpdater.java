@@ -32,7 +32,9 @@ public class LegacySavesUpdater {
             Debug.echoError(ex);
             return;
         }
-        savesFile.renameTo(new File(Denizen.getInstance().getDataFolder(), "saves.yml.bak"));
+        if (!savesFile.renameTo(new File(Denizen.getInstance().getDataFolder(), "saves.yml.bak"))) {
+            Debug.echoError("Legacy saves file failed to rename!");
+        }
         if (saveSection.contains("Global")) {
             Debug.log("==== Update global data ====");
             YamlConfiguration globalSection = saveSection.getConfigurationSection("Global");
