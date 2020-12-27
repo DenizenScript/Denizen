@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -38,6 +39,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <context.entity> returns the EntityTag that spawned.
     // <context.location> returns the location the entity will spawn at.
     // <context.reason> returns the reason the entity spawned, can be ENTITY_SPAWN or any of: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
+    // <context.spawner_location> returns the location of the mob spawner, when reason is SPAWNER.
     //
     // -->
 
@@ -101,6 +103,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         else if (name.equals("reason")) {
             return reason;
         }
+        else if (name.equals("spawner_location") && event instanceof SpawnerSpawnEvent) {
+            return new LocationTag(((SpawnerSpawnEvent) event).getSpawner().getLocation());
+        }
         return super.getContext(name);
     }
 
@@ -111,6 +116,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         location = new LocationTag(event.getLocation());
         if (event instanceof CreatureSpawnEvent) {
             reason = new ElementTag(((CreatureSpawnEvent) event).getSpawnReason().name());
+        }
+        else if (event instanceof SpawnerSpawnEvent) {
+            reason = new ElementTag("SPAWNER");
         }
         else {
             reason = new ElementTag("ENTITY_SPAWN");
