@@ -21,7 +21,7 @@ public class ItemRawNBT implements Property {
 
     public static boolean describes(ObjectTag item) {
         // All items can have raw NBT
-        return item instanceof ItemTag && ((ItemTag) item).getItemStack().getType() != Material.AIR;
+        return item instanceof ItemTag && ((ItemTag) item).getBukkitMaterial() != Material.AIR;
     }
 
     public static ItemRawNBT getFrom(ObjectTag _item) {
@@ -90,6 +90,15 @@ public class ItemRawNBT implements Property {
         MapTag result = getFullNBTMap();
         for (StringHolder key : defaultNbtKeys) {
             result.map.remove(key);
+        }
+        if (item.getBukkitMaterial() == Material.ITEM_FRAME) {
+            MapTag entityMap = (MapTag) result.getObject("EntityTag");
+            if (entityMap != null) {
+                entityMap.putObject("Invisible", null);
+                if (entityMap.map.isEmpty()) {
+                    result.putObject("EntityTag", null);
+                }
+            }
         }
         return result;
     }
