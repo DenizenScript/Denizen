@@ -32,6 +32,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.ai.NPCHolder;
@@ -977,13 +978,26 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return "e@ " + entity.getUniqueId().toString() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
-        if (entityScript != null) {
-            return "e@" + entityScript;
+        return identify();
+    }
+
+    @Override
+    public String savable() {
+        if (npc != null) {
+            return npc.savable();
         }
-        if (entity_type != null) {
+        if (entity == null) {
             return identify();
         }
-        return "null";
+        if (isPlayer()) {
+            return getDenizenPlayer().savable();
+        }
+        else if (isFake) {
+            return "e@fake:" + entity.getUniqueId().toString();
+        }
+        else {
+            return "e@" + entity.getUniqueId().toString();
+        }
     }
 
     @Override
@@ -1003,20 +1017,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
         if (entityScript != null) {
-            return "e@" + entityScript;
+            return "e@" + entityScript + getWaitingMechanismsString();
         }
         if (entity_type != null) {
-            StringBuilder properties = new StringBuilder();
-            for (Mechanism mechanism : mechanisms) {
-                properties.append(mechanism.getName()).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
-            }
-            String propertyOutput = "";
-            if (properties.length() > 0) {
-                propertyOutput = "[" + properties.substring(0, properties.length() - 1) + "]";
-            }
-            return "e@" + entity_type.getLowercaseName() + propertyOutput;
+            return "e@" + entity_type.getLowercaseName() + getWaitingMechanismsString();
         }
         return "null";
+    }
+
+    public String getWaitingMechanismsString() {
+        StringBuilder properties = new StringBuilder();
+        for (Mechanism mechanism : mechanisms) {
+            properties.append(mechanism.getName()).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
+        }
+        if (properties.length() > 0) {
+            return "[" + properties.substring(0, properties.length() - 1) + "]";
+        }
+        return "";
     }
 
     @Override
@@ -2351,13 +2368,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[tag]
         // @attribute <EntityTag.describe>
-        // @returns ElementTag
+        // @returns EntityTag
         // @group properties
         // @description
         // Returns the entity's full description, including all properties.
         // -->
         registerTag("describe", (attribute, object) -> {
-            return new ElementTag(object.describe());
+            ArrayList<Mechanism> waitingMechs;
+            if (object.isSpawnedOrValidForTag()) {
+                waitingMechs = new ArrayList<>();
+                for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(object).map.entrySet()) {
+                    waitingMechs.add(new Mechanism(new ElementTag(property.getKey().str), new ElementTag(property.getValue().toString())));
+                }
+            }
+            else {
+                waitingMechs = new ArrayList<>(object.getWaitingMechanisms());
+            }
+            return new EntityTag(object.entity_type, waitingMechs);
         });
 
         // <--[tag]
