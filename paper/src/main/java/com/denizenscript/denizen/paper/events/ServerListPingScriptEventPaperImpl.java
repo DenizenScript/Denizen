@@ -35,6 +35,9 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         else if (name.equals("version_name")) {
             return new ElementTag(((PaperServerListPingEvent) event).getVersion());
         }
+        else if (name.equals("client_protocol_version")) {
+            return new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
+        }
         return super.getContext(name);
     }
 

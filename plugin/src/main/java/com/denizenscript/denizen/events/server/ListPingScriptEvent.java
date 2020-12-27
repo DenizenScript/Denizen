@@ -38,6 +38,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.address> returns the IP address requesting the list.
     // <context.protocol_version> returns the protocol ID of the server's version (only on Paper).
     // <context.version_name> returns the name of the server's version (only on Paper).
+    // <context.client_protocol_version> returns the client's protocol version ID (only on Paper).
     //
     // @Determine
     // ElementTag(Number) to change the max player amount that will show.
