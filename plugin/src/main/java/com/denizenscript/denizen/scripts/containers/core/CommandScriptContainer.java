@@ -236,7 +236,7 @@ public class CommandScriptContainer extends ScriptContainer {
             tagContext.contextSource = oecs;
             contextSrc = oecs;
         }
-        ListTag list = new ListTag();
+        List<String> list = new ArrayList<>();
         if (tabCompletionTaggables != null) {
             int argCount = Math.max(originalArguments.length, 1);
             String taggable = tabCompletionTaggables.get(argCount);
@@ -244,7 +244,12 @@ public class CommandScriptContainer extends ScriptContainer {
                 taggable = tabCompletionTaggables.get(-1);
             }
             if (taggable != null) {
-                list.addAll(ListTag.getListFor(TagManager.tagObject(taggable, tagContext), tagContext));
+                String argLow = originalArguments.length == 0 ? "" : CoreUtilities.toLowerCase(originalArguments[originalArguments.length - 1]);
+                for (String value : ListTag.getListFor(TagManager.tagObject(taggable, tagContext), tagContext)) {
+                    if (CoreUtilities.toLowerCase(value).startsWith(argLow)) {
+                        list.add(value);
+                    }
+                }
             }
         }
         if (hasProcStyleTabComplete) {
