@@ -474,4 +474,8 @@ public abstract class EntityHelper {
     public void setShulkerPeek(Entity entity, int peek) {
         throw new UnsupportedOperationException();
     }
+
+    public void setHeadAngle(Entity entity, float angle) {
+        throw new UnsupportedOperationException();
+    }
 }

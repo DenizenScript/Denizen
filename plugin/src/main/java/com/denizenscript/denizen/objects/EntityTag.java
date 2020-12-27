@@ -3152,6 +3152,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name head_angle
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the raw head angle of a living entity.
+        // This will not rotate the body at all. Most users should prefer <@link command look>.
+        // -->
+        if (mechanism.matches("head_angle") && mechanism.requireFloat()) {
+            NMSHandler.getEntityHelper().setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

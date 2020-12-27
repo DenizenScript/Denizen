@@ -630,4 +630,11 @@ public class EntityHelperImpl extends EntityHelper {
     public void setShulkerPeek(Entity entity, int peek) {
         ((CraftShulker) entity).getHandle().a(peek);
     }
+
+    @Override
+    public void setHeadAngle(Entity entity, float angle) {
+        EntityLiving handle = ((CraftLivingEntity) entity).getHandle();
+        handle.aB = angle;
+        handle.setHeadRotation(angle);
+    }
 }

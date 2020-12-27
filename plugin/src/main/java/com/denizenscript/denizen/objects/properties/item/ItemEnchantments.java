@@ -183,8 +183,7 @@ public class ItemEnchantments implements Property {
         // Give no value input to remove all enchantments.
         // @tags
         // <ItemTag.enchantments>
-        // <ItemTag.enchantments.levels>
-        // <ItemTag.enchantments.with_levels>
+        // <ItemTag.enchantment_map>
         // -->
         if (mechanism.matches("remove_enchantments")) {
             HashSet<String> names = null;
