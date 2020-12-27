@@ -115,7 +115,11 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         this.entity = new EntityTag(entity);
         location = new LocationTag(event.getLocation());
         if (event instanceof CreatureSpawnEvent) {
-            reason = new ElementTag(((CreatureSpawnEvent) event).getSpawnReason().name());
+            CreatureSpawnEvent.SpawnReason creatureReason = ((CreatureSpawnEvent) event).getSpawnReason();
+            if (creatureReason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
+                return; // Let the SpawnerSpawnEvent happen and handle it instead
+            }
+            reason = new ElementTag(creatureReason.name());
         }
         else if (event instanceof SpawnerSpawnEvent) {
             reason = new ElementTag("SPAWNER");
