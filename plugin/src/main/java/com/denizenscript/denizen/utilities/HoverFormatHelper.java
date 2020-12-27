@@ -24,7 +24,7 @@ public class HoverFormatHelper {
             }
             // TODO: Why is there not a direct conversion method for Spigot ItemStack -> BungeeChat Item?
             String itemNbt = NMSHandler.getItemHelper().getRawHoverText(item.getItemStack());
-            content = new Item(item.getItemStack().getType().getKey().toString(), item.getAmount(), net.md_5.bungee.api.chat.ItemTag.ofNbt(itemNbt));
+            content = new Item(item.getBukkitMaterial().getKey().toString(), item.getAmount(), net.md_5.bungee.api.chat.ItemTag.ofNbt(itemNbt));
         }
         else if (action == HoverEvent.Action.SHOW_ENTITY) {
             EntityTag entity = EntityTag.valueOf(FormattedTextHelper.unescape(input), CoreUtilities.basicContext);

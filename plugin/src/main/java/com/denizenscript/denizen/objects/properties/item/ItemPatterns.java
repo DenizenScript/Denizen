@@ -25,7 +25,7 @@ public class ItemPatterns implements Property {
 
     public static boolean describes(ObjectTag item) {
         if (item instanceof ItemTag) {
-            Material material = ((ItemTag) item).getItemStack().getType();
+            Material material = ((ItemTag) item).getBukkitMaterial();
             return MaterialCompat.isBannerOrShield(material);
         }
         return false;

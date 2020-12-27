@@ -16,7 +16,7 @@ public class ItemChargedProjectile implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && ((ItemTag) item).getItemStack().getType() == Material.CROSSBOW;
+                && ((ItemTag) item).getBukkitMaterial() == Material.CROSSBOW;
     }
 
     public static ItemChargedProjectile getFrom(ObjectTag item) {

@@ -275,7 +275,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         // Add enchantment
                         Enchantment ench = Utilities.getEnchantmentByName(enchantment);
-                        if (stack.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                        if (stack.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
                             meta.addStoredEnchant(ench, level, true);
                             stack.setItemMeta(meta);

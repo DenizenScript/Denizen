@@ -384,12 +384,16 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         }
     }
 
+    public Material getBukkitMaterial() {
+        return getItemStack().getType();
+    }
+
     public MaterialTag getMaterial() {
-        return new MaterialTag(getItemStack().getType());
+        return new MaterialTag(getBukkitMaterial());
     }
 
     public String getMaterialName() {
-        return CoreUtilities.toLowerCase(getItemStack().getType().name());
+        return CoreUtilities.toLowerCase(getBukkitMaterial().name());
     }
 
     public void setAmount(int value) {
@@ -653,7 +657,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
                 return object;
             }
             if (object.getItemMeta() instanceof BlockStateMeta) {
-                if (object.getItemStack().getType() == Material.SHIELD) {
+                if (object.getBukkitMaterial() == Material.SHIELD) {
                     MaterialTag material = new MaterialTag(Material.SHIELD);
                     material.setModernData(new ModernBlockData(((BlockStateMeta) object.getItemMeta()).getBlockState()));
                     return material;

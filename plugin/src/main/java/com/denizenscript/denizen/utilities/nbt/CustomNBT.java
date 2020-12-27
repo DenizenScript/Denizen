@@ -21,10 +21,6 @@ public class CustomNBT {
     public static final String KEY_CAN_DESTROY = "CanDestroy";
     public static final String KEY_DISABLED_SLOTS = "DisabledSlots";
 
-    public static MapOfEnchantments getEnchantments(ItemStack item) {
-        return new MapOfEnchantments(item);
-    }
-
     private static final Map<EquipmentSlot, Integer> slotMap;
 
     static {

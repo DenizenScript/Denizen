@@ -61,7 +61,7 @@ public class EntityItem implements Property {
     @Override
     public String getPropertyString() {
         ItemTag item = getItem();
-        if (item.getItemStack().getType() != Material.AIR) {
+        if (item.getBukkitMaterial() != Material.AIR) {
             return item.identify();
         }
         else {

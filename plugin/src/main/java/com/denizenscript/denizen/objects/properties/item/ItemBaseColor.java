@@ -17,7 +17,7 @@ public class ItemBaseColor implements Property {
 
     public static boolean describes(ObjectTag item) {
         if (item instanceof ItemTag) {
-            return ((ItemTag) item).getItemStack().getType() == Material.SHIELD;
+            return ((ItemTag) item).getBukkitMaterial() == Material.SHIELD;
         }
         return false;
     }
@@ -48,7 +48,7 @@ public class ItemBaseColor implements Property {
     private DyeColor getBaseColor() {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BlockStateMeta) {
-            if (item.getItemStack().getType() == Material.SHIELD) { // Hack to avoid blank shields misdisplaying as white
+            if (item.getBukkitMaterial() == Material.SHIELD) { // Hack to avoid blank shields misdisplaying as white
                 if (!itemMeta.serialize().containsKey("internal")) {
                     return null;
                 }

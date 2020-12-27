@@ -194,7 +194,7 @@ public class ItemEnchantments implements Property {
                     names.add(CoreUtilities.toLowerCase(ench));
                 }
             }
-            if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+            if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                 for (Enchantment ench : new ArrayList<>(meta.getStoredEnchants().keySet())) {
                     if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName())) ||
@@ -231,7 +231,7 @@ public class ItemEnchantments implements Property {
                     Enchantment ench = Utilities.getEnchantmentByName(enchantments.getKey().low);
                     int level = enchantments.getValue().asType(ElementTag.class, mechanism.context).asInt();
                     if (ench != null) {
-                        if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                        if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                             meta.addStoredEnchant(ench, level, true);
                             item.setItemMeta(meta);
@@ -256,7 +256,7 @@ public class ItemEnchantments implements Property {
                         try {
                             Enchantment ench = Utilities.getEnchantmentByName(data[0]);
                             if (ench != null) {
-                                if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                                if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
                                     meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
                                     item.setItemMeta(meta);

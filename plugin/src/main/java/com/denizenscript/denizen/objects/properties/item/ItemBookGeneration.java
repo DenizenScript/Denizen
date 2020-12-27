@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.BookMeta;
 public class ItemBookGeneration implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof ItemTag && ((ItemTag) item).getItemStack().getType() == Material.WRITTEN_BOOK;
+        return item instanceof ItemTag && ((ItemTag) item).getBukkitMaterial() == Material.WRITTEN_BOOK;
     }
 
     public static ItemBookGeneration getFrom(ObjectTag _item) {

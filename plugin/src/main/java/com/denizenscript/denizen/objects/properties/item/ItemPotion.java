@@ -24,10 +24,10 @@ public class ItemPotion implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && (((ItemTag) item).getItemStack().getType() == Material.POTION
-                || ((ItemTag) item).getItemStack().getType() == Material.SPLASH_POTION
-                || ((ItemTag) item).getItemStack().getType() == Material.LINGERING_POTION
-                || ((ItemTag) item).getItemStack().getType() == Material.TIPPED_ARROW);
+                && (((ItemTag) item).getBukkitMaterial() == Material.POTION
+                || ((ItemTag) item).getBukkitMaterial() == Material.SPLASH_POTION
+                || ((ItemTag) item).getBukkitMaterial() == Material.LINGERING_POTION
+                || ((ItemTag) item).getBukkitMaterial() == Material.TIPPED_ARROW);
     }
 
     public static ItemPotion getFrom(ObjectTag _item) {
@@ -148,7 +148,7 @@ public class ItemPotion implements Property {
         if (attribute.startsWith("potion_base") && item.getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = ((PotionMeta) item.getItemMeta());
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
-                    + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
+                    + "," + meta.getBasePotionData().isExtended() + "," + (item.getBukkitMaterial() == Material.SPLASH_POTION)
                     + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : "")
                 ).getObjectAttribute(attribute.fulfill(1));
         }
@@ -203,7 +203,7 @@ public class ItemPotion implements Property {
                 // Returns whether the potion is a splash potion.
                 // -->
                 if (attribute.startsWith("is_splash")) {
-                    return new ElementTag(item.getItemStack().getType() == Material.SPLASH_POTION)
+                    return new ElementTag(item.getBukkitMaterial() == Material.SPLASH_POTION)
                             .getObjectAttribute(attribute.fulfill(1));
                 }
 
@@ -327,7 +327,7 @@ public class ItemPotion implements Property {
                 // In the format Effect,Level,Extended,Splash
                 // -->
                 return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
-                        + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
+                        + "," + meta.getBasePotionData().isExtended() + "," + (item.getBukkitMaterial() == Material.SPLASH_POTION))
                         .getObjectAttribute(attribute);
             }
         }

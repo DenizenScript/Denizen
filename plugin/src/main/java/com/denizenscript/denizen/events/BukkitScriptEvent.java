@@ -679,7 +679,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("item")) {
             return true;
         }
-        if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getItemStack().getType().name()).contains("potion")) {
+        if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getBukkitMaterial().name()).contains("potion")) {
             return true;
         }
         MatchHelper matcher = createMatcher(comparedto);

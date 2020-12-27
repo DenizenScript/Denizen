@@ -174,7 +174,7 @@ public class EquipCommand extends AbstractCommand {
                         else if (livingEntity.getType() == EntityType.PIG) {
                             if (equipment.get("saddle") != null) {
                                 ItemTag saddle = equipment.get("saddle");
-                                if (saddle.getItemStack().getType() == Material.SADDLE) {
+                                if (saddle.getBukkitMaterial() == Material.SADDLE) {
                                     ((Pig) livingEntity).setSaddle(true);
                                 }
                                 else {
@@ -199,7 +199,7 @@ public class EquipCommand extends AbstractCommand {
                     else if (livingEntity.getType() == EntityType.PIG) {
                         if (equipment.get("saddle") != null) {
                             ItemTag saddle = equipment.get("saddle");
-                            if (saddle.getItemStack().getType() == Material.SADDLE) {
+                            if (saddle.getBukkitMaterial() == Material.SADDLE) {
                                 ((Pig) livingEntity).setSaddle(true);
                             }
                             else {

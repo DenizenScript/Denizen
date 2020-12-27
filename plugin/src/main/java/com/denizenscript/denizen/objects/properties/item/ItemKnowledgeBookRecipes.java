@@ -17,7 +17,7 @@ import java.util.List;
 public class ItemKnowledgeBookRecipes implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof ItemTag && ((ItemTag) item).getItemStack().getType() == Material.KNOWLEDGE_BOOK;
+        return item instanceof ItemTag && ((ItemTag) item).getBukkitMaterial() == Material.KNOWLEDGE_BOOK;
     }
 
     public static ItemKnowledgeBookRecipes getFrom(ObjectTag _item) {

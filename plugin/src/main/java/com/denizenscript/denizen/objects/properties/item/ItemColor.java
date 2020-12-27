@@ -16,13 +16,13 @@ public class ItemColor implements Property {
     public static boolean describes(ObjectTag item) {
         // Leather armor and potions
         return item instanceof ItemTag
-                && (((ItemTag) item).getItemStack().getType() == Material.LEATHER_BOOTS
-                || ((ItemTag) item).getItemStack().getType() == Material.LEATHER_CHESTPLATE
-                || ((ItemTag) item).getItemStack().getType() == Material.LEATHER_HELMET
-                || ((ItemTag) item).getItemStack().getType() == Material.LEATHER_LEGGINGS
-                || ((ItemTag) item).getItemStack().getType() == Material.POTION
-                || ((ItemTag) item).getItemStack().getType() == Material.SPLASH_POTION
-                || ((ItemTag) item).getItemStack().getType() == Material.LINGERING_POTION);
+                && (((ItemTag) item).getBukkitMaterial() == Material.LEATHER_BOOTS
+                || ((ItemTag) item).getBukkitMaterial() == Material.LEATHER_CHESTPLATE
+                || ((ItemTag) item).getBukkitMaterial() == Material.LEATHER_HELMET
+                || ((ItemTag) item).getBukkitMaterial() == Material.LEATHER_LEGGINGS
+                || ((ItemTag) item).getBukkitMaterial() == Material.POTION
+                || ((ItemTag) item).getBukkitMaterial() == Material.SPLASH_POTION
+                || ((ItemTag) item).getBukkitMaterial() == Material.LINGERING_POTION);
     }
 
     public static ItemColor getFrom(ObjectTag _item) {
@@ -64,7 +64,7 @@ public class ItemColor implements Property {
         // Returns the color of the leather armor item or potion item.
         // -->
         if (attribute.startsWith("color") || attribute.startsWith("dye_color")) {
-            Material mat = item.getItemStack().getType();
+            Material mat = item.getBukkitMaterial();
             if (mat == Material.POTION
                     || mat == Material.LINGERING_POTION
                     || mat == Material.SPLASH_POTION) {
@@ -82,7 +82,7 @@ public class ItemColor implements Property {
 
     @Override
     public String getPropertyString() {
-        Material mat = item.getItemStack().getType();
+        Material mat = item.getBukkitMaterial();
         if (mat == Material.POTION
                 || mat == Material.LINGERING_POTION
                 || mat == Material.SPLASH_POTION) {
@@ -115,7 +115,7 @@ public class ItemColor implements Property {
         if ((mechanism.matches("dye") || mechanism.matches("dye_color")
                 || mechanism.matches("color")) && (mechanism.requireObject(ColorTag.class))) {
             ColorTag color = mechanism.valueAsType(ColorTag.class);
-            Material mat = item.getItemStack().getType();
+            Material mat = item.getBukkitMaterial();
             if (mat == Material.POTION || mat == Material.LINGERING_POTION || mat == Material.SPLASH_POTION) {
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
                 meta.setColor(color.getColor());

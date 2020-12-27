@@ -24,7 +24,7 @@ import java.util.List;
 public class ItemBook implements Property {
 
     public static boolean describes(ObjectTag item) {
-        Material material = ((ItemTag) item).getItemStack().getType();
+        Material material = ((ItemTag) item).getBukkitMaterial();
         return (material == Material.WRITTEN_BOOK || material == Material.WRITABLE_BOOK);
     }
 
@@ -70,7 +70,7 @@ public class ItemBook implements Property {
         // @description
         // Returns the author of the book.
         // -->
-        if (attribute.startsWith("book_author") && item.getItemStack().getType() == Material.WRITTEN_BOOK) {
+        if (attribute.startsWith("book_author") && item.getBukkitMaterial() == Material.WRITTEN_BOOK) {
             return new ElementTag(getBookInfo().getAuthor())
                     .getObjectAttribute(attribute.fulfill(1));
         }
@@ -83,7 +83,7 @@ public class ItemBook implements Property {
         // @description
         // Returns the title of the book.
         // -->
-        if (attribute.startsWith("book_title") && item.getItemStack().getType() == Material.WRITTEN_BOOK) {
+        if (attribute.startsWith("book_title") && item.getBukkitMaterial() == Material.WRITTEN_BOOK) {
             return new ElementTag(getBookInfo().getTitle())
                     .getObjectAttribute(attribute.fulfill(1));
         }
@@ -121,7 +121,7 @@ public class ItemBook implements Property {
             BookMeta bookInfo = (BookMeta) item.getItemMeta();
             attribute = attribute.fulfill(1);
 
-            if (item.getItemStack().getType() == Material.WRITTEN_BOOK) {
+            if (item.getBukkitMaterial() == Material.WRITTEN_BOOK) {
                 if (attribute.startsWith("author")) {
                     return new ElementTag(bookInfo.getAuthor())
                             .getObjectAttribute(attribute.fulfill(1));
@@ -179,7 +179,7 @@ public class ItemBook implements Property {
     public MapTag getBookMap() {
         MapTag outMap = new MapTag();
         BookMeta bookInfo = (BookMeta) item.getItemMeta();
-        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
+        if (item.getBukkitMaterial().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             outMap.putObject("author", new ElementTag(bookInfo.getAuthor()));
             outMap.putObject("title", new ElementTag(bookInfo.getTitle()));
         }
@@ -198,7 +198,7 @@ public class ItemBook implements Property {
     public String getOutputString() {
         StringBuilder output = new StringBuilder(128);
         BookMeta bookInfo = (BookMeta) item.getItemMeta();
-        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
+        if (item.getBukkitMaterial().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             output.append("author|").append(EscapeTagBase.escape(bookInfo.getAuthor()))
                     .append("|title|").append(EscapeTagBase.escape(bookInfo.getTitle())).append("|");
         }
@@ -262,7 +262,7 @@ public class ItemBook implements Property {
         // <ItemTag.book_author>
         // -->
         if (mechanism.matches("book_author")) {
-            if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+            if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
@@ -282,7 +282,7 @@ public class ItemBook implements Property {
         // <ItemTag.book_title>
         // -->
         if (mechanism.matches("book_title")) {
-            if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+            if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
                 Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
@@ -312,7 +312,7 @@ public class ItemBook implements Property {
                 ObjectTag author = mapData.getObject("author");
                 ObjectTag title = mapData.getObject("title");
                 if (author != null && title != null) {
-                    if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                    if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
                         Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                     }
                     else {
@@ -343,7 +343,7 @@ public class ItemBook implements Property {
             }
             if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
                     && data.get(2).equalsIgnoreCase("title")) {
-                if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
                     Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                 }
                 else {

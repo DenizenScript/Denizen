@@ -15,7 +15,7 @@ public class ItemMap implements Property {
 
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && (((ItemTag) item).getItemStack().getType() == MAP_MATERIAL);
+                && (((ItemTag) item).getBukkitMaterial() == MAP_MATERIAL);
     }
 
     public static ItemMap getFrom(ObjectTag _item) {

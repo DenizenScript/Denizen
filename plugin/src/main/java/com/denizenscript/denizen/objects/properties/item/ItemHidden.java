@@ -15,7 +15,7 @@ public class ItemHidden implements Property {
 
     public static boolean describes(ObjectTag item) {
         // All items can have hides
-        return item instanceof ItemTag && ((ItemTag) item).getItemStack().getType() != Material.AIR;
+        return item instanceof ItemTag && ((ItemTag) item).getBukkitMaterial() != Material.AIR;
     }
 
     public static ItemHidden getFrom(ObjectTag _item) {

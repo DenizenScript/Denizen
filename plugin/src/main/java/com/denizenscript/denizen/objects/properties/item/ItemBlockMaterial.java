@@ -57,7 +57,7 @@ public class ItemBlockMaterial implements Property {
         if (attribute.startsWith("block_material")) {
             BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
             if (meta.hasBlockData()) {
-                return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getItemStack().getType())))
+                return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getBukkitMaterial())))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -69,7 +69,7 @@ public class ItemBlockMaterial implements Property {
     public String getPropertyString() {
         BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
         if (meta.hasBlockData()) {
-            return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getItemStack().getType()))).identify();
+            return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getBukkitMaterial()))).identify();
         }
         return null;
     }
