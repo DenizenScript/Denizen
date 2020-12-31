@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
-import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.persistence.PersistenceLoader;
@@ -23,7 +21,10 @@ public class DenizenFlagsTrait extends Trait {
         public SavableMapFlagTracker create(DataKey dataKey) {
             SavableMapFlagTracker toRet = new SavableMapFlagTracker();
             for (DataKey key : dataKey.getSubKeys()) {
-                toRet.setRootMap(key.name(), MapTag.valueOf(key.getString(""), CoreUtilities.errorButNoDebugContext));
+                SavableMapFlagTracker.SaveOptimizedFlag flag = new SavableMapFlagTracker.SaveOptimizedFlag();
+                flag.string = key.getString("");
+                flag.canExpire = flag.string.startsWith("map@");
+                toRet.map.put(new StringHolder(key.name()), flag);
             }
             toRet.doTotalClean();
             return toRet;
