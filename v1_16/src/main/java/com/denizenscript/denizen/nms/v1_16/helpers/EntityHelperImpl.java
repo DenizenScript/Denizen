@@ -619,6 +619,9 @@ public class EntityHelperImpl extends EntityHelper {
         if (entity instanceof CraftFallingBlock) {
             ((CraftFallingBlock) entity).getHandle().ticksLived = ticks;
         }
+        else if (entity instanceof CraftItem) {
+            ((EntityItem) ((CraftItem) entity).getHandle()).age = ticks;
+        }
     }
 
     @Override
