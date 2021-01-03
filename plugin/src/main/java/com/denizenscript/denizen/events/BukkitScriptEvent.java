@@ -116,6 +116,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return genericCouldMatchChecks(text, this::couldMatchEntity);
     }
 
+    public boolean exactMatchEntity(String text) {
+        if (specialEntityMatchables.contains(text)) {
+            return true;
+        }
+        if (EntityTag.matches(text)) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean exactMatchesVehicle(String text) {
         if (text.equals("vehicle")) {
             return true;

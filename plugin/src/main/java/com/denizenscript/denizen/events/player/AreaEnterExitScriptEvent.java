@@ -70,7 +70,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (path.eventArgLowerAt(2).equals("biome") || exactMatchesEnum(path.eventArgLowerAt(2), Biome.values())) {
             return false;
         }
-        if (exactMatchesVehicle(path.eventArgLowerAt(2))) {
+        if (exactMatchEntity(path.eventArgLowerAt(2))) {
             return false;
         }
         if (path.eventArgLowerAt(2).equals("bed") || path.eventArgLowerAt(2).equals("portal")) {

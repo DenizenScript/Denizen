@@ -63,8 +63,10 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(entity, path.eventArgLowerAt(0))
-                || !tryEntity(vehicle, path.eventArgLowerAt(2))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!path.eventArgLowerAt(2).equals("vehicle") && !tryEntity(vehicle, path.eventArgLowerAt(2))) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {
