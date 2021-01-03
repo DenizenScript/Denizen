@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.handlers;
 
+import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.ProfileEditorImpl;
@@ -382,6 +383,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 }
             }
         }
+        if (e.passengers != null && !e.passengers.isEmpty()) {
+            for (Entity ent : e.passengers) {
+                tryProcessMovePacketForAttach(packet, ent);
+            }
+        }
     }
 
     public void tryProcessVelocityPacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
@@ -394,6 +400,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     oldManager.sendPacket(pNew);
                 }
+            }
+        }
+        if (e.passengers != null && !e.passengers.isEmpty()) {
+            for (Entity ent : e.passengers) {
+                tryProcessVelocityPacketForAttach(packet, ent);
             }
         }
     }
@@ -432,6 +443,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 }
             }
         }
+        if (e.passengers != null && !e.passengers.isEmpty()) {
+            for (Entity ent : e.passengers) {
+                tryProcessTeleportPacketForAttach(packet, ent, new Vector(ent.locX() - e.locX(), ent.locY() - e.locY(), ent.locZ() - e.locZ()));
+            }
+        }
     }
 
     public static Vector VECTOR_ZERO = new Vector(0, 0, 0);
@@ -448,11 +464,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     return false;
                 }
                 tryProcessMovePacketForAttach(packet, e);
-                if (e.passengers != null && !e.passengers.isEmpty()) {
-                    for (Entity ent : e.passengers) {
-                        tryProcessMovePacketForAttach(packet, ent);
-                    }
-                }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
@@ -462,11 +473,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     return false;
                 }
                 tryProcessVelocityPacketForAttach(packet, e);
-                if (e.passengers != null && !e.passengers.isEmpty()) {
-                    for (Entity ent : e.passengers) {
-                        tryProcessVelocityPacketForAttach(packet, ent);
-                    }
-                }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityTeleport) {
@@ -476,11 +482,6 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     return false;
                 }
                 tryProcessTeleportPacketForAttach(packet, e, VECTOR_ZERO);
-                if (e.passengers != null && !e.passengers.isEmpty()) {
-                    for (Entity ent : e.passengers) {
-                        tryProcessTeleportPacketForAttach(packet, ent, new Vector(ent.locX() - e.locX(), ent.locY() - e.locY(), ent.locZ() - e.locZ()));
-                    }
-                }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
         }
@@ -650,6 +651,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public void processBlockLightForPacket(Packet<?> packet) {
+        if (BlockLight.lightsByChunk.isEmpty()) {
+            return;
+        }
         if (packet instanceof PacketPlayOutLightUpdate) {
             BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.world);
         }

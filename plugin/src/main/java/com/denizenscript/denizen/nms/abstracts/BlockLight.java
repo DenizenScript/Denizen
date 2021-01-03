@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -16,11 +15,8 @@ import java.util.Map;
 
 public abstract class BlockLight {
 
-    protected static final Map<Location, BlockLight> lightsByLocation = new HashMap<>();
-    protected static final Map<ChunkCoordinate, List<BlockLight>> lightsByChunk = new HashMap<>();
-    protected static final BlockFace[] adjacentFaces = new BlockFace[] {
-            BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
-    };
+    public static final Map<Location, BlockLight> lightsByLocation = new HashMap<>();
+    public static final Map<ChunkCoordinate, List<BlockLight>> lightsByChunk = new HashMap<>();
 
     public final Block block;
     public final ChunkCoordinate chunkCoord;
