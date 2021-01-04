@@ -43,7 +43,9 @@ public class MirrorNameTrait extends Trait {
             return;
         }
         mirroredUUID = npc.getEntity().getUniqueId();
-        RenameCommand.addDynamicRename(npc.getEntity(), null, Player::getName);
+        RenameCommand.RenameData renamer = new RenameCommand.RenameData();
+        renamer.nameFunction = Player::getName;
+        RenameCommand.addDynamicRename(npc.getEntity(), null, renamer);
     }
 
     public void mirrorOff() {

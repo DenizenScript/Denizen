@@ -173,7 +173,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             if (ent == null) {
                 return; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
-            String nameToApply = RenameCommand.getCustomNameFor(ent.getUniqueID(), player.getBukkitEntity());
+            String nameToApply = RenameCommand.getCustomNameFor(ent.getUniqueID(), player.getBukkitEntity(), false);
             if (nameToApply == null) {
                 return;
             }

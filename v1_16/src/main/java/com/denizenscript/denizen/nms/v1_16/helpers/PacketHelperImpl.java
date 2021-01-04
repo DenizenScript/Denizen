@@ -2,7 +2,9 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
@@ -33,6 +35,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
@@ -277,11 +280,26 @@ public class PacketHelperImpl implements PacketHelper {
         }
     }
 
+    public static Field ENTITY_TRACKER_ENTRY_GETTER = ReflectionHelper.getFields(PlayerChunkMap.EntityTracker.class).get("trackerEntry");
+
     @Override
     public void sendRename(Player player, Entity entity, String name) {
         try {
-            if (entity.getType() == EntityType.PLAYER) {
-                // TODO: player rename somehow
+            if (entity.getType() == EntityType.PLAYER) { // For player entities, force a respawn packet and let the dynamic intercept correct the details
+                PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
+                PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
+                if (entityTracker != null) {
+                    try {
+                        EntityTrackerEntry entry = (EntityTrackerEntry) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
+                        if (entry != null) {
+                            entry.a(((CraftPlayer) player).getHandle());
+                            entry.b(((CraftPlayer) player).getHandle());
+                        }
+                    }
+                    catch (Throwable ex) {
+                        Debug.echoError(ex);
+                    }
+                }
                 return;
             }
             PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
