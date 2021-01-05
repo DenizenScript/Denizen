@@ -6,6 +6,7 @@ import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -79,21 +80,38 @@ public class ItemScriptHelper implements Listener {
         return output;
     }
 
-    public ItemStack[] textToItemArray(ItemScriptContainer container, String text) {
+    public ItemStack[] textToItemArray(ItemScriptContainer container, String text, boolean exact) {
         if (CoreUtilities.toLowerCase(text).equals("air")) {
             return new ItemStack[0];
         }
         List<String> ingredientText = splitByNonBracketedSlashes(text);
-        ItemStack[] outputItems = new ItemStack[ingredientText.size()];
-        for (int i = 0; i < outputItems.length; i++) {
-            ItemTag ingredient = ItemTag.valueOf(ingredientText.get(i), container);
-            if (ingredient == null) {
-                Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '" + container.getName() + "': " + text);
-                return null;
+        List<ItemStack> outputItems = new ArrayList<>(ingredientText.size());
+        for (int i = 0; i < ingredientText.size(); i++) {
+            String entry = ingredientText.get(i);
+            if (!exact && ScriptEvent.isAdvancedMatchable(entry)) {
+                boolean any = false;
+                ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(entry);
+                for (Material material : Material.values()) {
+                    if (matcher.doesMatch(CoreUtilities.toLowerCase(material.name()))) {
+                        outputItems.add(new ItemStack(material, 1));
+                        any = true;
+                    }
+                }
+                if (!any) {
+                    Debug.echoError("Invalid ItemTag ingredient (empty advanced matcher), recipe will not be registered for item script '" + container.getName() + "': " + entry);
+                    return null;
+                }
             }
-            outputItems[i] = ingredient.getItemStack().clone();
+            else {
+                ItemTag ingredient = ItemTag.valueOf(entry, container);
+                if (ingredient == null) {
+                    Debug.echoError("Invalid ItemTag ingredient, recipe will not be registered for item script '" + container.getName() + "': " + entry);
+                    return null;
+                }
+                outputItems.add(ingredient.getItemStack().clone());
+            }
         }
-        return outputItems;
+        return outputItems.toArray(new ItemStack[0]);
     }
 
     public void registerShapedRecipe(ItemScriptContainer container, ItemStack item, List<String> recipeList, String internalId, String group) {
@@ -114,14 +132,12 @@ public class ItemScriptHelper implements Listener {
 
             for (String element : elements) {
                 String itemText = element;
-                if (itemText.startsWith("material:")) {
-                    exacts.add(false);
+                boolean isExact = !itemText.startsWith("material:");
+                if (!isExact) {
                     itemText = itemText.substring("material:".length());
                 }
-                else {
-                    exacts.add(true);
-                }
-                ItemStack[] items = textToItemArray(container, itemText);
+                exacts.add(isExact);
+                ItemStack[] items = textToItemArray(container, itemText, isExact);
                 if (items == null) {
                     return;
                 }
@@ -159,14 +175,12 @@ public class ItemScriptHelper implements Listener {
         List<Boolean> exacts = new ArrayList<>();
         for (String element : ListTag.valueOf(list, context)) {
             String itemText = element;
-            if (itemText.startsWith("material:")) {
-                exacts.add(false);
+            boolean isExact = !itemText.startsWith("material:");
+            if (!isExact) {
                 itemText = itemText.substring("material:".length());
             }
-            else {
-                exacts.add(true);
-            }
-            ItemStack[] items = textToItemArray(container, itemText);
+            exacts.add(isExact);
+            ItemStack[] items = textToItemArray(container, itemText, isExact);
             if (items == null) {
                 return;
             }
@@ -185,7 +199,7 @@ public class ItemScriptHelper implements Listener {
             exact = false;
             furnaceItemString = furnaceItemString.substring("material:".length());
         }
-        ItemStack[] items = textToItemArray(container, furnaceItemString);
+        ItemStack[] items = textToItemArray(container, furnaceItemString, exact);
         if (items == null) {
             return;
         }
@@ -198,7 +212,7 @@ public class ItemScriptHelper implements Listener {
             exact = false;
             inputItemString = inputItemString.substring("material:".length());
         }
-        ItemStack[] items = textToItemArray(container, inputItemString);
+        ItemStack[] items = textToItemArray(container, inputItemString, exact);
         if (items == null) {
             return;
         }
