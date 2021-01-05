@@ -177,11 +177,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
             || processDisguiseForPacket(packet, genericfuturelistener)
+            || processCustomNameForPacket(packet, genericfuturelistener)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
         processBlockLightForPacket(packet);
-        processCustomNameForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
     }
 
@@ -227,7 +227,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             byte flags = (byte) item.b();
                             flags |= 0x20; // Invisible flag
                             data.add(new DataWatcher.Item(watcherObject, flags));
-                            oldManager.sendPacket(altPacket, genericfuturelistener);
+                            PacketPlayOutEntityMetadata updatedPacket = getModifiedMetadataFor(altPacket);
+                            oldManager.sendPacket(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
                             return true;
                         }
                     }
@@ -278,39 +279,69 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         return false;
     }
 
-    public void processCustomNameForPacket(Packet<?> packet) {
-        if (!(packet instanceof PacketPlayOutEntityMetadata)) {
-            return;
-        }
+    public PacketPlayOutEntityMetadata getModifiedMetadataFor(PacketPlayOutEntityMetadata metadataPacket) {
         if (!RenameCommand.hasAnyDynamicRenames()) {
-            return;
+            return null;
         }
-        PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
         try {
             int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
             Entity ent = player.world.getEntity(eid);
             if (ent == null) {
-                return; // If it doesn't exist on-server, it's definitely not relevant, so move on
+                return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
             String nameToApply = RenameCommand.getCustomNameFor(ent.getUniqueID(), player.getBukkitEntity(), false);
             if (nameToApply == null) {
-                return;
+                return null;
             }
-            List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
-            for (DataWatcher.Item item : data) {
+            List<DataWatcher.Item<?>> data = new ArrayList<>((List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket));
+            boolean any = false;
+            for (int i = 0; i < data.size(); i++) {
+                DataWatcher.Item<?> item = data.get(i);
                 DataWatcherObject<?> watcherObject = item.a();
                 int watcherId = watcherObject.a();
                 if (watcherId == 2) { // 2: Custom name metadata
                     Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
-                    item.a(name);
+                    data.set(i, new DataWatcher.Item(item.a(), name));
+                    any = true;
                 }
                 else if (watcherId == 3) { // 3: custom name visible metadata
-                    item.a(true);
+                    data.set(i, new DataWatcher.Item(item.a(), true));
+                    any = true;
                 }
             }
+            if (!any) {
+                return null;
+            }
+            PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata();
+            copyPacket(metadataPacket, altPacket);
+            ENTITY_METADATA_LIST.set(altPacket, data);
+            return altPacket;
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
+            return null;
+        }
+    }
+
+    public boolean processCustomNameForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (!(packet instanceof PacketPlayOutEntityMetadata)) {
+            return false;
+        }
+        if (!RenameCommand.hasAnyDynamicRenames()) {
+            return false;
+        }
+        PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
+        try {
+            PacketPlayOutEntityMetadata altPacket = getModifiedMetadataFor(metadataPacket);
+            if (altPacket == null) {
+                return false;
+            }
+            oldManager.sendPacket(altPacket, genericfuturelistener);
+            return true;
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return false;
         }
     }
 

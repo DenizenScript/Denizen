@@ -65,7 +65,7 @@ public class ProfileEditorImpl extends ProfileEditor {
             return true;
         }
         PacketPlayOutPlayerInfo.EnumPlayerInfoAction action = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "a", packet);
-        if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER) {
+        if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER && action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME) {
             return true;
         }
         List dataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", packet);
@@ -87,14 +87,14 @@ public class ProfileEditorImpl extends ProfileEditor {
             for (Object data : dataList) {
                 GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
                 if (!ProfileEditor.mirrorUUIDs.contains(gameProfile.getId()) && !RenameCommand.customNames.containsKey(gameProfile.getId())) {
-                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
+                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(action);
                     List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
                     newPacketDataList.add(data);
                     manager.oldManager.sendPacket(newPacket);
                 }
                 else {
                     String rename = RenameCommand.getCustomNameFor(gameProfile.getId(), manager.player.getBukkitEntity(), false);
-                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
+                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(action);
                     List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
                     GameProfile patchedProfile = new GameProfile(gameProfile.getId(), rename != null ? (rename.length() > 16 ? rename.substring(0, 16) : rename) : gameProfile.getName());
                     if (ProfileEditor.mirrorUUIDs.contains(gameProfile.getId())) {
