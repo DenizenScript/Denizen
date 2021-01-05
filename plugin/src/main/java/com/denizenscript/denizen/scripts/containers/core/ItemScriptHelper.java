@@ -88,13 +88,21 @@ public class ItemScriptHelper implements Listener {
         List<ItemStack> outputItems = new ArrayList<>(ingredientText.size());
         for (int i = 0; i < ingredientText.size(); i++) {
             String entry = ingredientText.get(i);
-            if (!exact && ScriptEvent.isAdvancedMatchable(entry)) {
+            if (ScriptEvent.isAdvancedMatchable(entry)) {
                 boolean any = false;
                 ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(entry);
                 for (Material material : Material.values()) {
                     if (matcher.doesMatch(CoreUtilities.toLowerCase(material.name()))) {
                         outputItems.add(new ItemStack(material, 1));
                         any = true;
+                    }
+                }
+                if (exact) {
+                    for (ItemScriptContainer possibleContainer : ItemScriptHelper.item_scripts.values()) {
+                        if (matcher.doesMatch(CoreUtilities.toLowerCase(possibleContainer.getName()))) {
+                            outputItems.add(possibleContainer.getCleanReference().getItemStack());
+                            any = true;
+                        }
                     }
                 }
                 if (!any) {
@@ -129,7 +137,6 @@ public class ItemScriptHelper implements Listener {
             if (width < 2 && elements.length >= 2) {
                 width = 2;
             }
-
             for (String element : elements) {
                 String itemText = element;
                 boolean isExact = !itemText.startsWith("material:");
