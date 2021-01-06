@@ -581,10 +581,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public boolean processMirrorForPacket(Packet<?> packet) {
         if (packet instanceof PacketPlayOutPlayerInfo) {
             PacketPlayOutPlayerInfo playerInfo = (PacketPlayOutPlayerInfo) packet;
+            ProfileEditorImpl.updatePlayerProfiles(playerInfo);
             if (!ProfileEditorImpl.handleAlteredProfiles(playerInfo, this)) {
                 return true;
             }
-            ProfileEditorImpl.updatePlayerProfiles(playerInfo);
         }
         return false;
     }

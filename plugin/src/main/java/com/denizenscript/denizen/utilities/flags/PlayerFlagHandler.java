@@ -150,6 +150,7 @@ public class PlayerFlagHandler implements Listener {
         if (cache == null) {
             cache = new CachedPlayerFlag();
             cache.lastAccessed = System.currentTimeMillis();
+            cache.loadingNow = true;
             playerFlagTrackerCache.put(id, cache);
             loadFlags(id, cache);
         }
