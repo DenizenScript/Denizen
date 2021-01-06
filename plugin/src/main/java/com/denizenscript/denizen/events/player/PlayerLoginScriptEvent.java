@@ -79,7 +79,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override

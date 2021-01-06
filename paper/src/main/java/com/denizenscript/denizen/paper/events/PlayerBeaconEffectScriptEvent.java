@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.properties.item.ItemPotion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -83,7 +83,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
@@ -105,6 +105,9 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void beaconEffectEvent(BeaconEffectEvent event) {
+        if (EntityTag.isNPC(event.getPlayer())) {
+            return;
+        }
         this.event = event;
         fire(event);
     }
