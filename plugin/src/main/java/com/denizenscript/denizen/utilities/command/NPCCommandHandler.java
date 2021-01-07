@@ -14,6 +14,10 @@ import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Anchors;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Slab;
+import org.bukkit.block.data.type.Stairs;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -316,16 +320,14 @@ public class NPCCommandHandler {
             return;
         }
         SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
-        if (args.hasFlag('c')) {
-            trait.sit(args.getSenderTargetBlockLocation());
-        }
-        else if (args.hasValueFlag("location")) {
-            String[] argsArray = args.getFlag("location").split(",");
-            if (argsArray.length != 4) {
+        if (args.hasValueFlag("location")) {
+            LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
+            if (location == null) {
                 Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
                 return;
             }
-            trait.sit(LocationTag.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3], CoreUtilities.basicContext));
+            trait.sit(location);
+            return;
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
@@ -339,13 +341,27 @@ public class NPCCommandHandler {
             Messaging.sendError(sender, "The NPC does not have the specified anchor!");
             return;
         }
-        else {
-            if (trait.isSitting()) {
-                Messaging.send(sender, npc.getName() + " is already sitting, use '/npc stand' to stand the NPC back up.");
-                return;
-            }
-            trait.sit();
+        Location targetLocation;
+        if (args.hasFlag('c')) {
+            targetLocation = args.getSenderTargetBlockLocation().clone().add(0.5, 0, 0.5);
+            targetLocation.setYaw(npc.getStoredLocation().getYaw());
         }
+        else {
+            targetLocation = npc.getStoredLocation().clone();
+            targetLocation.add(0, -0.2, 0);
+        }
+        if (trait.isSitting()) {
+            Messaging.send(sender, npc.getName() + " is already sitting, use '/npc stand' to stand the NPC back up.");
+            return;
+        }
+        Block block = targetLocation.getBlock();
+        if (block.getBlockData() instanceof Stairs || (block.getBlockData() instanceof Slab && ((Slab) block.getBlockData()).getType() == Slab.Type.BOTTOM)) {
+            targetLocation.setY(targetLocation.getBlockY() + 0.3);
+        }
+        else if (block.getType().isSolid()) {
+            targetLocation.setY(targetLocation.getBlockY() + 0.8);
+        }
+        trait.sit(targetLocation);
         Messaging.send(sender, npc.getName() + " is now sitting.");
     }
 

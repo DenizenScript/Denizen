@@ -94,13 +94,15 @@ public class SittingTrait extends Trait implements Listener {
             DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),
                     new ArrayList<>(), null).setPassenger(npc.getEntity());
         }
-        //eh.getDataWatcher().watch(0, (byte) 0x04);
         sitting = true;
     }
 
     private void standInternal() {
         if (npc.getEntity() instanceof Player) {
             PlayerAnimation.STOP_SITTING.play((Player) npc.getEntity());
+            if (chairLocation != null) {
+                npc.teleport(chairLocation.clone().add(0, 0.5, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            }
         }
         else {
             Entity vehicle = npc.getEntity().getVehicle();
@@ -111,7 +113,6 @@ public class SittingTrait extends Trait implements Listener {
                 vehicle.remove();
             }
         }
-        //eh.getDataWatcher().watch(0, (byte) 0x00);
         sitting = false;
     }
 
@@ -133,7 +134,7 @@ public class SittingTrait extends Trait implements Listener {
      * @param location where to sit
      */
     public void sit(Location location) {
-        sitInternal(location.clone().add(0, 0.5, 0));
+        sitInternal(location.clone());
         chairLocation = location.clone();
     }
 
