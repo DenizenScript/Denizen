@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.utilities.blocks;
 
+import com.denizenscript.denizen.objects.ChunkTag;
+import com.denizenscript.denizen.objects.WorldTag;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
@@ -47,5 +49,14 @@ public class ChunkCoordinate {
             return false;
         }
         return x == other.x && z == other.z && worldName.equals(other.worldName);
+    }
+
+    @Override
+    public String toString() {
+        return x + "," + z + "," + worldName;
+    }
+
+    public ChunkTag getChunk() {
+        return new ChunkTag(new WorldTag(worldName), x, z);
     }
 }

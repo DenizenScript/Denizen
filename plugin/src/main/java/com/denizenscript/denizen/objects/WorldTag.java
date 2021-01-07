@@ -147,6 +147,11 @@ public class WorldTag implements ObjectTag, Adjustable {
         this(null, world);
     }
 
+    public WorldTag(String worldName) {
+        prefix = "World";
+        this.world_name = worldName;
+    }
+
     public WorldTag(String prefix, World world) {
         if (prefix == null) {
             this.prefix = "World";

@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
+import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.Denizen;
@@ -14,10 +15,8 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -140,14 +139,14 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 Debug.echoError("Chunk input '" + chunkText + "' is invalid.");
                 return;
             }
-            String chunkString = chunk.getX() + "," + chunk.getZ() + "," + chunk.getWorld().getName();
+            ChunkCoordinate coord = new ChunkCoordinate(chunk);
             switch (Action.valueOf(action.asString())) {
                 case ADD:
                     if (length.getSeconds() != 0) {
-                        chunkDelays.put(chunkString, System.currentTimeMillis() + length.getMillis());
+                        chunkDelays.put(coord, System.currentTimeMillis() + length.getMillis());
                     }
                     else {
-                        chunkDelays.put(chunkString, (long) 0);
+                        chunkDelays.put(coord, (long) 0);
                     }
                     Debug.echoDebug(scriptEntry, "...added chunk " + chunk.getX() + ", " + chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
                     if (!chunk.isLoaded()) {
@@ -158,29 +157,28 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
                             @Override
                             public void run() {
-                                if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {
+                                if (chunkDelays.containsKey(coord) && chunkDelays.get(coord) <= System.currentTimeMillis()) {
                                     chunk.setForceLoaded(false);
-                                    chunkDelays.remove(chunkString);
+                                    chunkDelays.remove(coord);
                                 }
                             }
                         }, length.getTicks() + 20);
                     }
                     break;
                 case REMOVE:
-                    if (chunkDelays.containsKey(chunkString)) {
-                        chunkDelays.remove(chunkString);
+                    if (chunkDelays.containsKey(coord)) {
+                        chunkDelays.remove(coord);
                         chunk.setForceLoaded(false);
                         Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                     }
                     else {
-                        Debug.echoError("Chunk '" + chunkString + "' was not on the load list!");
+                        Debug.echoError("Chunk '" + coord + "' was not on the load list!");
                     }
                     break;
                 case REMOVEALL:
                     Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
-                    for (String chunkStr : chunkDelays.keySet()) {
-                        ChunkTag loopChunk = ChunkTag.valueOf(chunkStr, scriptEntry.context);
-                        loopChunk.getChunk().setForceLoaded(false);
+                    for (ChunkCoordinate loopCoord : chunkDelays.keySet()) {
+                        loopCoord.getChunk().getChunk().setForceLoaded(false);
                     }
                     chunkDelays.clear();
                     break;
@@ -189,26 +187,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     }
 
     // Map of chunks with delays
-    Map<String, Long> chunkDelays = new HashMap<>();
-
-    @EventHandler
-    public void stopUnload(ChunkUnloadEvent e) {
-        if (!(e instanceof Cancellable)) { // Not cancellable in 1.14
-            return;
-        }
-        String chunkString = e.getChunk().getX() + "," + e.getChunk().getZ() + "," + e.getChunk().getWorld().getName();
-        if (chunkDelays.containsKey(chunkString)) {
-            if (chunkDelays.get(chunkString) == 0) {
-                ((Cancellable) e).setCancelled(true);
-            }
-            else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
-                ((Cancellable) e).setCancelled(true);
-            }
-            else {
-                chunkDelays.remove(chunkString);
-            }
-        }
-    }
+    Map<ChunkCoordinate, Long> chunkDelays = new HashMap<>();
 
     public class ChunkLoadCommandNPCEvents implements Listener {
         @EventHandler
@@ -217,16 +196,16 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 return;
             }
             Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
-            String chunkString = chnk.getX() + "," + chnk.getZ() + "," + chnk.getWorld().getName();
-            if (chunkDelays.containsKey(chunkString)) {
-                if (chunkDelays.get(chunkString) == 0) {
+            ChunkCoordinate coord = new ChunkCoordinate(chnk);
+            if (chunkDelays.containsKey(coord)) {
+                if (chunkDelays.get(coord) == 0) {
                     e.setCancelled(true);
                 }
-                else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
+                else if (System.currentTimeMillis() < chunkDelays.get(coord)) {
                     e.setCancelled(true);
                 }
                 else {
-                    chunkDelays.remove(chunkString);
+                    chunkDelays.remove(coord);
                 }
             }
         }
