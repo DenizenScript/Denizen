@@ -80,10 +80,6 @@ public class PlayerFlagHandler implements Listener {
                 }
             }
         };
-        if (!cache.tracker.modified) {
-            expireTask.runTaskLater(Denizen.getInstance(), 1);
-            return;
-        }
         if (cache.savingNow || cache.loadingNow) {
             new BukkitRunnable() {
                 @Override
@@ -94,6 +90,11 @@ public class PlayerFlagHandler implements Listener {
                     }
                 }
             }.runTaskLater(Denizen.getInstance(), 10);
+            return;
+        }
+        if (!cache.tracker.modified) {
+            expireTask.runTaskLater(Denizen.getInstance(), 1);
+            return;
         }
         cache.tracker.modified = false;
         String text = cache.tracker.toString();
