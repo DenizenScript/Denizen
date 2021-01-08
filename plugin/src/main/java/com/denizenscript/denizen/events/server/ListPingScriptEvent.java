@@ -45,6 +45,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // "ICON:" + ElementTag of a file path to an icon image, to change the icon that will display.
     // "PROTOCOL_VERSION:" + ElementTag(Number) to change the protocol ID number of the server's version (only on Paper).
     // "VERSION_NAME:" + ElementTag to change the server's version name (only on Paper).
+    // "EXCLUDE_PLAYERS:" + ListTag(PlayerTag) to exclude a set of players from showing in the player count or preview of online players (only on Paper).
     // ElementTag to change the MOTD that will show.
     //
     // -->
