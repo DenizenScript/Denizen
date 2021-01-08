@@ -7,10 +7,10 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.queues.ContextSource;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.scripts.queues.core.TimedQueue;
@@ -103,9 +103,9 @@ public abstract class AbstractTrigger {
         queue.addEntries(entries);
         // Add context
         if (context != null) {
-            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
-            oecs.contexts = context;
-            queue.setContextSource(oecs);
+            ContextSource.SimpleMap src = new ContextSource.SimpleMap();
+            src.contexts = context;
+            queue.setContextSource(src);
         }
         if (!npc.getTriggerTrait().properly_set.get(name)) {
             if (missetWarning.testShouldWarn()) {

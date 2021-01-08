@@ -6,7 +6,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -206,9 +205,9 @@ public class CommandScriptContainer extends ScriptContainer {
         ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(
                 new BukkitScriptEntryData(player, npc)));
         if (context != null) {
-            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
-            oecs.contexts = context;
-            queue.setContextSource(oecs);
+            ContextSource.SimpleMap src = new ContextSource.SimpleMap();
+            src.contexts = context;
+            queue.setContextSource(src);
         }
         queue.start();
         return queue;
@@ -219,9 +218,9 @@ public class CommandScriptContainer extends ScriptContainer {
 
         ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
         if (context != null) {
-            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
-            oecs.contexts = context;
-            queue.setContextSource(oecs);
+            ContextSource.SimpleMap src = new ContextSource.SimpleMap();
+            src.contexts = context;
+            queue.setContextSource(src);
         }
         queue.start();
         return queue.determinations != null && queue.determinations.size() > 0 && queue.determinations.get(0).equalsIgnoreCase("true");
@@ -231,10 +230,10 @@ public class CommandScriptContainer extends ScriptContainer {
         BukkitTagContext tagContext = new BukkitTagContext(player, npc, new ScriptTag(this));
         ContextSource contextSrc = null;
         if (context != null) {
-            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
-            oecs.contexts = context;
-            tagContext.contextSource = oecs;
-            contextSrc = oecs;
+            ContextSource.SimpleMap src = new ContextSource.SimpleMap();
+            src.contexts = context;
+            tagContext.contextSource = src;
+            contextSrc = src;
         }
         List<String> list = new ArrayList<>();
         if (tabCompletionTaggables != null) {

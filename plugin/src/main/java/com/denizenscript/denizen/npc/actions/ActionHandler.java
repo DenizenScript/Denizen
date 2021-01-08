@@ -6,11 +6,11 @@ import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContain
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.queues.ContextSource;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
@@ -62,10 +62,10 @@ public class ActionHandler {
         // Add entries and context to the queue
         ScriptQueue queue = new InstantQueue(assignment.getName()).addEntries(script);
 
-        OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
-        oecs.contexts = context;
-        oecs.contexts.put("event_header", new ElementTag(actionName));
-        queue.setContextSource(oecs);
+        ContextSource.SimpleMap src = new ContextSource.SimpleMap();
+        src.contexts = context;
+        src.contexts.put("event_header", new ElementTag(actionName));
+        queue.setContextSource(src);
 
         // Start the queue!
         queue.start();
