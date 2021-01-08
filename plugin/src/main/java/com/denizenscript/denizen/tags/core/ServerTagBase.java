@@ -521,6 +521,24 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.art_types>
+        // @returns ListTag
+        // @description
+        // Returns a list of all known art types.
+        // Generally used with <@link tag EntityTag.painting> and <@link mechanism EntityTag.painting>.
+        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
+        // -->
+        if (attribute.startsWith("art_types")) {
+            listDeprecateWarn(attribute);
+            ListTag list = new ListTag();
+            for (Art art : Art.values()) {
+                list.add(art.name());
+            }
+            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.advancement_types>
         // @returns ListTag
         // @description
