@@ -27,6 +27,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -320,12 +321,15 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 }
                 // Otherwise, if the entity is no longer traveling through
                 // the air, stop the task
-                else if (lastLocation != null && lastVelocity != null) {
+                else if (lastLocation != null && lastVelocity != null && !(lastEntity.getBukkitEntity() instanceof Projectile)) {
                     if (lastLocation.getWorld() != lastEntity.getBukkitEntity().getWorld()
                             || (lastLocation.distanceSquared(lastEntity.getBukkitEntity().getLocation()) < 0.1
                             && lastVelocity.distanceSquared(lastEntity.getBukkitEntity().getVelocity()) < 0.1)) {
                         flying = false;
                     }
+                }
+                if (!arrows.containsKey(lastEntity.getUUID()) || arrows.get(lastEntity.getUUID()) != null) {
+                    flying = false;
                 }
                 // Stop the task and run the script if conditions
                 // are met
@@ -368,6 +372,11 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         if (script != null || !scriptEntry.shouldWaitFor()) {
             task.runTaskTimer(Denizen.getInstance(), 1, 2);
         }
+    }
+
+    @EventHandler
+    public void projectileHit(ProjectileHitEvent event) {
+        arrows.remove(event.getEntity().getUniqueId());
     }
 
     @EventHandler
