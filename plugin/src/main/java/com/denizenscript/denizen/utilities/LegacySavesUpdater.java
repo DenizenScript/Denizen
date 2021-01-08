@@ -23,10 +23,24 @@ public class LegacySavesUpdater {
     public static void updateLegacySaves() {
         Debug.log("==== UPDATING LEGACY SAVES TO NEW FLAG ENGINE ====");
         File savesFile = new File(Denizen.getInstance().getDataFolder(), "saves.yml");
+        if (!savesFile.exists()) {
+            Debug.echoError("Legacy update went weird: file doesn't exist?");
+            return;
+        }
         YamlConfiguration saveSection;
         try {
             FileInputStream fis = new FileInputStream(savesFile);
-            saveSection = YamlConfiguration.load(ScriptHelper.convertStreamToString(fis, false));
+            String saveData = ScriptHelper.convertStreamToString(fis, false);
+            if (saveData.trim().length() == 0) {
+                Debug.log("Nothing to update.");
+                savesFile.delete();
+                return;
+            }
+            saveSection = YamlConfiguration.load(saveData);
+            if (saveSection == null) {
+                Debug.echoError("Something went very wrong: legacy saves file failed to load!");
+                return;
+            }
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
