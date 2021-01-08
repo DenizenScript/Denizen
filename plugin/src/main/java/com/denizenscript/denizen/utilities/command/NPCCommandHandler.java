@@ -470,20 +470,13 @@ public class NPCCommandHandler {
             Messaging.sendError(sender, npc.getName() + " is already fishing! Use '/npc stopfishing' to stop.");
             return;
         }
-        if (args.hasFlag('c')) {
-            trait.startFishing(args.getSenderTargetBlockLocation());
-        }
-
-        // TODO: Make command use new CatchTypes
-        //if (args.hasFlag('f')) {
-        //    trait.setCatchFish(true);
-        //}
-
         if (args.hasValueFlag("percent")) {
             trait.setCatchPercent(args.getFlagInteger("percent"));
         }
-
-        if (args.hasValueFlag("location")) {
+        if (args.hasFlag('c')) {
+            trait.startFishing(args.getSenderTargetBlockLocation());
+        }
+        else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
                 Messaging.sendError(sender, "Usage: /npc fish --location x,y,z,world");

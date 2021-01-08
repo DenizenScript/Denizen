@@ -19,8 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-
 public class FishingTrait extends Trait {
 
     @Persist("fishing")
@@ -31,9 +29,6 @@ public class FishingTrait extends Trait {
     @Persist("fishing spot")
     private Location fishingLocation = null;
 
-    ArrayList<Location> available = new ArrayList<>();
-
-    Location fishingSpot = null;
     FishHook fishHook = null;
     Item fish = null;
 
@@ -121,15 +116,15 @@ public class FishingTrait extends Trait {
     public boolean scanForFishSpot(Location near, boolean horizontal) {
         Block block = near.getBlock();
         if (block.getType() == Material.WATER) {
-            fishingLocation = near;
+            fishingLocation = near.clone();
             return true;
         }
         else if (block.getRelative(BlockFace.DOWN).getType() == Material.WATER) {
-            fishingLocation = near.add(0, -1, 0);
+            fishingLocation = near.clone().add(0, -1, 0);
             return true;
         }
         else if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType() == Material.WATER) {
-            fishingLocation = near.add(0, -2, 0);
+            fishingLocation = near.clone().add(0, -2, 0);
             return true;
         }
         if (horizontal) {
@@ -222,14 +217,11 @@ public class FishingTrait extends Trait {
     // -->
     private void reel() {
         new NPCTag(npc).action("reel in fishing rod", null);
-
         int chance = (int) (Math.random() * 100);
-
         if (fishHook != null && fishHook.isValid()) {
             fishHook.remove();
             fishHook = null;
         }
-
         if (catchPercent > chance && fishHook != null && catchType != FishingHelper.CatchType.NONE) {
             try {
                 fish.remove();
@@ -250,29 +242,13 @@ public class FishingTrait extends Trait {
             }
             new NPCTag(npc).action("catch fish", null);
         }
-
         if (npc.getEntity() instanceof Player) {
             PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
         }
     }
 
-    /**
-     * Checks if the NPC is currently fishing
-     *
-     * @return boolean
-     */
     public boolean isFishing() {
         return fishing;
-    }
-
-    /**
-     * Gets the location the NPC is casting to
-     * Returns null if the NPC isn't fishing
-     *
-     * @return Location
-     */
-    public Location getFishingLocation() {
-        return fishingLocation;
     }
 
     public FishingTrait() {
