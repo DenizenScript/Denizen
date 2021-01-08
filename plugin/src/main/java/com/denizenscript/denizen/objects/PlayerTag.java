@@ -37,24 +37,16 @@ import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MapView;
-import org.bukkit.util.BlockIterator;
+import org.bukkit.util.RayTraceResult;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject {
 
@@ -748,16 +740,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // or null if the player is not looking at an entity.
         // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
         // -->
-
         registerOnlineOnlyTag("target", (attribute, object) -> {
-            int range = 50;
-            ListTag filterList = null;
-            if (attribute.hasContext(1)) {
-                filterList = attribute.contextAsType(1, ListTag.class);
-            }
+            double range = 50;
+            ListTag filterList = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
 
             // <--[tag]
-            // @attribute <PlayerTag.target[(<entity>|...)].within[(<#>)]>
+            // @attribute <PlayerTag.target[(<entity>|...)].within[(<#.#>)]>
             // @returns EntityTag
             // @description
             // Returns the living entity that the player is looking at within the specified range limit,
@@ -765,99 +753,39 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
             // -->
             if (attribute.startsWith("within", 2) && attribute.hasContext(2)) {
-                range = attribute.getIntContext(2);
+                range = attribute.getDoubleContext(2);
                 attribute.fulfill(1);
             }
-            List<Entity> entities = object.getPlayerEntity().getNearbyEntities(range, range, range);
-            ArrayList<LivingEntity> possibleTargets = new ArrayList<>();
-            if (filterList == null) {
-                for (Entity entity : entities) {
-                    if (entity instanceof LivingEntity) {
-                        possibleTargets.add((LivingEntity) entity);
-                    }
+            Location eyeLoc = object.getEyeLocation();
+            RayTraceResult result = eyeLoc.getWorld().rayTrace(eyeLoc, eyeLoc.getDirection(), range, FluidCollisionMode.NEVER, true, 0.01, (e) -> {
+                if (e.getUniqueId().equals(object.getOfflinePlayer().getUniqueId())) {
+                    return false;
                 }
-            }
-            else {
-                for (Entity entity : entities) {
-                    if (entity instanceof LivingEntity) {
-                        for (ObjectTag obj : filterList.objectForms) {
-                            boolean valid = false;
-                            EntityTag filterEntity = null;
-                            if (obj instanceof EntityTag) {
-                                filterEntity = (EntityTag) obj;
-                            }
-                            else if (CoreUtilities.equalsIgnoreCase(obj.toString(), "npc")) {
-                                valid = EntityTag.isCitizensNPC(entity);
-                            }
-                            else {
-                                filterEntity = EntityTag.getEntityFor(obj, attribute.context);
-                                if (filterEntity == null) {
-                                    Debug.echoError("Trying to filter 'player.target[...]' tag with invalid input: " + obj.toString());
-                                    continue;
-                                }
-                            }
-                            if (!valid && filterEntity != null) {
-                                if (filterEntity.isGeneric()) {
-                                    valid = filterEntity.getBukkitEntityType().equals(entity.getType());
-                                }
-                                else {
-                                    valid = filterEntity.getUUID().equals(entity.getUniqueId());
-                                }
-                            }
-                            if (valid) {
-                                possibleTargets.add((LivingEntity) entity);
-                                break;
-                            }
+                if (filterList != null) {
+                    EntityTag ent = new EntityTag(e);
+                    for (String val : filterList) {
+                        if (CoreUtilities.equalsIgnoreCase(val, "npc") && ent.isCitizensNPC()) {
+                            return true;
+                        }
+                        if (CoreUtilities.equalsIgnoreCase(val, e.getType().name())) {
+                            return true;
+                        }
+                        if (CoreUtilities.equalsIgnoreCase(val, ent.getEntityScript())) {
+                            return true;
+                        }
+                        EntityTag match = EntityTag.valueOf(val, CoreUtilities.noDebugContext);
+                        if (match.isUnique() && e.getUniqueId().equals(match.getUUID())) {
+                            return true;
                         }
                     }
+                    return false;
                 }
+                return true;
+            });
+            if (result.getHitEntity() == null) {
+                return null;
             }
-            try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
-                // Find the valid target
-                BlockIterator bi;
-                try {
-                    bi = new BlockIterator(object.getPlayerEntity(), range);
-                }
-                catch (IllegalStateException e) {
-                    return null;
-                }
-                Block b;
-                Location l;
-                int bx, by, bz;
-                double ex, ey, ez;
-                // Loop through player's line of sight
-                while (bi.hasNext()) {
-                    b = bi.next();
-                    bx = b.getX();
-                    by = b.getY();
-                    bz = b.getZ();
-                    if (b.getType().isSolid()) {
-                        // Line of sight is broken
-                        break;
-                    }
-                    else {
-                        // Check for entities near this block in the line of sight
-                        for (LivingEntity possibleTarget : possibleTargets) {
-                            l = possibleTarget.getLocation();
-                            ex = l.getX();
-                            ey = l.getY();
-                            ez = l.getZ();
-
-                            if ((bx - .50 <= ex && ex <= bx + 1.50) &&
-                                    (bz - .50 <= ez && ez <= bz + 1.50) &&
-                                    (by - 1 <= ey && ey <= by + 2.5)) {
-                                // Entity is close enough, so return it
-                                return new EntityTag(possibleTarget).getDenizenObject();
-                            }
-                        }
-                    }
-                }
-            }
-            finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
-            }
-            return null;
+            return new EntityTag(result.getHitEntity());
         });
 
         /////////////////////
