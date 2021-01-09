@@ -104,6 +104,10 @@ public class RemoveCommand extends AbstractCommand {
                 }
             }
             else {
+                if (entity.getUUID() != null) {
+                    Debug.echoError("Tried to remove already-removed entity.");
+                    return;
+                }
                 int removed = 0;
                 for (Entity worldEntity : world.getEntities()) {
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
