@@ -259,7 +259,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void sendRename(Player player, Entity entity, String name) {
+    public void sendRename(Player player, Entity entity, String name, boolean listMode) {
         try {
             PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata();
             ENTITY_METADATA_EID_SETTER.invoke(packet, entity.getEntityId());

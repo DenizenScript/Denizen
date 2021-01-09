@@ -64,7 +64,7 @@ public interface PacketHelper {
 
     void forceSpectate(Player player, Entity entity);
 
-    default void sendRename(Player player, Entity entity, String name) {
+    default void sendRename(Player player, Entity entity, String name, boolean listMode) {
         throw new UnsupportedOperationException();
     }
 

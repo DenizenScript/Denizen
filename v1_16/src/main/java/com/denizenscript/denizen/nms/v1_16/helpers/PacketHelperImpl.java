@@ -281,21 +281,27 @@ public class PacketHelperImpl implements PacketHelper {
     public static Field ENTITY_TRACKER_ENTRY_GETTER = ReflectionHelper.getFields(PlayerChunkMap.EntityTracker.class).get("trackerEntry");
 
     @Override
-    public void sendRename(Player player, Entity entity, String name) {
+    public void sendRename(Player player, Entity entity, String name, boolean listMode) {
         try {
-            if (entity.getType() == EntityType.PLAYER) { // For player entities, force a respawn packet and let the dynamic intercept correct the details
-                PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
-                PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
-                if (entityTracker != null) {
-                    try {
-                        EntityTrackerEntry entry = (EntityTrackerEntry) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
-                        if (entry != null) {
-                            entry.a(((CraftPlayer) player).getHandle());
-                            entry.b(((CraftPlayer) player).getHandle());
+            if (entity.getType() == EntityType.PLAYER) {
+                if (listMode) {
+                    sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, ((CraftPlayer) player).getHandle()));
+                }
+                else {
+                    // For player entities, force a respawn packet and let the dynamic intercept correct the details
+                    PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
+                    PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
+                    if (entityTracker != null) {
+                        try {
+                            EntityTrackerEntry entry = (EntityTrackerEntry) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
+                            if (entry != null) {
+                                entry.a(((CraftPlayer) player).getHandle());
+                                entry.b(((CraftPlayer) player).getHandle());
+                            }
                         }
-                    }
-                    catch (Throwable ex) {
-                        Debug.echoError(ex);
+                        catch (Throwable ex) {
+                            Debug.echoError(ex);
+                        }
                     }
                 }
                 return;

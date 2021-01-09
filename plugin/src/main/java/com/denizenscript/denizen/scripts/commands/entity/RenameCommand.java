@@ -149,12 +149,12 @@ public class RenameCommand extends AbstractCommand {
                         if (bukkitEntity.isCustomNameVisible()) {
                             if (players == null) {
                                 for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
-                                    NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, bukkitEntity.getCustomName());
+                                    NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, bukkitEntity.getCustomName(), false);
                                 }
                             }
                             else {
                                 for (PlayerTag player : players) {
-                                    NMSHandler.getPacketHelper().sendRename(player.getPlayerEntity(), bukkitEntity, bukkitEntity.getCustomName());
+                                    NMSHandler.getPacketHelper().sendRename(player.getPlayerEntity(), bukkitEntity, bukkitEntity.getCustomName(), false);
                                 }
                             }
                         }
@@ -187,12 +187,12 @@ public class RenameCommand extends AbstractCommand {
                         }
                         if (players == null) {
                             for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
-                                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "");
+                                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "", renamer.listOnly);
                             }
                         }
                         else {
                             for (PlayerTag player : players) {
-                                NMSHandler.getPacketHelper().sendRename(player.getPlayerEntity(), bukkitEntity, "");
+                                NMSHandler.getPacketHelper().sendRename(player.getPlayerEntity(), bukkitEntity, "", renamer.listOnly);
                             }
                         }
                     }
@@ -273,11 +273,11 @@ public class RenameCommand extends AbstractCommand {
         playerToFuncMap.put(forPlayer == null ? null : forPlayer.getUniqueId(), rename);
         if (forPlayer == null) {
             for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {
-                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "");
+                NMSHandler.getPacketHelper().sendRename(player, bukkitEntity, "", rename.listOnly);
             }
         }
         else {
-            NMSHandler.getPacketHelper().sendRename(forPlayer, bukkitEntity, "");
+            NMSHandler.getPacketHelper().sendRename(forPlayer, bukkitEntity, "", rename.listOnly);
         }
     }
 
