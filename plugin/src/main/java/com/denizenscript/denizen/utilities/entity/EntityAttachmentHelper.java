@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities.entity;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,13 +63,7 @@ public class EntityAttachmentHelper {
                             goal.setYaw(attachLoc.getYaw());
                             goal.setPitch(attachLoc.getPitch());
                         }
-                        if (attached.isFake) {
-                            NMSHandler.getEntityHelper().snapPositionTo(attached.getBukkitEntity(), goal.toVector());
-                            NMSHandler.getEntityHelper().look(attached.getBukkitEntity(), goal.getYaw(), goal.getPitch());
-                        }
-                        else {
-                            attached.teleport(goal);
-                        }
+                        attached.teleport(goal);
                     }
                 }
             };

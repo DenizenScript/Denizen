@@ -845,8 +845,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (isCitizensNPC()) {
             getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
         }
+        else if (isFake) {
+            NMSHandler.getEntityHelper().snapPositionTo(entity, location.toVector());
+            NMSHandler.getEntityHelper().look(entity, location.getYaw(), location.getPitch());
+        }
         else {
             entity.teleport(location);
+            if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
+                NMSHandler.getEntityHelper().teleport(entity, location.toVector());
+            }
         }
     }
 
