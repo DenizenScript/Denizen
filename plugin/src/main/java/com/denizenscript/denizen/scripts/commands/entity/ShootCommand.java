@@ -376,23 +376,26 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
     @EventHandler
     public void projectileHit(ProjectileHitEvent event) {
-        arrows.remove(event.getEntity().getUniqueId());
+        if (!arrows.containsKey(event.getEntity().getUniqueId())) {
+            return;
+        }
+        if (event.getHitEntity() != null) {
+            arrows.put(event.getEntity().getUniqueId(), new EntityTag(event.getHitEntity()));
+        }
+        else {
+            arrows.remove(event.getEntity().getUniqueId());
+        }
     }
 
     @EventHandler
     public void arrowDamage(EntityDamageByEntityEvent event) {
-        // Get the damager
         Entity arrow = event.getDamager();
-        // First, quickly confirm it's a projectile (relevant at all)
         if (!(arrow instanceof Projectile)) {
             return;
         }
-        // Second, more slowly check if we shot it
         if (!arrows.containsKey(arrow.getUniqueId())) {
             return;
         }
-        // Replace its entry with the hit entity.
-        arrows.remove(arrow.getUniqueId());
         arrows.put(arrow.getUniqueId(), new EntityTag(event.getEntity()));
     }
 }
