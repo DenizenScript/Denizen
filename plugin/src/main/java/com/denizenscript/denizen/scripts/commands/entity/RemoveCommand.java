@@ -79,6 +79,8 @@ public class RemoveCommand extends AbstractCommand {
         scriptEntry.defaultObject("world", Utilities.entryDefaultWorld(scriptEntry, false));
     }
 
+    public static boolean alwaysWarnOnMassRemove = false;
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
@@ -116,6 +118,9 @@ public class RemoveCommand extends AbstractCommand {
                     }
                 }
                 Debug.echoDebug(scriptEntry, "Removed " + removed + " entities from the world.");
+                if (alwaysWarnOnMassRemove) {
+                    Debug.echoError("Remove command 'Always warn on mass delete' is enabled - mass removal of '" + entity.getEntityType() + "' performed, removing " + removed + " entities.");
+                }
             }
         }
     }

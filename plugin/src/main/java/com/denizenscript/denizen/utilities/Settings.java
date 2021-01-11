@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.scripts.commands.entity.RemoveCommand;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -89,6 +90,7 @@ public class Settings {
         PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
         PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
         MapTagBasedFlagTracker.skipAllCleanings = config.getBoolean("Saves.Skip flag cleaning", false);
+        RemoveCommand.alwaysWarnOnMassRemove = config.getBoolean("Commands.Remove.Always warn on mass delete", false);
     }
 
     private static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,

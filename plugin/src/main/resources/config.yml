@@ -126,6 +126,11 @@ Commands:
         # This is mostly to clean up saves, but could potentially be abused.
         # Set to 'false' if you're worried about security.
         Allow file deletion: true
+  Remove:
+        # If set to true, the 'remove' command will always show a warning if it's removing all entities of a type from the world.
+        # This is usually an intentional action, but can happen by mistake.
+        # If entities are disappearing in groups unexpectedly, enable this config option to verify whether the 'remove' command is the source.
+        Always warn on mass delete: false
   Restart:
         # Whether scripts are allowed to stop or restart your server.
         # This is usually only done intentionally, and quite identifiable if done on accident,
