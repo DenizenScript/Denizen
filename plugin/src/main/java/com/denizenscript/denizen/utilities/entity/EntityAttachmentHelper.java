@@ -69,6 +69,13 @@ public class EntityAttachmentHelper {
             };
             runnable.run();
             checkTask = runnable.runTaskTimer(Denizen.getInstance(), 1, 1);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    // Run a forcetele one second later just to guarantee sync for lagging clients
+                    visiblePositions.clear();
+                }
+            }.runTaskLater(Denizen.getInstance(), 20);
         }
 
         public void removeFrom(PlayerAttachMap map) {
