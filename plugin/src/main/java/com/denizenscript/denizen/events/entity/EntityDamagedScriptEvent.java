@@ -84,7 +84,20 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean couldMatch(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("damaged") && !cmd.equals("damages")) {
+        if (cmd.equals("damaged")) {
+            if (path.eventArgLowerAt(0).equals("vehicle")) {
+                return false;
+            }
+        }
+        else if (cmd.equals("damages")) {
+            if (!couldMatchEntity(path.eventArgLowerAt(2))) {
+                return false;
+            }
+            if (path.eventArgLowerAt(2).equals("vehicle")) {
+                return false;
+            }
+        }
+        else {
             return false;
         }
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {
