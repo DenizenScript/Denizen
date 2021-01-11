@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Villager;
@@ -64,14 +63,13 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        try {
-            Villager.Profession newProfession = Villager.Profession.valueOf(determination.toUpperCase());
-            event.setProfession(newProfession);
-            return true;
-        }
-        catch (IllegalArgumentException e) {
-            Debug.echoError("Invalid profession specified: " + determination);
+        if (!isDefaultDetermination(determinationObj)) {
+            String determination = determinationObj.toString();
+            if (exactMatchesEnum(determination, Villager.Profession.values())) {
+                Villager.Profession newProfession = Villager.Profession.valueOf(determination.toUpperCase());
+                event.setProfession(newProfession);
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }
