@@ -368,14 +368,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public LocationTag(World world, double x, double y, double z, float yaw, float pitch) {
-        super(world, x, y, z, yaw, pitch);
+        super(world, x, y, z, EntityHelper.normalizeYaw(yaw), pitch);
         if (world != null) {
             backupWorld = world.getName();
         }
     }
 
     public LocationTag(String worldName, double x, double y, double z, float yaw, float pitch) {
-        super(worldName == null ? null : Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
+        super(worldName == null ? null : Bukkit.getWorld(worldName), x, y, z, EntityHelper.normalizeYaw(yaw), pitch);
         backupWorld = worldName;
     }
 
@@ -1749,7 +1749,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 // -->
                 if (attribute.startsWith("yaw", 2)) {
                     attribute.fulfill(1);
-                    return new ElementTag(entityHelper.normalizeYaw(entityHelper.getYaw
+                    return new ElementTag(EntityHelper.normalizeYaw(entityHelper.getYaw
                             (target.toVector().subtract(object.toVector())
                                     .normalize())));
                 }
@@ -1910,7 +1910,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             // -->
             if (attribute.startsWith("simple", 2)) {
                 attribute.fulfill(1);
-                float yaw = NMSHandler.getEntityHelper().normalizeYaw(object.getYaw());
+                float yaw = EntityHelper.normalizeYaw(object.getYaw());
                 if (yaw < 45) {
                     return new ElementTag("South");
                 }
@@ -1938,7 +1938,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 attribute.fulfill(1);
                 return new ElementTag(object.getYaw());
             }
-            return new ElementTag(NMSHandler.getEntityHelper().normalizeYaw(object.getYaw()));
+            return new ElementTag(EntityHelper.normalizeYaw(object.getYaw()));
         });
 
         // <--[tag]

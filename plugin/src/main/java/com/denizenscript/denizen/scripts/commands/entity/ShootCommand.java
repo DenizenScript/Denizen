@@ -230,30 +230,18 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         if (!no_rotate) {
             originLocation = new LocationTag(NMSHandler.getEntityHelper().faceLocation(originLocation, destination));
         }
-        // Go through all the entities, spawning/teleporting and rotating them
         for (EntityTag entity : entities) {
             if (!entity.isSpawned() || !no_rotate) {
                 entity.spawnAt(originLocation);
             }
-            // Only add to entityList after the entities have been
-            // spawned, otherwise you'll get something like "e@skeleton"
-            // instead of "e@57" on it
             entityList.addObject(entity);
-            if (!no_rotate) {
-                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
-            }
-            // If the current entity is a projectile, set its shooter
-            // when applicable
             if (entity.isProjectile() && (shooter != null || originEntity != null)) {
                 entity.setShooter(shooter != null ? shooter : originEntity);
-                // Also, watch for it hitting a target
                 if (script != null) {
                     arrows.put(entity.getUUID(), null);
                 }
             }
         }
-        // Add entities to context so that the specific entities created/spawned
-        // can be fetched.
         scriptEntry.addObject("shot_entities", entityList);
         if (entityList.size() == 1) {
             scriptEntry.addObject("shot_entity", entityList.getObject(0));

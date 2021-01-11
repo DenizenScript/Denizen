@@ -365,7 +365,7 @@ public abstract class EntityHelper {
      * @param yaw The original yaw.
      * @return The normalized yaw.
      */
-    public float normalizeYaw(float yaw) {
+    public static float normalizeYaw(float yaw) {
         yaw = yaw % 360;
         if (yaw < 0) {
             yaw += 360.0;
