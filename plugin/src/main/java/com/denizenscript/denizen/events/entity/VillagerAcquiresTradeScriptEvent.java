@@ -82,6 +82,7 @@ public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implemen
     @EventHandler
     public void onVillagerAcquiresTrade(VillagerAcquireTradeEvent event) {
         this.event = event;
+        entity = new EntityTag(event.getEntity());
         fire(event);
     }
 }
