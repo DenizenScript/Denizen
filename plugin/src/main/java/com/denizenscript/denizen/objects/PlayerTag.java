@@ -1666,6 +1666,19 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.skull_item>
+        // @returns ItemTag
+        // @description
+        // Returns a Player_Head item with the skin of the player.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
+        // -->
+        registerOnlineOnlyTag("skull_item", (attribute, object) -> {
+            ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+            item = NMSHandler.getItemHelper().setSkullSkin(item, NMSHandler.getInstance().getPlayerProfile(object.getPlayerEntity()));
+            return new ItemTag(item);
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.attack_cooldown_duration>
         // @returns DurationTag
         // @mechanism PlayerTag.attack_cooldown
