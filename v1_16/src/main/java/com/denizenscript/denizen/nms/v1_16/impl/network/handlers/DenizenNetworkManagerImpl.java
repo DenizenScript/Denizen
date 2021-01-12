@@ -301,11 +301,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 int watcherId = watcherObject.a();
                 if (watcherId == 2) { // 2: Custom name metadata
                     Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
-                    data.set(i, new DataWatcher.Item(item.a(), name));
+                    data.set(i, new DataWatcher.Item(watcherObject, name));
                     any = true;
                 }
                 else if (watcherId == 3) { // 3: custom name visible metadata
-                    data.set(i, new DataWatcher.Item(item.a(), true));
+                    data.set(i, new DataWatcher.Item(watcherObject, true));
                     any = true;
                 }
             }
@@ -590,16 +590,19 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
-        if (packet instanceof PacketPlayOutChat) {
+        if (packet instanceof PacketPlayOutChat && packetHandler.shouldInterceptChatPacket()) {
             return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
         }
-        else if (packet instanceof PacketPlayOutEntityMetadata) {
+        else if (packet instanceof PacketPlayOutEntityMetadata && packetHandler.shouldInterceptMetadata()) {
             return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
         }
         return false;
     }
 
     public boolean processShowFakeForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (FakeBlock.blocks.isEmpty()) {
+            return false;
+        }
         try {
             if (packet instanceof PacketPlayOutMapChunk) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());

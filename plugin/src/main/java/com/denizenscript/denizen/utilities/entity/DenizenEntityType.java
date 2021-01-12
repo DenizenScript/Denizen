@@ -175,4 +175,9 @@ public class DenizenEntityType {
     public boolean isCustom() {
         return customEntityType != null;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

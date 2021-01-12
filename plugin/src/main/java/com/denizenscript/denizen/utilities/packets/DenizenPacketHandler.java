@@ -90,6 +90,10 @@ public class DenizenPacketHandler {
         }
     }
 
+    public boolean shouldInterceptChatPacket() {
+        return !ExecuteCommand.silencedPlayers.isEmpty() || PlayerReceivesMessageScriptEvent.instance.loaded;
+    }
+
     public boolean sendPacket(final Player player, final PacketOutChat chat) {
         if (ExecuteCommand.silencedPlayers.contains(player.getUniqueId())) {
             return true;
@@ -134,6 +138,10 @@ public class DenizenPacketHandler {
             }
         }
         return false;
+    }
+
+    public boolean shouldInterceptMetadata() {
+        return !GlowCommand.glowViewers.isEmpty();
     }
 
     public boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata) {
