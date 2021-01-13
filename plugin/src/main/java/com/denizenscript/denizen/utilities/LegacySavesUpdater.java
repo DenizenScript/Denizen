@@ -31,6 +31,7 @@ public class LegacySavesUpdater {
         try {
             FileInputStream fis = new FileInputStream(savesFile);
             String saveData = ScriptHelper.convertStreamToString(fis, false);
+            fis.close();
             if (saveData.trim().length() == 0) {
                 Debug.log("Nothing to update.");
                 savesFile.delete();
