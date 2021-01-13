@@ -3316,6 +3316,23 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             return new ItemTag(((Jukebox) state).getRecord());
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.jukebox_is_playing>
+        // @returns ElementTag
+        // @mechanism LocationTag.jukebox_play
+        // @description
+        // Returns whether the jukebox is currently playing a song.
+        // -->
+        registerTag("jukebox_is_playing", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Jukebox)) {
+                attribute.echoError("'jukebox_is_playing' tag is only valid for jukebox blocks.");
+                return null;
+            }
+
+            return new ElementTag(((Jukebox) state).isPlaying());
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -3864,7 +3881,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @name jukebox_record
         // @input ItemTag
         // @description
-        // Sets the record item played by a jukebox. Give no input to disable all songs.
+        // Sets the record item played by a jukebox. Give no input to set the jukebox to empty.
+        // See also <@link mechanism LocationTag.jukebox_play>.
         // @tags
         // <LocationTag.jukebox_record>
         // -->
@@ -3881,6 +3899,37 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 Debug.echoError("'jukebox_record' mechanism can only be called on a jukebox block.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name jukebox_play
+        // @input ElementTag(Boolean)
+        // @description
+        // If 'true', starts playing the record inside. If 'false', stops playing any song.
+        // See also <@link mechanism LocationTag.jukebox_record>.
+        // @tags
+        // <LocationTag.jukebox_is_playing>
+        // -->
+        if (mechanism.matches("jukebox_play") && mechanism.requireBoolean()) {
+            BlockState state = getBlockState();
+            if (state instanceof Jukebox) {
+                if (mechanism.getValue().asBoolean()) {
+                    Material mat = ((Jukebox) state).getRecord().getType();
+                    if (mat == Material.AIR) {
+                        Debug.echoError("'jukebox_play' cannot play nothing.");
+                        return;
+                    }
+                    ((Jukebox) state).setPlaying(mat);
+                }
+                else {
+                    ((Jukebox) state).stopPlaying();
+                }
+                state.update();
+            }
+            else {
+                Debug.echoError("'jukebox_play' mechanism can only be called on a jukebox block.");
             }
         }
 
