@@ -21,7 +21,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on player beacon effect applied$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Plugin Paper
     //

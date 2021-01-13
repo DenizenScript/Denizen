@@ -26,7 +26,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Group Block
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

@@ -22,7 +22,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     //
     // @Regex ^on [^\s]+ knocks back [^\s]+$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
     //
     // @Plugin Paper

@@ -20,7 +20,7 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
     //
     // @Regex ^on player ([^\s]+ )?clicks fake entity$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Plugin Paper
     //

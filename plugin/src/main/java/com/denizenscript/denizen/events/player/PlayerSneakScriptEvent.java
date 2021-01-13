@@ -22,7 +22,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

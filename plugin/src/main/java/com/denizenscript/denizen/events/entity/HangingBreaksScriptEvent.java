@@ -24,7 +24,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Group Entity
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

@@ -22,7 +22,7 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Group NPC
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when an NPC's navigator is stuck.
     //

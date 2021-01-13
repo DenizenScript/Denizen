@@ -21,7 +21,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

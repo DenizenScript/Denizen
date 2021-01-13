@@ -21,7 +21,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Warning This event may fire very rapidly.
     //

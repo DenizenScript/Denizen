@@ -21,7 +21,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Group Block
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch from:<age> to only process the event if the material started at a specific age.
     // @Switch to:<age> to only process the event if the material ended at a specific age.
     //

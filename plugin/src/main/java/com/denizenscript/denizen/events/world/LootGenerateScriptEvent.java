@@ -27,7 +27,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Group World
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch for:<type> to only process the event if a certain inventory type is receiving loot (like 'for:chest').
     //
     // @Cancellable true

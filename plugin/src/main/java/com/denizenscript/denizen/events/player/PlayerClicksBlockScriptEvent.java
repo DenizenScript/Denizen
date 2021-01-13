@@ -35,7 +35,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Switch with:<item> to only process the event if a specified item was held.
     // @Switch using:hand/off_hand/either_hand to only process the event if the specified hand was used to click.
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when a player clicks on a block or in the air.
     //

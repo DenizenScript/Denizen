@@ -20,7 +20,7 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Group NPC
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Regex ^on npc (begins|completes|cancels) navigation$
     //

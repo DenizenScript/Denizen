@@ -18,7 +18,7 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on experience orbs merge$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Plugin Paper
     //

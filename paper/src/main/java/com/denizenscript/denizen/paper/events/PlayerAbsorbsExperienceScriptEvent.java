@@ -18,7 +18,7 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
     //
     // @Regex ^on player absorbs experience$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Plugin Paper
     //

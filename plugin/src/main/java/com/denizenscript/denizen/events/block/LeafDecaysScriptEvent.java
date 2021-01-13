@@ -19,7 +19,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Group Block
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

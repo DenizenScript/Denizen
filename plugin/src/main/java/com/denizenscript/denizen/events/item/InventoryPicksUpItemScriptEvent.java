@@ -22,7 +22,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     //
     // @Group Item
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

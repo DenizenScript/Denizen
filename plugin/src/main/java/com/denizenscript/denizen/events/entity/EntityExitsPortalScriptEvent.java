@@ -21,7 +21,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
     //
     // @Group Entity
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when an entity exits a portal.
     //

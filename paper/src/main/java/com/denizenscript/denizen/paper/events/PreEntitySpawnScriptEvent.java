@@ -23,7 +23,7 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ prespawns( because [^\s]+)?$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

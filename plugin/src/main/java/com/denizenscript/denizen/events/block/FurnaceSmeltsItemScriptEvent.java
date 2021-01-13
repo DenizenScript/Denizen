@@ -21,7 +21,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     //
     // @Group Block
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when a furnace smelts an item.
     //

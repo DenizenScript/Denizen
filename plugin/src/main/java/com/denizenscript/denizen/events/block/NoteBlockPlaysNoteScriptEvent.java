@@ -19,7 +19,7 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     //
     // @Group Block
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch instrument:<instrument> to only process the event if a specific instrument was played.
     //
     // @Cancellable true

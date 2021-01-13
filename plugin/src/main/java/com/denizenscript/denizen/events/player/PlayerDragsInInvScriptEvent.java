@@ -29,7 +29,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Group Player
     //
-    // @Switch in_area:<area> to only process the event if it occurred within a specified area.
+    // @Switch in_area:<area> replaces the default 'in:<area>' for this event.
+    //
+    // @Location true
     //
     // @Cancellable true
     //

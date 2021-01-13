@@ -21,7 +21,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Group Item
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

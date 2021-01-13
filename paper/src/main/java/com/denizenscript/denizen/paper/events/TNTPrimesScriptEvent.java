@@ -21,7 +21,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Regex ^on tnt primes$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Plugin Paper
     //

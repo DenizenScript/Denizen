@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -47,6 +48,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // "<item>" or similar expects of course an ItemTag.
     // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
+    // Items can also be used with an "item_flagged" secondary prefix, so for an event that has "with:<item>", you can also do "with:item_flagged:<flag name>".
+    // For item matchers that aren't switches, this works similarly, like "on player consumes item_flagged:myflag:" (note that this is not a switch).
     //
     // "<inventory>" or similar expects of course an InventoryTag.
     // You can use "inventory" as a catch-all, "note" to mean any noted inventory, the name of an inventory script,
@@ -172,6 +175,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean couldMatchItem(String text) {
         if (text.equals("item")) {
+            return true;
+        }
+        if (text.startsWith("item_flagged:")) {
             return true;
         }
         if (MaterialTag.matches(text)) {
@@ -412,7 +418,27 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runInCheck(path, location, "in");
     }
 
+    public boolean runLocationFlaggedCheck(ScriptPath path, String switchName, Location location) {
+        String flagged = path.switches.get(switchName);
+        if (flagged == null) {
+            return true;
+        }
+        if (location == null) {
+            return false;
+        }
+        AbstractFlagTracker tracker = new LocationTag(location).getFlagTracker();
+        for (String flag : CoreUtilities.split(flagged, '|')) {
+            if (!tracker.hasFlag(flag)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
+        if (!runLocationFlaggedCheck(path, "location_flagged", location)) {
+            return false;
+        }
         String inputText = path.switches.get(innote);
         if (inputText == null) {
             int index;
@@ -551,31 +577,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    // <--[language]
-    // @name Player Event Switches
-    // @group Script Events
-    // @description
-    // There are a few special switches available to any script event with a linked player.
-    //
-    // The "flagged:<flag name>" will limit the event to only fire when the player has the flag with the specified name.
-    // It can be used like "on player breaks block flagged:nobreak:" (that would be used alongside "- flag player nobreak").
-    //
-    // The "permission:<perm key>" will limit the event to only fire when the player has the specified permission key.
-    // It can be used like "on player breaks block permission:denizen.my.perm:"
-    //
-    // Note that these switches will be ignored for events that do not have a linked player.
-    // Be cautious with events that will only sometimes have a linked player.
-    //
-    // For multiple flag or permission requirements, just list them separated by '|' pipes, like "flagged:a|b|c".
-    // -->
-
     public boolean runAutomaticPlayerSwitches(ScriptPath path) {
         if (!path.switches.containsKey("flagged") && !path.switches.containsKey("permission")) {
             return true;
         }
         BukkitScriptEntryData data = (BukkitScriptEntryData) getScriptEntryData();
         if (!data.hasPlayer()) {
-            return true;
+            return false;
         }
         if (!runFlaggedCheck(path, data.getPlayer())) {
             return false;
@@ -686,6 +694,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         comparedto = CoreUtilities.toLowerCase(comparedto);
+        if (comparedto.startsWith("item_flagged:")) {
+            for (String flag : CoreUtilities.split(comparedto.substring("item_flagged:".length()), '|')) {
+                if (!item.getFlagTracker().hasFlag(flag)) {
+                    return false;
+                }
+            }
+            return true;
+        }
         if (comparedto.equals("item")) {
             return true;
         }

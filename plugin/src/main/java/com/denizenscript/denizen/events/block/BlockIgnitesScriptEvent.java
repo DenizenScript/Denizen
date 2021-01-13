@@ -20,7 +20,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Group Block
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch cause:<cause> to only process the event when it came from a specified cause.
     //
     // @Cancellable true

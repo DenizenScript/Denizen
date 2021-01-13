@@ -22,7 +22,7 @@ public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch item:<item> to only process the event when the player is going to hold a specified item.
     //
     // @Cancellable true

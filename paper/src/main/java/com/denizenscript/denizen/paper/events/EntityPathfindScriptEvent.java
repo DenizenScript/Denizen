@@ -20,7 +20,7 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ pathfinds$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch to:<area> to only process the event if the entity is pathfinding into a specified area.
     // @Switch at:<entity> to only process the event when the entity is pathfinding at a specified entity.
     //

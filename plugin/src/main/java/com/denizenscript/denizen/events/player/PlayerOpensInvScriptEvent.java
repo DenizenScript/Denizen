@@ -21,7 +21,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     //

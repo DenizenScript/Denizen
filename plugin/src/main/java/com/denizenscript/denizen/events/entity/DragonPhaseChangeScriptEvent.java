@@ -20,7 +20,7 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     //
     // @Group Entity
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch from:<phase> to only process the event if the dragon was previously in the specified phase.
     // @Switch to:<phase> to only process the event if the dragon is changing to the specified phase.
     //

@@ -18,7 +18,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on [^\s]+ collides with [^\s]+$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Plugin Paper
     //

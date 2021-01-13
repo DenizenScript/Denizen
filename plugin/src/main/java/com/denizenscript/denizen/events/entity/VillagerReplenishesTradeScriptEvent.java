@@ -19,7 +19,7 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
     //
     // @Group Entity
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

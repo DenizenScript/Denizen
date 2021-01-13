@@ -22,7 +22,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Group World
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

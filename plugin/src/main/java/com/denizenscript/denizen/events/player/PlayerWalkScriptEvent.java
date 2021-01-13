@@ -21,7 +21,7 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Warning This event fires very very rapidly!
     //

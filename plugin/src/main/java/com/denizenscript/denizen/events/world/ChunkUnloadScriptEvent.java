@@ -19,7 +19,7 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Group World
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //

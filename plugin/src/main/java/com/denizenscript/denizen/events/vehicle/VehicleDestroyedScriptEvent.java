@@ -24,7 +24,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Regex ^on [^\s]+ destroys [^\s]+$
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

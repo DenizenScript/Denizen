@@ -28,7 +28,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch with:<item> to only process the event when the player is breaking the block with a specified item.
     //
     // @Cancellable true

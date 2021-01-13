@@ -23,7 +23,7 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when a player fills a bucket.
     //

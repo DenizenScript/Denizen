@@ -24,7 +24,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Cancellable true
     //

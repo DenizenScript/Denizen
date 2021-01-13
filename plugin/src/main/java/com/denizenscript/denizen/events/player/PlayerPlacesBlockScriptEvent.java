@@ -21,7 +21,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     // @Switch using:<hand type> to only process the event if the player is using the specified hand type (HAND or OFF_HAND).
     //
     // @Cancellable true

@@ -24,7 +24,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     //
     // @Group Player
     //
-    // @Switch in:<area> to only process the event if it occurred within a specified area.
+    // @Location true
     //
     // @Triggers when a player takes an item from a furnace.
     // @Context
