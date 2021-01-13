@@ -54,7 +54,7 @@ public class LegacySavesUpdater {
             Debug.log("==== Update global data ====");
             YamlConfiguration globalSection = saveSection.getConfigurationSection("Global");
             if (globalSection.contains("Flags")) {
-                applyFlags(Denizen.getInstance().serverFlagMap, globalSection.getConfigurationSection("Flags"));
+                applyFlags("Server", Denizen.getInstance().serverFlagMap, globalSection.getConfigurationSection("Flags"));
             }
             if (globalSection.contains("Scripts")) {
                 YamlConfiguration scriptsSection = globalSection.getConfigurationSection("Scripts");
@@ -83,7 +83,7 @@ public class LegacySavesUpdater {
                     YamlConfiguration actual = subSection.getConfigurationSection(uuidString.str);
                     AbstractFlagTracker tracker = player.getFlagTracker();
                     if (actual.contains("Flags")) {
-                        applyFlags(tracker, actual.getConfigurationSection("Flags"));
+                        applyFlags(player.identify(), tracker, actual.getConfigurationSection("Flags"));
                     }
                     if (actual.contains("Scripts")) {
                         YamlConfiguration scriptsSection = actual.getConfigurationSection("Scripts");
@@ -118,7 +118,7 @@ public class LegacySavesUpdater {
                         }
                         AbstractFlagTracker tracker = npc.getFlagTracker();
                         if (actual.contains("Flags")) {
-                            applyFlags(tracker, actual.getConfigurationSection("Flags"));
+                            applyFlags(npc.identify(), tracker, actual.getConfigurationSection("Flags"));
                         }
                         npc.reapplyTracker(tracker);
                         Debug.log("==== Done late-updating NPC data ====");
@@ -130,8 +130,11 @@ public class LegacySavesUpdater {
         Debug.log("==== Done updating legacy saves (except NPCs) ====");
     }
 
-    public static void applyFlags(AbstractFlagTracker tracker, YamlConfiguration section) {
+    public static void applyFlags(String object, AbstractFlagTracker tracker, YamlConfiguration section) {
         try {
+            if (section == null || section.getKeys(false).isEmpty()) {
+                return;
+            }
             for (StringHolder flagName : section.getKeys(false)) {
                 if (flagName.low.endsWith("-expiration")) {
                     continue;
@@ -147,6 +150,7 @@ public class LegacySavesUpdater {
             }
         }
         catch (Throwable ex) {
+            Debug.echoError("Error while updating legacy flags for " + object);
             Debug.echoError(ex);
         }
     }
