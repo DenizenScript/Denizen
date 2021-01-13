@@ -172,6 +172,29 @@ public class FormattedTextHelper {
         return parse(str, baseColor, true);
     }
 
+    public static int findEndIndexFor(String base, String type, int startAt) {
+        int layers = 1;
+        while (true) {
+            int next = base.indexOf(ChatColor.COLOR_CHAR, startAt);
+            if (next == -1) {
+                return -1;
+            }
+            if (next + type.length() + 2 >= base.length()) {
+                return -1;
+            }
+            if (base.startsWith("[" + type + "=", next + 1)) {
+                layers++;
+            }
+            else if (base.startsWith("[/" + type + "]", next + 1)){
+                layers--;
+                if (layers == 0) {
+                    return next;
+                }
+            }
+            startAt = next + 1;
+        }
+    }
+
     public static BaseComponent[] parse(String str, ChatColor baseColor, boolean cleanBase) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
@@ -244,11 +267,7 @@ public class FormattedTextHelper {
                             lastText.addExtra(component);
                         }
                         else if (innardType.equals("click") && innardParts.size() == 1) {
-                            int endIndex = str.indexOf(ChatColor.COLOR_CHAR + "[/click]", i);
-                            int backupEndIndex = str.indexOf(ChatColor.COLOR_CHAR + "[click=", i + 5);
-                            if (backupEndIndex > 0 && backupEndIndex < endIndex) {
-                                endIndex = backupEndIndex;
-                            }
+                            int endIndex = findEndIndexFor(str, "click", i + 5);
                             if (endIndex == -1) {
                                 continue;
                             }
@@ -261,11 +280,7 @@ public class FormattedTextHelper {
                             endBracket = endIndex + "&[/click".length();
                         }
                         else if (innardType.equals("hover")) {
-                            int endIndex = str.indexOf(ChatColor.COLOR_CHAR + "[/hover]", i);
-                            int backupEndIndex = str.indexOf(ChatColor.COLOR_CHAR + "[hover=", i + 5);
-                            if (backupEndIndex > 0 && backupEndIndex < endIndex) {
-                                endIndex = backupEndIndex;
-                            }
+                            int endIndex = findEndIndexFor(str, "hover", i + 5);
                             if (endIndex == -1) {
                                 continue;
                             }

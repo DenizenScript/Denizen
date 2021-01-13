@@ -186,7 +186,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     // Denizen tracks a "linked player" and a "linked NPC" in queues and the commands within.
     // Many commands automatically operate on the linked player/NPC or by default or exclusively
     // (for example, "give" defaults to giving items to the linked player but that can be changed with the "to" argument,
-    // "assign" exclusively changes the assignment of the linked NPC, and that cannot be changed except by the global NPC argument).
+    // "assignment" exclusively changes the assignment of the linked NPC, and that cannot be changed except by the global NPC argument).
     //
     // When the player argument is used, it sets the linked player for the specific command it's on.
     // This is only useful for commands that default to operating on the linked player.
