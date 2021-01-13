@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
@@ -95,7 +94,7 @@ public class ItemSkullskin implements Property {
                 return new ElementTag(CoreUtilities.split(skin, '|').get(0)).getObjectAttribute(attribute);
             }
             else {
-                Debug.echoError("This skull item does not have a skin set!");
+                attribute.echoError("This skull item does not have a skin set!");
             }
         }
 

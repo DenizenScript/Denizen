@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -108,7 +107,7 @@ public class ItemCanPlaceOn implements Property {
         // -->
         if (mechanism.matches("can_place_on")) {
             if (item.getMaterial().getMaterial() == Material.AIR) {
-                Debug.echoError("Cannot apply NBT to AIR!");
+                mechanism.echoError("Cannot apply NBT to AIR!");
                 return;
             }
 

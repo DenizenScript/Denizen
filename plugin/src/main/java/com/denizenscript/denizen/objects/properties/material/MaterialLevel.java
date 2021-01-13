@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -81,7 +80,7 @@ public class MaterialLevel implements Property {
             return new ElementTag(material.getCurrent());
         });
     }
-    
+
     public Levelled getLevelled() {
         return (Levelled) material.getModernData().data;
     }
@@ -194,7 +193,7 @@ public class MaterialLevel implements Property {
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             int level = mechanism.getValue().asInt();
             if (level < getMin() || level > getMax()) {
-                Debug.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + material.realName() + "'.");
+                mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
             setCurrent(level);

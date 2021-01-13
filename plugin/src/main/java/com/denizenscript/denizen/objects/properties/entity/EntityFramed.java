@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -146,14 +145,14 @@ public class EntityFramed implements Property {
         if (mechanism.matches("framed")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.isEmpty()) {
-                Debug.echoError("Missing value for 'framed' mechanism!");
+                mechanism.echoError("Missing value for 'framed' mechanism!");
                 return;
             }
             if (new ElementTag(list.get(0)).matchesType(ItemTag.class)) {
                 setItem(new ElementTag(list.get(0)).asType(ItemTag.class, mechanism.context));
             }
             else {
-                Debug.echoError("Invalid item '" + list.get(0) + "'");
+                mechanism.echoError("Invalid item '" + list.get(0) + "'");
             }
             if (list.size() > 1 && new ElementTag(list.get(1)).matchesEnum(Rotation.values())) {
                 getItemFrameEntity().setRotation(Rotation.valueOf(list.get(1).toUpperCase()));

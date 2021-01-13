@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -223,7 +222,7 @@ public class MaterialDirectional implements Property {
                 case SOUTH_WEST:
                     getRail().setShape(Rail.Shape.SOUTH_WEST);
                 default:
-                    Debug.echoError("Unsupported rail direction '" + face + "'.");
+                    mechanism.echoError("Unsupported rail direction '" + face + "'.");
             }
         }
         else if (isDirectional()) {
@@ -265,7 +264,7 @@ public class MaterialDirectional implements Property {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
-                Debug.echoError("MaterialTag.Direction mechanism has bad input: directional value '" + mechanism.getValue().asString() + "' is invalid.");
+                mechanism.echoError("MaterialTag.Direction mechanism has bad input: directional value '" + mechanism.getValue().asString() + "' is invalid.");
             }
         }
     }

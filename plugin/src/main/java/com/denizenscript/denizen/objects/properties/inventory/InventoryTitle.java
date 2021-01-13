@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -93,7 +92,7 @@ public class InventoryTitle implements Property {
         // -->
         if (mechanism.matches("title")) {
             if (!inventory.isGeneric() && !inventory.isUnique()) {
-                Debug.echoError("Cannot set a title on a non-generic inventory.");
+                mechanism.echoError("Cannot set a title on a non-generic inventory.");
                 return;
             }
             String title = mechanism.getValue().asString();

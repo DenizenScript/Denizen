@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -140,7 +139,7 @@ public class MaterialAge implements Property {
         if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
             int age = mechanism.getValue().asInt();
             if (age < 0 || age > getMax()) {
-                Debug.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
+                mechanism.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
             if (isTurtleEgg()) {

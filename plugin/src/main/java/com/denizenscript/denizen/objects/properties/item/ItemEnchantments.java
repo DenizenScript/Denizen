@@ -241,14 +241,14 @@ public class ItemEnchantments implements Property {
                         }
                     }
                     else {
-                        Debug.echoError("Unknown enchantment '" + enchantments.getKey().str + "'");
+                        mechanism.echoError("Unknown enchantment '" + enchantments.getKey().str + "'");
                     }
                 }
             }
             else {
                 for (String enchant : mechanism.valueAsType(ListTag.class)) {
                     if (!enchant.contains(",")) {
-                        Debug.echoError("Invalid enchantment format, use name,level|...");
+                        mechanism.echoError("Invalid enchantment format, use name,level|...");
                     }
                     else {
                         String[] data = enchant.split(",", 2);
@@ -266,14 +266,14 @@ public class ItemEnchantments implements Property {
                                 }
                             }
                             else {
-                                Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                                mechanism.echoError("Unknown enchantment '" + data[0] + "'");
                             }
                         }
                         catch (NullPointerException e) {
-                            Debug.echoError("Unknown enchantment '" + data[0] + "'");
+                            mechanism.echoError("Unknown enchantment '" + data[0] + "'");
                         }
                         catch (NumberFormatException ex) {
-                            Debug.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
+                            mechanism.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
                             if (Debug.verbose) {
                                 Debug.echoError(ex);
                             }

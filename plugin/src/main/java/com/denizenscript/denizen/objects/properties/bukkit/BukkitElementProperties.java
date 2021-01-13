@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -226,7 +225,7 @@ public class BukkitElementProperties implements Property {
             }
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (format == null) {
-                Debug.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
+                attribute.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
                 return null;
             }
             else {

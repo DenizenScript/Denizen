@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -211,7 +210,7 @@ public class EntityAge implements Property {
         if (mechanism.matches("age")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.isEmpty()) {
-                Debug.echoError("Missing value for 'age' mechanism!");
+                mechanism.echoError("Missing value for 'age' mechanism!");
                 return;
             }
             if (list.get(0).equalsIgnoreCase("baby")) {

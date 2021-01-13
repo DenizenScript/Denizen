@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -91,7 +90,7 @@ public class InventorySize implements Property {
                 setSize(mechanism.getValue().asInt());
             }
             else {
-                Debug.echoError("Inventories of type '" + inventory.getIdType() + "' cannot have their size changed!");
+                mechanism.echoError("Inventories of type '" + inventory.getIdType() + "' cannot have their size changed!");
             }
         }
 

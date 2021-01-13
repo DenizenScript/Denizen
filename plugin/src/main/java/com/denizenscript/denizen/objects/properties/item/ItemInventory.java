@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
 import com.denizenscript.denizen.utilities.Conversion;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Argument;
@@ -126,7 +125,7 @@ public class ItemInventory implements Property {
             InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
             ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
             if (items.size() > invHolder.getInventory().getSize()) {
-                Debug.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
+                mechanism.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
                 return;
             }
             ItemStack[] itemArray = new ItemStack[items.size()];

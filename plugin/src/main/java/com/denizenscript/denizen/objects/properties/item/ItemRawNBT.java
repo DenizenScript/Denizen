@@ -354,7 +354,7 @@ public class ItemRawNBT implements Property {
                     }
                 }
                 catch (Exception ex) {
-                    Debug.echoError("Raw_Nbt input failed for root key '" + entry.getKey().str + "'.");
+                    mechanism.echoError("Raw_Nbt input failed for root key '" + entry.getKey().str + "'.");
                     Debug.echoError(ex);
                     return;
                 }

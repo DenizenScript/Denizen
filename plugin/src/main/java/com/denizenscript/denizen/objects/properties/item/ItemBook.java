@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -263,7 +262,7 @@ public class ItemBook implements Property {
         // -->
         if (mechanism.matches("book_author")) {
             if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
-                Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                mechanism.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
                 BookMeta meta = (BookMeta) item.getItemMeta();
@@ -283,7 +282,7 @@ public class ItemBook implements Property {
         // -->
         if (mechanism.matches("book_title")) {
             if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
-                Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                mechanism.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
             }
             else {
                 BookMeta meta = (BookMeta) item.getItemMeta();
@@ -313,7 +312,7 @@ public class ItemBook implements Property {
                 ObjectTag title = mapData.getObject("title");
                 if (author != null && title != null) {
                     if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
-                        Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                        mechanism.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                     }
                     else {
                         meta.setAuthor(author.toString());
@@ -334,7 +333,7 @@ public class ItemBook implements Property {
             }
             ListTag data = mechanism.valueAsType(ListTag.class);
             if (data.size() < 1) {
-                Debug.echoError("Invalid book input!");
+                mechanism.echoError("Invalid book input!");
                 return;
             }
             if (data.size() < 2) {
@@ -344,7 +343,7 @@ public class ItemBook implements Property {
             if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
                     && data.get(2).equalsIgnoreCase("title")) {
                 if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
-                    Debug.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+                    mechanism.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                 }
                 else {
                     meta.setAuthor(EscapeTagBase.unEscape(data.get(1)));
@@ -369,7 +368,7 @@ public class ItemBook implements Property {
                 meta.spigot().setPages(newPages);
             }
             else {
-                Debug.echoError("Invalid book input!");
+                mechanism.echoError("Invalid book input!");
             }
             item.setItemMeta(meta);
         }

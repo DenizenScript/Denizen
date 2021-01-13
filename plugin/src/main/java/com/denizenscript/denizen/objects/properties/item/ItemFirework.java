@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -138,7 +137,7 @@ public class ItemFirework implements Property {
                         builder.with(FireworkEffect.Type.valueOf(data[2].toUpperCase()));
                     }
                     else {
-                        Debug.echoError("Invalid firework type '" + data[2] + "'");
+                        mechanism.echoError("Invalid firework type '" + data[2] + "'");
                     }
                     builder.withColor(Color.fromRGB(new ElementTag(data[3]).asInt(),
                             new ElementTag(data[4]).asInt(),
@@ -160,11 +159,11 @@ public class ItemFirework implements Property {
                         ((FireworkMeta) meta).setPower(new ElementTag(data[0]).asInt());
                     }
                     else {
-                        Debug.echoError("Cannot set the power of a firework effect!");
+                        mechanism.echoError("Cannot set the power of a firework effect!");
                     }
                 }
                 else {
-                    Debug.echoError("Invalid firework data '" + effect + "'");
+                    mechanism.echoError("Invalid firework data '" + effect + "'");
                 }
             }
             item.setItemMeta(meta);

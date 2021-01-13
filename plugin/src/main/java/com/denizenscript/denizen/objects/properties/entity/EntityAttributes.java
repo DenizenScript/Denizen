@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -130,9 +129,7 @@ public class EntityAttributes implements Property {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
             if (instance == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
-                }
+                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                 return null;
             }
             return new ElementTag(instance.getValue()).getObjectAttribute(attribute.fulfill(1));
@@ -152,9 +149,7 @@ public class EntityAttributes implements Property {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
             if (instance == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
-                }
+                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                 return null;
             }
             return new ElementTag(instance.getBaseValue()).getObjectAttribute(attribute.fulfill(1));
@@ -174,9 +169,7 @@ public class EntityAttributes implements Property {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
             if (instance == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
-                }
+                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                 return null;
             }
             return new ElementTag(instance.getDefaultValue()).getObjectAttribute(attribute.fulfill(1));
@@ -214,7 +207,7 @@ public class EntityAttributes implements Property {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(EscapeTagBase.unEscape(subList.get(0)).toUpperCase());
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {
-                    Debug.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                     continue;
                 }
                 instance.setBaseValue(Double.parseDouble(subList.get(1)));

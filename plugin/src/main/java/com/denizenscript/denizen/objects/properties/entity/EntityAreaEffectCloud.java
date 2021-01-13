@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.objects.ColorTag;
@@ -440,7 +439,7 @@ public class EntityAreaEffectCloud implements Property {
                     ElementTag particles = new ElementTag((potionData.size() > 4) ? potionData.get(4) : "true");
 
                     if (type == null || duration == null || !amplifier.isInt() || !ambient.isBoolean() || !particles.isBoolean()) {
-                        Debug.echoError(item + " is not a valid potion effect!");
+                        mechanism.echoError(item + " is not a valid potion effect!");
                     }
                     else {
                         getHelper().addEffect(
@@ -449,7 +448,7 @@ public class EntityAreaEffectCloud implements Property {
                     }
                 }
                 else {
-                    Debug.echoError(item + " is not a valid potion effect!");
+                    mechanism.echoError(item + " is not a valid potion effect!");
                 }
             }
         }
@@ -485,7 +484,7 @@ public class EntityAreaEffectCloud implements Property {
         if (mechanism.matches("base_potion")) {
             List<String> data = CoreUtilities.split(mechanism.getValue().asString().toUpperCase(), ',');
             if (data.size() != 3) {
-                Debug.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
+                mechanism.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
             }
             else {
                 try {
@@ -493,14 +492,14 @@ public class EntityAreaEffectCloud implements Property {
                     boolean extended = type.isExtendable() && CoreUtilities.equalsIgnoreCase(data.get(1), "true");
                     boolean upgraded = type.isUpgradeable() && CoreUtilities.equalsIgnoreCase(data.get(2), "true");
                     if (extended && upgraded) {
-                        Debug.echoError("Potion cannot be both upgraded and extended");
+                        mechanism.echoError("Potion cannot be both upgraded and extended");
                     }
                     else {
                         getHelper().setBP(type, extended, upgraded);
                     }
                 }
                 catch (Exception e) {
-                    Debug.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
+                    mechanism.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
                 }
             }
         }

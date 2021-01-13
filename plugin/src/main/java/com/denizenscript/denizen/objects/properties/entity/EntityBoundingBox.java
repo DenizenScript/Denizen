@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -120,7 +119,7 @@ public class EntityBoundingBox implements Property {
                 modifiedBoxes.add(entity.getUUID());
             }
             else {
-                Debug.echoError("Must specify exactly 2 LocationTags in the format '<low>|<high>'!");
+                mechanism.echoError("Must specify exactly 2 LocationTags in the format '<low>|<high>'!");
             }
         }
     }

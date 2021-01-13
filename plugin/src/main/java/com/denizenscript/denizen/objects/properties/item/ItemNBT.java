@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -146,7 +145,7 @@ public class ItemNBT implements Property {
         if (mechanism.matches("remove_nbt")) {
             Deprecations.itemNbt.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
-                Debug.echoError("Cannot apply NBT to AIR!");
+                mechanism.echoError("Cannot apply NBT to AIR!");
                 return;
             }
             ItemStack itemStack = item.getItemStack();
@@ -177,7 +176,7 @@ public class ItemNBT implements Property {
         if (mechanism.matches("nbt")) {
             Deprecations.itemNbt.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
-                Debug.echoError("Cannot apply NBT to AIR!");
+                mechanism.echoError("Cannot apply NBT to AIR!");
                 return;
             }
             ListTag list = mechanism.valueAsType(ListTag.class);

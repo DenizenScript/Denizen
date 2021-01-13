@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -111,7 +110,7 @@ public class ItemAttributeNBT implements Property {
         // -->
         if (mechanism.matches("nbt_attributes")) {
             if (item.getMaterial().getMaterial() == Material.AIR) {
-                Debug.echoError("Cannot apply NBT to AIR!");
+                mechanism.echoError("Cannot apply NBT to AIR!");
                 return;
             }
             ListTag list = mechanism.valueAsType(ListTag.class);
@@ -120,7 +119,7 @@ public class ItemAttributeNBT implements Property {
             for (String string : list) {
                 String[] split = string.split("/");
                 if (split.length != 4) {
-                    Debug.echoError("Invalid nbt_attributes input: must have 4 values per attribute.");
+                    mechanism.echoError("Invalid nbt_attributes input: must have 4 values per attribute.");
                     continue;
                 }
                 String attribute = EscapeTagBase.unEscape(split[0]);

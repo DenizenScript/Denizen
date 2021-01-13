@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -119,7 +118,7 @@ public class MaterialDelay implements Property {
         if (mechanism.matches("delay") && mechanism.requireInteger()) {
             int delay = mechanism.getValue().asInt();
             if (delay < getMin() || delay > getMax()) {
-                Debug.echoError("Delay value '" + delay + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
+                mechanism.echoError("Delay value '" + delay + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
                 return;
             }
             getRepeater().setDelay(delay);
