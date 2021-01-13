@@ -3298,6 +3298,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         registerTag("local_difficulty", (attribute, object) -> {
             return new ElementTag(NMSHandler.getWorldHelper().getLocalDifficulty(object));
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.jukebox_record>
+        // @returns ItemTag
+        // @mechanism LocationTag.jukebox_record
+        // @description
+        // Returns the record item currently inside the jukebox.
+        // If there's no record, will return air.
+        // -->
+        registerTag("jukebox_record", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Jukebox)) {
+                attribute.echoError("'jukebox_record' tag is only valid for jukebox blocks.");
+                return null;
+            }
+
+            return new ItemTag(((Jukebox) state).getRecord());
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -3838,6 +3856,31 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 Debug.echoError("'clear_loot_table' mechanism can only be called on a lootable block (like a chest).");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name jukebox_record
+        // @input ItemTag
+        // @description
+        // Sets the record item played by a jukebox. Give no input to disable all songs.
+        // @tags
+        // <LocationTag.jukebox_record>
+        // -->
+        if (mechanism.matches("jukebox_record")) {
+            BlockState state = getBlockState();
+            if (state instanceof Jukebox) {
+                if (mechanism.hasValue() && mechanism.requireObject(ItemTag.class)) {
+                    ((Jukebox) state).setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
+                }
+                else {
+                    ((Jukebox) state).setRecord(null);
+                }
+                state.update();
+            }
+            else {
+                Debug.echoError("'jukebox_record' mechanism can only be called on a jukebox block.");
             }
         }
 

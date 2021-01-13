@@ -577,7 +577,7 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Makes the input text colored by the input color. Equivalent to "<COLOR><ELEMENT_HERE><COLOR.end_format>"
-        // Color can be a color name, color code, hex, or ColorTag... that is: ".color[gold]", ".color[6]", ".color[#AABB00]", and ".color[co@128,64,0]" are all valid.
+        // Color can be a color name, color code, hex, or ColorTag... that is: ".color[gold]", ".color[6]", and ".color[#AABB00]" are all valid.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("color", (attribute, object) -> {

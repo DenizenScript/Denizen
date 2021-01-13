@@ -45,7 +45,6 @@ public class SitCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (arg.matchesArgumentType(LocationTag.class)
                     && !scriptEntry.hasObject("location")) {
@@ -58,7 +57,6 @@ public class SitCommand extends AbstractCommand {
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
-
     }
 
     @Override
@@ -69,12 +67,10 @@ public class SitCommand extends AbstractCommand {
             Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit.");
             return;
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", npc)
                     + (location != null ? location.debug() : ""));
         }
-
         Entity entity = npc.getEntity();
         if (entity instanceof Sittable) {
             ((Sittable) entity).setSitting(true);
