@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -222,7 +223,7 @@ public class MaterialDirectional implements Property {
                 case SOUTH_WEST:
                     getRail().setShape(Rail.Shape.SOUTH_WEST);
                 default:
-                    mechanism.echoError("Unsupported rail direction '" + face + "'.");
+                    Debug.echoError("Unsupported rail direction '" + face + "'.");
             }
         }
         else if (isDirectional()) {
