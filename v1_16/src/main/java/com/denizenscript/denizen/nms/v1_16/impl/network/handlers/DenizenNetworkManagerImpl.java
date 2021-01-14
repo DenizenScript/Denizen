@@ -234,7 +234,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     }
                 }
                 else {
-                    PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata(ent.getId(), ((CraftEntity) disguise.as.entity).getHandle().getDataWatcher(), true);
+                    PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata(ent.getId(), ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getDataWatcher(), true);
                     oldManager.sendPacket(altPacket, genericfuturelistener);
                     return true;
                 }

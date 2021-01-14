@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class FakeEntity {
 
@@ -38,8 +39,10 @@ public class FakeEntity {
     public EntityTag entity;
     public LocationTag location;
     public BukkitTask currentTask = null;
+    public Consumer<PlayerTag> triggerSpawnPacket;
     public Runnable triggerUpdatePacket;
     public Runnable triggerDestroyPacket;
+    public UUID overrideUUID;
 
     public FakeEntity(List<PlayerTag> player, LocationTag location, int id) {
         this.players = player;
@@ -49,9 +52,7 @@ public class FakeEntity {
 
     public static FakeEntity showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration) {
         FakeEntity fakeEntity = NMSHandler.getPlayerHelper().sendEntitySpawn(players, typeToSpawn.getBukkitEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null, true);
-        fakeEntity.entity.isFake = true;
-        fakeEntity.entity.isFakeValid = true;
-        idsToEntities.put(fakeEntity.entity.getUUID(), fakeEntity);
+        idsToEntities.put(fakeEntity.overrideUUID == null ? fakeEntity.entity.getUUID() : fakeEntity.overrideUUID, fakeEntity);
         for (PlayerTag player : players) {
             UUID uuid = player.getPlayerEntity().getUniqueId();
             FakeEntity.FakeEntityMap playerEntities = playersToEntities.get(uuid);
@@ -70,7 +71,7 @@ public class FakeEntity {
             currentTask.cancel();
             currentTask = null;
         }
-        idsToEntities.remove(entity.getUUID());
+        idsToEntities.remove(overrideUUID == null ? entity.getUUID() : overrideUUID);
         if (triggerDestroyPacket != null) {
             triggerDestroyPacket.run();
         }

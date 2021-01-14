@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
+import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
@@ -416,6 +417,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     /////////////////
 
     @Override
+    public EntityTag duplicate() {
+        if (isUnique()) {
+            return this;
+        }
+        try {
+            EntityTag copy = (EntityTag) clone();
+            if (copy.mechanisms != null) {
+                copy.mechanisms = new ArrayList<>(copy.mechanisms);
+            }
+            return copy;
+        }
+        catch (CloneNotSupportedException ex) {
+            Debug.echoError(ex);
+            return null;
+        }
+    }
+
+    @Override
     public AbstractFlagTracker getFlagTracker() {
         Entity ent = getBukkitEntity();
         if (ent != null) {
@@ -441,7 +460,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     private String data1 = null;
     private DespawnedEntity despawned_entity = null;
     private NPCTag npc = null;
-    private UUID uuid = null;
+    public UUID uuid = null;
     private String entityScript = null;
     public boolean isFake = false;
     public boolean isFakeValid = false;
@@ -979,10 +998,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().debuggable();
             }
             else if (isFake) {
-                return "e@FAKE: " + entity.getUniqueId().toString() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "e@FAKE: " + getUUID() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
             }
             else if (isSpawnedOrValidForTag()) {
-                return "e@ " + entity.getUniqueId().toString() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "e@ " + getUUID() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
         return identify();
@@ -1000,10 +1019,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return getDenizenPlayer().savable();
         }
         else if (isFake) {
-            return "e@fake:" + entity.getUniqueId().toString();
+            return "e@fake:" + getUUID();
         }
         else {
-            return "e@" + entity.getUniqueId().toString();
+            return "e@" + getUUID();
         }
     }
 
@@ -1017,10 +1036,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().identify();
             }
             else if (isFake) {
-                return "e@fake:" + entity.getUniqueId().toString();
+                return "e@fake:" + getUUID();
             }
             else if (isSpawnedOrValidForTag()) {
-                return "e@" + entity.getUniqueId().toString();
+                return "e@" + getUUID();
             }
         }
         if (entityScript != null) {
@@ -2371,6 +2390,100 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             return result;
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.is_disguised[(<player>)]>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the entity is currently disguised, either globally (if no context input given), or to the specified player.
+        // Relates to <@link command disguise>.
+        // -->
+        registerTag("is_disguised", (attribute, object) -> {
+            HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
+            if (map == null) {
+                return new ElementTag(false);
+            }
+            if (attribute.hasContext(1)) {
+                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+                if (player == null) {
+                    attribute.echoError("Invalid player for is_disguised tag.");
+                    return null;
+                }
+                return new ElementTag(map.containsKey(player.getOfflinePlayer().getUniqueId()) || map.containsKey(null));
+            }
+            else {
+                return new ElementTag(map.containsKey(null));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.disguised_type[(<player>)]>
+        // @returns EntityTag
+        // @group properties
+        // @description
+        // Returns the entity type the entity is disguised as, either globally (if no context input given), or to the specified player.
+        // Relates to <@link command disguise>.
+        // -->
+        registerTag("disguised_type", (attribute, object) -> {
+            HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
+            if (map == null) {
+                return null;
+            }
+            DisguiseCommand.TrackedDisguise disguise;
+            if (attribute.hasContext(1)) {
+                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+                if (player == null) {
+                    attribute.echoError("Invalid player for is_disguised tag.");
+                    return null;
+                }
+                disguise = map.get(player.getOfflinePlayer().getUniqueId());
+                if (disguise == null) {
+                    disguise = map.get(null);
+                }
+            }
+            else {
+                disguise = map.get(null);
+            }
+            if (disguise == null) {
+                return null;
+            }
+            return disguise.as.duplicate();
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.disguise_to_others[(<player>)]>
+        // @returns EntityTag
+        // @group properties
+        // @description
+        // Returns the fake entity used to disguise the entity in other's views, either globally (if no context input given), or to the specified player.
+        // Relates to <@link command disguise>.
+        // -->
+        registerTag("disguise_to_others", (attribute, object) -> {
+            HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
+            if (map == null) {
+                return null;
+            }
+            DisguiseCommand.TrackedDisguise disguise;
+            if (attribute.hasContext(1)) {
+                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+                if (player == null) {
+                    attribute.echoError("Invalid player for is_disguised tag.");
+                    return null;
+                }
+                disguise = map.get(player.getOfflinePlayer().getUniqueId());
+                if (disguise == null) {
+                    disguise = map.get(null);
+                }
+            }
+            else {
+                disguise = map.get(null);
+            }
+            if (disguise == null) {
+                return null;
+            }
+            return disguise.toOthers.entity;
         });
 
         // <--[tag]

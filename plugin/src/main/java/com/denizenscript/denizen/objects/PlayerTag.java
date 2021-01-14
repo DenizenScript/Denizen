@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
+import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -2276,6 +2277,40 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             return list;
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.disguise_to_self[(<player>)]>
+        // @returns EntityTag
+        // @group properties
+        // @description
+        // Returns the fake entity used to disguise the entity in the player's self-view (only relevant to players), either globally (if no context input given), or to the specified player.
+        // Relates to <@link command disguise>.
+        // -->
+        registerTag("disguise_to_self", (attribute, object) -> {
+            HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getOfflinePlayer().getUniqueId());
+            if (map == null) {
+                return null;
+            }
+            DisguiseCommand.TrackedDisguise disguise;
+            if (attribute.hasContext(1)) {
+                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+                if (player == null) {
+                    attribute.echoError("Invalid player for is_disguised tag.");
+                    return null;
+                }
+                disguise = map.get(player.getOfflinePlayer().getUniqueId());
+                if (disguise == null) {
+                    disguise = map.get(null);
+                }
+            }
+            else {
+                disguise = map.get(null);
+            }
+            if (disguise == null) {
+                return null;
+            }
+            return disguise.fakeToSelf.entity;
         });
     }
 

@@ -93,8 +93,10 @@ public class PlayerHelperImpl extends PlayerHelper {
         nmsEntity.dead = false;
         FakeEntity fake = new FakeEntity(players, location, entity.getBukkitEntity().getEntityId());
         fake.entity = new EntityTag(entity.getBukkitEntity());
+        fake.entity.isFake = true;
+        fake.entity.isFakeValid = true;
         List<TrackerData> trackers = new ArrayList<>();
-        for (PlayerTag player : players) {
+        fake.triggerSpawnPacket = (player) -> {
             EntityPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
             PlayerConnection conn = nmsPlayer.playerConnection;
             final EntityTrackerEntry tracker = new EntityTrackerEntry(world.getHandle(), nmsEntity, 1, true, conn::sendPacket, Collections.singleton(nmsPlayer));
@@ -125,6 +127,9 @@ public class PlayerHelperImpl extends PlayerHelper {
                     }
                 }.runTaskTimer(Denizen.getInstance(), 1, 1);
             }
+        };
+        for (PlayerTag player : players) {
+            fake.triggerSpawnPacket.accept(player);
         }
         fake.triggerUpdatePacket = new Runnable() {
             @Override

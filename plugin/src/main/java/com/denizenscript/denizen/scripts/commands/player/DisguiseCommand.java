@@ -64,7 +64,10 @@ public class DisguiseCommand extends AbstractCommand {
     // To remove a disguise, use the 'cancel' argument.
     //
     // @Tags
-    // None.
+    // <PlayerTag.disguise_to_self[(<player>)]>
+    // <EntityTag.is_disguised[(<player>)]>
+    // <EntityTag.disguised_type[(<player>)]>
+    // <EntityTag.disguise_to_others[(<player>)]>
     //
     // @Usage
     // Use to show a turn the NPC into a creeper for the linked player.
@@ -128,7 +131,9 @@ public class DisguiseCommand extends AbstractCommand {
 
         public EntityTag as;
 
-        public FakeEntity fake;
+        public FakeEntity fakeToSelf;
+
+        public FakeEntity toOthers;
 
         public boolean shouldFake;
 
@@ -141,7 +146,7 @@ public class DisguiseCommand extends AbstractCommand {
 
         public void removeFor(PlayerTag player) {
             if (player.getOfflinePlayer().getUniqueId().equals(entity.getUUID())) {
-                if (fake != null) {
+                if (fakeToSelf != null) {
                     stopFake(player);
                 }
                 if (shouldFake) {
@@ -155,12 +160,12 @@ public class DisguiseCommand extends AbstractCommand {
         }
 
         public void moveFakeNow(Location position) {
-            NMSHandler.getEntityHelper().snapPositionTo(fake.entity.getBukkitEntity(), position.toVector());
-            NMSHandler.getEntityHelper().look(fake.entity.getBukkitEntity(), position.getYaw(), position.getPitch());
+            NMSHandler.getEntityHelper().snapPositionTo(fakeToSelf.entity.getBukkitEntity(), position.toVector());
+            NMSHandler.getEntityHelper().look(fakeToSelf.entity.getBukkitEntity(), position.getYaw(), position.getPitch());
         }
 
         public void startFake(PlayerTag player) {
-            if (fake != null) {
+            if (fakeToSelf != null) {
                 stopFake(player);
             }
             if (!shouldFake) {
@@ -170,13 +175,13 @@ public class DisguiseCommand extends AbstractCommand {
             if (!player.isOnline()) {
                 return;
             }
-            fake = FakeEntity.showFakeEntityTo(Collections.singletonList(player), as, player.getLocation(), null);
-            NMSHandler.getPacketHelper().generateNoCollideTeam(player.getPlayerEntity(), fake.entity.getUUID());
+            fakeToSelf = FakeEntity.showFakeEntityTo(Collections.singletonList(player), as, player.getLocation(), null);
+            NMSHandler.getPacketHelper().generateNoCollideTeam(player.getPlayerEntity(), fakeToSelf.entity.getUUID());
             NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity());
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (fake == null || !fake.entity.isFakeValid || !player.isOnline()) {
+                    if (fakeToSelf == null || !fakeToSelf.entity.isFakeValid || !player.isOnline()) {
                         stopFake(player);
                         cancel();
                         return;
@@ -187,11 +192,11 @@ public class DisguiseCommand extends AbstractCommand {
         }
 
         public void stopFake(PlayerTag player) {
-            if (fake == null) {
+            if (fakeToSelf == null) {
                 return;
             }
             if (player.isOnline()) {
-                NMSHandler.getPacketHelper().removeNoCollideTeam(player.getPlayerEntity(), fake.entity.getUUID());
+                NMSHandler.getPacketHelper().removeNoCollideTeam(player.getPlayerEntity(), fakeToSelf.entity.getUUID());
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -201,8 +206,8 @@ public class DisguiseCommand extends AbstractCommand {
                     }
                 }.runTaskLater(Denizen.getInstance(), 2);
             }
-            fake.cancelEntity();
-            fake = null;
+            fakeToSelf.cancelEntity();
+            fakeToSelf = null;
         }
 
         public void sendTo(List<PlayerTag> players) {
@@ -225,7 +230,17 @@ public class DisguiseCommand extends AbstractCommand {
             if (players.isEmpty()) {
                 return;
             }
-            NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
+            if (toOthers == null) {
+                toOthers = NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getBukkitEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
+                toOthers.overrideUUID = UUID.randomUUID();
+                toOthers.entity.uuid = toOthers.overrideUUID;
+                FakeEntity.idsToEntities.put(toOthers.overrideUUID, toOthers);
+            }
+            else {
+                for (PlayerTag player : players) {
+                    toOthers.triggerSpawnPacket.accept(player);
+                }
+            }
         }
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -246,7 +261,7 @@ public class DisguiseCommand extends AbstractCommand {
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onTeleport(PlayerTeleportEvent event) {
-            if (fake == null || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
+            if (fakeToSelf == null || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
                 return;
             }
             stopFake(new PlayerTag(event.getPlayer()));
@@ -264,15 +279,15 @@ public class DisguiseCommand extends AbstractCommand {
 
         @EventHandler(priority = EventPriority.MONITOR)
         public void onMove(PlayerMoveEvent event) {
-            if (fake == null || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
+            if (fakeToSelf == null || !event.getPlayer().getUniqueId().equals(entity.getUUID())) {
                 return;
             }
             if (event.getTo() == null) {
                 return;
             }
             moveFakeNow(event.getTo());
-            if (fake.triggerUpdatePacket != null) {
-                fake.triggerUpdatePacket.run();
+            if (fakeToSelf.triggerUpdatePacket != null) {
+                fakeToSelf.triggerUpdatePacket.run();
             }
         }
     }
@@ -299,6 +314,9 @@ public class DisguiseCommand extends AbstractCommand {
                 for (Map.Entry<UUID, TrackedDisguise> entry : playerMap.entrySet()) {
                     if (entry.getKey() == null) {
                         for (Player player : entity.getWorld().getPlayers()) {
+                            if (entry.getValue().toOthers != null) {
+                                FakeEntity.idsToEntities.remove(entry.getValue().toOthers.overrideUUID);
+                            }
                             entry.getValue().removeFor(new PlayerTag(player));
                         }
                     }
@@ -316,6 +334,9 @@ public class DisguiseCommand extends AbstractCommand {
                     if (disguise != null) {
                         disguise.isActive = false;
                         disguise.removeFor(player);
+                        if (disguise.toOthers != null) {
+                            FakeEntity.idsToEntities.remove(disguise.toOthers.overrideUUID);
+                        }
                         if (playerMap.isEmpty()) {
                             disguises.remove(entity.getUUID());
                         }
