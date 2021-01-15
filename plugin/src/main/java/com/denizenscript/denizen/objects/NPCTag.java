@@ -462,6 +462,28 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
+        // @attribute <NPCTag.is_sitting>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns true if the NPC is sitting. Relates to <@link command sit>.
+        // -->
+        registerTag("is_sitting", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            return new ElementTag(citizen.hasTrait(SittingTrait.class) && citizen.getOrAddTrait(SittingTrait.class).isSitting());
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.is_sleeping>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns true if the NPC is sleeping. Relates to <@link command sleep>.
+        // -->
+        registerTag("is_sleeping", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            return new ElementTag(citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping());
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.nickname>
         // @returns ElementTag
         // @description

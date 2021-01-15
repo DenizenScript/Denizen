@@ -35,7 +35,7 @@ public class SitCommand extends AbstractCommand {
     // Use <@link command Stand> to make the NPC stand up again.
     //
     // @Tags
-    // None
+    // <NPCTag.is_sitting>
     //
     // @Usage
     // Make the linked NPC sit at the player's cursor location.

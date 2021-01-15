@@ -36,7 +36,7 @@ public class SleepCommand extends AbstractCommand {
     // Use <@link command Stand> to make the NPC wake back up.
     //
     // @Tags
-    // None
+    // <NPCTag.is_sleeping>
     //
     // @Usage
     // Make the linked NPC sleep at the player's cursor location.
