@@ -49,7 +49,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject {
+public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject, Cloneable {
 
     // <--[language]
     // @name EntityTag Objects

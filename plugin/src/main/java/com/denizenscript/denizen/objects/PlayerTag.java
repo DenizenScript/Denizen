@@ -2035,6 +2035,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <PlayerTag.is_sprinting>
         // @returns ElementTag(Boolean)
+        // @mechanism PlayerTag.sprinting
         // @description
         // Returns whether the player is currently sprinting.
         // -->
