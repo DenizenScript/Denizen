@@ -482,8 +482,4 @@ public abstract class EntityHelper {
     public void setGhastAttacking(Entity entity, boolean attacking) {
         throw new UnsupportedOperationException();
     }
-
-    public boolean isGhastAttacking(Entity entity) {
-        throw new UnsupportedOperationException();
-    }
 }

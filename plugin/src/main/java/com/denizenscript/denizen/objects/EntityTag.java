@@ -3275,6 +3275,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object EntityTag
+        // @name ignite
+        // @input None
+        // @description
+        // If the entity is a creeper, ignites it.
+        // -->
+        if (mechanism.matches("ignite")) {
+            if (getBukkitEntity() instanceof Creeper) {
+                ((Creeper) getBukkitEntity()).ignite();
+            }
+            else {
+                Debug.echoError("Cannot ignite entity of type '" + getBukkitEntityType().name() + "'.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
         // @name head_angle
         // @input ElementTag(Decimal)
         // @description
