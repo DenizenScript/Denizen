@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStopScriptEvent;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
@@ -415,7 +416,7 @@ public class Denizen extends JavaPlugin {
                         }
                     }, 1, 1);
                     InventoryTag.setupInventoryTracker();
-                    if (!MapTagBasedFlagTracker.skipAllCleanings) {
+                    if (!MapTagBasedFlagTracker.skipAllCleanings && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
                         for (World world : Bukkit.getWorlds()) {
                             for (Chunk chunk : world.getLoadedChunks()) {
                                 new DataPersistenceFlagTracker(chunk).doTotalClean();
