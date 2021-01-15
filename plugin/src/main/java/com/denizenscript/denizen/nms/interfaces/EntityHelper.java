@@ -482,4 +482,8 @@ public abstract class EntityHelper {
     public void setGhastAttacking(Entity entity, boolean attacking) {
         throw new UnsupportedOperationException();
     }
+
+    public void setEndermanAngry(Entity entity, boolean angry) {
+        throw new UnsupportedOperationException();
+    }
 }

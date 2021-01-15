@@ -3336,6 +3336,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getEntityHelper().setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name enderman_angry
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the enderman entity should be screaming angrily.
+        // -->
+        if (mechanism.matches("enderman_angry") && mechanism.requireBoolean()) {
+            NMSHandler.getEntityHelper().setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

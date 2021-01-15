@@ -645,4 +645,11 @@ public class EntityHelperImpl extends EntityHelper {
     public void setGhastAttacking(Entity entity, boolean attacking) {
         ((CraftGhast) entity).getHandle().t(attacking);
     }
+
+    public static final DataWatcherObject<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EntityEnderman.class, "bo", null);
+
+    @Override
+    public void setEndermanAngry(Entity entity, boolean angry) {
+        ((CraftEnderman) entity).getHandle().getDataWatcher().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+    }
 }
