@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
@@ -3282,6 +3283,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("head_angle") && mechanism.requireFloat()) {
             NMSHandler.getEntityHelper().setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name polar_bear_standing
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the polar bear entity should stand up.
+        // -->
+        if (mechanism.matches("polar_bear_standing") && mechanism.requireBoolean()) {
+            EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(mechanism.getValue().asBoolean() ? "POLAR_BEAR_START_STANDING" : "POLAR_BEAR_STOP_STANDING");
+            entityAnimation.play(entity);
         }
 
         // <--[mechanism]
