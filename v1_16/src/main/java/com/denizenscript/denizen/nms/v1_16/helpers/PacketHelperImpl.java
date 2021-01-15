@@ -362,6 +362,11 @@ public class PacketHelperImpl implements PacketHelper {
         sendPacket(player, new PacketPlayOutEntityMetadata(player.getEntityId(), dw, true));
     }
 
+    @Override
+    public void sendEntityEffect(Player player, Entity entity, byte effectId) {
+        sendPacket(player, new PacketPlayOutEntityStatus(((CraftEntity) entity).getHandle(), effectId));
+    }
+
     public static void sendPacket(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }

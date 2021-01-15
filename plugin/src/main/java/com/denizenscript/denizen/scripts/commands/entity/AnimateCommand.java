@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
@@ -21,16 +22,16 @@ public class AnimateCommand extends AbstractCommand {
 
     public AnimateCommand() {
         setName("animate");
-        setSyntax("animate [<entity>|...] [animation:<name>]");
-        setRequiredArguments(2, 2);
+        setSyntax("animate [<entity>|...] [animation:<name>] (for:<player>|...)");
+        setRequiredArguments(2, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Animate
-    // @Syntax animate [<entity>|...] [animation:<name>]
+    // @Syntax animate [<entity>|...] [animation:<name>] (for:<player>|...)
     // @Required 2
-    // @Maximum 2
+    // @Maximum 3
     // @Plugin Citizens
     // @Short Makes a list of entities perform a certain animation.
     // @Group entity
@@ -45,6 +46,7 @@ public class AnimateCommand extends AbstractCommand {
     //
     // All entities also have available Bukkit's entity effect list:
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/EntityEffect.html>
+    // These EntityEffect options can optionally be played only for specific players with the "for:" argument input.
     //
     // In addition, Denizen adds a few new entity animations:
     // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING, HORSE_BUCK
@@ -59,7 +61,7 @@ public class AnimateCommand extends AbstractCommand {
     // - animate <player> animation:hurt
     //
     // @Usage
-    // Use to make a wolf NPC shake
+    // Use to make a wolf NPC shake.
     // - animate <npc> animation:wolf_shake
     // -->
 
@@ -67,6 +69,11 @@ public class AnimateCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         AnimationHelper animationHelper = NMSHandler.getAnimationHelper();
         for (Argument arg : scriptEntry.getProcessedArgs()) {
+            if (!scriptEntry.hasObject("for")
+                    && arg.matchesPrefix("for")
+                    && arg.matchesArgumentList(PlayerTag.class)) {
+                scriptEntry.addObject("for", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
+            }
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
@@ -97,6 +104,7 @@ public class AnimateCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        List<PlayerTag> forPlayers = (List<PlayerTag>) scriptEntry.getObject("for");
         PlayerAnimation animation = scriptEntry.hasObject("animation") ? (PlayerAnimation) scriptEntry.getObject("animation") : null;
         EntityEffect effect = scriptEntry.hasObject("effect") ? (EntityEffect) scriptEntry.getObject("effect") : null;
         String nmsAnimation = scriptEntry.hasObject("nms_animation") ? (String) scriptEntry.getObject("nms_animation") : null;
@@ -104,7 +112,8 @@ public class AnimateCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(),
                     (animation != null ? ArgumentHelper.debugObj("animation", animation.name()) :
                     effect != null ? ArgumentHelper.debugObj("effect", effect.name()) : ArgumentHelper.debugObj("animation", nmsAnimation)) +
-                    ArgumentHelper.debugObj("entities", entities.toString()));
+                    ArgumentHelper.debugList("entities", entities)
+                    + (forPlayers != null ? ArgumentHelper.debugList("for", forPlayers) : ""));
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
@@ -114,7 +123,14 @@ public class AnimateCommand extends AbstractCommand {
                         animation.play(player);
                     }
                     else if (effect != null) {
-                        entity.getBukkitEntity().playEffect(effect);
+                        if (forPlayers != null) {
+                            for (PlayerTag player : forPlayers) {
+                                NMSHandler.getPacketHelper().sendEntityEffect(player.getPlayerEntity(), entity.getBukkitEntity(), effect.getData());
+                            }
+                        }
+                        else {
+                            entity.getBukkitEntity().playEffect(effect);
+                        }
                     }
                     else {
                         EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(nmsAnimation);
