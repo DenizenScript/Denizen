@@ -478,4 +478,12 @@ public abstract class EntityHelper {
     public void setHeadAngle(Entity entity, float angle) {
         throw new UnsupportedOperationException();
     }
+
+    public void setGhastAttacking(Entity entity, boolean attacking) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isGhastAttacking(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
 }

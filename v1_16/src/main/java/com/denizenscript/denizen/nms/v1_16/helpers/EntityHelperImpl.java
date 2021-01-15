@@ -640,4 +640,9 @@ public class EntityHelperImpl extends EntityHelper {
         handle.aB = angle;
         handle.setHeadRotation(angle);
     }
+
+    @Override
+    public void setGhastAttacking(Entity entity, boolean attacking) {
+        ((CraftGhast) entity).getHandle().t(attacking);
+    }
 }

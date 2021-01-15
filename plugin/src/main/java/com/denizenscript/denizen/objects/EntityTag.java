@@ -3284,6 +3284,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getEntityHelper().setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name ghast_attacking
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the ghast entity should show the attacking face.
+        // -->
+        if (mechanism.matches("ghast_attacking") && mechanism.requireBoolean()) {
+            NMSHandler.getEntityHelper().setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }
