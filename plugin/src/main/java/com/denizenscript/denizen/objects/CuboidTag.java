@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
@@ -755,6 +756,24 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     /////////////////////
 
     public static void registerTags() {
+
+        // <--[tag]
+        // @attribute <CuboidTag.random>
+        // @returns LocationTag
+        // @description
+        // Returns a random block location within the cuboid.
+        // (Note: random selection will not be fairly weighted for multi-member cuboids).
+        // -->
+        registerTag("random", (attribute, cuboid) -> {
+            LocationPair pair = cuboid.pairs.get(CoreUtilities.getRandom().nextInt(cuboid.pairs.size()));
+            Vector range = pair.high.toVector().subtract(pair.low.toVector()).add(new Vector(1, 1, 1));
+            range.setX(CoreUtilities.getRandom().nextInt(range.getBlockX()));
+            range.setY(CoreUtilities.getRandom().nextInt(range.getBlockY()));
+            range.setZ(CoreUtilities.getRandom().nextInt(range.getBlockZ()));
+            LocationTag out = pair.low.clone();
+            out.add(range);
+            return out;
+        });
 
         // <--[tag]
         // @attribute <CuboidTag.blocks[(<material>|...)]>

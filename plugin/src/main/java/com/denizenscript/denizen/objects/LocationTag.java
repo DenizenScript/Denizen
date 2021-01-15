@@ -1074,6 +1074,39 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.random_offset[<limit>]>
+        // @returns LocationTag
+        // @description
+        // Returns a copy of this location, with the X/Y/Z offset by a random decimal value up to a given limit.
+        // The limit can either be an X,Y,Z location vector like [3,1,3] or a single value like [3] (which is equivalent to [3,3,3]).
+        // For example, for a location at 0,100,0, ".random_offset[1,2,3]" can return any decimal location within the cuboid from -1,98,-3 to 1,102,3.
+        // -->
+        registerTag("random_offset", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("LocationTag.random_offset[...] must have an input.");
+                return null;
+            }
+            Vector offsetLimit;
+            if (ArgumentHelper.matchesDouble(attribute.getContext(1))) {
+                double val = attribute.getDoubleContext(1);
+                offsetLimit = new Vector(val, val, val);
+            }
+            else {
+                LocationTag val = attribute.contextAsType(1, LocationTag.class);
+                if (val == null) {
+                    return null;
+                }
+                offsetLimit = val.toVector();
+            }
+            offsetLimit.setX(offsetLimit.getX() * (CoreUtilities.getRandom().nextDouble() * 2 - 1));
+            offsetLimit.setY(offsetLimit.getY() * (CoreUtilities.getRandom().nextDouble() * 2 - 1));
+            offsetLimit.setZ(offsetLimit.getZ() * (CoreUtilities.getRandom().nextDouble() * 2 - 1));
+            LocationTag output = object.clone();
+            output.add(offsetLimit);
+            return output;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.highest>
         // @returns LocationTag
         // @description

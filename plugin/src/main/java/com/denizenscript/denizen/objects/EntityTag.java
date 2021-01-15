@@ -75,7 +75,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // List a mechanism here if it can be safely run before spawn.
     public static HashSet<String> earlyValidMechanisms = new HashSet<>(Arrays.asList(
             "max_health", "health_data", "health", "visible",
-            "armor_pose", "arms", "base_plate", "is_small",
+            "armor_pose", "arms", "base_plate", "is_small", "marker",
             "velocity", "age", "is_using_riptide"
     ));
 

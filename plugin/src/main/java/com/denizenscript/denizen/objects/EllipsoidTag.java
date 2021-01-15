@@ -362,6 +362,29 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     public static void registerTags() {
 
         // <--[tag]
+        // @attribute <EllipsoidTag.random>
+        // @returns LocationTag
+        // @description
+        // Returns a random decimal location within the ellipsoid.
+        // Note that distribution of results will not be completely even.
+        // -->
+        registerTag("random", (attribute, object) -> {
+            // This is an awkward hack to try to weight towards the center a bit (to counteract the weight-away-from-center that would otherwise happen).
+            double y = Math.sqrt((CoreUtilities.getRandom().nextDouble() * 2 - 1) * (object.size.getY() * object.size.getY()));
+            Vector result = new Vector();
+            result.setY(y);
+            double yProg = Math.abs(y) / object.size.getY();
+            double subWidth = Math.sqrt(1.0 - yProg * yProg);
+            double maxX = object.size.getX() * subWidth;
+            double maxZ = object.size.getZ() * subWidth;
+            result.setX(maxX * (CoreUtilities.getRandom().nextDouble() * 2 - 1));
+            result.setZ(maxZ * (CoreUtilities.getRandom().nextDouble() * 2 - 1));
+            LocationTag out = object.center.clone();
+            out.add(result);
+            return out;
+        });
+
+        // <--[tag]
         // @attribute <EllipsoidTag.blocks[<material>|...]>
         // @returns ListTag(LocationTag)
         // @description
