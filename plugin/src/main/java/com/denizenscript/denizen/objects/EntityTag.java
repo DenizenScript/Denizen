@@ -2484,6 +2484,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (disguise == null) {
                 return null;
             }
+            if (disguise.toOthers == null) {
+                return null;
+            }
             return disguise.toOthers.entity;
         });
 

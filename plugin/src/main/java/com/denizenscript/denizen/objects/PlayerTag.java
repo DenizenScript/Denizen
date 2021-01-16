@@ -2311,6 +2311,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (disguise == null) {
                 return null;
             }
+            if (disguise.fakeToSelf == null) {
+                return null;
+            }
             return disguise.fakeToSelf.entity;
         });
     }
