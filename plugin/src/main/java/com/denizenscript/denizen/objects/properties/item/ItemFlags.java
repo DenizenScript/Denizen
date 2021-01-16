@@ -52,7 +52,7 @@ public class ItemFlags implements Property {
 
         // <--[tag]
         // @attribute <ItemTag.with_flag[<flag_set_action>]>
-        // @returns ElementTag(Boolean)
+        // @returns ItemTag
         // @mechanism ItemTag.flag
         // @group properties
         // @description
@@ -66,7 +66,7 @@ public class ItemFlags implements Property {
 
             // <--[tag]
             // @attribute <ItemTag.with_flag[<flag_set_action>].duration[<expire_duration>]>
-            // @returns ElementTag(Boolean)
+            // @returns ItemTag
             // @mechanism ItemTag.flag
             // @group properties
             // @description
