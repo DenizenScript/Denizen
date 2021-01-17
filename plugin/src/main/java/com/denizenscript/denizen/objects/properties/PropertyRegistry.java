@@ -151,7 +151,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialDrags.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialFaces.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialHalf.class, MaterialTag.class);
-        PropertyParser.registerProperty(MaterialHeights.class, MaterialTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            PropertyParser.registerProperty(MaterialHeights.class, MaterialTag.class);
+        }
         PropertyParser.registerProperty(MaterialHinge.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialInstrument.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialLocked.class, MaterialTag.class);

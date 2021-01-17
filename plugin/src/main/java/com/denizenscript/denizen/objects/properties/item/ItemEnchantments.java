@@ -131,6 +131,7 @@ public class ItemEnchantments implements Property {
         // @group properties
         // @description
         // Returns a map of enchantments on the item.
+        // Map keys are enchantment names (like "sharpness"), and values are the level (as a number).
         // -->
         if (attribute.startsWith("enchantment_map")) {
             return getEnchantmentMap().getObjectAttribute(attribute.fulfill(1));
