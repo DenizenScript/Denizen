@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.implementation;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.objects.*;
@@ -19,6 +20,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -508,6 +510,12 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         }
         if (CoreUtilities.equalsIgnoreCase(word, "npc")) {
             return Utilities.getEntryNPC(entry);
+        }
+        if (!word.contains("@")) {
+            Notable noted = NotableManager.getSavedObject(word);
+            if (noted instanceof LocationTag) {
+                return (LocationTag) noted;
+            }
         }
         ObjectTag obj = ObjectFetcher.pickObjectFor(word, entry.context);
         if (obj instanceof FlaggableObject) {
