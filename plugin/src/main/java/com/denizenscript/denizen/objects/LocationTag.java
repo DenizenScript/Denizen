@@ -802,7 +802,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
         String saved = getSaved(this);
         if (saved != null) {
-            return saved;
+            return "l@" + saved;
         }
         return identifyRaw();
     }
