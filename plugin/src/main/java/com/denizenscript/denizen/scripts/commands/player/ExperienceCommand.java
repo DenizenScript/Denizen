@@ -59,7 +59,10 @@ public class ExperienceCommand extends AbstractCommand {
     private enum Type {SET, GIVE, TAKE}
 
     public static void setTotalExperience(Player player, int exp) {
-        player.setTotalExperience(exp);
+        player.setTotalExperience(0);
+        player.setLevel(0);
+        player.setExp(0);
+        player.giveExp(exp);
     }
 
     public static void takeExperience(Player player, int toTake) {
@@ -83,9 +86,7 @@ public class ExperienceCommand extends AbstractCommand {
         Type type = Type.SET;
         boolean level = false;
         boolean silent = false;
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesInteger()) {
                 amount = arg.asElement().asInt();
             }
@@ -102,32 +103,24 @@ public class ExperienceCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         scriptEntry.addObject("quantity", amount)
                 .addObject("type", type)
                 .addObject("level", level)
                 .addObject("silent", silent);
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         Type type = (Type) scriptEntry.getObject("type");
         int quantity = (int) scriptEntry.getObject("quantity");
         Boolean level = (Boolean) scriptEntry.getObject("level");
         //Boolean silent = (Boolean) scriptEntry.getObject("silent");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, name, ArgumentHelper.debugObj("Type", type.toString())
                     + ArgumentHelper.debugObj("Quantity", level ? quantity + " levels" : quantity)
                     + ArgumentHelper.debugObj("Player", Utilities.getEntryPlayer(scriptEntry).getName()));
-
         }
-
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-
         switch (type) {
             case SET:
                 if (level) {
@@ -137,7 +130,6 @@ public class ExperienceCommand extends AbstractCommand {
                     setTotalExperience(player, quantity);
                 }
                 break;
-
             case GIVE:
                 if (level) {
                     player.setLevel(player.getLevel() + quantity);
@@ -146,7 +138,6 @@ public class ExperienceCommand extends AbstractCommand {
                     player.giveExp(quantity);
                 }
                 break;
-
             case TAKE:
                 if (level) {
                     int value = player.getLevel() - quantity;
@@ -157,6 +148,5 @@ public class ExperienceCommand extends AbstractCommand {
                 }
                 break;
         }
-
     }
 }

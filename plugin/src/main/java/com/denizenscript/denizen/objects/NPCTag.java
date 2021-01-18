@@ -1548,9 +1548,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // TODO
         // -->
         if (mechanism.matches("clear_waypoints")) {
-            if (!getCitizen().hasTrait(Waypoints.class)) {
-                getCitizen().addTrait(Waypoints.class);
-            }
             Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
             if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
                 ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).clear();
@@ -1574,9 +1571,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // TODO
         // -->
         if (mechanism.matches("add_waypoint") && mechanism.requireObject(LocationTag.class)) {
-            if (!getCitizen().hasTrait(Waypoints.class)) {
-                getCitizen().addTrait(Waypoints.class);
-            }
             Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
             if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
                 ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints())
