@@ -303,7 +303,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             // matches don't exist
                             regexId = entry.getKey();
                             regexMessage = triggerText.replace(matcher.group(), m.group());
-                            Debug.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
                             context.put("keyword", new ElementTag(m.group()));
                             if (replace != null) {
                                 regexMessage = replace;
