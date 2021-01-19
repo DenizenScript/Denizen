@@ -15,7 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.ref.SoftReference;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -54,9 +56,22 @@ public class PlayerFlagHandler implements Listener {
 
     public static HashMap<UUID, CachedPlayerFlag> playerFlagTrackerCache = new HashMap<>();
 
+    public static HashMap<UUID, SoftReference<CachedPlayerFlag>> secondaryPlayerFlagTrackerCache = new HashMap<>();
+
+    private static ArrayList<UUID> toClearCache = new ArrayList<>();
+
     public static void cleanCache() {
         if (cacheTimeoutSeconds == -1) {
             return;
+        }
+        toClearCache.clear();
+        for (Map.Entry<UUID, SoftReference<CachedPlayerFlag>> entry : secondaryPlayerFlagTrackerCache.entrySet()) {
+            if (entry.getValue().get() == null) {
+                toClearCache.add(entry.getKey());
+            }
+        }
+        for (UUID id : toClearCache) {
+            toClearCache.remove(id);
         }
         long timeNow = System.currentTimeMillis();
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
@@ -77,6 +92,7 @@ public class PlayerFlagHandler implements Listener {
             public void run() {
                 if (cache.shouldExpire()) {
                     playerFlagTrackerCache.remove(id);
+                    secondaryPlayerFlagTrackerCache.put(id, new SoftReference<>(cache));
                 }
             }
         };
@@ -149,6 +165,16 @@ public class PlayerFlagHandler implements Listener {
     public static AbstractFlagTracker getTrackerFor(UUID id) {
         CachedPlayerFlag cache = playerFlagTrackerCache.get(id);
         if (cache == null) {
+            SoftReference<CachedPlayerFlag> softRef = secondaryPlayerFlagTrackerCache.get(id);
+            if (softRef != null) {
+                cache = softRef.get();
+                if (cache != null) {
+                    cache.lastAccessed = System.currentTimeMillis();
+                    playerFlagTrackerCache.put(id, cache);
+                    secondaryPlayerFlagTrackerCache.remove(id);
+                    return null;
+                }
+            }
             cache = new CachedPlayerFlag();
             cache.lastAccessed = System.currentTimeMillis();
             cache.loadingNow = true;
@@ -173,6 +199,16 @@ public class PlayerFlagHandler implements Listener {
             CachedPlayerFlag cache = playerFlagTrackerCache.get(id);
             if (cache != null) {
                 return null;
+            }
+            SoftReference<CachedPlayerFlag> softRef = secondaryPlayerFlagTrackerCache.get(id);
+            if (softRef != null) {
+                cache = softRef.get();
+                if (cache != null) {
+                    cache.lastAccessed = System.currentTimeMillis();
+                    playerFlagTrackerCache.put(id, cache);
+                    secondaryPlayerFlagTrackerCache.remove(id);
+                    return null;
+                }
             }
             CachedPlayerFlag newCache = new CachedPlayerFlag();
             newCache.lastAccessed = System.currentTimeMillis();
