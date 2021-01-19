@@ -19,7 +19,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // blocks explodes
+    // block explodes
     // <block> explodes
     //
     // @Regex ^on [^\s]+ explodes$

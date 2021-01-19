@@ -111,6 +111,9 @@ public class BukkitWorldScriptHelper implements Listener {
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            return;
+        }
         NMSHandler.getPacketHelper().removeNoCollideTeam(event.getPlayer(), null);
     }
 
