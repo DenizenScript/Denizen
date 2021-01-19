@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +38,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.location> returns the LocationTag the block was broken at.
     // <context.material> returns the MaterialTag of the block that was broken.
     // <context.xp> returns how much XP will be dropped.
+    // <context.should_drop_items> returns whether the event will drop items.
     //
     // @Determine
     // "NOTHING" to make the block drop no items.
@@ -106,8 +106,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (determinationObj instanceof ElementTag) {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.equals("nothing")) {
-                cancelled = true;
-                block.setType(Material.AIR);
+                event.setExpToDrop(0);
+                event.setDropItems(false);
                 return true;
             }
             else if (((ElementTag) determinationObj).isInt()) {
@@ -116,8 +116,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             }
         }
         if (Argument.valueOf(determination).matchesArgumentList(ItemTag.class)) {
-            cancelled = true;
-            block.setType(Material.AIR);
+            event.setDropItems(false);
             for (ItemTag newItem : ListTag.valueOf(determination, getTagContext(path)).filter(ItemTag.class, path.container, true)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
@@ -141,6 +140,9 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         else if (name.equals("xp")) {
             return new ElementTag(event.getExpToDrop());
+        }
+        else if (name.equals("should_drop_items")) {
+            return new ElementTag(event.isDropItems());
         }
         return super.getContext(name);
     }

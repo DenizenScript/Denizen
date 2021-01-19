@@ -1,0 +1,136 @@
+package com.denizenscript.denizen.events.player;
+
+import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import org.bukkit.entity.Item;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDropItemEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // block drops item from breaking
+    // <block> drops <item> from breaking
+    //
+    // @Regex ^on [^\s]+ drops [^\s]+ from breaking$
+    //
+    // @Group Player
+    //
+    // @Location true
+    //
+    // @Cancellable true
+    //
+    // @Triggers when a player breaks a block.
+    //
+    // @Context
+    // <context.location> returns the LocationTag the block was broken at.
+    // <context.material> returns the MaterialTag of the block that was broken.
+    // <context.drop_entities> returns a ListTag of EntityTags of type DROPPED_ITEM.
+    //
+    // @Player Always.
+    //
+    // -->
+
+    public BlockDropsItemScriptEvent() {
+        instance = this;
+    }
+
+    public static BlockDropsItemScriptEvent instance;
+    public LocationTag location;
+    public MaterialTag material;
+    public BlockDropItemEvent event;
+
+    @Override
+    public boolean couldMatch(ScriptPath path) {
+        if (!path.eventArgLowerAt(1).equals("drops") || !path.eventArgLowerAt(3).equals("from") || !path.eventArgLowerAt(4).equals("breaking")) {
+            return false;
+        }
+        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!couldMatchItem(path.eventArgLowerAt(2))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        String item = path.eventArgLowerAt(2);
+        if (!item.equals("item")) {
+            boolean anyMatch = false;
+            for (Item itemEnt : event.getItems()) {
+                if (tryItem(new ItemTag(itemEnt.getItemStack()), item)) {
+                    anyMatch = true;
+                    break;
+                }
+            }
+            if (!anyMatch) {
+                return false;
+            }
+        }
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        return super.matches(path);
+    }
+
+    @Override
+    public String getName() {
+        return "BlockDropsItem";
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
+    }
+
+    @Override
+    public ObjectTag getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        else if (name.equals("drop_entities")) {
+            ListTag toRet = new ListTag();
+            for (Item item : event.getItems()) {
+                toRet.addObject(new EntityTag(item));
+            }
+            return toRet;
+        }
+        return super.getContext(name);
+    }
+
+    @EventHandler
+    public void onBlockDropsItem(BlockDropItemEvent event) {
+        if (EntityTag.isNPC(event.getPlayer())) {
+            return;
+        }
+        material = new MaterialTag(event.getBlockState());
+        location = new LocationTag(event.getBlock().getLocation());
+        List<Item> items = new ArrayList<>(event.getItems());
+        for (Item item : items) {
+            EntityTag.rememberEntity(item);
+        }
+        this.event = event;
+        fire(event);
+        for (Item item : items) {
+            EntityTag.forgetEntity(item);
+        }
+    }
+
+}
