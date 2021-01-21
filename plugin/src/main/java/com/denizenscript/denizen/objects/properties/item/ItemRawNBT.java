@@ -50,7 +50,7 @@ public class ItemRawNBT implements Property {
     static {
         String[] defaultNbtKeysRaw = new String[] {
                 // Denizen
-                "Denizen Item Script", "Denizen NBT", "Denizen",
+                "Denizen Item Script", "DenizenItemScript", "Denizen NBT", "Denizen",
                 // General
                 "Damage", "Unbreakable", "CanDestroy", "CustomModelData",
                 // Display data

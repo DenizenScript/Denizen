@@ -168,7 +168,7 @@ public class ItemScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
         canRunScripts = false;
 
-        ItemScriptHelper.item_scripts.put(getName(), this);
+        ItemScriptHelper.item_scripts.put(CoreUtilities.toLowerCase(getName()), this);
         ItemScriptHelper.item_scripts_by_hash_id.put(ItemScriptHelper.createItemScriptID(this), this);
     }
 
@@ -179,10 +179,6 @@ public class ItemScriptContainer extends ScriptContainer {
             cleanReference = getItemFrom();
         }
         return new ItemTag(cleanReference.getItemStack().clone());
-    }
-
-    public String getHashID() {
-        return hash;
     }
 
     public void setHashID(String HashID) {

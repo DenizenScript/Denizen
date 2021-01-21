@@ -1,8 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -12,6 +10,8 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+
+import java.util.List;
 
 public class ItemLore implements Property {
 
@@ -85,13 +85,11 @@ public class ItemLore implements Property {
     }
 
     public ListTag getLoreList() {
-        ListTag output = new ListTag();
-        for (String itemLore : NMSHandler.getItemHelper().getLore(item)) {
-            if (!itemLore.startsWith(ItemTag.itemscriptIdentifier) && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
-                output.add(itemLore);
-            }
+        List<String> lore = NMSHandler.getItemHelper().getLore(item);
+        if (lore == null) {
+            return null;
         }
-        return output;
+        return new ListTag(lore);
     }
 
     @Override
@@ -125,11 +123,6 @@ public class ItemLore implements Property {
         if (mechanism.matches("lore")) {
             ListTag lore = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(lore);
-            if (item.isItemscript()) {
-                if (!Settings.packetInterception()) {
-                    lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));
-                }
-            }
             for (int i = 0; i < lore.size(); i++) {
                 String loreLine = lore.get(i);
                 if (lore.wasLegacy) {

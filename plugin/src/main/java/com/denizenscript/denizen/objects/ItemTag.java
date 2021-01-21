@@ -69,8 +69,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     //
     // -->
 
-    final public static String itemscriptIdentifier = "§0id:";
-
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -374,14 +372,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         if (script.contains("NO_ID") && Boolean.valueOf(script.getString("NO_ID"))) {
             return;
         }
-        if (Settings.packetInterception()) {
-            setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
-        }
-        else {
-            List<String> lore = getItemMeta().hasLore() ? NMSHandler.getItemHelper().getLore(this) : new ArrayList<>();
-            lore.add(0, script.getHashID());
-            NMSHandler.getItemHelper().setLore(this, lore);
-        }
+        setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(script.getName()))));
     }
 
     public Material getBukkitMaterial() {

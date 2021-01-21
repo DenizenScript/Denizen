@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -21,7 +22,6 @@ import org.bukkit.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -298,22 +298,15 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        String nbt = NMSHandler.getItemHelper().getNbtData(item.getItemStack()).getString("Denizen Item Script");
+        CompoundTag tag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+        String scriptName = tag.getString("DenizenItemScript");
+        if (scriptName != null && !scriptName.equals("")) {
+            return item_scripts.get(scriptName);
+        }
+        // TODO: Legacy hashed format
+        String nbt = tag.getString("Denizen Item Script");
         if (nbt != null && !nbt.equals("")) {
             return item_scripts_by_hash_id.get(nbt);
-        }
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null || !meta.hasLore()) {
-            return null;
-        }
-        // TODO: Remove legacy lore script support?
-        for (String itemLore : meta.getLore()) {
-            if (itemLore.startsWith(ItemTag.itemscriptIdentifier)) {
-                return item_scripts.get(itemLore.replace(ItemTag.itemscriptIdentifier, ""));
-            }
-            if (itemLore.startsWith(ItemScriptHashID)) {
-                return item_scripts_by_hash_id.get(itemLore);
-            }
         }
         return null;
     }
