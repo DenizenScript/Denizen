@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
@@ -146,13 +147,7 @@ public class FormattedTextHelper {
         }
         builder.append(RESET);
         String output = builder.toString();
-        while (output.contains(RESET + baseColor)) {
-            output = output.replace(RESET + baseColor, RESET);
-        }
-        while (output.contains(RESET + RESET)) {
-            output = output.replace(RESET + RESET, RESET);
-        }
-        return output;
+        return cleanRedundantCodes(output);
     }
 
     public static final String RESET = ChatColor.RESET.toString();
@@ -195,6 +190,47 @@ public class FormattedTextHelper {
         }
     }
 
+    public static AsciiMatcher allowedCharCodes = new AsciiMatcher("0123456789abcdefABCDEFklmnorxKLMNORX[");
+
+    public static AsciiMatcher colorCodesOrReset = new AsciiMatcher("0123456789abcdefABCDEFrR"); // Any color code that can be invalidated
+
+    public static AsciiMatcher colorCodeInvalidator = new AsciiMatcher("0123456789abcdefABCDEFrRxX"); // Any code that can invalidate the colors above
+
+    public static String cleanRedundantCodes(String str) {
+        int index = str.indexOf(ChatColor.COLOR_CHAR);
+        if (index == -1) {
+            return str;
+        }
+        int start = 0;
+        StringBuilder output = new StringBuilder(str.length());
+        while (index != -1) {
+            output.append(str, start, index);
+            start = index;
+            if (index + 1 > str.length()) {
+                break;
+            }
+            char symbol = str.charAt(index + 1);
+            if (allowedCharCodes.isMatch(symbol)) {
+                if (symbol == 'x' || symbol == 'X') { // Skip entire hex block
+                    index = str.indexOf(ChatColor.COLOR_CHAR, index + 14);
+                    continue;
+                }
+                int nextIndex = str.indexOf(ChatColor.COLOR_CHAR, index + 1);
+                if (colorCodesOrReset.isMatch(symbol) && nextIndex == index + 2 && nextIndex + 1 < str.length()) {
+                    char nextSymbol = str.charAt(nextIndex + 1);
+                    if (colorCodeInvalidator.isMatch(nextSymbol)) {
+                        start = index + 2; // Exclude from output the initial (redundant) color code
+                        index = nextIndex;
+                        continue;
+                    }
+                }
+            }
+            index = str.indexOf(ChatColor.COLOR_CHAR, index + 1);
+        }
+        output.append(str, start, str.length());
+        return output.toString();
+    }
+
     public static BaseComponent[] parse(String str, ChatColor baseColor, boolean cleanBase) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
@@ -203,6 +239,7 @@ public class FormattedTextHelper {
             base.addExtra(new TextComponent(str)); // This is for compat with how Spigot does parsing of plaintext.
             return new BaseComponent[] { base };
         }
+        str = cleanRedundantCodes(str);
         TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();
         if (cleanBase) {
@@ -223,6 +260,9 @@ public class FormattedTextHelper {
         int started = 0;
         TextComponent nextText = new TextComponent();
         TextComponent lastText = new TextComponent();
+        if (!str.contains(ChatColor.COLOR_CHAR + "[")) {
+
+        }
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == ChatColor.COLOR_CHAR && i + 1 < chars.length) {
                 char code = chars[i + 1];
