@@ -1604,7 +1604,8 @@ public class ServerTagBase {
         // @attribute <server.players_flagged[<flag_name>]>
         // @returns ListTag(PlayerTag)
         // @description
-        // Returns a list of all players with a specified flag set.
+        // Returns a list of all players (online or offline) with a specified flag set.
+        // Warning: this will cause the player flag cache to temporarily fill with ALL historical playerdata.
         // -->
         if ((attribute.startsWith("players_flagged") || attribute.startsWith("list_players_flagged"))
                 && attribute.hasContext(1)) {

@@ -77,7 +77,8 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!couldMatchItem(path.eventArgLowerAt(isUp ? 3 : 2))) {
+        String item = path.eventArgLowerAt(isUp ? 3 : 2);
+        if (item.equals("launched") || !couldMatchItem(item)) {
             return false;
         }
         return true;

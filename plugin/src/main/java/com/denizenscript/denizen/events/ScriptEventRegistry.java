@@ -152,6 +152,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerPickupArrowScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());
