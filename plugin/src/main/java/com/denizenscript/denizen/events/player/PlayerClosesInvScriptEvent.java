@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -60,7 +61,11 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
         if (!tryInventory(inventory, path.eventArgLowerAt(2))) {
             return false;
         }
-        if (!runInCheck(path, inventory.getLocation())) {
+        LocationTag loc = inventory.getLocation();
+        if (loc == null) {
+            loc = player.getLocation();
+        }
+        if (!runInCheck(path, loc)) {
             return false;
         }
         return super.matches(path);

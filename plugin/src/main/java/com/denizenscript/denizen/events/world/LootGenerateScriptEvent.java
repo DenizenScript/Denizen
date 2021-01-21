@@ -90,7 +90,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
             String determination = determinationObj.toString();
             String determinationLower = CoreUtilities.toLowerCase(determination);
             if (determinationLower.startsWith("loot:")) {
-                ListTag list = ListTag.valueOf(determinationLower.substring("loot:".length()), getTagContext(path));
+                ListTag list = ListTag.valueOf(determination.substring("loot:".length()), getTagContext(path));
                 ArrayList<ItemStack> newLoot = new ArrayList<>(list.size());
                 for (ItemTag item : list.filter(ItemTag.class, getTagContext(path))) {
                     newLoot.add(item.getItemStack());
