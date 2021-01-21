@@ -290,15 +290,15 @@ public class ItemScriptHelper implements Listener {
         rebuildRecipes();
     }
 
-    public static boolean isItemscript(ItemTag item) {
+    public static boolean isItemscript(ItemStack item) {
         return getItemScriptContainer(item) != null;
     }
 
-    public static ItemScriptContainer getItemScriptContainer(ItemTag item) {
+    public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
         if (item == null) {
             return null;
         }
-        CompoundTag tag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+        CompoundTag tag = NMSHandler.getItemHelper().getNbtData(item);
         String scriptName = tag.getString("DenizenItemScript");
         if (scriptName != null && !scriptName.equals("")) {
             return item_scripts.get(scriptName);

@@ -355,11 +355,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
      * @return True if it does, otherwise false
      */
     public boolean isItemscript() {
-        return ItemScriptHelper.isItemscript(this);
+        return ItemScriptHelper.isItemscript(getItemStack());
     }
 
     public String getScriptName() {
-        ItemScriptContainer cont = ItemScriptHelper.getItemScriptContainer(this);
+        ItemScriptContainer cont = ItemScriptHelper.getItemScriptContainer(getItemStack());
         if (cont != null) {
             return cont.getName();
         }
@@ -707,7 +707,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         // -->
         registerTag("recipe_ids", (attribute, object) -> {
             String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
-            ItemScriptContainer container = object.isItemscript() ? ItemScriptHelper.getItemScriptContainer(object) : null;
+            ItemScriptContainer container = object.isItemscript() ? ItemScriptHelper.getItemScriptContainer(object.getItemStack()) : null;
             ListTag list = new ListTag();
             for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
                 if (!Utilities.isRecipeOfType(recipe, type)) {

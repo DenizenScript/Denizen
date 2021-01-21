@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.InventoryTrackerSystem;
@@ -2324,6 +2325,45 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                 return;
             }
             ((AnvilInventory) inventory).setRepairCost(mechanism.getValue().asInt());
+        }
+
+        // <--[mechanism]
+        // @object InventoryTag
+        // @name reformat
+        // @input ElementTag
+        // @description
+        // Reformats the contents of an inventory to ensure any items within will be stackable with new Denizen-produced items.
+        // This is a simple handy cleanup tool that may sometimes be useful with Denizen updates.
+        // This essentially just parses the item to Denizen text, back to an item, and replaces the slot.
+        // Input can be "scripts" to only change items spawned by item scripts, or "all" to change ALL items.
+        // Most users are recommended to only use "scripts".
+        // -->
+        if (mechanism.matches("reformat")) {
+            ItemStack[] items = inventory.getContents();
+            boolean any = false;
+            boolean scriptsOnly = CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "scripts");
+            if (!scriptsOnly && !CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "all")) {
+                mechanism.echoError("Invalid input to 'reformat' mechanism.");
+                return;
+            }
+            for (int i = 0; i < items.length; i++) {
+                ItemStack item = items[i];
+                if (item == null) {
+                    continue;
+                }
+                if (scriptsOnly && !ItemScriptHelper.isItemscript(item)) {
+                    continue;
+                }
+                any = true;
+                String format = new ItemTag(item).identify();
+                ItemTag result = ItemTag.valueOf(format, mechanism.context);
+                if (result != null) {
+                    items[i] = result.getItemStack();
+                }
+            }
+            if (any) {
+                inventory.setContents(items);
+            }
         }
     }
 }
