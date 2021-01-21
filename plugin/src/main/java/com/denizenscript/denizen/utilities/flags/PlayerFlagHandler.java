@@ -172,7 +172,7 @@ public class PlayerFlagHandler implements Listener {
                     cache.lastAccessed = System.currentTimeMillis();
                     playerFlagTrackerCache.put(id, cache);
                     secondaryPlayerFlagTrackerCache.remove(id);
-                    return null;
+                    return cache.tracker;
                 }
             }
             cache = new CachedPlayerFlag();
