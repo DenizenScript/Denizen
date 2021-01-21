@@ -249,7 +249,9 @@ public class FormattedTextHelper {
             base.setUnderlined(false);
             base.setObfuscated(false);
             base.setColor(baseColor);
-            root.setText(str.substring(0, firstChar));
+            if (firstChar > 0) {
+                root.addExtra(new TextComponent(str.substring(0, firstChar)));
+            }
         }
         else {
             base.setText(str.substring(0, firstChar));
@@ -260,9 +262,6 @@ public class FormattedTextHelper {
         int started = 0;
         TextComponent nextText = new TextComponent();
         TextComponent lastText = new TextComponent();
-        if (!str.contains(ChatColor.COLOR_CHAR + "[")) {
-
-        }
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == ChatColor.COLOR_CHAR && i + 1 < chars.length) {
                 char code = chars[i + 1];

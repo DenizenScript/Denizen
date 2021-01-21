@@ -15,7 +15,6 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
@@ -309,11 +308,7 @@ public class ItemHelperImpl extends ItemHelper {
             return;
         }
         BaseComponent[] components = FormattedTextHelper.parse(name, ChatColor.WHITE);
-        TextComponent actualComponent = new TextComponent();
-        for (BaseComponent component : components) {
-            actualComponent.addExtra(component);
-        }
-        display.set("Name", NBTTagString.a(ComponentSerializer.toString(actualComponent)));
+        display.set("Name", NBTTagString.a(ComponentSerializer.toString(components)));
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 
