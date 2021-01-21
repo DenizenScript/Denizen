@@ -19,16 +19,16 @@ public class PlaySoundCommand extends AbstractCommand {
 
     public PlaySoundCommand() {
         setName("playsound");
-        setSyntax("playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)");
-        setRequiredArguments(2, 6);
+        setSyntax("playsound (<location>|...) (<player>|...) [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)");
+        setRequiredArguments(2, 7);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name PlaySound
-    // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)
+    // @Syntax playsound (<location>|...) (<player>|...) [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)
     // @Required 2
-    // @Maximum 6
+    // @Maximum 7
     // @Short Plays a sound at the location or to a list of players.
     // @Group world
     //
@@ -44,6 +44,7 @@ public class PlaySoundCommand extends AbstractCommand {
     //
     // Specifying a player or list of players will only play the sound for each player, from their own location (but will not follow them if they move).
     // If a location is specified, it will play the sound for any players that are near the location specified.
+    // If both players and locations are specified, will play the sound for only those players at those locations.
     //
     // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound name to something like 'random.click'
     //
@@ -68,16 +69,12 @@ public class PlaySoundCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("locations")
-                    && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(LocationTag.class)) {
                 scriptEntry.addObject("locations", arg.asType(ListTag.class).filter(LocationTag.class, scriptEntry));
             }
-            else if (!scriptEntry.hasObject("locations")
-                    && !scriptEntry.hasObject("entities")
+            else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
@@ -105,27 +102,22 @@ public class PlaySoundCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("sound")) {
             throw new InvalidArgumentsException("Missing sound argument!");
         }
         if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
-
         scriptEntry.defaultObject("volume", new ElementTag(1));
         scriptEntry.defaultObject("pitch", new ElementTag(1));
         scriptEntry.defaultObject("custom", new ElementTag(false));
         scriptEntry.defaultObject("sound_category", new ElementTag("MASTER"));
-
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("entities");
         ElementTag soundElement = scriptEntry.getElement("sound");
@@ -133,7 +125,6 @@ public class PlaySoundCommand extends AbstractCommand {
         ElementTag pitchElement = scriptEntry.getElement("pitch");
         ElementTag custom = scriptEntry.getElement("custom");
         ElementTag sound_category = scriptEntry.getElement("sound_category");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     (locations != null ? ArgumentHelper.debugObj("locations", locations.toString()) : "") +
@@ -143,14 +134,12 @@ public class PlaySoundCommand extends AbstractCommand {
                             pitchElement.debug() +
                             custom.debug());
         }
-
         String sound = soundElement.asString();
         float volume = volumeElement.asFloat();
         float pitch = pitchElement.asFloat();
         String category = sound_category.asString().toUpperCase();
-
         try {
-            if (locations != null) {
+            if (players == null) {
                 if (custom.asBoolean()) {
                     for (LocationTag location : locations) {
                         NMSHandler.getSoundHelper().playSound(null, location, sound, volume, pitch, category);
@@ -159,6 +148,18 @@ public class PlaySoundCommand extends AbstractCommand {
                 else {
                     for (LocationTag location : locations) {
                         NMSHandler.getSoundHelper().playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                    }
+                }
+            }
+            else if (locations != null) {
+                for (LocationTag location : locations) {
+                    for (PlayerTag player : players) {
+                        if (custom.asBoolean()) {
+                            NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), location, sound, volume, pitch, category);
+                        }
+                        else {
+                            NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        }
                     }
                 }
             }

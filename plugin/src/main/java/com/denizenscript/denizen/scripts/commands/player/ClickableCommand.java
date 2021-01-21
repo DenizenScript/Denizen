@@ -136,7 +136,9 @@ public class ClickableCommand extends AbstractCommand {
                 if (!script.isValid()) {
                     arg.reportUnhandled();
                 }
-                scriptEntry.addObject("script", script);
+                else {
+                    scriptEntry.addObject("script", script);
+                }
             }
             else {
                 arg.reportUnhandled();
@@ -181,4 +183,3 @@ public class ClickableCommand extends AbstractCommand {
         scriptEntry.addObject("command", new ElementTag("/denizenclickable " + id));
     }
 }
-

@@ -57,6 +57,8 @@ public class AdvancementCommand extends AbstractCommand {
     // The hidden argument sets whether the advancement should be hidden until it is completed.
     // The x and y arguments are offsets based on the size of an advancement icon in the menu. They are required for custom tabs to look reasonable.
     //
+    // To award a pre-existing vanilla advancement, instead use <@link mechanism PlayerTag.award_advancement>
+    //
     // WARNING: Failure to re-create advancements on every server start may result in loss of data - use <@link event server prestart>.
     //
     // @Tags
