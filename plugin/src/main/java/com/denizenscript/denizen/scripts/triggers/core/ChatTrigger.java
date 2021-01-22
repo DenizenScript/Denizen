@@ -330,11 +330,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             replacementText = replace;
                         }
                     }
-                    else if ((keywordLow.startsWith("strict:") && messageLow.equals(keywordLow.substring("strict:".length())))
-                            || messageLow.contains(keywordLow)) {
-                        // Trigger matches
+                    else if (keywordLow.startsWith("strict:") && messageLow.equals(keywordLow.substring("strict:".length()))) {
                         id = entry.getKey();
                         replacementText = triggerText.replace(matcher.group(), keyword.substring("strict:".length()));
+                        matched = true;
+                        if (replace != null) {
+                            replacementText = replace;
+                        }
+                    }
+                    else if (messageLow.contains(keywordLow)) {
+                        id = entry.getKey();
+                        replacementText = triggerText.replace(matcher.group(), keyword);
                         matched = true;
                         if (replace != null) {
                             replacementText = replace;
