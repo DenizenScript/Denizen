@@ -38,6 +38,7 @@ import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.*;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -599,16 +600,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return NumberConversions.square(getX() - loc2.getX()) + NumberConversions.square(getY() - loc2.getY()) + NumberConversions.square(getZ() - loc2.getZ());
     }
 
-    public boolean hasInventory() {
-        return getBlockState() instanceof InventoryHolder;
-    }
-
     public Inventory getBukkitInventory() {
-        return hasInventory() ? ((InventoryHolder) getBlockState()).getInventory() : null;
+        BlockState state = getBlockState();
+        if (state instanceof InventoryHolder) {
+            return((InventoryHolder) state).getInventory();
+        }
+        return null;
     }
 
     public InventoryTag getInventory() {
-        return hasInventory() ? InventoryTag.mirrorBukkitInventory(getBukkitInventory()) : null;
+        Inventory inv = getBukkitInventory();
+        if (inv != null) {
+            return InventoryTag.mirrorBukkitInventory(inv);
+        }
+        Material type = getBlock().getType();
+        if (type == Material.ANVIL || type == Material.CHIPPED_ANVIL || type == Material.DAMAGED_ANVIL) {
+            return new InventoryTag(Bukkit.createInventory(null, InventoryType.ANVIL), "location", this.clone());
+        }
+        return null;
     }
 
     public BlockFace getSkullBlockFace(int rotation) {

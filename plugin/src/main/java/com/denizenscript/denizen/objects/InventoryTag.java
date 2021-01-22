@@ -428,6 +428,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         loadIdentifiers(holder);
     }
 
+    public InventoryTag(Inventory inventory, String type, ObjectTag holder) {
+        this.inventory = inventory;
+        this.idType = type;
+        this.idHolder = holder;
+    }
+
     public InventoryTag(ItemStack[] items) {
         inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9.0) * 9);
         idType = "generic";
@@ -592,6 +598,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
                     return;
                 }
             }
+        }
+        else if (inventory instanceof AnvilInventory && inventory.getLocation() != null) {
+            idType = "location";
+            idHolder = new LocationTag(inventory.getLocation());
         }
         else if (getIdType().equals("player")) {
             if (idHolder instanceof PlayerTag) {
