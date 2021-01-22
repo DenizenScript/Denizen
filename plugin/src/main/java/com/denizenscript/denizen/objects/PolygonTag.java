@@ -78,7 +78,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         this.world = world;
         this.yMin = yMin;
         this.yMax = yMax;
-        this.corners.addAll(corners);
+        for (Corner corner : corners) {
+            this.corners.add(new Corner(corner.x, corner.z));
+        }
         recalculateBox();
     }
 
@@ -642,6 +644,32 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         });
 
         // <--[tag]
+        // @attribute <PolygonTag.shift[<vector>]>
+        // @returns PolygonTag
+        // @description
+        // Returns a copy of the polygon, with all coordinates shifted by the given location-vector.
+        // -->
+        registerTag("shift", (attribute, polygon) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("PolygonTag.shift[...] tag must have an input.");
+                return null;
+            }
+            LocationTag shift = attribute.contextAsType(1, LocationTag.class);
+            PolygonTag toReturn = polygon.clone();
+            toReturn.yMin += shift.getY();
+            toReturn.yMax += shift.getY();
+            for (Corner corner : toReturn.corners) {
+                corner.x += shift.getX();
+                corner.z += shift.getZ();
+            }
+            toReturn.boxMin.x += shift.getX();
+            toReturn.boxMin.z += shift.getZ();
+            toReturn.boxMax.x += shift.getX();
+            toReturn.boxMax.z += shift.getZ();
+            return toReturn;
+        });
+
+        // <--[tag]
         // @attribute <PolygonTag.with_corner[<location>]>
         // @returns PolygonTag
         // @mechanism PolygonTag.add_corner
@@ -655,8 +683,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             }
             LocationTag corner = attribute.contextAsType(1, LocationTag.class);
             PolygonTag toReturn = polygon.clone();
-            toReturn.corners.add(new Corner(corner.getX(), corner.getZ()));
-            toReturn.recalculateBox();
+            Corner added = new Corner(corner.getX(), corner.getZ());
+            toReturn.corners.add(added);
+            toReturn.recalculateToFit(added);
             return toReturn;
         });
 
@@ -689,6 +718,25 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             }
             PolygonTag toReturn = polygon.clone();
             toReturn.yMax = attribute.getDoubleContext(1);
+            return toReturn;
+        });
+
+        // <--[tag]
+        // @attribute <PolygonTag.with_world[<world>]>
+        // @returns PolygonTag
+        // @description
+        // Returns a copy of the polygon, with the specified world.
+        // -->
+        registerTag("with_world", (attribute, polygon) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("PolygonTag.with_world[...] tag must have an input.");
+                return null;
+            }
+            PolygonTag toReturn = polygon.clone();
+            toReturn.world = attribute.contextAsType(1, WorldTag.class);
+            if (toReturn.world == null) {
+                return null;
+            }
             return toReturn;
         });
 
