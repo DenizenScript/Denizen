@@ -480,6 +480,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         else if (lower.equals("ellipsoid")) {
             return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
         }
+        else if (lower.equals("polygon")) {
+            return PolygonTag.getNotedPolygonsContaining(location).size() > 0;
+        }
         else if (WorldTag.matches(inputText)) {
             return CoreUtilities.equalsIgnoreCase(location.getWorld().getName(), lower);
         }
@@ -498,6 +501,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return false;
             }
             return ellipsoid.contains(location);
+        }
+        else if (PolygonTag.matches(inputText)) {
+            PolygonTag polygon = PolygonTag.valueOf(inputText, getTagContext(path));
+            if (polygon == null || !polygon.isUnique()) {
+                Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid polygon): '" + path.event + "' for " + path.container.getName());
+                return false;
+            }
+            return polygon.doesContainLocation(location);
         }
         else if (isAdvancedMatchable(lower)) {
             MatchHelper matcher = createMatcher(lower);

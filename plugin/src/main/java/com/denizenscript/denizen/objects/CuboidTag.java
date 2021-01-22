@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.*;
@@ -78,7 +77,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 cuboids.add(cuboid);
             }
         }
-
         return cuboids;
     }
 
@@ -510,7 +508,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return getBlocks(null, attribute);
     }
 
-    private boolean matchesMaterialList(Location loc, List<MaterialTag> materials, Attribute attribute) {
+    public static boolean matchesMaterialList(Location loc, List<MaterialTag> materials, Attribute attribute) {
         if (materials == null) {
             return true;
         }
@@ -1540,11 +1538,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Gets the name of a noted CuboidTag. If the cuboid isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, cuboid) -> {
-            String notname = NotableManager.getSavedId(cuboid);
-            if (notname == null) {
+            String noteName = NotableManager.getSavedId(cuboid);
+            if (noteName == null) {
                 return null;
             }
-            return new ElementTag(notname);
+            return new ElementTag(noteName);
         }, "notable_name");
 
         registerTag("full", (attribute, cuboid) -> {

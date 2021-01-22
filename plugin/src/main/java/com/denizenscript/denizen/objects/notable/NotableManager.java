@@ -32,6 +32,7 @@ public class NotableManager {
         registerWithNotableManager(InventoryTag.class);
         registerWithNotableManager(ItemTag.class);
         registerWithNotableManager(LocationTag.class);
+        registerWithNotableManager(PolygonTag.class);
     }
 
     public static HashMap<String, Notable> notableObjects = new HashMap<>();

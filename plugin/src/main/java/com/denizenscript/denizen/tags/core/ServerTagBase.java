@@ -922,7 +922,7 @@ public class ServerTagBase {
         // @returns ListTag
         // @description
         // Lists all saved notable objects of a specific type currently on the server.
-        // Valid types: locations, cuboids, ellipsoids, inventories
+        // Valid types: locations, cuboids, ellipsoids, inventories, polygons
         // This is primarily intended for debugging purposes, and it's best to avoid using this in a live script if possible.
         // -->
         if (attribute.startsWith("notables") || attribute.startsWith("list_notables")) {

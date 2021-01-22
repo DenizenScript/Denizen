@@ -43,8 +43,7 @@ public class DenizenCommandHandler {
     // denizen.npc.sit, denizen.npc.nameplate, denizen.npc.nickname, denizen.npc.trigger,
     // denizen.npc.assign, denizen.npc.constants, denizen.npc.pushable
     //
-    // However, we recommend just giving op to whoever needs to access Denizen - they can
-    // op themselves through Denizen anyway, why not save the trouble?
+    // However, we recommend just giving op to whoever needs to access Denizen - they can op themselves through Denizen anyway, why not save the trouble?
     // ( EG, /ex execute as_server "op <player.name>" )
     //
     // -->
@@ -53,20 +52,17 @@ public class DenizenCommandHandler {
     // @name /denizen submit command
     // @group Console Commands
     // @description
-    // Use the '/denizen submit' command with '/denizen debug -r' to record debug output and post
-    // it online for assisting developers to see.
+    // Use the '/denizen submit' command with '/denizen debug -r' to record debug output and post it online for assisting developers to see.
     //
-    // To begin recording, simply use '/denizen debug -r'. After that, any debug output sent to the
-    // console and any player chat will be added to an internal record. Once enabled, you should then
-    // fire off scripts and events that aren't working fully. Finally, you use the '/denizen submit'
-    // command to take all the recording information and paste it to an online pastebin hosted by
-    // the Denizen team. It will give you back a direct link to the full debug output, which you
-    // can view yourself and send to other helpers without trouble.
+    // To begin recording, simply use '/denizen debug -r'.
+    // After that, any debug output sent to the console and any player chat will be added to an internal record.
+    // Once enabled, you should then fire off scripts and events that aren't working fully.
+    // Finally, you use the '/denizen submit' command to take all the recording information and paste it to an online pastebin hosted by the Denizen team.
+    // It will give you back a direct link to the full debug output, which you can view yourself and send to other helpers without trouble.
     //
-    // There is no limit to the recording size, to prevent any important information from being trimmed
-    // away. Be careful not to leave debug recording enabled by accident, as it may eventually begin
-    // using up large amounts of memory. (The submit command will automatically disable recording,
-    // or you can instead just use '/denizen debug -r' again.)
+    // There is no limit to the recording size, to prevent any important information from being trimmed away.
+    // Be careful not to leave debug recording enabled by accident, as it may eventually begin using up large amounts of memory.
+    // (The submit command will automatically disable recording, or you can instead just use '/denizen debug -r' again.)
     //
     // -->
     @Command(
@@ -93,29 +89,27 @@ public class DenizenCommandHandler {
     // @name /denizen debug command
     // @group Console Commands
     // @description
-    // Using the /denizen debug command interfaces with Denizen's debugger to allow control
-    // over debug messages.
+    // Using the /denizen debug command interfaces with Denizen's debugger to allow control over debug messages.
     //
-    // To enable debugging mode, simply type '/denizen debug'. While debug is enabled, all debuggable
-    // scripts, and any invoked actions, will output information to the console as they are executed.
-    // By default, all scripts are debuggable while the debugger is enabled. To disable a script
-    // specifically from debugging, simply add the 'debug:' node with a value of 'false' to your script
-    // container. This is typically used to silence particularly spammy scripts. Any kind of script
-    // container can be silenced using this method.
+    // To enable debugging mode, simply type '/denizen debug'.
+    // While debug is enabled, all debuggable scripts, and any invoked actions, will output information to the console as they are executed.
+    // By default, all scripts are debuggable while the debugger is enabled.
+    // To disable a script specifically from debugging, simply add the 'debug:' node with a value of 'false' to your script container.
+    // This is typically used to silence particularly spammy scripts. Any kind of script container can be silenced using this method.
     //
-    // To stop debugging, simply type the '/denizen debug' command again. This must be used without
-    // any additional options. A message will be sent to show the current status of the debugger.
-    // Note: While your server is in 'live production mode', the debugger should be disabled as your
-    // server will run slower while outputting debug information.
+    // To stop debugging, simply type the '/denizen debug' command again.
+    // This must be used without any additional options. A message will be sent to show the current status of the debugger.
     //
-    // There are also several options to further help debugging. To use an option, simply attach them
-    // to the /denizen debug command. One option, or multiple options can be used. For example: /denizen debug -sbi
+    // Note: you should almost NEVER disable debug entirely. Instead, always disable it on a per-script basis.
+    // If debug is globally disabled, that will hide important error messages, not just normal debug output.
+    //
+    // There are also several options to further help debugging. To use an option, simply attach them to the /denizen debug command.
+    // One option, or multiple options can be used. For example: /denizen debug -sbi
     //
     // '-c' enables/disables color. This is sometimes useful when debugging with a non-color console.
     // '-r' enables recording mode. See also: /denizen submit command
     // '-s' enables/disables stacktraces generated by Denizen. We might ask you to enable this when problems arise.
-    // '-b' enables/disables the ScriptBuilder debug. When enabled, Denizen will show info on script and argument creation.
-    //      Warning: Can be spammy.
+    // '-b' enables/disables the ScriptBuilder debug. When enabled, Denizen will show info on script and argument creation. Warning: Can be spammy.
     // '-n' enables/disables debug trimming. When enabled, messages longer than 1024 characters will be 'snipped'.
     // '-i' enables/disables source information. When enabled, debug will show where it came from (when possible).
     // '-p' enables/disables packet debug logging. When enabled, all packets sent to players (from anywhere) will be logged to console.

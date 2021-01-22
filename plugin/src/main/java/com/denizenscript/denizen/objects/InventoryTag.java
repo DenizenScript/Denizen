@@ -1845,11 +1845,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
         // Gets the name of a noted InventoryTag. If the inventory isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, object) -> {
-            String notname = NotableManager.getSavedId(object);
-            if (notname == null) {
+            String noteName = NotableManager.getSavedId(object);
+            if (noteName == null) {
                 return null;
             }
-            return new ElementTag(notname);
+            return new ElementTag(noteName);
         }, "notable_name");
 
         // <--[tag]

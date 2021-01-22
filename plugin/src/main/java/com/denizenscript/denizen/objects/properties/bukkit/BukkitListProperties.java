@@ -1,9 +1,7 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
-import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -12,6 +10,8 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.ChatColor;
+
+import java.util.List;
 
 public class BukkitListProperties implements Property {
     public static boolean describes(ObjectTag list) {
@@ -99,6 +99,33 @@ public class BukkitListProperties implements Property {
                 }
             }
             return new ElementTag(output.toString().substring(0, output.length() - 2));
+        });
+
+        // <--[tag]
+        // @attribute <ListTag.to_polygon>
+        // @returns PolygonTag
+        // @description
+        // Converts a list of locations to a PolygonTag.
+        // The Y-Min and Y-Max values will be assigned based the range of Y values in the locations given.
+        // -->
+        PropertyParser.<BukkitListProperties>registerTag("to_polygon", (attribute, listObj) -> {
+            List<LocationTag> locations = listObj.list.filter(LocationTag.class, attribute.context);
+            if (locations == null || locations.isEmpty()) {
+                return null;
+            }
+            if (locations.size() > Settings.blockTagsMaxBlocks()) {
+                return null;
+            }
+            PolygonTag polygon = new PolygonTag(new WorldTag(locations.get(0).getWorldName()));
+            polygon.yMin = locations.get(0).getY();
+            polygon.yMax = polygon.yMin;
+            for (LocationTag location : locations) {
+                polygon.yMin = Math.min(polygon.yMin, location.getY());
+                polygon.yMax = Math.max(polygon.yMax, location.getY());
+                polygon.corners.add(new PolygonTag.Corner(location.getX(), location.getZ()));
+            }
+            polygon.recalculateBox();
+            return polygon;
         });
     }
 

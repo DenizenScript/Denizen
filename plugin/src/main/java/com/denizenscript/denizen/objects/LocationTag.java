@@ -2656,11 +2656,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Gets the name of a noted LocationTag. If the location isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, object) -> {
-            String notname = NotableManager.getSavedId((object));
-            if (notname == null) {
+            String noteName = NotableManager.getSavedId((object));
+            if (noteName == null) {
                 return null;
             }
-            return new ElementTag(notname);
+            return new ElementTag(noteName);
         }, "notable_name");
 
         /////////////////////
@@ -2897,10 +2897,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.is_within[<cuboid>/<ellipsoid>]>
+        // @attribute <LocationTag.is_within[<area>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the location is within the cuboid or ellipsoid.
+        // Returns whether the location is within the specified area (cuboid, ellipsoid, polygon, ...).
         // -->
         registerTag("is_within", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
@@ -2910,6 +2910,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 EllipsoidTag ellipsoid = attribute.contextAsType(1, EllipsoidTag.class);
                 if (ellipsoid != null) {
                     return new ElementTag(ellipsoid.contains(object));
+                }
+            }
+            else if (PolygonTag.matches(attribute.getContext(1))) {
+                PolygonTag polygon = attribute.contextAsType(1, PolygonTag.class);
+                if (polygon != null) {
+                    return new ElementTag(polygon.doesContainLocation(object));
                 }
             }
             else {
@@ -2997,6 +3003,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ellipsoid_list.addObject(ellipsoid);
             }
             return ellipsoid_list;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.polygons>
+        // @returns ListTag(PolygonTag)
+        // @description
+        // Returns a ListTag of all noted PolygonTags that include this location.
+        // -->
+        registerTag("polygons", (attribute, object) -> {
+            List<PolygonTag> polygons = PolygonTag.getNotedPolygonsContaining(object);
+            ListTag polygon_list = new ListTag();
+            for (PolygonTag polygon : polygons) {
+                polygon_list.addObject(polygon);
+            }
+            return polygon_list;
         });
 
         // <--[tag]

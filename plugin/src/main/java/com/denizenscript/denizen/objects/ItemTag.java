@@ -731,11 +731,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
 
         registerTag("notable_name", (attribute, object) -> {
             Deprecations.notableItems.warn();
-            String notname = NotableManager.getSavedId(object);
-            if (notname == null) {
+            String noteName = NotableManager.getSavedId(object);
+            if (noteName == null) {
                 return null;
             }
-            return new ElementTag(notname);
+            return new ElementTag(noteName);
         });
 
         // <--[tag]

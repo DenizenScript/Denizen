@@ -74,6 +74,7 @@ public class CommonRegistries {
         }
         new PlayerTagBase();
         new PluginTagBase();
+        new PolygonTagBase();
         new TradeTagBase();
         new WorldTagBase();
         // Other bases
@@ -98,6 +99,7 @@ public class CommonRegistries {
         }
         ObjectFetcher.registerWithObjectFetcher(PlayerTag.class, PlayerTag.tagProcessor); // p@
         ObjectFetcher.registerWithObjectFetcher(PluginTag.class, PluginTag.tagProcessor); // pl@
+        ObjectFetcher.registerWithObjectFetcher(PolygonTag.class, PolygonTag.tagProcessor); // polygon@
         ObjectFetcher.registerWithObjectFetcher(TradeTag.class, TradeTag.tagProcessor); // trade@
         ObjectFetcher.registerWithObjectFetcher(WorldTag.class, WorldTag.tagProcessor); // w@
         StringBuilder debug = new StringBuilder(256);
@@ -142,6 +144,7 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(NPCTag.class, "n");
         CoreUtilities.registerTypeAsNoOtherTypeCode(PlayerTag.class, "p");
         CoreUtilities.registerTypeAsNoOtherTypeCode(PluginTag.class, "pl");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(PolygonTag.class, "polygon");
         CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");
         CoreUtilities.registerTypeAsNoOtherTypeCode(WorldTag.class, "w");
         Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
