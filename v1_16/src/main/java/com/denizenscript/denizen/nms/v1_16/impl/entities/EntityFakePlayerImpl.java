@@ -12,7 +12,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakePlayerImpl extends EntityPlayer {
 
-    public EntityFakePlayerImpl(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
+    public EntityFakePlayerImpl(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager, boolean doAdd) {
         super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
         try {
             Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayerImpl((CraftServer) Bukkit.getServer(), this));
@@ -25,7 +25,9 @@ public class EntityFakePlayerImpl extends EntityPlayer {
         playerConnection = new FakePlayerConnectionImpl(minecraftserver, networkManager, this);
         networkManager.setPacketListener(playerConnection);
         datawatcher.set(EntityHuman.bi, (byte) 127);
-        worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        if (doAdd) {
+            worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        }
     }
 
     @Override

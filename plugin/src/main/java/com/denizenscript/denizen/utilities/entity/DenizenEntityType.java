@@ -26,7 +26,7 @@ public class DenizenEntityType {
     private final String name;
     private final String lowercaseName;
     private final double gravity;
-    private final CustomEntityType customEntityType;
+    public final CustomEntityType customEntityType;
 
     static {
         for (EntityType entityType : EntityType.values()) {

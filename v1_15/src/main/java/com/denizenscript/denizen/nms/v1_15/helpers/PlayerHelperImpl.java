@@ -7,6 +7,7 @@ import com.denizenscript.denizen.nms.v1_15.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.mojang.authlib.GameProfile;
@@ -22,7 +23,6 @@ import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -69,9 +69,9 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public FakeEntity sendEntitySpawn(List<PlayerTag> players, EntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
+    public FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         CraftWorld world = ((CraftWorld) location.getWorld());
-        net.minecraft.server.v1_15_R1.Entity nmsEntity = world.createEntity(location,  entityType.getEntityClass());
+        net.minecraft.server.v1_15_R1.Entity nmsEntity = world.createEntity(location,  entityType.getBukkitEntityType().getEntityClass());
         if (customUUID != null) {
             nmsEntity.e(customId);
             nmsEntity.a(customUUID);

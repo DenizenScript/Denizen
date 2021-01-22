@@ -35,7 +35,6 @@ public class EntityItemProjectileImpl extends EntityProjectile {
         }
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         setItemStack(item);
-        world.addEntity(this);
     }
 
     @Override

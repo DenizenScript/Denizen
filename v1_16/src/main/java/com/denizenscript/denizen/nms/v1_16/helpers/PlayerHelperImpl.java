@@ -1,14 +1,19 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.ImprovedOfflinePlayerImpl;
+import com.denizenscript.denizen.nms.v1_16.impl.entities.CraftFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityItemProjectileImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.AbstractListenerPlayInImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.mojang.authlib.GameProfile;
@@ -20,15 +25,17 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.SoundCategory;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
@@ -79,9 +86,44 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public FakeEntity sendEntitySpawn(List<PlayerTag> players, EntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
+    public FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         CraftWorld world = ((CraftWorld) location.getWorld());
-        net.minecraft.server.v1_16_R3.Entity nmsEntity = world.createEntity(location,  entityType.getEntityClass());
+        net.minecraft.server.v1_16_R3.Entity nmsEntity;
+        if (entityType.isCustom()) {
+            if (entityType.customEntityType == CustomEntityType.ITEM_PROJECTILE) {
+                org.bukkit.inventory.ItemStack itemStack = new ItemStack(Material.STONE);
+                for (Mechanism mechanism : mechanisms) {
+                    if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
+                        itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
+                    }
+                }
+                nmsEntity = new EntityItemProjectileImpl(world.getHandle(), location, CraftItemStack.asNMSCopy(itemStack));
+            }
+            else if (entityType.customEntityType == CustomEntityType.FAKE_PLAYER) {
+                String name = null;
+                String skin = null;
+                for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
+                    if (mechanism.matches("name")) {
+                        name = mechanism.getValue().asString();
+                        mechanisms.remove(mechanism);
+                    }
+                    else if (mechanism.matches("skin")) {
+                        skin = mechanism.getValue().asString();
+                        mechanisms.remove(mechanism);
+                    }
+                    if (name != null && skin != null) {
+                        break;
+                    }
+                }
+                nmsEntity = ((CraftFakePlayerImpl) CustomEntityHelperImpl.spawnFakePlayer(location, name, skin, false)).getHandle();
+            }
+            else {
+                throw new IllegalArgumentException("entityType");
+            }
+        }
+        else {
+            nmsEntity = world.createEntity(location, entityType.getBukkitEntityType().getEntityClass());
+        }
         if (customUUID != null) {
             nmsEntity.e(customId);
             nmsEntity.a_(customUUID);

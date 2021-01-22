@@ -42,11 +42,16 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
     public ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack) {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityItemProjectileImpl entity = new EntityItemProjectileImpl(world.getHandle(), location, CraftItemStack.asNMSCopy(itemStack));
+        world.getHandle().addEntity(entity);
         return entity.getBukkitEntity();
     }
 
     @Override
     public FakePlayer spawnFakePlayer(Location location, String name, String skin) throws IllegalArgumentException {
+        return spawnFakePlayer(location, name, skin, true);
+    }
+
+    public static FakePlayer spawnFakePlayer(Location location, String name, String skin, boolean doAdd) throws IllegalArgumentException {
         String fullName = name;
         String prefix = null;
         String suffix = null;
@@ -116,7 +121,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
                 new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
 
         final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getMinecraftServer(), worldServer,
-                gameProfile, new PlayerInteractManager(worldServer));
+                gameProfile, new PlayerInteractManager(worldServer), doAdd);
 
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
