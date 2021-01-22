@@ -3565,10 +3565,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else {
                 if (mechanism.matches("show_to_players")) {
-                    EntityHelper.removeHide(null, getOfflinePlayer().getUniqueId());
+                    EntityHelper.removeHide(EntityHelper.DEFAULT_HIDE, getOfflinePlayer().getUniqueId());
                 }
                 if (mechanism.matches("hide_from_players")) {
-                    NMSHandler.getEntityHelper().addHide(null, getOfflinePlayer().getUniqueId());
+                    NMSHandler.getEntityHelper().addHide(EntityHelper.DEFAULT_HIDE, getOfflinePlayer().getUniqueId());
                 }
             }
         }
