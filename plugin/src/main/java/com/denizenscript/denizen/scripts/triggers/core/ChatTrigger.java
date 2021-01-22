@@ -313,7 +313,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         for (String subkeyword : CoreUtilities.split(keywordLow, '|')) {
                             if (messageLow.contains(subkeyword)) {
                                 id = entry.getKey();
-                                replacementText = triggerText.replace("/", "");
+                                replacementText = triggerText.replace(matcher.group(), subkeyword);
                                 matched = true;
                                 context.put("keyword", new ElementTag(subkeyword));
                                 if (replace != null) {
@@ -322,12 +322,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             }
                         }
                     }
-                    else if (keyword.equals("*")
-                            || (keywordLow.startsWith("strict:") && messageLow.equals(keywordLow.substring("strict:".length())))
+                    else if (keyword.equals("*")) {
+                        id = entry.getKey();
+                        replacementText = triggerText.replace("/*/", message);
+                        matched = true;
+                        if (replace != null) {
+                            replacementText = replace;
+                        }
+                    }
+                    else if ((keywordLow.startsWith("strict:") && messageLow.equals(keywordLow.substring("strict:".length())))
                             || messageLow.contains(keywordLow)) {
                         // Trigger matches
                         id = entry.getKey();
-                        replacementText = triggerText.replace("/", "");
+                        replacementText = triggerText.replace(matcher.group(), keyword.substring("strict:".length()));
                         matched = true;
                         if (replace != null) {
                             replacementText = replace;
