@@ -55,7 +55,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (!path.eventLower.startsWith("player places")) {
             return false;
         }
-        if (!couldMatchItem(path.eventArgLowerAt(2)) && !couldMatchBlock(path.eventArgLowerAt(2))) {
+        if (!couldMatchBlockOrItem(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;

@@ -156,6 +156,23 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return genericCouldMatchChecks(text, this::couldMatchVehicle);
     }
 
+    public boolean couldMatchBlockOrItem(String text) {
+        if (text.equals("block") || text.equals("material") || text.equals("item") || text.startsWith("item_flagged:")) {
+            return true;
+        }
+        if (MaterialTag.matches(text)) {
+            MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
+            if (mat == null) {
+                return false;
+            }
+            return true;
+        }
+        if (ItemTag.matches(text)) {
+            return true;
+        }
+        return genericCouldMatchChecks(text, this::couldMatchBlockOrItem);
+    }
+
     public boolean couldMatchBlock(String text) {
         if (text.equals("block") || text.equals("material")) {
             return true;

@@ -437,6 +437,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
+        if (isCitizensNPC()) {
+            return getDenizenNPC().getFlagTracker();
+        }
+        else if (isPlayer()) {
+            return getDenizenPlayer().getFlagTracker();
+        }
         Entity ent = getBukkitEntity();
         if (ent != null) {
             return new DataPersistenceFlagTracker(ent);
