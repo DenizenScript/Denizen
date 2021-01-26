@@ -157,21 +157,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     //    OBJECT FETCHER
     ////////////////
 
-    public static EntityTag getEntityFor(ObjectTag object, TagContext context) {
-        if (object instanceof EntityTag) {
-            return (EntityTag) object;
-        }
-        else if (object instanceof PlayerTag && ((PlayerTag) object).isOnline()) {
-            return new EntityTag(((PlayerTag) object).getPlayerEntity());
-        }
-        else if (object instanceof NPCTag) {
-            return new EntityTag((NPCTag) object);
-        }
-        else {
-            return valueOf(object.toString(), context);
-        }
-    }
-
     @Deprecated
     public static EntityTag valueOf(String string) {
         return valueOf(string, null);
@@ -211,67 +196,67 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 // DO NOTHING
             }
         }
-        if (string.startsWith("n@") || string.startsWith("e@") || string.startsWith("p@")) {
-            // NPC entity
-            if (string.startsWith("n@")) {
-                NPCTag npc = NPCTag.valueOf(string, context);
-                if (npc != null) {
-                    if (npc.isSpawned()) {
-                        return new EntityTag(npc);
-                    }
-                    else {
-                        if (context != null && context.showErrors()) {
-                            Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
-                        }
-                        return new EntityTag(npc);
-                    }
+        if (string.startsWith("e@")) {
+            string = string.substring("e@".length());
+        }
+        // NPC entity
+        if (string.startsWith("n@")) {
+            NPCTag npc = NPCTag.valueOf(string, context);
+            if (npc != null) {
+                if (npc.isSpawned()) {
+                    return new EntityTag(npc);
                 }
                 else {
-                    Debug.echoError("NPC '" + string + "' does not exist!");
-                }
-            }
-            // Player entity
-            else if (string.startsWith("p@")) {
-                LivingEntity returnable = PlayerTag.valueOf(string, context).getPlayerEntity();
-                if (returnable != null) {
-                    return new EntityTag(returnable);
-                }
-                else if (context == null || context.showErrors()) {
-                    Debug.echoError("Invalid Player! '" + string + "' could not be found. Has the player logged off?");
-                }
-            }
-            // Assume entity
-            else {
-                if (string.startsWith("e@")) {
-                    string = string.substring("e@".length());
-                }
-                try {
-                    UUID entityID = UUID.fromString(string);
-                    Entity entity = getEntityForID(entityID);
-                    if (entity != null) {
-                        return new EntityTag(entity);
+                    if (context != null && context.showErrors()) {
+                        Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
                     }
-                    return null;
+                    return new EntityTag(npc);
                 }
-                catch (Exception ex) {
-                    // DO NOTHING
+            }
+            else {
+                Debug.echoError("NPC '" + string + "' does not exist!");
+            }
+        }
+        // Player entity
+        else if (string.startsWith("p@")) {
+            LivingEntity returnable = PlayerTag.valueOf(string, context).getPlayerEntity();
+            if (returnable != null) {
+                return new EntityTag(returnable);
+            }
+            else if (context == null || context.showErrors()) {
+                Debug.echoError("Invalid Player! '" + string + "' could not be found. Has the player logged off?");
+            }
+        }
+        UUID id = null;
+        int slash = string.indexOf('/');
+        if (slash != -1) {
+            try {
+                id = UUID.fromString(string.substring(0, slash));
+                Entity entity = getEntityForID(id);
+                if (entity != null) {
+                    return new EntityTag(entity);
                 }
-
-                // else if (isSaved(m.group(2)))
-                //     return getSaved(m.group(2));
+                string = string.substring(slash + 1);
+            }
+            catch (Exception ex) {
+                // DO NOTHING
             }
         }
         if (ScriptRegistry.containsScript(string, EntityScriptContainer.class)) {
             // Construct a new custom unspawned entity from script
-            return ScriptRegistry.getScriptContainerAs(string, EntityScriptContainer.class).getEntityFrom();
+            EntityTag entity = ScriptRegistry.getScriptContainerAs(string, EntityScriptContainer.class).getEntityFrom();
+            entity.uuid = id;
+            return entity;
         }
         List<String> data = CoreUtilities.split(string, ',');
         // Handle custom DenizenEntityTypes
         if (DenizenEntityType.isRegistered(data.get(0))) {
-            return new EntityTag(DenizenEntityType.getByName(data.get(0)), data.size() > 1 ? data.get(1) : null);
+            EntityTag entity = new EntityTag(DenizenEntityType.getByName(data.get(0)), data.size() > 1 ? data.get(1) : null);
+            entity.uuid = id;
+            return entity;
         }
         try {
-            UUID entityID = UUID.fromString(string);
+            UUID entityID = id != null ? id : UUID.fromString(string);
             Entity entity = getEntityForID(entityID);
             if (entity != null) {
                 return new EntityTag(entity);
@@ -489,6 +474,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public UUID getUUID() {
+        if (uuid == null && entity != null) {
+            uuid = entity.getUniqueId();
+        }
         return uuid;
     }
 
@@ -1038,15 +1026,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (npc != null) {
             return npc.identify();
         }
-        if (entity != null) {
-            if (isPlayer()) {
-                return getDenizenPlayer().identify();
+        if (isPlayer()) {
+            return getDenizenPlayer().identify();
+        }
+        if (isFake) {
+            return "e@fake:" + getUUID();
+        }
+        if (getUUID() != null) {
+            if (entityScript != null) {
+                return "e@" + getUUID() + "/" + entityScript + getWaitingMechanismsString();
             }
-            else if (isFake) {
-                return "e@fake:" + getUUID();
-            }
-            else if (isSpawnedOrValidForTag()) {
-                return "e@" + getUUID();
+            if (entity_type != null) {
+                return "e@" + getUUID() + "/" + entity_type.getLowercaseName() + getWaitingMechanismsString();
             }
         }
         if (entityScript != null) {

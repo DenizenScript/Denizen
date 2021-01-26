@@ -20,7 +20,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // hanging breaks (because <cause>)
     // <hanging> breaks (because <cause>)
     //
-    // @Regex ^on [^\s]+ breaks( because [^\s]+)$
+    // @Regex ^on [^\s]+ breaks( because [^\s]+)?$
     //
     // @Group Entity
     //

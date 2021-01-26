@@ -137,6 +137,27 @@ public class CommonRegistries {
                 return false;
             }
         });
+        CoreUtilities.typeConverters.put(EntityTag.class, (obj, context) -> {
+            if (obj instanceof PlayerTag && ((PlayerTag) obj).isOnline()) {
+                return new EntityTag(((PlayerTag) obj).getPlayerEntity());
+            }
+            else if (obj instanceof NPCTag && ((NPCTag) obj).isSpawned()) {
+                return new EntityTag(((NPCTag) obj).getEntity());
+            }
+            return EntityTag.valueOf(obj.toString(), context);
+        });
+        CoreUtilities.typeConverters.put(NPCTag.class, (obj, context) -> {
+            if (obj instanceof EntityTag && ((EntityTag) obj).isCitizensNPC()) {
+                return ((EntityTag) obj).getDenizenNPC();
+            }
+            return NPCTag.valueOf(obj.toString(), context);
+        });
+        CoreUtilities.typeConverters.put(PlayerTag.class, (obj, context) -> {
+            if (obj instanceof EntityTag && ((EntityTag) obj).isPlayer()) {
+                return ((EntityTag) obj).getDenizenPlayer();
+            }
+            return PlayerTag.valueOf(obj.toString(), context);
+        });
         CoreUtilities.registerTypeAsNoOtherTypeCode(InventoryTag.class, "in");
         CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
         CoreUtilities.registerTypeAsNoOtherTypeCode(LocationTag.class, "l");
