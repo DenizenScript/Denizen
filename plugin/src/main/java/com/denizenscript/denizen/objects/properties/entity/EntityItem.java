@@ -54,7 +54,11 @@ public class EntityItem implements Property {
             return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
         }
         else {
-            return new ItemTag(((Enderman) item.getBukkitEntity()).getCarriedBlock().getMaterial());
+            Material mat = ((Enderman) item.getBukkitEntity()).getCarriedBlock().getMaterial();
+            if (mat == null) {
+                mat = Material.AIR;
+            }
+            return new ItemTag(mat);
         }
     }
 
