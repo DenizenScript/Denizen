@@ -273,6 +273,11 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                     processSingle(ellipsoid, player, inAreas, pos, eventCause);
                 }
             }
+            for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+                if (anyMatch(polygon.noteName)) {
+                    processSingle(polygon, player, inAreas, pos, eventCause);
+                }
+            }
         }
         else {
             for (String name : exactTracked) {
