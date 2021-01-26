@@ -1007,17 +1007,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (npc != null) {
             return npc.savable();
         }
-        if (entity == null) {
-            return identify();
-        }
-        if (isPlayer()) {
+        else if (isPlayer()) {
             return getDenizenPlayer().savable();
         }
         else if (isFake) {
             return "e@fake:" + getUUID();
         }
         else {
-            return "e@" + getUUID();
+            return identify();
         }
     }
 
