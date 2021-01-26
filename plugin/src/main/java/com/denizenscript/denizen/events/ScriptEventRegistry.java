@@ -56,6 +56,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
+        ScriptEvent.registerScriptEvent(new EntityDropsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityEntersPortalScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityEntersVehicleScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityExitsPortalScriptEvent());
@@ -131,7 +132,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerCraftsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerDragsInInvScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerDropsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEditsBookScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEmptiesBucketScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
