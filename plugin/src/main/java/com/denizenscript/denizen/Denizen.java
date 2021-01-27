@@ -46,6 +46,7 @@ import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
@@ -423,6 +424,7 @@ public class Denizen extends JavaPlugin {
                             }
                         }
                     }
+                    Debug.log("Denizen fully loaded at: " + TimeTag.now().format());
                 }
                 catch (Exception e) {
                     Debug.echoError(e);
