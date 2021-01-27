@@ -29,7 +29,7 @@ public class SneakCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Sneak
-    // @Syntax sneak [<entity>|...] ({start}/stop) (fake) (for:<player>|...)
+    // @Syntax sneak [<entity>|...] ({start}/stop) (fake/stopfake) (for:<player>|...)
     // @Required 1
     // @Maximum 4
     // @Short Causes the entity to start or stop sneaking.

@@ -74,32 +74,42 @@ public class LegacySavesUpdater {
             for (StringHolder plPrefix : playerSection.getKeys(false)) {
                 YamlConfiguration subSection = playerSection.getConfigurationSection(plPrefix.str);
                 for (StringHolder uuidString : subSection.getKeys(false)) {
-                    UUID id = UUID.fromString(uuidString.str.substring(0, 8) + "-" + uuidString.str.substring(8, 12) + "-" + uuidString.str.substring(12, 16) + "-" + uuidString.str.substring(16, 20) + "-" + uuidString.str.substring(20, 32));
-                    PlayerTag player = PlayerTag.valueOf(id.toString(), CoreUtilities.errorButNoDebugContext);
-                    if (player == null) {
-                        Debug.echoError("Cannot update data for player with id: " + uuidString);
+                    if (uuidString.str.length() != 32) {
+                        Debug.echoError("Cannot update data for player with non-ID entry listed: " + uuidString);
                         continue;
                     }
-                    YamlConfiguration actual = subSection.getConfigurationSection(uuidString.str);
-                    AbstractFlagTracker tracker = player.getFlagTracker();
-                    if (actual.contains("Flags")) {
-                        applyFlags(player.identify(), tracker, actual.getConfigurationSection("Flags"));
-                    }
-                    if (actual.contains("Scripts")) {
-                        YamlConfiguration scriptsSection = actual.getConfigurationSection("Scripts");
-                        for (StringHolder script : scriptsSection.getKeys(false)) {
-                            YamlConfiguration scriptSection = scriptsSection.getConfigurationSection(script.str);
-                            if (scriptSection.contains("Current Step")) {
-                                tracker.setFlag("__interact_step." + script, new ElementTag(scriptSection.getString("Current Step")), null);
-                            }
-                            if (scriptSection.contains("Cooldown Time")) {
-                                long time = Long.parseLong(scriptSection.getString("Cooldown Time"));
-                                TimeTag cooldown = new TimeTag(time);
-                                tracker.setFlag("__interact_cooldown." + script, cooldown, cooldown);
+                    try {
+                        UUID id = UUID.fromString(uuidString.str.substring(0, 8) + "-" + uuidString.str.substring(8, 12) + "-" + uuidString.str.substring(12, 16) + "-" + uuidString.str.substring(16, 20) + "-" + uuidString.str.substring(20, 32));
+                        PlayerTag player = PlayerTag.valueOf(id.toString(), CoreUtilities.errorButNoDebugContext);
+                        if (player == null) {
+                            Debug.echoError("Cannot update data for player with id: " + uuidString);
+                            continue;
+                        }
+                        YamlConfiguration actual = subSection.getConfigurationSection(uuidString.str);
+                        AbstractFlagTracker tracker = player.getFlagTracker();
+                        if (actual.contains("Flags")) {
+                            applyFlags(player.identify(), tracker, actual.getConfigurationSection("Flags"));
+                        }
+                        if (actual.contains("Scripts")) {
+                            YamlConfiguration scriptsSection = actual.getConfigurationSection("Scripts");
+                            for (StringHolder script : scriptsSection.getKeys(false)) {
+                                YamlConfiguration scriptSection = scriptsSection.getConfigurationSection(script.str);
+                                if (scriptSection.contains("Current Step")) {
+                                    tracker.setFlag("__interact_step." + script, new ElementTag(scriptSection.getString("Current Step")), null);
+                                }
+                                if (scriptSection.contains("Cooldown Time")) {
+                                    long time = Long.parseLong(scriptSection.getString("Cooldown Time"));
+                                    TimeTag cooldown = new TimeTag(time);
+                                    tracker.setFlag("__interact_cooldown." + script, cooldown, cooldown);
+                                }
                             }
                         }
+                        player.reapplyTracker(tracker);
                     }
-                    player.reapplyTracker(tracker);
+                    catch (Throwable ex) {
+                        Debug.echoError("Error updating flags for player with ID " + uuidString.str);
+                        Debug.echoError(ex);
+                    }
                 }
             }
         }
