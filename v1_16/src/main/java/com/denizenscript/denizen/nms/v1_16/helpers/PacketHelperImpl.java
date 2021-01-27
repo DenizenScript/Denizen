@@ -356,10 +356,10 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void sendEntityMetadataFlagsUpdate(Player player) {
+    public void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
         DataWatcher dw = new DataWatcher(null);
-        dw.register(ENTITY_DATA_WATCHER_FLAGS, ((CraftPlayer) player).getHandle().getDataWatcher().get(ENTITY_DATA_WATCHER_FLAGS));
-        sendPacket(player, new PacketPlayOutEntityMetadata(player.getEntityId(), dw, true));
+        dw.register(ENTITY_DATA_WATCHER_FLAGS, ((CraftEntity) entity).getHandle().getDataWatcher().get(ENTITY_DATA_WATCHER_FLAGS));
+        sendPacket(player, new PacketPlayOutEntityMetadata(entity.getEntityId(), dw, true));
     }
 
     @Override

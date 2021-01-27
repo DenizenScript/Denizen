@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.NPCTag;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public class SneakingTrait extends Trait implements Listener {
@@ -41,7 +40,7 @@ public class SneakingTrait extends Trait implements Listener {
             return;
         }
 
-        NMSHandler.getEntityHelper().setSneaking(((Player) npc.getEntity()), true);
+        NMSHandler.getEntityHelper().setSneaking(npc.getEntity(), true);
 
         sneaking = true;
     }
@@ -53,7 +52,7 @@ public class SneakingTrait extends Trait implements Listener {
         // Notated in SittingTrait
         new NPCTag(npc).action("stand", null);
 
-        NMSHandler.getEntityHelper().setSneaking(((Player) npc.getEntity()), false);
+        NMSHandler.getEntityHelper().setSneaking(npc.getEntity(), false);
 
         sneaking = false;
     }

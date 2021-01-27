@@ -27,9 +27,7 @@ public abstract class EntityHelper {
 
     public abstract void setAbsorption(LivingEntity entity, double value);
 
-    public void setSneaking(Player player, boolean sneak) {
-        player.setSneaking(sneak);
-    }
+    public abstract void setSneaking(Entity player, boolean sneak);
 
     public abstract double getDamageTo(LivingEntity attacker, Entity target);
 

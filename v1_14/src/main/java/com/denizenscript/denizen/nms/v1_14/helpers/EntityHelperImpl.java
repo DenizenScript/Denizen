@@ -52,11 +52,13 @@ public class EntityHelperImpl extends EntityHelper {
     public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_14_R1.Entity.class, "setPose", EntityPose.class);
 
     @Override
-    public void setSneaking(Player player, boolean sneak) {
-        player.setSneaking(sneak);
+    public void setSneaking(Entity player, boolean sneak) {
+        if (player instanceof Player) {
+            ((Player) player).setSneaking(sneak);
+        }
         EntityPose pose = sneak ? EntityPose.SNEAKING : EntityPose.STANDING;
         try {
-            ENTITY_SETPOSE.invoke(((CraftPlayer) player).getHandle(), pose);
+            ENTITY_SETPOSE.invoke(((CraftEntity) player).getHandle(), pose);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

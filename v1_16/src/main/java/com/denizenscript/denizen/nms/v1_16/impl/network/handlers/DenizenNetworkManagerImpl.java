@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
+import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
@@ -177,7 +178,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
             || processDisguiseForPacket(packet, genericfuturelistener)
-            || processCustomNameForPacket(packet, genericfuturelistener)
+            || processMetadataChangesForPacket(packet, genericfuturelistener)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
@@ -280,7 +281,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public PacketPlayOutEntityMetadata getModifiedMetadataFor(PacketPlayOutEntityMetadata metadataPacket) {
-        if (!RenameCommand.hasAnyDynamicRenames()) {
+        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty()) {
             return null;
         }
         try {
@@ -290,7 +291,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
             String nameToApply = RenameCommand.getCustomNameFor(ent.getUniqueID(), player.getBukkitEntity(), false);
-            if (nameToApply == null) {
+            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUniqueID(), player.getUniqueID());
+            if (nameToApply == null && forceSneak == null) {
                 return null;
             }
             List<DataWatcher.Item<?>> data = new ArrayList<>((List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket));
@@ -299,12 +301,23 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 DataWatcher.Item<?> item = data.get(i);
                 DataWatcherObject<?> watcherObject = item.a();
                 int watcherId = watcherObject.a();
-                if (watcherId == 2) { // 2: Custom name metadata
+                if (watcherId == 0 && forceSneak != null) { // 0: Entity flags
+                    byte val = (Byte) item.b();
+                    if (forceSneak) {
+                        val |= 0x02; // 8: Crouching
+                    }
+                    else {
+                        val &= ~0x02;
+                    }
+                    data.set(i, new DataWatcher.Item(watcherObject, val));
+                    any = true;
+                }
+                else if (watcherId == 2 && nameToApply != null) { // 2: Custom name metadata
                     Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
                     data.set(i, new DataWatcher.Item(watcherObject, name));
                     any = true;
                 }
-                else if (watcherId == 3) { // 3: custom name visible metadata
+                else if (watcherId == 3 && nameToApply != null) { // 3: custom name visible metadata
                     data.set(i, new DataWatcher.Item(watcherObject, true));
                     any = true;
                 }
@@ -323,26 +336,16 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
     }
 
-    public boolean processCustomNameForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processMetadataChangesForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (!(packet instanceof PacketPlayOutEntityMetadata)) {
             return false;
         }
-        if (!RenameCommand.hasAnyDynamicRenames()) {
+        PacketPlayOutEntityMetadata altPacket = getModifiedMetadataFor((PacketPlayOutEntityMetadata) packet);
+        if (altPacket == null) {
             return false;
         }
-        PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
-        try {
-            PacketPlayOutEntityMetadata altPacket = getModifiedMetadataFor(metadataPacket);
-            if (altPacket == null) {
-                return false;
-            }
-            oldManager.sendPacket(altPacket, genericfuturelistener);
-            return true;
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return false;
-        }
+        oldManager.sendPacket(altPacket, genericfuturelistener);
+        return true;
     }
 
     public void tryProcessMovePacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {

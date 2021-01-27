@@ -177,7 +177,7 @@ public class DisguiseCommand extends AbstractCommand {
             }
             fakeToSelf = FakeEntity.showFakeEntityTo(Collections.singletonList(player), as, player.getLocation(), null);
             NMSHandler.getPacketHelper().generateNoCollideTeam(player.getPlayerEntity(), fakeToSelf.entity.getUUID());
-            NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity());
+            NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), player.getPlayerEntity());
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -201,7 +201,7 @@ public class DisguiseCommand extends AbstractCommand {
                     @Override
                     public void run() {
                         if (player.isOnline()) {
-                            NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity());
+                            NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), player.getPlayerEntity());
                         }
                     }
                 }.runTaskLater(Denizen.getInstance(), 2);

@@ -76,8 +76,7 @@ public interface PacketHelper {
         throw new UnsupportedOperationException();
     }
 
-    default void sendEntityMetadataFlagsUpdate(Player player) {
-        throw new UnsupportedOperationException();
+    default void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
     }
 
     default void sendEntityEffect(Player player, Entity entity, byte effectId) {
