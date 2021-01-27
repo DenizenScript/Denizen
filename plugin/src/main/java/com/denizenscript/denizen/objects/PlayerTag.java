@@ -240,6 +240,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return Bukkit.getPlayer(offlinePlayer.getUniqueId());
     }
 
+    public UUID getUUID() {
+        if (offlinePlayer == null) {
+            return null;
+        }
+        return offlinePlayer.getUniqueId();
+    }
+
     public OfflinePlayer getOfflinePlayer() {
         return offlinePlayer;
     }
@@ -615,7 +622,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (!(other instanceof PlayerTag)) {
             return false;
         }
-        return getOfflinePlayer().getUniqueId().equals(((PlayerTag) other).getOfflinePlayer().getUniqueId());
+        return getOfflinePlayer().getUniqueId().equals(((PlayerTag) other).getUUID());
     }
 
     public static void registerTags() {
@@ -643,7 +650,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         registerTag("chat_history_list", (attribute, object) -> {
-            return new ListTag(PlayerTagBase.playerChatHistory.get(object.getOfflinePlayer().getUniqueId()));
+            return new ListTag(PlayerTagBase.playerChatHistory.get(object.getUUID()));
         });
 
         // <--[tag]
@@ -660,10 +667,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 x = attribute.getIntContext(1);
             }
             // No playerchathistory? Return null.
-            if (!PlayerTagBase.playerChatHistory.containsKey(object.getOfflinePlayer().getUniqueId())) {
+            if (!PlayerTagBase.playerChatHistory.containsKey(object.getUUID())) {
                 return null;
             }
-            List<String> messages = PlayerTagBase.playerChatHistory.get(object.getOfflinePlayer().getUniqueId());
+            List<String> messages = PlayerTagBase.playerChatHistory.get(object.getUUID());
             if (messages.size() < x || x < 1) {
                 return null;
             }
@@ -759,7 +766,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             Location eyeLoc = object.getEyeLocation();
             RayTraceResult result = eyeLoc.getWorld().rayTrace(eyeLoc, eyeLoc.getDirection(), range, FluidCollisionMode.NEVER, true, 0.01, (e) -> {
-                if (e.getUniqueId().equals(object.getOfflinePlayer().getUniqueId())) {
+                if (e.getUniqueId().equals(object.getUUID())) {
                     return false;
                 }
                 if (filterList != null) {
@@ -1384,7 +1391,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         registerTag("uuid", (attribute, object) -> {
-            return new ElementTag(object.getOfflinePlayer().getUniqueId().toString());
+            return new ElementTag(object.getUUID().toString());
         });
 
         // <--[tag]
@@ -2230,7 +2237,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerTag("fake_block_locations", (attribute, object) -> {
             ListTag list = new ListTag();
-            FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getOfflinePlayer().getUniqueId());
+            FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getUUID());
             if (map != null) {
                 for (LocationTag loc : map.byLocation.keySet()) {
                     list.addObject(loc.clone());
@@ -2252,7 +2259,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             LocationTag input = attribute.contextAsType(1, LocationTag.class);
-            FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getOfflinePlayer().getUniqueId());
+            FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getUUID());
             if (map != null) {
                 FakeBlock block = map.byLocation.get(input);
                 if (block != null) {
@@ -2271,7 +2278,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerTag("fake_entities", (attribute, object) -> {
             ListTag list = new ListTag();
-            FakeEntity.FakeEntityMap map = FakeEntity.playersToEntities.get(object.getOfflinePlayer().getUniqueId());
+            FakeEntity.FakeEntityMap map = FakeEntity.playersToEntities.get(object.getUUID());
             if (map != null) {
                 for (Map.Entry<Integer, FakeEntity> entry : map.byId.entrySet()) {
                     list.addObject(entry.getValue().entity);
@@ -2289,7 +2296,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Relates to <@link command disguise>.
         // -->
         registerTag("disguise_to_self", (attribute, object) -> {
-            HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getOfflinePlayer().getUniqueId());
+            HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
             if (map == null) {
                 return null;
             }
@@ -2300,7 +2307,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
                 }
-                disguise = map.get(player.getOfflinePlayer().getUniqueId());
+                disguise = map.get(player.getUUID());
                 if (disguise == null) {
                     disguise = map.get(null);
                 }

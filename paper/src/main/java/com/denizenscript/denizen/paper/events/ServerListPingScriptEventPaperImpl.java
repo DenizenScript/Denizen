@@ -33,7 +33,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
             else if (lower.startsWith("exclude_players:")) {
                 HashSet<UUID> exclusions = new HashSet<>();
                 for (PlayerTag player : ListTag.valueOf(determination.substring("exclude_players:".length()), getTagContext(path)).filter(PlayerTag.class, getTagContext(path))) {
-                    exclusions.add(player.getOfflinePlayer().getUniqueId());
+                    exclusions.add(player.getUUID());
                 }
                 Iterator<Player> players = ((PaperServerListPingEvent) event).iterator();
                 while (players.hasNext()) {

@@ -176,7 +176,7 @@ public class ClickableCommand extends AbstractCommand {
         if (forPlayers != null) {
             newClickable.forPlayers = new HashSet<>(forPlayers.size());
             for (PlayerTag player : forPlayers) {
-                newClickable.forPlayers.add(player.getOfflinePlayer().getUniqueId());
+                newClickable.forPlayers.add(player.getUUID());
             }
         }
         clickables.put(id, newClickable);

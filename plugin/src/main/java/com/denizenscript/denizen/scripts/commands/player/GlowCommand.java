@@ -99,7 +99,7 @@ public class GlowCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities) + glowing.debug());
         }
         boolean shouldGlow = glowing.asBoolean();
-        final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer().getUniqueId();
+        final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getUUID();
         for (EntityTag ent : entities) {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, shouldGlow);

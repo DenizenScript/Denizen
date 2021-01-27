@@ -156,7 +156,7 @@ public class SneakCommand extends AbstractCommand {
                 }
                 else {
                     for (PlayerTag player : forPlayers) {
-                        updateFakeSneak(entity.getUUID(), player.getOfflinePlayer().getUniqueId(), shouldSneak, shouldFake);
+                        updateFakeSneak(entity.getUUID(), player.getUUID(), shouldSneak, shouldFake);
                         NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), entity.getBukkitEntity());
                     }
                 }

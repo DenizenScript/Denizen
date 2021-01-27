@@ -186,7 +186,7 @@ public class AttachCommand extends AbstractCommand {
             }
             else {
                 for (PlayerTag player : forPlayers) {
-                    procPlayer.accept(entity, player.getOfflinePlayer().getUniqueId());
+                    procPlayer.accept(entity, player.getUUID());
                 }
             }
         }

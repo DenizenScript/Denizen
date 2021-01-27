@@ -83,7 +83,7 @@ public class FakeEntity {
             }
         }
         for (PlayerTag player : players) {
-            FakeEntity.FakeEntityMap mapping = playersToEntities.get(player.getOfflinePlayer().getUniqueId());
+            FakeEntity.FakeEntityMap mapping = playersToEntities.get(player.getUUID());
             mapping.remove(this);
         }
         entity.isFakeValid = false;

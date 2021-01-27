@@ -145,7 +145,7 @@ public class DisguiseCommand extends AbstractCommand {
         }
 
         public void removeFor(PlayerTag player) {
-            if (player.getOfflinePlayer().getUniqueId().equals(entity.getUUID())) {
+            if (player.getUUID().equals(entity.getUUID())) {
                 if (fakeToSelf != null) {
                     stopFake(player);
                 }
@@ -213,7 +213,7 @@ public class DisguiseCommand extends AbstractCommand {
         public void sendTo(List<PlayerTag> players) {
             PlayerTag remove = null;
             for (PlayerTag player : players) {
-                if (player.getOfflinePlayer().getUniqueId().equals(entity.getUUID())) {
+                if (player.getUUID().equals(entity.getUUID())) {
                     remove = player;
                     startFake(player);
                 }
@@ -330,7 +330,7 @@ public class DisguiseCommand extends AbstractCommand {
             }
             else {
                 for (PlayerTag player : players) {
-                    TrackedDisguise disguise = playerMap.remove(player.getOfflinePlayer().getUniqueId());
+                    TrackedDisguise disguise = playerMap.remove(player.getUUID());
                     if (disguise != null) {
                         disguise.isActive = false;
                         disguise.removeFor(player);
@@ -370,7 +370,7 @@ public class DisguiseCommand extends AbstractCommand {
                         playerMap = new HashMap<>();
                         disguises.put(entity.getUUID(), playerMap);
                     }
-                    playerMap.put(player.getOfflinePlayer().getUniqueId(), disguise);
+                    playerMap.put(player.getUUID(), disguise);
                     disguise.isActive = true;
                 }
                 disguise.sendTo(players);

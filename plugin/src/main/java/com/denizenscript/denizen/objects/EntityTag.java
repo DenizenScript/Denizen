@@ -2406,7 +2406,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
                 }
-                return new ElementTag(map.containsKey(player.getOfflinePlayer().getUniqueId()) || map.containsKey(null));
+                return new ElementTag(map.containsKey(player.getUUID()) || map.containsKey(null));
             }
             else {
                 return new ElementTag(map.containsKey(null));
@@ -2433,7 +2433,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
                 }
-                disguise = map.get(player.getOfflinePlayer().getUniqueId());
+                disguise = map.get(player.getUUID());
                 if (disguise == null) {
                     disguise = map.get(null);
                 }
@@ -2467,7 +2467,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
                 }
-                disguise = map.get(player.getOfflinePlayer().getUniqueId());
+                disguise = map.get(player.getUUID());
                 if (disguise == null) {
                     disguise = map.get(null);
                 }

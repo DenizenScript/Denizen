@@ -182,7 +182,7 @@ public class RenameCommand extends AbstractCommand {
                         }
                         else {
                             for (PlayerTag player : players) {
-                                playerToFuncMap.put(player.getOfflinePlayer().getUniqueId(), renamer);
+                                playerToFuncMap.put(player.getUUID(), renamer);
                             }
                         }
                         if (players == null) {

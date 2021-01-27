@@ -211,7 +211,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public void cancellationChanged() {
         if (cancelled) {
-            HashSet<String> inAreas = playersInArea.get(currentPlayer.getOfflinePlayer().getUniqueId());
+            HashSet<String> inAreas = playersInArea.get(currentPlayer.getUUID());
             if (isEntering) {
                 inAreas.remove(CoreUtilities.toLowerCase(area.getNoteName()));
             }

@@ -122,7 +122,7 @@ public class FakeBlock {
                 location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
             }
         }
-        FakeBlockMap mapping = blocks.get(player.getOfflinePlayer().getUniqueId());
+        FakeBlockMap mapping = blocks.get(player.getUUID());
         mapping.remove(this);
     }
 
