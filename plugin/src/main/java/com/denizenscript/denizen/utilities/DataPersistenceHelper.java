@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataAdapterContext;
@@ -33,7 +34,7 @@ public class DataPersistenceHelper {
 
         @Override
         public ObjectTag fromPrimitive(String primitive, PersistentDataAdapterContext context) {
-            return ObjectFetcher.pickObjectFor(primitive);
+            return ObjectFetcher.pickObjectFor(primitive, CoreUtilities.noDebugContext);
         }
     }
 

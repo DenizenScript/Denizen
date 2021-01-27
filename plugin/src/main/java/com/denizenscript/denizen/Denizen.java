@@ -595,7 +595,7 @@ public class Denizen extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
         if (cmd.getName().equals("denizenclickable")) {
             if (args.length != 1 || !(sender instanceof Player)) {
                 return false;
