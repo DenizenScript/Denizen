@@ -17,11 +17,11 @@ commands:
     permission: denizen.clickable
   ex:
     description: Executes a Denizen script command.
-    usage: /ex <Denizen script command> (arguments)
+    usage: /ex (-q) <Denizen script command> (arguments)
     permission: denizen.ex
   exs:
     description: Executes a Denizen script command in a sustained queue.
-    usage: /exs <Denizen script command> (arguments)
+    usage: /exs (-q) <Denizen script command> (arguments)
     permission: denizen.ex
 
 permissions:

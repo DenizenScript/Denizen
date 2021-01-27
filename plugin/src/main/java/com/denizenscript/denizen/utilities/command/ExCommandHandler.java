@@ -34,7 +34,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 
         // <--[language]
         // @name /ex command
@@ -69,7 +69,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         //
         // -->
 
-        if (cmdName.equalsIgnoreCase("ex")) {
+        if (cmd.getName().equalsIgnoreCase("ex")) {
             List<Object> entries = new ArrayList<>();
             String entry = String.join(" ", args);
             boolean quiet = !Settings.showExDebug();

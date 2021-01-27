@@ -63,8 +63,8 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
-        if (cmdName.equalsIgnoreCase("exs")) {
+    public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("exs")) {
             List<Object> entries = new ArrayList<>();
             String entry = String.join(" ", args);
             boolean quiet = !Settings.showExDebug();
