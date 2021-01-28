@@ -219,7 +219,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        return PlayerFlagHandler.getTrackerFor(getOfflinePlayer().getUniqueId());
+        return PlayerFlagHandler.getTrackerFor(getUUID());
     }
 
     @Override
@@ -614,7 +614,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public int hashCode() {
-        return getOfflinePlayer().getUniqueId().hashCode();
+        return getUUID().hashCode();
     }
 
     @Override
@@ -622,7 +622,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (!(other instanceof PlayerTag)) {
             return false;
         }
-        return getOfflinePlayer().getUniqueId().equals(((PlayerTag) other).getUUID());
+        return getUUID().equals(((PlayerTag) other).getUUID());
     }
 
     public static void registerTags() {
@@ -790,7 +790,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
                 return true;
             });
-            if (result.getHitEntity() == null) {
+            if (result == null || result.getHitEntity() == null) {
                 return null;
             }
             return new EntityTag(result.getHitEntity());
@@ -2377,10 +2377,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("noclip") && mechanism.hasValue()) {
             if (mechanism.getValue().asBoolean()) {
-                DenizenPacketHandler.forceNoclip.add(getOfflinePlayer().getUniqueId());
+                DenizenPacketHandler.forceNoclip.add(getUUID());
             }
             else {
-                DenizenPacketHandler.forceNoclip.remove(getOfflinePlayer().getUniqueId());
+                DenizenPacketHandler.forceNoclip.remove(getUUID());
             }
         }
 
@@ -3572,10 +3572,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else {
                 if (mechanism.matches("show_to_players")) {
-                    EntityHelper.removeHide(EntityHelper.DEFAULT_HIDE, getOfflinePlayer().getUniqueId());
+                    EntityHelper.removeHide(EntityHelper.DEFAULT_HIDE, getUUID());
                 }
                 if (mechanism.matches("hide_from_players")) {
-                    NMSHandler.getEntityHelper().addHide(EntityHelper.DEFAULT_HIDE, getOfflinePlayer().getUniqueId());
+                    NMSHandler.getEntityHelper().addHide(EntityHelper.DEFAULT_HIDE, getUUID());
                 }
             }
         }

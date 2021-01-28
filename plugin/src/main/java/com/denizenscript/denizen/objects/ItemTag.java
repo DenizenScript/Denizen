@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
@@ -42,7 +41,6 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
