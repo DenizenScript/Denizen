@@ -56,6 +56,8 @@ public class ShowFakeCommand extends AbstractCommand {
     // You can enable the player to walk through fake air via <@link mechanism PlayerTag.noclip>.
     // Note as well that some clientside block effects may occur (eg fake fire may appear momentarily to actually ignite things, but won't actually damage them).
     //
+    // Warning: extremely complex chunks (those with a significant variety of block types in a small area) might not be able to retain fake blocks over time properly.
+    //
     // @Tags
     // <PlayerTag.fake_block_locations>
     // <PlayerTag.fake_block[<location>]>

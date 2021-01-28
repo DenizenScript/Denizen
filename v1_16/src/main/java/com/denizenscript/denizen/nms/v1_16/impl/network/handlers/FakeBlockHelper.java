@@ -112,6 +112,12 @@ public class FakeBlockHelper {
                         outputSerial.a(blockListHelper); // writeLongs
                         continue;
                     }
+                    char dataBitsF = (char)(64 / width);
+                    int expectedLength = (4096 + dataBitsF - 1) / dataBitsF;
+                    if (blockListHelper.length != expectedLength) {
+                        return originalPacket; // This chunk is too-complex and is using non-standard chunk format. For now, just ignore it.
+                        // TODO: Add support for processing very-complex chunks (DataPaletteHash might be responsible for the unique format?)
+                    }
                     DataBits bits = new DataBits(width, 4096, blockListHelper);
                     int minY = y << 4;
                     int maxY = (y << 4) + 16;
