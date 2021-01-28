@@ -616,7 +616,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 int chunkZ = CHUNKZ_MAPCHUNK.getInt(packet);
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getWorld().getWorld().getName());
                 List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUniqueID(), chunkCoord);
-                if (blocks == null) {
+                if (blocks == null || blocks.isEmpty()) {
                     return false;
                 }
                 PacketPlayOutMapChunk newPacket = FakeBlockHelper.handleMapChunkPacket((PacketPlayOutMapChunk) packet, blocks);

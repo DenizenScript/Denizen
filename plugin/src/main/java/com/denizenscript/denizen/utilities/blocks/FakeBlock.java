@@ -42,6 +42,9 @@ public class FakeBlock {
                 List<FakeBlock> chunkBlocks = byChunk.get(block.chunkCoord);
                 if (chunkBlocks != null) {
                     chunkBlocks.remove(block);
+                    if (chunkBlocks.isEmpty()) {
+                        byChunk.remove(block.chunkCoord);
+                    }
                 }
             }
         }
@@ -124,6 +127,9 @@ public class FakeBlock {
         }
         FakeBlockMap mapping = blocks.get(player.getUUID());
         mapping.remove(this);
+        if (mapping.byChunk.isEmpty()) {
+            blocks.remove(player.getUUID());
+        }
     }
 
     private void updateBlock(MaterialTag material, DurationTag duration) {
