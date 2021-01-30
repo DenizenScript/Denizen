@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
@@ -670,6 +671,46 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
         }, "get_pose");
+
+        // <--[tag]
+        // @attribute <NPCTag.name_hologram_npc>
+        // @returns NPCTag
+        // @description
+        // Returns the NPCTag of a hologram attached to this NPC as its nameplate.
+        // -->
+        registerTag("name_hologram_npc", (attribute, object) -> {
+            if (!object.getCitizen().hasTrait(HologramTrait.class)) {
+                return null;
+            }
+            HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
+            NPC npc = ReflectionHelper.getFieldValue(HologramTrait.class, "nameNPC", hologram);
+            if (npc == null) {
+                return null;
+            }
+            return new NPCTag(npc);
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.hologram_npcs>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns the list of hologram NPCs attached to an NPC.
+        // -->
+        registerTag("hologram_npcs", (attribute, object) -> {
+            if (!object.getCitizen().hasTrait(HologramTrait.class)) {
+                return null;
+            }
+            HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
+            List<NPC> npcs = ReflectionHelper.getFieldValue(HologramTrait.class, "hologramNPCs", hologram);
+            if (npcs == null || npcs.isEmpty()) {
+                return null;
+            }
+            ListTag output = new ListTag();
+            for (NPC npc : npcs) {
+                output.addObject(new NPCTag(npc));
+            }
+            return output;
+        });
 
         // <--[tag]
         // @attribute <NPCTag.hologram_lines>
