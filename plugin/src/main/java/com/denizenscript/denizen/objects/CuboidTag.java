@@ -350,24 +350,19 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return true;
             }
         }
-
-        // Does not match any of the pairs
         return false;
     }
 
     public ListTag getShell() {
         int max = Settings.blockTagsMaxBlocks();
         int index = 0;
-
         ListTag list = new ListTag();
-
         for (LocationPair pair : pairs) {
             LocationTag low = pair.low;
             LocationTag high = pair.high;
             int y_distance = pair.yDistance();
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
-
             for (int x = 0; x < x_distance; x++) {
                 for (int y = 0; y < y_distance; y++) {
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, low.getBlockZ()));
@@ -401,99 +396,70 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return list;
     }
 
-    public ListTag getOutline() {
-
-        //    +-----2
-        //   /|    /|
-        //  +-----+ |
-        //  | +---|-+
-        //  |/    |/
-        //  1-----+
+    public ListTag getOutline2D(double y) {
         int max = Settings.blockTagsMaxBlocks();
         int index = 0;
-
         ListTag list = new ListTag();
-
         for (LocationPair pair : pairs) {
+            LocationTag loc_1 = pair.low;
+            LocationTag loc_2 = pair.high;
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
+            for (int x = loc_1.getBlockX(); x < loc_1.getBlockX() + x_distance; x++) {
+                list.addObject(new LocationTag(loc_1.getWorld(), x, y, loc_2.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), x, y, loc_1.getBlockZ()));
+                index++;
+                if (index > max) {
+                    return list;
+                }
+            }
+            for (int z = loc_1.getBlockZ(); z < loc_1.getBlockZ() + z_distance; z++) {
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_2.getBlockX(), y, z));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_1.getBlockX(), y, z));
+                index++;
+                if (index > max) {
+                    return list;
+                }
+            }
+        }
+        return list;
+    }
 
+    public ListTag getOutline() {
+        int max = Settings.blockTagsMaxBlocks();
+        int index = 0;
+        ListTag list = new ListTag();
+        for (LocationPair pair : pairs) {
             LocationTag loc_1 = pair.low;
             LocationTag loc_2 = pair.high;
             int y_distance = pair.yDistance();
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
-
             for (int y = loc_1.getBlockY(); y < loc_1.getBlockY() + y_distance; y++) {
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_1.getBlockX(),
-                        y,
-                        loc_1.getBlockZ()));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_2.getBlockX(),
-                        y,
-                        loc_2.getBlockZ()));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_1.getBlockX(),
-                        y,
-                        loc_2.getBlockZ()));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_2.getBlockX(),
-                        y,
-                        loc_1.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_1.getBlockX(), y, loc_1.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_2.getBlockX(), y, loc_2.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_1.getBlockX(), y, loc_2.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_2.getBlockX(), y, loc_1.getBlockZ()));
                 index++;
                 if (index > max) {
                     return list;
                 }
             }
-
             for (int x = loc_1.getBlockX(); x < loc_1.getBlockX() + x_distance; x++) {
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        x,
-                        loc_1.getBlockY(),
-                        loc_1.getBlockZ()));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        x,
-                        loc_1.getBlockY(),
-                        loc_2.getBlockZ()));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        x,
-                        loc_2.getBlockY(),
-                        loc_2.getBlockZ()));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        x,
-                        loc_2.getBlockY(),
-                        loc_1.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), x, loc_1.getBlockY(), loc_1.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), x, loc_1.getBlockY(), loc_2.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), x, loc_2.getBlockY(), loc_2.getBlockZ()));
+                list.addObject(new LocationTag(loc_1.getWorld(), x, loc_2.getBlockY(), loc_1.getBlockZ()));
                 index++;
                 if (index > max) {
                     return list;
                 }
             }
-
             for (int z = loc_1.getBlockZ(); z < loc_1.getBlockZ() + z_distance; z++) {
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_1.getBlockX(),
-                        loc_1.getBlockY(),
-                        z));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_2.getBlockX(),
-                        loc_2.getBlockY(),
-                        z));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_1.getBlockX(),
-                        loc_2.getBlockY(),
-                        z));
-
-                list.addObject(new LocationTag(loc_1.getWorld(),
-                        loc_2.getBlockX(),
-                        loc_1.getBlockY(),
-                        z));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_1.getBlockX(), loc_1.getBlockY(), z));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_2.getBlockX(), loc_2.getBlockY(), z));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_1.getBlockX(), loc_2.getBlockY(), z));
+                list.addObject(new LocationTag(loc_1.getWorld(), loc_2.getBlockX(), loc_1.getBlockY(), z));
                 index++;
                 if (index > max) {
                     return list;
@@ -538,14 +504,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         LocationTag loc;
         List<LocationTag> list = new ArrayList<>();
         int index = 0;
-
         for (LocationPair pair : pairs) {
-
             LocationTag loc_1 = pair.low;
             int y_distance = pair.yDistance();
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
-
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
@@ -563,7 +526,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     }
                 }
             }
-
         }
         return list;
     }
@@ -834,6 +796,21 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         registerTag("outline", (attribute, cuboid) -> {
             return cuboid.getOutline();
         }, "get_outline");
+
+        // <--[tag]
+        // @attribute <CuboidTag.outline_2d[<#.#>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a list of block locations along the 2D outline of this CuboidTag, at the specified Y level.
+        // -->
+        registerTag("outline_2d", (attribute, cuboid) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("CuboidTag.outline_2d[...] tag must have an input.");
+                return null;
+            }
+            double y = attribute.getDoubleContext(1);
+            return cuboid.getOutline2D(y);
+        });
 
         // <--[tag]
         // @attribute <CuboidTag.intersects[<cuboid>]>
