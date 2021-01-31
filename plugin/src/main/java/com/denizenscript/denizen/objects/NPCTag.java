@@ -676,7 +676,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.name_hologram_npc>
         // @returns NPCTag
         // @description
-        // Returns the NPCTag of a hologram attached to this NPC as its nameplate.
+        // Returns the NPCTag of a hologram attached to this NPC as its nameplate (if any).
+        // Note that this can regenerate at any time.
         // -->
         registerTag("name_hologram_npc", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
@@ -694,7 +695,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.hologram_npcs>
         // @returns ListTag(NPCTag)
         // @description
-        // Returns the list of hologram NPCs attached to an NPC.
+        // Returns the list of hologram NPCs attached to an NPC (if any).
+        // Note that these can regenerate at any time.
         // -->
         registerTag("hologram_npcs", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {

@@ -192,6 +192,8 @@ public class FormattedTextHelper {
 
     public static AsciiMatcher allowedCharCodes = new AsciiMatcher("0123456789abcdefABCDEFklmnorxKLMNORX[");
 
+    public static AsciiMatcher hexMatcher = new AsciiMatcher("0123456789abcdefABCDEF");
+
     public static AsciiMatcher colorCodesOrReset = new AsciiMatcher("0123456789abcdefABCDEFrR"); // Any color code that can be invalidated
 
     public static AsciiMatcher colorCodeInvalidator = new AsciiMatcher("0123456789abcdefABCDEFrRxX"); // Any code that can invalidate the colors above
@@ -231,6 +233,104 @@ public class FormattedTextHelper {
         return output.toString();
     }
 
+    public static TextComponent getCleanRef() {
+        TextComponent reference = new TextComponent();
+        reference.setBold(false);
+        reference.setItalic(false);
+        reference.setStrikethrough(false);
+        reference.setUnderlined(false);
+        reference.setObfuscated(false);
+        return reference;
+    }
+
+    public static BaseComponent[] parseSimpleColorsOnly(String str) {
+        TextComponent root = new TextComponent();
+        int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
+        int lastStart = 0;
+        if (firstChar > 0) {
+            root.addExtra(new TextComponent(str.substring(0, firstChar)));
+            lastStart = firstChar;
+        }
+        TextComponent nextText = new TextComponent();
+        while (firstChar != -1 && firstChar + 1 < str.length()) {
+            char c = str.charAt(firstChar + 1);
+            if (allowedCharCodes.isMatch(c)) {
+                if (c == 'r' || c == 'R') {
+                    nextText.setText(str.substring(lastStart, firstChar));
+                    if (!nextText.getText().isEmpty()) {
+                        root.addExtra(nextText);
+                    }
+                    nextText = getCleanRef();
+                    lastStart = firstChar + 2;
+                }
+                else if (c == 'X' || c == 'x' && firstChar + 13 < str.length()) {
+                    StringBuilder color = new StringBuilder(12);
+                    color.append("#");
+                    for (int i = 1; i <= 6; i++) {
+                        if (str.charAt(firstChar + i * 2) != ChatColor.COLOR_CHAR) {
+                            color = null;
+                            break;
+                        }
+                        char hexChar = str.charAt(firstChar + 1 + i * 2);
+                        if (!hexMatcher.isMatch(hexChar)) {
+                            color = null;
+                            break;
+                        }
+                        color.append(hexChar);
+                    }
+                    if (color != null) {
+                        nextText.setText(str.substring(lastStart, firstChar));
+                        if (!nextText.getText().isEmpty()) {
+                            root.addExtra(nextText);
+                        }
+                        nextText = getCleanRef();
+                        nextText.setColor(ChatColor.of(color.toString()));
+                        firstChar += 12;
+                        lastStart = firstChar + 2;
+                    }
+                }
+                else if (colorCodesOrReset.isMatch(c)) {
+                    nextText.setText(str.substring(lastStart, firstChar));
+                    if (!nextText.getText().isEmpty()) {
+                        root.addExtra(nextText);
+                    }
+                    nextText = getCleanRef();
+                    nextText.setColor(ChatColor.getByChar(c));
+                    lastStart = firstChar + 2;
+                }
+                else { // format code
+                    nextText.setText(str.substring(lastStart, firstChar));
+                    if (!nextText.getText().isEmpty()) {
+                        root.addExtra(nextText);
+                    }
+                    nextText = copyFormatToNewText(nextText);
+                    if (c == 'k' || c == 'K') {
+                        nextText.setObfuscated(true);
+                    }
+                    else if (c == 'l' || c == 'L') {
+                        nextText.setBold(true);
+                    }
+                    else if (c == 'm' || c == 'M') {
+                        nextText.setStrikethrough(true);
+                    }
+                    else if (c == 'n' || c == 'N') {
+                        nextText.setUnderlined(true);
+                    }
+                    else if (c == 'o' || c == 'O') {
+                        nextText.setItalic(true);
+                    }
+                    lastStart = firstChar + 2;
+                }
+            }
+            firstChar = str.indexOf(ChatColor.COLOR_CHAR, firstChar + 1);
+        }
+        if (lastStart < str.length()) {
+            nextText.setText(str.substring(lastStart));
+            root.addExtra(nextText);
+        }
+        return new BaseComponent[] { root };
+    }
+
     public static BaseComponent[] parse(String str, ChatColor baseColor, boolean cleanBase) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
@@ -240,6 +340,9 @@ public class FormattedTextHelper {
             return new BaseComponent[] { base };
         }
         str = cleanRedundantCodes(str);
+        if (cleanBase && str.length() < 256 && !str.contains(ChatColor.COLOR_CHAR + "[")) {
+            return parseSimpleColorsOnly(str);
+        }
         TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();
         if (cleanBase) {
@@ -265,6 +368,9 @@ public class FormattedTextHelper {
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == ChatColor.COLOR_CHAR && i + 1 < chars.length) {
                 char code = chars[i + 1];
+                if (!allowedCharCodes.isMatch(code)) {
+                    continue;
+                }
                 if (code == '[') {
                     int endBracket = str.indexOf(']', i + 2);
                     if (endBracket == -1) {
@@ -422,7 +528,15 @@ public class FormattedTextHelper {
                     started = endBracket + 1;
                     continue;
                 }
-                else if ((code >= '0' && code <= '9') || (code >= 'a' && code <= 'f') || (code >= 'A' && code <= 'F')) {
+                else if (code == 'r' || code == 'R') {
+                    nextText.setText(nextText.getText() + str.substring(started, i));
+                    if (!nextText.getText().isEmpty()) {
+                        base.addExtra(nextText);
+                    }
+                    nextText = new TextComponent();
+                    nextText.setColor(baseColor);
+                }
+                else if (colorCodesOrReset.isMatch(code)) {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     if (!nextText.getText().isEmpty()) {
                         base.addExtra(nextText);
@@ -430,7 +544,38 @@ public class FormattedTextHelper {
                     nextText = new TextComponent();
                     nextText.setColor(ChatColor.getByChar(code));
                 }
-                else if ((code >= 'k' && code <= 'o') || (code >= 'K' && code <= 'O')) {
+                else if (code == 'x') {
+                    if (i + 13 >= chars.length) {
+                        continue;
+                    }
+                    StringBuilder color = new StringBuilder(12);
+                    color.append("#");
+                    for (int c = 1; c <= 6; c++) {
+                        if (chars[i + c * 2] != ChatColor.COLOR_CHAR) {
+                            color = null;
+                            break;
+                        }
+                        char hexPart = chars[i + 1 + c * 2];
+                        if (!hexMatcher.isMatch(hexPart)) {
+                            color = null;
+                            break;
+                        }
+                        color.append(hexPart);
+                    }
+                    if (color == null) {
+                        continue;
+                    }
+                    nextText.setText(nextText.getText() + str.substring(started, i));
+                    if (!nextText.getText().isEmpty()) {
+                        base.addExtra(nextText);
+                    }
+                    nextText = new TextComponent();
+                    nextText.setColor(ChatColor.of(color.toString()));
+                    i += 13;
+                    started = i + 1;
+                    continue;
+                }
+                else {
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     if (!nextText.getText().isEmpty()) {
                         base.addExtra(nextText);
@@ -451,43 +596,6 @@ public class FormattedTextHelper {
                     else if (code == 'o' || code == 'O') {
                         nextText.setItalic(true);
                     }
-                }
-                else if (code == 'r' || code == 'R') {
-                    nextText.setText(nextText.getText() + str.substring(started, i));
-                    if (!nextText.getText().isEmpty()) {
-                        base.addExtra(nextText);
-                    }
-                    nextText = new TextComponent();
-                    nextText.setColor(baseColor);
-                }
-                else if (code == 'x') {
-                    if (i + 13 >= chars.length) {
-                        continue;
-                    }
-                    StringBuilder color = new StringBuilder(12);
-                    color.append("#");
-                    for (int c = 1; c <= 6; c++) {
-                        if (chars[i + c * 2] != ChatColor.COLOR_CHAR) {
-                            color = null;
-                            break;
-                        }
-                        color.append(chars[i + 1 + c * 2]);
-                    }
-                    if (color == null) {
-                        continue;
-                    }
-                    nextText.setText(nextText.getText() + str.substring(started, i));
-                    if (!nextText.getText().isEmpty()) {
-                        base.addExtra(nextText);
-                    }
-                    nextText = new TextComponent();
-                    nextText.setColor(ChatColor.of(color.toString()));
-                    i += 13;
-                    started = i + 1;
-                    continue;
-                }
-                else {
-                    continue;
                 }
                 i++;
                 started = i + 1;
