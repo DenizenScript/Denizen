@@ -5,9 +5,11 @@ import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,6 +35,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     // <context.inventory> returns the InventoryTag of the crafting inventory.
     // <context.item> returns the ItemTag to be formed in the result slot.
     // <context.recipe> returns a ListTag of ItemTags in the recipe.
+    // <context.recipe_id> returns the ID of the recipe that was formed.
     //
     // @Determine
     // ItemTag to change the item that is formed in the result slot.
@@ -118,6 +121,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
                 }
             }
             return recipe;
+        }
+        else if (name.equals("recipe_id") && event.getRecipe() instanceof Keyed) {
+            return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
         }
         return super.getContext(name);
     }

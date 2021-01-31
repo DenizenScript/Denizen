@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
@@ -39,6 +40,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the ItemTag to be crafted.
     // <context.amount> returns the amount of the item that will be crafted (usually 1, except when shift clicked. Can be above 64).
     // <context.recipe> returns a ListTag of ItemTags in the recipe.
+    // <context.recipe_id> returns the ID of the recipe that is being crafted.
     //
     // @Determine
     // ItemTag to change the item that is crafted.
@@ -125,6 +127,9 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
                 }
             }
             return recipe;
+        }
+        else if (name.equals("recipe_id") && event.getRecipe() instanceof Keyed) {
+            return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
         }
         return super.getContext(name);
     }
