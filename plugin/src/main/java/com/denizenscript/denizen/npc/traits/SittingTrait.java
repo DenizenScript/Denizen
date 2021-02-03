@@ -46,6 +46,9 @@ public class SittingTrait extends Trait implements Listener {
                 sit();
             }
             else {
+                chairLocation = chairLocation.clone();
+                chairLocation.setYaw(npc.getStoredLocation().getYaw());
+                chairLocation.setPitch(npc.getStoredLocation().getPitch());
                 sit(chairLocation);
             }
         }
