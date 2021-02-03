@@ -27,7 +27,7 @@ public class DebugSubmit extends Thread {
         BufferedReader in = null;
         try {
             // Open a connection to the paste server
-            URL url = new URL("http://one.denizenscript.com/paste");
+            URL url = new URL("http://paste.denizenscript.com/New/Log");
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setDoInput(true);
             uc.setDoOutput(true);
@@ -95,7 +95,7 @@ public class DebugSubmit extends Thread {
             boolean bungee = Bukkit.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
-                    + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
+                    + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
                     + "&pastecontents=" + URLEncoder.encode(("Java Version: " + System.getProperty("java.version")
                     + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
                     + "\nServer Version: " + Bukkit.getServer().getName() + " version " + Bukkit.getServer().getVersion()

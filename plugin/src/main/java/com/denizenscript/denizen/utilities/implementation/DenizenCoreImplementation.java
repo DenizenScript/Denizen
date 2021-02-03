@@ -495,7 +495,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                         processResult.accept(null);
                     }
                     else {
-                        processResult.accept("https://one.denizenscript.com" + submit.Result);
+                        processResult.accept(submit.Result);
                     }
                 }
             }
