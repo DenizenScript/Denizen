@@ -2517,11 +2517,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
     }
 
-    public String describe() {
-        String escript = getEntityScript();
-        return "e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName()) + PropertyParser.getPropertiesString(this);
-    }
-
     public static ObjectTagProcessor<EntityTag> tagProcessor = new ObjectTagProcessor<>();
 
     public static void registerSpawnedOnlyTag(String name, TagRunnable.ObjectInterface<EntityTag> runnable, String... variants) {

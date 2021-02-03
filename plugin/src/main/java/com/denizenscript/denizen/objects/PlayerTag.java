@@ -778,7 +778,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         if (CoreUtilities.equalsIgnoreCase(val, e.getType().name())) {
                             return true;
                         }
-                        if (CoreUtilities.equalsIgnoreCase(val, ent.getEntityScript())) {
+                        String script = ent.getEntityScript();
+                        if (script != null && CoreUtilities.equalsIgnoreCase(val, script)) {
                             return true;
                         }
                         EntityTag match = EntityTag.valueOf(val, CoreUtilities.noDebugContext);
