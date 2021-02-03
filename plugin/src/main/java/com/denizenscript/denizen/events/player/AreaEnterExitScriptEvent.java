@@ -42,8 +42,8 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     // @Context
     // <context.area> returns the area object that was entered or exited.
     // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, QUIT, TELEPORT, VEHICLE.
-    // <context.to> returns the location the player moved to.
-    // <context.from> returns the location the player moved from (when available).
+    // <context.to> returns the location the entity moved to (might not be available in exit events).
+    // <context.from> returns the location the entity moved from (when available, depending on cause).
     // <context.entity> returns the entity that entered/exited an area.
     //
     // @Player When the entity is a player.
@@ -151,7 +151,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             }
             return new ElementTag(cause);
         }
-        else if (name.equals("to")) {
+        else if (name.equals("to") && to != null) {
             return new LocationTag(to);
         }
         else if (name.equals("from")) {
@@ -177,7 +177,6 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public void init() {
-        registerCorrectClass();
         doTrackAll = false;
         boolean needsMatchers = false;
         HashSet<String> exacts = new HashSet<>();
@@ -211,6 +210,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         }
         exactTracked = needsMatchers ? null : exacts.toArray(new String[0]);
         matchers = needsMatchers ? matchList.toArray(new MatchHelper[0]) : null;
+        registerCorrectClass();
     }
 
     public boolean doTrackAll = false;
@@ -246,10 +246,14 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public void processSingle(AreaContainmentObject obj, EntityTag entity, HashSet<String> inAreas, Location pos, Event eventCause) {
-        boolean containedNow = obj.doesContainLocation(pos);
+        boolean containedNow = pos != null && obj.doesContainLocation(pos);
         boolean wasContained = inAreas != null && inAreas.contains(obj.getNoteName());
         if (containedNow == wasContained) {
             return;
+        }
+        if (inAreas == null) {
+            inAreas = new HashSet<>();
+            entitiesInArea.put(entity.getUUID(), inAreas);
         }
         if (containedNow) {
             inAreas.add(obj.getNoteName());
@@ -269,10 +273,6 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             return;
         }
         HashSet<String> inAreas = entitiesInArea.get(entity.getUUID());
-        if (inAreas == null) {
-            inAreas = new HashSet<>();
-            entitiesInArea.put(entity.getUUID(), inAreas);
-        }
         if (doTrackAll || matchers != null) {
             for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
                 if (anyMatch(cuboid.noteName)) {
@@ -300,13 +300,16 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                 processSingle((AreaContainmentObject) obj, entity, inAreas, pos, eventCause);
             }
         }
+        if (inAreas != null && inAreas.isEmpty()) {
+            entitiesInArea.remove(entity.getUUID());
+        }
     }
 
     public class SpigotListeners implements Listener {
 
         @EventHandler
         public void onQuit(PlayerQuitEvent event) {
-            processNewPosition(new EntityTag(event.getPlayer()), new Location(event.getPlayer().getWorld(), 10000000d, 10000000d, 10000000d), event);
+            processNewPosition(new EntityTag(event.getPlayer()), null, event);
             entitiesInArea.remove(event.getPlayer().getUniqueId());
         }
 
