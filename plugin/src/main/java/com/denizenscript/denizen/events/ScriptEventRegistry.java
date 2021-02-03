@@ -111,7 +111,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
 
         // Player events
-        ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEvent());
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockDropsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new ChatScriptEvent());

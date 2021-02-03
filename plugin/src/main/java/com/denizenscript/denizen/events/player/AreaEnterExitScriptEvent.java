@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,18 +25,17 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // player enters <area>
-    // player exits <area>
-    // player enters/exits cuboid
-    // player enters/exits ellipsoid
+    // entity enters/exits cuboid/ellipsoid/polygon
+    // <entity> enters <area>
+    // <entity> exits <area>
     //
-    // @Regex ^on player (enters|exits) [^\s]+$
+    // @Regex ^on [^\s]+ (enters|exits) [^\s]+$
     //
     // @Group Player
     //
-    // @Triggers when a player enters or exits a noted area (cuboid or ellipsoid).
+    // @Triggers when an entity enters or exits a noted area (cuboid, ellipsoid, or polygon). On Spigot servers, only fires for players. Paper is required for other mob types.
     //
-    // @Warning cancelling this event will have different results depending on the cause. Teleporting the player away 1 tick later might be safer.
+    // @Warning cancelling this event will have different results depending on the cause. Teleporting the entity away 1 tick later might be safer.
     //
     // @Cancellable true
     //
@@ -46,8 +44,9 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, QUIT, TELEPORT, VEHICLE.
     // <context.to> returns the location the player moved to.
     // <context.from> returns the location the player moved from (when available).
+    // <context.entity> returns the entity that entered/exited an area.
     //
-    // @Player Always.
+    // @Player When the entity is a player.
     //
     // -->
 
@@ -57,14 +56,17 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     public static AreaEnterExitScriptEvent instance;
 
-    public PlayerTag currentPlayer;
+    public EntityTag currentEntity;
     public AreaContainmentObject area;
     public boolean isEntering;
     public Location to;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player enters") && !path.eventLower.startsWith("player exits")) {
+        if (!path.eventArgLowerAt(1).equals("enters") && !path.eventArgLowerAt(1).equals("exits")) {
+            return false;
+        }
+        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
         if (path.eventArgLowerAt(2).equals("biome") || exactMatchesEnum(path.eventArgLowerAt(2), Biome.values())) {
@@ -116,7 +118,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(currentPlayer, null);
+        return new BukkitScriptEntryData(currentEntity);
     }
 
     @Override
@@ -160,36 +162,44 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                 return new LocationTag(((VehicleMoveEvent) currentEvent).getFrom());
             }
             else {
-                return new LocationTag(currentPlayer.getLocation());
+                return new LocationTag(currentEntity.getLocation());
             }
+        }
+        else if (name.equals("entity")) {
+            return currentEntity.getDenizenObject();
         }
         return super.getContext(name);
     }
 
+    public void registerCorrectClass() {
+        initListener(new SpigotListeners());
+    }
+
     @Override
     public void init() {
-        super.init();
+        registerCorrectClass();
         doTrackAll = false;
         boolean needsMatchers = false;
         HashSet<String> exacts = new HashSet<>();
         List<MatchHelper> matchList = new ArrayList<>();
+        onlyTrackPlayers = true;
         for (ScriptPath path : eventPaths) {
+            if (!path.eventArgLowerAt(0).equals("player")) {
+                onlyTrackPlayers = false;
+            }
             String area = path.eventArgLowerAt(2);
             if (area.equals("notable")) {
                 area = path.eventArgLowerAt(3);
             }
             if (area.equals("cuboid")) {
                 doTrackAll = true;
-                break;
             }
             else if (area.equals("ellipsoid")) {
                 doTrackAll = true;
-                break;
             }
             MatchHelper matcher = createMatcher(area);
             if (matcher instanceof AlwaysMatchHelper) {
                 doTrackAll = true;
-                break;
             }
             else if (!needsMatchers && (matcher instanceof ExactMatchHelper)) {
                 exacts.add(area);
@@ -206,12 +216,13 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     public boolean doTrackAll = false;
     public String[] exactTracked = null;
     public MatchHelper[] matchers = null;
-    public static HashMap<UUID, HashSet<String>> playersInArea = new HashMap<>();
+    public boolean onlyTrackPlayers = true;
+    public static HashMap<UUID, HashSet<String>> entitiesInArea = new HashMap<>();
 
     @Override
     public void cancellationChanged() {
         if (cancelled) {
-            HashSet<String> inAreas = playersInArea.get(currentPlayer.getUUID());
+            HashSet<String> inAreas = entitiesInArea.get(currentEntity.getUUID());
             if (isEntering) {
                 inAreas.remove(CoreUtilities.toLowerCase(area.getNoteName()));
             }
@@ -234,7 +245,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         return false;
     }
 
-    public void processSingle(AreaContainmentObject obj, Player player, HashSet<String> inAreas, Location pos, Event eventCause) {
+    public void processSingle(AreaContainmentObject obj, EntityTag entity, HashSet<String> inAreas, Location pos, Event eventCause) {
         boolean containedNow = obj.doesContainLocation(pos);
         boolean wasContained = inAreas != null && inAreas.contains(obj.getNoteName());
         if (containedNow == wasContained) {
@@ -246,36 +257,36 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         else {
             inAreas.remove(obj.getNoteName());
         }
-        currentPlayer = new PlayerTag(player);
+        currentEntity = entity;
         isEntering = containedNow;
         area = obj;
         to = pos;
         fire(eventCause);
     }
 
-    public void processNewPosition(Player player, Location pos, Event eventCause) {
-        if (EntityTag.isNPC(player)) {
+    public void processNewPosition(EntityTag entity, Location pos, Event eventCause) {
+        if (onlyTrackPlayers && !entity.isPlayer()) {
             return;
         }
-        HashSet<String> inAreas = playersInArea.get(player.getUniqueId());
+        HashSet<String> inAreas = entitiesInArea.get(entity.getUUID());
         if (inAreas == null) {
             inAreas = new HashSet<>();
-            playersInArea.put(player.getUniqueId(), inAreas);
+            entitiesInArea.put(entity.getUUID(), inAreas);
         }
         if (doTrackAll || matchers != null) {
             for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
                 if (anyMatch(cuboid.noteName)) {
-                    processSingle(cuboid, player, inAreas, pos, eventCause);
+                    processSingle(cuboid, entity, inAreas, pos, eventCause);
                 }
             }
             for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
                 if (anyMatch(ellipsoid.noteName)) {
-                    processSingle(ellipsoid, player, inAreas, pos, eventCause);
+                    processSingle(ellipsoid, entity, inAreas, pos, eventCause);
                 }
             }
             for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
                 if (anyMatch(polygon.noteName)) {
-                    processSingle(polygon, player, inAreas, pos, eventCause);
+                    processSingle(polygon, entity, inAreas, pos, eventCause);
                 }
             }
         }
@@ -286,48 +297,51 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                     Debug.echoError("Invalid area enter/exit event area '" + name + "'");
                     continue;
                 }
-                processSingle((AreaContainmentObject) obj, player, inAreas, pos, eventCause);
+                processSingle((AreaContainmentObject) obj, entity, inAreas, pos, eventCause);
             }
         }
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        processNewPosition(event.getPlayer(), new Location(event.getPlayer().getWorld(), 10000000d, 10000000d, 10000000d), event);
-        playersInArea.remove(event.getPlayer().getUniqueId());
-    }
+    public class SpigotListeners implements Listener {
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        processNewPosition(event.getPlayer(), event.getPlayer().getLocation(), event);
-    }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
-            return;
+        @EventHandler
+        public void onQuit(PlayerQuitEvent event) {
+            processNewPosition(new EntityTag(event.getPlayer()), new Location(event.getPlayer().getWorld(), 10000000d, 10000000d, 10000000d), event);
+            entitiesInArea.remove(event.getPlayer().getUniqueId());
         }
-        processNewPosition(event.getPlayer(), event.getTo(), event);
-    }
 
-    @EventHandler
-    public void onTeleport(PlayerTeleportEvent event) {
-        processNewPosition(event.getPlayer(), event.getTo(), event);
-    }
-
-    @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event) {
-        processNewPosition(event.getPlayer(), event.getPlayer().getLocation(), event);
-    }
-
-    @EventHandler
-    public void onVehicleMove(VehicleMoveEvent event) {
-        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
-            return;
+        @EventHandler
+        public void onJoin(PlayerJoinEvent event) {
+            processNewPosition(new EntityTag(event.getPlayer()), event.getPlayer().getLocation(), event);
         }
-        for (Entity entity : event.getVehicle().getPassengers()) {
-            if (EntityTag.isPlayer(entity)) {
-                processNewPosition((Player) entity, event.getTo(), event);
+
+        @EventHandler
+        public void onMove(PlayerMoveEvent event) {
+            if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
+                return;
+            }
+            processNewPosition(new EntityTag(event.getPlayer()), event.getTo(), event);
+        }
+
+        @EventHandler
+        public void onTeleport(PlayerTeleportEvent event) {
+            processNewPosition(new EntityTag(event.getPlayer()), event.getTo(), event);
+        }
+
+        @EventHandler
+        public void onWorldChange(PlayerChangedWorldEvent event) {
+            processNewPosition(new EntityTag(event.getPlayer()), event.getPlayer().getLocation(), event);
+        }
+
+        @EventHandler
+        public void onVehicleMove(VehicleMoveEvent event) {
+            if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
+                return;
+            }
+            for (Entity entity : event.getVehicle().getPassengers()) {
+                if (!onlyTrackPlayers || EntityTag.isPlayer(entity)) {
+                    processNewPosition(new EntityTag(entity), event.getTo(), event);
+                }
             }
         }
     }

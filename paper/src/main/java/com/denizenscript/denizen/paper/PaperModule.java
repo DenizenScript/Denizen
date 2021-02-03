@@ -16,6 +16,7 @@ public class PaperModule {
         Debug.log("Loading Paper support module...");
 
         // Events
+        ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEventPaperImpl());
         ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityPathfindScriptEvent());
         ScriptEvent.registerScriptEvent(new ExperienceOrbMergeScriptEvent());

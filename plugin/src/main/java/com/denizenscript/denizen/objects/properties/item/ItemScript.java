@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -8,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.Deprecations;
 
 public class ItemScript implements Property {
 
@@ -46,26 +48,14 @@ public class ItemScript implements Property {
             return null;
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.has_script>
-        // @returns ElementTag(Boolean)
-        // @group scripts
-        // @description
-        // Returns whether the item was created by an item script.
-        // -->
         if (attribute.startsWith("has_script")) {
+            Deprecations.itemScriptNameTags.warn(attribute.context);
             return new ElementTag(item.isItemscript())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.scriptname>
-        // @returns ElementTag
-        // @group scripts
-        // @description
-        // Returns the script name of the item if it was created by an item script.
-        // -->
         if (attribute.startsWith("scriptname")) {
+            Deprecations.itemScriptNameTags.warn(attribute.context);
             if (item.isItemscript()) {
                 return new ElementTag(item.getScriptName())
                         .getObjectAttribute(attribute.fulfill(1));
@@ -80,8 +70,9 @@ public class ItemScript implements Property {
         // Returns the script of the item if it was created by an item script.
         // -->
         if (attribute.startsWith("script")) {
-            if (item.isItemscript()) {
-                return new ScriptTag(item.getScriptName())
+            ItemScriptContainer container = ItemScriptHelper.getItemScriptContainer(item.getItemStack());
+            if (container != null) {
+                return new ScriptTag(container)
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
