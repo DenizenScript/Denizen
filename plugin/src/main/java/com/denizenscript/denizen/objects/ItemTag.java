@@ -750,7 +750,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     }
 
     public String formattedName() {
-        String id = CoreUtilities.toLowerCase(getMaterial().realName()).replace('_', ' ');
+        String id = CoreUtilities.toLowerCase(getMaterial().name()).replace('_', ' ');
         if (id.equals("air")) {
             return "nothing";
         }

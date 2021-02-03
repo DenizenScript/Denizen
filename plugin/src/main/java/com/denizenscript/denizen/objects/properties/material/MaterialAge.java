@@ -139,7 +139,7 @@ public class MaterialAge implements Property {
         if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
             int age = mechanism.getValue().asInt();
             if (age < 0 || age > getMax()) {
-                mechanism.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
+                mechanism.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.name() + "'.");
                 return;
             }
             if (isTurtleEgg()) {

@@ -7,6 +7,7 @@ import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -744,9 +745,30 @@ public class WorldTag implements ObjectTag, Adjustable {
         // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
         // -->
         registerTag("gamerule", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("The tag 'worldtag.gamerule[...]' must have an input value.");
+                return null;
+            }
             GameRule rule = GameRule.getByName(attribute.getContext(1));
             Object result = object.getWorld().getGameRuleValue(rule);
             return new ElementTag(result == null ? "null" : result.toString());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.gamerule_map>
+        // @returns MapTag
+        // @description
+        // Returns a map of all the current values of all gamerules in the world.
+        // -->
+        registerTag("gamerule_map", (attribute, object) -> {
+            MapTag map = new MapTag();
+            for (GameRule rule : GameRule.values()) {
+                Object result = object.getWorld().getGameRuleValue(rule);
+                if (result != null) {
+                    map.putObject(rule.getName(), new ElementTag(result.toString()));
+                }
+            }
+            return map;
         });
     }
 

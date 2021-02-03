@@ -209,10 +209,6 @@ public class MaterialTag implements ObjectTag, Adjustable {
         return identify();
     }
 
-    public String realName() {
-        return CoreUtilities.toLowerCase(material.name());
-    }
-
     @Override
     public ObjectTag setPrefix(String prefix) {
         if (prefix != null) {

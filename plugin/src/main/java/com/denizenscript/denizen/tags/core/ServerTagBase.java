@@ -492,6 +492,21 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.gamerules>
+        // @Plugin Citizens
+        // @returns ListTag
+        // @description
+        // Returns a list of all available gamerules on the server.
+        // -->
+        if (attribute.startsWith("gamerules")) {
+            ListTag allGameRules = new ListTag();
+            for (GameRule rule : GameRule.values()) {
+                allGameRules.add(rule.getName());
+            }
+            event.setReplacedObject(allGameRules.getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.traits>
         // @Plugin Citizens
         // @returns ListTag

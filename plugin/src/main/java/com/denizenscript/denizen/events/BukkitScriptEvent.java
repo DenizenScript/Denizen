@@ -768,7 +768,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         MatchHelper matcher = createMatcher(comparedto);
-        if (matcher.doesMatch(mat.realName())) {
+        if (matcher.doesMatch(mat.name())) {
             return true;
         }
         else if (matcher.doesMatch(mat.identifyNoIdentifier())) {
