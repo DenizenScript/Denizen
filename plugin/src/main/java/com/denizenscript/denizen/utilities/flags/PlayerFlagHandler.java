@@ -71,7 +71,7 @@ public class PlayerFlagHandler implements Listener {
             }
         }
         for (UUID id : toClearCache) {
-            toClearCache.remove(id);
+            secondaryPlayerFlagTrackerCache.remove(id);
         }
         long timeNow = System.currentTimeMillis();
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {

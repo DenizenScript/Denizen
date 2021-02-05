@@ -53,7 +53,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @Determine
     // ElementTag to change the death message.
     // "NO_DROPS" to specify that any drops should be removed.
-    // "NO_DROPS_OR_XP" to specify that any drops or XP orbs should be removed.
     // "NO_XP" to specify that any XP orbs should be removed.
     // ListTag(ItemTag) to specify new items to be dropped.
     // ElementTag(Number) to specify the new amount of XP to be dropped.

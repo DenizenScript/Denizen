@@ -71,6 +71,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
     //
     // @Tags
     // <EntityTag.velocity>
+    // <entry[saveName].pushed_entities> returns the list of pushed entities.
     //
     // @Usage
     // Use to launch an arrow straight towards a target.
