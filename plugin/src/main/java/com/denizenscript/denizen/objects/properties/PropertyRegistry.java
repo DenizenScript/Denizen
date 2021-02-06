@@ -51,6 +51,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityColor.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCritical.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCustomName.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityDirection.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDisabledSlots.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);

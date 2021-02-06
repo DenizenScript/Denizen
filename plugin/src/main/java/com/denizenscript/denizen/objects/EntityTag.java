@@ -678,12 +678,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public void setVelocity(Vector vector) {
         if (!isGeneric()) {
-            if (entity instanceof WitherSkull) {
-                ((WitherSkull) entity).setDirection(vector);
-            }
-            else {
-                entity.setVelocity(vector);
-            }
+            entity.setVelocity(vector);
         }
     }
 
@@ -730,7 +725,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     despawned_entity = null;
                 }
                 else {
-                    if (entity_type.getName().equals("PLAYER")) {
+                    if (entity_type.getBukkitEntityType() == EntityType.PLAYER) {
                         if (Depends.citizens == null) {
                             Debug.echoError("Cannot spawn entity of type PLAYER!");
                             return;
@@ -742,7 +737,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             uuid = entity.getUniqueId();
                         }
                     }
-                    else if (entity_type.getName().equals("FALLING_BLOCK")) {
+                    else if (entity_type.getBukkitEntityType() == EntityType.FALLING_BLOCK) {
                         MaterialTag material = null;
                         if (data1 != null && MaterialTag.matches(data1)) {
                             material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
