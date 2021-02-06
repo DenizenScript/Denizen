@@ -39,7 +39,7 @@ public class DebugSubmit extends Thread {
             int newlineLength = 0;
             int pluginCount = Bukkit.getPluginManager().getPlugins().length;
             for (Plugin pl : Bukkit.getPluginManager().getPlugins()) {
-                String temp = ((char) 0x01) + (pl.isEnabled() ? "2" : "4") + pl.getName() + ": " + pl.getDescription().getVersion() + ", ";
+                String temp = (pl.isEnabled() ? ChatColor.DARK_GREEN : ChatColor.DARK_RED) + pl.getName() + ": " + pl.getDescription().getVersion() + ", ";
                 pluginlist.append(temp);
                 newlineLength += temp.length();
                 if (newlineLength > 80) {
@@ -65,7 +65,7 @@ public class DebugSubmit extends Thread {
             newlineLength = 0;
             int playerCount = Bukkit.getOnlinePlayers().size();
             for (Player pla : Bukkit.getOnlinePlayers()) {
-                String temp = pla.getDisplayName().replace(ChatColor.COLOR_CHAR, (char) 0x01) + ((char) 0x01) + "7(" + pla.getName() + "), ";
+                String temp = pla.getDisplayName() + ChatColor.GRAY + "(" + pla.getName() + "), ";
                 playerlist.append(temp);
                 newlineLength += temp.length();
                 if (newlineLength > 80) {
@@ -94,7 +94,7 @@ public class DebugSubmit extends Thread {
             // Gather other setting info
             boolean bungee = Bukkit.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
             // Create the final message pack and upload it
-            uc.getOutputStream().write(("postid=pastetext&pastetype=log"
+            uc.getOutputStream().write(("pastetype=log"
                     + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
                     + "&pastecontents=" + URLEncoder.encode(("Java Version: " + System.getProperty("java.version")
                     + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
@@ -105,7 +105,7 @@ public class DebugSubmit extends Thread {
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                     + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
-                    + "\n\n").replace(ChatColor.COLOR_CHAR, (char) 0x01)) + recording)
+                    + "\n\n")) + recording)
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
