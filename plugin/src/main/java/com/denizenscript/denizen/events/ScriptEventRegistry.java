@@ -45,6 +45,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
 
         // Entity events
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
         ScriptEvent.registerScriptEvent(new DragonPhaseChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityAirLevelChangeScriptEvent());
@@ -111,9 +114,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
 
         // Player events
-        if (!Denizen.supportsPaper) {
-            ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEvent());
-        }
         ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockDropsItemScriptEvent());
         ScriptEvent.registerScriptEvent(new ChatScriptEvent());

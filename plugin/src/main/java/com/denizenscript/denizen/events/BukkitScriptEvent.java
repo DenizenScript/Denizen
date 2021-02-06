@@ -539,6 +539,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     return true;
                 }
             }
+            for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+                if (polygon.doesContainLocation(location) && matcher.doesMatch(polygon.noteName)) {
+                    return true;
+                }
+            }
             for (World world : Bukkit.getWorlds()) {
                 if (matcher.doesMatch(CoreUtilities.toLowerCase(world.getName()))) {
                     return true;

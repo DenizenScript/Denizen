@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.player;
+package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.*;
@@ -31,7 +31,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Regex ^on [^\s]+ (enters|exits) [^\s]+$
     //
-    // @Group Player
+    // @Group Entity
     //
     // @Triggers when an entity enters or exits a noted area (cuboid, ellipsoid, or polygon). On Spigot servers, only fires for players. Paper is required for other mob types.
     //
@@ -107,6 +107,9 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             if (!runGenericCheck(areaName, area.getNoteName())) {
                 return false;
             }
+        }
+        if (!tryEntity(currentEntity, path.eventArgLowerAt(0))) {
+            return false;
         }
         return super.matches(path);
     }

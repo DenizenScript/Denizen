@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.paper.events;
 
-import com.denizenscript.denizen.events.player.AreaEnterExitScriptEvent;
+import com.denizenscript.denizen.events.entity.AreaEnterExitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;

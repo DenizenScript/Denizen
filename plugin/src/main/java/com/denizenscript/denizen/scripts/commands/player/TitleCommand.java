@@ -60,7 +60,6 @@ public class TitleCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
             if (arg.matchesPrefix("title")) {
                 scriptEntry.addObject("title", arg.asElement());
@@ -93,23 +92,18 @@ public class TitleCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("title") && !scriptEntry.hasObject("subtitle")) {
             throw new InvalidArgumentsException("Must have a title or subtitle!");
         }
-
         scriptEntry.defaultObject("fade_in", new DurationTag(1)).defaultObject("stay", new DurationTag(3))
                 .defaultObject("fade_out", new DurationTag(1))
                 .defaultObject("targets", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)))
             .defaultObject("subtitle", new ElementTag("")).defaultObject("title", new ElementTag(""));
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         String title = scriptEntry.getElement("title").asString();
         String subtitle = scriptEntry.getElement("subtitle").asString();
         DurationTag fade_in = scriptEntry.getObjectTag("fade_in");
@@ -117,14 +111,12 @@ public class TitleCommand extends AbstractCommand {
         DurationTag fade_out = scriptEntry.getObjectTag("fade_out");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         ElementTag perPlayerObj = scriptEntry.getElement("per_player");
-
         boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
         BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
         if (!perPlayer) {
             title = TagManager.tag(title, context);
             subtitle = TagManager.tag(subtitle, context);
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("title", title)
@@ -135,7 +127,6 @@ public class TitleCommand extends AbstractCommand {
                             + ArgumentHelper.debugList("targets", targets)
                             + (perPlayerObj != null ? perPlayerObj.debug() : ""));
         }
-
         for (PlayerTag player : targets) {
             if (player != null) {
                 if (!player.isOnline()) {
@@ -155,7 +146,5 @@ public class TitleCommand extends AbstractCommand {
                 Debug.echoError("Sent title to non-existent player!?");
             }
         }
-
     }
-
 }
