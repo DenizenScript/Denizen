@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -12,15 +13,25 @@ import org.bukkit.Material;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.ThrowableProjectile;
 import org.bukkit.inventory.ItemStack;
 
 public class EntityItem implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag &&
-                (((EntityTag) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
-                        || ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDERMAN
-                        || ((EntityTag) entity).getBukkitEntityType() == EntityType.TRIDENT);
+        if (!(entity instanceof EntityTag)) {
+            return false;
+        }
+        EntityType type = ((EntityTag) entity).getBukkitEntityType();
+        if (type == EntityType.DROPPED_ITEM || type == EntityType.ENDERMAN || type == EntityType.TRIDENT) {
+            return true;
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            if (((EntityTag) entity).getBukkitEntity() instanceof ThrowableProjectile) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static EntityItem getFrom(ObjectTag entity) {
@@ -53,13 +64,17 @@ public class EntityItem implements Property {
         else if (item.getBukkitEntityType() == EntityType.TRIDENT) {
             return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
         }
-        else {
+        else if (item.getBukkitEntity() instanceof Enderman) {
             Material mat = ((Enderman) item.getBukkitEntity()).getCarriedBlock().getMaterial();
             if (mat == null) {
                 mat = Material.AIR;
             }
             return new ItemTag(mat);
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && item.getBukkitEntity() instanceof ThrowableProjectile) {
+            return new ItemTag(((ThrowableProjectile) item.getBukkitEntity()).getItem());
+        }
+        return null;
     }
 
     @Override
@@ -94,6 +109,7 @@ public class EntityItem implements Property {
         // If the entity is a dropped item, returns the item represented by the entity.
         // If the entity is an enderman, returns the item that the enderman is holding.
         // If the entity is a trident, returns the trident item represented by the entity.
+        // If the item is a throwable projectile, returns the item that was thrown.
         // -->
         if (attribute.startsWith("item")) {
             return getItem().getObjectAttribute(attribute.fulfill(1));
@@ -110,7 +126,7 @@ public class EntityItem implements Property {
         // @name item
         // @input ItemTag
         // @description
-        // Changes what item a dropped item or trident represents, or that an Enderman holds.
+        // Changes what item a dropped item, trident, or thrown projectile represents, or that an Enderman holds.
         // @tags
         // <EntityTag.item>
         // -->
@@ -125,8 +141,11 @@ public class EntityItem implements Property {
             else if (item.getBukkitEntityType() == EntityType.TRIDENT) {
                 NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), itemStack);
             }
-            else {
+            else if (item.getBukkitEntity() instanceof Enderman) {
                 NMSHandler.getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(), itemStack);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && item.getBukkitEntity() instanceof ThrowableProjectile) {
+                ((ThrowableProjectile) item.getBukkitEntity()).setItem(itemStack);
             }
         }
     }
