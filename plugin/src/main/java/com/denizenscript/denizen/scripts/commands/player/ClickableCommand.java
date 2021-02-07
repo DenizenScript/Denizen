@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -74,6 +76,7 @@ public class ClickableCommand extends AbstractCommand {
         public ListTag definitions;
         public ScriptTag script;
         public String path;
+        public NPCTag npc;
         public int remainingUsages;
         public TagContext context;
         public long until;
@@ -100,7 +103,7 @@ public class ClickableCommand extends AbstractCommand {
             }
         }
         ScriptUtilities.createAndStartQueue(clickable.script.getContainer(), clickable.path,
-                new BukkitScriptEntryData(new PlayerTag(player), null), null, null, null, null, clickable.definitions, clickable.context);
+                new BukkitScriptEntryData(new PlayerTag(player), clickable.npc), null, null, null, null, clickable.definitions, clickable.context);
     }
 
     @Override
@@ -173,6 +176,7 @@ public class ClickableCommand extends AbstractCommand {
         newClickable.remainingUsages = usages == null ? -1 : usages.asInt();
         newClickable.until = until == null ? 0 : (System.currentTimeMillis() + until.getMillis());
         newClickable.context = scriptEntry.context;
+        newClickable.npc = Utilities.getEntryNPC(scriptEntry);
         if (forPlayers != null) {
             newClickable.forPlayers = new HashSet<>(forPlayers.size());
             for (PlayerTag player : forPlayers) {
