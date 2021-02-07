@@ -44,10 +44,33 @@ public class FormattedTextHelper {
         return input.replace("&sc", ";").replace("&lb", "[").replace("&rb", "]").replace("&ss", String.valueOf(ChatColor.COLOR_CHAR)).replace("&amp", "&");
     }
 
+    public static boolean hasRootFormat(BaseComponent component) {
+        if (component.hasFormatting()) {
+            return true;
+        }
+        if (!(component instanceof TextComponent)) {
+            return false;
+        }
+        if (!((TextComponent) component).getText().isEmpty()) {
+            return false;
+        }
+        List<BaseComponent> extra = component.getExtra();
+        if (extra == null || extra.isEmpty()) {
+            return false;
+        }
+        return hasRootFormat(extra.get(0));
+    }
+
     public static String stringify(BaseComponent[] components, ChatColor baseColor) {
+        if (components.length == 0) {
+            return "";
+        }
         StringBuilder builder = new StringBuilder(128 * components.length);
+        if (hasRootFormat(components[0])) {
+            builder.append(RESET);
+        }
         for (BaseComponent component : components) {
-            builder.append(stringify(component, baseColor));
+            builder.append(stringify(component));
         }
         while (builder.toString().endsWith(RESET)) {
             builder.setLength(builder.length() - RESET.length());
@@ -71,7 +94,7 @@ public class FormattedTextHelper {
         return outColor.toString();
     }
 
-    public static String stringify(BaseComponent component, ChatColor baseColor) {
+    public static String stringify(BaseComponent component) {
         StringBuilder builder = new StringBuilder(128);
         ChatColor color = component.getColorRaw();
         if (color != null) {
@@ -114,7 +137,7 @@ public class FormattedTextHelper {
             List<BaseComponent> with = ((TranslatableComponent) component).getWith();
             if (with != null) {
                 for (BaseComponent withComponent : with) {
-                    builder.append(";").append(escape(stringify(withComponent, baseColor)));
+                    builder.append(";").append(escape(stringify(withComponent)));
                 }
             }
             builder.append("]");
@@ -133,7 +156,7 @@ public class FormattedTextHelper {
         List<BaseComponent> after = component.getExtra();
         if (after != null) {
             for (BaseComponent afterComponent : after) {
-                builder.append(stringify(afterComponent, baseColor));
+                builder.append(stringify(afterComponent));
             }
         }
         if (hasClick) {
