@@ -19,7 +19,6 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 
-import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 
 public class BukkitElementProperties implements Property {
@@ -346,7 +345,7 @@ public class BukkitElementProperties implements Property {
         PropertyParser.<BukkitElementProperties>registerTag("to_secret_colors", (attribute, object) -> {
             String text = object.asString();
             byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
-            String hex = DatatypeConverter.printHexBinary(bytes);
+            String hex = CoreUtilities.hexEncode(bytes);
             StringBuilder colors = new StringBuilder(text.length() * 2);
             for (int i = 0; i < hex.length(); i++) {
                 colors.append(ChatColor.COLOR_CHAR).append(hex.charAt(i));
@@ -364,7 +363,7 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties>registerTag("from_secret_colors", (attribute, object) -> {
             String text = object.asString().replace(String.valueOf(ChatColor.COLOR_CHAR), "");
-            byte[] bytes = DatatypeConverter.parseHexBinary(text);
+            byte[] bytes = CoreUtilities.hexDecode(text);
             return new ElementTag(new String(bytes, StandardCharsets.UTF_8));
         });
 

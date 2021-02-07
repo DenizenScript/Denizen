@@ -154,17 +154,22 @@ public class Denizen extends JavaPlugin {
             PlayerFlagHandler.dataFolder.mkdir();
         }
         String javaVersion = System.getProperty("java.version");
-        if (!javaVersion.startsWith("8") && !javaVersion.startsWith("1.8")) {
-            if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10") || javaVersion.startsWith("11")) {
-                getLogger().warning("Running unreliable Java version. Minecraft is built for Java 8. Newer Java versions are not guaranteed to function properly (due to changes Oracle made to how reflection works).");
-                getLogger().warning("Found java version: " + javaVersion);
-            }
-            else {
-                getLogger().warning("-------------------------------------");
-                getLogger().warning("Running incompatible Java version! Minecraft is built for Java 8. Older versions will not work, and newer versions will cause errors (due to Oracle removing reflection support)!");
-                getLogger().warning("Found java version: " + javaVersion);
-                getLogger().warning("-------------------------------------");
-            }
+        getLogger().info("Running on java version: " + javaVersion);
+        if (javaVersion.startsWith("8") || javaVersion.startsWith("1.8")) {
+            getLogger().info("Running on fully supported Java 8.");
+        }
+        else if (javaVersion.startsWith("11")) {
+            getLogger().info("Running on mostly supported Java 11. Some warnings may show or limitations may apply due to Java 11. If these limits become problems, switch to Java 8.");
+        }
+        else if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10")) {
+            getLogger().warning("Running unreliable Java version. Minecraft is built for Java 8, and Paper is built for Java 11. Other Java versions are not guaranteed to function properly.");
+            getLogger().warning("Found java version: " + javaVersion);
+        }
+        else {
+            getLogger().warning("-------------------------------------");
+            getLogger().warning("Running incompatible Java version! Minecraft is built for Java 8, and Paper is built for Java 11. Older versions will not work, and newer versions will cause errors (due to Oracle removing reflection support)!");
+            getLogger().warning("Found java version: " + javaVersion);
+            getLogger().warning("-------------------------------------");
         }
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
