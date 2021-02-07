@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.paper.events;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -138,6 +139,9 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void armorChangeEvent(PlayerArmorChangeEvent event) {
+        if (EntityTag.isCitizensNPC(event.getPlayer())) {
+            return;
+        }
         if (simpleComparisonString(event.getOldItem()).equals(simpleComparisonString(event.getNewItem()))) {
             return;
         }
