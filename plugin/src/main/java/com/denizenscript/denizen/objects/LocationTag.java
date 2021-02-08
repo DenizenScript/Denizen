@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
+import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -2085,15 +2086,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
             try {
                 if (object.getWorld() == null) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                    }
+                    attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                     return null;
                 }
                 if (!object.isChunkLoaded()) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                    }
+                    attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                     return null;
                 }
                 flooder.requiredMaterials = new HashSet<>();
@@ -2125,6 +2122,63 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
             }
             return new ListTag((Collection<LocationTag>) flooder.result);
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.find_blocks_flagged[<flag_name>].within[<#>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a list of blocks that have the specified flag within a radius.
+        // Note: current implementation measures the center of nearby block's distance from the exact given location.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // Searches the internal flag lists, rather than through all possible blocks.
+        // -->
+        registerTag("find_blocks_flagged", (attribute, object) -> {
+            if (!attribute.hasContext(1) || !attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
+                attribute.echoError("find_blocks_flagged[...].within[...] tag malformed.");
+                return null;
+            }
+            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            attribute.fulfill(1);
+            double radius = attribute.getDoubleContext(1);
+            if (!object.isChunkLoadedSafe()) {
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                return null;
+            }
+            double minPossibleX = object.getX() - radius;
+            double minPossibleZ = object.getZ() - radius;
+            double maxPossibleX = object.getX() + radius;
+            double maxPossibleZ = object.getZ() + radius;
+            int minChunkX = (int) Math.floor(minPossibleX / 16);
+            int minChunkZ = (int) Math.floor(minPossibleZ / 16);
+            int maxChunkX = (int) Math.ceil(maxPossibleX / 16);
+            int maxChunkZ = (int) Math.ceil(maxPossibleZ / 16);
+            ChunkTag testChunk = new ChunkTag(object);
+            final ArrayList<LocationTag> found = new ArrayList<>();
+            for (int x = minChunkX; x <= maxChunkX; x++) {
+                testChunk.chunkX = x;
+                for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                    testChunk.chunkZ = z;
+                    testChunk.cachedChunk = null;
+                    if (testChunk.isLoadedSafe()) {
+                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunk(), flagName, (loc) -> {
+                            loc.setX(loc.getX() + 0.5);
+                            loc.setY(loc.getY() + 0.5);
+                            loc.setZ(loc.getZ() + 0.5);
+                            if (Utilities.checkLocation(object, loc, radius)) {
+                                found.add(new LocationTag(loc));
+                            }
+                        });
+                    }
+                }
+            }
+            Collections.sort(found, new Comparator<LocationTag>() {
+                @Override
+                public int compare(LocationTag loc1, LocationTag loc2) {
+                    return object.compare(loc1, loc2);
+                }
+            });
+            return new ListTag(found);
         });
 
         registerTag("find", (attribute, object) -> {
@@ -2186,14 +2240,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         }
                     }
                 }
-
                 Collections.sort(found, new Comparator<LocationTag>() {
                     @Override
                     public int compare(LocationTag loc1, LocationTag loc2) {
                         return object.compare(loc1, loc2);
                     }
                 });
-
                 return new ListTag(found);
             }
 
@@ -2216,7 +2268,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 int max = Settings.blockTagsMaxBlocks();
                 int index = 0;
-
                 attribute.fulfill(2);
                 Location blockLoc = object.getBlockLocation();
                 Location loc = blockLoc.clone().add(0.5f, 0.5f, 0.5f);
@@ -2253,14 +2304,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         }
                     }
                 }
-
                 Collections.sort(found, new Comparator<LocationTag>() {
                     @Override
                     public int compare(LocationTag loc1, LocationTag loc2) {
                         return object.compare(loc1, loc2);
                     }
                 });
-
                 return new ListTag(found);
             }
 
@@ -2279,14 +2328,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         found.add(new PlayerTag(player));
                     }
                 }
-
                 Collections.sort(found, new Comparator<PlayerTag>() {
                     @Override
                     public int compare(PlayerTag pl1, PlayerTag pl2) {
                         return object.compare(pl1.getLocation(), pl2.getLocation());
                     }
                 });
-
                 return new ListTag(found);
             }
 
@@ -2305,14 +2352,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         found.add(new NPCTag(npc));
                     }
                 }
-
                 Collections.sort(found, new Comparator<NPCTag>() {
                     @Override
                     public int compare(NPCTag npc1, NPCTag npc2) {
                         return object.compare(npc1.getLocation(), npc2.getLocation());
                     }
                 });
-
                 return new ListTag(found);
             }
 
@@ -2343,14 +2388,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         }
                     }
                 }
-
                 Collections.sort(found.objectForms, new Comparator<ObjectTag>() {
                     @Override
                     public int compare(ObjectTag ent1, ObjectTag ent2) {
                         return object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation());
                     }
                 });
-
                 return new ListTag(found.objectForms);
             }
 
@@ -2371,14 +2414,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         found.addObject(new EntityTag(entity).getDenizenObject());
                     }
                 }
-
                 Collections.sort(found.objectForms, new Comparator<ObjectTag>() {
                     @Override
                     public int compare(ObjectTag ent1, ObjectTag ent2) {
                         return object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation());
                     }
                 });
-
                 return new ListTag(found.objectForms);
             }
 

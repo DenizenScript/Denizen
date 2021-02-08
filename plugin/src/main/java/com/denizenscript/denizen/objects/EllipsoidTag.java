@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -433,6 +434,46 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 return new ListTag(object.getBlocks(attribute));
             }
         }, "get_blocks");
+
+        // <--[tag]
+        // @attribute <EllipsoidTag.blocks_flagged[<flag_name>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Gets a list of all block locations with a specified flag within the ellipsoid.
+        // Searches the internal flag lists, rather than through all possible blocks.
+        // -->
+        registerTag("blocks_flagged", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("EllipsoidTag.blocks_flagged[...] must have an input value.");
+                return null;
+            }
+            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            ListTag blocks = new ListTag();
+            double minPossibleX = object.center.getX() - object.size.getX();
+            double minPossibleZ = object.center.getZ() - object.size.getZ();
+            double maxPossibleX = object.center.getX() + object.size.getX();
+            double maxPossibleZ = object.center.getZ() + object.size.getZ();
+            int minChunkX = (int) Math.floor(minPossibleX / 16);
+            int minChunkZ = (int) Math.floor(minPossibleZ / 16);
+            int maxChunkX = (int) Math.ceil(maxPossibleX / 16);
+            int maxChunkZ = (int) Math.ceil(maxPossibleZ / 16);
+            ChunkTag testChunk = new ChunkTag(object.center);
+            for (int x = minChunkX; x <= maxChunkX; x++) {
+                testChunk.chunkX = x;
+                for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                    testChunk.chunkZ = z;
+                    testChunk.cachedChunk = null;
+                    if (object.intersects(testChunk) && testChunk.isLoadedSafe()) {
+                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunk(), flagName, (loc) -> {
+                            if (object.doesContainLocation(loc)) {
+                                blocks.addObject(new LocationTag(loc));
+                            }
+                        });
+                    }
+                }
+            }
+            return blocks;
+        });
 
         // <--[tag]
         // @attribute <EllipsoidTag.shell>

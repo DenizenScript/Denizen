@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -785,6 +786,42 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return new ListTag(cuboid.getBlocks(attribute));
             }
         }, "get_blocks");
+
+        // <--[tag]
+        // @attribute <CuboidTag.blocks_flagged[<flag_name>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Gets a list of all block locations with a specified flag within the CuboidTag.
+        // Searches the internal flag lists, rather than through all possible blocks.
+        // -->
+        registerTag("blocks_flagged", (attribute, cuboid) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("CuboidTag.blocks_flagged[...] must have an input value.");
+                return null;
+            }
+            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            ListTag blocks = new ListTag();
+            for (LocationPair pair : cuboid.pairs) {
+                ChunkTag minChunk = new ChunkTag(pair.low);
+                ChunkTag maxChunk = new ChunkTag(pair.high);
+                ChunkTag subChunk = new ChunkTag(pair.low);
+                for (int x = minChunk.getX(); x <= maxChunk.getX(); x++) {
+                    subChunk.chunkX = x;
+                    for (int z = minChunk.getZ(); z <= maxChunk.getZ(); z++) {
+                        subChunk.chunkZ = z;
+                        subChunk.cachedChunk = null;
+                        if (subChunk.isLoadedSafe()) {
+                            LocationFlagSearchHelper.getFlaggedLocations(subChunk.getChunk(), flagName, (loc) -> {
+                                if (cuboid.doesContainLocation(loc)) {
+                                    blocks.addObject(new LocationTag(loc));
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            return blocks;
+        });
 
         // <--[tag]
         // @attribute <CuboidTag.members_size>

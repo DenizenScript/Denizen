@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -842,6 +843,42 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
                 materials = attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context);
             }
             return polygon.getBlocks(materials, attribute);
+        });
+
+        // <--[tag]
+        // @attribute <PolygonTag.blocks_flagged[<flag_name>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Gets a list of all block locations with a specified flag within the polygon.
+        // Searches the internal flag lists, rather than through all possible blocks.
+        // -->
+        registerTag("blocks_flagged", (attribute, polygon) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("PolygonTag.blocks_flagged[...] must have an input value.");
+                return null;
+            }
+            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            ListTag blocks = new ListTag();
+            int chunkMinX = ((int) Math.floor(polygon.boxMin.x)) >> 4;
+            int chunkMinZ = ((int) Math.floor(polygon.boxMin.z)) >> 4;
+            int chunkMaxX = ((int) Math.ceil(polygon.boxMax.x)) >> 4;
+            int chunkMaxZ = ((int) Math.ceil(polygon.boxMax.z)) >> 4;
+            ChunkTag testChunk = new ChunkTag(polygon.world, chunkMinX, chunkMinZ);
+            for (int x = chunkMinX; x <= chunkMaxX; x++) {
+                testChunk.chunkX = x;
+                for (int z = chunkMinZ; z <= chunkMaxZ; z++) {
+                    testChunk.chunkZ = z;
+                    testChunk.cachedChunk = null;
+                    if (testChunk.isLoadedSafe()) {
+                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunk(), flagName, (loc) -> {
+                            if (polygon.doesContainLocation(loc)) {
+                                blocks.addObject(new LocationTag(loc));
+                            }
+                        });
+                    }
+                }
+            }
+            return blocks;
         });
     }
 
