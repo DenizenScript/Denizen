@@ -889,6 +889,20 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
+        // @attribute <NPCTag.auto_update_skin>
+        // @returns ElementTag(Boolean)
+        // @mechanism NPCTag.auto_update_skin
+        // @description
+        // Returns whether the NPC is set to automatically update skins from name.
+        // -->
+        registerTag("auto_update_skin", (attribute, object) -> {
+            if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).shouldUpdateSkins());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.inventory>
         // @returns InventoryTag
         // @description
@@ -1376,6 +1390,20 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
                 getCitizen().spawn(getCitizen().getStoredLocation());
             }
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name auto_update_skin
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC will automatically update its skin based on the skin name used.
+        // If true, the NPC's skin will change when the relevant account owner changes their skin.
+        // @tags
+        // <NPCTag.auto_update_skin>
+        // -->
+        if (mechanism.matches("auto_update_skin") && mechanism.requireBoolean()) {
+            getCitizen().getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
