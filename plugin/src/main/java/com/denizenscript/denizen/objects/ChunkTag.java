@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -556,6 +557,30 @@ public class ChunkTag implements ObjectTag, Adjustable {
                 }
             }
             return surface_blocks;
+        });
+
+        // <--[tag]
+        // @attribute <ChunkTag.blocks_flagged[<flag_name>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Gets a list of all block locations with a specified flag within the CuboidTag.
+        // Searches the internal flag lists, rather than through all possible blocks.
+        // -->
+        registerTag("blocks_flagged", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                attribute.echoError("ChunkTag.blocks_flagged[...] must have an input value.");
+                return null;
+            }
+            Chunk chunk = object.getChunkForTag(attribute);
+            if (chunk == null) {
+                return null;
+            }
+            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            ListTag blocks = new ListTag();
+            LocationFlagSearchHelper.getFlaggedLocations(chunk, flagName, (loc) -> {
+                blocks.addObject(new LocationTag(loc));
+            });
+            return blocks;
         });
 
         // <--[tag]

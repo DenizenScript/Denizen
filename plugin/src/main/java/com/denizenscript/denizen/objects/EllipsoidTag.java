@@ -464,7 +464,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                     testChunk.chunkZ = z;
                     testChunk.cachedChunk = null;
                     if (object.intersects(testChunk) && testChunk.isLoadedSafe()) {
-                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunk(), flagName, (loc) -> {
+                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunkForTag(attribute), flagName, (loc) -> {
                             if (object.doesContainLocation(loc)) {
                                 blocks.addObject(new LocationTag(loc));
                             }

@@ -870,7 +870,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
                     testChunk.chunkZ = z;
                     testChunk.cachedChunk = null;
                     if (testChunk.isLoadedSafe()) {
-                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunk(), flagName, (loc) -> {
+                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunkForTag(attribute), flagName, (loc) -> {
                             if (polygon.doesContainLocation(loc)) {
                                 blocks.addObject(new LocationTag(loc));
                             }

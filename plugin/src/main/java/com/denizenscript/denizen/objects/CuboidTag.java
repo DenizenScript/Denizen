@@ -811,7 +811,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                         subChunk.chunkZ = z;
                         subChunk.cachedChunk = null;
                         if (subChunk.isLoadedSafe()) {
-                            LocationFlagSearchHelper.getFlaggedLocations(subChunk.getChunk(), flagName, (loc) -> {
+                            LocationFlagSearchHelper.getFlaggedLocations(subChunk.getChunkForTag(attribute), flagName, (loc) -> {
                                 if (cuboid.doesContainLocation(loc)) {
                                     blocks.addObject(new LocationTag(loc));
                                 }

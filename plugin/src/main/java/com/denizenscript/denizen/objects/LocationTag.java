@@ -2161,7 +2161,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     testChunk.chunkZ = z;
                     testChunk.cachedChunk = null;
                     if (testChunk.isLoadedSafe()) {
-                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunk(), flagName, (loc) -> {
+                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunkForTag(attribute), flagName, (loc) -> {
                             loc.setX(loc.getX() + 0.5);
                             loc.setY(loc.getY() + 0.5);
                             loc.setZ(loc.getZ() + 0.5);
