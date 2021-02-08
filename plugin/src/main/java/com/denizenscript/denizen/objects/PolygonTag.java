@@ -4,6 +4,9 @@ import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -18,13 +21,15 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject {
+public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
     // <--[language]
     // @name PolygonTag Objects
@@ -57,6 +62,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     public Corner boxMin = new Corner(), boxMax = new Corner();
 
     public String noteName = null;
+
+    public AbstractFlagTracker flagTracker = null;
 
     public static class Corner {
         public double x, z;
@@ -395,20 +402,25 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     @Note("Polygons")
-    public String getSaveObject() {
-        return identifyFull().substring("polygon@".length());
+    public Object getSaveObject() {
+        ConfigurationSection section = new YamlConfiguration();
+        section.set("object", identifyFull());
+        section.set("flags", flagTracker.toString());
+        return section;
     }
 
     @Override
     public void makeUnique(String id) {
         PolygonTag toNote = clone();
         toNote.noteName = id;
+        toNote.flagTracker = new SavableMapFlagTracker();
         NotableManager.saveAs(toNote, id);
     }
 
     @Override
     public void forget() {
         noteName = null;
+        flagTracker = null;
         NotableManager.remove(this);
     }
 
@@ -472,7 +484,29 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return identify();
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return flagTracker;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        if (noteName != null) {
+            this.flagTracker = tracker;
+        }
+    }
+
+    @Override
+    public String getReasonNotFlaggable() {
+        if (noteName == null) {
+            return "the area is not noted - only noted areas can hold flags";
+        }
+        return "unknown reason - something went wrong";
+    }
+
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <PolygonTag.contains[<location>]>

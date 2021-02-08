@@ -3,6 +3,8 @@ package com.denizenscript.denizen.objects.notable;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -119,9 +121,22 @@ public class NotableManager {
             }
             for (String notableRaw : section.getKeys(false)) {
                 String notable = EscapeTagBase.unEscape(notableRaw.replace("DOT", "."));
-                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), CoreUtilities.errorButNoDebugContext);
+                String objText;
+                String flagText = null;
+                if (section.isConfigurationSection(notableRaw)) {
+                    objText = section.getConfigurationSection(notableRaw).getString("object");
+                    flagText = section.getConfigurationSection(notableRaw).getString("flags");
+                }
+                else {
+                    objText = section.getString(notableRaw);
+                }
+                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, objText, CoreUtilities.errorButNoDebugContext);
                 if (obj != null) {
                     obj.makeUnique(notable);
+                    obj = getSavedObject(notable);
+                    if (flagText != null && obj instanceof FlaggableObject) {
+                        ((FlaggableObject) obj).reapplyTracker(new SavableMapFlagTracker(flagText));
+                    }
                 }
                 else {
                     Debug.echoError("Notable '" + notable + "' failed to load!");
@@ -139,10 +154,8 @@ public class NotableManager {
             notables.set(key, null);
         }
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
-
             try {
-                notables.set(getClassId(getClass(notable.getValue())) + "." + EscapeTagBase.escape(CoreUtilities.toLowerCase(notable.getKey())),
-                        notable.getValue().getSaveObject());
+                notables.set(getClassId(getClass(notable.getValue())) + "." + EscapeTagBase.escape(CoreUtilities.toLowerCase(notable.getKey())), notable.getValue().getSaveObject());
             }
             catch (Exception e) {
                 Debug.echoError("Notable '" + notable.getKey() + "' failed to save!");

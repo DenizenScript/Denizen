@@ -9,6 +9,9 @@ import com.denizenscript.denizen.utilities.inventory.InventoryTrackerSystem;
 import com.denizenscript.denizen.utilities.inventory.RecipeHelper;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -34,6 +37,8 @@ import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -43,7 +48,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class InventoryTag implements ObjectTag, Notable, Adjustable {
+public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
     // <--[language]
     // @name InventoryTag Objects
@@ -122,11 +127,16 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
 
     public boolean isSaving = false;
 
+    public AbstractFlagTracker flagTracker = null;
+
     @Note("Inventories")
-    public String getSaveObject() {
+    public Object getSaveObject() {
         isSaving = true;
         try {
-            return "in@" + idType + PropertyParser.getPropertiesString(this);
+            ConfigurationSection section = new YamlConfiguration();
+            section.set("object", "in@" + idType + PropertyParser.getPropertiesString(this));
+            section.set("flags", flagTracker.toString());
+            return section;
         }
         finally {
             isSaving = false;
@@ -160,12 +170,34 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
             idType = "generic";
             idHolder = new ElementTag(CoreUtilities.toLowerCase(getInventoryType().name()));
         }
+        flagTracker = new SavableMapFlagTracker();
         NotableManager.saveAs(this, id);
     }
 
     public void forget() {
+        flagTracker = null;
         NotableManager.remove(this);
         InventoryScriptHelper.notedInventories.remove(inventory);
+    }
+
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return flagTracker;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        if (NotableManager.getSavedId(this) != null) {
+            this.flagTracker = tracker;
+        }
+    }
+
+    @Override
+    public String getReasonNotFlaggable() {
+        if (NotableManager.getSavedId(this) == null) {
+            return "the inventory is not noted - only noted inventories can hold flags";
+        }
+        return "unknown reason - something went wrong";
     }
 
     public static InventoryTag valueOf(String string, PlayerTag player, NPCTag npc, boolean silent) {
@@ -1080,6 +1112,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable {
     }
 
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <InventoryTag.empty_slots>

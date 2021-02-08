@@ -3,6 +3,9 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -20,6 +23,8 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -27,7 +32,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject {
+public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
     // <--[language]
     // @name CuboidTag Objects
@@ -59,6 +64,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             cuboid = new CuboidTag();
         }
         cuboid.noteName = null;
+        cuboid.flagTracker = null;
         cuboid.pairs = new ArrayList<>(pairs.size());
         for (LocationPair pair : pairs) {
             cuboid.pairs.add(new LocationPair(pair.low.clone(), pair.high.clone()));
@@ -301,6 +307,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     public List<LocationPair> pairs = new ArrayList<>();
 
     public String noteName = null;
+
+    public AbstractFlagTracker flagTracker = null;
 
     /**
      * Construct the cuboid without adding pairs
@@ -632,20 +640,25 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     @Note("Cuboids")
-    public String getSaveObject() {
-        return identifyFull().substring(3);
+    public Object getSaveObject() {
+        ConfigurationSection section = new YamlConfiguration();
+        section.set("object", identifyFull());
+        section.set("flags", flagTracker.toString());
+        return section;
     }
 
     @Override
     public void makeUnique(String id) {
         CuboidTag toNote = clone();
         toNote.noteName = id;
+        toNote.flagTracker = new SavableMapFlagTracker();
         NotableManager.saveAs(toNote, id);
     }
 
     @Override
     public void forget() {
         noteName = null;
+        flagTracker = null;
         NotableManager.remove(this);
     }
 
@@ -711,11 +724,33 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return identify();
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return flagTracker;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        if (noteName != null) {
+            this.flagTracker = tracker;
+        }
+    }
+
+    @Override
+    public String getReasonNotFlaggable() {
+        if (noteName == null) {
+            return "the area is not noted - only noted areas can hold flags";
+        }
+        return "unknown reason - something went wrong";
+    }
+
     /////////////////////
     // ObjectTag Tag Management
     /////////////////////
 
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <CuboidTag.random>

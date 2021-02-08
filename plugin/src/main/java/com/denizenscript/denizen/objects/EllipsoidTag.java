@@ -3,6 +3,9 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -17,6 +20,8 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -24,7 +29,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject {
+public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject, FlaggableObject {
 
     // <--[language]
     // @name EllipsoidTag Objects
@@ -112,14 +117,14 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
     @Override
     public EllipsoidTag clone() {
-        if (noteName != null) {
-            return this;
-        }
         return new EllipsoidTag(center.clone(), size.clone());
     }
 
     @Override
     public ObjectTag duplicate() {
+        if (noteName != null) {
+            return this;
+        }
         return clone();
     }
 
@@ -141,6 +146,8 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     private LocationTag size;
 
     public String noteName = null;
+
+    public AbstractFlagTracker flagTracker = null;
 
     public ListTag getBlocks(Attribute attribute) {
         return getBlocks(null, attribute);
@@ -274,13 +281,17 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     @Note("Ellipsoids")
     public Object getSaveObject() {
-        return identifyFull().substring(10);
+        ConfigurationSection section = new YamlConfiguration();
+        section.set("object", identifyFull());
+        section.set("flags", flagTracker.toString());
+        return section;
     }
 
     @Override
     public void makeUnique(String id) {
         EllipsoidTag toNote = clone();
         toNote.noteName = id;
+        toNote.flagTracker = new SavableMapFlagTracker();
         NotableManager.saveAs(toNote, id);
     }
 
@@ -288,6 +299,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     public void forget() {
         NotableManager.remove(this);
         noteName = null;
+        flagTracker = null;
     }
     @Override
     public int hashCode() {
@@ -359,7 +371,29 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         return this;
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return flagTracker;
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        if (noteName != null) {
+            this.flagTracker = tracker;
+        }
+    }
+
+    @Override
+    public String getReasonNotFlaggable() {
+        if (noteName == null) {
+            return "the area is not noted - only noted areas can hold flags";
+        }
+        return "unknown reason - something went wrong";
+    }
+
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <EllipsoidTag.random>
