@@ -467,13 +467,13 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public void startRecording() {
         Debug.record = true;
-        Debug.Recording = new StringBuilder();
+        Debug.recording = new StringBuilder();
     }
 
     @Override
     public void stopRecording() {
         Debug.record = false;
-        Debug.Recording = new StringBuilder();
+        Debug.recording = new StringBuilder();
     }
 
     @Override
@@ -484,8 +484,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         }
         Debug.record = false;
         final DebugSubmit submit = new DebugSubmit();
-        submit.recording = Debug.Recording.toString();
-        Debug.Recording = new StringBuilder();
+        submit.recording = Debug.recording.toString();
+        Debug.recording = new StringBuilder();
         submit.start();
         BukkitRunnable task = new BukkitRunnable() {
             public void run() {

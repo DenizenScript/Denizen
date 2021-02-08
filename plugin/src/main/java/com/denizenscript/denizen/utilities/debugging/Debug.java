@@ -33,7 +33,7 @@ public class Debug {
 
     public static boolean shouldTrim = true;
     public static boolean record = false;
-    public static StringBuilder Recording = new StringBuilder();
+    public static StringBuilder recording = new StringBuilder();
 
     public static void toggle() {
         showDebug = !showDebug;
@@ -517,7 +517,7 @@ public class Debug {
 
             // Record current buffer to the to-be-submitted buffer
             if (Debug.record) {
-                Debug.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
+                Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date())
                         + " [INFO] " + string.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
             }
 

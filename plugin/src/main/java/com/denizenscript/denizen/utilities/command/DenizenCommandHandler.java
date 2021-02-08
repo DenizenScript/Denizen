@@ -165,7 +165,7 @@ public class DenizenCommandHandler {
                 Debug.toggle();
             }
             Debug.record = !Debug.record;
-            Debug.Recording = new StringBuilder();
+            Debug.recording = new StringBuilder();
             Messaging.sendInfo(sender, (Debug.record ? "Denizen debugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen debugger recording disabled."));
         }
