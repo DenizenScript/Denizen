@@ -6,7 +6,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -53,12 +52,12 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
         String[] data = path.eventArgsLower;
         for (int index = 3; index < data.length; index++) {
             if (data[index].equals("from")) {
-                if (!data[index + 1].equals(CoreUtilities.toLowerCase(origin_world.getName()))) {
+                if (!tryWorld(origin_world, data[index + 1])) {
                     return false;
                 }
             }
             else if (data[index].equals("to")) {
-                if (!data[index + 1].equals(CoreUtilities.toLowerCase(destination_world.getName()))) {
+                if (!tryWorld(destination_world, data[index + 1])) {
                     return false;
                 }
             }

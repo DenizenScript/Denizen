@@ -50,7 +50,7 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.eventArgLowerAt(2).equals("in") && !runGenericCheck(path.eventArgLowerAt(3), world.getName())) {
+        if (path.eventArgLowerAt(2).equals("in") && !tryWorld(world, path.eventArgLowerAt(3))) {
             return false;
         }
         String arg1 = path.eventArgLowerAt(1);

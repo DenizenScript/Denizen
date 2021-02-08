@@ -109,6 +109,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Nothing to do.
     }
 
+    @Override
+    public String getReasonNotFlaggable() {
+        return "is the world loaded?";
+    }
+
     public World getWorld() {
         return Bukkit.getWorld(world_name);
     }

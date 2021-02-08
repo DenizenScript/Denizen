@@ -55,6 +55,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // You can use "inventory" as a catch-all, "note" to mean any noted inventory, the name of an inventory script,
     // the name of an inventory note, or the name of an inventory type (like "chest").
     //
+    // "<world>" or similar expects of course a WorldTag.
+    // You can use "world" as a catch-all, a world name, or "world_flagged:<flag_name>" (note that this is not a switch).
+    //
     // You will also often see match inputs like "<cause>" or "<reason>" or similar,
     // which will expect the name from an enumeration documented elsewhere in the event meta (usually alongside a "<context.cause>" or similar).
     //
@@ -491,6 +494,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         String lower = CoreUtilities.toLowerCase(inputText);
+        if (lower.contains(":")) {
+            if (lower.startsWith("world_flagged:")) {
+                return new WorldTag(location.getWorld()).getFlagTracker().hasFlag(inputText.substring("world_flagged:".length()));
+            }
+        }
         if (lower.equals("cuboid")) {
             return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
         }
@@ -693,6 +701,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // </code>
     //
     // -->
+
+    public boolean tryWorld(WorldTag world, String comparedto) {
+        if (comparedto.equals("world")) {
+            return true;
+        }
+        if (comparedto.startsWith("world_flagged:")) {
+            return world.getFlagTracker().hasFlag(comparedto.substring("world_flagged:".length()));
+        }
+        return runGenericCheck(comparedto, world.getName());
+    }
 
     public boolean tryInventory(InventoryTag inv, String comparedto) {
         comparedto = CoreUtilities.toLowerCase(comparedto);

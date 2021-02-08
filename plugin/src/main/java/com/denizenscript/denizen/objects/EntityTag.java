@@ -439,6 +439,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
+    public String getReasonNotFlaggable() {
+        if (!isSpawned() || getBukkitEntity() == null) {
+            return "the entity is not spawned";
+        }
+        return "unknown reason - something went wrong";
+    }
+
+    @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
         if (cleanRateProtect + 60000 > DenizenCore.serverTimeMillis) {
             ((DataPersistenceFlagTracker) tracker).doTotalClean();

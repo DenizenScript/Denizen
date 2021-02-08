@@ -51,7 +51,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
         if (!cmd.equals("changes") && !cmd.equals(weather.asString())) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("in") && !runGenericCheck(path.eventArgLowerAt(3), world.getName())) {
+        if (path.eventArgLowerAt(2).equals("in") && !tryWorld(world, path.eventArgLowerAt(3))) {
             return false;
         }
         return super.matches(path);

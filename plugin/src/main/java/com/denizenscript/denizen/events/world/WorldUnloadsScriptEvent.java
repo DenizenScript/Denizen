@@ -48,7 +48,7 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runGenericCheck(path.eventArgAt(0), world.getName())) {
+        if (!tryWorld(world, path.eventArgLowerAt(0))) {
             return false;
         }
         return super.matches(path);
