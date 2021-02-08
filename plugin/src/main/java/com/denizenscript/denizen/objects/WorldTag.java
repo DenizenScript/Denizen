@@ -2,6 +2,9 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -25,7 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorldTag implements ObjectTag, Adjustable {
+public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
     /////////////////////
     //   STATIC METHODS
@@ -69,44 +72,41 @@ public class WorldTag implements ObjectTag, Adjustable {
         if (string == null) {
             return null;
         }
-
         string = string.replace("w@", "");
-
-        ////////
-        // Match world name
-
         World returnable = null;
-
         for (World world : Bukkit.getWorlds()) {
             if (world.getName().equalsIgnoreCase(string)) {
                 returnable = world;
             }
         }
-
         if (returnable != null) {
             return new WorldTag(returnable);
         }
         else if (announce) {
-            Debug.echoError("Invalid World! '" + string
-                    + "' could not be found.");
+            Debug.echoError("Invalid World! '" + string + "' could not be found.");
         }
-
         return null;
     }
 
     public static boolean matches(String arg) {
-
         arg = arg.replace("w@", "");
-
         World returnable = null;
-
         for (World world : Bukkit.getWorlds()) {
             if (world.getName().equalsIgnoreCase(arg)) {
                 returnable = world;
             }
         }
-
         return returnable != null;
+    }
+
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return WorldFlagHandler.worldFlagTrackers.get(getName());
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        // Nothing to do.
     }
 
     public World getWorld() {
@@ -201,6 +201,8 @@ public class WorldTag implements ObjectTag, Adjustable {
     }
 
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         /////////////////////
         //   ENTITY LIST ATTRIBUTES

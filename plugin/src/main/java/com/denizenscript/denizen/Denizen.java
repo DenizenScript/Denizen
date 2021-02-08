@@ -32,6 +32,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
+import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
@@ -67,7 +68,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -512,6 +512,7 @@ public class Denizen extends JavaPlugin {
         HandlerList.unregisterAll(this);
 
         saveSaves(false);
+        worldFlags.shutdown();
     }
 
     @Override
@@ -527,6 +528,8 @@ public class Denizen extends JavaPlugin {
     private FileConfiguration scoreboardsConfig = null;
     private File scoreboardsConfigFile = null;
 
+    public WorldFlagHandler worldFlags;
+
     public void reloadSaves() {
         if (scoreboardsConfigFile == null) {
             scoreboardsConfigFile = new File(getDataFolder(), "scoreboards.yml");
@@ -541,6 +544,8 @@ public class Denizen extends JavaPlugin {
         if (worldFlags == null) {
             worldFlags = new WorldFlagHandler();
         }
+        worldFlags.shutdown();
+        worldFlags.init();
         if (new File(getDataFolder(), "saves.yml").exists()) {
             LegacySavesUpdater.updateLegacySaves();
         }
@@ -570,6 +575,7 @@ public class Denizen extends JavaPlugin {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
         PlayerFlagHandler.saveAllNow(canSleep);
+        worldFlags.saveAll();
     }
 
     @Override
