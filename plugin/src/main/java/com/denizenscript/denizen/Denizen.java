@@ -537,21 +537,9 @@ public class Denizen extends JavaPlugin {
         // Load maps from maps.yml
         DenizenMapManager.reloadMaps();
         // Reload server flags
-        File serverFlagsFile = new File(getDataFolder(), "server_flags.dat");
-        if (serverFlagsFile.exists()) {
-            try {
-                FileInputStream fis = new FileInputStream(serverFlagsFile);
-                String str = ScriptHelper.convertStreamToString(fis);
-                fis.close();
-                serverFlagMap = new SavableMapFlagTracker(str);
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-                serverFlagMap = new SavableMapFlagTracker();
-            }
-        }
-        else {
-            serverFlagMap = new SavableMapFlagTracker();
+        serverFlagMap = SavableMapFlagTracker.loadFlagFile(new File(getDataFolder(), "server_flags").getPath());
+        if (worldFlags == null) {
+            worldFlags = new WorldFlagHandler();
         }
         if (new File(getDataFolder(), "saves.yml").exists()) {
             LegacySavesUpdater.updateLegacySaves();
@@ -574,24 +562,7 @@ public class Denizen extends JavaPlugin {
         // Save maps to maps.yml
         DenizenMapManager.saveMaps();
         // Save server flags
-        File serverFlagsFile = new File(getDataFolder(), "server_flags.dat");
-        try {
-            String flagData = serverFlagMap.toString();
-            Charset charset = ScriptHelper.encoding == null ? null : ScriptHelper.encoding.charset();
-            FileOutputStream fiout = new FileOutputStream(serverFlagsFile);
-            OutputStreamWriter writer;
-            if (charset == null) {
-                writer = new OutputStreamWriter(fiout);
-            }
-            else {
-                writer = new OutputStreamWriter(fiout, charset);
-            }
-            writer.write(flagData);
-            writer.close();
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
+        serverFlagMap.saveToFile(new File(getDataFolder(), "server_flags").getPath());
         try {
             scoreboardsConfig.save(scoreboardsConfigFile);
         }

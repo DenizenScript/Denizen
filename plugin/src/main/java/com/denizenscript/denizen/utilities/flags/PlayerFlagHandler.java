@@ -13,10 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.lang.ref.SoftReference;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,34 +128,7 @@ public class PlayerFlagHandler implements Listener {
     }
 
     public static void loadFlags(UUID id, CachedPlayerFlag cache) {
-        try {
-            File realPath;
-            File flagFile = new File(dataFolder, id.toString() + ".dat");
-            if (flagFile.exists()) {
-                realPath = flagFile;
-            }
-            else {
-                File bakFile = new File(dataFolder, id.toString() + ".dat~2");
-                if (bakFile.exists()) {
-                    realPath = bakFile;
-                }
-                // Note: ~1 are likely corrupted, so ignore them.
-                else {
-                    cache.tracker = new SavableMapFlagTracker();
-                    cache.loadingNow = false;
-                    return;
-                }
-            }
-            FileInputStream fis = new FileInputStream(realPath);
-            String str = ScriptHelper.convertStreamToString(fis);
-            fis.close();
-            cache.tracker = new SavableMapFlagTracker(str);
-        }
-        catch (Throwable ex) {
-            Debug.echoError("Failed to load player data for player ID '" + id + "'");
-            Debug.echoError(ex);
-            cache.tracker = new SavableMapFlagTracker();
-        }
+        cache.tracker = SavableMapFlagTracker.loadFlagFile(new File(dataFolder, id.toString()).getPath());
         cache.loadingNow = false;
     }
 
@@ -251,33 +221,7 @@ public class PlayerFlagHandler implements Listener {
     }
 
     public static void saveFlags(UUID id, String flagData) {
-        File saveToFile = new File(dataFolder, id.toString() + ".dat~1");
-        try {
-            Charset charset = ScriptHelper.encoding == null ? null : ScriptHelper.encoding.charset();
-            FileOutputStream fiout = new FileOutputStream(saveToFile);
-            OutputStreamWriter writer;
-            if (charset == null) {
-                writer = new OutputStreamWriter(fiout);
-            }
-            else {
-                writer = new OutputStreamWriter(fiout, charset);
-            }
-            writer.write(flagData);
-            writer.close();
-            File bakFile = new File(dataFolder, id.toString() + ".dat~2");
-            File realFile = new File(dataFolder, id.toString() + ".dat");
-            if (realFile.exists()) {
-                realFile.renameTo(bakFile);
-            }
-            saveToFile.renameTo(realFile);
-            if (bakFile.exists()) {
-                bakFile.delete();
-            }
-        }
-        catch (Throwable ex) {
-            Debug.echoError("Failed to save player data for player ID '" + id + "'");
-            Debug.echoError(ex);
-        }
+        SavableMapFlagTracker.saveToFile(new File(dataFolder, id.toString()).getPath(), flagData);
     }
 
     @EventHandler
