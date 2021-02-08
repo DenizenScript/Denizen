@@ -22,7 +22,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Group Vehicle
     //
-    // @Regex ^on [^\s]+ destroys [^\s]+$
+    // @Regex ^on [^\s]+ (destroyed|destroys [^\s]+)$
     //
     // @Location true
     //
@@ -52,13 +52,20 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean couldMatch(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("destroyed") && !cmd.equals("destroys")) {
-            return false;
+        if (cmd.equals("destroys")) {
+            if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+                return false;
+            }
+            if (!couldMatchVehicle(path.eventArgLowerAt(2))) {
+                return false;
+            }
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(0)) && !couldMatchVehicle(path.eventArgLowerAt(2))) {
-            return false;
+        else if (cmd.equals("destroyed")) {
+            if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+                return false;
+            }
         }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
+        else {
             return false;
         }
         return true;
