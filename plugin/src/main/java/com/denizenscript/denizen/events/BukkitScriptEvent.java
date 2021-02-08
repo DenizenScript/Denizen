@@ -40,23 +40,29 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // This means you can specify any valid block material name, like "stone" or "air".
     // You can also use "block" or "material" as catch-alls.
     //
-    // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
-    // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
-    // but you can also specify "entity" (catch-all), "player" (real players, NOT player-type NPCs), "npc" (Citizens NPC),
-    // "vehicle" (minecarts, boats, horses, etc), "fish" (cod, pufferfish, etc), "projectile" (arrow, trident, etc), "hanging" (painting, item_frame, etc),
-    // "monster" (creepers, zombies, etc), "animals" (pigs, cows, etc), "mob" (creepers, pigs, etc).
-    //
     // "<item>" or similar expects of course an ItemTag.
     // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
     // Items can also be used with an "item_flagged" secondary prefix, so for an event that has "with:<item>", you can also do "with:item_flagged:<flag name>".
     // For item matchers that aren't switches, this works similarly, like "on player consumes item_flagged:myflag:" (note that this is not a switch).
     //
+    // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
+    // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
+    // but you can also specify "entity" (catch-all), "player" (real players, NOT player-type NPCs), "npc" (Citizens NPC),
+    // "vehicle" (minecarts, boats, horses, etc), "fish" (cod, pufferfish, etc), "projectile" (arrow, trident, etc), "hanging" (painting, item_frame, etc),
+    // "monster" (creepers, zombies, etc), "animals" (pigs, cows, etc), "mob" (creepers, pigs, etc),
+    // "entity_flagged:<flag_name>", "npc_flagged:<flag_name>", "player_flagged:<flag_name>" (all three work similar to 'item_flagged').
+    //
     // "<inventory>" or similar expects of course an InventoryTag.
     // You can use "inventory" as a catch-all, "note" to mean any noted inventory, the name of an inventory script,
-    // the name of an inventory note, or the name of an inventory type (like "chest").
+    // the name of an inventory note, the name of an inventory type (like "chest"),
+    // or "inventory_flagged:<flag_name>" for noted inventories.
     //
     // "<world>" or similar expects of course a WorldTag.
-    // You can use "world" as a catch-all, a world name, or "world_flagged:<flag_name>" (note that this is not a switch).
+    // You can use "world" as a catch-all, a world name, or "world_flagged:<flag_name>" (works similar to 'item_flagged').
+    //
+    // "<area>" or similar refers to any area-defining tag type, including WorldTag, CuboidTag, EllipsoidTag, and PolygonTag.
+    // You can specify the name of any world, the name of any noted area, "world_flagged:<flag_name>", "area_flagged:<flag_name>" (both work similar to 'item_flagged'),
+    // "cuboid" for any noted cuboid, "ellipsoid" for any noted ellipsoid, or "polygon" for any noted polygon.
     //
     // You will also often see match inputs like "<cause>" or "<reason>" or similar,
     // which will expect the name from an enumeration documented elsewhere in the event meta (usually alongside a "<context.cause>" or similar).
@@ -104,6 +110,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (text.equals("inventory")) {
             return true;
         }
+        if (text.startsWith("inventory_flagged:")) {
+            return true;
+        }
         if (InventoryTag.matches(text)) {
             return true;
         }
@@ -113,10 +122,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("player", "entity", "npc", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
 
     public boolean couldMatchEntity(String text) {
-        if (specialEntityMatchables.contains(text)) {
-            return true;
-        }
-        if (EntityTag.matches(text)) {
+        if (exactMatchEntity(text)) {
             return true;
         }
         return genericCouldMatchChecks(text, this::couldMatchEntity);
@@ -124,6 +130,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean exactMatchEntity(String text) {
         if (specialEntityMatchables.contains(text)) {
+            return true;
+        }
+        if (text.startsWith("entity_flagged:") || text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
             return true;
         }
         if (EntityTag.matches(text)) {
@@ -138,6 +147,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         if (specialEntityMatchables.contains(text)) {
             return false;
+        }
+        if (text.startsWith("entity_flagged:") || text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
+            return true;
         }
         if (EntityTag.matches(text)) {
             EntityTag entity = EntityTag.valueOf(text, CoreUtilities.noDebugContext);
@@ -498,15 +510,49 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (lower.startsWith("world_flagged:")) {
                 return new WorldTag(location.getWorld()).getFlagTracker().hasFlag(inputText.substring("world_flagged:".length()));
             }
+            else if (lower.startsWith("area_flagged:")) {
+                String flagName = inputText.substring("area_flagged:".length());
+                for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+                    if (cuboid.isInsideCuboid(location) && cuboid.flagTracker.hasFlag(flagName)) {
+                        return true;
+                    }
+                }
+                for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+                    if (ellipsoid.contains(location) && ellipsoid.flagTracker.hasFlag(flagName)) {
+                        return true;
+                    }
+                }
+                for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+                    if (polygon.doesContainLocation(location) && polygon.flagTracker.hasFlag(flagName)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
         if (lower.equals("cuboid")) {
-            return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
+            for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+                if (cuboid.isInsideCuboid(location)) {
+                    return true;
+                }
+            }
+            return false;
         }
         else if (lower.equals("ellipsoid")) {
-            return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
+            for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+                if (ellipsoid.contains(location)) {
+                    return true;
+                }
+            }
+            return false;
         }
         else if (lower.equals("polygon")) {
-            return PolygonTag.getNotedPolygonsContaining(location).size() > 0;
+            for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+                if (polygon.doesContainLocation(location)) {
+                    return true;
+                }
+            }
+            return false;
         }
         else if (WorldTag.matches(inputText)) {
             return CoreUtilities.equalsIgnoreCase(location.getWorld().getName(), lower);
@@ -720,6 +766,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("notable") || comparedto.equals("note")) {
             return NotableManager.isSaved(inv);
         }
+        if (comparedto.startsWith("inventory_flagged:")) {
+            return inv.flagTracker != null && inv.flagTracker.hasFlag(comparedto.substring("inventory_flagged:".length()));
+        }
         MatchHelper matcher = createMatcher(comparedto);
         if (matcher.doesMatch(inv.getInventoryType().name())) {
             return true;
@@ -839,6 +888,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             else if (comparedto.equals("animal")) {
                 return bEntity instanceof Animals;
+            }
+        }
+        if (comparedto.contains(":")) {
+            if (comparedto.startsWith("entity_flagged:")) {
+                return entity.getFlagTracker().hasFlag(comparedto.substring("entity_flagged:".length()));
+            }
+            else if (comparedto.startsWith("player_flagged:")) {
+                return entity.isPlayer() && entity.getFlagTracker().hasFlag(comparedto.substring("player_flagged:".length()));
+            }
+            else if (comparedto.startsWith("npc_flagged:")) {
+                return entity.isCitizensNPC() && entity.getFlagTracker().hasFlag(comparedto.substring("npc_flagged:".length()));
             }
         }
         MatchHelper matcher = createMatcher(comparedto);
