@@ -38,6 +38,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -3331,12 +3332,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns LocationTag
         // @description
         // Returns the block this block is attached to.
-        // (For buttons, levers, signs, etc).
+        // (For buttons, levers, signs, torches, etc).
         // -->
         registerTag("attached_to", (attribute, object) -> {
             BlockFace face = BlockFace.SELF;
             MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
-            if (MaterialSwitchFace.describes(material)) {
+            if (material.getMaterial() == Material.TORCH || material.getMaterial() == Material.REDSTONE_TORCH || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getMaterial() == Material.SOUL_TORCH)) {
+                face = BlockFace.DOWN;
+            }
+            else if (material.getMaterial() == Material.WALL_TORCH || material.getMaterial() == Material.REDSTONE_WALL_TORCH || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getMaterial() == Material.SOUL_WALL_TORCH)) {
+                face = ((Directional) material.getModernData().data).getFacing().getOppositeFace();
+            }
+            else if (MaterialSwitchFace.describes(material)) {
                 face = MaterialSwitchFace.getFrom(material).getAttachedTo();
             }
             else if (material.hasModernData() && material.getModernData().data instanceof org.bukkit.block.data.type.WallSign) {
