@@ -1524,6 +1524,9 @@ public class ServerTagBase {
         if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
             Player matchPlayer = null;
             String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
+            if (matchInput.isEmpty()) {
+                return;
+            }
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (CoreUtilities.equalsIgnoreCase(player.getName(), matchInput)) {
                     matchPlayer = player;
@@ -1552,6 +1555,9 @@ public class ServerTagBase {
         if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
             UUID matchPlayer = null;
             String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
+            if (matchInput.isEmpty()) {
+                return;
+            }
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
                 if (CoreUtilities.equalsIgnoreCase(entry.getKey(), matchInput)) {
                     matchPlayer = entry.getValue();

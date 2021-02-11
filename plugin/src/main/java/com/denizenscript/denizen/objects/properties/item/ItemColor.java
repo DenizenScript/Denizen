@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -14,15 +16,19 @@ import org.bukkit.inventory.meta.PotionMeta;
 public class ItemColor implements Property {
 
     public static boolean describes(ObjectTag item) {
+        if (!(item instanceof ItemTag)) {
+            return false;
+        }
+        Material mat = ((ItemTag) item).getBukkitMaterial();
         // Leather armor and potions
-        return item instanceof ItemTag
-                && (((ItemTag) item).getBukkitMaterial() == Material.LEATHER_BOOTS
-                || ((ItemTag) item).getBukkitMaterial() == Material.LEATHER_CHESTPLATE
-                || ((ItemTag) item).getBukkitMaterial() == Material.LEATHER_HELMET
-                || ((ItemTag) item).getBukkitMaterial() == Material.LEATHER_LEGGINGS
-                || ((ItemTag) item).getBukkitMaterial() == Material.POTION
-                || ((ItemTag) item).getBukkitMaterial() == Material.SPLASH_POTION
-                || ((ItemTag) item).getBukkitMaterial() == Material.LINGERING_POTION);
+        return mat == Material.LEATHER_BOOTS
+                || mat == Material.LEATHER_CHESTPLATE
+                || mat == Material.LEATHER_HELMET
+                || mat == Material.LEATHER_LEGGINGS
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && mat == Material.LEATHER_HORSE_ARMOR)
+                || mat == Material.POTION
+                || mat == Material.SPLASH_POTION
+                || mat == Material.LINGERING_POTION;
     }
 
     public static ItemColor getFrom(ObjectTag _item) {
