@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -235,8 +236,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 entity.spawnAt(originLocation);
             }
             entityList.addObject(entity);
-            if (entity.isProjectile() && (shooter != null || originEntity != null)) {
-                entity.setShooter(shooter != null ? shooter : originEntity);
+            if (entity.isProjectile()) {
+                if (shooter != null || originEntity != null) {
+                    entity.setShooter(shooter != null ? shooter : originEntity);
+                }
                 if (script != null) {
                     arrows.put(entity.getUUID(), null);
                 }
@@ -362,7 +365,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void projectileHit(ProjectileHitEvent event) {
         if (!arrows.containsKey(event.getEntity().getUniqueId())) {
             return;
