@@ -52,11 +52,6 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
             return queue;
         }
         queue = new TimedQueue("EX_SUSTAINED_COMMAND", 0);
-        if (!quiet && player != null) {
-            queue.debugOutput = (s) -> {
-                player.spigot().sendMessage(FormattedTextHelper.parse(s, net.md_5.bungee.api.ChatColor.WHITE));
-            };
-        }
         queue.waitWhenEmpty = true;
         playerQueues.put(id, queue);
         return queue;
@@ -77,6 +72,15 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
                 return true;
             }
             TimedQueue queue = getOrMakeQueue(sender instanceof Player ? (Player) sender : null, quiet);
+            if (!quiet && sender instanceof Player) {
+                Player player = (Player) sender;
+                queue.debugOutput = (s) -> {
+                    player.spigot().sendMessage(FormattedTextHelper.parse(s, net.md_5.bungee.api.ChatColor.WHITE));
+                };
+            }
+            else {
+                queue.debugOutput = null;
+            }
             if (queue.isPaused() || queue.isDelayed()) {
                 sender.sendMessage(ChatColor.YELLOW + "Sustained queue is currently paused or waiting, adding command to queue for later execution.");
             }

@@ -167,6 +167,9 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     @Override
     public void a(PacketPlayInFlying packet) {
         handlePacketIn(packet);
+        if (!(packet instanceof PacketPlayInFlying.PacketPlayInLook) && player.getVehicle() != null) {
+            player.playerConnection.sendPacket(new PacketPlayOutMount(player.getVehicle()));
+        }
         oldListener.a(packet);
     }
 

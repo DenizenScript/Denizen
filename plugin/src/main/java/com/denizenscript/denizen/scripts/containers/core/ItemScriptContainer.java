@@ -154,7 +154,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # | Most item scripts should exclude this key!
     //   color: ColorTag
     //
-    //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
+    //   # If your material is a 'written_book', you can specify a book script to automatically scribe your item
     //   # upon creation. See 'book script containers' for more information.
     //   # | Most item scripts should exclude this key, though there are certain rare cases it may be useful to.
     //   book: book_script_name
