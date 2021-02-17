@@ -38,13 +38,18 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     //
     // @Description
     // This command creates a new minecraft world with the specified name, or loads an existing world by that name.
+    //
     // Optionally specify a plugin-based world generator by it's generator ID.
-    // Optionally specify a world type which can be specified with 'worldtype:' (defaults to NORMAL).
-    // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
-    // Optionally specify an environment (defaults to NORMAL, can also be NETHER or THE_END).
-    // Optionally specify an existing world to copy files from.
+    // If you want an empty void world, you can use "generate:denizen:void".
+    //
     // Optionally specify additional generator settings as JSON input.
     //
+    // Optionally specify a world type which can be specified with 'worldtype:' (defaults to NORMAL).
+    // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
+    //
+    // Optionally specify an environment (defaults to NORMAL, can also be NETHER or THE_END).
+    //
+    // Optionally specify an existing world to copy files from.
     // The 'copy_from' argument is ~waitable. Refer to <@link language ~waitable>.
     //
     // It's often ideal to put this command inside <@link event server prestart>.

@@ -167,6 +167,7 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     @Override
     public void a(PacketPlayInFlying packet) {
         handlePacketIn(packet);
+        // TODO: The underlying issue that necessitated this fix in 1.16 is probably fixed in 1.17
         if (!(packet instanceof PacketPlayInFlying.PacketPlayInLook) && player.getVehicle() != null) {
             player.playerConnection.sendPacket(new PacketPlayOutMount(player.getVehicle()));
         }

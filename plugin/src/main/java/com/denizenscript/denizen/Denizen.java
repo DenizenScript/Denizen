@@ -42,6 +42,7 @@ import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
+import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
@@ -63,6 +64,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -613,4 +615,13 @@ public class Denizen extends JavaPlugin {
         }
         return false;
     }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && CoreUtilities.toLowerCase(id).equals("void")) {
+            return new VoidGenerator();
+        }
+        return null;
+    }
+
 }

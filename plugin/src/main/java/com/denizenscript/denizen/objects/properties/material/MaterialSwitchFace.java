@@ -72,7 +72,7 @@ public class MaterialSwitchFace implements Property {
     }
 
     public FaceAttachable getFaceAttachable() {
-        return (FaceAttachable) material.getModernData();
+        return (FaceAttachable) material.getModernData().data;
     }
 
     @Override

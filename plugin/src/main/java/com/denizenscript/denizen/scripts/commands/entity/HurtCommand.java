@@ -21,14 +21,14 @@ public class HurtCommand extends AbstractCommand {
 
     public HurtCommand() {
         setName("hurt");
-        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)");
+        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>) (source_once)");
         setRequiredArguments(0, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Hurt
-    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
+    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>) (source_once)
     // @Required 0
     // @Maximum 5
     // @Short Hurts the player or a list of entities.
@@ -40,8 +40,8 @@ public class HurtCommand extends AbstractCommand {
     // If no entities are specified: if there is a linked player, the command targets that. If there is no linked
     // player but there is a linked NPC, the command targets the NPC. If neither is available, the command will error.
     //
-    // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
-    // (half a heart).
+    // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage (half a heart).
+    //
     // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
     // be warned this does not always work as intended, and is liable to glitch.
     // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
