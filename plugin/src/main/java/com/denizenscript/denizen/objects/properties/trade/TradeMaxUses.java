@@ -64,7 +64,7 @@ public class TradeMaxUses implements Property {
         // @description
         // Sets the maximum amount of times that the trade can be used.
         // @tags
-        // //
+        // <TradeTag.max_uses>
         // -->
         if (mechanism.matches("max_uses") && mechanism.requireInteger()) {
             recipe.getRecipe().setMaxUses(mechanism.getValue().asInt());

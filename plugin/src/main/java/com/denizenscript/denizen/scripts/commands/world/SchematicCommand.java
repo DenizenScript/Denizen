@@ -39,7 +39,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delayed_ms:<#>)");
+        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>)");
         setRequiredArguments(2, 11);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
@@ -55,7 +55,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delayed_ms:<#>)
+    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>)
     // @Group World
     // @Required 2
     // @Maximum 11
@@ -77,7 +77,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
     // For 'paste' and 'create', this delays how many blocks can be processed at once, spread over many ticks.
-    // Optionally, specify 'max_delayed_ms' to control how many milliseconds the 'delayed' set can run for in any given tick (defaults to 50) (for create/paste only).
+    // Optionally, specify 'max_delay_ms' to control how many milliseconds the 'delayed' set can run for in any given tick (defaults to 50) (for create/paste only).
     //
     // The "load" option by default will load '.schem' files. If no '.schem' file is available, will attempt to load a legacy '.schematic' file instead.
     //

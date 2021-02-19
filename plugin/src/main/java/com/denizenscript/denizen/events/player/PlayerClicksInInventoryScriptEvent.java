@@ -82,6 +82,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     //
     // @Location true
     //
+    // @Cancellable true
+    //
     // @Triggers when a player clicks in an inventory. Note that you likely will also want to listen to <@link event player drags in inventory>.
     //
     // @Context
@@ -98,7 +100,6 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // <context.hotbar_button> returns an ElementTag of the button pressed as a number, or 0 if no number button was pressed.
     //
     // @Determine
-    // "CANCELLED" to stop the player from clicking.
     // ItemTag to set the current item for the event.
     //
     // @Player Always.

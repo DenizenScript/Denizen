@@ -3,23 +3,28 @@ package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
-import com.denizenscript.denizen.nms.interfaces.FakeArrow;
+import com.denizenscript.denizen.utilities.debugging.Debug;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.MemoryNPCDataStore;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.util.PlayerAnimation;
-import org.bukkit.Bukkit;
+import net.citizensnpcs.trait.ArmorStandTrait;
+import net.citizensnpcs.trait.ClickRedirectTrait;
+import net.citizensnpcs.util.NMS;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
-
-import java.util.ArrayList;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SittingTrait extends Trait implements Listener {
 
@@ -57,11 +62,15 @@ public class SittingTrait extends Trait implements Listener {
     @Override
     public void onDespawn() {
         if (npc == null || npc.getEntity() == null) {
-            // Wat.
             return;
         }
-        if (npc.getEntity().getVehicle() != null) {
-            npc.getEntity().getVehicle().eject();
+        Entity vehicle = npc.getEntity().getVehicle();
+        if (vehicle != null) {
+            vehicle.eject();
+            NPC vehicleNPC = CitizensAPI.getNPCRegistry().getNPC(vehicle);
+            if (vehicleNPC != null && vehicleNPC.data().get("is-denizen-seat", false)) {
+                vehicleNPC.destroy();
+            }
         }
     }
 
@@ -83,52 +92,40 @@ public class SittingTrait extends Trait implements Listener {
         if (!npc.isSpawned()) {
             return;
         }
-
         new NPCTag(npc).action("sit", null);
-
         sit(npc.getEntity().getLocation());
     }
 
-    private void sitInternal() {
-        if (npc.getEntity() instanceof Player) {
-            PlayerAnimation.SIT.play((Player) npc.getEntity());
-        }
-        else {
-            DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),
-                    new ArrayList<>(), null).setPassenger(npc.getEntity());
-        }
-        sitting = true;
-    }
-
     private void standInternal() {
-        if (npc.getEntity() instanceof Player) {
-            PlayerAnimation.STOP_SITTING.play((Player) npc.getEntity());
-            if (chairLocation != null) {
-                npc.teleport(chairLocation.clone().add(0, 0.5, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            }
-        }
-        else {
-            Entity vehicle = npc.getEntity().getVehicle();
-            npc.despawn();
-            npc.spawn(npc.getStoredLocation().clone().add(0, 0.5, 0));
-            if (vehicle != null && vehicle.isValid()) {
-                vehicle.eject();
-                vehicle.remove();
-            }
-        }
+        forceUnsit(npc.getEntity());
+        safetyCleanup(chairLocation.clone());
+        npc.teleport(chairLocation.clone().add(0, 0.5, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
         sitting = false;
     }
 
     public void sitInternal(Location location) {
+        safetyCleanup(location.clone());
         new NPCTag(npc).action("sit", null);
+        npc.getEntity().teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        forceEntitySit(npc.getEntity(), location.clone());
+        sitting = true;
+    }
 
-        /*
-         * Teleport NPC to the location before
-         * sending the sit packet to the clients.
-         */
-        npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-
-        sitInternal();
+    public void safetyCleanup(Location loc) {
+        for (Entity entity : loc.getWorld().getNearbyEntities(loc, 3, 3, 3)) {
+            if (entity.getType() == EntityType.ARMOR_STAND && entity.getCustomName() != null && entity.getCustomName().equals(SIT_STAND_NAME) && entity.getPassengers().isEmpty()) {
+                ArmorStand stand = (ArmorStand) entity;
+                if (stand.isMarker() && stand.isSmall() && !stand.isVisible() && stand.getPassengers().isEmpty()) {
+                    NPC npc = CitizensAPI.getNPCRegistry().getNPC(stand);
+                    if (npc != null) {
+                        npc.destroy();
+                    }
+                    else {
+                        stand.remove();
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -174,16 +171,6 @@ public class SittingTrait extends Trait implements Listener {
     }
 
     /**
-     * Gets the chair the NPC is sitting on
-     * Returns null if the NPC isnt sitting
-     *
-     * @return Location
-     */
-    public Location getChair() {
-        return chairLocation;
-    }
-
-    /**
      * If someone tries to break the poor
      * NPC's chair, we need to stop them!
      */
@@ -197,22 +184,90 @@ public class SittingTrait extends Trait implements Listener {
         }
     }
 
-    @EventHandler
-    public void arrowDismount(final VehicleExitEvent event) {
-        // TODO: Move elsewhere so not multi-firing?
-        if (event.getVehicle() instanceof FakeArrow) {
-            Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    if (event.getVehicle().isValid()) {
-                        event.getVehicle().remove();
-                    }
-                }
-            }, 1);
+    public SittingTrait() {
+        super("sitting");
+    }
+
+    public static String SIT_STAND_NAME = ChatColor.BLACK + "Deniz" + ChatColor.DARK_GRAY + "NPCSit";
+
+    public void forceUnsit(Entity entity) {
+        entity.removeMetadata("denizen.sitting", Denizen.getInstance());
+        if (entity.isInsideVehicle()) {
+            entity.leaveVehicle();
+        }
+        if (sitStandNPC != null) {
+            sitStandNPC.destroy();
+            sitStandNPC = null;
         }
     }
 
-    public SittingTrait() {
-        super("sitting");
+    public NPC sitStandNPC = null;
+
+    public void forceEntitySit(Entity entity, Location location) {
+        if (sitStandNPC != null) {
+            sitStandNPC.destroy();
+        }
+        entity.setMetadata("denizen.sitting", new FixedMetadataValue(Denizen.getInstance(), true));
+        NPCRegistry registry = CitizensAPI.getNamedNPCRegistry("DenizenSitRegistry");
+        if (registry == null) {
+            registry = CitizensAPI.createNamedNPCRegistry("DenizenSitRegistry", new MemoryNPCDataStore());
+        }
+        NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+        final NPC holder = registry.createNPC(EntityType.ARMOR_STAND, SIT_STAND_NAME);
+        sitStandNPC = holder;
+        if (npc != null) {
+            holder.addTrait(new ClickRedirectTrait(npc));
+        }
+        ArmorStandTrait trait = holder.getOrAddTrait(ArmorStandTrait.class);
+        trait.setGravity(false);
+        trait.setHasArms(false);
+        trait.setHasBaseplate(false);
+        trait.setSmall(true);
+        trait.setMarker(true);
+        trait.setVisible(false);
+        holder.spawn(location);
+        holder.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
+        holder.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
+        holder.data().set("is-denizen-seat", true);
+        if (!holder.isSpawned()) {
+            Debug.echoError("NPC sit failed: cannot spawn chair");
+            holder.destroy();
+            sitStandNPC = null;
+            return;
+        }
+        new BukkitRunnable() {
+            @Override
+            public void cancel() {
+                super.cancel();
+                if (entity.isValid() && entity.hasMetadata("denizen.sitting")) {
+                    entity.removeMetadata("denizen.sitting", Denizen.getInstance());
+                }
+                if (holder.getTraits().iterator().hasNext()) { // Hacky NPC-already-removed test
+                    holder.destroy();
+                }
+                if (sitStandNPC == holder) {
+                    sitStandNPC = null;
+                }
+            }
+
+            @Override
+            public void run() {
+                if (holder != sitStandNPC) {
+                    cancel();
+                }
+                else if (!holder.getTraits().iterator().hasNext()) { // Hacky NPC-already-removed test
+                    cancel();
+                }
+                else if (!entity.isValid() || !entity.hasMetadata("denizen.sitting") || !entity.getMetadata("denizen.sitting").get(0).asBoolean()) {
+                    cancel();
+                }
+                else if (npc != null && !npc.isSpawned()) {
+                    cancel();
+                }
+                else if (!NMS.getPassengers(holder.getEntity()).contains(entity)) {
+                    holder.getEntity().addPassenger(entity);
+                }
+            }
+        }.runTaskTimer(Denizen.getInstance(), 0, 1);
     }
 }
