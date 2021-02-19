@@ -71,6 +71,8 @@ public class TakeCommand extends AbstractCommand {
     //
     // If an economy is registered, using 'money' instead of an item will take money from the player's economy balance.
     //
+    // Material, Flagged, Slot, Bydisplay, and Scriptname all sort a list as input to take multiple different item types at once.
+    //
     // If no quantity is specified, exactly 1 item will be taken.
     //
     // Specifying a raw item without any matching method is considered unreliable and should be avoided.
@@ -135,7 +137,7 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matchesPrefix("bydisplay")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.BYDISPLAY);
-                scriptEntry.addObject("displayname", arg.asElement());
+                scriptEntry.addObject("displayname", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("items")
                     && arg.matchesPrefix("nbt")
@@ -148,7 +150,7 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matchesPrefix("flagged")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.FLAGGED);
-                scriptEntry.addObject("flag_name", arg.asElement());
+                scriptEntry.addObject("flag_name", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
@@ -160,19 +162,19 @@ public class TakeCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("material")) {
                 scriptEntry.addObject("type", Type.MATERIAL);
-                scriptEntry.addObject("material", arg.asType(MaterialTag.class));
+                scriptEntry.addObject("material", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("script", "scriptname")) {
                 scriptEntry.addObject("type", Type.SCRIPTNAME);
-                scriptEntry.addObject("scriptitem", arg.asType(ItemTag.class));
+                scriptEntry.addObject("scriptitem", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesPrefix("slot")) {
                 scriptEntry.addObject("type", Type.SLOT);
-                scriptEntry.addObject("slot", arg.asElement());
+                scriptEntry.addObject("slot", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
@@ -219,26 +221,26 @@ public class TakeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         InventoryTag inventory = scriptEntry.getObjectTag("inventory");
         ElementTag quantity = scriptEntry.getElement("quantity");
-        ElementTag displayname = scriptEntry.getElement("displayname");
-        ItemTag scriptitem = scriptEntry.getObjectTag("scriptitem");
-        ElementTag slot = scriptEntry.getElement("slot");
+        ListTag displayNameList = scriptEntry.getObjectTag("displayname");
+        List<ItemTag> scriptItemList = scriptEntry.getObjectTag("scriptitem");
+        ListTag slotList = scriptEntry.getObjectTag("slot");
         ListTag titleAuthor = scriptEntry.getObjectTag("cover");
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
-        ElementTag flagName = scriptEntry.getElement("flag_name");
-        MaterialTag material = scriptEntry.getObjectTag("material");
+        ListTag flagList = scriptEntry.getObjectTag("flag_name");
+        List<MaterialTag> materialList = scriptEntry.getObjectTag("material");
         Type type = (Type) scriptEntry.getObject("type");
         List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("items");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                             + quantity.debug()
                             + (inventory != null ? inventory.debug() : "")
-                            + (displayname != null ? displayname.debug() : "")
-                            + (scriptitem != null ? scriptitem.debug() : "")
+                            + (displayNameList != null ? displayNameList.debug() : "")
+                            + (scriptItemList != null ? ArgumentHelper.debugList("scriptname", scriptItemList) : "")
                             + ArgumentHelper.debugObj("Items", items)
-                            + (slot != null ? slot.debug() : "")
+                            + (slotList != null ? slotList.debug() : "")
                             + (nbtKey != null ? nbtKey.debug() : "")
-                            + (flagName != null ? flagName.debug() : "")
-                            + (material != null ? material.debug() : "")
+                            + (flagList != null ? flagList.debug() : "")
+                            + (materialList != null ? ArgumentHelper.debugList("material",  materialList) : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));
         }
         switch (type) {
@@ -315,12 +317,14 @@ public class TakeCommand extends AbstractCommand {
                 break;
             }
             case BYDISPLAY: {
-                if (displayname == null) {
+                if (displayNameList == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a displayname!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                        item.getItemMeta().getDisplayName().equalsIgnoreCase(displayname.identify()), quantity.asInt());
+                for (String name : displayNameList) {
+                    takeByMatcher(inventory, (item) -> item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                            item.getItemMeta().getDisplayName().equalsIgnoreCase(name), quantity.asInt());
+                }
                 break;
             }
             case BYCOVER: {
@@ -334,11 +338,13 @@ public class TakeCommand extends AbstractCommand {
                 break;
             }
             case FLAGGED: {
-                if (flagName == null) {
+                if (flagList == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a flag name!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> new ItemTag(item).getFlagTracker().hasFlag(flagName.asString()), quantity.asInt());
+                for (String flag : flagList) {
+                    takeByMatcher(inventory, (item) -> new ItemTag(item).getFlagTracker().hasFlag(flag), quantity.asInt());
+                }
                 break;
             }
             case NBT: {
@@ -350,35 +356,46 @@ public class TakeCommand extends AbstractCommand {
                 break;
             }
             case SCRIPTNAME: {
-                if (scriptitem == null || scriptitem.getScriptName() == null) {
+                if (scriptItemList == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> scriptitem.getScriptName().equalsIgnoreCase(new ItemTag(item).getScriptName()), quantity.asInt());
+                for (ItemTag scriptedItem : scriptItemList) {
+                    String script = scriptedItem.getScriptName();
+                    if (script == null) {
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Item '" + scriptedItem.debuggable() + "' is not a scripted item, cannot take by scriptname.");
+                        continue;
+                    }
+                    takeByMatcher(inventory, (item) -> script.equalsIgnoreCase(new ItemTag(item).getScriptName()), quantity.asInt());
+                }
                 break;
             }
             case MATERIAL: {
-                if (material == null) {
+                if (materialList == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid material!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript()), quantity.asInt());
+                for (MaterialTag material : materialList) {
+                    takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript()), quantity.asInt());
+                }
                 break;
             }
             case SLOT: {
-                int slotId = SlotHelper.nameToIndex(slot.asString());
-                if (slotId == -1 || slotId >= inventory.getSize()) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
-                    return;
-                }
-                ItemStack original = inventory.getInventory().getItem(slotId);
-                if (original != null && original.getType() != Material.AIR) {
-                    if (original.getAmount() > quantity.asInt()) {
-                        original.setAmount(original.getAmount() - quantity.asInt());
-                        inventory.setSlots(slotId, original);
+                for (String slot : slotList) {
+                    int slotId = SlotHelper.nameToIndex(slot);
+                    if (slotId == -1 || slotId >= inventory.getSize()) {
+                        Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot + "' is not a valid slot!");
+                        return;
                     }
-                    else {
-                        inventory.setSlots(slotId, new ItemStack(Material.AIR));
+                    ItemStack original = inventory.getInventory().getItem(slotId);
+                    if (original != null && original.getType() != Material.AIR) {
+                        if (original.getAmount() > quantity.asInt()) {
+                            original.setAmount(original.getAmount() - quantity.asInt());
+                            inventory.setSlots(slotId, original);
+                        }
+                        else {
+                            inventory.setSlots(slotId, new ItemStack(Material.AIR));
+                        }
                     }
                 }
                 break;
