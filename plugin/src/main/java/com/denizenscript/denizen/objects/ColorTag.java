@@ -196,6 +196,16 @@ public class ColorTag implements ObjectTag {
     public static void registerTags() {
 
         // <--[tag]
+        // @attribute <ColorTag.hex>
+        // @returns ElementTag)
+        // @description
+        // Returns a hex code formatting of this color, like '#ff00ff'.
+        // -->
+        registerTag("hex", (attribute, object) -> {
+            return new ElementTag("#" + CoreUtilities.hexEncode(new byte[] { (byte) object.color.getRed(), (byte) object.color.getGreen(), (byte) object.color.getBlue() }));
+        });
+
+        // <--[tag]
         // @attribute <ColorTag.red>
         // @returns ElementTag(Number)
         // @description
