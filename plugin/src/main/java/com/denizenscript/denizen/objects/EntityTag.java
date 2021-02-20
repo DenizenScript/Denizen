@@ -1732,7 +1732,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the animal entity is capable of mating with another of its kind.
         // -->
         registerSpawnedOnlyTag("can_breed", (attribute, object) -> {
-            return new ElementTag(((Ageable) object.getLivingEntity()).canBreed());
+            if (!(object.getLivingEntity() instanceof Breedable)) {
+                return new ElementTag(false);
+            }
+            return new ElementTag(((Breedable) object.getLivingEntity()).canBreed());
         });
 
         // <--[tag]
@@ -1744,6 +1747,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         registerSpawnedOnlyTag("breeding", (attribute, object) -> {
+            if (!(object.getLivingEntity() instanceof Animals)) {
+                return null;
+            }
             return new ElementTag(((Animals) object.getLivingEntity()).getLoveModeTicks() > 0);
         }, "is_breeding");
 
