@@ -23,6 +23,10 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ prespawns( because [^\s]+)?$
     //
+    // @Plugin Paper
+    //
+    // @Group Paper
+    //
     // @Location true
     //
     // @Cancellable true

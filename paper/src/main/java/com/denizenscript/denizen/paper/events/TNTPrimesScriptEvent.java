@@ -3,13 +3,11 @@ package com.denizenscript.denizen.paper.events;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -24,6 +22,8 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     // @Location true
     //
     // @Plugin Paper
+    //
+    // @Group Paper
     //
     // @Cancellable true
     //
@@ -66,7 +66,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getPrimerEntity() instanceof Player ? new PlayerTag((Player) event.getPrimerEntity()) : null, null);
+        return new BukkitScriptEntryData(event.getPrimerEntity());
     }
 
     @Override

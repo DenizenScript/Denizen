@@ -22,6 +22,8 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when a projectile entity collides with an entity (before any damage calculations are done).

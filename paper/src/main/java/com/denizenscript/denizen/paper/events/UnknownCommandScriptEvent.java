@@ -31,6 +31,8 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when an unknown command is processed by the server.

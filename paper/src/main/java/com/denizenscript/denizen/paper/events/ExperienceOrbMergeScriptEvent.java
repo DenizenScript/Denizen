@@ -22,6 +22,8 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when two experience orbs are about to merge.

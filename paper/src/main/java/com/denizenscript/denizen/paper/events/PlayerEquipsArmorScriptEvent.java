@@ -29,6 +29,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Triggers when a player (un)equips armor.
     //
     // @Warning This event is not reliable, and may miss some types of equipment changes or fire when equipment hasn't actually changed.

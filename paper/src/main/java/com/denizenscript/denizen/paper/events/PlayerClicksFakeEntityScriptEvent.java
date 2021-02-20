@@ -24,6 +24,8 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Triggers when a player clicks a fake entity, one that is only shown to the player and not tracked by the server.
     //
     // @Context

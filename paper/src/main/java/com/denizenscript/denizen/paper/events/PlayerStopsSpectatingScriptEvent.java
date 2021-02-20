@@ -21,6 +21,8 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when a player stops spectating an entity.

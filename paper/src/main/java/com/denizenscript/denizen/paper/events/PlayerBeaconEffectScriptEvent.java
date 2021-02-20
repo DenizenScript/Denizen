@@ -25,6 +25,8 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when a beacon applies an effect to a player.

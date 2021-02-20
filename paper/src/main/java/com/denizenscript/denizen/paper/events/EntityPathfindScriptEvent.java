@@ -26,6 +26,8 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when an entity starts pathfinding towards a location or entity.
@@ -87,9 +89,7 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(
-                target != null && target.isPlayer() ? target.getDenizenPlayer() : null,
-                target != null && target.isCitizensNPC() ? target.getDenizenNPC() : null);
+        return new BukkitScriptEntryData(target);
     }
 
     @Override

@@ -27,6 +27,8 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when an entity is knocked back from the hit of another entity.

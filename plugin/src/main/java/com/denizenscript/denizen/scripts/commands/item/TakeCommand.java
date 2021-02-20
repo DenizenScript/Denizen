@@ -209,9 +209,6 @@ public class TakeCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
             throw new InvalidArgumentsException("Must specify an inventory to take from!");
         }
-        if (type == Type.ITEM && scriptEntry.getObject("items") == null) {
-            throw new InvalidArgumentsException("Must specify item/items!");
-        }
         if (requiresPlayerTypes.contains(type) && !Utilities.entryHasPlayer(scriptEntry)) {
             throw new InvalidArgumentsException("Cannot take '" + type.name() + "' without a linked player.");
         }
@@ -236,7 +233,7 @@ public class TakeCommand extends AbstractCommand {
                             + (inventory != null ? inventory.debug() : "")
                             + (displayNameList != null ? displayNameList.debug() : "")
                             + (scriptItemList != null ? ArgumentHelper.debugList("scriptname", scriptItemList) : "")
-                            + ArgumentHelper.debugObj("Items", items)
+                            + (items != null ? ArgumentHelper.debugList("Items", items) : "")
                             + (slotList != null ? slotList.debug() : "")
                             + (nbtKey != null ? nbtKey.debug() : "")
                             + (flagList != null ? flagList.debug() : "")
@@ -307,6 +304,10 @@ public class TakeCommand extends AbstractCommand {
                 break;
             }
             case ITEM: {
+                if (items == null) {
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify item/items!");
+                    return;
+                }
                 for (ItemTag item : items) {
                     ItemStack is = item.getItemStack();
                     is.setAmount(quantity.asInt());

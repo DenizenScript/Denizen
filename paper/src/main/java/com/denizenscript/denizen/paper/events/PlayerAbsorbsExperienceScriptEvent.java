@@ -22,6 +22,8 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when a player is absorbing an experience orb.

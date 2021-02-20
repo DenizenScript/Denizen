@@ -21,6 +21,8 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Plugin Paper
     //
+    // @Group Paper
+    //
     // @Cancellable true
     //
     // @Triggers when a player starts spectating an entity.
