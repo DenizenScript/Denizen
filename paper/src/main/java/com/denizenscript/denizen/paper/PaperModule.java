@@ -18,6 +18,7 @@ public class PaperModule {
         // Events
         ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEventPaperImpl());
         ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
+        ScriptEvent.registerScriptEvent(new EntityLoadCrossbowScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityPathfindScriptEvent());
         ScriptEvent.registerScriptEvent(new ExperienceOrbMergeScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerAbsorbsExperienceScriptEvent());
