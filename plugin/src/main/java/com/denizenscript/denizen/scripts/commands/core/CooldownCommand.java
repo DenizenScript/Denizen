@@ -109,14 +109,14 @@ public class CooldownCommand extends AbstractCommand {
     public static DurationTag getCooldownDuration(PlayerTag player, String scriptName) {
         TimeTag expires = Denizen.getInstance().serverFlagMap.getFlagExpirationTime("__interact_cooldown." + scriptName);
         if (expires != null) {
-            return new DurationTag((TimeTag.now().millis() - expires.millis()) / 1000.0);
+            return new DurationTag((expires.millis() - TimeTag.now().millis()) / 1000.0);
         }
         if (player == null) {
             return new DurationTag(0);
         }
         expires = player.getFlagTracker().getFlagExpirationTime("__interact_cooldown." + scriptName);
         if (expires != null) {
-            return new DurationTag((TimeTag.now().millis() - expires.millis()) / 1000.0);
+            return new DurationTag((expires.millis() - TimeTag.now().millis()) / 1000.0);
         }
         return new DurationTag(0);
     }
