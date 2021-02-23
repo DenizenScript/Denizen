@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
+import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.DenizenCore;
@@ -713,6 +714,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             entity.teleport(location);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
                 NMSHandler.getEntityHelper().teleport(entity, location);
+            }
+            else {
+                List<Entity> passengers = entity.getPassengers();
+                if (!passengers.isEmpty()) {
+                    Position.dismount(passengers);
+                    entity.teleport(location);
+                    for (Entity passenger : passengers) {
+                        passenger.teleport(location);
+                        entity.addPassenger(passenger);
+                    }
+                }
             }
         }
         else {
