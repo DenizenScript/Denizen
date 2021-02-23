@@ -577,7 +577,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void teleport(Entity entity, Vector vector) {
+    public void teleport(Entity entity, Location vector) {
         ((CraftEntity) entity).getHandle().setPosition(vector.getX(), vector.getY(), vector.getZ());
     }
 

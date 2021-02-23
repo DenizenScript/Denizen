@@ -712,7 +712,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         else if (entity != null && isUnique()) {
             entity.teleport(location);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
-                NMSHandler.getEntityHelper().teleport(entity, location.toVector());
+                NMSHandler.getEntityHelper().teleport(entity, location);
             }
         }
         else {
@@ -869,7 +869,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         else {
             entity.teleport(location);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
-                NMSHandler.getEntityHelper().teleport(entity, location.toVector());
+                NMSHandler.getEntityHelper().teleport(entity, location);
             }
         }
     }

@@ -131,6 +131,10 @@
                                     <pattern>org.json</pattern>
                                     <shadedPattern>com.denizenscript.shaded.org.json</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.yaml</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.org.yaml</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>

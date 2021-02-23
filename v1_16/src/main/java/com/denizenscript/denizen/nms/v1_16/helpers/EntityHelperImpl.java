@@ -463,7 +463,7 @@ public class EntityHelperImpl extends EntityHelper {
             Location location = entity.getLocation();
             location.setYaw(yaw);
             location.setPitch(pitch);
-            entity.teleport(location);
+            teleport(entity, location);
         }
         else if (entity instanceof LivingEntity) {
             if (entity instanceof EnderDragon) {
@@ -506,7 +506,7 @@ public class EntityHelperImpl extends EntityHelper {
             handle.pitch = pitch;
         }
         else {
-            Debug.echoError("Cannot set look direction for unspawned entitity " + entity.getUniqueId());
+            Debug.echoError("Cannot set look direction for unspawned entity " + entity.getUniqueId());
         }
     }
 
@@ -578,8 +578,14 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void teleport(Entity entity, Vector vector) {
-        ((CraftEntity) entity).getHandle().setPosition(vector.getX(), vector.getY(), vector.getZ());
+    public void teleport(Entity entity, Location loc) {
+        net.minecraft.server.v1_16_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        nmsEntity.yaw = loc.getYaw();
+        nmsEntity.pitch = loc.getPitch();
+        if (nmsEntity instanceof EntityPlayer) {
+            nmsEntity.teleportAndSync(loc.getX(), loc.getY(), loc.getZ());
+        }
+        nmsEntity.setPosition(loc.getX(), loc.getY(), loc.getZ());
     }
 
     @Override
