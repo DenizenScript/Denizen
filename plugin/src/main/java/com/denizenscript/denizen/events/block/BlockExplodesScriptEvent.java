@@ -76,7 +76,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
                 return false;
             }
         }
-        if (!runInCheck(path, blocks.get(0).getLocation())) {
+        if (blocks.size() > 0 && !runInCheck(path, blocks.get(0).getLocation())) {
             return false;
         }
         return super.matches(path);
