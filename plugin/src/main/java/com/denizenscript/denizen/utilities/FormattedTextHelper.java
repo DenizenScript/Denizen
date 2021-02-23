@@ -363,7 +363,7 @@ public class FormattedTextHelper {
             return new BaseComponent[] { base };
         }
         str = cleanRedundantCodes(str);
-        if (cleanBase && str.length() < 256 && !str.contains(ChatColor.COLOR_CHAR + "[")) {
+        if (cleanBase && str.length() < 512 && !str.contains(ChatColor.COLOR_CHAR + "[") && !str.contains("://")) {
             return parseSimpleColorsOnly(str);
         }
         TextComponent root = new TextComponent();
