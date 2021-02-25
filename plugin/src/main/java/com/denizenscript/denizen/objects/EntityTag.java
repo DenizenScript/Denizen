@@ -894,13 +894,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
      */
 
     public void target(LivingEntity target) {
-
-        if (!isSpawned() || !(entity instanceof Creature)) {
-            Debug.echoError(identify() + " is not a valid creature entity!");
+        if (!isSpawned()) {
             return;
         }
-
-        NMSHandler.getEntityHelper().setTarget((Creature) entity, target);
+        if (entity instanceof Creature) {
+            NMSHandler.getEntityHelper().setTarget((Creature) entity, target);
+        }
+        else if (entity instanceof ShulkerBullet) {
+            ((ShulkerBullet) entity).setTarget(target);
+        }
+        else {
+            Debug.echoError(identify() + " is not an entity type that can hold a target!");
+        }
     }
 
     public void setEntity(Entity entity) {
@@ -1997,12 +2002,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns EntityTag
         // @group attributes
         // @description
-        // Returns the target entity of the creature, if any.
+        // Returns the target entity of the creature or shulker_bullet, if any.
         // This is the entity that a hostile mob is currently trying to attack.
         // -->
         registerSpawnedOnlyTag("target", (attribute, object) -> {
             if (object.getBukkitEntity() instanceof Creature) {
                 Entity target = ((Creature) object.getLivingEntity()).getTarget();
+                if (target != null) {
+                    return new EntityTag(target);
+                }
+            }
+            else if (object.getBukkitEntity() instanceof ShulkerBullet) {
+                Entity target = ((ShulkerBullet) object.getLivingEntity()).getTarget();
                 if (target != null) {
                     return new EntityTag(target);
                 }

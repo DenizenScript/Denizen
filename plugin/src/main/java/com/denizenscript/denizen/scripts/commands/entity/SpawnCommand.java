@@ -132,7 +132,7 @@ public class SpawnCommand extends AbstractCommand {
                 if (persistent && entity.isLivingEntity()) {
                     entity.getLivingEntity().setRemoveWhenFarAway(false);
                 }
-                if (target != null && target.isLivingEntity()) {
+                if (target != null) {
                     entity.target(target.getLivingEntity());
                 }
             }
