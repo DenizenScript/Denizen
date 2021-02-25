@@ -963,13 +963,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             return new ElementTag(object.getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE);
         });
 
-        // <--[tag]
-        // @attribute <NPCTag.has_script>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the NPC has an assignment script.
-        // -->
         registerTag("has_script", (attribute, object) -> {
+            Deprecations.hasScriptTags.warn(attribute.context);
             NPC citizen = object.getCitizen();
             return new ElementTag(citizen.hasTrait(AssignmentTrait.class) && citizen.getOrAddTrait(AssignmentTrait.class).hasAssignment());
         });
@@ -1210,7 +1205,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Removes the NPC's assigment script.
         // @tags
-        // <NPCTag.has_script>
+        // <NPCTag.script>
         // -->
         if (mechanism.matches("remove_assignment")) {
             getAssignmentTrait().removeAssignment(null);

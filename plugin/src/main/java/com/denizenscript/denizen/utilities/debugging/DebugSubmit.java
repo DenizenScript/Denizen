@@ -97,7 +97,7 @@ public class DebugSubmit extends Thread {
             uc.getOutputStream().write(("pastetype=log"
                     + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
                     + "&pastecontents=" + URLEncoder.encode(("Java Version: " + System.getProperty("java.version")
-                    + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
+                    + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted(false)
                     + "\nServer Version: " + Bukkit.getServer().getName() + " version " + Bukkit.getServer().getVersion()
                     + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + Denizen.getInstance().coreImplementation.getImplementationVersion()
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)

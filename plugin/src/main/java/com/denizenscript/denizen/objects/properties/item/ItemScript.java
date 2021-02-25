@@ -49,13 +49,13 @@ public class ItemScript implements Property {
         }
 
         if (attribute.startsWith("has_script")) {
-            Deprecations.itemScriptNameTags.warn(attribute.context);
+            Deprecations.hasScriptTags.warn(attribute.context);
             return new ElementTag(item.isItemscript())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("scriptname")) {
-            Deprecations.itemScriptNameTags.warn(attribute.context);
+            Deprecations.hasScriptTags.warn(attribute.context);
             if (item.isItemscript()) {
                 return new ElementTag(item.getScriptName())
                         .getObjectAttribute(attribute.fulfill(1));

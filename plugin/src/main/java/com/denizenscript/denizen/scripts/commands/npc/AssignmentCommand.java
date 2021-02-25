@@ -43,7 +43,6 @@ public class AssignmentCommand extends AbstractCommand {
     //
     // @Tags
     // <NPCTag.script>
-    // <NPCTag.has_script>
     // <server.npcs_assigned[<assignment_script>]>
     //
     // @Usage
