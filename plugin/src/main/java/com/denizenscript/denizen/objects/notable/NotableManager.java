@@ -19,10 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,8 +35,8 @@ public class NotableManager {
     }
 
     public static HashMap<String, Notable> notableObjects = new HashMap<>();
-    public static HashMap<String, Class> typeTracker = new HashMap<>();
     public static HashMap<Notable, String> reverseObjects = new HashMap<>();
+    public static HashMap<Class, HashSet<Notable>> notesByType = new HashMap<>();
 
     public static boolean isSaved(Notable object) {
         return reverseObjects.containsKey(object);
@@ -61,18 +58,13 @@ public class NotableManager {
         return reverseObjects.get(object);
     }
 
-    public static boolean isType(String id, Class type) {
-        Class trackedType = typeTracker.get(CoreUtilities.toLowerCase(id));
-        return trackedType == type;
-    }
-
     public static void saveAs(Notable object, String id) {
         if (object == null) {
             return;
         }
         notableObjects.put(CoreUtilities.toLowerCase(id), object);
         reverseObjects.put(object, CoreUtilities.toLowerCase(id));
-        typeTracker.put(CoreUtilities.toLowerCase(id), object.getClass());
+        notesByType.get(object.getClass()).add(object);
     }
 
     public static Notable remove(String id) {
@@ -82,7 +74,7 @@ public class NotableManager {
         }
         notableObjects.remove(CoreUtilities.toLowerCase(id));
         reverseObjects.remove(obj);
-        typeTracker.remove(CoreUtilities.toLowerCase(id));
+        notesByType.get(obj.getClass()).remove(obj);
         return obj;
     }
 
@@ -90,19 +82,11 @@ public class NotableManager {
         String id = reverseObjects.get(obj);
         notableObjects.remove(CoreUtilities.toLowerCase(id));
         reverseObjects.remove(obj);
-        typeTracker.remove(CoreUtilities.toLowerCase(id));
+        notesByType.get(obj.getClass()).remove(obj);
     }
 
-    public static <T extends ObjectTag> List<T> getAllType(Class<T> type) {
-        List<T> objects = new ArrayList<>();
-        for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
-            // dB.log(notable.toString());
-            if (isType(notable.getKey(), type)) {
-                objects.add((T) notable.getValue());
-            }
-        }
-
-        return objects;
+    public static <T extends Notable> Set<T> getAllType(Class<T> type) {
+        return (Set<T>) notesByType.get(type);
     }
 
     /**
@@ -110,7 +94,9 @@ public class NotableManager {
      */
     private static void _recallNotables() {
         notableObjects.clear();
-        typeTracker.clear();
+        for (Set set : notesByType.values()) {
+            set.clear();
+        }
         reverseObjects.clear();
         // Find each type of notable
         for (String key : Denizen.getInstance().notableManager().getNotables().getKeys(false)) {
@@ -222,6 +208,7 @@ public class NotableManager {
                 String note = method.getAnnotation(Note.class).value();
                 objects.put(notable, note);
                 reverse_objects.put(note, notable);
+                notesByType.put(notable, new HashSet<>());
             }
         }
     }

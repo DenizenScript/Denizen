@@ -423,7 +423,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         if (ScriptRegistry.containsScript(tid, InventoryScriptContainer.class)) {
             return true;
         }
-        if (NotableManager.isType(tid, InventoryTag.class)) {
+        if (NotableManager.getSavedObject(tid) instanceof InventoryTag) {
             return true;
         }
         for (String idType : idTypes) {

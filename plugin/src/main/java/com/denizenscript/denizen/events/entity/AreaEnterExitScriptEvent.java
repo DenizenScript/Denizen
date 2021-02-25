@@ -5,6 +5,8 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -103,6 +105,12 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                 return false;
             }
         }
+        else if (areaName.startsWith("area_flagged:")) {
+            AbstractFlagTracker tracker = ((FlaggableObject) area).getFlagTracker();
+            if (tracker == null || !tracker.hasFlag(areaName.substring("area_flagged:".length()))) {
+                return false;
+            }
+        }
         else {
             if (!runGenericCheck(areaName, area.getNoteName())) {
                 return false;
@@ -184,6 +192,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         boolean needsMatchers = false;
         HashSet<String> exacts = new HashSet<>();
         List<MatchHelper> matchList = new ArrayList<>();
+        HashSet<String> flags = new HashSet<>();
         onlyTrackPlayers = true;
         for (ScriptPath path : eventPaths) {
             if (!path.eventArgLowerAt(0).equals("player")) {
@@ -193,10 +202,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             if (area.equals("notable")) {
                 area = path.eventArgLowerAt(3);
             }
-            if (area.equals("cuboid")) {
-                doTrackAll = true;
-            }
-            else if (area.equals("ellipsoid")) {
+            if (area.equals("cuboid") || area.equals("ellipsoid") || area.equals("polygon")) {
                 doTrackAll = true;
             }
             MatchHelper matcher = createMatcher(area);
@@ -210,14 +216,19 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                 needsMatchers = true;
             }
             matchList.add(matcher);
+            if (area.startsWith("area_flagged:")) {
+                flags.add(CoreUtilities.toLowerCase(area.substring("area_flagged:".length())));
+            }
         }
         exactTracked = needsMatchers ? null : exacts.toArray(new String[0]);
         matchers = needsMatchers ? matchList.toArray(new MatchHelper[0]) : null;
+        flagTracked = flags.size() > 0 ? flags.toArray(new String[0]) : null;
         registerCorrectClass();
     }
 
     public boolean doTrackAll = false;
     public String[] exactTracked = null;
+    public String[] flagTracked = null;
     public MatchHelper[] matchers = null;
     public boolean onlyTrackPlayers = true;
     public static HashMap<UUID, HashSet<String>> entitiesInArea = new HashMap<>();
@@ -236,13 +247,23 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         super.cancellationChanged();
     }
 
-    public boolean anyMatch(String name) {
+    public boolean anyMatch(String name, FlaggableObject flaggable) {
         if (doTrackAll) {
             return true;
         }
-        for (MatchHelper matcher : matchers) {
-            if (matcher.doesMatch(name)) {
-                return true;
+        if (matchers != null) {
+            for (MatchHelper matcher : matchers) {
+                if (matcher.doesMatch(name)) {
+                    return true;
+                }
+            }
+        }
+        if (flagTracked != null) {
+            for (String flag : flagTracked) {
+                AbstractFlagTracker tracker = flaggable.getFlagTracker();
+                if (tracker != null && tracker.hasFlag(flag)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -276,19 +297,19 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             return;
         }
         HashSet<String> inAreas = entitiesInArea.get(entity.getUUID());
-        if (doTrackAll || matchers != null) {
+        if (doTrackAll || matchers != null || flagTracked != null) {
             for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
-                if (anyMatch(cuboid.noteName)) {
+                if (anyMatch(cuboid.noteName, cuboid)) {
                     processSingle(cuboid, entity, inAreas, pos, eventCause);
                 }
             }
             for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
-                if (anyMatch(ellipsoid.noteName)) {
+                if (anyMatch(ellipsoid.noteName, ellipsoid)) {
                     processSingle(ellipsoid, entity, inAreas, pos, eventCause);
                 }
             }
             for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
-                if (anyMatch(polygon.noteName)) {
+                if (anyMatch(polygon.noteName, polygon)) {
                     processSingle(polygon, entity, inAreas, pos, eventCause);
                 }
             }
