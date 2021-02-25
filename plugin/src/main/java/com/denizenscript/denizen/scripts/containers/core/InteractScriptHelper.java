@@ -15,19 +15,8 @@ import java.util.List;
 
 public class InteractScriptHelper {
 
-    public static boolean debugGet = true;
-
-    /**
-     * Gets the InteractScript from an NPC and returns the appropriate ScriptContainer.
-     * Returns null if no script found.
-     *
-     * @param npc     the NPC involved
-     * @param player  the Player involved
-     * @param trigger the class of the trigger being used
-     * @return the highest priority InteractScriptContainer that meets requirements, if any.
-     */
-    public static InteractScriptContainer getInteractScript(NPCTag npc, PlayerTag player, Class<? extends AbstractTrigger> trigger) {
-        if (npc == null || player == null || trigger == null) {
+    public static InteractScriptContainer getInteractScript(NPCTag npc) {
+        if (npc == null) {
             return null;
         }
         AssignmentScriptContainer assignmentScript = npc.getAssignmentTrait().getAssignment();
@@ -41,9 +30,6 @@ public class InteractScriptHelper {
         if (assignedScripts.isEmpty()) {
             return null;
         }
-        if (Debug.shouldDebug(assignmentScript) && debugGet) {
-            Debug.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
-        }
         String script = assignedScripts.get(0);
         if (script.contains(" ") && Character.isDigit(script.charAt(0))) {
             Deprecations.interactScriptPriority.warn(assignmentScript);
@@ -55,24 +41,46 @@ public class InteractScriptHelper {
                 return null;
             }
         }
-        InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(script);
-        if (interactScript == null) {
-            Debug.echoError("'" + script + "' is not a valid Interact Script. Is there a duplicate script by this name?");
+        InteractScriptContainer container = ScriptRegistry.getScriptContainer(script);
+        if (container == null) {
+            Debug.echoError("'" + script + "' is not a valid Interact Script. Is there a duplicate script by this name, or is it missing?");
+        }
+        return container;
+    }
+
+    /**
+     * Gets the InteractScript from an NPC and returns the appropriate ScriptContainer.
+     * Returns null if no script found.
+     *
+     * @param npc     the NPC involved
+     * @param player  the Player involved
+     * @param trigger the class of the trigger being used
+     * @return the highest priority InteractScriptContainer that meets requirements, if any.
+     */
+    public static InteractScriptContainer getInteractScript(NPCTag npc, PlayerTag player, boolean showDebug, Class<? extends AbstractTrigger> trigger) {
+        if (player == null || trigger == null) {
             return null;
         }
+        InteractScriptContainer interactScript = getInteractScript(npc);
+        if (interactScript == null) {
+            return null;
+        }
+        if (Debug.shouldDebug(interactScript) && showDebug) {
+            Debug.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
+        }
         if (!CooldownCommand.checkCooldown(player, interactScript.getName())) {
-            if (Debug.shouldDebug(interactScript) && debugGet) {
+            if (Debug.shouldDebug(interactScript) && showDebug) {
                 Debug.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
                 return null;
             }
         }
-        if (Debug.shouldDebug(assignmentScript) && debugGet) {
+        if (Debug.shouldDebug(interactScript) && showDebug) {
             Debug.log(DebugElement.Spacer, null);
         }
-        if (Debug.shouldDebug(assignmentScript) && debugGet) {
-            Debug.log("Interact script is " + script + ". Current step for this script is: " + getCurrentStep(player, script));
+        if (Debug.shouldDebug(interactScript) && showDebug) {
+            Debug.log("Interact script is " + interactScript.getName() + ". Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
         }
-        if (Debug.shouldDebug(interactScript) && debugGet) {
+        if (Debug.shouldDebug(interactScript) && showDebug) {
             Debug.log(DebugElement.Footer, "");
         }
         return interactScript;

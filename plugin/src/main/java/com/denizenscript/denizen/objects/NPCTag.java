@@ -239,15 +239,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return getCitizen().getName();
     }
 
+    public InteractScriptContainer getInteractScript() {
+        return InteractScriptHelper.getInteractScript(this);
+    }
+
     public InteractScriptContainer getInteractScript(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
-        return InteractScriptHelper.getInteractScript(this, player, triggerType);
+        return InteractScriptHelper.getInteractScript(this, player, true, triggerType);
     }
 
     public InteractScriptContainer getInteractScriptQuietly(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
-        InteractScriptHelper.debugGet = false;
-        InteractScriptContainer script = InteractScriptHelper.getInteractScript(this, player, triggerType);
-        InteractScriptHelper.debugGet = true;
-        return script;
+        return InteractScriptHelper.getInteractScript(this, player, true, triggerType);
     }
 
     public void destroy() {

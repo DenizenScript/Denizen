@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -12,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.Listener;
 
 public class ZapCommand extends AbstractCommand implements Listener {
@@ -39,6 +42,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // The step name can be '*' to automatically zap to the default step.
     //
     // If used inside an interact script, will default to the current interact script.
+    // If used elsewhere, but there is a linked NPC with an assignment and interact, that NPC's interact script will be used.
     // For anywhere else, you must specify the script by name.
     //
     // Optionally specify a duration. When the duration is up, the script will zap back to the step it was previously on.
@@ -79,7 +83,11 @@ public class ZapCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(ScriptTag.class)
                     && !arg.matchesPrefix("step")) {
-                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
+                ScriptTag script = arg.asType(ScriptTag.class);
+                if (!CoreUtilities.toLowerCase(script.getType()).equals("interact")) {
+                    throw new InvalidArgumentsException("Script specified must be an 'interact' script!");
+                }
+                scriptEntry.addObject("script", script);
             }
             else if (!scriptEntry.hasObject("step")) {
                 scriptEntry.addObject("step", arg.asElement());
@@ -92,9 +100,26 @@ public class ZapCommand extends AbstractCommand implements Listener {
                 arg.reportUnhandled();
             }
         }
-        scriptEntry.defaultObject("script", scriptEntry.getScript());
-        if (!Utilities.entryHasPlayer(scriptEntry) || !Utilities.getEntryPlayer(scriptEntry).isValid()) {
+        PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
+        if (player == null || !player.isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
+        }
+        if (!scriptEntry.hasObject("script")) {
+            ScriptTag script = scriptEntry.getScript();
+            if (script == null || !CoreUtilities.toLowerCase(script.getType()).equals("interact")) {
+                script = null;
+                NPCTag npc = Utilities.getEntryNPC(scriptEntry);
+                if (npc != null) {
+                    InteractScriptContainer scriptContainer = npc.getInteractScript();
+                    if (scriptContainer != null) {
+                        script = new ScriptTag(scriptContainer);
+                    }
+                }
+            }
+            if (script == null) {
+                throw new InvalidArgumentsException("No script to zap! Must be in an interact script, or have a linked NPC with an associated interact script.");
+            }
+            scriptEntry.addObject("script", script);
         }
     }
 

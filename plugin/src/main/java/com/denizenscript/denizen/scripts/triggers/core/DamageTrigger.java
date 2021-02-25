@@ -83,7 +83,6 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     public void damageTrigger(EntityDamageByEntityEvent event) {
         Map<String, ObjectTag> context = new HashMap<>();
         context.put("damage", new ElementTag(event.getDamage()));
-
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             NPCTag npc = new NPCTag(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
             if (npc == null) {
@@ -92,44 +91,35 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             if (npc.getCitizen() == null) {
                 return;
             }
-
             EntityTag damager = new EntityTag(event.getDamager());
             if (damager.isProjectile() && damager.hasShooter()) {
                 damager = damager.getShooter();
             }
             context.put("damager", damager.getDenizenObject());
-
             String determ = npc.action("damaged", null, context);
             if (determ != null && determ.equalsIgnoreCase("CANCELLED")) {
                 event.setCancelled(true);
                 return;
             }
-
             if (!damager.isPlayer()) {
                 return;
             }
             PlayerTag dplayer = damager.getDenizenPlayer();
-
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
                 return;
             }
             if (!npc.getTriggerTrait().isEnabled(name)) {
                 return;
             }
-
             TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, dplayer);
-
             if (!trigger.wasTriggered()) {
                 return;
             }
-
             if (trigger.hasDetermination() && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
                 event.setCancelled(true);
                 return;
             }
-
-            InteractScriptContainer script = InteractScriptHelper.getInteractScript(npc, dplayer, getClass());
-
+            InteractScriptContainer script = InteractScriptHelper.getInteractScript(npc, dplayer, true, getClass());
             String id = null;
             if (script != null) {
                 Map<String, String> idMap = script.getIdMapFor(this.getClass(), dplayer);
@@ -142,7 +132,6 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                     }
                 }
             }
-
             if (!parse(npc, dplayer, script, id, context)) {
                 npc.action("no damage trigger", dplayer);
             }
