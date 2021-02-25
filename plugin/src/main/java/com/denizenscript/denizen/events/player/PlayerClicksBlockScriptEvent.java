@@ -41,8 +41,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Context
     // <context.item> returns the ItemTag the player is clicking with.
-    // <context.location> returns the LocationTag the player is clicking on. If the player clicked air, will be the player's head location.
-    // <context.relative> returns a LocationTag of the air block in front of the clicked block. If the player clicked air, will be null.
+    // <context.location> returns the LocationTag the player is clicking on.
+    // <context.relative> returns a LocationTag of the air block in front of the clicked block.
     // <context.click_type> returns an ElementTag of the Spigot API click type <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/Action.html>.
     // <context.hand> returns an ElementTag of the used hand.
     //
@@ -140,7 +140,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!runUsingCheck(path)) {
             return false;
         }
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, location != null ? location : event.getPlayer().getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -197,7 +197,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         blockMaterial = event.hasBlock() ? new MaterialTag(event.getClickedBlock()) : new MaterialTag(Material.AIR);
         hand = new ElementTag(event.getHand().name());
         item = new ItemTag(event.getItem());
-        location = new LocationTag(event.hasBlock() ? event.getClickedBlock().getLocation() : event.getPlayer().getEyeLocation());
+        location = event.hasBlock() ? new LocationTag(event.getClickedBlock().getLocation()) : null;
         click_type = new ElementTag(event.getAction().name());
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;
