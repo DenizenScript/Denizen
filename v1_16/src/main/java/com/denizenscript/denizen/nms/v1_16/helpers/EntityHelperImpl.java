@@ -268,7 +268,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void follow(final Entity target, final Entity follower, final double speed, final double lead,
-                       final double maxRange, final boolean allowWander) {
+                       final double maxRange, final boolean allowWander, final boolean teleport) {
         if (target == null || follower == null) {
             return;
         }
@@ -304,7 +304,12 @@ public class EntityHelperImpl extends EntityHelper {
                 if (hasMax && !Utilities.checkLocation(targetLocation, follower.getLocation(), maxRange)
                         && !target.isDead() && target.isOnGround()) {
                     if (!inRadius) {
-                        follower.teleport(Utilities.getWalkableLocationNear(targetLocation, locationNearInt));
+                        if (teleport) {
+                            follower.teleport(Utilities.getWalkableLocationNear(targetLocation, locationNearInt));
+                        }
+                        else {
+                            cancel();
+                        }
                     }
                     else {
                         inRadius = false;

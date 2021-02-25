@@ -17,16 +17,16 @@ public class FollowCommand extends AbstractCommand {
 
     public FollowCommand() {
         setName("follow");
-        setSyntax("follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)");
-        setRequiredArguments(0, 6);
+        setSyntax("follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander) (no_teleport)");
+        setRequiredArguments(0, 7);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Follow
-    // @Syntax follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander)
+    // @Syntax follow (followers:<entity>|...) (stop/target:<entity>) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (allow_wander) (no_teleport)
     // @Required 0
-    // @Maximum 6
+    // @Maximum 7
     // @Short Causes a list of entities to follow a target.
     // @Group entity
     //
@@ -40,6 +40,7 @@ public class FollowCommand extends AbstractCommand {
     // Use 'speed' to set the movement speed multiplier.
     // Use 'lead' to set how far away the follower will remain from the target (ie, it won't try to get closer than the 'lead' distance).
     // Use 'max' to set the maximum distance between the follower and the target before the follower will automatically start teleporting to keep up.
+    // Use 'no_teleport' to disable teleporting when the entity is out of range (instead, the entity will simply give up).
     // Use 'allow_wander' to allow the entity to wander randomly.
     //
     // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
@@ -84,6 +85,10 @@ public class FollowCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("allow_wander") &&
                     arg.matches("allow_wander")) {
                 scriptEntry.addObject("allow_wander", new ElementTag(true));
+            }
+            else if (!scriptEntry.hasObject("no_teleport") &&
+                    arg.matches("no_teleport")) {
+                scriptEntry.addObject("no_teleport", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("speed") &&
                     arg.matchesFloat() &&
@@ -130,6 +135,7 @@ public class FollowCommand extends AbstractCommand {
         ElementTag maxRange = scriptEntry.getElement("max");
         ElementTag allowWander = scriptEntry.getElement("allow_wander");
         ElementTag speed = scriptEntry.getElement("speed");
+        ElementTag noTeleport = scriptEntry.getElement("no_teleport");
         ListTag entities = scriptEntry.getObjectTag("entities");
         EntityTag target = scriptEntry.getObjectTag("target");
         if (scriptEntry.dbCallShouldDebug()) {
@@ -137,6 +143,7 @@ public class FollowCommand extends AbstractCommand {
                     (Utilities.getEntryPlayer(scriptEntry) != null ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + (!stop.asBoolean() ? ArgumentHelper.debugObj("Action", "FOLLOW") : ArgumentHelper.debugObj("Action", "STOP"))
                             + (lead != null ? lead.debug() : "")
+                            + (noTeleport != null ? noTeleport.debug() : "")
                             + (maxRange != null ? maxRange.debug() : "")
                             + allowWander.debug()
                             + entities.debug()
@@ -150,6 +157,9 @@ public class FollowCommand extends AbstractCommand {
                 }
                 if (speed != null) {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
+                }
+                if (noTeleport != null && noTeleport.asBoolean()) {
+                    npc.getNavigator().getLocalParameters().stuckAction(null);
                 }
                 if (stop.asBoolean()) {
                     npc.getNavigator().cancelNavigation();
@@ -165,7 +175,7 @@ public class FollowCommand extends AbstractCommand {
                 else {
                     NMSHandler.getEntityHelper().follow(target.getBukkitEntity(), entity.getBukkitEntity(),
                             speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble() : 5,
-                            maxRange != null ? maxRange.asDouble() : 8, allowWander.asBoolean());
+                            maxRange != null ? maxRange.asDouble() : 8, allowWander.asBoolean(), noTeleport == null || !noTeleport.asBoolean());
                 }
             }
         }

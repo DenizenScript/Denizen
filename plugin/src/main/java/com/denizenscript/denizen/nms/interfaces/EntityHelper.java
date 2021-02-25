@@ -82,7 +82,7 @@ public abstract class EntityHelper {
     public abstract void setSpeed(Entity entity, double speed);
 
     public abstract void follow(final Entity target, final Entity follower, final double speed, final double lead,
-                                final double maxRange, final boolean allowWander);
+                                final double maxRange, final boolean allowWander, final boolean teleport);
 
     public abstract void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback);
 

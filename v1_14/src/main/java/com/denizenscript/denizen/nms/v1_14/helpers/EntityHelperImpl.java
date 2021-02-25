@@ -276,7 +276,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void follow(final Entity target, final Entity follower, final double speed, final double lead,
-                       final double maxRange, final boolean allowWander) {
+                       final double maxRange, final boolean allowWander, final boolean teleport) {
         if (target == null || follower == null) {
             return;
         }
