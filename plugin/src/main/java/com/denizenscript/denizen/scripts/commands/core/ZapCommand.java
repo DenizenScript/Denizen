@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.Listener;
 
 public class ZapCommand extends AbstractCommand implements Listener {
@@ -77,17 +78,15 @@ public class ZapCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("step")
                     && arg.hasPrefix()
                     && arg.getPrefix().matchesArgumentType(ScriptTag.class)) {
+                Deprecations.zapPrefix.warn(scriptEntry);
                 scriptEntry.addObject("script", arg.getPrefix().asType(ScriptTag.class));
                 scriptEntry.addObject("step", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(ScriptTag.class)
+                    && arg.asType(ScriptTag.class).getType().equals("interact")
                     && !arg.matchesPrefix("step")) {
-                ScriptTag script = arg.asType(ScriptTag.class);
-                if (!CoreUtilities.toLowerCase(script.getType()).equals("interact")) {
-                    throw new InvalidArgumentsException("Script specified must be an 'interact' script!");
-                }
-                scriptEntry.addObject("script", script);
+                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
             else if (!scriptEntry.hasObject("step")) {
                 scriptEntry.addObject("step", arg.asElement());
