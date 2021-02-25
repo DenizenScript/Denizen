@@ -49,7 +49,7 @@ public class AnimateCommand extends AbstractCommand {
     // These EntityEffect options can optionally be played only for specific players with the "for:" argument input.
     //
     // In addition, Denizen adds a few new entity animations:
-    // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING, HORSE_BUCK
+    // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING, HORSE_BUCK, IRON_GOLEM_ATTACK
     //
     // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
     //
