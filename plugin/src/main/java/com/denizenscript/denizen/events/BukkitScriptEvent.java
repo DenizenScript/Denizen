@@ -61,7 +61,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // You can use "world" as a catch-all, a world name, or "world_flagged:<flag_name>" (works similar to 'item_flagged').
     //
     // "<area>" or similar refers to any area-defining tag type, including WorldTag, CuboidTag, EllipsoidTag, and PolygonTag.
-    // You can specify the name of any world, the name of any noted area, "world_flagged:<flag_name>", "area_flagged:<flag_name>" (both work similar to 'item_flagged'),
+    // You can specify the name of any world, the name of any noted area, "world_flagged:<flag_name>", "chunk_flagged:<flag_name>", "area_flagged:<flag_name>" (all work similar to 'item_flagged'),
     // "cuboid" for any noted cuboid, "ellipsoid" for any noted ellipsoid, or "polygon" for any noted polygon.
     //
     // You will also often see match inputs like "<cause>" or "<reason>" or similar,
@@ -450,21 +450,24 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runInCheck(path, location, "in");
     }
 
-    public boolean runLocationFlaggedCheck(ScriptPath path, String switchName, Location location) {
+    public boolean runFlaggedCheck(ScriptPath path, String switchName, AbstractFlagTracker tracker) {
         String flagged = path.switches.get(switchName);
         if (flagged == null) {
             return true;
         }
-        if (location == null) {
+        if (tracker == null) {
             return false;
         }
-        AbstractFlagTracker tracker = new LocationTag(location).getFlagTracker();
         for (String flag : CoreUtilities.split(flagged, '|')) {
             if (!tracker.hasFlag(flag)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean runLocationFlaggedCheck(ScriptPath path, String switchName, Location location) {
+        return runFlaggedCheck(path, switchName, location == null ? null : new LocationTag(location).getFlagTracker());
     }
 
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
@@ -509,6 +512,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (lower.contains(":")) {
             if (lower.startsWith("world_flagged:")) {
                 return new WorldTag(location.getWorld()).getFlagTracker().hasFlag(inputText.substring("world_flagged:".length()));
+            }
+            else if (lower.startsWith("chunk_flagged:")) {
+                return new ChunkTag(location).getFlagTracker().hasFlag(inputText.substring("chunk_flagged:".length()));
             }
             else if (lower.startsWith("area_flagged:")) {
                 String flagName = inputText.substring("area_flagged:".length());

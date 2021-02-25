@@ -556,8 +556,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     @Override
+    public AbstractFlagTracker getFlagTrackerForTag() {
+        if (!isChunkLoadedSafe()) {
+            return null;
+        }
+        return getFlagTracker();
+    }
+
+    @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
         // Nothing to do.
+    }
+
+    @Override
+    public String getReasonNotFlaggable() {
+        return "is the chunk loaded?";
     }
 
     /**

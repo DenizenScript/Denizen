@@ -1,7 +1,11 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -23,7 +27,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class ChunkTag implements ObjectTag, Adjustable {
+public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
 
     // <--[language]
     // @name ChunkTag Objects
@@ -235,7 +239,36 @@ public class ChunkTag implements ObjectTag, Adjustable {
         }
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            Debug.echoError("Chunk flags are only available in 1.16+");
+            return null;
+        }
+        return new DataPersistenceFlagTracker(getChunk(), "flag_chunk_");
+    }
+
+    @Override
+    public AbstractFlagTracker getFlagTrackerForTag() {
+        if (!isLoadedSafe()) {
+            return null;
+        }
+        return getFlagTracker();
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        // Nothing to do.
+    }
+
+    @Override
+    public String getReasonNotFlaggable() {
+        return "is the chunk loaded?";
+    }
+
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <ChunkTag.add[<#>,<#>]>
