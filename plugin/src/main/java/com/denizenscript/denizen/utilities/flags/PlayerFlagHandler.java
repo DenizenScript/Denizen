@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
-import com.denizenscript.denizencore.scripts.ScriptHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,7 +11,6 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,18 +55,27 @@ public class PlayerFlagHandler implements Listener {
 
     private static ArrayList<UUID> toClearCache = new ArrayList<>();
 
-    public static void cleanCache() {
-        if (cacheTimeoutSeconds == -1) {
-            return;
-        }
+    public static void cleanSecondaryCache() {
         toClearCache.clear();
         for (Map.Entry<UUID, SoftReference<CachedPlayerFlag>> entry : secondaryPlayerFlagTrackerCache.entrySet()) {
+            // NOTE: This call will make the GC think the value is still needed, thus the 10 minute cleanup timer to allow the GC to know these are unimportant
             if (entry.getValue().get() == null) {
                 toClearCache.add(entry.getKey());
             }
         }
         for (UUID id : toClearCache) {
             secondaryPlayerFlagTrackerCache.remove(id);
+        }
+    }
+
+    private static int secondaryCleanTicker = 0;
+
+    public static void cleanCache() {
+        if (cacheTimeoutSeconds == -1) {
+            return;
+        }
+        if (secondaryCleanTicker++ > 10) {
+            cleanSecondaryCache();
         }
         long timeNow = System.currentTimeMillis();
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
