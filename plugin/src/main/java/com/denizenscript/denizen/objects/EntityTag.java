@@ -3353,6 +3353,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getEntityHelper().setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name melee_attack
+        // @input EntityTag
+        // @description
+        // Causes this hostile-mob entity to immediately melee-attack the specified target entity once.
+        // Does not work with passive mobs, player entities, non-living entities, etc.
+        // -->
+        if (mechanism.matches("melee_attack") && mechanism.requireObject(EntityTag.class)) {
+            getLivingEntity().attack(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }
