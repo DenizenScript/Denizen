@@ -66,7 +66,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(path, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 
