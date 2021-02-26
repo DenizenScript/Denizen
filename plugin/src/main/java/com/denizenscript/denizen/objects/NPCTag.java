@@ -953,6 +953,21 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
+        // @attribute <NPCTag.controllable>
+        // @returns ElementTag(Boolean)
+        // @mechanism NPCTag.controllable
+        // @description
+        // Returns whether the NPC has controllable enabled.
+        // -->
+        registerTag("controllable", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            if (citizen.hasTrait(Controllable.class)) {
+                return new ElementTag(citizen.getOrAddTrait(Controllable.class).isEnabled());
+            }
+            return new ElementTag(false);
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.teleport_on_stuck>
         // @returns ElementTag(Boolean)
         // @mechanism NPCTag.teleport_on_stuck
@@ -1533,6 +1548,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("lookclose") && mechanism.requireBoolean()) {
             getLookCloseTrait().lookClose(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name controllable
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC is controllable.
+        // @tags
+        // <NPCTag.controllable>
+        // -->
+        if (mechanism.matches("controllable") && mechanism.requireBoolean()) {
+            getCitizen().getOrAddTrait(Controllable.class).setEnabled(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
