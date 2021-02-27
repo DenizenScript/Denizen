@@ -1602,8 +1602,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     public CuboidTag shifted(LocationTag vec) {
         CuboidTag cuboid = clone();
-        LocationTag low = cuboid.pairs.get(0).low.clone().add(vec);
-        LocationTag high = cuboid.pairs.get(0).high.clone().add(vec);
+        LocationTag low = cuboid.pairs.get(0).low.clone().add(vec.toVector());
+        LocationTag high = cuboid.pairs.get(0).high.clone().add(vec.toVector());
         cuboid.pairs.get(0).regenerate(low, high);
         return cuboid;
     }
