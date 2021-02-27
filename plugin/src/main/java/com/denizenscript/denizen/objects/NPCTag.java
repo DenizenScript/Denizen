@@ -960,11 +960,22 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC has controllable enabled.
         // -->
         registerTag("controllable", (attribute, object) -> {
-            NPC citizen = object.getCitizen();
-            if (citizen.hasTrait(Controllable.class)) {
-                return new ElementTag(citizen.getOrAddTrait(Controllable.class).isEnabled());
+            if (object.getCitizen().hasTrait(Controllable.class)) {
+                return new ElementTag(object.getCitizen().getOrAddTrait(Controllable.class).isEnabled());
             }
             return new ElementTag(false);
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.targetable>
+        // @returns ElementTag(Boolean)
+        // @mechanism NPCTag.targetable
+        // @description
+        // Returns whether the NPC is targetable.
+        // -->
+        registerTag("targetable", (attribute, object) -> {
+            boolean targetable = object.getCitizen().data().get(NPC.TARGETABLE_METADATA, object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
+            return new ElementTag(targetable);
         });
 
         // <--[tag]
@@ -1561,6 +1572,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("controllable") && mechanism.requireBoolean()) {
             getCitizen().getOrAddTrait(Controllable.class).setEnabled(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name targetable
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC is targetable.
+        // @tags
+        // <NPCTag.targetable>
+        // -->
+        if (mechanism.matches("targetable") && mechanism.requireBoolean()) {
+            getCitizen().data().setPersistent(NPC.TARGETABLE_METADATA, mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
