@@ -105,6 +105,11 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                 return false;
             }
         }
+        else if (areaName.equals("polygon")) {
+            if (!(area instanceof PolygonTag)) {
+                return false;
+            }
+        }
         else if (areaName.startsWith("area_flagged:")) {
             AbstractFlagTracker tracker = ((FlaggableObject) area).getFlagTracker();
             if (tracker == null || !tracker.hasFlag(areaName.substring("area_flagged:".length()))) {
