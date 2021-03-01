@@ -225,7 +225,7 @@ public class TakeCommand extends AbstractCommand {
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         ListTag flagList = scriptEntry.getObjectTag("flag_name");
         List<MaterialTag> materialList = scriptEntry.getObjectTag("material");
-        Type type = scriptEntry.getObjectTag("type");
+        Type type = (Type) scriptEntry.getObject("type");
         List<ItemTag> items = scriptEntry.getObjectTag("items");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
