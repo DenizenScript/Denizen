@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
@@ -62,9 +63,7 @@ public class AssignmentCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesEnum(Action.values())
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
@@ -73,7 +72,7 @@ public class AssignmentCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("script")) {
                 // Check the type of script.. it must be an assignment-type container
                 if (arg.asType(ScriptTag.class) != null
-                        && arg.asType(ScriptTag.class).getType().equalsIgnoreCase("assignment")) {
+                        && arg.asType(ScriptTag.class).getContainer() instanceof AssignmentScriptContainer) {
                     scriptEntry.addObject("script", arg.asType(ScriptTag.class));
                 }
                 else {
@@ -88,8 +87,6 @@ public class AssignmentCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-
         if (!scriptEntry.hasObject("npcs")) {
             if (!Utilities.entryHasNPC(scriptEntry)) {
                 throw new InvalidArgumentsException("This command requires a linked NPC!");
@@ -102,7 +99,6 @@ public class AssignmentCommand extends AbstractCommand {
         if (scriptEntry.getObject("action").equals(Action.SET) && !scriptEntry.hasObject("script")) {
             throw new InvalidArgumentsException("Script specified was missing or invalid.");
         }
-
     }
 
     @Override
@@ -111,14 +107,12 @@ public class AssignmentCommand extends AbstractCommand {
         ScriptTag script = scriptEntry.getObjectTag("script");
         Action action = (Action) scriptEntry.getObject("action");
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("action", action)
                     + (script != null ? script.debug() : "")
                     + ArgumentHelper.debugList("npc", npcs));
         }
-
         for (NPCTag npc : npcs) {
             if (action.equals(Action.SET)) {
                 npc.getCitizen().getOrAddTrait(AssignmentTrait.class).setAssignment(script.getName(), Utilities.getEntryPlayer(scriptEntry));

@@ -179,7 +179,7 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesArgumentList(ItemTag.class)) {
-                scriptEntry.addObject("items", ListTag.valueOf(arg.getRawValue().replace("item:", ""), scriptEntry.getContext()).filter(ItemTag.class, scriptEntry));
+                scriptEntry.addObject("items", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("f", "from")
@@ -225,8 +225,8 @@ public class TakeCommand extends AbstractCommand {
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
         ListTag flagList = scriptEntry.getObjectTag("flag_name");
         List<MaterialTag> materialList = scriptEntry.getObjectTag("material");
-        Type type = (Type) scriptEntry.getObject("type");
-        List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("items");
+        Type type = scriptEntry.getObjectTag("type");
+        List<ItemTag> items = scriptEntry.getObjectTag("items");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
                             + quantity.debug()
