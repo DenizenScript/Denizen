@@ -78,6 +78,11 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
+    //   # Set this to 'true' to allow the item script item to be used in material-based recipe (eg most vanilla recipes).
+    //   # Defaults to false if unspecified.
+    //   # | Most item scripts should exclude this key!
+    //   allow in material recipes: false
+    //
     //   # You can specify flags to be added to the item.
     //   flags:
     //     # Each line within the flags section should be a flag name as a key, and the flag value as the value.
@@ -164,10 +169,12 @@ public class ItemScriptContainer extends ScriptContainer {
 
     String hash = "";
 
+    public boolean allowInMaterialRecipes;
+
     public ItemScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         canRunScripts = false;
-
+        allowInMaterialRecipes = getString("allow in material recipes", "false").equalsIgnoreCase("true");
         ItemScriptHelper.item_scripts.put(CoreUtilities.toLowerCase(getName()), this);
         ItemScriptHelper.item_scripts_by_hash_id.put(ItemScriptHelper.createItemScriptID(this), this);
     }

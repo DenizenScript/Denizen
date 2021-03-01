@@ -20,7 +20,11 @@ import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockCookEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.*;
 
 import java.math.BigInteger;
@@ -337,5 +341,98 @@ public class ItemScriptHelper implements Listener {
             colors.append(ChatColor.BLUE);
         }
         return colors.toString();
+    }
+
+    public static boolean isAllowedChoice(ItemScriptContainer script, RecipeChoice choice) {
+        if (choice instanceof RecipeChoice.ExactChoice) {
+            for (ItemStack choiceOpt : ((RecipeChoice.ExactChoice) choice).getChoices()) {
+                ItemScriptContainer choiceOptContainer = getItemScriptContainer(choiceOpt);
+                if (script == choiceOptContainer) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean shouldDenyCraft(ItemStack[] items, Recipe recipe) {
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item == null || item.getType() == Material.AIR) {
+                continue;
+            }
+            ItemScriptContainer container = getItemScriptContainer(item);
+            if (container == null || container.allowInMaterialRecipes) {
+                continue;
+            }
+            boolean allowed = false;
+            if (recipe instanceof ShapelessRecipe) {
+                for (RecipeChoice choice : ((ShapelessRecipe) recipe).getChoiceList()) {
+                    if (isAllowedChoice(container, choice)) {
+                        allowed = true;
+                        break;
+                    }
+                }
+            }
+            else if (recipe instanceof ShapedRecipe) {
+                int width = items.length == 9 ? 3 : 2;
+                int x = i % width;
+                int y = i / width;
+                String[] shape = ((ShapedRecipe) recipe).getShape();
+                if (y < shape.length && x < shape[y].length()) {
+                    char c = shape[y].charAt(x);
+                    RecipeChoice choice = ((ShapedRecipe) recipe).getChoiceMap().get(c);
+                    if (isAllowedChoice(container, choice)) {
+                        allowed = true;
+                    }
+                }
+            }
+            else if (recipe instanceof CookingRecipe) {
+                allowed = isAllowedChoice(container, ((CookingRecipe) recipe).getInputChoice());
+            }
+            else {
+                allowed = true; // Shouldn't be possible?
+            }
+            if (!allowed) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onCraftPrepared(PrepareItemCraftEvent event) {
+        Recipe recipe = event.getRecipe();
+        if (recipe == null) {
+            return;
+        }
+        ItemStack[] items = event.getInventory().getMatrix();
+        if (shouldDenyCraft(items, recipe)) {
+            event.getInventory().setResult(null);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onItemCrafted(CraftItemEvent event) {
+        Recipe recipe = event.getRecipe();
+        ItemStack[] items = event.getInventory().getMatrix();
+        if (shouldDenyCraft(items, recipe)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onItemCooked(BlockCookEvent event) {
+        ItemScriptContainer container = getItemScriptContainer(event.getSource());
+        if (container == null || container.allowInMaterialRecipes) {
+            return;
+        }
+        ItemStack[] stacks = new ItemStack[] { event.getSource() };
+        for (Recipe recipe : Bukkit.getRecipesFor(event.getResult())) {
+            if (recipe instanceof CookingRecipe && !shouldDenyCraft(stacks, recipe)) {
+                return;
+            }
+        }
+        event.setCancelled(true);
     }
 }
