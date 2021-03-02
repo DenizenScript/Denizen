@@ -4,6 +4,8 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.events.core.ConsoleOutputScriptEvent;
 import com.denizenscript.denizencore.events.core.ScriptGeneratesErrorScriptEvent;
 import com.denizenscript.denizencore.events.core.ServerGeneratesExceptionScriptEvent;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -522,6 +524,23 @@ public class Debug {
             }
 
             string = Settings.debugPrefix() + string;
+
+            if (DenizenCore.logInterceptor.redirected) {
+                if (!DenizenCore.logInterceptor.antiLoop) {
+                    DenizenCore.logInterceptor.antiLoop = true;
+                    try {
+                        ConsoleOutputScriptEvent event = ConsoleOutputScriptEvent.instance;
+                        event.message = string;
+                        event.fire();
+                        if (event.cancelled) {
+                            return;
+                        }
+                    }
+                    finally {
+                        DenizenCore.logInterceptor.antiLoop = false;
+                    }
+                }
+            }
 
             // Send buffer to the player
             commandSender.sendMessage(showColor ? string : ChatColor.stripColor(string));
