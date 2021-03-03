@@ -21,7 +21,6 @@ import com.denizenscript.denizencore.scripts.containers.core.TaskScriptContainer
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -256,10 +255,21 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     }
                     Vector newVel = v3.multiply(speed);
                     lastEntity.setVelocity(newVel);
-                    // Check if the entity has collided with something using the most basic possible calculation
-                    if (!ignoreCollision && (!isSafeBlock(lastEntity.getLocation().add(expandForBoundingBox(lastEntity.getBukkitEntity(), newVel)))
-                            || !isSafeBlock(lastEntity.getLocation().add(v3)))) {
-                        runs = maxTicks;
+                    if (!ignoreCollision && lastEntity.isValid()) {
+                        BoundingBox box = lastEntity.getBukkitEntity().getBoundingBox().expand(newVel);
+                        Location ref = lastEntity.getLocation().clone();
+                        for (int x = (int) Math.floor(box.getMinX()); x < Math.ceil(box.getMaxX()); x++) {
+                            ref.setX(x);
+                            for (int y = (int) Math.floor(box.getMinY()); y < Math.ceil(box.getMaxY()); y++) {
+                                ref.setY(y);
+                                for (int z = (int) Math.floor(box.getMinZ()); z < Math.ceil(box.getMaxZ()); z++) {
+                                    ref.setZ(z);
+                                    if (!isSafeBlock(ref)) {
+                                        runs = maxTicks;
+                                    }
+                                }
+                            }
+                        }
                     }
                     if (no_damage && lastEntity.isLivingEntity()) {
                         lastEntity.getLivingEntity().setFallDistance(0);
@@ -291,14 +301,5 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
     public static boolean isSafeBlock(Location loc) {
         return loc.getBlockY() < 0 || loc.getBlockY() > 255 || !loc.getBlock().getType().isSolid();
-    }
-
-    public static Vector expandForBoundingBox(Entity entity, Vector velDir) {
-        Vector dir = velDir.lengthSquared() == 0 ? new Vector(0, 0, 0) : velDir.clone().normalize();
-        if (entity == null || !entity.isValid()) {
-            return velDir;
-        }
-        BoundingBox box = entity.getBoundingBox();
-        return new Vector(box.getWidthX(), box.getHeight(), box.getWidthZ()).multiply(0.5).multiply(dir).add(velDir);
     }
 }
