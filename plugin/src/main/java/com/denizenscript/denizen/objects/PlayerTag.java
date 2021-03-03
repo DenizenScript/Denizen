@@ -14,6 +14,7 @@ import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
+import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -3546,6 +3547,31 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("selected_npc") && Depends.citizens != null && mechanism.requireObject(NPCTag.class)) {
             ((NPCSelector) CitizensAPI.getDefaultNPCSelector()).select(getPlayerEntity(), mechanism.valueAsType(NPCTag.class).getCitizen());
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name hide_particles
+        // @input ElementTag
+        // @description
+        // Hides a certain type of particle from the player.
+        // Input is the particle type name - refer to <@link tag server.particle_types>.
+        // Give no input to remove all hides from a player.
+        // Hides will persist through players reconnecting, but not through servers restarting.
+        // -->
+        if (mechanism.matches("hide_particles")) {
+            if (!mechanism.hasValue()) {
+                HideParticles.hidden.remove(getUUID());
+            }
+            else {
+                HashSet<Particle> particles = HideParticles.hidden.get(getUUID());
+                if (particles == null) {
+                    particles = new HashSet<>();
+                    HideParticles.hidden.put(getUUID(), particles);
+                }
+                Particle particle = Particle.valueOf(mechanism.getValue().asString().toUpperCase());
+                particles.add(particle);
+            }
         }
 
         // <--[mechanism]

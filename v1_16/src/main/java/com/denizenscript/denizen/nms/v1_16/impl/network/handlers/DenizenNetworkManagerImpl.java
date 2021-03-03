@@ -18,6 +18,7 @@ import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
+import com.denizenscript.denizen.utilities.packets.HideParticles;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
@@ -28,6 +29,8 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.craftbukkit.v1_16_R3.CraftParticle;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -138,6 +141,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("d");
     public static Field ENTITY_METADATA_EID = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("a");
     public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("b");
+    public static Field WORLD_PARTICLES_PARTICLETYPE = ReflectionHelper.getFields(PacketPlayOutWorldParticles.class).get("j");
 
     public static Object duplo(Object a) {
         try {
@@ -177,6 +181,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processHiddenEntitiesForPacket(packet)
             || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
+            || processParticlesForPacket(packet)
             || processDisguiseForPacket(packet, genericfuturelistener)
             || processMetadataChangesForPacket(packet, genericfuturelistener)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
@@ -184,6 +189,30 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
         processBlockLightForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
+    }
+
+    public boolean processParticlesForPacket(Packet<?> packet) {
+        if (HideParticles.hidden.isEmpty()) {
+            return false;
+        }
+        try {
+            if (packet instanceof PacketPlayOutWorldParticles) {
+                HashSet<Particle> hidden = HideParticles.hidden.get(player.getUniqueID());
+                if (hidden == null) {
+                    return false;
+                }
+                ParticleParam particle = (ParticleParam) WORLD_PARTICLES_PARTICLETYPE.get(packet);
+                Particle bukkitParticle = CraftParticle.toBukkit(particle);
+                if (hidden.contains(bukkitParticle)) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return false;
     }
 
     private boolean antiDuplicate = false;
