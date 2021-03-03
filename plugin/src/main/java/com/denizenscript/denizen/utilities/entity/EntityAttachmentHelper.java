@@ -47,11 +47,15 @@ public class EntityAttachmentHelper {
                 checkTask.cancel();
             }
             BukkitRunnable runnable = new BukkitRunnable() {
+                int ticks = 0;
                 @Override
                 public void run() {
                     if (!attached.isValid() || !to.isValid()) {
                         cancelAndRemove();
                         return;
+                    }
+                    if (ticks++ >= 20 * 10) { // Run a forcetele every 10 seconds to guarantee sync
+                        visiblePositions.clear();
                     }
                     if (syncServer) {
                         Location goal = to.getLocation();

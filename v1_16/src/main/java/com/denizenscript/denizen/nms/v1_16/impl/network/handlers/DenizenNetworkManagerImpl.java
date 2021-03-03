@@ -427,6 +427,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
                             YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
                             PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
+                            if (NMSHandler.debugPackets) {
+                                Debug.log("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                            }
                             oldManager.sendPacket(newTeleportPacket);
                         }
                         else {
@@ -437,10 +440,16 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                 YAW_PACKENT.setByte(pNew, yaw);
                                 PITCH_PACKENT.setByte(pNew, pitch);
                             }
+                            if (NMSHandler.debugPackets) {
+                                Debug.log("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                            }
                             oldManager.sendPacket(pNew);
                         }
                     }
                     else {
+                        if (NMSHandler.debugPackets) {
+                            Debug.log("Attach Replica-Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                        }
                         oldManager.sendPacket(pNew);
                     }
                 }
@@ -461,6 +470,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (attMap.attached.isValid() && att != null) {
                     Packet pNew = (Packet) duplo(packet);
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
+                    if (NMSHandler.debugPackets) {
+                        Debug.log("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                    }
                     oldManager.sendPacket(pNew);
                 }
             }
@@ -502,6 +514,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         PITCH_PACKTELENT.setByte(pNew, pitch);
                     }
                     att.visiblePositions.put(player.getUniqueID(), resultPos.clone());
+                    if (NMSHandler.debugPackets) {
+                        Debug.log("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                    }
                     oldManager.sendPacket(pNew);
                 }
             }
