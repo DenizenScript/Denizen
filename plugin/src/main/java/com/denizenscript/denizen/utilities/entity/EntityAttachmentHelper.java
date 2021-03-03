@@ -100,11 +100,13 @@ public class EntityAttachmentHelper {
             EntityAttachedToMap map = toEntityToData.get(to.getUUID());
             if (map != null) {
                 PlayerAttachMap subMap = map.attachedToMap.get(attached.getUUID());
-                removeFrom(subMap);
-                if (subMap.everyoneAttachment == null && subMap.playerToAttachment == null) {
-                    map.attachedToMap.remove(attached.getUUID());
-                    if (map.attachedToMap.isEmpty()) {
-                        toEntityToData.remove(to.getUUID());
+                if (subMap != null) {
+                    removeFrom(subMap);
+                    if (subMap.everyoneAttachment == null && subMap.playerToAttachment == null) {
+                        map.attachedToMap.remove(attached.getUUID());
+                        if (map.attachedToMap.isEmpty()) {
+                            toEntityToData.remove(to.getUUID());
+                        }
                     }
                 }
             }
