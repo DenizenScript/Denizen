@@ -522,16 +522,14 @@ public class Debug {
                 Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date())
                         + " [INFO] " + string.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
             }
-
             string = Settings.debugPrefix() + string;
-
             if (DenizenCore.logInterceptor.redirected) {
                 if (!DenizenCore.logInterceptor.antiLoop) {
                     DenizenCore.logInterceptor.antiLoop = true;
                     try {
                         ConsoleOutputScriptEvent event = ConsoleOutputScriptEvent.instance;
                         event.message = string;
-                        event.fire();
+                        event = (ConsoleOutputScriptEvent) event.fire();
                         if (event.cancelled) {
                             return;
                         }
@@ -541,8 +539,6 @@ public class Debug {
                     }
                 }
             }
-
-            // Send buffer to the player
             commandSender.sendMessage(showColor ? string : ChatColor.stripColor(string));
         }
     }

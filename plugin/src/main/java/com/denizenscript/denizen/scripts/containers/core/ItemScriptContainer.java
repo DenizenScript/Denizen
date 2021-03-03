@@ -154,11 +154,6 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # | Most item scripts should exclude this key!
     //   no_id: true/false
     //
-    //   # For colorable items, such as leather armor, you can specify a valid ColorTag to specify the item's appearance.
-    //   # See 'ColorTag' for more information.
-    //   # | Most item scripts should exclude this key!
-    //   color: ColorTag
-    //
     //   # If your material is a 'written_book', you can specify a book script to automatically scribe your item
     //   # upon creation. See 'book script containers' for more information.
     //   # | Most item scripts should exclude this key, though there are certain rare cases it may be useful to.
@@ -299,6 +294,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Color
             if (contains("color")) {
+                Deprecations.itemScriptColor.warn(context);
                 String color = TagManager.tag(getString("color"), context);
                 LeatherColorer.colorArmor(stack, color);
             }

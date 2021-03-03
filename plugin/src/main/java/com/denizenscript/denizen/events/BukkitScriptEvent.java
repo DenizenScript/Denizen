@@ -337,7 +337,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // -->
 
     @Override
-    public void fire() {
+    public ScriptEvent fire() {
         if (!Bukkit.isPrimaryThread()) {
             if (Debug.verbose) {
                 Debug.log("Event is firing async: " + getName());
@@ -349,9 +349,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     altEvent.fire();
                 }
             }.runTask(Denizen.getInstance());
-            return;
+            return altEvent;
         }
-        super.fire();
+        return super.fire();
     }
 
     @Override
