@@ -257,8 +257,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     Vector newVel = v3.multiply(speed);
                     lastEntity.setVelocity(newVel);
                     // Check if the entity has collided with something using the most basic possible calculation
-                    if (!ignoreCollision && (!isSafeBlock(lastEntity.getLocation().add(v3).add(expandForBoundingBox(lastEntity.getBukkitEntity(), v3)))
-                            || !isSafeBlock(lastEntity.getLocation().add(newVel)))) {
+                    if (!ignoreCollision && (!isSafeBlock(lastEntity.getLocation().add(expandForBoundingBox(lastEntity.getBukkitEntity(), newVel)))
+                            || !isSafeBlock(lastEntity.getLocation().add(v3)))) {
                         runs = maxTicks;
                     }
                     if (no_damage && lastEntity.isLivingEntity()) {

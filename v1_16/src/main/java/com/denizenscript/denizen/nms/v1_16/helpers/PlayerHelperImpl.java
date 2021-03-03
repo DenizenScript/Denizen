@@ -65,7 +65,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void stopSound(Player player, String sound, SoundCategory category) {
         MinecraftKey soundKey = sound == null ? null : new MinecraftKey(sound);
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, net.minecraft.server.v1_16_R3.SoundCategory.valueOf(category.name())));
+        net.minecraft.server.v1_16_R3.SoundCategory nmsCategory = category == null ? null : net.minecraft.server.v1_16_R3.SoundCategory.valueOf(category.name());
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, nmsCategory));
     }
 
     @Override
