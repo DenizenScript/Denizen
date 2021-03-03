@@ -1,6 +1,10 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -12,7 +16,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-public class PluginTag implements ObjectTag {
+public class PluginTag implements ObjectTag, FlaggableObject {
 
     // <--[language]
     // @name PluginTag Objects
@@ -23,6 +27,9 @@ public class PluginTag implements ObjectTag {
     // These use the object notation "pl@".
     // The identity format for plugins is the plugin's registered name.
     // For example, 'pl@Denizen'.
+    //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the server saves file, under special sub-key "__plugins"
     //
     // -->
 
@@ -139,7 +146,19 @@ public class PluginTag implements ObjectTag {
         return this;
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__plugins." + plugin.getName().replace(".", "&dot"));
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        // Nothing to do.
+    }
+
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <PluginTag.name>

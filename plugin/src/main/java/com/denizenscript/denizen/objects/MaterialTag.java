@@ -2,6 +2,10 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
@@ -21,7 +25,7 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.List;
 
-public class MaterialTag implements ObjectTag, Adjustable {
+public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
     // <--[language]
     // @name MaterialTag Objects
@@ -37,6 +41,9 @@ public class MaterialTag implements ObjectTag, Adjustable {
     // for specific values on the block material such as the growth stage of a plant or the orientation of a stair block.
     //
     // Material types: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
+    //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the server saves file, under special sub-key "__materials"
     //
     // -->
 
@@ -217,7 +224,19 @@ public class MaterialTag implements ObjectTag, Adjustable {
         return this;
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__materials." + material.name().replace(".", "&dot"));
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        // Nothing to do.
+    }
+
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <MaterialTag.is_ageable>

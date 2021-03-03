@@ -1,6 +1,10 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
@@ -17,7 +21,7 @@ import org.bukkit.entity.EntityType;
 
 import java.util.List;
 
-public class BiomeTag implements ObjectTag, Adjustable {
+public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
     // <--[language]
     // @name BiomeTag Objects
@@ -30,6 +34,9 @@ public class BiomeTag implements ObjectTag, Adjustable {
     //
     // These use the object notation "b@".
     // The identity format for biomes is simply the biome name, as registered in Bukkit, for example: 'desert'.
+    //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the server saves file, under special sub-key "__biomes"
     //
     // -->
 
@@ -145,7 +152,19 @@ public class BiomeTag implements ObjectTag, Adjustable {
         return this;
     }
 
+    @Override
+    public AbstractFlagTracker getFlagTracker() {
+        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__biomes." + biome.getName().replace(".", "&dot"));
+    }
+
+    @Override
+    public void reapplyTracker(AbstractFlagTracker tracker) {
+        // Nothing to do.
+    }
+
     public static void registerTags() {
+
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <BiomeTag.downfall_type>
