@@ -52,6 +52,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     // Multi-member cuboids can simply continue listing x,y,z pairs.
     // For example, 'cu@space,1,2,3,4,5,6'.
     //
+    // This object type can be noted.
+    //
+    // This object type is flaggable when it is noted.
+    // Flags on this object type will be stored in the notables.yml file.
+    //
     // -->
 
     @Override

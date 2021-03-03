@@ -61,6 +61,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // These use the object notation "p@".
     // The identity format for players is the UUID of the relevant player.
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the file "plugins/Denizen/player_flags/(UUID).dat",
+    // with automatic loading only when the player is online and caching for interacting with offline player flags.
+    //
     // -->
 
     /////////////////////

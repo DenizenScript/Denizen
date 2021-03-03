@@ -51,6 +51,9 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
     // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the chunk file inside the world folder.
+    //
     // -->
 
     //////////////////

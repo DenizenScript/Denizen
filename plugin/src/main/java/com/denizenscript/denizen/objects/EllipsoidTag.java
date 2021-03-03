@@ -45,6 +45,11 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     // The identity format for ellipsoids is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
     //
+    // This object type can be noted.
+    //
+    // This object type is flaggable when it is noted.
+    // Flags on this object type will be stored in the notables.yml file.
+    //
     // -->
 
     public static List<EllipsoidTag> getNotableEllipsoidsContaining(Location location) {

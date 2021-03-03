@@ -62,6 +62,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     // The identity format for NPCs is the NPC's id number.
     // For example, 'n@5'.
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the Citizens saves.yml file, under the 'denizen_flags' trait.
+    //
     // -->
 
     public static NPCRegistry getRegistryByName(String name) {

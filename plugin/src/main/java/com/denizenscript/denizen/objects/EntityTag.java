@@ -68,6 +68,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // The identity format for entities is a spawned entity's UUID, or an entity type.
     // For example, 'e@abc123' or 'e@zombie'.
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the world chunk files as a part of the entity's NBT.
+    //
     // -->
 
     /////////////////////

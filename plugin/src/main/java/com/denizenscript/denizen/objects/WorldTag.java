@@ -56,6 +56,9 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     // associated with. For example, to reference the world named 'world1', use simply 'world1'.
     // World names are case insensitive.
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the world folder in a file named 'denizen_flags.dat', like "server/world/denizen_flags.dat".
+    //
     // -->
 
     @Deprecated

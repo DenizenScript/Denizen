@@ -65,6 +65,9 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>
     // Note that some materials on that list are exclusively for use with blocks, and cannot be held as items.
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the item NBT.
+    //
     // -->
 
     //////////////////

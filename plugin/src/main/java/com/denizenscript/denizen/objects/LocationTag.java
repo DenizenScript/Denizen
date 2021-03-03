@@ -72,6 +72,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     // You cannot leave off both the z and the pitch+yaw at the same time.
     // For example, 'l@1,2.15,3,45,90,space' or 'l@7.5,99,3.2'
     //
+    // This object type is flaggable.
+    // Flags on this object type will be stored in the chunk file inside the world folder.
+    //
     // -->
 
     /**
@@ -731,7 +734,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         public void run(LocationTag start, AreaContainmentObject area) {
             iterationLimit = Settings.blockTagsMaxBlocks();
             areaLimit = area;
-            result = new HashSet<>();
+            result = new LinkedHashSet<>();
             flood(start.getBlockLocation());
         }
 

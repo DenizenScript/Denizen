@@ -65,6 +65,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     // Valid inventory type classifications:
     // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"
     //
+    // This object type can be noted.
+    //
+    // This object type is flaggable when it is noted.
+    // Flags on this object type will be stored in the notables.yml file.
+    //
     // -->
 
     public static void trackTemporaryInventory(InventoryTag tagForm) {

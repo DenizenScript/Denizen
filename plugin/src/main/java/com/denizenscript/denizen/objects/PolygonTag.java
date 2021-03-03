@@ -52,6 +52,11 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     //
     // Note that forming invalid polygons (duplicate corners, impossible shapes, etc) will not necessarily give any error message, and may cause weird results.
     //
+    // This object type can be noted.
+    //
+    // This object type is flaggable when it is noted.
+    // Flags on this object type will be stored in the notables.yml file.
+    //
     // -->
 
     public WorldTag world;
