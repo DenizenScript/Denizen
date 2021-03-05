@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.properties.material.MaterialSwitchable;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -13,7 +14,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.block.data.Bisected;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +108,6 @@ public class SwitchCommand extends AbstractCommand {
         final ListTag interactLocations = scriptEntry.getObjectTag("locations");
         long duration = ((DurationTag) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
-        final Player player = Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getPlayerEntity() : null;
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), interactLocations.debug()
@@ -115,7 +115,7 @@ public class SwitchCommand extends AbstractCommand {
                     + ArgumentHelper.debugObj("switchstate", switchState.name()));
         }
         for (final LocationTag interactLocation : interactLocations.filter(LocationTag.class, scriptEntry)) {
-            switchBlock(scriptEntry, interactLocation, switchState, player);
+            switchBlock(scriptEntry, interactLocation, switchState);
             // If duration set, schedule a delayed task.
             if (duration > 0) {
                 // If this block already had a delayed task, cancel it.
@@ -128,26 +128,43 @@ public class SwitchCommand extends AbstractCommand {
                 }
                 Debug.echoDebug(scriptEntry, "Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
-                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, player), duration));
+                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE), duration));
             }
         }
     }
 
     public static boolean switchState(Block b) {
-        ModernBlockData mbd = new ModernBlockData(b);
-        Boolean switchState = mbd.getSwitchState();
-        if (switchState != null) {
-            return switchState;
+        MaterialSwitchable switchable = MaterialSwitchable.getFrom(new MaterialTag(b.getBlockData()));
+        if (switchable == null) {
+            return false;
         }
-        return false;
+        return switchable.getState();
     }
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
-    public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, Player player) {
-        boolean currentState = switchState(interactLocation.getBlock());
+    public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState) {
+        MaterialSwitchable switchable = MaterialSwitchable.getFrom(new MaterialTag(interactLocation.getBlock().getBlockData()));
+        if (switchable == null) {
+            return;
+        }
+        boolean currentState = switchable.getState();
         if ((switchState.equals(SwitchState.ON) && !currentState) || (switchState.equals(SwitchState.OFF) && currentState) || switchState.equals(SwitchState.TOGGLE)) {
-            ModernBlockData mbd = new ModernBlockData(interactLocation.getBlock());
-            mbd.setSwitchState(interactLocation.getBlock(), !currentState);
+            switchable.setState(!currentState);
+            interactLocation.getBlock().setBlockData(switchable.material.getModernData());
+            if (switchable.material.getModernData() instanceof Bisected) {
+                Location other = interactLocation.clone();
+                if (((Bisected) switchable.material.getModernData()).getHalf() == Bisected.Half.TOP) {
+                    other = other.add(0, -1, 0);
+                }
+                else {
+                    other = other.add(0, 1, 0);
+                }
+                MaterialSwitchable switchable2 = MaterialSwitchable.getFrom(new MaterialTag(other.getBlock().getBlockData()));
+                switchable2.setState(!currentState);
+                other.getBlock().setBlockData(switchable2.material.getModernData());
+                AdjustBlockCommand.applyPhysicsAt(other);
+            }
+            AdjustBlockCommand.applyPhysicsAt(interactLocation);
             Debug.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " + (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
         }
     }

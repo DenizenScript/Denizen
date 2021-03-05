@@ -104,7 +104,7 @@ public class SignCommand extends AbstractCommand {
         sign.setType(material == null ? Material.OAK_WALL_SIGN : material.getMaterial(), false);
         MaterialTag signMaterial = new MaterialTag(sign);
         MaterialDirectional.getFrom(signMaterial).setFacing(bf);
-        signMaterial.getModernData().setToBlock(sign);
+        sign.setBlockData(signMaterial.getModernData());
     }
 
     @Override

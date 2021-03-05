@@ -39,7 +39,7 @@ public class MaterialSwitchable  implements Property {
         material = _material;
     }
 
-    MaterialTag material;
+    public MaterialTag material;
 
     public static void registerTags() {
 

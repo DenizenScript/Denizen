@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
@@ -110,17 +111,21 @@ public class AdjustBlockCommand extends AbstractCommand {
             specialMaterial.safeAdjust(mechanism);
             if (doPhysics) {
                 block.setBlockData(data, false);
-                NMSHandler.getBlockHelper().applyPhysics(location);
-                NMSHandler.getBlockHelper().applyPhysics(location.clone().add(1, 0, 0));
-                NMSHandler.getBlockHelper().applyPhysics(location.clone().add(-1, 0, 0));
-                NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 0, 1));
-                NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 0, -1));
-                NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 1, 0));
-                NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, -1, 0));
+                applyPhysicsAt(location);
             }
             else {
                 ModifyBlockCommand.setBlock(block.getLocation(), specialMaterial, false, null);
             }
         }
+    }
+
+    public static void applyPhysicsAt(Location location) {
+        NMSHandler.getBlockHelper().applyPhysics(location);
+        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(1, 0, 0));
+        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(-1, 0, 0));
+        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 0, 1));
+        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 0, -1));
+        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 1, 0));
+        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, -1, 0));
     }
 }

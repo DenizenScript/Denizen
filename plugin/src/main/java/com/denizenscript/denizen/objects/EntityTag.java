@@ -1582,7 +1582,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!(object.entity instanceof FallingBlock)) {
                 return null;
             }
-            return new MaterialTag(new ModernBlockData(((FallingBlock) object.entity).getBlockData()));
+            return new MaterialTag(((FallingBlock) object.entity).getBlockData());
         });
 
         // <--[tag]

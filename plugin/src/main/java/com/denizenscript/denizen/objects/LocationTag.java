@@ -3468,7 +3468,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return;
             }
             MaterialDirectional.getFrom(material).setFacing(Utilities.faceFor(faceVec.toVector()));
-            material.getModernData().setToBlock(block);
+            block.setBlockData(material.getModernData());
         }
 
         // <--[mechanism]

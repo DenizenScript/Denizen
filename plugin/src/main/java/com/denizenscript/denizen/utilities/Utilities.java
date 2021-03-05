@@ -371,7 +371,7 @@ public class Utilities {
         }
         MaterialTag signMaterial = new MaterialTag(signState.getBlock());
         MaterialDirectional.getFrom(signMaterial).setFacing(bf);
-        signMaterial.getModernData().setToBlock(signState.getBlock());
+        signState.getBlock().setBlockData(signMaterial.getModernData());
     }
 
     /**
