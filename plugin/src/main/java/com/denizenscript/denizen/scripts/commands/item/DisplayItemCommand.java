@@ -154,13 +154,10 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
         // Remove it later
         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (dropped.isValid() && !dropped.isDead()) {
-                            dropped.remove();
-                            protectedEntities.remove(itemUUID);
-                        }
+                () -> {
+                    if (dropped.isValid() && !dropped.isDead()) {
+                        dropped.remove();
+                        protectedEntities.remove(itemUUID);
                     }
                 }, duration.getTicks());
     }

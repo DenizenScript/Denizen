@@ -144,17 +144,15 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("origin")) {
-            return from;
-        }
-        else if (name.equals("destination")) {
-            return to;
-        }
-        else if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("cause")) {
-            return new ElementTag(cause);
+        switch (name) {
+            case "origin":
+                return from;
+            case "destination":
+                return to;
+            case "entity":
+                return entity.getDenizenObject();
+            case "cause":
+                return new ElementTag(cause);
         }
         return super.getContext(name);
     }

@@ -12,7 +12,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TargetType;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AttackCommand extends AbstractCommand {
@@ -82,7 +82,7 @@ public class AttackCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("target")) {
             scriptEntry.addObject("target", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
-        scriptEntry.defaultObject("entities", Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
+        scriptEntry.defaultObject("entities", Utilities.entryHasNPC(scriptEntry) ? Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }

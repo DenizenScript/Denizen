@@ -282,15 +282,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return offlinePlayer.getName();
     }
 
-    @Deprecated // TODO: Delete during flag rewrite
-    public String getSaveName() {
-        if (offlinePlayer == null) {
-            return "00.UNKNOWN";
-        }
-        String baseID = offlinePlayer.getUniqueId().toString().toUpperCase().replace("-", "");
-        return baseID.substring(0, 2) + "." + baseID;
-    }
-
     @Override
     public LocationTag getLocation() {
         if (isOnline()) {
@@ -800,15 +791,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return new EntityTag(result.getHitEntity());
-        });
-
-        /////////////////////
-        //   IDENTIFICATION ATTRIBUTES
-        /////////////////
-
-        registerTag("save_name", (attribute, object) -> {
-            Debug.echoError("player.save_name is bound to be removed very soon.");
-            return new ElementTag(object.getSaveName());
         });
 
         /////////////////////
@@ -3577,11 +3559,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 HideParticles.hidden.remove(getUUID());
             }
             else {
-                HashSet<Particle> particles = HideParticles.hidden.get(getUUID());
-                if (particles == null) {
-                    particles = new HashSet<>();
-                    HideParticles.hidden.put(getUUID(), particles);
-                }
+                HashSet<Particle> particles = HideParticles.hidden.computeIfAbsent(getUUID(), k -> new HashSet<>());
                 Particle particle = Particle.valueOf(mechanism.getValue().asString().toUpperCase());
                 particles.add(particle);
             }

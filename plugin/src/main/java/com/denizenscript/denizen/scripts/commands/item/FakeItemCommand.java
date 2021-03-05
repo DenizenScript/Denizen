@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FakeItemCommand extends AbstractCommand {
@@ -94,7 +94,7 @@ public class FakeItemCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid slot!");
         }
         scriptEntry.defaultObject("duration", new DurationTag(0)).defaultObject("player_only", new ElementTag(false))
-                .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+                .defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
     }
 
     @Override
@@ -127,15 +127,12 @@ public class FakeItemCommand extends AbstractCommand {
             final int slotSnapshot = slot;
             slot++;
             if (duration.getSeconds() > 0) {
-                DenizenCore.schedule(new OneTimeSchedulable(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (PlayerTag player : players) {
-                            Player ent = player.getPlayerEntity();
-                            int translated = translateSlot(ent, slotSnapshot, playerOnly);
-                            ItemStack original = ent.getOpenInventory().getItem(translated);
-                            packetHelper.setSlot(ent, translated, original, playerOnly);
-                        }
+                DenizenCore.schedule(new OneTimeSchedulable(() -> {
+                    for (PlayerTag player : players) {
+                        Player ent = player.getPlayerEntity();
+                        int translated = translateSlot(ent, slotSnapshot, playerOnly);
+                        ItemStack original = ent.getOpenInventory().getItem(translated);
+                        packetHelper.setSlot(ent, translated, original, playerOnly);
                     }
                 }, (float) duration.getSeconds()));
             }

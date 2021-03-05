@@ -78,17 +78,17 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            FakeEntity fakeEntity = FakeEntity.getFakeEntityFor(event.getPlayer().getUniqueId(), event.getEntityId());
-            if (fakeEntity != null) {
-                return fakeEntity.entity;
-            }
-        }
-        else if (name.equals("hand")) {
-            return new ElementTag(event.getHand().name());
-        }
-        else if (name.equals("click_type")) {
-            return new ElementTag(event.isAttack() ? "left" : "right");
+        switch (name) {
+            case "entity":
+                FakeEntity fakeEntity = FakeEntity.getFakeEntityFor(event.getPlayer().getUniqueId(), event.getEntityId());
+                if (fakeEntity != null) {
+                    return fakeEntity.entity;
+                }
+                break;
+            case "hand":
+                return new ElementTag(event.getHand().name());
+            case "click_type":
+                return new ElementTag(event.isAttack() ? "left" : "right");
         }
         return super.getContext(name);
     }

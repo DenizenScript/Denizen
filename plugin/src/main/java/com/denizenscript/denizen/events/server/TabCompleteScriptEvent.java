@@ -92,20 +92,17 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("buffer")) {
-            return new ElementTag(event.getBuffer());
-        }
-        else if (name.equals("command")) {
-            return new ElementTag(getCommand());
-        }
-        else if (name.equals("current_arg")) {
-            return new ElementTag(getCurrentArg());
-        }
-        else if (name.equals("completions")) {
-            return new ListTag(event.getCompletions());
-        }
-        else if (name.equals("server")) {
-            return new ElementTag(event.getSender() instanceof ConsoleCommandSender);
+        switch (name) {
+            case "buffer":
+                return new ElementTag(event.getBuffer());
+            case "command":
+                return new ElementTag(getCommand());
+            case "current_arg":
+                return new ElementTag(getCurrentArg());
+            case "completions":
+                return new ListTag(event.getCompletions());
+            case "server":
+                return new ElementTag(event.getSender() instanceof ConsoleCommandSender);
         }
         return super.getContext(name);
     }

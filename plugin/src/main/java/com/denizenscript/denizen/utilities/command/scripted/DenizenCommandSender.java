@@ -11,6 +11,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -56,9 +57,7 @@ public class DenizenCommandSender implements ConsoleCommandSender {
 
     @Override
     public void sendMessage(UUID uuid, String[] strings) {
-        for (String s : strings) {
-            output.add(s);
-        }
+        output.addAll(Arrays.asList(strings));
         if (!silent) {
             Bukkit.getServer().getConsoleSender().sendMessage(uuid, strings);
         }

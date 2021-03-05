@@ -107,14 +107,13 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("vehicle")) {
-            return vehicle;
-        }
-        else if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("pickup")) {
-            return new ElementTag(!event.isPickupCancelled());
+        switch (name) {
+            case "vehicle":
+                return vehicle;
+            case "entity":
+                return entity;
+            case "pickup":
+                return new ElementTag(!event.isPickupCancelled());
         }
         return super.getContext(name);
     }

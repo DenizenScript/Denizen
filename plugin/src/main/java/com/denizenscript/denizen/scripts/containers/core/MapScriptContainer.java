@@ -95,7 +95,7 @@ public class MapScriptContainer extends ScriptContainer {
             for (StringHolder sh : objectKeys1) {
                 objectKeys.add(sh.str);
             }
-            Collections.sort(objectKeys, new NaturalOrderComparator());
+            objectKeys.sort(new NaturalOrderComparator());
             for (String objectKey : objectKeys) {
                 YamlConfiguration objectSection = objectsSection.getConfigurationSection(objectKey);
                 if (!objectSection.contains("type")) {
@@ -107,51 +107,53 @@ public class MapScriptContainer extends ScriptContainer {
                 String y = objectSection.getString("y", "0");
                 String visible = objectSection.getString("visible", "true");
                 boolean worldC = objectSection.contains("world_coordinates") && objectSection.getString("world_coordinates", "false").equalsIgnoreCase("true");
-                if (type.equals("image")) {
-                    if (!objectSection.contains("image")) {
-                        Debug.echoError("Map script '" + getName() + "'s image '" + objectKey
-                                + "' has no specified image location!");
-                        return;
-                    }
-                    String image = objectSection.getString("image");
-                    int width = Integer.parseInt(objectSection.getString("width", "0"));
-                    int height = Integer.parseInt(objectSection.getString("height", "0"));
-                    if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
-                        renderer.addObject(new MapAnimatedImage(x, y, visible, debug, image, width, height));
-                    }
-                    else {
-                        renderer.addObject(new MapImage(x, y, visible, debug, image, width, height));
-                    }
-                }
-                else if (type.equals("text")) {
-                    if (!objectSection.contains("text")) {
-                        Debug.echoError("Map script '" + getName() + "'s text object '" + objectKey
-                                + "' has no specified text!");
-                        return;
-                    }
-                    String text = objectSection.getString("text");
-                    renderer.addObject(new MapText(x, y, visible, debug, text));
-                }
-                else if (type.equals("cursor")) {
-                    if (!objectSection.contains("cursor")) {
-                        Debug.echoError("Map script '" + getName() + "'s cursor '" + objectKey
-                                + "' has no specified cursor type!");
-                        return;
-                    }
-                    String cursor = objectSection.getString("cursor");
-                    if (cursor == null) {
-                        Debug.echoError("Map script '" + getName() + "'s cursor '" + objectKey
-                                + "' is missing a cursor type!");
-                        return;
-                    }
-                    renderer.addObject(new MapCursor(x, y, visible, debug, objectSection.getString("direction", "0"), cursor));
-                }
-                else if (type.equals("dot")) {
-                    renderer.addObject(new MapDot(x, y, visible, debug, objectSection.getString("radius", "1"),
-                            objectSection.getString("color", "black")));
-                }
-                else {
-                    Debug.echoError("Weird map data!");
+                switch (type) {
+                    case "image":
+                        if (!objectSection.contains("image")) {
+                            Debug.echoError("Map script '" + getName() + "'s image '" + objectKey
+                                    + "' has no specified image location!");
+                            return;
+                        }
+                        String image = objectSection.getString("image");
+                        int width = Integer.parseInt(objectSection.getString("width", "0"));
+                        int height = Integer.parseInt(objectSection.getString("height", "0"));
+                        if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
+                            renderer.addObject(new MapAnimatedImage(x, y, visible, debug, image, width, height));
+                        }
+                        else {
+                            renderer.addObject(new MapImage(x, y, visible, debug, image, width, height));
+                        }
+                        break;
+                    case "text":
+                        if (!objectSection.contains("text")) {
+                            Debug.echoError("Map script '" + getName() + "'s text object '" + objectKey
+                                    + "' has no specified text!");
+                            return;
+                        }
+                        String text = objectSection.getString("text");
+                        renderer.addObject(new MapText(x, y, visible, debug, text));
+                        break;
+                    case "cursor":
+                        if (!objectSection.contains("cursor")) {
+                            Debug.echoError("Map script '" + getName() + "'s cursor '" + objectKey
+                                    + "' has no specified cursor type!");
+                            return;
+                        }
+                        String cursor = objectSection.getString("cursor");
+                        if (cursor == null) {
+                            Debug.echoError("Map script '" + getName() + "'s cursor '" + objectKey
+                                    + "' is missing a cursor type!");
+                            return;
+                        }
+                        renderer.addObject(new MapCursor(x, y, visible, debug, objectSection.getString("direction", "0"), cursor));
+                        break;
+                    case "dot":
+                        renderer.addObject(new MapDot(x, y, visible, debug, objectSection.getString("radius", "1"),
+                                objectSection.getString("color", "black")));
+                        break;
+                    default:
+                        Debug.echoError("Weird map data!");
+                        break;
                 }
                 if (worldC && renderer.mapObjects.size() > 0) {
                     renderer.mapObjects.get(renderer.mapObjects.size() - 1).worldCoordinates = true;

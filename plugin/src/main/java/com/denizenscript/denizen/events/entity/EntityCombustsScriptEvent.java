@@ -102,31 +102,30 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("duration")) {
-            return new DurationTag(event.getDuration());
-        }
-        else if (name.equals("source")) {
-            if (event instanceof EntityCombustByEntityEvent) {
-                return new EntityTag(((EntityCombustByEntityEvent) event).getCombuster());
-            }
-            else if (event instanceof EntityCombustByBlockEvent) {
-                Block combuster = ((EntityCombustByBlockEvent) event).getCombuster();
-                if (combuster != null) {
-                    return new LocationTag(combuster.getLocation());
+        switch (name) {
+            case "entity":
+                return entity;
+            case "duration":
+                return new DurationTag(event.getDuration());
+            case "source":
+                if (event instanceof EntityCombustByEntityEvent) {
+                    return new EntityTag(((EntityCombustByEntityEvent) event).getCombuster());
                 }
-            }
-        }
-        else if (name.equals("source_type")) {
-            if (event instanceof EntityCombustByEntityEvent) {
-                return new ElementTag("ENTITY");
-            }
-            else if (event instanceof EntityCombustByBlockEvent) {
-                return new ElementTag("LOCATION");
-            }
-            return new ElementTag("NONE");
+                else if (event instanceof EntityCombustByBlockEvent) {
+                    Block combuster = ((EntityCombustByBlockEvent) event).getCombuster();
+                    if (combuster != null) {
+                        return new LocationTag(combuster.getLocation());
+                    }
+                }
+                break;
+            case "source_type":
+                if (event instanceof EntityCombustByEntityEvent) {
+                    return new ElementTag("ENTITY");
+                }
+                else if (event instanceof EntityCombustByBlockEvent) {
+                    return new ElementTag("LOCATION");
+                }
+                return new ElementTag("NONE");
         }
         return super.getContext(name);
     }

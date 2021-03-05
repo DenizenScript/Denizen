@@ -130,11 +130,7 @@ public class SwitchCommand extends AbstractCommand {
                 Debug.echoDebug(scriptEntry, "Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
                 taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
-                        new Runnable() {
-                            public void run() {
-                                switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, player);
-                            }
-                        }, duration));
+                        () -> switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, player), duration));
             }
         }
     }

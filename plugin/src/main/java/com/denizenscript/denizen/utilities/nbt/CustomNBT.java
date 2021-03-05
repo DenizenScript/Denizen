@@ -401,11 +401,7 @@ public class CustomNBT {
             for (Action action : Action.values()) {
                 int matchedSlot = disabledSlots & 1 << slotMap.get(slot) + action.getId();
                 if (matchedSlot != 0) {
-                    Set<Action> set = map.get(slot);
-                    if (set == null) {
-                        set = new HashSet<>();
-                        map.put(slot, set);
-                    }
+                    Set<Action> set = map.computeIfAbsent(slot, k -> new HashSet<>());
                     set.add(action);
                     disabledSlots -= matchedSlot;
                     if (disabledSlots == 0) {

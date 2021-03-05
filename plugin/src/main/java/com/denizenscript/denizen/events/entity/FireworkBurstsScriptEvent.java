@@ -66,16 +66,15 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("item")) {
-            ItemStack itemStack = new ItemStack(Material.FIREWORK_ROCKET);
-            itemStack.setItemMeta(event.getEntity().getFireworkMeta());
-            return new ItemTag(itemStack);
+        switch (name) {
+            case "entity":
+                return entity;
+            case "location":
+                return location;
+            case "item":
+                ItemStack itemStack = new ItemStack(Material.FIREWORK_ROCKET);
+                itemStack.setItemMeta(event.getEntity().getFireworkMeta());
+                return new ItemTag(itemStack);
         }
         return super.getContext(name);
     }

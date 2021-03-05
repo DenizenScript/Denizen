@@ -121,12 +121,9 @@ public class PlayerHelperImpl extends PlayerHelper {
         for (PlayerTag player : players) {
             fake.triggerSpawnPacket.accept(player);
         }
-        fake.triggerUpdatePacket = new Runnable() {
-            @Override
-            public void run() {
-                for (EntityTrackerEntry tracker : trackers) {
-                    tracker.a();
-                }
+        fake.triggerUpdatePacket = () -> {
+            for (EntityTrackerEntry tracker : trackers) {
+                tracker.a();
             }
         };
         return fake;

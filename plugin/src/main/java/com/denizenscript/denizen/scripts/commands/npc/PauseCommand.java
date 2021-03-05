@@ -141,13 +141,10 @@ public class PauseCommand extends AbstractCommand {
             final ScriptEntry se = scriptEntry;
             durations.put(npc.getId() + pauseType.name(), Denizen.getInstance()
                     .getServer().getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    Debug.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
-                                    pause(theNpc, pauseType, false);
+                            () -> {
+                                Debug.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
+                                pause(theNpc, pauseType, false);
 
-                                }
                             }, duration.getTicks()));
         }
     }

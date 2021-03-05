@@ -957,35 +957,27 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         Entity bEntity = entity.getBukkitEntity();
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (specialEntityMatchables.contains(comparedto)) {
-            if (comparedto.equals("entity")) {
-                return true;
-            }
-            else if (comparedto.equals("npc")) {
-                return entity.isCitizensNPC();
-            }
-            else if (comparedto.equals("player")) {
-                return entity.isPlayer();
-            }
-            else if (comparedto.equals("vehicle")) {
-                return bEntity instanceof Vehicle;
-            }
-            else if (comparedto.equals("fish")) {
-                return bEntity instanceof Fish;
-            }
-            else if (comparedto.equals("projectile")) {
-                return bEntity instanceof Projectile;
-            }
-            else if (comparedto.equals("hanging")) {
-                return bEntity instanceof Hanging;
-            }
-            else if (comparedto.equals("monster")) {
-                return bEntity instanceof Monster;
-            }
-            else if (comparedto.equals("mob")) {
-                return bEntity instanceof Mob;
-            }
-            else if (comparedto.equals("animal")) {
-                return bEntity instanceof Animals;
+            switch (comparedto) {
+                case "entity":
+                    return true;
+                case "npc":
+                    return entity.isCitizensNPC();
+                case "player":
+                    return entity.isPlayer();
+                case "vehicle":
+                    return bEntity instanceof Vehicle;
+                case "fish":
+                    return bEntity instanceof Fish;
+                case "projectile":
+                    return bEntity instanceof Projectile;
+                case "hanging":
+                    return bEntity instanceof Hanging;
+                case "monster":
+                    return bEntity instanceof Monster;
+                case "mob":
+                    return bEntity instanceof Mob;
+                case "animal":
+                    return bEntity instanceof Animals;
             }
         }
         if (comparedto.contains(":")) {

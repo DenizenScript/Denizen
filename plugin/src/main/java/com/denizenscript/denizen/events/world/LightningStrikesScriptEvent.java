@@ -63,15 +63,14 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("lightning")) {
-            return new EntityTag(event.getLightning());
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("world")) {
-            Deprecations.worldContext.warn();
-            return new WorldTag(location.getWorld());
+        switch (name) {
+            case "lightning":
+                return new EntityTag(event.getLightning());
+            case "location":
+                return location;
+            case "world":
+                Deprecations.worldContext.warn();
+                return new WorldTag(location.getWorld());
         }
         return super.getContext(name);
     }

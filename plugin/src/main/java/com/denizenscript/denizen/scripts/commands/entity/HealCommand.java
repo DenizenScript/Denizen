@@ -12,7 +12,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class HealCommand extends AbstractCommand {
@@ -73,7 +73,7 @@ public class HealCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(EntityTag.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", Arrays.asList(arg.asType(EntityTag.class)));
+                scriptEntry.addObject("entities", Collections.singletonList(arg.asType(EntityTag.class)));
                 specified_targets = true;
             }
             else {

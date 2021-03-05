@@ -21,7 +21,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -103,7 +103,7 @@ public class NarrateCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("targets")) {
-            scriptEntry.addObject("targets", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry)) : null));
+            scriptEntry.addObject("targets", (Utilities.entryHasPlayer(scriptEntry) ? Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)) : null));
         }
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Missing any text!");

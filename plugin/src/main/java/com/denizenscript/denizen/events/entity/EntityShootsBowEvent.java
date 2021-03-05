@@ -114,12 +114,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
                 event.setConsumeItem(false);
                 if (entity.isPlayer()) {
                     final Player p = entity.getPlayer();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            p.updateInventory();
-                        }
-                    }, 1);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), p::updateInventory, 1);
                 }
                 return true;
             }
@@ -159,17 +154,15 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("force")) {
-            return new ElementTag(event.getForce() * 3);
-        }
-        else if (name.equals("bow")) {
-            return bow;
-        }
-        else if (name.equals("projectile")) {
-            return projectile;
+        switch (name) {
+            case "entity":
+                return entity;
+            case "force":
+                return new ElementTag(event.getForce() * 3);
+            case "bow":
+                return bow;
+            case "projectile":
+                return projectile;
         }
         if (name.equals("item")) {
             return new ItemTag(event.getConsumable());
@@ -181,12 +174,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     public void cancellationChanged() {
         if (cancelled && entity.isPlayer()) {
             final Player p = entity.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    p.updateInventory();
-                }
-            }, 1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), p::updateInventory, 1);
         }
         super.cancellationChanged();
     }

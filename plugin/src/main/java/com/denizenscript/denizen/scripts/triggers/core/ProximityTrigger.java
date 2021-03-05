@@ -92,160 +92,157 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
         final ProximityTrigger trigger = this;
 
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), () -> {
 
-                Collection<? extends Player> allPlayers = Bukkit.getOnlinePlayers();
+            Collection<? extends Player> allPlayers = Bukkit.getOnlinePlayers();
+            //
+            // Iterate over all of the NPCs
+            //
+            for (NPC citizensNPC : CitizensAPI.getNPCRegistry()) {
+                if (citizensNPC == null || !citizensNPC.isSpawned()) {
+                    continue;
+                }
                 //
-                // Iterate over all of the NPCs
+                // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,
+                // then just return.
                 //
-                for (NPC citizensNPC : CitizensAPI.getNPCRegistry()) {
-                    if (citizensNPC == null || !citizensNPC.isSpawned()) {
+                if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
+                    continue;
+                }
+                NPCTag npc = new NPCTag(citizensNPC);
+                TriggerTrait triggerTrait = npc.getTriggerTrait();
+
+                // Loop through all players
+                for (Player bukkitPlayer : allPlayers) {
+
+                    //
+                    // If this NPC is not spawned or in a different world, no need to check,
+                    // unless the Player hasn't yet triggered an Exit Proximity after Entering
+                    //
+                    if (!npc.getWorld().equals(bukkitPlayer.getWorld())
+                            && hasExitedProximityOf(bukkitPlayer, npc)) {
                         continue;
                     }
+
                     //
-                    // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,
-                    // then just return.
+                    // If this NPC is more than the maxProximityDistance, skip it, unless
+                    // the Player hasn't yet triggered an 'Exit Proximity' after entering.
                     //
-                    if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
+                    if (!isCloseEnough(bukkitPlayer, npc)
+                            && hasExitedProximityOf(bukkitPlayer, npc)) {
                         continue;
                     }
-                    NPCTag npc = new NPCTag(citizensNPC);
-                    TriggerTrait triggerTrait = npc.getTriggerTrait();
 
-                    // Loop through all players
-                    for (Player bukkitPlayer : allPlayers) {
+                    // Get the player
+                    PlayerTag player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
 
-                        //
-                        // If this NPC is not spawned or in a different world, no need to check,
-                        // unless the Player hasn't yet triggered an Exit Proximity after Entering
-                        //
-                        if (!npc.getWorld().equals(bukkitPlayer.getWorld())
-                                && hasExitedProximityOf(bukkitPlayer, npc)) {
+                    //
+                    // Check to make sure the NPC has an assignment. If no assignment, a script doesn't need to be parsed,
+                    // but it does still need to trigger for cooldown and action purposes.
+                    //
+                    InteractScriptContainer script = npc.getInteractScriptQuietly(player, ProximityTrigger.class);
+
+                    //
+                    // Set default ranges with information from the TriggerTrait. This allows per-npc overrides and will
+                    // automatically check the config for defaults.
+                    //
+                    double entryRadius = triggerTrait.getRadius(name);
+                    double exitRadius = triggerTrait.getRadius(name);
+                    double moveRadius = triggerTrait.getRadius(name);
+
+                    //
+                    // If a script was found, it might have custom ranges.
+                    //
+                    if (script != null) {
+                        try {
+                            if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS")) {
+                                entryRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"));
+                            }
+                        }
+                        catch (NumberFormatException nfe) {
+                            Debug.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
+                        }
+                        try {
+                            if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS")) {
+                                exitRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"));
+                            }
+                        }
+                        catch (NumberFormatException nfe) {
+                            Debug.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
+                        }
+                        try {
+                            if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS")) {
+                                moveRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"));
+                            }
+                        }
+                        catch (NumberFormatException nfe) {
+                            Debug.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
+                        }
+                    }
+
+                    Location npcLocation = npc.getLocation();
+
+                    //
+                    // If the Player switches worlds while in range of an NPC, trigger still needs to
+                    // fire since technically they have exited proximity. Let's check that before
+                    // trying to calculate a distance between the Player and NPC, which will throw
+                    // an exception if worlds do not match.
+                    //
+                    boolean playerChangedWorlds = false;
+                    if (npcLocation.getWorld() != player.getWorld()) {
+                        playerChangedWorlds = true;
+                    }
+
+                    //
+                    // If the user is outside the range, and was previously within the
+                    // range, then execute the "Exit" script.
+                    //
+                    // If the user entered the range and were not previously within the
+                    // range, then execute the "Entry" script.
+                    //
+                    // If the user was previously within the range and moved, then execute
+                    // the "Move" script.
+                    //
+                    boolean exitedProximity = hasExitedProximityOf(bukkitPlayer, npc);
+                    double distance = 0;
+                    if (!playerChangedWorlds) {
+                        distance = npcLocation.distance(player.getLocation());
+                    }
+
+                    if (!exitedProximity
+                            && (playerChangedWorlds || distance >= exitRadius)) {
+                        if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
                             continue;
                         }
-
-                        //
-                        // If this NPC is more than the maxProximityDistance, skip it, unless
-                        // the Player hasn't yet triggered an 'Exit Proximity' after entering.
-                        //
-                        if (!isCloseEnough(bukkitPlayer, npc)
-                                && hasExitedProximityOf(bukkitPlayer, npc)) {
+                        // Remember that NPC has exited proximity.
+                        exitProximityOf(bukkitPlayer, npc);
+                        // Exit Proximity Action
+                        npc.action("exit proximity", player);
+                        // Parse Interact Script
+                        parse(npc, player, script, "EXIT");
+                    }
+                    else if (exitedProximity && distance <= entryRadius) {
+                        // Cooldown
+                        if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
                             continue;
                         }
-
-                        // Get the player
-                        PlayerTag player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
-
-                        //
-                        // Check to make sure the NPC has an assignment. If no assignment, a script doesn't need to be parsed,
-                        // but it does still need to trigger for cooldown and action purposes.
-                        //
-                        InteractScriptContainer script = npc.getInteractScriptQuietly(player, ProximityTrigger.class);
-
-                        //
-                        // Set default ranges with information from the TriggerTrait. This allows per-npc overrides and will
-                        // automatically check the config for defaults.
-                        //
-                        double entryRadius = triggerTrait.getRadius(name);
-                        double exitRadius = triggerTrait.getRadius(name);
-                        double moveRadius = triggerTrait.getRadius(name);
-
-                        //
-                        // If a script was found, it might have custom ranges.
-                        //
-                        if (script != null) {
-                            try {
-                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS")) {
-                                    entryRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"));
-                                }
-                            }
-                            catch (NumberFormatException nfe) {
-                                Debug.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
-                            }
-                            try {
-                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS")) {
-                                    exitRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"));
-                                }
-                            }
-                            catch (NumberFormatException nfe) {
-                                Debug.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
-                            }
-                            try {
-                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS")) {
-                                    moveRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"));
-                                }
-                            }
-                            catch (NumberFormatException nfe) {
-                                Debug.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
-                            }
-                        }
-
-                        Location npcLocation = npc.getLocation();
-
-                        //
-                        // If the Player switches worlds while in range of an NPC, trigger still needs to
-                        // fire since technically they have exited proximity. Let's check that before
-                        // trying to calculate a distance between the Player and NPC, which will throw
-                        // an exception if worlds do not match.
-                        //
-                        boolean playerChangedWorlds = false;
-                        if (npcLocation.getWorld() != player.getWorld()) {
-                            playerChangedWorlds = true;
-                        }
-
-                        //
-                        // If the user is outside the range, and was previously within the
-                        // range, then execute the "Exit" script.
-                        //
-                        // If the user entered the range and were not previously within the
-                        // range, then execute the "Entry" script.
-                        //
-                        // If the user was previously within the range and moved, then execute
-                        // the "Move" script.
-                        //
-                        boolean exitedProximity = hasExitedProximityOf(bukkitPlayer, npc);
-                        double distance = 0;
-                        if (!playerChangedWorlds) {
-                            distance = npcLocation.distance(player.getLocation());
-                        }
-
-                        if (!exitedProximity
-                                && (playerChangedWorlds || distance >= exitRadius)) {
-                            if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
-                                continue;
-                            }
-                            // Remember that NPC has exited proximity.
-                            exitProximityOf(bukkitPlayer, npc);
-                            // Exit Proximity Action
-                            npc.action("exit proximity", player);
-                            // Parse Interact Script
-                            parse(npc, player, script, "EXIT");
-                        }
-                        else if (exitedProximity && distance <= entryRadius) {
-                            // Cooldown
-                            if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
-                                continue;
-                            }
-                            // Remember that Player has entered proximity of the NPC
-                            enterProximityOf(bukkitPlayer, npc);
-                            // Enter Proximity Action
-                            npc.action("enter proximity", player);
-                            // Parse Interact Script
-                            parse(npc, player, script, "ENTRY");
-                        }
-                        else if (!exitedProximity && distance <= moveRadius) {
-                            // TODO: Remove this? Constantly cooling down on move may make
-                            // future entry/exit proximities 'lag' behind.  Temporarily removing
-                            // cooldown on 'move proximity'.
-                            // if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
-                            //     continue;
-                            // Move Proximity Action
-                            npc.action("move proximity", player);
-                            // Parse Interact Script
-                            parse(npc, player, script, "MOVE");
-                        }
+                        // Remember that Player has entered proximity of the NPC
+                        enterProximityOf(bukkitPlayer, npc);
+                        // Enter Proximity Action
+                        npc.action("enter proximity", player);
+                        // Parse Interact Script
+                        parse(npc, player, script, "ENTRY");
+                    }
+                    else if (!exitedProximity && distance <= moveRadius) {
+                        // TODO: Remove this? Constantly cooling down on move may make
+                        // future entry/exit proximities 'lag' behind.  Temporarily removing
+                        // cooldown on 'move proximity'.
+                        // if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
+                        //     continue;
+                        // Move Proximity Action
+                        npc.action("move proximity", player);
+                        // Parse Interact Script
+                        parse(npc, player, script, "MOVE");
                     }
                 }
             }
@@ -306,11 +303,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc    the NPC
      */
     private void enterProximityOf(Player player, NPCTag npc) {
-        Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
-        if (npcs == null) {
-            npcs = new HashSet<>();
-            proximityTracker.put(player.getUniqueId(), npcs);
-        }
+        Set<Integer> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
         npcs.add(npc.getId());
     }
 
@@ -322,11 +315,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc    the NPC
      */
     private void exitProximityOf(Player player, NPCTag npc) {
-        Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
-        if (npcs == null) {
-            npcs = new HashSet<>();
-            proximityTracker.put(player.getUniqueId(), npcs);
-        }
+        Set<Integer> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
         npcs.remove(npc.getId());
     }
 }

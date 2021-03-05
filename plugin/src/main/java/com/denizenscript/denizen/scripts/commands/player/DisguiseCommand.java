@@ -111,7 +111,7 @@ public class DisguiseCommand extends AbstractCommand {
                 scriptEntry.defaultObject("players", new ArrayList<>());
             }
             else {
-                scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+                scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
         if (!scriptEntry.hasObject("as") && !scriptEntry.hasObject("cancel")) {
@@ -348,11 +348,7 @@ public class DisguiseCommand extends AbstractCommand {
             TrackedDisguise disguise = new TrackedDisguise(entity, as);
             disguise.as.entity = NMSHandler.getPlayerHelper().sendEntitySpawn(new ArrayList<>(), as.getEntityType(), entity.getLocation(), as.getWaitingMechanisms(), -1, null, false).entity.getBukkitEntity();
             if (isGlobal) {
-                playerMap = disguises.get(entity.getUUID());
-                if (playerMap == null) {
-                    playerMap = new HashMap<>();
-                    disguises.put(entity.getUUID(), playerMap);
-                }
+                playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
                 playerMap.put(null, disguise);
                 disguise.isActive = true;
                 ArrayList<PlayerTag> playerSet = new ArrayList<>(players);
@@ -365,11 +361,7 @@ public class DisguiseCommand extends AbstractCommand {
             }
             else {
                 for (PlayerTag player : players) {
-                    playerMap = disguises.get(entity.getUUID());
-                    if (playerMap == null) {
-                        playerMap = new HashMap<>();
-                        disguises.put(entity.getUUID(), playerMap);
-                    }
+                    playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
                     playerMap.put(player.getUUID(), disguise);
                     disguise.isActive = true;
                 }

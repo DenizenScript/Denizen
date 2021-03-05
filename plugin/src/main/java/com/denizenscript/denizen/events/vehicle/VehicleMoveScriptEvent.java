@@ -73,14 +73,13 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("from")) {
-            return from;
-        }
-        else if (name.equals("to")) {
-            return to;
-        }
-        else if (name.equals("vehicle")) {
-            return vehicle;
+        switch (name) {
+            case "from":
+                return from;
+            case "to":
+                return to;
+            case "vehicle":
+                return vehicle;
         }
         return super.getContext(name);
     }

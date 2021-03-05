@@ -101,17 +101,15 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("origin")) {
-            return origin;
-        }
-        else if (name.equals("destination")) {
-            return destination;
-        }
-        else if (name.equals("initiator")) {
-            return InventoryTag.mirrorBukkitInventory(event.getInitiator());
-        }
-        else if (name.equals("item")) {
-            return item;
+        switch (name) {
+            case "origin":
+                return origin;
+            case "destination":
+                return destination;
+            case "initiator":
+                return InventoryTag.mirrorBukkitInventory(event.getInitiator());
+            case "item":
+                return item;
         }
         return super.getContext(name);
     }

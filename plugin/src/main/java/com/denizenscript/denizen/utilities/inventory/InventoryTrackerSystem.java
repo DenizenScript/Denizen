@@ -56,15 +56,12 @@ public class InventoryTrackerSystem implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerCloseInventory(InventoryCloseEvent event) {
         Inventory inv = event.getInventory();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (inv.getViewers().isEmpty()) {
-                    InventoryTag removed = retainedInventoryLinks.remove(inv);
-                    if (removed != null && removed.uniquifier != null) {
-                        idTrackedInventories.remove(removed.uniquifier);
-                        temporaryInventoryLinks.put(inv, removed);
-                    }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
+            if (inv.getViewers().isEmpty()) {
+                InventoryTag removed = retainedInventoryLinks.remove(inv);
+                if (removed != null && removed.uniquifier != null) {
+                    idTrackedInventories.remove(removed.uniquifier);
+                    temporaryInventoryLinks.put(inv, removed);
                 }
             }
         }, 1);
@@ -90,21 +87,18 @@ public class InventoryTrackerSystem implements Listener {
     }
 
     public static void setup() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (idTrackedInventories.size() > 300) {
-                    idTrackedInventories.clear();
-                    for (InventoryTag temp : temporaryInventoryLinks.values()) {
-                        idTrackedInventories.put(temp.uniquifier, temp);
-                    }
-                    for (InventoryTag retained : retainedInventoryLinks.values()) {
-                        idTrackedInventories.put(retained.uniquifier, retained);
-                        temporaryInventoryLinks.put(retained.getInventory(), retained);
-                    }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), () -> {
+            if (idTrackedInventories.size() > 300) {
+                idTrackedInventories.clear();
+                for (InventoryTag temp : temporaryInventoryLinks.values()) {
+                    idTrackedInventories.put(temp.uniquifier, temp);
                 }
-                InventoryTrackerSystem.temporaryInventoryLinks.clear();
+                for (InventoryTag retained : retainedInventoryLinks.values()) {
+                    idTrackedInventories.put(retained.uniquifier, retained);
+                    temporaryInventoryLinks.put(retained.getInventory(), retained);
+                }
             }
+            InventoryTrackerSystem.temporaryInventoryLinks.clear();
         }, 20, 20);
         Bukkit.getPluginManager().registerEvents(new InventoryTrackerSystem(), Denizen.getInstance());
     }

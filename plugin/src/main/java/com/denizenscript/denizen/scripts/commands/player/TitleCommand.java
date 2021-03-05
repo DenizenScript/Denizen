@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TitleCommand extends AbstractCommand {
@@ -98,7 +98,7 @@ public class TitleCommand extends AbstractCommand {
         }
         scriptEntry.defaultObject("fade_in", new DurationTag(1)).defaultObject("stay", new DurationTag(3))
                 .defaultObject("fade_out", new DurationTag(1))
-                .defaultObject("targets", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)))
+                .defaultObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)))
             .defaultObject("subtitle", new ElementTag("")).defaultObject("title", new ElementTag(""));
     }
 

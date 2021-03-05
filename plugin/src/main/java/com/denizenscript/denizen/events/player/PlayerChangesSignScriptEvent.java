@@ -105,17 +105,15 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
-        }
-        else if (name.equals("new")) {
-            return new ListTag(Arrays.asList(event.getLines()));
-        }
-        else if (name.equals("old")) {
-            return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()));
+        switch (name) {
+            case "location":
+                return location;
+            case "material":
+                return material;
+            case "new":
+                return new ListTag(Arrays.asList(event.getLines()));
+            case "old":
+                return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()));
         }
         return super.getContext(name);
     }

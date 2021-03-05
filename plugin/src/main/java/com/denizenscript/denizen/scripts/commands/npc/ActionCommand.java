@@ -9,10 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ActionCommand extends AbstractCommand {
 
@@ -82,7 +79,7 @@ public class ActionCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("npcs")) {
             if (Utilities.entryHasNPC(scriptEntry)) {
-                scriptEntry.addObject("npcs", Arrays.asList(Utilities.getEntryNPC(scriptEntry)));
+                scriptEntry.addObject("npcs", Collections.singletonList(Utilities.getEntryNPC(scriptEntry)));
             }
             else {
                 throw new InvalidArgumentsException("Must specify an NPC to use!");

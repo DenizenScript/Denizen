@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FakeSpawnCommand extends AbstractCommand {
@@ -83,7 +83,7 @@ public class FakeSpawnCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
-            scriptEntry.defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+            scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
         }
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a valid location!");

@@ -83,22 +83,21 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("statistic")) {
-            return new ElementTag(statistic.toString());
-        }
-        else if (name.equals("previous_value")) {
-            return new ElementTag(event.getPreviousValue());
-        }
-        else if (name.equals("new_value")) {
-            return new ElementTag(event.getNewValue());
-        }
-        else if (name.equals("qualifier")) {
-            if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
-                return new MaterialTag(event.getMaterial());
-            }
-            else if (statistic.getType() == Statistic.Type.ENTITY) {
-                return new EntityTag(event.getEntityType());
-            }
+        switch (name) {
+            case "statistic":
+                return new ElementTag(statistic.toString());
+            case "previous_value":
+                return new ElementTag(event.getPreviousValue());
+            case "new_value":
+                return new ElementTag(event.getNewValue());
+            case "qualifier":
+                if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
+                    return new MaterialTag(event.getMaterial());
+                }
+                else if (statistic.getType() == Statistic.Type.ENTITY) {
+                    return new EntityTag(event.getEntityType());
+                }
+                break;
         }
         return super.getContext(name);
     }

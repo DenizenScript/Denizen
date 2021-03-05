@@ -125,17 +125,15 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("entity")) {
-            return new EntityTag(event.getItem());
-        }
-        else if (name.equals("pickup_entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
+        switch (name) {
+            case "item":
+                return item;
+            case "entity":
+                return new EntityTag(event.getItem());
+            case "pickup_entity":
+                return entity;
+            case "location":
+                return location;
         }
         return super.getContext(name);
     }

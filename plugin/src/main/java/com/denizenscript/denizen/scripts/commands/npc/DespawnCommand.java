@@ -12,7 +12,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.trait.trait.Spawned;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DespawnCommand extends AbstractCommand {
@@ -63,7 +63,7 @@ public class DespawnCommand extends AbstractCommand {
         }
         if (!scriptEntry.hasObject("npcs")) {
             if (Utilities.entryHasNPC(scriptEntry)) {
-                scriptEntry.addObject("npcs", Arrays.asList(Utilities.getEntryNPC(scriptEntry)));
+                scriptEntry.addObject("npcs", Collections.singletonList(Utilities.getEntryNPC(scriptEntry)));
             }
             else {
                 throw new InvalidArgumentsException("Must specify a valid list of NPCs!");

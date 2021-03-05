@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.milkbowl.vault.economy.Economy;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MoneyCommand extends AbstractCommand {
@@ -102,7 +102,7 @@ public class MoneyCommand extends AbstractCommand {
             }
             else {
                 scriptEntry.addObject("players",
-                        Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+                        Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
         else if (!scriptEntry.hasObject("action")) {

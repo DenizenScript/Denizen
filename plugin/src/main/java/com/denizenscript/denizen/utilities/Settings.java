@@ -239,17 +239,6 @@ public class Settings {
                         + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Range", -1);
     }
 
-    /*
-     * This set of nodes defines cooldown-types for different types of
-     * interact-script triggers.
-    */
-
-    public static String triggerDefaultCooldownType(String triggerName) {
-        return Denizen.getInstance().getConfig()
-                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
-                        + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown Type", "Player");
-    }
-
     /**
      * Default engage timeout. When NPCs are set to ENGAGE, this is
      * the default timeout that they will auto-DISENGAGE if not otherwise

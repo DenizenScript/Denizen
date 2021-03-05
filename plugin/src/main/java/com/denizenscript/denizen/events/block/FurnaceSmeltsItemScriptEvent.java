@@ -91,14 +91,13 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("source_item")) {
-            return source_item;
-        }
-        else if (name.equals("result_item")) {
-            return result_item;
+        switch (name) {
+            case "location":
+                return location;
+            case "source_item":
+                return source_item;
+            case "result_item":
+                return result_item;
         }
         return super.getContext(name);
     }

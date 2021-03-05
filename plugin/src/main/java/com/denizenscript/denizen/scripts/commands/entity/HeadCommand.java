@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class HeadCommand extends AbstractCommand {
@@ -45,7 +45,7 @@ public class HeadCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matches("player")
                     && Utilities.entryHasPlayer(scriptEntry)) {
-                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
+                scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {

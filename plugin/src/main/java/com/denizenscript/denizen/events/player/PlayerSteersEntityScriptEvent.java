@@ -103,20 +103,17 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("sideways")) {
-            return sideways;
-        }
-        else if (name.equals("forward")) {
-            return forward;
-        }
-        else if (name.equals("jump")) {
-            return jump;
-        }
-        else if (name.equals("dismount")) {
-            return dismount;
+        switch (name) {
+            case "entity":
+                return entity;
+            case "sideways":
+                return sideways;
+            case "forward":
+                return forward;
+            case "jump":
+                return jump;
+            case "dismount":
+                return dismount;
         }
         return super.getContext(name);
     }

@@ -59,14 +59,13 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("world")) {
-            return new WorldTag(event.getWorld());
-        }
-        else if (name.equals("old_location")) {
-            return new LocationTag(event.getPreviousLocation());
-        }
-        else if (name.equals("new_location")) {
-            return new LocationTag(event.getWorld().getSpawnLocation());
+        switch (name) {
+            case "world":
+                return new WorldTag(event.getWorld());
+            case "old_location":
+                return new LocationTag(event.getPreviousLocation());
+            case "new_location":
+                return new LocationTag(event.getWorld().getSpawnLocation());
         }
         return super.getContext(name);
     }

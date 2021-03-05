@@ -396,46 +396,40 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(ex);
         }
         // Run everything else on the first server tick
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    exCommand.processTagList();
-                    // Process script files (events, etc).
-                    DenizenCore.postLoadScripts();
-                    // Synchronize any script commands added while loading scripts.
-                    CommandScriptHelper.syncDenizenCommands();
-                    // Reload notables from notables.yml into memory
-                    notableManager.reloadNotables();
-                    Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-                    // Fire the 'on Server Start' world event
-                    ServerStartScriptEvent.instance.fire();
-                    worldScriptHelper.serverStartEvent();
-                    if (Settings.allowStupidx()) {
-                        Debug.echoError("Don't screw with bad config values.");
-                        Bukkit.shutdown();
-                    }
-                    Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, new Runnable() {
-                        @Override
-                        public void run() {
-                            Debug.outputThisTick = 0;
-                            Debug.errorDuplicatePrevention = false;
-                            DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
-                        }
-                    }, 1, 1);
-                    InventoryTag.setupInventoryTracker();
-                    if (!MapTagBasedFlagTracker.skipAllCleanings && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-                        for (World world : Bukkit.getWorlds()) {
-                            for (Chunk chunk : world.getLoadedChunks()) {
-                                new DataPersistenceFlagTracker(chunk).doTotalClean();
-                            }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            try {
+                exCommand.processTagList();
+                // Process script files (events, etc).
+                DenizenCore.postLoadScripts();
+                // Synchronize any script commands added while loading scripts.
+                CommandScriptHelper.syncDenizenCommands();
+                // Reload notables from notables.yml into memory
+                notableManager.reloadNotables();
+                Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+                // Fire the 'on Server Start' world event
+                ServerStartScriptEvent.instance.fire();
+                worldScriptHelper.serverStartEvent();
+                if (Settings.allowStupidx()) {
+                    Debug.echoError("Don't screw with bad config values.");
+                    Bukkit.shutdown();
+                }
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, () -> {
+                    Debug.outputThisTick = 0;
+                    Debug.errorDuplicatePrevention = false;
+                    DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
+                }, 1, 1);
+                InventoryTag.setupInventoryTracker();
+                if (!MapTagBasedFlagTracker.skipAllCleanings && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+                    for (World world : Bukkit.getWorlds()) {
+                        for (Chunk chunk : world.getLoadedChunks()) {
+                            new DataPersistenceFlagTracker(chunk).doTotalClean();
                         }
                     }
-                    Debug.log("Denizen fully loaded at: " + TimeTag.now().format());
                 }
-                catch (Exception e) {
-                    Debug.echoError(e);
-                }
+                Debug.log("Denizen fully loaded at: " + TimeTag.now().format());
+            }
+            catch (Exception e) {
+                Debug.echoError(e);
             }
         }, 1);
         new BukkitRunnable() {
@@ -484,35 +478,20 @@ public class Denizen extends JavaPlugin {
         if (!startedSuccessful) {
             return;
         }
-
         if (hasDisabled) {
             return;
         }
         hasDisabled = true;
-
         ServerStopScriptEvent.instance.fire();
-
-        // Disable the log interceptor... otherwise bad things on /reload
-        /*if (logInterceptor != null) {
-            logInterceptor.standardOutput();
-        }*/
-
-        // Save notables
         notableManager.saveNotables();
-
-        // Save scoreboards
         ScoreboardHelper._saveScoreboards();
-
-        // Save offline player inventories
         InventoryScriptHelper._savePlayerInventories();
-
-        //Disable core members
         getCommandRegistry().disableCoreMembers();
-
+        triggerRegistry.disableCoreMembers();
+        DenizenCore.logInterceptor.standardOutput();
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
-
         saveSaves(false);
         worldFlags.shutdown();
     }

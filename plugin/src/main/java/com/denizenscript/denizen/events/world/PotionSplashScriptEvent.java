@@ -76,21 +76,19 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return new EntityTag(event.getEntity());
-        }
-        else if (name.equals("entities")) {
-            ListTag entities = new ListTag();
-            for (Entity e : event.getAffectedEntities()) {
-                entities.addObject(new EntityTag(e));
-            }
-            return entities;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("potion")) {
-            return potion;
+        switch (name) {
+            case "entity":
+                return new EntityTag(event.getEntity());
+            case "entities":
+                ListTag entities = new ListTag();
+                for (Entity e : event.getAffectedEntities()) {
+                    entities.addObject(new EntityTag(e));
+                }
+                return entities;
+            case "location":
+                return location;
+            case "potion":
+                return potion;
         }
         return super.getContext(name);
     }

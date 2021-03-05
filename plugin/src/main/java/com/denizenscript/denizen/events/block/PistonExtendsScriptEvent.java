@@ -77,27 +77,23 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
-        }
-        else if (name.equals("sticky")) {
-            return new ElementTag(event.isSticky());
-        }
-        else if (name.equals("relative")) {
-            return new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation());
-        }
-        else if (name.equals("blocks")) {
-            ListTag blocks = new ListTag();
-            for (Block block : event.getBlocks()) {
-                blocks.addObject(new LocationTag(block.getLocation()));
-            }
-            return blocks;
-        }
-        else if (name.equals("length")) {
-            return new ElementTag(event.getBlocks().size());
+        switch (name) {
+            case "location":
+                return location;
+            case "material":
+                return material;
+            case "sticky":
+                return new ElementTag(event.isSticky());
+            case "relative":
+                return new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation());
+            case "blocks":
+                ListTag blocks = new ListTag();
+                for (Block block : event.getBlocks()) {
+                    blocks.addObject(new LocationTag(block.getLocation()));
+                }
+                return blocks;
+            case "length":
+                return new ElementTag(event.getBlocks().size());
         }
         return super.getContext(name);
     }

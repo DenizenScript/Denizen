@@ -83,10 +83,13 @@ public class FormattedTextHelper {
     }
 
     public static String stringifyRGBSpigot(String hex) {
-        while (hex.length() < 6) {
-            hex = "0" + hex;
+        StringBuilder hexBuilder = new StringBuilder(7);
+        hexBuilder.append('x');
+        for (int i = hex.length(); i < 6; i++) {
+            hexBuilder.append('0');
         }
-        hex = "x" + hex;
+        hexBuilder.append(hex);
+        hex = hexBuilder.toString();
         StringBuilder outColor = new StringBuilder();
         for (char c : hex.toCharArray()) {
             outColor.append(org.bukkit.ChatColor.COLOR_CHAR).append(c);

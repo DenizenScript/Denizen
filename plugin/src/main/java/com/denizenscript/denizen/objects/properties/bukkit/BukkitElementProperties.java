@@ -595,9 +595,9 @@ public class BukkitElementProperties implements Property {
             }
             else if (colorName.startsWith("co@")) {
                 ColorTag color = ColorTag.valueOf(colorName, attribute.context);
-                String hex = Integer.toHexString(color.getColor().asRGB());
+                StringBuilder hex = new StringBuilder(Integer.toHexString(color.getColor().asRGB()));
                 while (hex.length() < 6) {
-                    hex = "0" + hex;
+                    hex.insert(0, "0");
                 }
                 return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=f]");
             }

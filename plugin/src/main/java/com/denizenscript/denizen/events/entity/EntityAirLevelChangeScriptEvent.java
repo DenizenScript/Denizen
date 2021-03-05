@@ -101,15 +101,14 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("air")) {
-            Deprecations.airLevelEventDuration.warn();
-            return new ElementTag(event.getAmount());
-        }
-        else if (name.equals("air_duration")) {
-            return new DurationTag((long) event.getAmount());
+        switch (name) {
+            case "entity":
+                return entity.getDenizenObject();
+            case "air":
+                Deprecations.airLevelEventDuration.warn();
+                return new ElementTag(event.getAmount());
+            case "air_duration":
+                return new DurationTag((long) event.getAmount());
         }
         return super.getContext(name);
     }

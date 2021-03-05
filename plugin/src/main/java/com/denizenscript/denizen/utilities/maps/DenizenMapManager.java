@@ -69,7 +69,7 @@ public class DenizenMapManager {
                     mapsSection.getBoolean(key + ".auto update", false));
             renderer.displayOriginal = mapsSection.getBoolean(key + ".original", true);
             List<String> objects = new ArrayList<>(objectsData.getKeys(false));
-            Collections.sort(objects, new NaturalOrderComparator());
+            objects.sort(new NaturalOrderComparator());
             for (String objectKey : objects) {
                 String type = objectsData.getString(objectKey + ".type").toUpperCase();
                 String xTag = objectsData.getString(objectKey + ".x");
@@ -78,25 +78,27 @@ public class DenizenMapManager {
                 boolean debug = objectsData.getString(objectKey + ".debug", "false").equalsIgnoreCase("true");
                 boolean worldC = objectsData.getString(objectKey + ".world_coordinates", "false").equalsIgnoreCase("true");
                 MapObject object = null;
-                if (type.equals("CURSOR")) {
-                    object = new MapCursor(xTag, yTag, visibilityTag, debug,
-                            objectsData.getString(objectKey + ".direction"),
-                            objectsData.getString(objectKey + ".cursor"));
-                }
-                else if (type.equals("IMAGE")) {
-                    String file = objectsData.getString(objectKey + ".image");
-                    int width = objectsData.getInt(objectKey + ".width", 0);
-                    int height = objectsData.getInt(objectKey + ".height", 0);
-                    if (CoreUtilities.toLowerCase(file).endsWith(".gif")) {
-                        object = new MapAnimatedImage(xTag, yTag, visibilityTag, debug, file, width, height);
-                    }
-                    else {
-                        object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
-                    }
-                }
-                else if (type.equals("TEXT")) {
-                    object = new MapText(xTag, yTag, visibilityTag, debug,
-                            objectsData.getString(objectKey + ".text"));
+                switch (type) {
+                    case "CURSOR":
+                        object = new MapCursor(xTag, yTag, visibilityTag, debug,
+                                objectsData.getString(objectKey + ".direction"),
+                                objectsData.getString(objectKey + ".cursor"));
+                        break;
+                    case "IMAGE":
+                        String file = objectsData.getString(objectKey + ".image");
+                        int width = objectsData.getInt(objectKey + ".width", 0);
+                        int height = objectsData.getInt(objectKey + ".height", 0);
+                        if (CoreUtilities.toLowerCase(file).endsWith(".gif")) {
+                            object = new MapAnimatedImage(xTag, yTag, visibilityTag, debug, file, width, height);
+                        }
+                        else {
+                            object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
+                        }
+                        break;
+                    case "TEXT":
+                        object = new MapText(xTag, yTag, visibilityTag, debug,
+                                objectsData.getString(objectKey + ".text"));
+                        break;
                 }
                 if (object != null) {
                     object.worldCoordinates = worldC;

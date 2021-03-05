@@ -97,14 +97,13 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("old_phase")) {
-            return new ElementTag(event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name());
-        }
-        else if (name.equals("new_phase")) {
-            return new ElementTag(event.getNewPhase().name());
+        switch (name) {
+            case "entity":
+                return entity.getDenizenObject();
+            case "old_phase":
+                return new ElementTag(event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name());
+            case "new_phase":
+                return new ElementTag(event.getNewPhase().name());
         }
         return super.getContext(name);
     }

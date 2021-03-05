@@ -174,26 +174,20 @@ public class PlayerHelperImpl extends PlayerHelper {
         for (PlayerTag player : players) {
             fake.triggerSpawnPacket.accept(player);
         }
-        fake.triggerUpdatePacket = new Runnable() {
-            @Override
-            public void run() {
-                for (TrackerData tracker : trackers) {
-                    if (tracker.player.isOnline()) {
-                        tracker.tracker.a();
-                    }
+        fake.triggerUpdatePacket = () -> {
+            for (TrackerData tracker : trackers) {
+                if (tracker.player.isOnline()) {
+                    tracker.tracker.a();
                 }
             }
         };
-        fake.triggerDestroyPacket = new Runnable() {
-            @Override
-            public void run() {
-                for (TrackerData tracker : trackers) {
-                    if (tracker.player.isOnline()) {
-                        tracker.tracker.a(((CraftPlayer) tracker.player.getPlayerEntity()).getHandle());
-                    }
+        fake.triggerDestroyPacket = () -> {
+            for (TrackerData tracker : trackers) {
+                if (tracker.player.isOnline()) {
+                    tracker.tracker.a(((CraftPlayer) tracker.player.getPlayerEntity()).getHandle());
                 }
-                trackers.clear();
             }
+            trackers.clear();
         };
         return fake;
     }

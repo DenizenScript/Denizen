@@ -4,7 +4,6 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.Argument;
-import com.google.common.base.Function;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -16,11 +15,9 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
-import net.citizensnpcs.api.ai.Navigator;
-import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class WalkCommand extends AbstractCommand implements Holdable {
@@ -142,7 +139,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
             }
             else {
-                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
+                scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
             }
         }
         scriptEntry.defaultObject("stop", new ElementTag(false));
@@ -189,12 +186,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
                 npc.getNavigator().setTarget(loc);
                 if (lookat != null) {
-                    npc.getNavigator().getLocalParameters().lookAtFunction(new Function<Navigator, Location>() {
-                        @Override
-                        public Location apply(Navigator nav) {
-                            return lookat;
-                        }
-                    });
+                    npc.getNavigator().getLocalParameters().lookAtFunction(nav -> lookat);
                 }
                 if (speed != null) {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
@@ -209,12 +201,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             else {
                 waitForEntities.add(entity);
                 NMSHandler.getEntityHelper().walkTo(entity.getLivingEntity(), loc, speed != null ? speed.asDouble() : 0.2,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                checkHeld(entity);
-                            }
-                        });
+                        () -> checkHeld(entity));
             }
         }
         if (scriptEntry.shouldWaitFor()) {

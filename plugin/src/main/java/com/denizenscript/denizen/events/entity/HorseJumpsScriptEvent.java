@@ -94,14 +94,13 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("color")) {
-            return color;
-        }
-        else if (name.equals("power")) {
-            return new ElementTag(event.getPower());
+        switch (name) {
+            case "entity":
+                return entity;
+            case "color":
+                return color;
+            case "power":
+                return new ElementTag(event.getPower());
         }
         return super.getContext(name);
     }

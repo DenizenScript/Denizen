@@ -129,11 +129,7 @@ public abstract class EntityHelper {
     }
 
     public boolean addHide(UUID player, UUID entity) {
-        Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
-        if (hidden == null) {
-            hidden = new HashSet<>();
-            hiddenEntitiesEntPl.put(entity, hidden);
-        }
+        Set<UUID> hidden = hiddenEntitiesEntPl.computeIfAbsent(entity, k -> new HashSet<>());
         if (player.equals(DEFAULT_HIDE)) {
             for (UUID pl : hidden) {
                 Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
@@ -144,11 +140,7 @@ public abstract class EntityHelper {
             hidden.clear();
         }
         else {
-            Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
-            if (plHid == null) {
-                plHid = new HashSet<>();
-                hiddenEntitiesPlEnt.put(player, plHid);
-            }
+            Set<UUID> plHid = hiddenEntitiesPlEnt.computeIfAbsent(player, k -> new HashSet<>());
             plHid.add(entity);
         }
         return hidden.add(player);

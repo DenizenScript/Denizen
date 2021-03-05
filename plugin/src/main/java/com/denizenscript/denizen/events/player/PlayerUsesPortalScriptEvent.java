@@ -81,14 +81,13 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("to")) {
-            return to;
-        }
-        else if (name.equals("from")) {
-            return from;
+        switch (name) {
+            case "entity":
+                return entity;
+            case "to":
+                return to;
+            case "from":
+                return from;
         }
         return super.getContext(name);
     }

@@ -28,7 +28,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -266,14 +265,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
             List<Map.Entry<String, String>> entries = new ArrayList<>(idMap.entrySet());
-            Collections.sort(entries, new Comparator<Map.Entry<String, String>>() {
-                @Override
-                public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                    if (o1 == null || o2 == null) {
-                        return 0;
-                    }
-                    return o1.getKey().compareToIgnoreCase(o2.getKey());
+            entries.sort((o1, o2) -> {
+                if (o1 == null || o2 == null) {
+                    return 0;
                 }
+                return o1.getKey().compareToIgnoreCase(o2.getKey());
             });
             for (Map.Entry<String, String> entry : entries) {
 
@@ -406,12 +402,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             syncChatTrigger(new PlayerChatEvent(event.getPlayer(), event.getMessage(), event.getFormat(), event.getRecipients()));
             return;
         }
-        FutureTask<ChatContext> futureTask = new FutureTask<>(new Callable<ChatContext>() {
-            @Override
-            public ChatContext call() {
-                return process(event.getPlayer(), event.getMessage());
-            }
-        });
+        FutureTask<ChatContext> futureTask = new FutureTask<>(() -> process(event.getPlayer(), event.getMessage()));
 
         Bukkit.getScheduler().runTask(Denizen.getInstance(), futureTask);
 

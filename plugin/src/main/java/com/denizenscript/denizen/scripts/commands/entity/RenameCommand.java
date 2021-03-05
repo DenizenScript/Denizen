@@ -165,11 +165,7 @@ public class RenameCommand extends AbstractCommand {
                     }
                     else {
                         final BukkitTagContext originalContext = (BukkitTagContext) scriptEntry.context.clone();
-                        HashMap<UUID, RenameData> playerToFuncMap = customNames.get(bukkitEntity.getUniqueId());
-                        if (playerToFuncMap == null) {
-                            playerToFuncMap = new HashMap<>();
-                            customNames.put(bukkitEntity.getUniqueId(), playerToFuncMap);
-                        }
+                        HashMap<UUID, RenameData> playerToFuncMap = customNames.computeIfAbsent(bukkitEntity.getUniqueId(), k -> new HashMap<>());
                         Function<Player, String> nameGetter = p -> {
                             originalContext.player = new PlayerTag(p);
                             return TagManager.tag(name.asString(), originalContext);
@@ -265,11 +261,7 @@ public class RenameCommand extends AbstractCommand {
     }
 
     public static void addDynamicRename(Entity bukkitEntity, Player forPlayer, RenameData rename) {
-        HashMap<UUID, RenameData> playerToFuncMap = customNames.get(bukkitEntity.getUniqueId());
-        if (playerToFuncMap == null) {
-            playerToFuncMap = new HashMap<>();
-            customNames.put(bukkitEntity.getUniqueId(), playerToFuncMap);
-        }
+        HashMap<UUID, RenameData> playerToFuncMap = customNames.computeIfAbsent(bukkitEntity.getUniqueId(), k -> new HashMap<>());
         playerToFuncMap.put(forPlayer == null ? null : forPlayer.getUniqueId(), rename);
         if (forPlayer == null) {
             for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(bukkitEntity)) {

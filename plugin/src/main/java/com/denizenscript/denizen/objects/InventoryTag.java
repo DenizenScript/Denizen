@@ -250,62 +250,62 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
         }
         if (holder != null) {
-            if (typeName.equals("player") || typeName.equals("enderchest") || typeName.equals("workbench") || typeName.equals("crafting")) {
-                PlayerTag player = PlayerTag.valueOf(holder, context);
-                if (player == null) {
-                    if (context == null || context.showErrors()) {
-                        Debug.echoError("Invalid inventory player '" + holder + "'");
+            switch (typeName) {
+                case "player":
+                case "enderchest":
+                case "workbench":
+                case "crafting":
+                    PlayerTag player = PlayerTag.valueOf(holder, context);
+                    if (player == null) {
+                        if (context == null || context.showErrors()) {
+                            Debug.echoError("Invalid inventory player '" + holder + "'");
+                        }
+                        return null;
                     }
-                    return null;
-                }
-                if (typeName.equals("player")) {
-                    return player.getInventory();
-                }
-                else if (typeName.equals("enderchest")) {
-                    return player.getEnderChest();
-                }
-                else if (typeName.equals("workbench")) {
-                    return player.getWorkbench();
-                }
-                else if (typeName.equals("crafting")) {
-                    Inventory opened = player.getPlayerEntity().getOpenInventory().getTopInventory();
-                    if (opened instanceof CraftingInventory) {
-                        return new InventoryTag(opened, player.getPlayerEntity());
+                    switch (typeName) {
+                        case "player":
+                            return player.getInventory();
+                        case "enderchest":
+                            return player.getEnderChest();
+                        case "workbench":
+                            return player.getWorkbench();
+                        case "crafting":
+                            Inventory opened = player.getPlayerEntity().getOpenInventory().getTopInventory();
+                            if (opened instanceof CraftingInventory) {
+                                return new InventoryTag(opened, player.getPlayerEntity());
+                            }
+                            else {
+                                return player.getInventory();
+                            }
                     }
-                    else {
-                        return player.getInventory();
+                    break;
+                case "npc":
+                    NPCTag npc = NPCTag.valueOf(holder, context);
+                    if (npc == null) {
+                        if (context == null || context.showErrors()) {
+                            Debug.echoError("Invalid inventory npc '" + holder + "'");
+                        }
+                        return null;
                     }
-                }
-            }
-            else if (typeName.equals("npc")) {
-                NPCTag npc = NPCTag.valueOf(holder, context);
-                if (npc == null) {
-                    if (context == null || context.showErrors()) {
-                        Debug.echoError("Invalid inventory npc '" + holder + "'");
+                    return npc.getDenizenInventory();
+                case "entity":
+                    EntityTag entity = EntityTag.valueOf(holder, context);
+                    if (entity == null) {
+                        if (context == null || context.showErrors()) {
+                            Debug.echoError("Invalid inventory entity '" + holder + "'");
+                        }
+                        return null;
                     }
-                    return null;
-                }
-                return npc.getDenizenInventory();
-            }
-            else if (typeName.equals("entity")) {
-                EntityTag entity = EntityTag.valueOf(holder, context);
-                if (entity == null) {
-                    if (context == null || context.showErrors()) {
-                        Debug.echoError("Invalid inventory entity '" + holder + "'");
+                    return entity.getInventory();
+                case "location":
+                    LocationTag location = LocationTag.valueOf(holder, context);
+                    if (location == null) {
+                        if (context == null || context.showErrors()) {
+                            Debug.echoError("Invalid inventory location '" + holder + "'");
+                        }
+                        return null;
                     }
-                    return null;
-                }
-                return entity.getInventory();
-            }
-            else if (typeName.equals("location")) {
-                LocationTag location = LocationTag.valueOf(holder, context);
-                if (location == null) {
-                    if (context == null || context.showErrors()) {
-                        Debug.echoError("Invalid inventory location '" + holder + "'");
-                    }
-                    return null;
-                }
-                return location.getInventory();
+                    return location.getInventory();
             }
         }
         InventoryTag result = null;
@@ -572,9 +572,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         ItemStack[] oldContents = inventory.getContents();
         ItemStack[] newContents = new ItemStack[size];
         if (oldSize > size) {
-            for (int i = 0; i < size; i++) { // TODO: Why is this a manual copy?
-                newContents[i] = oldContents[i];
-            }
+            // TODO: Why is this a manual copy?
+            System.arraycopy(oldContents, 0, newContents, 0, size);
         }
         else {
             newContents = oldContents;

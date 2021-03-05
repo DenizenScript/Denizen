@@ -32,7 +32,7 @@ public class CommandContext {
             }
             else if (args[i].charAt(0) == '\'' || args[i].charAt(0) == '"') {
                 char quote = args[i].charAt(0);
-                String quoted = args[i].substring(1); // remove initial quote
+                StringBuilder quoted = new StringBuilder(args[i].substring(1)); // remove initial quote
                 if (quoted.length() > 0 && quoted.charAt(quoted.length() - 1) == quote) {
                     args[i] = quoted.substring(0, quoted.length() - 1);
                     continue;
@@ -42,7 +42,7 @@ public class CommandContext {
                         continue;
                     }
                     String test = args[inner].trim();
-                    quoted += " " + test;
+                    quoted.append(" ").append(test);
                     if (test.charAt(test.length() - 1) == quote) {
                         args[i] = quoted.substring(0, quoted.length() - 1);
                         // remove ending quote

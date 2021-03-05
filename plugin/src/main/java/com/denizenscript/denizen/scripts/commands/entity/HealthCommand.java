@@ -12,7 +12,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class HealthCommand extends AbstractCommand {
@@ -77,7 +77,7 @@ public class HealthCommand extends AbstractCommand {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("No player attached!");
                 }
-                scriptEntry.addObject("target", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
+                scriptEntry.addObject("target", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("quantity")
                     && arg.matchesFloat()) {
@@ -106,7 +106,7 @@ public class HealthCommand extends AbstractCommand {
             if (!Utilities.entryHasNPC(scriptEntry)) {
                 throw new InvalidArgumentsException("Missing NPC!");
             }
-            scriptEntry.addObject("target", Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
+            scriptEntry.addObject("target", Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
         }
         scriptEntry.defaultObject("heal", new ElementTag(false));
     }

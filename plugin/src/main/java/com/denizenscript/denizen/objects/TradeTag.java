@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class TradeTag implements ObjectTag, Adjustable {
 
@@ -55,7 +55,7 @@ public class TradeTag implements ObjectTag, Adjustable {
         string = CoreUtilities.toLowerCase(string).replace("trade@", "");
         if (string.toLowerCase().matches("trade")) {
             MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
-            recipe.setIngredients(Arrays.asList(new ItemStack(Material.AIR)));
+            recipe.setIngredients(Collections.singletonList(new ItemStack(Material.AIR)));
             return new TradeTag(recipe);
         }
         return null;

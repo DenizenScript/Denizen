@@ -94,18 +94,16 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("cause")) {
-            return cause;
-        }
-        else if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("hanging")) {
-            return hanging;
-        }
-        else if (name.equals("location")) {
-            Deprecations.hangingBreaksEventContext.warn();
-            return hanging.getLocation();
+        switch (name) {
+            case "cause":
+                return cause;
+            case "entity":
+                return entity;
+            case "hanging":
+                return hanging;
+            case "location":
+                Deprecations.hangingBreaksEventContext.warn();
+                return hanging.getLocation();
         }
         return super.getContext(name);
     }

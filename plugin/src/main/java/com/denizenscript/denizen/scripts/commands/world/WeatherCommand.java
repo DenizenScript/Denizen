@@ -168,12 +168,7 @@ public class WeatherCommand extends AbstractCommand {
                 player.resetPlayerWeather();
             }
             if (resetAfter != null) {
-                int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        player.resetPlayerWeather();
-                    }
-                }, resetAfter.getTicks());
+                int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), player::resetPlayerWeather, resetAfter.getTicks());
                 resetTasks.put(player.getUniqueId(), newTask);
             }
         }

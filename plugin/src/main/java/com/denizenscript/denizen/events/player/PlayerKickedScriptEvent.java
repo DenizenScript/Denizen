@@ -103,14 +103,13 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("message")) {
-            return new ElementTag(event.getLeaveMessage());
-        }
-        else if (name.equals("reason")) {
-            return new ElementTag(event.getReason());
-        }
-        else if (name.equals("flying")) {
-            return new ElementTag(isFlying());
+        switch (name) {
+            case "message":
+                return new ElementTag(event.getLeaveMessage());
+            case "reason":
+                return new ElementTag(event.getReason());
+            case "flying":
+                return new ElementTag(isFlying());
         }
         return super.getContext(name);
     }

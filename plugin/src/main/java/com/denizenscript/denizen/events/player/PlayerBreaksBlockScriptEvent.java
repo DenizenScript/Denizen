@@ -132,17 +132,15 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
-        }
-        else if (name.equals("xp")) {
-            return new ElementTag(event.getExpToDrop());
-        }
-        else if (name.equals("should_drop_items")) {
-            return new ElementTag(event.isDropItems());
+        switch (name) {
+            case "location":
+                return location;
+            case "material":
+                return material;
+            case "xp":
+                return new ElementTag(event.getExpToDrop());
+            case "should_drop_items":
+                return new ElementTag(event.isDropItems());
         }
         return super.getContext(name);
     }

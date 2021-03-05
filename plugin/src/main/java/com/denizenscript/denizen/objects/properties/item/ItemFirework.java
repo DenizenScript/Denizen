@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ItemFirework implements Property {
@@ -58,7 +58,7 @@ public class ItemFirework implements Property {
             }
         }
         else {
-            effects = Arrays.asList(((FireworkEffectMeta) item.getItemMeta()).getEffect());
+            effects = Collections.singletonList(((FireworkEffectMeta) item.getItemMeta()).getEffect());
         }
         if (effects != null) {
             for (FireworkEffect effect : effects) {

@@ -246,25 +246,30 @@ public class ItemScriptHelper implements Listener {
                         if (subSection.contains("output_quantity")) {
                             item.setAmount(Integer.parseInt(subSection.getString("output_quantity")));
                         }
-                        if (type.equals("shaped")) {
-                            registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group);
-                        }
-                        else if (type.equals("shapeless")) {
-                            registerShapelessRecipe(container, item, subSection.getString("input"), internalId, group);
-                        }
-                        else if (type.equals("stonecutting")) {
-                            registerStonecuttingRecipe(container, item, subSection.getString("input"), internalId, group);
-                        }
-                        else if (type.equals("furnace") || type.equals("blast") || type.equals("smoker") || type.equals("campfire")) {
-                            float exp = 0;
-                            int cookTime = 40;
-                            if (subSection.contains("experience")) {
-                                exp = Float.parseFloat(subSection.getString("experience"));
-                            }
-                            if (subSection.contains("cook_time")) {
-                                cookTime = DurationTag.valueOf(subSection.getString("cook_time"), new BukkitTagContext(container)).getTicksAsInt();
-                            }
-                            registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                        switch (type) {
+                            case "shaped":
+                                registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group);
+                                break;
+                            case "shapeless":
+                                registerShapelessRecipe(container, item, subSection.getString("input"), internalId, group);
+                                break;
+                            case "stonecutting":
+                                registerStonecuttingRecipe(container, item, subSection.getString("input"), internalId, group);
+                                break;
+                            case "furnace":
+                            case "blast":
+                            case "smoker":
+                            case "campfire":
+                                float exp = 0;
+                                int cookTime = 40;
+                                if (subSection.contains("experience")) {
+                                    exp = Float.parseFloat(subSection.getString("experience"));
+                                }
+                                if (subSection.contains("cook_time")) {
+                                    cookTime = DurationTag.valueOf(subSection.getString("cook_time"), new BukkitTagContext(container)).getTicksAsInt();
+                                }
+                                registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                                break;
                         }
                     }
                 }

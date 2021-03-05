@@ -103,25 +103,23 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return new ItemTag(event.getItem());
-        }
-        else if (name.equals("location")) {
-            return new LocationTag(event.getEnchantBlock().getLocation());
-        }
-        else if (name.equals("bonus")) {
-            return new ElementTag(event.getEnchantmentBonus());
-        }
-        else if (name.equals("offers")) {
-            ListTag output = new ListTag();
-            for (EnchantmentOffer offer : event.getOffers()) {
-                MapTag map = new MapTag();
-                map.putObject("cost", new ElementTag(offer.getCost()));
-                map.putObject("enchantment", new ElementTag(offer.getEnchantment().getKey().getKey()));
-                map.putObject("level", new ElementTag(offer.getEnchantmentLevel()));
-                output.addObject(map);
-            }
-            return output;
+        switch (name) {
+            case "item":
+                return new ItemTag(event.getItem());
+            case "location":
+                return new LocationTag(event.getEnchantBlock().getLocation());
+            case "bonus":
+                return new ElementTag(event.getEnchantmentBonus());
+            case "offers":
+                ListTag output = new ListTag();
+                for (EnchantmentOffer offer : event.getOffers()) {
+                    MapTag map = new MapTag();
+                    map.putObject("cost", new ElementTag(offer.getCost()));
+                    map.putObject("enchantment", new ElementTag(offer.getEnchantment().getKey().getKey()));
+                    map.putObject("level", new ElementTag(offer.getEnchantmentLevel()));
+                    output.addObject(map);
+                }
+                return output;
         }
         return super.getContext(name);
     }

@@ -93,17 +93,15 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("fuel_power")) {
-            return new ElementTag(event.getFuelPower());
-        }
-        else if (name.equals("consuming")) {
-            return new ElementTag(event.isConsuming());
+        switch (name) {
+            case "location":
+                return location;
+            case "item":
+                return item;
+            case "fuel_power":
+                return new ElementTag(event.getFuelPower());
+            case "consuming":
+                return new ElementTag(event.isConsuming());
         }
         return super.getContext(name);
     }

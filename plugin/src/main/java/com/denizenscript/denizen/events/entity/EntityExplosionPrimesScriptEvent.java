@@ -88,14 +88,13 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("radius")) {
-            return new ElementTag(event.getRadius());
-        }
-        else if (name.equals("fire")) {
-            return new ElementTag(event.getFire());
+        switch (name) {
+            case "entity":
+                return entity;
+            case "radius":
+                return new ElementTag(event.getRadius());
+            case "fire":
+                return new ElementTag(event.getFire());
         }
         return super.getContext(name);
     }

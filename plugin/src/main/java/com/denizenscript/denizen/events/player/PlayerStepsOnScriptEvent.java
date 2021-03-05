@@ -84,14 +84,13 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("previous_location")) {
-            return previous_location;
-        }
-        else if (name.equals("new_location")) {
-            return new_location;
+        switch (name) {
+            case "location":
+                return location;
+            case "previous_location":
+                return previous_location;
+            case "new_location":
+                return new_location;
         }
         return super.getContext(name);
     }

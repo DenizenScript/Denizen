@@ -96,14 +96,13 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("repair_amount")) {
-            return new ElementTag(event.getRepairAmount());
-        }
-        else if (name.equals("xp_orb")) {
-            return new EntityTag(event.getExperienceOrb());
+        switch (name) {
+            case "item":
+                return item;
+            case "repair_amount":
+                return new ElementTag(event.getRepairAmount());
+            case "xp_orb":
+                return new EntityTag(event.getExperienceOrb());
         }
         return super.getContext(name);
     }

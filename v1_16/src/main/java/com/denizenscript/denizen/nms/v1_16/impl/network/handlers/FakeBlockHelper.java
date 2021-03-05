@@ -135,9 +135,7 @@ public class FakeBlockHelper {
                             int subPaletteId = getPaletteSubId(palette, globalPaletteIndex);
                             if (subPaletteId == -1) {
                                 int[] newPalette = new int[paletteLen + 1];
-                                for (int p = 0; p < paletteLen; p++) {
-                                    newPalette[p] = palette[p];
-                                }
+                                if (paletteLen >= 0) System.arraycopy(palette, 0, newPalette, 0, paletteLen);
                                 newPalette[paletteLen] = globalPaletteIndex;
                                 subPaletteId = paletteLen;
                                 paletteLen++;

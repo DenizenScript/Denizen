@@ -82,14 +82,13 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("relative")) {
-            return new LocationTag(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
-        }
-        else if (name.equals("item")) {
-            return item;
+        switch (name) {
+            case "location":
+                return location;
+            case "relative":
+                return new LocationTag(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
+            case "item":
+                return item;
         }
         return super.getContext(name);
     }

@@ -121,14 +121,13 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("velocity")) {
-            return new LocationTag(event.getVelocity());
+        switch (name) {
+            case "location":
+                return location;
+            case "item":
+                return item;
+            case "velocity":
+                return new LocationTag(event.getVelocity());
         }
         return super.getContext(name);
     }

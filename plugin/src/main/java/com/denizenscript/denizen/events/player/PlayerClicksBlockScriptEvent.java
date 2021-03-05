@@ -166,20 +166,17 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("click_type")) {
-            return click_type;
-        }
-        else if (name.equals("hand")) {
-            return hand;
-        }
-        else if (name.equals("relative")) {
-            return event.hasBlock() ? new LocationTag(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
+        switch (name) {
+            case "item":
+                return item;
+            case "location":
+                return location;
+            case "click_type":
+                return click_type;
+            case "hand":
+                return hand;
+            case "relative":
+                return event.hasBlock() ? new LocationTag(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
         }
         return super.getContext(name);
     }

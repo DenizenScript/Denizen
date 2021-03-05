@@ -117,14 +117,13 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("new_item")) {
-            return newItem;
-        }
-        else if (name.equals("old_item")) {
-            return oldItem;
-        }
-        else if (name.equals("slot")) {
-            return new ElementTag(namesBySlot.get(slot));
+        switch (name) {
+            case "new_item":
+                return newItem;
+            case "old_item":
+                return oldItem;
+            case "slot":
+                return new ElementTag(namesBySlot.get(slot));
         }
         return super.getContext(name);
     }

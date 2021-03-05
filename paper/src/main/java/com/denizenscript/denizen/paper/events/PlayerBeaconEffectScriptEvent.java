@@ -90,17 +90,15 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return new LocationTag(event.getBlock().getLocation());
-        }
-        else if (name.equals("effect")) {
-            return new ElementTag(ItemPotion.stringifyEffect(event.getEffect()));
-        }
-        else if (name.equals("effect_type")) {
-            return new ElementTag(event.getEffect().getType().getName());
-        }
-        else if (name.equals("is_primary")) {
-            return new ElementTag(event.isPrimary());
+        switch (name) {
+            case "location":
+                return new LocationTag(event.getBlock().getLocation());
+            case "effect":
+                return new ElementTag(ItemPotion.stringifyEffect(event.getEffect()));
+            case "effect_type":
+                return new ElementTag(event.getEffect().getType().getName());
+            case "is_primary":
+                return new ElementTag(event.isPrimary());
         }
         return super.getContext(name);
     }

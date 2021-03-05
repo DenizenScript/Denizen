@@ -112,21 +112,18 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("cause")) {
-            return cause;
-        }
-        else if (name.equals("entity")) {
-            Deprecations.entityBreaksHangingEventContext.warn();
-            return breaker;
-        }
-        else if (name.equals("breaker")) {
-            return breaker;
-        }
-        else if (name.equals("hanging")) {
-            return hanging;
-        }
-        else if (name.equals("location")) {
-            return location;
+        switch (name) {
+            case "cause":
+                return cause;
+            case "entity":
+                Deprecations.entityBreaksHangingEventContext.warn();
+                return breaker;
+            case "breaker":
+                return breaker;
+            case "hanging":
+                return hanging;
+            case "location":
+                return location;
         }
         return super.getContext(name);
     }

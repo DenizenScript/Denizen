@@ -444,12 +444,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         }
                     }
                     if (delayed != null && delayed.asBoolean()) {
-                        schematics.get(name.asString().toUpperCase()).setBlocksDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                scriptEntry.setFinished(true);
-                            }
-                        }, input, maxDelayMs.asLong());
+                        schematics.get(name.asString().toUpperCase()).setBlocksDelayed(() -> scriptEntry.setFinished(true), input, maxDelayMs.asLong());
                     }
                     else {
                         scriptEntry.setFinished(true);

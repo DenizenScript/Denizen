@@ -78,17 +78,15 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("target")) {
-            return new EntityTag(event.getTarget());
+        switch (name) {
+            case "location":
+                return location;
+            case "item":
+                return item;
+            case "entity":
+                return entity;
+            case "target":
+                return new EntityTag(event.getTarget());
         }
         return super.getContext(name);
     }

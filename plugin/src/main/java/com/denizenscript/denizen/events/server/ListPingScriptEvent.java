@@ -122,17 +122,15 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("motd")) {
-            return new ElementTag(event.getMotd());
-        }
-        else if (name.equals("max_players")) {
-            return new ElementTag(event.getMaxPlayers());
-        }
-        else if (name.equals("num_players")) {
-            return new ElementTag(event.getNumPlayers());
-        }
-        else if (name.equals("address")) {
-            return new ElementTag(event.getAddress().toString());
+        switch (name) {
+            case "motd":
+                return new ElementTag(event.getMotd());
+            case "max_players":
+                return new ElementTag(event.getMaxPlayers());
+            case "num_players":
+                return new ElementTag(event.getNumPlayers());
+            case "address":
+                return new ElementTag(event.getAddress().toString());
         }
         return super.getContext(name);
     }

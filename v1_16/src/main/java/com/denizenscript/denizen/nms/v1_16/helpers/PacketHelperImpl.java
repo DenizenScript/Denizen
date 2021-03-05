@@ -327,11 +327,7 @@ public class PacketHelperImpl implements PacketHelper {
         ScoreboardTeam team = new ScoreboardTeam(SidebarImpl.dummyScoreboard, Utilities.generateRandomColors(8));
         team.getPlayerNameSet().add(noCollide.toString());
         team.setCollisionRule(ScoreboardTeamBase.EnumTeamPush.NEVER);
-        HashMap<UUID, ScoreboardTeam> map = noCollideTeamMap.get(player.getUniqueId());
-        if (map == null) {
-            map = new HashMap<>();
-            noCollideTeamMap.put(player.getUniqueId(), map);
-        }
+        HashMap<UUID, ScoreboardTeam> map = noCollideTeamMap.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
         map.put(noCollide, team);
         sendPacket(player, new PacketPlayOutScoreboardTeam(team, 0));
     }

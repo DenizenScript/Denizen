@@ -187,14 +187,13 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("message")) {
-            return new ElementTag(getMessage());
-        }
-        else if (name.equals("format")) {
-            return new ElementTag(getFormat());
-        }
-        else if (name.equals("full_text")) {
-            return new ElementTag(String.format(getFormat(), player.getPlayerEntity().getDisplayName(), getMessage()));
+        switch (name) {
+            case "message":
+                return new ElementTag(getMessage());
+            case "format":
+                return new ElementTag(getFormat());
+            case "full_text":
+                return new ElementTag(String.format(getFormat(), player.getPlayerEntity().getDisplayName(), getMessage()));
         }
         if (name.equals("recipients")) {
             ListTag list = new ListTag();

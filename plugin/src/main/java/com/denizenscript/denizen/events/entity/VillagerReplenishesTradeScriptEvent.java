@@ -77,14 +77,13 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("trade")) {
-            return new TradeTag(event.getRecipe());
-        }
-        else if (name.equals("bonus")) {
-            return new ElementTag(event.getBonus());
+        switch (name) {
+            case "entity":
+                return entity;
+            case "trade":
+                return new TradeTag(event.getRecipe());
+            case "bonus":
+                return new ElementTag(event.getBonus());
         }
         return super.getContext(name);
     }

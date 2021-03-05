@@ -19,18 +19,15 @@ public class SpawnEntityHelper {
 
     @SuppressWarnings("unchecked")
     public static <T extends Entity> Entity spawn(Location location, EntityType bukkitEntityType, final ArrayList<Mechanism> mechanisms, final String scriptName) {
-        Consumer<? extends Entity> consumer = new Consumer<Entity>() {
-            @Override
-            public void accept(Entity bukkitEntity) {
-                if (scriptName != null) {
-                    EntityScriptHelper.setEntityScript(bukkitEntity, scriptName);
-                }
-                EntityTag entity = new EntityTag(bukkitEntity);
-                for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
-                    if (EntityTag.earlyValidMechanisms.contains(CoreUtilities.toLowerCase(mechanism.getName()))) {
-                        entity.safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue(), mechanism.context));
-                        mechanisms.remove(mechanism);
-                    }
+        Consumer<? extends Entity> consumer = (Consumer<Entity>) bukkitEntity -> {
+            if (scriptName != null) {
+                EntityScriptHelper.setEntityScript(bukkitEntity, scriptName);
+            }
+            EntityTag entity = new EntityTag(bukkitEntity);
+            for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
+                if (EntityTag.earlyValidMechanisms.contains(CoreUtilities.toLowerCase(mechanism.getName()))) {
+                    entity.safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue(), mechanism.context));
+                    mechanisms.remove(mechanism);
                 }
             }
         };

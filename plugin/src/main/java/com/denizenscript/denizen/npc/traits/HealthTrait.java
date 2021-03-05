@@ -141,26 +141,23 @@ public class HealthTrait extends Trait implements Listener {
         dying = false;
         setHealth();
 
-        void_watcher_task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (!npc.isSpawned()) {
-                    Bukkit.getScheduler().cancelTask(void_watcher_task);
-                    return;
-                }
-                if (npc.getEntity().getLocation().getY() < -1000) {
-                    npc.despawn(DespawnReason.DEATH);
-                    if (respawn) {
-                        Location res = getRespawnLocation();
-                        if (res.getY() < 1) {
-                            res.setY(res.getWorld().getHighestBlockYAt(res.getBlockX(), res.getBlockZ()));
-                        }
-                        if (npc.isSpawned()) {
-                            npc.getEntity().teleport(res);
-                        }
-                        else {
-                            npc.spawn(res);
-                        }
+        void_watcher_task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), () -> {
+            if (!npc.isSpawned()) {
+                Bukkit.getScheduler().cancelTask(void_watcher_task);
+                return;
+            }
+            if (npc.getEntity().getLocation().getY() < -1000) {
+                npc.despawn(DespawnReason.DEATH);
+                if (respawn) {
+                    Location res = getRespawnLocation();
+                    if (res.getY() < 1) {
+                        res.setY(res.getWorld().getHighestBlockYAt(res.getBlockX(), res.getBlockZ()));
+                    }
+                    if (npc.isSpawned()) {
+                        npc.getEntity().teleport(res);
+                    }
+                    else {
+                        npc.spawn(res);
                     }
                 }
             }
@@ -291,14 +288,12 @@ public class HealthTrait extends Trait implements Listener {
 
         if (respawn && (getRespawnDelay().getTicks() > 0)) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
-                    new Runnable() {
-                        public void run() {
-                            if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) {
-                                return;
-                            }
-                            else {
-                                npc.spawn(loc);
-                            }
+                    () -> {
+                        if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) {
+                            return;
+                        }
+                        else {
+                            npc.spawn(loc);
                         }
                     }, (getRespawnDelay().getTicks()));
         }

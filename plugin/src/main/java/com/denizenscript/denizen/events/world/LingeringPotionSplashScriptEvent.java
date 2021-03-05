@@ -81,20 +81,17 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("radius")) {
-            return new ElementTag(event.getAreaEffectCloud().getRadius());
-        }
-        else if (name.equals("duration")) {
-            return new DurationTag((long) event.getAreaEffectCloud().getDuration());
-        }
-        else if (name.equals("potion")) {
-            return item;
-        }
-        else if (name.equals("entity")) {
-            return new EntityTag(event.getEntity());
+        switch (name) {
+            case "location":
+                return location;
+            case "radius":
+                return new ElementTag(event.getAreaEffectCloud().getRadius());
+            case "duration":
+                return new DurationTag((long) event.getAreaEffectCloud().getDuration());
+            case "potion":
+                return item;
+            case "entity":
+                return new EntityTag(event.getEntity());
         }
         return super.getContext(name);
     }

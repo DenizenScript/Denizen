@@ -39,12 +39,7 @@ public class BukkitWorldScriptHelper implements Listener {
     public void serverStartEvent() {
         long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        timeEvent();
-                    }
-                }, ticks, ticks);
+                this::timeEvent, ticks, ticks);
     }
 
     private final Map<String, Integer> current_time = new HashMap<>();
@@ -90,13 +85,10 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         final String message = ChatColor.DARK_GREEN + "CHAT: " + event.getPlayer().getName() + ": " + event.getMessage();
-        Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                // If currently recording debug information, add the chat message to debug output
-                if (Debug.record) {
-                    Debug.log(message);
-                }
+        Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
+            // If currently recording debug information, add the chat message to debug output
+            if (Debug.record) {
+                Debug.log(message);
             }
         }, 1);
     }

@@ -98,17 +98,15 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("crossbow")) {
-            return new ItemTag(event.getCrossbow());
-        }
-        else if (name.equals("hand")) {
-            return new ElementTag(event.getHand().name());
-        }
-        else if (name.equals("consumes")) {
-            return new ElementTag(event.shouldConsumeItem());
+        switch (name) {
+            case "entity":
+                return entity.getDenizenObject();
+            case "crossbow":
+                return new ItemTag(event.getCrossbow());
+            case "hand":
+                return new ElementTag(event.getHand().name());
+            case "consumes":
+                return new ElementTag(event.shouldConsumeItem());
         }
         return super.getContext(name);
     }

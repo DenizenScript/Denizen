@@ -141,30 +141,25 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("inventory")) {
-            return inventory;
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("button")) {
-            return button;
-        }
-        else if (name.equals("cost")) {
-            return new ElementTag(cost);
-        }
-        else if (name.equals("enchants")) {
-            MapTag map = new MapTag();
-            for (Map.Entry<Enchantment, Integer> enchant : event.getEnchantsToAdd().entrySet()) {
-                map.putObject(enchant.getKey().getKey().getKey(), new ElementTag(enchant.getValue()));
-            }
-            return map;
+        switch (name) {
+            case "entity":
+                return entity;
+            case "location":
+                return location;
+            case "inventory":
+                return inventory;
+            case "item":
+                return item;
+            case "button":
+                return button;
+            case "cost":
+                return new ElementTag(cost);
+            case "enchants":
+                MapTag map = new MapTag();
+                for (Map.Entry<Enchantment, Integer> enchant : event.getEnchantsToAdd().entrySet()) {
+                    map.putObject(enchant.getKey().getKey().getKey(), new ElementTag(enchant.getValue()));
+                }
+                return map;
         }
         return super.getContext(name);
     }

@@ -102,14 +102,13 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("hostname")) {
-            return new ElementTag(event.getAddress().toString());
-        }
-        else if (name.equals("name")) {
-            return new ElementTag(event.getName());
-        }
-        else if (name.equals("uuid")) {
-            return new ElementTag(event.getUniqueId().toString());
+        switch (name) {
+            case "hostname":
+                return new ElementTag(event.getAddress().toString());
+            case "name":
+                return new ElementTag(event.getName());
+            case "uuid":
+                return new ElementTag(event.getUniqueId().toString());
         }
         return super.getContext(name);
     }

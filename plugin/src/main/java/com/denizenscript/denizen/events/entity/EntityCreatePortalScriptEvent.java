@@ -81,18 +81,17 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("portal_type")) {
-            return new ElementTag(event.getPortalType().toString());
-        }
-        else if (name.equals("blocks")) {
-            ListTag blocks = new ListTag();
-            for (BlockState block : event.getBlocks()) {
-                blocks.add(new LocationTag(block.getBlock().getLocation()).identifySimple());
-            }
-            return blocks;
+        switch (name) {
+            case "entity":
+                return entity;
+            case "portal_type":
+                return new ElementTag(event.getPortalType().toString());
+            case "blocks":
+                ListTag blocks = new ListTag();
+                for (BlockState block : event.getBlocks()) {
+                    blocks.add(new LocationTag(block.getBlock().getLocation()).identifySimple());
+                }
+                return blocks;
         }
         return super.getContext(name);
     }

@@ -18,10 +18,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EquipCommand extends AbstractCommand {
 
@@ -111,7 +108,7 @@ public class EquipCommand extends AbstractCommand {
             }
             else if (arg.matches("player") && Utilities.entryHasPlayer(scriptEntry)) {
                 // Player arg for compatibility with old scripts
-                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
+                scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else {
                 arg.reportUnhandled();

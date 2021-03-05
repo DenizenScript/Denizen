@@ -18,7 +18,7 @@ import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +86,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new ElementTag(arg.getValue().toUpperCase()));
                 if (arg.getValue().equalsIgnoreCase("removeall")) {
-                    scriptEntry.addObject("location", new ListTag(Arrays.asList(new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0))));
+                    scriptEntry.addObject("location", new ListTag(Collections.singletonList(new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0))));
                 }
             }
             else if (arg.matchesArgumentList(ChunkTag.class)
@@ -154,13 +154,10 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     }
                     chunk.setForceLoaded(true);
                     if (length.getSeconds() > 0) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-                            @Override
-                            public void run() {
-                                if (chunkDelays.containsKey(coord) && chunkDelays.get(coord) <= System.currentTimeMillis()) {
-                                    chunk.setForceLoaded(false);
-                                    chunkDelays.remove(coord);
-                                }
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
+                            if (chunkDelays.containsKey(coord) && chunkDelays.get(coord) <= System.currentTimeMillis()) {
+                                chunk.setForceLoaded(false);
+                                chunkDelays.remove(coord);
                             }
                         }, length.getTicks() + 20);
                     }

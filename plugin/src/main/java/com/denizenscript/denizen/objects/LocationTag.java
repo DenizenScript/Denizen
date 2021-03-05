@@ -55,7 +55,6 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.Comparator;
 
 public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
@@ -2195,12 +2194,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     }
                 }
             }
-            Collections.sort(found, new Comparator<LocationTag>() {
-                @Override
-                public int compare(LocationTag loc1, LocationTag loc2) {
-                    return object.compare(loc1, loc2);
-                }
-            });
+            found.sort(object::compare);
             return new ListTag(found);
         });
 
@@ -2263,12 +2257,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         }
                     }
                 }
-                Collections.sort(found, new Comparator<LocationTag>() {
-                    @Override
-                    public int compare(LocationTag loc1, LocationTag loc2) {
-                        return object.compare(loc1, loc2);
-                    }
-                });
+                found.sort(object::compare);
                 return new ListTag(found);
             }
 
@@ -2327,12 +2316,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         }
                     }
                 }
-                Collections.sort(found, new Comparator<LocationTag>() {
-                    @Override
-                    public int compare(LocationTag loc1, LocationTag loc2) {
-                        return object.compare(loc1, loc2);
-                    }
-                });
+                found.sort(object::compare);
                 return new ListTag(found);
             }
 
@@ -2351,12 +2335,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         found.add(new PlayerTag(player));
                     }
                 }
-                Collections.sort(found, new Comparator<PlayerTag>() {
-                    @Override
-                    public int compare(PlayerTag pl1, PlayerTag pl2) {
-                        return object.compare(pl1.getLocation(), pl2.getLocation());
-                    }
-                });
+                found.sort((pl1, pl2) -> object.compare(pl1.getLocation(), pl2.getLocation()));
                 return new ListTag(found);
             }
 
@@ -2375,12 +2354,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         found.add(new NPCTag(npc));
                     }
                 }
-                Collections.sort(found, new Comparator<NPCTag>() {
-                    @Override
-                    public int compare(NPCTag npc1, NPCTag npc2) {
-                        return object.compare(npc1.getLocation(), npc2.getLocation());
-                    }
-                });
+                found.sort((npc1, npc2) -> object.compare(npc1.getLocation(), npc2.getLocation()));
                 return new ListTag(found);
             }
 
@@ -2411,12 +2385,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         }
                     }
                 }
-                Collections.sort(found.objectForms, new Comparator<ObjectTag>() {
-                    @Override
-                    public int compare(ObjectTag ent1, ObjectTag ent2) {
-                        return object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation());
-                    }
-                });
+                found.objectForms.sort((ent1, ent2) -> object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation()));
                 return new ListTag(found.objectForms);
             }
 
@@ -2437,12 +2406,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         found.addObject(new EntityTag(entity).getDenizenObject());
                     }
                 }
-                Collections.sort(found.objectForms, new Comparator<ObjectTag>() {
-                    @Override
-                    public int compare(ObjectTag ent1, ObjectTag ent2) {
-                        return object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation());
-                    }
-                });
+                found.objectForms.sort((ent1, ent2) -> object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation()));
                 return new ListTag(found.objectForms);
             }
 

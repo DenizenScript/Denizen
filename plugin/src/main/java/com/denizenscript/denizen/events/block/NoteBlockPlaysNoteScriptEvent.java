@@ -109,27 +109,23 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("instrument")) {
-            return new ElementTag(event.getInstrument().name());
-        }
-        else if (name.equals("sound")) {
-            return new ElementTag(getSound().name());
-        }
-        else if (name.equals("tone")) {
-            return new ElementTag(event.getNote().getTone().name());
-        }
-        else if (name.equals("octave")) {
-            return new ElementTag(event.getNote().getOctave());
-        }
-        else if (name.equals("sharp")) {
-            return new ElementTag(event.getNote().isSharped());
-        }
-        else if (name.equals("pitch")) {
-            double pitch = Math.pow(2.0, (double)(event.getNote().getId() - 12) / 12.0); // based on minecraft source
-            return new ElementTag(pitch);
+        switch (name) {
+            case "location":
+                return location;
+            case "instrument":
+                return new ElementTag(event.getInstrument().name());
+            case "sound":
+                return new ElementTag(getSound().name());
+            case "tone":
+                return new ElementTag(event.getNote().getTone().name());
+            case "octave":
+                return new ElementTag(event.getNote().getOctave());
+            case "sharp":
+                return new ElementTag(event.getNote().isSharped());
+            case "pitch":
+                double pitch = Math.pow(2.0, (double) (event.getNote().getId() - 12) / 12.0); // based on minecraft source
+
+                return new ElementTag(pitch);
         }
         return super.getContext(name);
     }

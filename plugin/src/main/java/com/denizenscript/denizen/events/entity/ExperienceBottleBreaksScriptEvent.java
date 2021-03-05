@@ -83,14 +83,13 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return new EntityTag(event.getEntity());
-        }
-        else if (name.equals("experience")) {
-            return new ElementTag(event.getExperience());
-        }
-        else if (name.equals("show_effect")) {
-            return new ElementTag(event.getShowEffect());
+        switch (name) {
+            case "entity":
+                return new EntityTag(event.getEntity());
+            case "experience":
+                return new ElementTag(event.getExperience());
+            case "show_effect":
+                return new ElementTag(event.getShowEffect());
         }
         return super.getContext(name);
     }

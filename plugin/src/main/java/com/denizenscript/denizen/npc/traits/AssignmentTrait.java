@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.command.exception.CommandException;
-import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -51,7 +50,7 @@ public class AssignmentTrait extends Trait {
      * Checks to see if the NPCs assignment is still a valid script on load of NPC.
      */
     @Override
-    public void load(DataKey key) throws NPCLoadException {
+    public void load(DataKey key) {
         if (hasAssignment()) {
             Debug.echoError("Missing assignment '" + assignment + "' for NPC '" + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
         }

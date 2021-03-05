@@ -102,14 +102,13 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("reason")) {
-            return reason;
-        }
-        else if (name.equals("amount")) {
-            return new ElementTag(event.getAmount());
+        switch (name) {
+            case "entity":
+                return entity;
+            case "reason":
+                return reason;
+            case "amount":
+                return new ElementTag(event.getAmount());
         }
         return super.getContext(name);
     }

@@ -95,29 +95,26 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("inventory")) {
-            return dInv;
-        }
-        else if (name.equals("slots")) {
-            ListTag slots = new ListTag();
-            for (Integer slot : event.getInventorySlots()) {
-                slots.add(String.valueOf(slot + 1));
-            }
-            return slots;
-        }
-        else if (name.equals("raw_slots")) {
-            ListTag raw_slots = new ListTag();
-            for (Integer raw_slot : event.getRawSlots()) {
-                raw_slots.add(String.valueOf(raw_slot + 1));
-            }
-            return raw_slots;
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("clicked_inventory")) {
-            return InventoryTag.mirrorBukkitInventory(event.getView()
-                    .getInventory(event.getRawSlots().stream().findFirst().orElse(0)));
+        switch (name) {
+            case "inventory":
+                return dInv;
+            case "slots":
+                ListTag slots = new ListTag();
+                for (Integer slot : event.getInventorySlots()) {
+                    slots.add(String.valueOf(slot + 1));
+                }
+                return slots;
+            case "raw_slots":
+                ListTag raw_slots = new ListTag();
+                for (Integer raw_slot : event.getRawSlots()) {
+                    raw_slots.add(String.valueOf(raw_slot + 1));
+                }
+                return raw_slots;
+            case "item":
+                return item;
+            case "clicked_inventory":
+                return InventoryTag.mirrorBukkitInventory(event.getView()
+                        .getInventory(event.getRawSlots().stream().findFirst().orElse(0)));
         }
         return super.getContext(name);
     }

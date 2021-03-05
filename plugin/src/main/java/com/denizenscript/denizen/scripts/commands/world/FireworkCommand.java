@@ -20,7 +20,7 @@ import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FireworkCommand extends AbstractCommand {
@@ -117,7 +117,7 @@ public class FireworkCommand extends AbstractCommand {
         scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
         scriptEntry.defaultObject("type", new ElementTag("ball"));
         scriptEntry.defaultObject("power", new ElementTag(1));
-        scriptEntry.defaultObject("primary", Arrays.asList(new ColorTag(Color.YELLOW)));
+        scriptEntry.defaultObject("primary", Collections.singletonList(new ColorTag(Color.YELLOW)));
     }
 
     @SuppressWarnings("unchecked")

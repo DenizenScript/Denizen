@@ -159,12 +159,7 @@ public class TimeCommand extends AbstractCommand {
                     }
                     player.setPlayerTime(value.getTicks(), freeze == null || !freeze.asBoolean());
                     if (resetAfter != null) {
-                        int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-                            @Override
-                            public void run() {
-                                player.resetPlayerTime();
-                            }
-                        }, resetAfter.getTicks());
+                        int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), player::resetPlayerTime, resetAfter.getTicks());
                         resetTasks.put(player.getUniqueId(), newTask);
                     }
                 }

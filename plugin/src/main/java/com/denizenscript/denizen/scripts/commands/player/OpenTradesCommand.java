@@ -17,7 +17,7 @@ import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class OpenTradesCommand extends AbstractCommand {
@@ -95,7 +95,7 @@ public class OpenTradesCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("title", new ElementTag(""))
-                .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+                .defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
 
     }
 

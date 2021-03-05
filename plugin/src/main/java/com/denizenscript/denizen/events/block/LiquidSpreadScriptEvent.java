@@ -87,14 +87,13 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("destination")) {
-            return destination;
-        }
-        else if (name.equals("material")) {
-            return material;
+        switch (name) {
+            case "location":
+                return location;
+            case "destination":
+                return destination;
+            case "material":
+                return material;
         }
         return super.getContext(name);
     }

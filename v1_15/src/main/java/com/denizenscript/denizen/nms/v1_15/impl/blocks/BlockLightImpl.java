@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_15.impl.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
+import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.v1_15_R1.*;
@@ -100,7 +101,7 @@ public class BlockLightImpl extends BlockLight {
                 for (Vector vec : RELATIVE_CHUNKS) {
                     Chunk other = world.getChunkIfLoaded(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ());
                     if (other != null) {
-                        List<BlockLight> lights = lightsByChunk.get(other.bukkitChunk);
+                        List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(other.bukkitChunk));
                         if (lights != null) {
                             any = true;
                             for (BlockLight light : lights) {
@@ -133,7 +134,7 @@ public class BlockLightImpl extends BlockLight {
                 if (chk == null) {
                     return;
                 }
-                List<BlockLight> lights = lightsByChunk.get(chk.bukkitChunk);
+                List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(chk.bukkitChunk));
                 if (lights == null) {
                     return;
                 }
@@ -181,25 +182,19 @@ public class BlockLightImpl extends BlockLight {
     }
 
     public static void runResetFor(final Chunk chunk, final BlockPosition pos) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                LightEngine lightEngine = chunk.e();
-                LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
-                engineBlock.a(pos);
-            }
+        Runnable runnable = () -> {
+            LightEngine lightEngine = chunk.e();
+            LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+            engineBlock.a(pos);
         };
         enqueueRunnable(chunk, runnable);
     }
 
     public static void runSetFor(final Chunk chunk, final BlockPosition pos, final int level) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                LightEngine lightEngine = chunk.e();
-                LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
-                engineBlock.a(pos, level);
-            }
+        Runnable runnable = () -> {
+            LightEngine lightEngine = chunk.e();
+            LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
+            engineBlock.a(pos, level);
         };
         enqueueRunnable(chunk, runnable);
     }
@@ -208,6 +203,7 @@ public class BlockLightImpl extends BlockLight {
     public void reset(boolean updateChunk) {
         runResetFor(((CraftChunk) getChunk()).getHandle(), ((CraftBlock) block).getPosition());
         if (updateChunk) {
+            // This runnable cast is necessary despite what your IDE may claim
             updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
         }
     }
@@ -219,6 +215,7 @@ public class BlockLightImpl extends BlockLight {
             updateTask = null;
             runSetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition(), lightLevel);
             if (updateChunk) {
+                // This runnable cast is necessary despite what your IDE may claim
                 updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
             }
         }, 1);

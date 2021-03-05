@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TeleportCommand extends AbstractCommand {
@@ -78,7 +78,7 @@ public class TeleportCommand extends AbstractCommand {
             }
             // NPC arg for compatibility with old scripts
             else if (arg.matches("npc") && Utilities.entryHasNPC(scriptEntry)) {
-                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
+                scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
             }
             else {
                 arg.reportUnhandled();

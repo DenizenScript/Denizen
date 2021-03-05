@@ -111,14 +111,13 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("damager")) {
-            return hitBy.getDenizenObject();
-        }
-        else if (name.equals("acceleration")) {
-            return new LocationTag(event.getAcceleration());
+        switch (name) {
+            case "entity":
+                return entity.getDenizenObject();
+            case "damager":
+                return hitBy.getDenizenObject();
+            case "acceleration":
+                return new LocationTag(event.getAcceleration());
         }
         return super.getContext(name);
     }

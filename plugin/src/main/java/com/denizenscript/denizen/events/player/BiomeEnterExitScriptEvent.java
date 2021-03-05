@@ -99,17 +99,15 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("to")) {
-            return to;
-        }
-        else if (name.equals("from")) {
-            return from;
-        }
-        else if (name.equals("old_biome")) {
-            return old_biome;
-        }
-        else if (name.equals("new_biome")) {
-            return new_biome;
+        switch (name) {
+            case "to":
+                return to;
+            case "from":
+                return from;
+            case "old_biome":
+                return old_biome;
+            case "new_biome":
+                return new_biome;
         }
         return super.getContext(name);
     }

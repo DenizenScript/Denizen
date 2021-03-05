@@ -85,14 +85,13 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("material")) {
-            return material;
+        switch (name) {
+            case "location":
+                return location;
+            case "item":
+                return item;
+            case "material":
+                return material;
         }
         return super.getContext(name);
     }

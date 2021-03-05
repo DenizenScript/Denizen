@@ -28,35 +28,29 @@ public class DenizenPacketHandler {
     public static HashSet<UUID> forceNoclip = new HashSet<>();
 
     public void receivePacket(final Player player, final PacketInResourcePackStatus resourcePackStatus) {
-        Bukkit.getScheduler().runTask(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
-                event.status = new ElementTag(resourcePackStatus.getStatus());
-                event.player = PlayerTag.mirrorBukkitPlayer(player);
-                event.fire();
-            }
+        Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+            ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
+            event.status = new ElementTag(resourcePackStatus.getStatus());
+            event.player = PlayerTag.mirrorBukkitPlayer(player);
+            event.fire();
         });
     }
 
     public boolean receivePacket(final Player player, final PacketInSteerVehicle steerVehicle) {
         if (PlayerSteersEntityScriptEvent.instance.enabled) {
             Future<Boolean> future = Bukkit.getScheduler().callSyncMethod(Denizen.getInstance(),
-                    new Callable<Boolean>() {
-                        @Override
-                        public Boolean call() throws Exception {
-                            PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
-                            event.player = PlayerTag.mirrorBukkitPlayer(player);
-                            event.entity = player.isInsideVehicle() ? new EntityTag(player.getVehicle()) : null;
-                            event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
-                            event.forward = new ElementTag(steerVehicle.getForwardInput());
-                            event.jump = new ElementTag(steerVehicle.getJumpInput());
-                            event.dismount = new ElementTag(steerVehicle.getDismountInput());
-                            event.cancelled = false;
-                            event.modifyCancellation = (c) -> event.cancelled = c;
-                            event.fire();
-                            return event.cancelled;
-                        }
+                    () -> {
+                        PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
+                        event.player = PlayerTag.mirrorBukkitPlayer(player);
+                        event.entity = player.isInsideVehicle() ? new EntityTag(player.getVehicle()) : null;
+                        event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
+                        event.forward = new ElementTag(steerVehicle.getForwardInput());
+                        event.jump = new ElementTag(steerVehicle.getJumpInput());
+                        event.dismount = new ElementTag(steerVehicle.getDismountInput());
+                        event.cancelled = false;
+                        event.modifyCancellation = (c) -> event.cancelled = c;
+                        event.fire();
+                        return event.cancelled;
                     }
             );
             try {
@@ -103,24 +97,21 @@ public class DenizenPacketHandler {
         }
         final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
         if (event.loaded) {
-            Callable<Boolean> eventCall = new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    int pos = chat.getPosition();
-                    if (pos != 2) {
-                        event.message = new ElementTag(chat.getMessage());
-                        event.rawJson = new ElementTag(chat.getRawJson());
-                        event.system = new ElementTag(pos == 1);
-                        event.player = PlayerTag.mirrorBukkitPlayer(player);
-                        event.modifyMessage = chat::setMessage;
-                        event.modifyRawJson = chat::setRawJson;
-                        event.cancelled = false;
-                        event.modifyCancellation = (c) -> event.cancelled = c;
-                        event.fire();
-                        return event.cancelled;
-                    }
-                    return false;
+            Callable<Boolean> eventCall = () -> {
+                int pos = chat.getPosition();
+                if (pos != 2) {
+                    event.message = new ElementTag(chat.getMessage());
+                    event.rawJson = new ElementTag(chat.getRawJson());
+                    event.system = new ElementTag(pos == 1);
+                    event.player = PlayerTag.mirrorBukkitPlayer(player);
+                    event.modifyMessage = chat::setMessage;
+                    event.modifyRawJson = chat::setRawJson;
+                    event.cancelled = false;
+                    event.modifyCancellation = (c) -> event.cancelled = c;
+                    event.fire();
+                    return event.cancelled;
                 }
+                return false;
             };
             try {
                 if (DenizenCoreImplementation.isSafeThread()) {

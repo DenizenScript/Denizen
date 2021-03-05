@@ -87,28 +87,25 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("world")) {
-            return new WorldTag(event.getWorld());
-        }
-        else if (name.equals("location")) {
-            return new LocationTag(event.getLocation());
-        }
-        else if (name.equals("structure")) {
-            return new ElementTag(event.getSpecies().name());
-        }
-        else if (name.equals("blocks")) {
-            ListTag blocks = new ListTag();
-            for (BlockState block : event.getBlocks()) {
-                blocks.addObject(new LocationTag(block.getLocation()));
-            }
-            return blocks;
-        }
-        else if (name.equals("new_materials")) {
-            ListTag new_materials = new ListTag();
-            for (BlockState block : event.getBlocks()) {
-                new_materials.addObject(new MaterialTag(block));
-            }
-            return new_materials;
+        switch (name) {
+            case "world":
+                return new WorldTag(event.getWorld());
+            case "location":
+                return new LocationTag(event.getLocation());
+            case "structure":
+                return new ElementTag(event.getSpecies().name());
+            case "blocks":
+                ListTag blocks = new ListTag();
+                for (BlockState block : event.getBlocks()) {
+                    blocks.addObject(new LocationTag(block.getLocation()));
+                }
+                return blocks;
+            case "new_materials":
+                ListTag new_materials = new ListTag();
+                for (BlockState block : event.getBlocks()) {
+                    new_materials.addObject(new MaterialTag(block));
+                }
+                return new_materials;
         }
         return super.getContext(name);
     }

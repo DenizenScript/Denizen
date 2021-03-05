@@ -19,7 +19,7 @@ import com.denizenscript.denizencore.tags.TagManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ActionBarCommand extends AbstractCommand {
@@ -104,7 +104,7 @@ public class ActionBarCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify valid player Targets!");
             }
             else {
-                scriptEntry.addObject("targets", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
+                scriptEntry.addObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
     }

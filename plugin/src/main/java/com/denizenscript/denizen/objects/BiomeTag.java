@@ -240,20 +240,22 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             else {
                 String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : "all";
-                if (type.equals("ambient")) {
-                    entityTypes = object.biome.getAmbientEntities();
-                }
-                else if (type.equals("creatures")) {
-                    entityTypes = object.biome.getCreatureEntities();
-                }
-                else if (type.equals("monsters")) {
-                    entityTypes = object.biome.getMonsterEntities();
-                }
-                else if (type.equals("water")) {
-                    entityTypes = object.biome.getWaterEntities();
-                }
-                else {
-                    entityTypes = object.biome.getAllEntities();
+                switch (type) {
+                    case "ambient":
+                        entityTypes = object.biome.getAmbientEntities();
+                        break;
+                    case "creatures":
+                        entityTypes = object.biome.getCreatureEntities();
+                        break;
+                    case "monsters":
+                        entityTypes = object.biome.getMonsterEntities();
+                        break;
+                    case "water":
+                        entityTypes = object.biome.getWaterEntities();
+                        break;
+                    default:
+                        entityTypes = object.biome.getAllEntities();
+                        break;
                 }
             }
 

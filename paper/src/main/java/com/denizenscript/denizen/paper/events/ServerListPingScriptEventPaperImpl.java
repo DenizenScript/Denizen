@@ -49,14 +49,13 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("protocol_version")) {
-            return new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
-        }
-        else if (name.equals("version_name")) {
-            return new ElementTag(((PaperServerListPingEvent) event).getVersion());
-        }
-        else if (name.equals("client_protocol_version")) {
-            return new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
+        switch (name) {
+            case "protocol_version":
+                return new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
+            case "version_name":
+                return new ElementTag(((PaperServerListPingEvent) event).getVersion());
+            case "client_protocol_version":
+                return new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
         }
         return super.getContext(name);
     }

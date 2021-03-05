@@ -133,14 +133,11 @@ public class BreakCommand extends AbstractCommand implements Holdable {
 
         final ScriptEntry se = scriptEntry;
         BlockBreaker.BlockBreakerConfiguration config = new BlockBreaker.BlockBreakerConfiguration();
-        config.item(npc.getLivingEntity().getEquipment().getItemInHand());
+        config.item(npc.getLivingEntity().getEquipment().getItemInMainHand());
         config.radius(radius.asDouble());
-        config.callback(new Runnable() {
-            @Override
-            public void run() {
-                npc.action("dig", null, context);
-                se.setFinished(true);
-            }
+        config.callback(() -> {
+            npc.action("dig", null, context);
+            se.setFinished(true);
         });
 
         BlockBreaker breaker = npc.getCitizen().getBlockBreaker(location.getBlock(), config);

@@ -78,18 +78,17 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return originalEntity.getDenizenObject();
-        }
-        else if (name.equals("new_entities")) {
-            ListTag output = new ListTag();
-            for (Entity ent : event.getTransformedEntities()) {
-                output.addObject(new EntityTag(ent).getDenizenObject());
-            }
-            return output;
-        }
-        else if (name.equals("cause")) {
-            return new ElementTag(event.getTransformReason().name());
+        switch (name) {
+            case "entity":
+                return originalEntity.getDenizenObject();
+            case "new_entities":
+                ListTag output = new ListTag();
+                for (Entity ent : event.getTransformedEntities()) {
+                    output.addObject(new EntityTag(ent).getDenizenObject());
+                }
+                return output;
+            case "cause":
+                return new ElementTag(event.getTransformReason().name());
         }
         return super.getContext(name);
     }

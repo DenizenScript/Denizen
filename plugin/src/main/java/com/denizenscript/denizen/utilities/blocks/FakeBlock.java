@@ -28,11 +28,7 @@ public class FakeBlock {
             }
             block = new FakeBlock(player, location);
             byLocation.put(location, block);
-            List<FakeBlock> chunkBlocks = byChunk.get(block.chunkCoord);
-            if (chunkBlocks == null) {
-                chunkBlocks = new ArrayList<>();
-                byChunk.put(block.chunkCoord, chunkBlocks);
-            }
+            List<FakeBlock> chunkBlocks = byChunk.computeIfAbsent(block.chunkCoord, k -> new ArrayList<>());
             chunkBlocks.add(block);
             return block;
         }

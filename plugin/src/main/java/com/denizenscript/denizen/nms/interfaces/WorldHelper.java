@@ -10,8 +10,4 @@ public interface WorldHelper {
     void setStatic(World world, boolean isStatic);
 
     float getLocalDifficulty(Location location);
-
-    void setWorldAccess(World world, WorldAccess worldAccess);
-
-    void removeWorldAccess(World world);
 }

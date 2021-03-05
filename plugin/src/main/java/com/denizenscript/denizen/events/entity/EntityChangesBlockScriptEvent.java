@@ -104,17 +104,15 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("new_material")) {
-            return new_material;
-        }
-        else if (name.equals("old_material")) {
-            return old_material;
+        switch (name) {
+            case "entity":
+                return entity;
+            case "location":
+                return location;
+            case "new_material":
+                return new_material;
+            case "old_material":
+                return old_material;
         }
         return super.getContext(name);
     }

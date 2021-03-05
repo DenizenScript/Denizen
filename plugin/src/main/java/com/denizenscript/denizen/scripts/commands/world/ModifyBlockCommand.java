@@ -45,13 +45,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         setRequiredArguments(2, 8);
         Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                tick++;
-                if (physitick < tick - 1) {
-                    block_physics.clear();
-                }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), () -> {
+            tick++;
+            if (physitick < tick - 1) {
+                block_physics.clear();
             }
         }, 2, 2);
         isProcedural = false;

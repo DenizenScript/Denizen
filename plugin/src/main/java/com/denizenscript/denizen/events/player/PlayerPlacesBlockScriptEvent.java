@@ -88,20 +88,17 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
-        }
-        else if (name.equals("old_material")) {
-            return new MaterialTag(event.getBlockReplacedState());
-        }
-        else if (name.equals("item_in_hand")) {
-            return item_in_hand;
-        }
-        else if (name.equals("hand")) {
-            return hand;
+        switch (name) {
+            case "location":
+                return location;
+            case "material":
+                return material;
+            case "old_material":
+                return new MaterialTag(event.getBlockReplacedState());
+            case "item_in_hand":
+                return item_in_hand;
+            case "hand":
+                return hand;
         }
         return super.getContext(name);
     }

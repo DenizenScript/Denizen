@@ -150,12 +150,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 scriptEntry.setFinished(true);
             }
             else {
-                rec.onFinish = new Runnable() {
-                    @Override
-                    public void run() {
-                        scriptEntry.setFinished(true);
-                    }
-                };
+                rec.onFinish = () -> scriptEntry.setFinished(true);
             }
         }
         else {

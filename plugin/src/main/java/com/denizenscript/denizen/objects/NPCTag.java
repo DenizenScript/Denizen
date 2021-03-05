@@ -399,6 +399,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public NPCTag setPrefix(String prefix) {
+        this.prefix = prefix;
         return this;
     }
 

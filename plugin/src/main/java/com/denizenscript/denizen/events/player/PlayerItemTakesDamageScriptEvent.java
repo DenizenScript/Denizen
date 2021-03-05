@@ -102,14 +102,13 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("damage")) {
-            return new ElementTag(event.getDamage());
-        }
-        else if (name.equals("slot")) {
-            return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
+        switch (name) {
+            case "item":
+                return item;
+            case "damage":
+                return new ElementTag(event.getDamage());
+            case "slot":
+                return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
         }
         return super.getContext(name);
     }
@@ -118,12 +117,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     public void cancellationChanged() {
         if (cancelled) {
             final Player p = event.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    p.updateInventory();
-                }
-            }, 1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), p::updateInventory, 1);
         }
         super.cancellationChanged();
     }

@@ -148,7 +148,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public ItemTag getItemInHand() {
         if (isLivingEntity() && getLivingEntity().getEquipment() != null) {
-            ItemStack its = getLivingEntity().getEquipment().getItemInHand();
+            ItemStack its = getLivingEntity().getEquipment().getItemInMainHand();
             if (its == null) {
                 return null;
             }
@@ -490,11 +490,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             uuid = entity.getUniqueId();
         }
         return uuid;
-    }
-
-    public String getSaveName() {
-        String baseID = uuid.toString().toUpperCase().replace("-", "");
-        return baseID.substring(0, 2) + "." + baseID;
     }
 
     @Override

@@ -101,17 +101,15 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return result;
-        }
-        else if (name.equals("repair_cost")) {
-            return new ElementTag(event.getInventory().getRepairCost());
-        }
-        else if (name.equals("new_name")) {
-            return new ElementTag(event.getInventory().getRenameText());
-        }
-        else if (name.equals("inventory")) {
-            return InventoryTag.mirrorBukkitInventory(event.getInventory());
+        switch (name) {
+            case "item":
+                return result;
+            case "repair_cost":
+                return new ElementTag(event.getInventory().getRepairCost());
+            case "new_name":
+                return new ElementTag(event.getInventory().getRenameText());
+            case "inventory":
+                return InventoryTag.mirrorBukkitInventory(event.getInventory());
         }
         return super.getContext(name);
     }

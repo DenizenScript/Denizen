@@ -64,14 +64,13 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("pig")) {
-            return pig;
-        }
-        else if (name.equals("pig_zombie")) {
-            return pig_zombie;
-        }
-        else if (name.equals("lightning")) {
-            return lightning;
+        switch (name) {
+            case "pig":
+                return pig;
+            case "pig_zombie":
+                return pig_zombie;
+            case "lightning":
+                return lightning;
         }
         return super.getContext(name);
     }

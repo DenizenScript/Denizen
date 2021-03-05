@@ -76,14 +76,13 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("reason")) {
-            return new ElementTag(event.getReason().toString());
-        }
-        else if (name.equals("profession")) {
-            return new ElementTag(event.getProfession().toString());
+        switch (name) {
+            case "entity":
+                return entity;
+            case "reason":
+                return new ElementTag(event.getReason().toString());
+            case "profession":
+                return new ElementTag(event.getProfession().toString());
         }
         return super.getContext(name);
     }

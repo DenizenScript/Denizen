@@ -424,11 +424,11 @@ public class Utilities {
     private final static String colors = "0123456789abcdefklmnorABCDEFKLMNOR";
 
     public static String generateRandomColors(int count) {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(colors.length()));
+            ret.append(ChatColor.COLOR_CHAR).append(colors.charAt(CoreUtilities.getRandom().nextInt(colors.length())));
         }
-        return ret;
+        return ret.toString();
     }
 
     public static BukkitScriptEntryData getEntryData(ScriptEntry entry) {

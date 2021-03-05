@@ -99,18 +99,17 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
-        }
-        else if (name.equals("drop_entities")) {
-            ListTag toRet = new ListTag();
-            for (Item item : event.getItems()) {
-                toRet.addObject(new EntityTag(item));
-            }
-            return toRet;
+        switch (name) {
+            case "location":
+                return location;
+            case "material":
+                return material;
+            case "drop_entities":
+                ListTag toRet = new ListTag();
+                for (Item item : event.getItems()) {
+                    toRet.addObject(new EntityTag(item));
+                }
+                return toRet;
         }
         return super.getContext(name);
     }
