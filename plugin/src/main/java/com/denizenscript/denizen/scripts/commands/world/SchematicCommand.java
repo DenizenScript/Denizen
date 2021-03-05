@@ -73,6 +73,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The 'create' option requires a cuboid region and a center location as input. This will create a new schematic in memory based on world data.
     //
     // The "rotate" and "flip_x/y/z" options will apply the change to the copy of the schematic in memory, to later be pasted or saved.
+    // This will rotate the set of blocks itself, the relative origin, and any directional blocks inside the schematic.
     //
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
