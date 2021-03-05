@@ -16,10 +16,10 @@ public class MaterialSwitchable  implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData().data instanceof Powerable
-                || ((MaterialTag) material).getModernData().data instanceof Openable
-                || ((MaterialTag) material).getModernData().data instanceof Dispenser
-                || ((MaterialTag) material).getModernData().data instanceof DaylightDetector);
+                && (((MaterialTag) material).getModernData() instanceof Powerable
+                || ((MaterialTag) material).getModernData() instanceof Openable
+                || ((MaterialTag) material).getModernData() instanceof Dispenser
+                || ((MaterialTag) material).getModernData() instanceof DaylightDetector);
     }
 
     public static MaterialSwitchable getFrom(ObjectTag _material) {
@@ -57,31 +57,31 @@ public class MaterialSwitchable  implements Property {
     }
 
     public boolean isPowerable() {
-        return material.getModernData().data instanceof Powerable;
+        return material.getModernData() instanceof Powerable;
     }
 
     public Powerable getPowerable() {
-        return (Powerable) material.getModernData().data;
+        return (Powerable) material.getModernData();
     }
 
     public boolean isOpenable() {
-        return material.getModernData().data instanceof Openable;
+        return material.getModernData() instanceof Openable;
     }
 
     public boolean isDisepnser() {
-        return material.getModernData().data instanceof Dispenser;
+        return material.getModernData() instanceof Dispenser;
     }
 
     public Openable getOpenable() {
-        return (Openable) material.getModernData().data;
+        return (Openable) material.getModernData();
     }
 
     public Dispenser getDispenser() {
-        return (Dispenser) material.getModernData().data;
+        return (Dispenser) material.getModernData();
     }
 
     public DaylightDetector getDaylightDetector() {
-        return (DaylightDetector) material.getModernData().data;
+        return (DaylightDetector) material.getModernData();
     }
 
     public boolean getState() {

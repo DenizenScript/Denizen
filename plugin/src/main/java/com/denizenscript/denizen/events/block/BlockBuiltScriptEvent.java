@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -117,7 +116,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         old_material = new MaterialTag(event.getBlock());
-        new_material = new MaterialTag(new ModernBlockData(event.getBlockData()));
+        new_material = new MaterialTag(event.getBlockData());
         cancelled = !event.isBuildable();
         this.event = event;
         fire(event);

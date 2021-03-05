@@ -13,7 +13,7 @@ public class MaterialMode implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Comparator;
+                && ((MaterialTag) material).getModernData() instanceof Comparator;
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -52,7 +52,7 @@ public class MaterialMode implements Property {
     }
 
     public Comparator getComparator() {
-        return (Comparator) material.getModernData().data;
+        return (Comparator) material.getModernData();
     }
 
     public void setMode(String mode) {

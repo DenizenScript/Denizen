@@ -15,9 +15,9 @@ public class MaterialAge implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData().data instanceof Ageable
-                || ((MaterialTag) material).getModernData().data instanceof TurtleEgg
-                || ((MaterialTag) material).getModernData().data instanceof Sapling);
+                && (((MaterialTag) material).getModernData() instanceof Ageable
+                || ((MaterialTag) material).getModernData() instanceof TurtleEgg
+                || ((MaterialTag) material).getModernData() instanceof Sapling);
     }
 
     public static MaterialAge getFrom(ObjectTag _material) {
@@ -70,23 +70,23 @@ public class MaterialAge implements Property {
     }
 
     public TurtleEgg getTurtleEgg() {
-        return (TurtleEgg) material.getModernData().data;
+        return (TurtleEgg) material.getModernData();
     }
 
     public boolean isTurtleEgg() {
-        return material.getModernData().data instanceof TurtleEgg;
+        return material.getModernData() instanceof TurtleEgg;
     }
 
     public Sapling getSapling() {
-        return (Sapling) material.getModernData().data;
+        return (Sapling) material.getModernData();
     }
 
     public boolean isSapling() {
-        return material.getModernData().data instanceof Sapling;
+        return material.getModernData() instanceof Sapling;
     }
 
     public Ageable getAgeable() {
-        return (Ageable) material.getModernData().data;
+        return (Ageable) material.getModernData();
     }
 
     public int getCurrent() {

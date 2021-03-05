@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.v1_15.impl.jnbt.CompoundTagImpl;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -16,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_15_R1.block.CraftBlockState;
@@ -43,9 +43,8 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public ModernBlockData parseBlockData(Material material, String otherData) {
-        CraftBlockData data = CraftBlockData.newData(material, otherData);
-        return new ModernBlockData(data);
+    public BlockData parseBlockData(Material material, String otherData) {
+        return CraftBlockData.newData(material, otherData);
     }
 
     @Override

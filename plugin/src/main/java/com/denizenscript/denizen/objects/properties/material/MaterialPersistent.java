@@ -13,7 +13,7 @@ public class MaterialPersistent implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Leaves;
+                && ((MaterialTag) material).getModernData() instanceof Leaves;
     }
 
     public static MaterialPersistent getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialPersistent implements Property {
     }
 
     public Leaves getLeaves() {
-        return (Leaves) material.getModernData().data;
+        return (Leaves) material.getModernData();
     }
 
     public int getDistance() {

@@ -12,7 +12,6 @@ import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -651,10 +650,10 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
             if (object.getItemMeta() instanceof BlockStateMeta) {
                 if (object.getBukkitMaterial() == Material.SHIELD) {
                     MaterialTag material = new MaterialTag(Material.SHIELD);
-                    material.setModernData(new ModernBlockData(((BlockStateMeta) object.getItemMeta()).getBlockState()));
+                    material.setModernData(((BlockStateMeta) object.getItemMeta()).getBlockState().getBlockData());
                     return material;
                 }
-                return new MaterialTag(new ModernBlockData(((BlockStateMeta) object.getItemMeta()).getBlockState()));
+                return new MaterialTag(((BlockStateMeta) object.getItemMeta()).getBlockState());
             }
             return object.getMaterial();
         });

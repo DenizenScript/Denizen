@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -106,7 +105,7 @@ public class AdjustBlockCommand extends AbstractCommand {
         for (LocationTag location : locations) {
             Block block = location.getBlock();
             BlockData data = block.getBlockData();
-            MaterialTag specialMaterial = new MaterialTag(new ModernBlockData(data));
+            MaterialTag specialMaterial = new MaterialTag(data);
             Mechanism mechanism = new Mechanism(mechanismName, value, scriptEntry.entryData.getTagContext());
             specialMaterial.safeAdjust(mechanism);
             if (doPhysics) {

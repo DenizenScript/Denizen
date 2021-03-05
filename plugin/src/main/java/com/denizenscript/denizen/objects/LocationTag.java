@@ -3327,13 +3327,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 face = BlockFace.DOWN;
             }
             else if (material.getMaterial() == Material.WALL_TORCH || material.getMaterial() == Material.REDSTONE_WALL_TORCH || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getMaterial() == Material.SOUL_WALL_TORCH)) {
-                face = ((Directional) material.getModernData().data).getFacing().getOppositeFace();
+                face = ((Directional) material.getModernData()).getFacing().getOppositeFace();
             }
             else if (MaterialSwitchFace.describes(material)) {
                 face = MaterialSwitchFace.getFrom(material).getAttachedTo();
             }
-            else if (material.hasModernData() && material.getModernData().data instanceof org.bukkit.block.data.type.WallSign) {
-                face = ((org.bukkit.block.data.type.WallSign) material.getModernData().data).getFacing().getOppositeFace();
+            else if (material.hasModernData() && material.getModernData() instanceof org.bukkit.block.data.type.WallSign) {
+                face = ((org.bukkit.block.data.type.WallSign) material.getModernData()).getFacing().getOppositeFace();
             }
             else {
                 MaterialData data = object.getBlockStateForTag(attribute).getData();
@@ -3482,7 +3482,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("block_type") && mechanism.requireObject(MaterialTag.class)) {
             MaterialTag mat = mechanism.valueAsType(MaterialTag.class);
-            getBlock().setBlockData(mat.getModernData().data, false);
+            getBlock().setBlockData(mat.getModernData(), false);
         }
 
         // <--[mechanism]

@@ -13,7 +13,7 @@ public class MaterialLocked implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Repeater;
+                && ((MaterialTag) material).getModernData() instanceof Repeater;
     }
 
     public static MaterialLocked getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialLocked implements Property {
     }
 
     public Repeater getRepeater() {
-        return (Repeater) material.getModernData().data;
+        return (Repeater) material.getModernData();
     }
 
     public boolean isLocked() {

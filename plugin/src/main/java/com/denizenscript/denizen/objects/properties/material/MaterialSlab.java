@@ -13,7 +13,7 @@ public class MaterialSlab implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Slab;
+                && ((MaterialTag) material).getModernData() instanceof Slab;
     }
 
     public static MaterialSlab getFrom(ObjectTag _material) {
@@ -52,7 +52,7 @@ public class MaterialSlab implements Property {
     }
 
     public Slab getSlab() {
-        return (Slab) material.getModernData().data;
+        return (Slab) material.getModernData();
     }
 
     @Override

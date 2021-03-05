@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
@@ -57,7 +56,7 @@ public class ItemBlockMaterial implements Property {
         if (attribute.startsWith("block_material")) {
             BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
             if (meta.hasBlockData()) {
-                return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getBukkitMaterial())))
+                return new MaterialTag(meta.getBlockData(item.getBukkitMaterial()))
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -69,7 +68,7 @@ public class ItemBlockMaterial implements Property {
     public String getPropertyString() {
         BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
         if (meta.hasBlockData()) {
-            return new MaterialTag(new ModernBlockData(meta.getBlockData(item.getBukkitMaterial()))).identify();
+            return new MaterialTag(meta.getBlockData(item.getBukkitMaterial())).identify();
         }
         return null;
     }
@@ -94,7 +93,7 @@ public class ItemBlockMaterial implements Property {
         if (mechanism.matches("block_material") && mechanism.requireObject(MaterialTag.class)) {
             BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
             MaterialTag mat = mechanism.valueAsType(MaterialTag.class);
-            meta.setBlockData(mat.getModernData().data);
+            meta.setBlockData(mat.getModernData());
             item.setItemMeta(meta);
         }
     }

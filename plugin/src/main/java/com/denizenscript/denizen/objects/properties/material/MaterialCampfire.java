@@ -13,7 +13,7 @@ public class MaterialCampfire implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Campfire;
+                && ((MaterialTag) material).getModernData() instanceof Campfire;
     }
 
     public static MaterialCampfire getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialCampfire implements Property {
     }
 
     public Campfire getCampfire() {
-        return (Campfire) material.getModernData().data;
+        return (Campfire) material.getModernData();
     }
 
     @Override

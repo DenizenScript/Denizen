@@ -14,7 +14,7 @@ public class MaterialNote implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof NoteBlock;
+                && ((MaterialTag) material).getModernData() instanceof NoteBlock;
     }
 
     public static MaterialNote getFrom(ObjectTag _material) {
@@ -78,7 +78,7 @@ public class MaterialNote implements Property {
     }
 
     public NoteBlock getNoteBlock() {
-        return (NoteBlock) material.getModernData().data;
+        return (NoteBlock) material.getModernData();
     }
 
     @Override

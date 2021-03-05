@@ -593,7 +593,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
                 LocationTag location = attribute.contextAsType(1, LocationTag.class);
                 FullBlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
-                event.setReplaced(new MaterialTag(new ModernBlockData(block.data))
+                event.setReplaced(new MaterialTag(block.data)
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }

@@ -13,7 +13,7 @@ public class MaterialLightable implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Lightable;
+                && ((MaterialTag) material).getModernData() instanceof Lightable;
     }
 
     public static MaterialLightable getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialLightable implements Property {
     }
 
     public Lightable getLightable() {
-        return (Lightable) material.getModernData().data;
+        return (Lightable) material.getModernData();
     }
 
     @Override

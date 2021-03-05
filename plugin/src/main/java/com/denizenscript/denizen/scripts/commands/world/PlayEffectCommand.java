@@ -285,7 +285,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                     else if (clazz == BlockData.class) {
                         MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
-                        dataObject = blockMaterial.getModernData().data;
+                        dataObject = blockmaterial.getModernData();
                     }
                     else if (clazz == ItemStack.class) {
                         ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());

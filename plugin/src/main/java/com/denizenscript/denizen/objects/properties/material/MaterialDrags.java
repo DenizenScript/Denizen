@@ -13,7 +13,7 @@ public class MaterialDrags implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof BubbleColumn;
+                && ((MaterialTag) material).getModernData() instanceof BubbleColumn;
     }
 
     public static MaterialDrags getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialDrags implements Property {
     }
 
     public BubbleColumn getBubbleColumn() {
-        return (BubbleColumn) material.getModernData().data;
+        return (BubbleColumn) material.getModernData();
     }
 
     public boolean isDrag() {

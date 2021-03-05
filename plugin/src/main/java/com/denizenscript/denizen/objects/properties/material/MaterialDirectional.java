@@ -23,7 +23,7 @@ public class MaterialDirectional implements Property {
         if (!mat.hasModernData()) {
             return false;
         }
-        BlockData data = mat.getModernData().data;
+        BlockData data = mat.getModernData();
         if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable || data instanceof Rail)) {
             return false;
         }
@@ -157,35 +157,35 @@ public class MaterialDirectional implements Property {
     }
 
     public boolean isOrientable() {
-        return material.getModernData().data instanceof Orientable;
+        return material.getModernData() instanceof Orientable;
     }
 
     public boolean isRotatable() {
-        return material.getModernData().data instanceof Rotatable;
+        return material.getModernData() instanceof Rotatable;
     }
 
     public boolean isDirectional() {
-        return material.getModernData().data instanceof Directional;
+        return material.getModernData() instanceof Directional;
     }
 
     public boolean isRail() {
-        return material.getModernData().data instanceof Rail;
+        return material.getModernData() instanceof Rail;
     }
 
     public Orientable getOrientable() {
-        return (Orientable) material.getModernData().data;
+        return (Orientable) material.getModernData();
     }
 
     public Rotatable getRotatable() {
-        return (Rotatable) material.getModernData().data;
+        return (Rotatable) material.getModernData();
     }
 
     public Directional getDirectional() {
-        return (Directional) material.getModernData().data;
+        return (Directional) material.getModernData();
     }
 
     public Rail getRail() {
-        return (Rail) material.getModernData().data;
+        return (Rail) material.getModernData();
     }
 
     public void setFacing(BlockFace face) {

@@ -13,7 +13,7 @@ public class MaterialShape implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Stairs;
+                && ((MaterialTag) material).getModernData() instanceof Stairs;
     }
 
     public static MaterialShape getFrom(ObjectTag _material) {
@@ -52,7 +52,7 @@ public class MaterialShape implements Property {
     }
 
     public Stairs getStairs() {
-        return (Stairs) material.getModernData().data;
+        return (Stairs) material.getModernData();
     }
 
     @Override

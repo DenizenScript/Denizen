@@ -20,7 +20,7 @@ public class MaterialHeights implements Property {
         if (!mat.hasModernData()) {
             return false;
         }
-        BlockData data = mat.getModernData().data;
+        BlockData data = mat.getModernData();
         if (!(data instanceof Wall)) {
             return false;
         }
@@ -63,7 +63,7 @@ public class MaterialHeights implements Property {
     }
 
     public Wall getWall() {
-        return (Wall) material.getModernData().data;
+        return (Wall) material.getModernData();
     }
 
     public ListTag getHeightsList() {

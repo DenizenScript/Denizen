@@ -17,9 +17,9 @@ public class MaterialCount implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData().data instanceof SeaPickle
-                || ((MaterialTag) material).getModernData().data instanceof TurtleEgg
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ((MaterialTag) material).getModernData().data instanceof RespawnAnchor));
+                && (((MaterialTag) material).getModernData() instanceof SeaPickle
+                || ((MaterialTag) material).getModernData() instanceof TurtleEgg
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ((MaterialTag) material).getModernData() instanceof RespawnAnchor));
     }
 
     public static MaterialCount getFrom(ObjectTag _material) {
@@ -81,19 +81,19 @@ public class MaterialCount implements Property {
     }
 
     public boolean isSeaPickle() {
-        return material.getModernData().data instanceof SeaPickle;
+        return material.getModernData() instanceof SeaPickle;
     }
 
     public boolean isTurtleEgg() {
-        return material.getModernData().data instanceof TurtleEgg;
+        return material.getModernData() instanceof TurtleEgg;
     }
 
     public TurtleEgg getTurtleEgg() {
-        return (TurtleEgg) material.getModernData().data;
+        return (TurtleEgg) material.getModernData();
     }
 
     public SeaPickle getSeaPickle() {
-        return (SeaPickle) material.getModernData().data;
+        return (SeaPickle) material.getModernData();
     }
 
     public int getCurrent() {
@@ -104,7 +104,7 @@ public class MaterialCount implements Property {
             return getTurtleEgg().getEggs();
         }
         else {
-            return ((RespawnAnchor) material.getModernData().data).getCharges();
+            return ((RespawnAnchor) material.getModernData()).getCharges();
         }
     }
 
@@ -116,7 +116,7 @@ public class MaterialCount implements Property {
             return getTurtleEgg().getMaximumEggs();
         }
         else {
-            return ((RespawnAnchor) material.getModernData().data).getMaximumCharges();
+            return ((RespawnAnchor) material.getModernData()).getMaximumCharges();
         }
     }
 
@@ -169,7 +169,7 @@ public class MaterialCount implements Property {
                 getTurtleEgg().setEggs(count);
             }
             else {
-                ((RespawnAnchor) material.getModernData().data).setCharges(count);
+                ((RespawnAnchor) material.getModernData()).setCharges(count);
             }
         }
     }

@@ -13,7 +13,7 @@ public class MaterialWaterlogged implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Waterlogged;
+                && ((MaterialTag) material).getModernData() instanceof Waterlogged;
     }
 
     public static MaterialWaterlogged getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialWaterlogged implements Property {
     }
 
     public Waterlogged getWaterlogged() {
-        return (Waterlogged) material.getModernData().data;
+        return (Waterlogged) material.getModernData();
     }
 
     public boolean isWaterlogged() {

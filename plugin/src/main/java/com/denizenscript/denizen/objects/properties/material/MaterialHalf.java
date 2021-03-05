@@ -20,7 +20,7 @@ public class MaterialHalf implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && isHalfData(((MaterialTag) material).getModernData().data);
+                && isHalfData(((MaterialTag) material).getModernData());
     }
 
     public static boolean isHalfData(BlockData data) {
@@ -104,7 +104,7 @@ public class MaterialHalf implements Property {
     }
 
     public String getHalfName() {
-        return getHalfName(material.getModernData().data);
+        return getHalfName(material.getModernData());
     }
 
     public static void setHalfByName(BlockData data, String name) {
@@ -149,7 +149,7 @@ public class MaterialHalf implements Property {
     }
 
     public Vector getRelativeBlockVector() {
-        return getRelativeBlockVector(material.getModernData().data);
+        return getRelativeBlockVector(material.getModernData());
     }
 
     @Override
@@ -175,7 +175,7 @@ public class MaterialHalf implements Property {
         // <MaterialTag.half>
         // -->
         if (mechanism.matches("half")) {
-            setHalfByName(material.getModernData().data, mechanism.getValue().asString().toUpperCase());
+            setHalfByName(material.getModernData(), mechanism.getValue().asString().toUpperCase());
         }
     }
 }

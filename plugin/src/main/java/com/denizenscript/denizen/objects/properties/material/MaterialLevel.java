@@ -18,10 +18,10 @@ public class MaterialLevel implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData().data instanceof Levelled
-                || ((MaterialTag) material).getModernData().data instanceof Cake
-                || ((MaterialTag) material).getModernData().data instanceof Snow
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData().data instanceof Beehive));
+                && (((MaterialTag) material).getModernData() instanceof Levelled
+                || ((MaterialTag) material).getModernData() instanceof Cake
+                || ((MaterialTag) material).getModernData() instanceof Snow
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData() instanceof Beehive));
     }
 
     public static MaterialLevel getFrom(ObjectTag _material) {
@@ -82,39 +82,39 @@ public class MaterialLevel implements Property {
     }
 
     public Levelled getLevelled() {
-        return (Levelled) material.getModernData().data;
+        return (Levelled) material.getModernData();
     }
 
     public boolean isCake() {
-        return material.getModernData().data instanceof Cake;
+        return material.getModernData() instanceof Cake;
     }
 
     public Cake getCake() {
-        return (Cake) material.getModernData().data;
+        return (Cake) material.getModernData();
     }
 
     public boolean isSnow() {
-        return material.getModernData().data instanceof Snow;
+        return material.getModernData() instanceof Snow;
     }
 
     public Snow getSnow() {
-        return (Snow) material.getModernData().data;
+        return (Snow) material.getModernData();
     }
 
     public boolean isHive() {
-        return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData().data instanceof Beehive);
+        return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData() instanceof Beehive);
     }
 
     public int getHoneyLevel() {
-        return ((Beehive) material.getModernData().data).getHoneyLevel();
+        return ((Beehive) material.getModernData()).getHoneyLevel();
     }
 
     public int getMaxHoneyLevel() {
-        return ((Beehive) material.getModernData().data).getMaximumHoneyLevel();
+        return ((Beehive) material.getModernData()).getMaximumHoneyLevel();
     }
 
     public void setHoneyLevel(int level) {
-        ((Beehive) material.getModernData().data).setHoneyLevel(level);
+        ((Beehive) material.getModernData()).setHoneyLevel(level);
     }
 
     public int getCurrent() {

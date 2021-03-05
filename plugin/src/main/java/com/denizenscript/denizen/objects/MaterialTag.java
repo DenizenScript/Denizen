@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -21,6 +20,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.List;
@@ -123,37 +123,37 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     public MaterialTag(Material material) {
         this.material = material;
         if (material.isBlock()) {
-            modernData = new ModernBlockData(material);
+            modernData = material.createBlockData();
         }
     }
 
     public MaterialTag(BlockState state) {
         this.material = state.getType();
-        this.modernData = new ModernBlockData(state);
+        this.modernData = state.getBlockData();
     }
 
     public MaterialTag(Block block) {
-        this.modernData = new ModernBlockData(block);
+        this.modernData = block.getBlockData();
         this.material = modernData.getMaterial();
     }
 
-    public MaterialTag(ModernBlockData data) {
+    public MaterialTag(BlockData data) {
         this.modernData = data;
         this.material = data.getMaterial();
     }
 
     private Material material;
-    private ModernBlockData modernData;
+    private BlockData modernData;
 
     public boolean hasModernData() {
         return modernData != null;
     }
 
-    public ModernBlockData getModernData() {
+    public BlockData getModernData() {
         return modernData;
     }
 
-    public void setModernData(ModernBlockData data) {
+    public void setModernData(BlockData data) {
         modernData = data;
     }
 
@@ -654,7 +654,9 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag("item", (attribute, object) -> {
             ItemTag item = new ItemTag(object, 1);
             if (item.getItemMeta() instanceof BlockStateMeta) {
-                ((BlockStateMeta) item.getItemMeta()).setBlockState(object.modernData.getBlockState());
+                BlockState state = NMSHandler.getBlockHelper().generateBlockState(object.material);
+                state.setBlockData(object.modernData);
+                ((BlockStateMeta) item.getItemMeta()).setBlockState(state);
             }
             return item;
         });

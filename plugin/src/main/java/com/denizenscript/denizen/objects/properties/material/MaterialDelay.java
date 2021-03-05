@@ -13,7 +13,7 @@ public class MaterialDelay implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Repeater;
+                && ((MaterialTag) material).getModernData() instanceof Repeater;
     }
 
     public static MaterialDelay getFrom(ObjectTag _material) {
@@ -76,7 +76,7 @@ public class MaterialDelay implements Property {
     }
 
     public Repeater getRepeater() {
-        return (Repeater) material.getModernData().data;
+        return (Repeater) material.getModernData();
     }
 
     public int getCurrent() {

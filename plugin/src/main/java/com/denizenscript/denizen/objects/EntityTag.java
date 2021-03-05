@@ -8,7 +8,6 @@ import com.denizenscript.denizen.objects.properties.entity.EntityTame;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
@@ -792,7 +791,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             material = new MaterialTag(Material.SAND);
                         }
                         // This is currently the only way to spawn a falling block
-                        entity = location.getWorld().spawnFallingBlock(location, material.getModernData().data);
+                        entity = location.getWorld().spawnFallingBlock(location, material.getModernData());
                         uuid = entity.getUniqueId();
                     }
                     else {

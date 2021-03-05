@@ -14,7 +14,7 @@ public class MaterialFaces implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof MultipleFacing;
+                && ((MaterialTag) material).getModernData() instanceof MultipleFacing;
     }
 
     public static MaterialFaces getFrom(ObjectTag _material) {
@@ -78,7 +78,7 @@ public class MaterialFaces implements Property {
     }
 
     public MultipleFacing getFaces() {
-        return (MultipleFacing) material.getModernData().data;
+        return (MultipleFacing) material.getModernData();
     }
 
     @Override

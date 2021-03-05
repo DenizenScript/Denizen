@@ -19,8 +19,8 @@ public class MaterialSwitchFace implements Property {
         // TODO: After 1.14 is dropped, remove Switch entirely
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData().data instanceof Switch
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData().data instanceof FaceAttachable));
+                && (((MaterialTag) material).getModernData() instanceof Switch
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData() instanceof FaceAttachable));
     }
 
     public static MaterialSwitchFace getFrom(ObjectTag _material) {
@@ -64,15 +64,15 @@ public class MaterialSwitchFace implements Property {
     }
 
     public boolean isSwitch() {
-        return material.getModernData().data instanceof Switch;
+        return material.getModernData() instanceof Switch;
     }
 
     public Switch getSwitch() {
-        return (Switch) material.getModernData().data;
+        return (Switch) material.getModernData();
     }
 
     public FaceAttachable getFaceAttachable() {
-        return (FaceAttachable) material.getModernData().data;
+        return (FaceAttachable) material.getModernData();
     }
 
     @Override
@@ -101,8 +101,8 @@ public class MaterialSwitchFace implements Property {
         else {
             switch (getFaceAttachable().getAttachedFace()) {
                 case WALL:
-                    if (material.getModernData().data instanceof Directional) {
-                        return ((Directional) material.getModernData().data).getFacing().getOppositeFace();
+                    if (material.getModernData() instanceof Directional) {
+                        return ((Directional) material.getModernData()).getFacing().getOppositeFace();
                     }
                 case FLOOR:
                     return BlockFace.DOWN;

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.interfaces;
 
-import com.denizenscript.denizen.utilities.blocks.ModernBlockData;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Location;
@@ -8,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public interface BlockHelper {
         return material;
     }
 
-    default ModernBlockData parseBlockData(String text) {
+    default BlockData parseBlockData(String text) {
         int openBracket = text.indexOf('[');
         String material = text;
         String otherData = null;
@@ -79,7 +79,7 @@ public interface BlockHelper {
         return parseBlockData(Material.getMaterial(material.toUpperCase()), otherData);
     }
 
-    default ModernBlockData parseBlockData(Material material, String otherData) {
+    default BlockData parseBlockData(Material material, String otherData) {
         throw new UnsupportedOperationException();
     }
 }

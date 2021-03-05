@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.util.BlockVector;
 
 import java.io.ByteArrayOutputStream;
@@ -57,10 +58,10 @@ public class SpongeSchematicHelper {
             cbs.center_z = originZ;
             cbs.blocks = new FullBlockData[width * length * height];
             Map<String, Tag> paletteMap = getChildTag(schematic, "Palette", CompoundTag.class).getValue();
-            HashMap<Integer, ModernBlockData> palette = new HashMap<>(256);
+            HashMap<Integer, BlockData> palette = new HashMap<>(256);
             for (String key : paletteMap.keySet()) {
                 int id = getChildTag(paletteMap, key, IntTag.class).getValue();
-                ModernBlockData data;
+                BlockData data;
                 try {
                     data = NMSHandler.getBlockHelper().parseBlockData(key);
                 }
@@ -104,7 +105,7 @@ public class SpongeSchematicHelper {
                     }
                     i++;
                 }
-                FullBlockData block = new FullBlockData(palette.get(value).data);
+                FullBlockData block = new FullBlockData(palette.get(value));
                 int y = index / (width * length);
                 int z = (index % (width * length)) / width;
                 int x = (index % (width * length)) % width;

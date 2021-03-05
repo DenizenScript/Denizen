@@ -13,7 +13,7 @@ public class MaterialSnowable implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Snowable;
+                && ((MaterialTag) material).getModernData() instanceof Snowable;
     }
 
     public static MaterialSnowable getFrom(ObjectTag _material) {
@@ -51,7 +51,7 @@ public class MaterialSnowable implements Property {
     }
 
     public Snowable getSnowable() {
-        return (Snowable) material.getModernData().data;
+        return (Snowable) material.getModernData();
     }
 
     public boolean isSnowy() {

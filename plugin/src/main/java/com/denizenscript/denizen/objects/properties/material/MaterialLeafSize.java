@@ -13,7 +13,7 @@ public class MaterialLeafSize implements Property {
     public static boolean describes(ObjectTag material) {
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData().data instanceof Bamboo;
+                && ((MaterialTag) material).getModernData() instanceof Bamboo;
     }
 
     public static MaterialLeafSize getFrom(ObjectTag _material) {
@@ -52,7 +52,7 @@ public class MaterialLeafSize implements Property {
     }
 
     public Bamboo getBamboo() {
-        return (Bamboo) material.getModernData().data;
+        return (Bamboo) material.getModernData();
     }
 
     public void setLeafSize(String size) {

@@ -20,7 +20,7 @@ public class FakeBlockHelper {
     public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("e");
 
     public static IBlockData getNMSState(FakeBlock block) {
-        return ((CraftBlockData) block.material.getModernData().data).getState();
+        return ((CraftBlockData) block.material.getModernData()).getState();
     }
 
     public static boolean anyBlocksInSection(List<FakeBlock> blocks, int y) {
