@@ -3,19 +3,25 @@ package com.denizenscript.denizen.events;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
+import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
@@ -25,7 +31,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Function;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
@@ -72,13 +77,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // -->
 
 
-    public boolean couldMatchInArea(String lower) {
+    public boolean couldMatchLegacyInArea(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
         if (index == -1) {
             return true;
         }
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (InventoryTag.matches(in) || CoreUtilities.equalsIgnoreCase(in, "inventory") || isAdvancedMatchable(in)) {
+        if (couldMatchInventory(in)) {
             return false;
         }
         if (in.equals("notable") || in.equals("noted")) {
@@ -88,6 +93,27 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         return true;
+    }
+
+    public boolean couldMatchArea(String text) {
+        if (text.equals("area") || text.equals("cuboid") || text.equals("polygon") || text.equals("ellipsoid")) {
+            return true;
+        }
+        if (text.startsWith("area_flagged:")) {
+            return true;
+        }
+        if (NotableManager.getSavedObject(text) instanceof AreaContainmentObject) {
+            return true;
+        }
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (Notable obj : NotableManager.notableObjects.values()) {
+                if (obj instanceof AreaContainmentObject && matcher.doesMatch(((AreaContainmentObject) obj).getNoteName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean exactMatchesEnum(String text, final Enum<?>[] enumVals) {
@@ -103,11 +129,19 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (exactMatchesEnum(text, enumVals)) {
             return true;
         }
-        return genericCouldMatchChecks(text, (t) -> couldMatchEnum(t, enumVals));
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (Enum<?> val : enumVals) {
+                if (matcher.doesMatch(val.name())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean couldMatchInventory(String text) {
-        if (text.equals("inventory")) {
+        if (text.equals("inventory") || text.equals("notable") || text.equals("note")) {
             return true;
         }
         if (text.startsWith("inventory_flagged:")) {
@@ -116,7 +150,30 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (InventoryTag.matches(text)) {
             return true;
         }
-        return genericCouldMatchChecks(text, this::couldMatchInventory);
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (InventoryType type : InventoryType.values()) {
+                if (matcher.doesMatch(type.name())) {
+                    return true;
+                }
+            }
+            for (String type : InventoryTag.idTypes) {
+                if (matcher.doesMatch(type)) {
+                    return true;
+                }
+            }
+            for (String type : InventoryScriptHelper.inventoryScripts.keySet()) {
+                if (matcher.doesMatch(type)) {
+                    return true;
+                }
+            }
+            for (InventoryTag note : InventoryScriptHelper.notedInventories.values()) {
+                if (matcher.doesMatch(note.noteName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("player", "entity", "npc", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
@@ -125,7 +182,20 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (exactMatchEntity(text)) {
             return true;
         }
-        return genericCouldMatchChecks(text, this::couldMatchEntity);
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (EntityType entity : EntityType.values()) {
+                if (matcher.doesMatch(entity.name())) {
+                    return true;
+                }
+            }
+            for (String script : EntityScriptHelper.scripts.keySet()) {
+                if (matcher.doesMatch(script)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean exactMatchEntity(String text) {
@@ -168,11 +238,24 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (exactMatchesVehicle(text)) {
             return true;
         }
-        return genericCouldMatchChecks(text, this::couldMatchVehicle);
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (EntityType entity : EntityType.values()) {
+                if (matcher.doesMatch(entity.name())) {
+                    return true;
+                }
+            }
+            for (String script : EntityScriptHelper.scripts.keySet()) {
+                if (matcher.doesMatch(script)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean couldMatchBlockOrItem(String text) {
-        if (text.equals("block") || text.equals("material") || text.equals("item") || text.startsWith("item_flagged:")) {
+        if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion") || text.startsWith("item_flagged:")) {
             return true;
         }
         if (MaterialTag.matches(text)) {
@@ -185,7 +268,20 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (ItemTag.matches(text)) {
             return true;
         }
-        return genericCouldMatchChecks(text, this::couldMatchBlockOrItem);
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (Material material : Material.values()) {
+                if (matcher.doesMatch(material.name())) {
+                    return true;
+                }
+            }
+            for (String item : ItemScriptHelper.item_scripts.keySet()) {
+                if (matcher.doesMatch(item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean couldMatchBlock(String text) {
@@ -202,11 +298,19 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             return true;
         }
-        return genericCouldMatchChecks(text, this::couldMatchBlock);
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (Material material : Material.values()) {
+                if (material.isBlock() && matcher.doesMatch(material.name())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean couldMatchItem(String text) {
-        if (text.equals("item")) {
+        if (text.equals("item") || text.equals("potion")) {
             return true;
         }
         if (text.startsWith("item_flagged:")) {
@@ -222,24 +326,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (ItemTag.matches(text)) {
             return true;
         }
-        return genericCouldMatchChecks(text, this::couldMatchItem);
-    }
-
-    public boolean genericCouldMatchChecks(String text, Function<String, Boolean> checkType) {
-        if (CoreUtilities.contains(text, '*')) {
-            return true;
-        }
-        if (text.startsWith("regex:")) {
-            return true;
-        }
-        // This one must be last.
-        if (CoreUtilities.contains(text, '|')) {
-            for (String subMatch : text.split("\\|")) {
-                if (!checkType.apply(subMatch)) {
-                    return false;
+        if (isAdvancedMatchable(text)) {
+            MatchHelper matcher = createMatcher(text);
+            for (Material material : Material.values()) {
+                if (material.isItem() && matcher.doesMatch(material.name())) {
+                    return true;
                 }
             }
-            return true;
+            for (String item : ItemScriptHelper.item_scripts.keySet()) {
+                if (matcher.doesMatch(item)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -847,12 +945,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         MatchHelper matcher = createMatcher(comparedto);
         if (matcher.doesMatch(mat.name())) {
-            return true;
-        }
-        else if (matcher.doesMatch(mat.identifyNoIdentifier())) {
-            return true;
-        }
-        else if (matcher.doesMatch(mat.identifySimpleNoIdentifier())) {
             return true;
         }
         return false;

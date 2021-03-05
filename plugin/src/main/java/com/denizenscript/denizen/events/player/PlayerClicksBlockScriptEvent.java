@@ -110,7 +110,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
                 && !clickedOn.equals("with") && !clickedOn.equals("in") && !clickedOn.equals("using")) { // Legacy format support
             return false;
         }
-        if (!couldMatchInArea(path.eventLower)) {
+        if (!couldMatchLegacyInArea(path.eventLower)) {
             return false;
         }
         if (clickedOn.isEmpty()) {

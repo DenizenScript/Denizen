@@ -92,6 +92,7 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public InventoryScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        InventoryScriptHelper.inventoryScripts.put(getName(), this);
     }
 
     public InventoryTag getInventoryFrom(TagContext context) {

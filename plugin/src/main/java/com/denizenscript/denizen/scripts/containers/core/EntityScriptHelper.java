@@ -18,7 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
+import java.util.HashMap;
+
 public class EntityScriptHelper implements Listener {
+
+    public static HashMap<String, EntityScriptContainer> scripts = new HashMap<>();
 
     public EntityScriptHelper() {
         Denizen.getInstance().getServer().getPluginManager()

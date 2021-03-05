@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -71,13 +70,8 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("biome") || exactMatchesEnum(path.eventArgLowerAt(2), Biome.values())) {
-            return false;
-        }
-        if (exactMatchEntity(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        if (path.eventArgLowerAt(2).equals("bed") || path.eventArgLowerAt(2).equals("portal")) {
+        String areaName = path.eventArgLowerAt(2);
+        if (!couldMatchArea(areaName) && !areaName.equals("notable")) {
             return false;
         }
         return true;
@@ -92,7 +86,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         String areaName = path.eventArgLowerAt(2);
-        if (areaName.equals("notable")) {
+        if (areaName.equals("notable")) { // TODO: Deprecate?
             areaName = path.eventArgLowerAt(3);
         }
         if (areaName.equals("cuboid")) {

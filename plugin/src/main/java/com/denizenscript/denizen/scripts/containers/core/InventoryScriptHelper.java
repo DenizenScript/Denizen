@@ -18,6 +18,8 @@ public class InventoryScriptHelper implements Listener {
 
     public static Map<Inventory, InventoryTag> notedInventories = new HashMap<>();
 
+    public static HashMap<String, InventoryScriptContainer> inventoryScripts = new HashMap<>();
+
     public InventoryScriptHelper() {
         Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
     }

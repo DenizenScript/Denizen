@@ -64,9 +64,6 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchEnum(path.eventArgLowerAt(2), Biome.values())) {
             return false;
         }
-        if (path.eventArgLowerAt(3).equals("cuboid")) {
-            return false;
-        }
         return true;
     }
 

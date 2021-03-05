@@ -156,6 +156,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         this.inventory = inventory;
     }
 
+    public String noteName;
+
     public void makeUnique(String id) {
         uniquifier = null;
         String title = NMSHandler.getInstance().getTitle(inventory);
@@ -177,12 +179,14 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
         flagTracker = new SavableMapFlagTracker();
         NotableManager.saveAs(this, id);
+        noteName = id;
     }
 
     public void forget() {
         flagTracker = null;
         NotableManager.remove(this);
         InventoryScriptHelper.notedInventories.remove(inventory);
+        noteName = null;
     }
 
     @Override

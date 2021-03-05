@@ -62,6 +62,7 @@ public class EntityScriptContainer extends ScriptContainer {
 
     public EntityScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        EntityScriptHelper.scripts.put(CoreUtilities.toLowerCase(getName()), this);
         canRunScripts = false;
     }
 
