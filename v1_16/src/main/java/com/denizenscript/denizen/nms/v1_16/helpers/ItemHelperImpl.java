@@ -95,7 +95,10 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact) {
-        if (exact) {
+        if (item.length == 1 && item[0].getType() == Material.AIR) {
+            recipe.setIngredient(c, new RecipeChoice.MaterialChoice(Material.AIR));
+        }
+        else if (exact) {
             recipe.setIngredient(c, new RecipeChoice.ExactChoice(item));
         }
         else {

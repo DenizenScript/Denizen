@@ -360,7 +360,38 @@ public class ItemScriptHelper implements Listener {
         return false;
     }
 
+    private static ItemStack AIR = new ItemStack(Material.AIR);
+
     public static boolean shouldDenyCraft(ItemStack[] items, Recipe recipe) {
+        int width = items.length == 9 ? 3 : 2;
+        int shapeStartX = 0, shapeStartY = 0;
+        if (recipe instanceof ShapedRecipe) {
+            String[] shape = ((ShapedRecipe) recipe).getShape();
+            if (shape.length != width || shape[0].length() != width) {
+                if (shape.length > width || shape[0].length() > width) {
+                    return false; // Already impossible regardless
+                }
+                loopStart:
+                for (shapeStartX = 0; shapeStartX <= width - shape[0].length(); shapeStartX++) {
+                    for (shapeStartY = 0; shapeStartY <= width - shape.length; shapeStartY++) {
+                        boolean hasAnyInvalid = false;
+                        for (int x = 0; x < shape[0].length(); x++) {
+                            for (int y = 0; y < shape.length; y++) {
+                                ItemStack item = items[(y + shapeStartY) * width + (x + shapeStartX)];
+                                RecipeChoice choice = ((ShapedRecipe) recipe).getChoiceMap().get(shape[y].charAt(x));
+                                if (choice != null && !choice.test(item == null ? AIR : item)) {
+                                    hasAnyInvalid = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!hasAnyInvalid) {
+                            break loopStart;
+                        }
+                    }
+                }
+            }
+        }
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             if (item == null || item.getType() == Material.AIR) {
@@ -380,9 +411,11 @@ public class ItemScriptHelper implements Listener {
                 }
             }
             else if (recipe instanceof ShapedRecipe) {
-                int width = items.length == 9 ? 3 : 2;
-                int x = i % width;
-                int y = i / width;
+                int x = i % width - shapeStartX;
+                int y = i / width - shapeStartY;
+                if (x < 0 || y < 0) {
+                    return true;
+                }
                 String[] shape = ((ShapedRecipe) recipe).getShape();
                 if (y < shape.length && x < shape[y].length()) {
                     char c = shape[y].charAt(x);

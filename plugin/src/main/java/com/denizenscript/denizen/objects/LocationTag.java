@@ -2960,6 +2960,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns EllipsoidTag
         // @description
         // Returns an ellipsoid centered at this location with the specified size.
+        // Size input is a vector of x,y,z size.
         // -->
         registerTag("to_ellipsoid", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
