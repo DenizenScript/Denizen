@@ -6,14 +6,24 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.PistonHead;
 
 public class MaterialMode implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData() instanceof Comparator;
+        if (!(material instanceof MaterialTag)) {
+            return false;
+        }
+        MaterialTag mat = (MaterialTag) material;
+        if (!mat.hasModernData()) {
+            return false;
+        }
+        BlockData data = mat.getModernData();
+        return data instanceof Comparator
+                || data instanceof PistonHead;
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -43,25 +53,39 @@ public class MaterialMode implements Property {
         // @mechanism MaterialTag.mode
         // @group properties
         // @description
-        // Returns a comparator's mode.
-        // Output is COMPARE or SUBTRACT.
+        // Returns a block's mode.
+        // For comparators, output is COMPARE or SUBTRACT.
+        // For piston_heads, output is NORMAL or SHORT.
         // -->
         PropertyParser.<MaterialMode>registerTag("mode", (attribute, material) -> {
-            return new ElementTag(material.getComparator().getMode().name());
+            return new ElementTag(material.getPropertyString());
         });
+    }
+
+    public boolean isComparator() {
+        return material.getModernData() instanceof Comparator;
+    }
+
+    public boolean isPistonHead() {
+        return material.getModernData() instanceof PistonHead;
     }
 
     public Comparator getComparator() {
         return (Comparator) material.getModernData();
     }
 
-    public void setMode(String mode) {
-        getComparator().setMode(Comparator.Mode.valueOf(mode));
+    public PistonHead getPistonHead() {
+        return (PistonHead) material.getModernData();
     }
 
     @Override
     public String getPropertyString() {
-        return getComparator().getMode().name();
+        if (isComparator()) {
+            return getComparator().getMode().name();
+        }
+        else {
+            return getPistonHead().isShort() ? "SHORT" : "NORMAL";
+        }
     }
 
     @Override
@@ -77,12 +101,19 @@ public class MaterialMode implements Property {
         // @name mode
         // @input ElementTag
         // @description
-        // Sets comparator's mode between compare and subtract.
+        // Set a block's mode.
+        // For comparators, input is COMPARE or SUBTRACT.
+        // For piston_heads, input is NORMAL or SHORT.
         // @tags
         // <MaterialTag.mode>
         // -->
         if (mechanism.matches("mode") && mechanism.requireEnum(false, Comparator.Mode.values())) {
-            setMode(mechanism.getValue().asString().toUpperCase());
+            if (isComparator() && mechanism.requireEnum(false, Comparator.Mode.values())) {
+                getComparator().setMode(Comparator.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isPistonHead()) {
+                getPistonHead().setShort(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "short"));
+            }
         }
     }
 }
