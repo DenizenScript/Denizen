@@ -132,6 +132,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return NotableManager.getSavedId(location);
     }
 
+    @Override
     public void forget() {
         NotableManager.remove(this);
     }

@@ -56,9 +56,7 @@ public class NoteCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesPrefix("as", "i", "id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
@@ -72,7 +70,6 @@ public class NoteCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("id")) {
             throw new InvalidArgumentsException("Must specify an id");
         }
@@ -82,24 +79,20 @@ public class NoteCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("remove")) {
             scriptEntry.addObject("remove", new ElementTag(false));
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         String object = (String) scriptEntry.getObject("object");
         ElementTag id = scriptEntry.getElement("id");
         ElementTag remove = scriptEntry.getElement("remove");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("object", object) + id.debug() + remove.debug());
-
         }
-
         if (remove.asBoolean()) {
-            if (NotableManager.remove(id.asString()) != null) {
+            Notable note = NotableManager.getSavedObject(id.asString());
+            if (note != null) {
+                note.forget();
                 Debug.echoDebug(scriptEntry, "notable '" + id.asString() + "' removed");
             }
             else {
@@ -107,35 +100,26 @@ public class NoteCommand extends AbstractCommand {
             }
             return;
         }
-
         String object_type = CoreUtilities.toLowerCase(object.split("@")[0]);
         Class object_class = ObjectFetcher.getObjectClass(object_type);
-
         if (object_class == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Invalid object type! Could not fetch '" + object_type + "'!");
             return;
         }
-
         ObjectTag arg;
         try {
-
             if (!ObjectFetcher.checkMatch(object_class, object)) {
-                Debug.echoError(scriptEntry.getResidingQueue(), "'" + object
-                        + "' is an invalid " + object_class.getSimpleName() + ".");
+                Debug.echoError(scriptEntry.getResidingQueue(), "'" + object + "' is an invalid " + object_class.getSimpleName() + ".");
                 return;
             }
-
             arg = ObjectFetcher.getObjectFrom(object_class, object, scriptEntry.entryData.getTagContext());
-
             if (arg instanceof Notable) {
                 ((Notable) arg).makeUnique(id.asString());
             }
-
         }
         catch (Exception e) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
             Debug.echoError(scriptEntry.getResidingQueue(), e);
         }
-
     }
 }

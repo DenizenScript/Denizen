@@ -182,6 +182,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         noteName = id;
     }
 
+    @Override
     public void forget() {
         flagTracker = null;
         NotableManager.remove(this);

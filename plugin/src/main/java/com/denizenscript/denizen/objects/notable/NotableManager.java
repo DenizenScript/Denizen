@@ -62,17 +62,19 @@ public class NotableManager {
         if (object == null) {
             return;
         }
-        notableObjects.put(CoreUtilities.toLowerCase(id), object);
-        reverseObjects.put(object, CoreUtilities.toLowerCase(id));
+        id = CoreUtilities.toLowerCase(id);
+        notableObjects.put(id, object);
+        reverseObjects.put(object, id);
         notesByType.get(object.getClass()).add(object);
     }
 
     public static Notable remove(String id) {
-        Notable obj = notableObjects.get(CoreUtilities.toLowerCase(id));
+        id = CoreUtilities.toLowerCase(id);
+        Notable obj = notableObjects.get(id);
         if (obj == null) {
             return null;
         }
-        notableObjects.remove(CoreUtilities.toLowerCase(id));
+        notableObjects.remove(id);
         reverseObjects.remove(obj);
         notesByType.get(obj.getClass()).remove(obj);
         return obj;
@@ -80,7 +82,7 @@ public class NotableManager {
 
     public static void remove(Notable obj) {
         String id = reverseObjects.get(obj);
-        notableObjects.remove(CoreUtilities.toLowerCase(id));
+        notableObjects.remove(id);
         reverseObjects.remove(obj);
         notesByType.get(obj.getClass()).remove(obj);
     }
