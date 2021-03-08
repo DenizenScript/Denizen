@@ -384,17 +384,17 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         }, "is_pickle");
 
         // <--[tag]
-        // @attribute <MaterialTag.is_slab>
+        // @attribute <MaterialTag.has_type>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a slab.
-        // When this returns true, <@link tag MaterialTag.slab_type>,
-        // and <@link mechanism MaterialTag.slab_type> are accessible.
+        // Returns whether the material has a block sub-type.
+        // When this returns true, <@link tag MaterialTag.type>,
+        // and <@link mechanism MaterialTag.type> are accessible.
         // -->
-        registerTag("is_slab", (attribute, object) -> {
-            return new ElementTag(MaterialSlab.describes(object));
-        });
+        registerTag("has_type", (attribute, object) -> {
+            return new ElementTag(MaterialBlockType.describes(object));
+        }, "is_slab");
 
         // <--[tag]
         // @attribute <MaterialTag.is_snowable>
