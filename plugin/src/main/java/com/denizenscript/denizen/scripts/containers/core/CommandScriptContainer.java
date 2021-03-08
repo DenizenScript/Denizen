@@ -143,7 +143,7 @@ public class CommandScriptContainer extends ScriptContainer {
 
     public CommandScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
-        CommandScriptHelper.registerDenizenCommand(new DenizenCommand(this));
+        CommandScriptHelper.commandScripts.put(getName(), this);
         if (contains("tab complete")) {
             hasProcStyleTabComplete = true;
         }

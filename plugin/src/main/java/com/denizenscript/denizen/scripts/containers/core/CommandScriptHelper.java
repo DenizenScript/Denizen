@@ -30,6 +30,7 @@ public class CommandScriptHelper implements Listener {
     public static Map<String, HelpTopic> overriddenHelpTopics = new HashMap<>();
     public static Map<String, Command> knownCommands = null;
     public static Map<String, HelpTopic> helpTopics = null;
+    public static final Map<String, CommandScriptContainer> commandScripts = new HashMap<>();
     public static boolean hasCommandInformation = true;
 
     public CommandScriptHelper() {
@@ -93,6 +94,9 @@ public class CommandScriptHelper implements Listener {
 
     @EventHandler
     public void scriptReload(ScriptReloadEvent event) {
+        for (CommandScriptContainer script : commandScripts.values()) {
+            registerDenizenCommand(new DenizenCommand(script));
+        }
         syncDenizenCommands();
     }
 

@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.map.MapView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MapScriptContainer extends ScriptContainer {

@@ -399,12 +399,10 @@ public class Denizen extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
             try {
                 exCommand.processTagList();
-                // Process script files (events, etc).
-                DenizenCore.postLoadScripts();
-                // Synchronize any script commands added while loading scripts.
-                CommandScriptHelper.syncDenizenCommands();
                 // Reload notables from notables.yml into memory
                 notableManager.reloadNotables();
+                // Process script files (events, etc).
+                DenizenCore.postLoadScripts();
                 Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
                 // Fire the 'on Server Start' world event
                 ServerStartScriptEvent.instance.fire();
