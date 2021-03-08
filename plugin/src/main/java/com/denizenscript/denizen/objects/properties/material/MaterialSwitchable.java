@@ -6,20 +6,29 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.DaylightDetector;
 import org.bukkit.block.data.type.Dispenser;
+import org.bukkit.block.data.type.Piston;
 
 public class MaterialSwitchable  implements Property {
 
     public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData() instanceof Powerable
-                || ((MaterialTag) material).getModernData() instanceof Openable
-                || ((MaterialTag) material).getModernData() instanceof Dispenser
-                || ((MaterialTag) material).getModernData() instanceof DaylightDetector);
+        if (!(material instanceof MaterialTag)) {
+            return false;
+        }
+        MaterialTag mat = (MaterialTag) material;
+        if (!mat.hasModernData()) {
+            return false;
+        }
+        BlockData data = mat.getModernData();
+        return data instanceof Powerable
+                || data instanceof Openable
+                || data instanceof Dispenser
+                || data instanceof DaylightDetector
+                || data instanceof Piston;
     }
 
     public static MaterialSwitchable getFrom(ObjectTag _material) {
@@ -49,7 +58,7 @@ public class MaterialSwitchable  implements Property {
         // @mechanism MaterialTag.switched
         // @group properties
         // @description
-        // Returns whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser, or a daylight sensor is switched.
+        // Returns whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, or a piston is switched.
         // -->
         PropertyParser.<MaterialSwitchable>registerTag("switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -72,6 +81,10 @@ public class MaterialSwitchable  implements Property {
         return material.getModernData() instanceof Dispenser;
     }
 
+    public boolean isDaylightDetector() {
+        return material.getModernData() instanceof DaylightDetector;
+    }
+
     public Openable getOpenable() {
         return (Openable) material.getModernData();
     }
@@ -84,6 +97,10 @@ public class MaterialSwitchable  implements Property {
         return (DaylightDetector) material.getModernData();
     }
 
+    public Piston getPiston() {
+        return (Piston) material.getModernData();
+    }
+
     public boolean getState() {
         if (isOpenable()) {
             return getOpenable().isOpen();
@@ -94,8 +111,11 @@ public class MaterialSwitchable  implements Property {
         else if (isDisepnser()) {
             return getDispenser().isTriggered();
         }
-        else {
+        else if (isDaylightDetector()) {
             return getDaylightDetector().isInverted();
+        }
+        else {
+            return getPiston().isExtended();
         }
     }
 
@@ -109,8 +129,11 @@ public class MaterialSwitchable  implements Property {
         else if (isDisepnser()) {
             getDispenser().setTriggered(state);
         }
-        else {
+        else if (isDaylightDetector()) {
             getDaylightDetector().setInverted(state);
+        }
+        else {
+            getPiston().setExtended(state);
         }
     }
 
@@ -132,7 +155,7 @@ public class MaterialSwitchable  implements Property {
         // @name switched
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a Powerable material (like pressure plates) or an Openable material (like doors), or a dispenser, or a daylight sensor is switched.
+        // Sets whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, or a piston is switched.
         // @tags
         // <MaterialTag.switched>
         // -->
