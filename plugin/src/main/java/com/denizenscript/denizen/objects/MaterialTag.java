@@ -308,7 +308,8 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a bisected material (doors, beds, double chests, double plants, ...).
+        // Returns whether the material type is a bisected material type (doors, beds, double chests, double plants, ...).
+        // Some MaterialTag instances, such as single chests, may return true for this tag even though the specific material instance is not bisected.
         // When this returns true, <@link tag MaterialTag.half>, <@link tag MaterialTag.relative_vector>
         // and <@link mechanism MaterialTag.half> are accessible.
         // -->
@@ -317,17 +318,17 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.is_bamboo>
+        // @attribute <MaterialTag.has_leaf_size>
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a bamboo material.
+        // Returns whether the material has a bamboo leaf size (currently only bamboo).
         // When this returns true, <@link tag MaterialTag.leaf_size>,
         // and <@link mechanism MaterialTag.leaf_size> are accessible.
         // -->
-        registerTag("is_bamboo", (attribute, object) -> {
+        registerTag("has_leaf_size", (attribute, object) -> {
             return new ElementTag(MaterialLeafSize.describes(object));
-        });
+        }, "is_bamboo");
 
         // <--[tag]
         // @attribute <MaterialTag.is_levelable>
@@ -419,7 +420,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // and <@link mechanism MaterialTag.switch_face> are accessible.
         // -->
         registerTag("is_switch", (attribute, object) -> {
-            return new ElementTag(MaterialSnowable.describes(object));
+            return new ElementTag(MaterialSwitchFace.describes(object));
         });
 
         // <--[tag]

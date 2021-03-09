@@ -620,6 +620,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return this;
     }
 
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+        backupWorld = world == null ? null : world.getName();
+    }
+
     public double distanceSquaredNoWorld(Location loc2) {
         return NumberConversions.square(getX() - loc2.getX()) + NumberConversions.square(getY() - loc2.getY()) + NumberConversions.square(getZ() - loc2.getZ());
     }
@@ -1565,6 +1571,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns LocationTag
         // @description
         // Returns the exact impact normal at the location this location is pointing at.
+        // In minecraft, the impact normal is generally the side of the block that the location is facing.
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         registerTag("precise_impact_normal", (attribute, object) -> {
@@ -2802,7 +2809,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.vector_to_face>
         // @returns ElementTag
         // @description
-        // Returns the name of the BlockFace represented by a vector.
+        // Returns the name of the BlockFace represented by a normal vector.
         // Result can be any of the following:
         // NORTH, EAST, SOUTH, WEST, UP, DOWN, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST,
         // WEST_NORTH_WEST, NORTH_NORTH_WEST, NORTH_NORTH_EAST, EAST_NORTH_EAST, EAST_SOUTH_EAST,

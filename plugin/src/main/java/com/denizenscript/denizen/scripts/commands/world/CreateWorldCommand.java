@@ -40,7 +40,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     // This command creates a new minecraft world with the specified name, or loads an existing world by that name.
     //
     // Optionally specify a plugin-based world generator by it's generator ID.
-    // If you want an empty void world, you can use "generate:denizen:void".
+    // If you want an empty void world, you can use "generator:denizen:void".
     //
     // Optionally specify additional generator settings as JSON input.
     //
