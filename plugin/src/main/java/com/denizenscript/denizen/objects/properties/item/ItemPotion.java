@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -376,53 +375,5 @@ public class ItemPotion implements Property {
             }
             item.setItemMeta(meta);
         }
-
-        if (mechanism.matches("potion")) {
-            String[] data = mechanism.getValue().asString().split(",", 4);
-            if (data.length < 4) {
-                if (mechanism.getValue().isInt()) {
-                    item.getItemStack().setDurability((short) mechanism.getValue().asInt());
-                }
-                else {
-                    mechanism.echoError("Invalid effect format, use name,amplifier,extended,splash.");
-                }
-            }
-            else {
-                ElementTag data1 = new ElementTag(data[1]);
-                ElementTag data2 = new ElementTag(data[2]);
-                ElementTag data3 = new ElementTag(data[3]);
-                PotionType type;
-                try {
-                    type = PotionType.valueOf(data[0].toUpperCase());
-                }
-                catch (Exception ex) {
-                    mechanism.echoError("Invalid potion effect type '" + data[0] + "'");
-                    return;
-                }
-                if (!data1.isInt()) {
-                    mechanism.echoError("Cannot apply effect '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
-                    return;
-                }
-                if (!data2.isBoolean()) {
-                    mechanism.echoError("Cannot apply effect '" + data[0] + "': '" + data[2] + "' is not a valid boolean!");
-                    return;
-                }
-                if (!data3.isBoolean()) {
-                    mechanism.echoError("Cannot apply effect '" + data[0] + "': '" + data[3] + "' is not a valid boolean!");
-                    return;
-                }
-                Potion pot = new Potion(type);
-                int d1 = data1.asInt();
-                if (d1 >= 1 && d1 <= pot.getType().getMaxLevel()) {
-                    pot.setLevel(d1);
-                }
-                if (!pot.getType().isInstant()) {
-                    pot.setHasExtendedDuration(data2.asBoolean());
-                }
-                pot.setSplash(data3.asBoolean());
-                pot.apply(item.getItemStack());
-            }
-        }
-
     }
 }

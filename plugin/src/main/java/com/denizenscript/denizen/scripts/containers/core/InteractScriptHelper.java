@@ -70,7 +70,7 @@ public class InteractScriptHelper {
         }
         if (!CooldownCommand.checkCooldown(player, interactScript.getName())) {
             if (Debug.shouldDebug(interactScript) && showDebug) {
-                Debug.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
+                Debug.log(ChatColor.GOLD + interactScript.getName() + " isn't cooled down yet! Skipping.");
                 return null;
             }
         }

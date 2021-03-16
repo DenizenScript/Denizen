@@ -104,7 +104,7 @@ public class MaterialBlockType implements Property {
         // For slabs, input is TOP, BOTTOM, or DOUBLE.
         // For piston_heads, input is NORMAL or STICKY.
         // @tags
-        // <MaterialTag.slab_type>
+        // <MaterialTag.type>
         // -->
         if (mechanism.matches("type") || (mechanism.matches("slab_type"))) {
             if (isSlab() && mechanism.requireEnum(false, Slab.Type.values())) {

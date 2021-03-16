@@ -1247,7 +1247,7 @@ public class ServerTagBase {
         // @attribute <server.list_files[<path>]>
         // @returns ListTag
         // @description
-        // Returns a list of all files in the specified directory. The starting path is /plugins/Denizen.
+        // Returns a list of all files (and directories) in the specified directory. The starting path is /plugins/Denizen.
         // -->
         if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
             File folder = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));

@@ -128,11 +128,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return null;
         }
         boolean announce = context == null ? defaultAnnounce : context.showErrors();
-
         string = string.replace("p@", "").replace("P@", "");
-
-        // Match as a UUID
-
         if (string.indexOf('-') >= 0) {
             try {
                 UUID uuid = UUID.fromString(string);
@@ -147,7 +143,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 // Nothing
             }
         }
-
         // Match as a player name
         if (playerNames.containsKey(CoreUtilities.toLowerCase(string))) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
