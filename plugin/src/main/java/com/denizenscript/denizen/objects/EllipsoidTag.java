@@ -410,7 +410,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // -->
         registerTag("random", (attribute, object) -> {
             // This is an awkward hack to try to weight towards the center a bit (to counteract the weight-away-from-center that would otherwise happen).
-            double y = Math.sqrt((CoreUtilities.getRandom().nextDouble() * 2 - 1) * (object.size.getY() * object.size.getY()));
+            double y = (Math.sqrt(CoreUtilities.getRandom().nextDouble()) * 2 - 1) * object.size.getY();
             Vector result = new Vector();
             result.setY(y);
             double yProg = Math.abs(y) / object.size.getY();
