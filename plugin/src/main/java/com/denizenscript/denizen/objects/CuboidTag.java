@@ -641,7 +641,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public boolean isUnique() {
-        return NotableManager.isSaved(this);
+        return noteName != null;
     }
 
     @Override
@@ -693,7 +693,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     @Override
     public String debuggable() {
         if (isUnique()) {
-            return "cu@" + NotableManager.getSavedId(this) + " <GR>(" + identifyFull() + ")";
+            return "cu@" + noteName + " <GR>(" + identifyFull() + ")";
         }
         else {
             return identifyFull();
@@ -703,7 +703,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     @Override
     public String identify() {
         if (isUnique()) {
-            return "cu@" + NotableManager.getSavedId(this);
+            return "cu@" + noteName;
         }
         else {
             return identifyFull();

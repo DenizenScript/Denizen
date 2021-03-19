@@ -272,7 +272,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     public String debuggable() {
         if (isUnique()) {
-            return "ellipsoid@" + NotableManager.getSavedId(this) + "<GR> (" + identifyFull() + ")";
+            return "ellipsoid@" + noteName + "<GR> (" + identifyFull() + ")";
         }
         else {
             return identifyFull();
@@ -281,7 +281,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     @Override
     public boolean isUnique() {
-        return NotableManager.isSaved(this);
+        return noteName != null;
     }
 
     @Override
@@ -347,7 +347,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     public String identify() {
         if (isUnique()) {
-            return "ellipsoid@" + NotableManager.getSavedId(this);
+            return "ellipsoid@" + noteName;
         }
         else {
             return identifyFull();

@@ -270,8 +270,6 @@ public class DenizenCommandHandler {
             desc = "Reloads various Denizen files from disk to memory.", modifiers = {"reload"},
             min = 1, max = 3, permission = "denizen.basic", flags = "a")
     public void reload(CommandContext args, CommandSender sender) throws CommandException {
-
-        // Get reload type
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
             DenizenCore.reloadScripts();
@@ -283,7 +281,6 @@ public class DenizenCommandHandler {
             }
             return;
         }
-        // Reload a specific item
         if (args.length() > 2) {
             if (args.getString(1).equalsIgnoreCase("saves")) {
                 denizen.reloadSaves();
@@ -310,13 +307,11 @@ public class DenizenCommandHandler {
                 return;
             }
         }
-
         Messaging.send(sender, "");
         Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTES, CONFIG, SCRIPTS");
         Messaging.send(sender, "<b>Example: /denizen reload scripts");
         Messaging.send(sender, "<f>Use '-a' to reload all parts.");
         Messaging.send(sender, "");
-
     }
 
     /*
@@ -327,7 +322,6 @@ public class DenizenCommandHandler {
             desc = "Lists currently loaded dScripts.", modifiers = {"scripts"},
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender) throws CommandException {
-        // Fill arguments
         String type = null;
         if (args.hasValueFlag("type")) {
             type = args.getFlag("type");
@@ -337,13 +331,10 @@ public class DenizenCommandHandler {
             filter = args.getFlag("filter");
         }
         Set<String> scripts = ScriptRegistry.scriptContainers.keySet();
-        // New Paginator to display script names
         Paginator paginator = new Paginator().header("Scripts");
         paginator.addLine("<e>Key: <a>Type  <b>Name");
-        // Add scripts to Paginator
         for (String script : scripts) {
             ScriptContainer scriptContainer = ScriptRegistry.getScriptContainer(script);
-            // If a --type has been specified...
             if (type != null) {
                 if (scriptContainer.getContainerType().equalsIgnoreCase(type)) {
                     if (filter != null) {
@@ -355,7 +346,6 @@ public class DenizenCommandHandler {
                         paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
                     }
                 }
-                // If a --filter has been specified...
             }
             else if (filter != null) {
                 if (script.contains(filter.toUpperCase())) {
@@ -366,7 +356,6 @@ public class DenizenCommandHandler {
                 paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
             }
         }
-        // Send the contents of the Paginator to the Player (or Console)
         if (!paginator.sendPage(sender, args.getInteger(1, 1))) {
             throw new CommandException("The page " + args.getInteger(1, 1) + " does not exist.");
         }

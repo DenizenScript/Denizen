@@ -159,22 +159,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (string == null) {
             return null;
         }
-
         if (string.startsWith("l@")) {
             string = string.substring(2);
         }
-
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof LocationTag) {
             return (LocationTag) noted;
         }
-
-        ////////
-        // Match location formats
-
-        // Split values
         List<String> split = CoreUtilities.split(string, ',');
-
         if (split.size() == 2)
         // If 4 values, world-less 2D location format
         // x,y
@@ -301,11 +293,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
         }
-
         if (context == null || context.showErrors()) {
             Debug.log("Minor: valueOf LocationTag returning null: " + string);
         }
-
         return null;
     }
 
@@ -313,11 +303,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (string == null || string.length() == 0) {
             return false;
         }
-
         if (string.startsWith("l@")) {
             return true;
         }
-
         return LocationTag.valueOf(string, new BukkitTagContext(null, null, null, false, null)) != null;
     }
 
@@ -329,8 +317,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     /////////////////////
     //   CONSTRUCTORS
     //////////////////
-
-    private boolean is2D = false;
 
     /**
      * Turns a Bukkit Location into a LocationTag, which has some helpful methods
@@ -352,7 +338,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     public LocationTag(World world, double x, double y) {
         this(world, x, y, 0);
-        this.is2D = true;
     }
 
     /**
@@ -853,11 +838,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return saved;
         }
         else if (getWorldName() == null) {
-            return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "");
+            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ();
         }
         else {
-            return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "")
-                    + "," + getWorldName();
+            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ() + "," + getWorldName();
         }
     }
 
@@ -870,7 +854,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
         else {
             return "l@" + CoreUtilities.doubleToString(getX()) + "," + CoreUtilities.doubleToString(getY())
-                    + (!is2D ? "," + CoreUtilities.doubleToString(getZ()) : "")
+                    + "," + CoreUtilities.doubleToString(getZ())
                     + (getWorldName() != null ? "," + getWorldName() : "");
         }
     }

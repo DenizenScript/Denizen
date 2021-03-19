@@ -403,7 +403,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public boolean isUnique() {
-        return NotableManager.isSaved(this);
+        return noteName != null;
     }
 
     @Override
@@ -451,7 +451,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     @Override
     public String debuggable() {
         if (isUnique()) {
-            return "polygon@" + NotableManager.getSavedId(this) + " <GR>(" + identifyFull() + ")";
+            return "polygon@" + noteName + " <GR>(" + identifyFull() + ")";
         }
         else {
             return identifyFull();
@@ -461,7 +461,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     @Override
     public String identify() {
         if (isUnique()) {
-            return "polygon@" + NotableManager.getSavedId(this);
+            return "polygon@" + noteName;
         }
         else {
             return identifyFull();

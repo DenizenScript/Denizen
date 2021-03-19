@@ -63,6 +63,10 @@ public class NotableManager {
             return;
         }
         id = CoreUtilities.toLowerCase(id);
+        Notable noted = notableObjects.get(id);
+        if (noted != null) {
+            noted.forget();
+        }
         notableObjects.put(id, object);
         reverseObjects.put(object, id);
         notesByType.get(object.getClass()).add(object);

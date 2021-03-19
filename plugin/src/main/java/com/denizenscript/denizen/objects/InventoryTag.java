@@ -126,8 +126,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     //   NOTABLE METHODS
     /////////////////
 
+    @Override
     public boolean isUnique() {
-        return NotableManager.isSaved(this);
+        return noteName != null;
     }
 
     public boolean isSaving = false;
@@ -159,27 +160,28 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     public String noteName;
 
     public void makeUnique(String id) {
-        uniquifier = null;
+        InventoryTag toNote = new InventoryTag(inventory, idType, idHolder);
+        toNote.uniquifier = null;
         String title = NMSHandler.getInstance().getTitle(inventory);
         if (title == null || title.startsWith("container.")) {
-            title = inventory.getType().getDefaultTitle();
+            title = toNote.inventory.getType().getDefaultTitle();
         }
-        ItemStack[] contents = inventory.getContents();
+        ItemStack[] contents = toNote.inventory.getContents();
         if (getInventoryType() == InventoryType.CHEST) {
-            inventory = Bukkit.getServer().createInventory(null, inventory.getSize(), title);
+            toNote.inventory = Bukkit.getServer().createInventory(null, toNote.inventory.getSize(), title);
         }
         else {
-            inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title);
+            toNote.inventory = Bukkit.getServer().createInventory(null, toNote.inventory.getType(), title);
         }
-        inventory.setContents(contents);
-        InventoryScriptHelper.notedInventories.put(inventory, this);
+        toNote.inventory.setContents(contents);
+        InventoryScriptHelper.notedInventories.put(toNote.inventory, toNote);
         if (!idType.equals("generic") && !idType.equals("script")) {
-            idType = "generic";
-            idHolder = new ElementTag(CoreUtilities.toLowerCase(getInventoryType().name()));
+            toNote.idType = "generic";
+            toNote.idHolder = new ElementTag(CoreUtilities.toLowerCase(getInventoryType().name()));
         }
-        flagTracker = new SavableMapFlagTracker();
-        NotableManager.saveAs(this, id);
-        noteName = id;
+        toNote.flagTracker = new SavableMapFlagTracker();
+        NotableManager.saveAs(toNote, id);
+        toNote.noteName = id;
     }
 
     @Override
@@ -197,14 +199,14 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        if (NotableManager.getSavedId(this) != null) {
+        if (noteName != null) {
             this.flagTracker = tracker;
         }
     }
 
     @Override
     public String getReasonNotFlaggable() {
-        if (NotableManager.getSavedId(this) == null) {
+        if (noteName == null) {
             return "the inventory is not noted - only noted inventories can hold flags";
         }
         return "unknown reason - something went wrong";
