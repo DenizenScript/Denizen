@@ -42,6 +42,11 @@ public class EntityHelperImpl extends EntityHelper {
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.Entity.class, "onGround");
 
     @Override
+    public void setInvisible(Entity entity, boolean invisible) {
+        ((CraftEntity) entity).getHandle().setInvisible(invisible);
+    }
+
+    @Override
     public double getAbsorption(LivingEntity entity) {
         return entity.getAbsorptionAmount();
     }

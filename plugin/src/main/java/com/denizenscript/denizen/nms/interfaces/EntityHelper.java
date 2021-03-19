@@ -23,6 +23,10 @@ import java.util.*;
 
 public abstract class EntityHelper {
 
+    public void setInvisible(Entity entity, boolean invisible) {
+        // Do nothing on older versions
+    }
+
     public abstract double getAbsorption(LivingEntity entity);
 
     public abstract void setAbsorption(LivingEntity entity, double value);

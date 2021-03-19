@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
@@ -87,6 +88,23 @@ public class InvisibleCommand extends AbstractCommand {
         }
     }
 
+    public void setInvisible(EntityTag entity, boolean visible) {
+        if (entity.getBukkitEntity() instanceof ArmorStand) {
+            ((ArmorStand) entity.getBukkitEntity()).setVisible(visible);
+        }
+        else if (entity.isLivingEntity() && !entity.isFake) {
+            if (visible) {
+                entity.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+            }
+            else {
+                new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(entity.getLivingEntity());
+            }
+        }
+        else {
+            NMSHandler.getEntityHelper().setInvisible(entity.getBukkitEntity(), !visible);
+        }
+    }
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag state = scriptEntry.getElement("state");
@@ -115,37 +133,17 @@ public class InvisibleCommand extends AbstractCommand {
         else {
             switch (Action.valueOf(state.asString().toUpperCase())) {
                 case FALSE:
-                    if (target.getBukkitEntity() instanceof ArmorStand) {
-                        ((ArmorStand) target.getBukkitEntity()).setVisible(true);
-                    }
-                    else {
-                        target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
-                    }
+                    setInvisible(target, true);
                     break;
                 case TRUE:
-                    if (target.getBukkitEntity() instanceof ArmorStand) {
-                        ((ArmorStand) target.getBukkitEntity()).setVisible(false);
-                    }
-                    else {
-                        new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
-                    }
+                    setInvisible(target, false);
                     break;
                 case TOGGLE:
                     if (target.getBukkitEntity() instanceof ArmorStand) {
-                        if (((ArmorStand) target.getBukkitEntity()).isVisible()) {
-                            ((ArmorStand) target.getBukkitEntity()).setVisible(true);
-                        }
-                        else {
-                            ((ArmorStand) target.getBukkitEntity()).setVisible(false);
-                        }
+                        setInvisible(target, !((ArmorStand) target.getBukkitEntity()).isVisible());
                     }
                     else {
-                        if (target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                            target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
-                        }
-                        else {
-                            new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
-                        }
+                        setInvisible(target, target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY));
                     }
                     break;
             }
