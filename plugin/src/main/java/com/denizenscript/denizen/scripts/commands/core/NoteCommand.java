@@ -33,7 +33,7 @@ public class NoteCommand extends AbstractCommand {
     // Noted objects are "permanent" versions of other ObjectTags. (See: <@link language ObjectTags>)
     // Noted objects keep their properties when added.
     //
-    // Notable object types: CuboidTag, EllipsoidTag, LocationTag, InventoryTag
+    // Notable object types: CuboidTag, EllipsoidTag, PolygonTag, LocationTag, InventoryTag
     //
     // @Tags
     // <server.notables[<type>]>

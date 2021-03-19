@@ -1203,7 +1203,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                     Deprecations.qtyTags.warn(attribute.context);
                 }
                 int qty = attribute.getIntContext(2);
-                items.get(0).setAmount(qty);
+                ItemTag itemZero = new ItemTag(items.get(0).getItemStack().clone());
+                itemZero.setAmount(qty);
+                items.set(0, itemZero);
                 attribute.fulfill(1);
             }
 
@@ -1250,7 +1252,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                     Deprecations.qtyTags.warn(attribute.context);
                 }
                 int qty = attribute.getIntContext(2);
-                items.get(0).setAmount(qty);
+                ItemTag itemZero = new ItemTag(items.get(0).getItemStack().clone());
+                itemZero.setAmount(qty);
+                items.set(0, itemZero);
                 attribute.fulfill(1);
             }
             for (ItemTag item: items) {
@@ -1292,7 +1296,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                     Deprecations.qtyTags.warn(attribute.context);
                 }
                 int qty = attribute.getIntContext(2);
-                items.get(0).setAmount(qty);
+                ItemTag itemZero = new ItemTag(items.get(0).getItemStack().clone());
+                itemZero.setAmount(qty);
+                items.set(0, itemZero);
                 attribute.fulfill(1);
             }
             for (ItemTag item : items) {
