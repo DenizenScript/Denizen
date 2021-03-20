@@ -47,6 +47,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityBeamTarget.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBodyArrows.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBoundingBox.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityCannotEnterHive.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
         PropertyParser.registerProperty(EntityColor.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCritical.class, EntityTag.class);
@@ -59,9 +62,19 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFirework.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFixed.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityHasNectar.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityHasStung.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityHealth.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
+            PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
             PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
         }
