@@ -351,7 +351,7 @@ public class DisguiseCommand extends AbstractCommand {
                 playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
                 playerMap.put(null, disguise);
                 disguise.isActive = true;
-                ArrayList<PlayerTag> playerSet = new ArrayList<>(players);
+                ArrayList<PlayerTag> playerSet = players == null ? new ArrayList<>() : new ArrayList<>(players);
                 for (Player player : entity.getWorld().getPlayers()) {
                     if (!playerSet.contains(new PlayerTag(player)) && !player.getUniqueId().equals(entity.getUUID())) {
                         playerSet.add(new PlayerTag(player));
@@ -360,10 +360,12 @@ public class DisguiseCommand extends AbstractCommand {
                 disguise.sendTo(playerSet);
             }
             else {
-                for (PlayerTag player : players) {
-                    playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
-                    playerMap.put(player.getUUID(), disguise);
-                    disguise.isActive = true;
+                if (players != null) {
+                    for (PlayerTag player : players) {
+                        playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
+                        playerMap.put(player.getUUID(), disguise);
+                        disguise.isActive = true;
+                    }
                 }
                 disguise.sendTo(players);
             }

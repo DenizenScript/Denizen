@@ -351,7 +351,7 @@ public class TextTagBase {
         }, "p");
 
         // <--[tag]
-        // @attribute <&hover[<hover text>]>
+        // @attribute <&hover[<hover_text>]>
         // @returns ElementTag
         // @description
         // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
@@ -366,7 +366,7 @@ public class TextTagBase {
                   String hoverText = attribute.getContext(1);
 
                   // <--[tag]
-                  // @attribute <&hover[<hover text>].type[<type>]>
+                  // @attribute <&hover[<hover_text>].type[<type>]>
                   // @returns ElementTag
                   // @description
                   // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
@@ -386,7 +386,7 @@ public class TextTagBase {
           }, "&hover");
 
         // <--[tag]
-        // @attribute <&click[<click command>]>
+        // @attribute <&click[<click_command>]>
         // @returns ElementTag
         // @description
         // Returns a special chat code that makes the following text execute the input command line value when clicked.
@@ -403,7 +403,7 @@ public class TextTagBase {
                 String clickText = attribute.getContext(1);
 
                 // <--[tag]
-                // @attribute <&click[<click command>].type[<type>]>
+                // @attribute <&click[<click_command>].type[<type>]>
                 // @returns ElementTag
                 // @description
                 // Returns a special chat code that makes the following text execute the input command when clicked.
