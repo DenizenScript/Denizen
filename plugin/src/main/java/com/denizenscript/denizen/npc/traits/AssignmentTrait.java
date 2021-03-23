@@ -51,7 +51,7 @@ public class AssignmentTrait extends Trait {
      */
     @Override
     public void load(DataKey key) {
-        if (hasAssignment()) {
+        if (!hasAssignment()) {
             Debug.echoError("Missing assignment '" + assignment + "' for NPC '" + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
         }
         npc.getOrAddTrait(ConstantsTrait.class).rebuildAssignmentConstants();
