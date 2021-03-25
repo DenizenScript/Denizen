@@ -483,7 +483,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         else {
             net.minecraft.server.v1_16_R3.Entity handle = ((CraftEntity) entity).getHandle();
-            handle.yaw = yaw;
+            handle.yaw = yaw - 360;
             handle.pitch = pitch;
         }
     }

@@ -401,8 +401,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             yaw = EntityAttachmentHelper.compressAngle(e.yaw);
                             pitch = EntityAttachmentHelper.compressAngle(e.pitch);
                         }
+                        byte newYaw = yaw;
                         if (isRotate) {
-                            yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                            newYaw = EntityAttachmentHelper.adaptedCompressedAngle(newYaw, att.positionalOffset.getYaw());
                             pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                         }
                         Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
@@ -425,10 +426,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
                             POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
                             POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
-                            YAW_PACKTELENT.setByte(newTeleportPacket, yaw);
+                            YAW_PACKTELENT.setByte(newTeleportPacket, newYaw);
                             PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
                             if (NMSHandler.debugPackets) {
-                                Debug.log("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                                Debug.log("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
                             oldManager.sendPacket(newTeleportPacket);
                         }
@@ -441,7 +442,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                                 PITCH_PACKENT.setByte(pNew, pitch);
                             }
                             if (NMSHandler.debugPackets) {
-                                Debug.log("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                                Debug.log("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
                             oldManager.sendPacket(pNew);
                         }
@@ -505,18 +506,18 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             yaw = YAW_PACKTELENT.getByte(packet);
                             pitch = PITCH_PACKTELENT.getByte(packet);
                         }
-                        yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                        byte newYaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
                         pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                         POS_X_PACKTELENT.setDouble(pNew, resultPos.getX());
                         POS_Y_PACKTELENT.setDouble(pNew, resultPos.getY());
                         POS_Z_PACKTELENT.setDouble(pNew, resultPos.getZ());
-                        YAW_PACKTELENT.setByte(pNew, yaw);
+                        YAW_PACKTELENT.setByte(pNew, newYaw);
                         PITCH_PACKTELENT.setByte(pNew, pitch);
+                        if (NMSHandler.debugPackets) {
+                            Debug.log("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with raw yaw " + yaw + " adapted to " + newYaw);
+                        }
                     }
                     att.visiblePositions.put(player.getUniqueID(), resultPos.clone());
-                    if (NMSHandler.debugPackets) {
-                        Debug.log("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
-                    }
                     oldManager.sendPacket(pNew);
                 }
             }
