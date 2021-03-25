@@ -213,6 +213,7 @@ public class Debug {
             fullMessage.append(ChatColor.GRAY).append(" ... ").append(ChatColor.RED).append("Enable debug on the script for more information.");
         }
         finalOutputDebugText(fullMessage.toString(), sourceQueue, reformat);
+        errorDuplicatePrevention = false;
         if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
@@ -223,7 +224,6 @@ public class Debug {
             }
             depthCorrectError--;
         }
-        errorDuplicatePrevention = false;
     }
 
     static long depthCorrectError = 0;
@@ -439,6 +439,7 @@ public class Debug {
                 .replace("<Y>", ChatColor.YELLOW.toString())
                 .replace("<O>", ChatColor.GOLD.toString()) // 'orange'
                 .replace("<G>", ChatColor.DARK_GRAY.toString())
+                .replace("<LG>", ChatColor.GRAY.toString())
                 .replace("<GR>", ChatColor.GREEN.toString())
                 .replace("<A>", ChatColor.AQUA.toString())
                 .replace("<R>", ChatColor.DARK_RED.toString())
