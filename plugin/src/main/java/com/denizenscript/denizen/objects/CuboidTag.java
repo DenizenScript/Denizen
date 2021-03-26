@@ -663,9 +663,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public void forget() {
+        NotableManager.remove(this);
         noteName = null;
         flagTracker = null;
-        NotableManager.remove(this);
     }
 
     /////////////////////

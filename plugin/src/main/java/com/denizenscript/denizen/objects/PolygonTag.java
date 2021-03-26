@@ -425,9 +425,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public void forget() {
+        NotableManager.remove(this);
         noteName = null;
         flagTracker = null;
-        NotableManager.remove(this);
     }
 
     String prefix = "Polygon";

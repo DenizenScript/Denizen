@@ -125,9 +125,8 @@ public class NotableManager {
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, objText, CoreUtilities.errorButNoDebugContext);
                 if (obj != null) {
                     obj.makeUnique(notable);
-                    obj = getSavedObject(notable);
                     if (flagText != null && obj instanceof FlaggableObject) {
-                        ((FlaggableObject) obj).reapplyTracker(new SavableMapFlagTracker(flagText));
+                        ((FlaggableObject) getSavedObject(notable)).reapplyTracker(new SavableMapFlagTracker(flagText));
                     }
                 }
                 else {
