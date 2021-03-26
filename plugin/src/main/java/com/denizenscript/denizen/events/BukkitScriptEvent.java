@@ -862,18 +862,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runGenericCheck(comparedto, world.getName());
     }
 
-    public boolean tryInventory(InventoryTag inv, String comparedto) {
-        comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.equals("inventory")) {
-            return true;
+    public boolean compareInventoryToMatch(InventoryTag inv, MatchHelper matcher) {
+        if (matcher instanceof InverseMatchHelper) {
+            return !compareInventoryToMatch(inv, ((InverseMatchHelper) matcher).matcher);
         }
-        if (comparedto.equals("notable") || comparedto.equals("note")) {
-            return NotableManager.isSaved(inv);
-        }
-        if (comparedto.startsWith("inventory_flagged:")) {
-            return inv.flagTracker != null && inv.flagTracker.hasFlag(comparedto.substring("inventory_flagged:".length()));
-        }
-        MatchHelper matcher = createMatcher(comparedto);
         if (matcher.doesMatch(inv.getInventoryType().name())) {
             return true;
         }
@@ -891,6 +883,21 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         return false;
+    }
+
+    public boolean tryInventory(InventoryTag inv, String comparedto) {
+        comparedto = CoreUtilities.toLowerCase(comparedto);
+        if (comparedto.equals("inventory")) {
+            return true;
+        }
+        if (comparedto.equals("notable") || comparedto.equals("note")) {
+            return NotableManager.isSaved(inv);
+        }
+        if (comparedto.startsWith("inventory_flagged:")) {
+            return inv.flagTracker != null && inv.flagTracker.hasFlag(comparedto.substring("inventory_flagged:".length()));
+        }
+        MatchHelper matcher = createMatcher(comparedto);
+        return compareInventoryToMatch(inv, matcher);
     }
 
     public boolean tryItem(ItemTag item, String comparedto) {
@@ -992,13 +999,25 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         MatchHelper matcher = createMatcher(comparedto);
-        if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {
+        if (matcher instanceof InverseMatchHelper) {
+            matcher = ((InverseMatchHelper) matcher).matcher;
+            if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {
+                return false;
+            }
+            else if (matcher.doesMatch(entity.getEntityType().getLowercaseName())) {
+                return false;
+            }
             return true;
         }
-        else if (matcher.doesMatch(entity.getEntityType().getLowercaseName())) {
-            return true;
+        else {
+            if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {
+                return true;
+            }
+            else if (matcher.doesMatch(entity.getEntityType().getLowercaseName())) {
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
 }
