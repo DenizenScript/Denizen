@@ -1349,12 +1349,44 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         // <--[tag]
-        // @attribute <InventoryTag.contains[<item>|...]>
+        // @attribute <InventoryTag.contains_item[<matcher>]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the inventory contains all of the specified items.
-        // Note that this is usually a poor option, and a more specific option like <@link tag inventorytag.contains.material> is usually better.
+        // Returns whether the inventory contains any item that matches the specified item matcher.
+        // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
+        registerTag("contains_item", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            int qty = 1;
+            String matcher = attribute.getContext(1);
+
+            // <--[tag]
+            // @attribute <InventoryTag.contains_item[<matcher>].quantity[<#>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain number of items that match the specified item matcher.
+            // Uses the system behind <@link language Advanced Script Event Matching>.
+            // -->
+            if (attribute.startsWith("quantity", 2) && attribute.hasContext(2)) {
+                qty = attribute.getIntContext(2);
+                attribute.fulfill(1);
+            }
+            int found_items = 0;
+            for (ItemStack item : object.getContents()) {
+                if (item != null) {
+                    if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return new ElementTag(found_items >= qty);
+        });
+
         registerTag("contains", (attribute, object) -> {
             // <--[tag]
             // @attribute <InventoryTag.contains.display[(strict:)<element>]>
@@ -1532,13 +1564,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(found_items >= qty);
             }
-            // <--[tag]
-            // @attribute <InventoryTag.contains.scriptname[<scriptname>|...]>
-            // @returns ElementTag(Boolean)
-            // @description
-            // Returns whether the inventory contains an item with the specified scriptname(s).
-            // -->
             if (attribute.startsWith("scriptname", 2)) {
+                Deprecations.inventoryNonMatcherTags.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
@@ -1549,12 +1576,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 }
                 int qty = 1;
 
-                // <--[tag]
-                // @attribute <InventoryTag.contains.scriptname[<scriptname>|...].quantity[<#>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item with the specified scriptname(s).
-                // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
                         Deprecations.qtyTags.warn(attribute.context);
@@ -1577,13 +1598,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(found_items >= qty);
             }
-            // <--[tag]
-            // @attribute <InventoryTag.contains.flagged[<flag_name>|...]>
-            // @returns ElementTag(Boolean)
-            // @description
-            // Returns whether the inventory contains an item with the specified flag(s) set.
-            // -->
             if (attribute.startsWith("flagged", 2)) {
+                Deprecations.inventoryNonMatcherTags.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
@@ -1591,12 +1607,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 String[] flags = scrNameList.toArray(new String[0]);
                 int qty = 1;
 
-                // <--[tag]
-                // @attribute <InventoryTag.contains.flagged[<flag_name>|...].quantity[<#>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item with the specified flag(s) set.
-                // -->
                 if (attribute.startsWith("quantity", 3) && attribute.hasContext(3)) {
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
@@ -1645,25 +1655,14 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(found_items >= qty);
             }
-            // <--[tag]
-            // @attribute <InventoryTag.contains.material[<material>|...]>
-            // @returns ElementTag(Boolean)
-            // @description
-            // Returns whether the inventory contains an item with the specified material (except item script items).
-            // -->
             if (attribute.startsWith("material", 2)) {
+                Deprecations.inventoryNonMatcherTags.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
                 List<MaterialTag> materials = attribute.contextAsType(2, ListTag.class).filter(MaterialTag.class, attribute.context);
                 int qty = 1;
 
-                // <--[tag]
-                // @attribute <InventoryTag.contains.material[<material>|...].quantity[<#>]>
-                // @returns ElementTag(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item with the specified material (except item script items).
-                // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
                         Deprecations.qtyTags.warn(attribute.context);
@@ -1698,12 +1697,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             int qty = 1;
 
-            // <--[tag]
-            // @attribute <InventoryTag.contains[<item>|...].quantity[<#>]>
-            // @returns ElementTag(Boolean)
-            // @description
-            // Returns whether the inventory contains a certain quantity of all of the specified items.
-            // -->
+            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
                     Deprecations.qtyTags.warn(attribute.context);
@@ -1773,6 +1767,30 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         registerTag("first_empty", (attribute, object) -> {
             int val = object.firstEmpty(0);
             return new ElementTag(val >= 0 ? (val + 1) : -1);
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.find_item[<matcher>]>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the location of the first slot that contains an item that matches the given item matcher.
+        // Returns -1 if there's no match.
+        // Uses the system behind <@link language Advanced Script Event Matching>.
+        // -->
+        registerTag("find_item", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            String matcher = attribute.getContext(1);
+            for (int i = 0; i < object.inventory.getSize(); i++) {
+                ItemStack item = object.inventory.getItem(i);
+                if (item != null) {
+                    if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                        return new ElementTag(i);
+                    }
+                }
+            }
+            return new ElementTag(-1);
         });
 
         // <--[tag]
@@ -1916,20 +1934,28 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         // <--[tag]
-        // @attribute <InventoryTag.quantity[(<item>)]>
+        // @attribute <InventoryTag.quantity_item[(<matcher>)]>
         // @returns ElementTag(Number)
         // @description
-        // Returns the combined quantity of itemstacks that match an item if one is specified,
+        // Returns the combined quantity of itemstacks that match an item matcher if one is specified,
         // or the combined quantity of all itemstacks if one is not.
-        // Note that this is usually a poor option, and a more specific option like <@link tag inventorytag.quantity.material> is usually better.
+        // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
+        registerTag("quantity_item", (attribute, object) -> {
+            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            int found_items = 0;
+            for (ItemStack item : object.getContents()) {
+                if (item != null) {
+                    if (matcher == null || BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                        found_items += item.getAmount();
+                    }
+                }
+            }
+            return new ElementTag(found_items);
+        });
+
         registerTag("quantity", (attribute, object) -> {
-            // <--[tag]
-            // @attribute <InventoryTag.quantity.scriptname[<script>]>
-            // @returns ElementTag(Number)
-            // @description
-            // Returns the combined quantity of itemstacks that have the specified script name.
-            // -->
+            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("scriptname", 2)) {
                 if (!attribute.hasContext(2)) {
                     return null;
@@ -1938,12 +1964,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(object.countByScriptName(scriptName));
             }
-            // <--[tag]
-            // @attribute <InventoryTag.quantity.flagged[<flag_name>]>
-            // @returns ElementTag(Number)
-            // @description
-            // Returns the combined quantity of itemstacks that have the specified flag set.
-            // -->
             if (attribute.startsWith("flagged", 2)) {
                 if (!attribute.hasContext(2)) {
                     return null;
@@ -1952,13 +1972,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(object.countByFlag(flag));
             }
-
-            // <--[tag]
-            // @attribute <InventoryTag.quantity.material[<material>]>
-            // @returns ElementTag(Number)
-            // @description
-            // Returns the combined quantity of itemstacks that have the specified material (except for item script items).
-            // -->
             if (attribute.startsWith("material", 2)) {
                 if (!attribute.hasContext(2) || !MaterialTag.matches(attribute.getContext(2))) {
                     return null;

@@ -54,7 +54,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
     // but you can also specify "entity" (catch-all), "player" (real players, NOT player-type NPCs), "npc" (Citizens NPC),
     // "vehicle" (minecarts, boats, horses, etc), "fish" (cod, pufferfish, etc), "projectile" (arrow, trident, etc), "hanging" (painting, item_frame, etc),
-    // "monster" (creepers, zombies, etc), "animals" (pigs, cows, etc), "mob" (creepers, pigs, etc),
+    // "monster" (creepers, zombies, etc), "animals" (pigs, cows, etc), "mob" (creepers, pigs, etc), "living" (players, pigs, creepers, etc),
     // "entity_flagged:<flag_name>", "npc_flagged:<flag_name>", "player_flagged:<flag_name>" (all three work similar to 'item_flagged').
     //
     // "<inventory>" or similar expects of course an InventoryTag.
@@ -971,6 +971,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     return entity.isCitizensNPC();
                 case "player":
                     return entity.isPlayer();
+                case "living":
+                    return bEntity instanceof LivingEntity;
                 case "vehicle":
                     return bEntity instanceof Vehicle;
                 case "fish":

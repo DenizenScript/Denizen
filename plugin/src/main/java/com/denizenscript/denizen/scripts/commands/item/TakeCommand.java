@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
@@ -35,14 +36,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/cursoritem/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/material:<material>/<item>|...] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -61,13 +62,11 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'cursoritem' will take from the player's held cursor item (as in, one that's actively being picked up and moved in an inventory screen).
     //
-    // Using 'scriptname:' will take items with the specified item script name.
-    //
     // Using 'bydisplay:' will take items with the specified display name.
     //
     // Using 'bycover:' will take a written book by the specified book title + author pair.
     //
-    // Using 'material:' will take items of the specified material type (except for script items).
+    // Using 'item:' will take items that match an advanced item matcher, using the system behind <@link language Advanced Script Event Matching>.
     //
     // Using 'xp' will take experience from the player.
     //
@@ -104,7 +103,7 @@ public class TakeCommand extends AbstractCommand {
     // - take material:emerald quantity:5
     // -->
 
-    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED}
+    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED, MATCHER}
 
     public static HashSet<Type> requiresPlayerTypes = new HashSet<>(Arrays.asList(Type.XP, Type.MONEY, Type.ITEMINHAND, Type.CURSORITEM));
 
@@ -178,13 +177,21 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("item")) {
+                scriptEntry.addObject("type", Type.MATCHER);
+                scriptEntry.addObject("matcher_text", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("type")
+                    && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("material")) {
+                Deprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MATERIAL);
                 scriptEntry.addObject("material", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("script", "scriptname")) {
+                Deprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.SCRIPTNAME);
                 scriptEntry.addObject("scriptitem", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
@@ -197,6 +204,7 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesArgumentList(ItemTag.class)) {
+                Deprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("items", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
@@ -241,6 +249,7 @@ public class TakeCommand extends AbstractCommand {
         ListTag slotList = scriptEntry.getObjectTag("slot");
         ListTag titleAuthor = scriptEntry.getObjectTag("cover");
         ElementTag nbtKey = scriptEntry.getElement("nbt_key");
+        ElementTag matcherText = scriptEntry.getElement("matcher_text");
         ListTag flagList = scriptEntry.getObjectTag("flag_name");
         List<MaterialTag> materialList = scriptEntry.getObjectTag("material");
         Type type = (Type) scriptEntry.getObject("type");
@@ -255,6 +264,7 @@ public class TakeCommand extends AbstractCommand {
                             + (slotList != null ? slotList.debug() : "")
                             + (nbtKey != null ? nbtKey.debug() : "")
                             + (flagList != null ? flagList.debug() : "")
+                            + (matcherText != null ? matcherText.debug() : "")
                             + (materialList != null ? ArgumentHelper.debugList("material",  materialList) : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));
         }
@@ -397,6 +407,14 @@ public class TakeCommand extends AbstractCommand {
                 for (MaterialTag material : materialList) {
                     takeByMatcher(inventory, (item) -> item.getType() == material.getMaterial() && !(new ItemTag(item).isItemscript()), quantity.asInt());
                 }
+                break;
+            }
+            case MATCHER: {
+                if (matcherText == null) {
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify an item matcher!");
+                    return;
+                }
+                takeByMatcher(inventory, (item) -> BukkitScriptEvent.tryItem(new ItemTag(item), matcherText.asString()), quantity.asInt());
                 break;
             }
             case SLOT: {

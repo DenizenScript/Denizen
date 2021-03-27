@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
@@ -2190,6 +2191,33 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return new ListTag(found);
         });
 
+        // <--[tag]
+        // @attribute <LocationTag.find_entities[(<matcher>)].within[<#.#>]>
+        // @returns ListTag(EntityTag)
+        // @description
+        // Returns a list of entities within a radius, with an optional search parameter for the entity type.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // -->
+        registerTag("find_entities", (attribute, object) -> {
+            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            if (!attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
+                return null;
+            }
+            double radius = attribute.getDoubleContext(2);
+            attribute.fulfill(1);
+            ListTag found = new ListTag();
+            for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {
+                if (Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
+                    EntityTag current = new EntityTag(entity);
+                    if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
+                        found.addObject(current.getDenizenObject());
+                    }
+                }
+            }
+            found.objectForms.sort((ent1, ent2) -> object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation()));
+            return new ListTag(found.objectForms);
+        });
+
         registerTag("find", (attribute, object) -> {
             if (!attribute.startsWith("within", 3) || !attribute.hasContext(3)) {
                 return null;
@@ -2350,14 +2378,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return new ListTag(found);
             }
 
-            // <--[tag]
-            // @attribute <LocationTag.find.entities[(<entity>|...)].within[<#.#>]>
-            // @returns ListTag(EntityTag)
-            // @description
-            // Returns a list of entities within a radius, with an optional search parameter for the entity type.
-            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
-            // -->
             else if (attribute.startsWith("entities", 2)) {
+                Deprecations.locationFindEntities.warn(attribute.context);
                 ListTag ent_list = attribute.hasContext(2) ? attribute.contextAsType(2, ListTag.class) : null;
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
