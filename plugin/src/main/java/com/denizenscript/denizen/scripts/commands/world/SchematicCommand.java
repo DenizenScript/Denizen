@@ -508,8 +508,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         if (!event.matches("schematic")) {
             return;
         }
-        String id = event.hasNameContext() ? event.getNameContext().toUpperCase() : null;
-        Attribute attribute = event.getAttributes().fulfill(1);
+        Attribute attribute = event.getAttributes();
+        String id = attribute.hasContext(1) ? attribute.getContext(1).toUpperCase() : null;
+        attribute = attribute.fulfill(1);
 
         // <--[tag]
         // @attribute <schematic.list>

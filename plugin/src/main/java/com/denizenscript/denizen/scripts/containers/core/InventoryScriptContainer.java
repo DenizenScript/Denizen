@@ -60,6 +60,11 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   # | Some inventory scripts should have this key! Most can exclude it if 'slots' is used.
     //   size: 27
     //
+    //   # Set 'gui' to 'true' to indicate that the inventory is a GUI, meaning it's a set of buttons to be clicked, not a container of items.
+    //   # This will prevent players from taking items out of or putting items into the inventory.
+    //   # | SOME inventory scripts should have this key!
+    //   gui: true
+    //
     //   # You can use definitions to define items to use in the slots. These are not like normal script definitions, and do not need to be in a definition tag.
     //   # | Some inventory scripts MAY have this key, but it is optional. Most scripts will just specify items directly.
     //   definitions:
@@ -92,8 +97,11 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public InventoryScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        gui = CoreUtilities.equalsIgnoreCase(getString("gui", "false"), "true");
         InventoryScriptHelper.inventoryScripts.put(getName(), this);
     }
+
+    public boolean gui;
 
     public InventoryTag getInventoryFrom(TagContext context) {
         InventoryTag inventory;
