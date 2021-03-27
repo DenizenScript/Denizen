@@ -13,9 +13,11 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.entity.EntityType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FakeSpawnCommand extends AbstractCommand {
 
@@ -54,6 +56,13 @@ public class FakeSpawnCommand extends AbstractCommand {
     // - fakespawn creeper <player.location.forward[5]>
     //
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (EntityType entity : EntityType.values()) {
+            addOne.accept(entity.name());
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

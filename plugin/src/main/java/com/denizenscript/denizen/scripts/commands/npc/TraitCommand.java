@@ -13,9 +13,11 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.TraitInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TraitCommand extends AbstractCommand {
 
@@ -64,8 +66,14 @@ public class TraitCommand extends AbstractCommand {
     private enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
+            addOne.accept(trait.getTraitName());
+        }
+    }
 
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("state")
                     && arg.matchesPrefix("state", "s")
@@ -83,7 +91,6 @@ public class TraitCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("trait")) {
             throw new InvalidArgumentsException("Missing trait argument!");
         }

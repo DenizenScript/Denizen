@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class SchematicCommand extends AbstractCommand implements Holdable, Listener {
 
@@ -133,6 +134,15 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     public void onBlockPhysics(BlockPhysicsEvent event) {
         if (noPhys) {
             event.setCancelled(true);
+        }
+    }
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("name:")) {
+            for (String schem : schematics.keySet()) {
+                addOne.accept("name:" + schem);
+            }
         }
     }
 

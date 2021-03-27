@@ -17,6 +17,7 @@ import org.bukkit.WorldType;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class CreateWorldCommand extends AbstractCommand implements Holdable {
@@ -74,6 +75,20 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     // Use to create a new world named 'dungeon3' as a copy of an existing world named 'dungeon_template'.
     // - ~createworld dungeon3 copy_from:dungeon_template
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("environment:")) {
+            for (World.Environment env : World.Environment.values()) {
+                addOne.accept("environment:" + env);
+            }
+        }
+        if (arg.startsWith("worldtype:")) {
+            for (WorldType type : WorldType.values()) {
+                addOne.accept("worldtype:" + type);
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -15,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class AdjustBlockCommand extends AbstractCommand {
 
@@ -55,6 +57,13 @@ public class AdjustBlockCommand extends AbstractCommand {
     // - adjustblock <player.cursor_on> switched:true no_physics
     //
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (String mech : PropertyParser.propertiesByClass.get(MaterialTag.class).propertiesByMechanism.keySet()) {
+            addOne.accept(mech);
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

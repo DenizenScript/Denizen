@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CastCommand extends AbstractCommand {
 
@@ -73,6 +74,13 @@ public class CastCommand extends AbstractCommand {
     // - if <player.has_effect[jump]>:
     //   - cast jump remove <player>
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (PotionEffectType effect : PotionEffectType.values()) {
+            addOne.accept(effect.getName());
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

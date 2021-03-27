@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -15,9 +16,11 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GiveCommand extends AbstractCommand {
 
@@ -65,6 +68,18 @@ public class GiveCommand extends AbstractCommand {
     // -->
 
     enum Type {ITEM, MONEY, EXP}
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Material material : Material.values()) {
+            if (material.isItem()) {
+                addOne.accept(material.name());
+            }
+        }
+        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
+            addOne.accept(itemScript);
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

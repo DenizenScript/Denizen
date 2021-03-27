@@ -15,6 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 
+import java.util.function.Consumer;
+
 public class StatisticCommand extends AbstractCommand {
 
     public StatisticCommand() {
@@ -61,6 +63,13 @@ public class StatisticCommand extends AbstractCommand {
     // -->
 
     private enum Action {ADD, TAKE, SET}
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Statistic stat : Statistic.values()) {
+            addOne.accept(stat.name());
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -13,10 +13,14 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.Listener;
+
+import java.util.function.Consumer;
 
 public class ZapCommand extends AbstractCommand implements Listener {
 
@@ -70,6 +74,15 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // Use to change the step to 1 for the defined player in a script called InteractScript.
     // - zap 1 InteractScript player:<[player]>
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
+            if (script instanceof InteractScriptContainer) {
+                addOne.accept(script.getName());
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

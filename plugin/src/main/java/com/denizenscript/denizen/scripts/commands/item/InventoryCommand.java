@@ -2,6 +2,8 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -9,6 +11,7 @@ import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
@@ -19,7 +22,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class InventoryCommand extends AbstractCommand {
 
@@ -138,6 +143,28 @@ public class InventoryCommand extends AbstractCommand {
     // -->
 
     private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (String mech : PropertyParser.propertiesByClass.get(ItemTag.class).propertiesByMechanism.keySet()) {
+            addOne.accept(mech);
+        }
+        if (arg.contains(":")) {
+            Consumer<String> addAll = (s) -> {
+                addOne.accept("o:" + s);
+                addOne.accept("origin:" + s);
+                addOne.accept("d:" + s);
+                addOne.accept("dest:" + s);
+                addOne.accept("destination:" + s);
+            };
+            for (InventoryTag inventory : (HashSet<InventoryTag>) ((HashSet) NotableManager.notesByType.get(InventoryTag.class))) {
+                addAll.accept(inventory.noteName);
+            }
+            for (String script : InventoryScriptHelper.inventoryScripts.keySet()) {
+                addAll.accept(script);
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     @Override

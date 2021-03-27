@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -10,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +21,7 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class DisplayItemCommand extends AbstractCommand implements Listener {
 
@@ -63,6 +66,18 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // Use to save the dropped item to save entry 'item_dropped'.
     // - displayitem redstone <context.location> duration:10s save:item_dropped
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Material material : Material.values()) {
+            if (material.isItem()) {
+                addOne.accept(material.name());
+            }
+        }
+        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
+            addOne.accept(itemScript);
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

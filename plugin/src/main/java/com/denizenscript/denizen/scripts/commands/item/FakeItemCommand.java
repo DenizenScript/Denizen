@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -16,12 +17,14 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.scheduling.OneTimeSchedulable;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FakeItemCommand extends AbstractCommand {
 
@@ -57,6 +60,18 @@ public class FakeItemCommand extends AbstractCommand {
     // Use to show a clientside-only pumpkin on the player's head.
     // - fakeitem pumpkin slot:head
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Material material : Material.values()) {
+            if (material.isItem()) {
+                addOne.accept(material.name());
+            }
+        }
+        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
+            addOne.accept(itemScript);
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

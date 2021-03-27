@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class TakeCommand extends AbstractCommand {
@@ -105,6 +107,22 @@ public class TakeCommand extends AbstractCommand {
     private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED}
 
     public static HashSet<Type> requiresPlayerTypes = new HashSet<>(Arrays.asList(Type.XP, Type.MONEY, Type.ITEMINHAND, Type.CURSORITEM));
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("material:")) {
+            for (Material material : Material.values()) {
+                if (material.isItem()) {
+                    addOne.accept("material:" + material.name());
+                }
+            }
+        }
+        else if (arg.startsWith("scriptname:")) {
+            for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
+                addOne.accept("scriptname:" + itemScript);
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -114,6 +114,10 @@ public class TradeTag implements ObjectTag, Adjustable {
         return identify();
     }
 
+    public static void registerTags() {
+        PropertyParser.registerPropertyTagHandlers(tagProcessor);
+    }
+
     public static ObjectTagProcessor<TradeTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchable;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -9,6 +10,7 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -18,6 +20,7 @@ import org.bukkit.block.data.Bisected;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class SwitchCommand extends AbstractCommand {
 
@@ -76,6 +79,13 @@ public class SwitchCommand extends AbstractCommand {
     private enum SwitchState {ON, OFF, TOGGLE}
 
     private Map<Location, Integer> taskMap = new HashMap<>(32);
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Notable note : NotableManager.notesByType.get(LocationTag.class)) {
+            addOne.accept(NotableManager.getSavedId(note));
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

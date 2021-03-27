@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -12,6 +13,7 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -19,6 +21,7 @@ import com.denizenscript.denizencore.scripts.commands.Holdable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class WalkCommand extends AbstractCommand implements Holdable {
 
@@ -90,6 +93,13 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // Use to make a list of NPCs stored in a flag all move together, with a flocking radius based on the number of NPCs included.
     // - walk <player.flag[squad]> radius:<player.flag[squad].size> <player.location>
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Notable note : NotableManager.notesByType.get(LocationTag.class)) {
+            addOne.accept(NotableManager.getSavedId(note));
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

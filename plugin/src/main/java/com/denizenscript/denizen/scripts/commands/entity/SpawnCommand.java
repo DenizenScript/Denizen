@@ -13,8 +13,10 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SpawnCommand extends AbstractCommand {
 
@@ -59,6 +61,13 @@ public class SpawnCommand extends AbstractCommand {
     // Use to spawn a swarm of creepers around the npc, which will not despawn until killed.
     // - spawn creeper|creeper|creeper|creeper|creeper <npc.location> persistent
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (EntityType entity : EntityType.values()) {
+            addOne.accept(entity.name());
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

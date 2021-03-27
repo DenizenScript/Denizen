@@ -1,14 +1,18 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+
+import java.util.function.Consumer;
 
 public class ExplodeCommand extends AbstractCommand {
 
@@ -61,6 +65,13 @@ public class ExplodeCommand extends AbstractCommand {
     // Use to create an explosion with a power radius of 3 at a related location which breaks blocks.
     // - explode power:3 <context.location> breakblocks
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Notable note : NotableManager.notesByType.get(LocationTag.class)) {
+            addOne.accept(NotableManager.getSavedId(note));
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

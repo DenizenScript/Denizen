@@ -36,7 +36,6 @@ public class ParticleHelper {
         register("HAPPY_VILLAGER", new Particle(org.bukkit.Particle.VILLAGER_HAPPY));
     }
 
-    public HashMap<String, Effect> effectRemap = new HashMap<>();
     public final Map<String, Particle> particles = new HashMap<>();
     public final List<Particle> visibleParticles = new ArrayList<>();
 

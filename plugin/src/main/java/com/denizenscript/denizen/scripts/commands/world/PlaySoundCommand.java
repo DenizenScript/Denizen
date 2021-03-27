@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Sound;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PlaySoundCommand extends AbstractCommand {
 
@@ -66,6 +67,15 @@ public class PlaySoundCommand extends AbstractCommand {
     // Use to notify all players with a sound
     // - playsound <server.online_players> sound:ENTITY_PLAYER_LEVELUP volume:0.5 pitch:0.8
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("sound:")) {
+            for (Sound sound : Sound.values()) {
+                addOne.accept("sound:" + sound.name());
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

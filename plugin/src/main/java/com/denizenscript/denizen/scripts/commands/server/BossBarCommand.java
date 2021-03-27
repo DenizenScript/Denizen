@@ -18,6 +18,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class BossBarCommand extends AbstractCommand {
 
@@ -74,6 +75,15 @@ public class BossBarCommand extends AbstractCommand {
 
     private enum Action {
         CREATE, UPDATE, REMOVE
+    }
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("id:")) {
+            for (String id : bossBarMap.keySet()) {
+                addOne.accept(id);
+            }
+        }
     }
 
     @Override

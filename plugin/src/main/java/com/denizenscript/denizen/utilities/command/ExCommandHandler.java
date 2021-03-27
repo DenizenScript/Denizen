@@ -211,6 +211,11 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                 output.add(prefix + ":");
             }
         }
+        dcmd.addCustomTabCompletions(lowArg, (s) -> {
+            if (CoreUtilities.toLowerCase(s).startsWith(lowArg)) {
+                output.add(s);
+            }
+        });
         return output;
     }
 }

@@ -1,13 +1,17 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+
+import java.util.function.Consumer;
 
 public class StrikeCommand extends AbstractCommand {
 
@@ -45,10 +49,15 @@ public class StrikeCommand extends AbstractCommand {
     // -->
 
     @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Notable note : NotableManager.notesByType.get(LocationTag.class)) {
+            addOne.accept(NotableManager.getSavedId(note));
+        }
+    }
+
+    @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
@@ -59,31 +68,22 @@ public class StrikeCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
-
         scriptEntry.defaultObject("damage", new ElementTag(true));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
-        // Extract objects from ScriptEntry
         LocationTag location = scriptEntry.getObjectTag("location");
         Boolean damage = scriptEntry.getElement("damage").asBoolean();
-
-        // Debugger
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     location.debug()
                             + ArgumentHelper.debugObj("Damageable", String.valueOf(damage)));
         }
-
-        // Play the sound
         if (damage) {
             location.getWorld().strikeLightning(location);
         }

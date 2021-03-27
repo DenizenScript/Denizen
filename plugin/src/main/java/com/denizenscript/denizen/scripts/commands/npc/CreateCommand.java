@@ -14,7 +14,10 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.function.Consumer;
 
 public class CreateCommand extends AbstractCommand {
 
@@ -56,6 +59,13 @@ public class CreateCommand extends AbstractCommand {
     // Use to create an NPC and spawn it immediately.
     // - create spider Joe <player.location>
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (EntityType entity : EntityType.values()) {
+            addOne.accept(entity.name());
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -13,7 +13,10 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.scripts.containers.core.TaskScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import org.bukkit.entity.Player;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ClickableCommand extends AbstractCommand {
 
@@ -70,6 +74,15 @@ public class ClickableCommand extends AbstractCommand {
     // - clickable your_secret def:quest3 for:<player> until:1m save:secretmessage
     // - narrate "Do you want to know the secret? <blue><element[Yes].on_click[<entry[secretmessage].command>]><reset> / No."
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
+            if (script instanceof TaskScriptContainer) {
+                addOne.accept(script.getName());
+            }
+        }
+    }
 
     public static class Clickable {
         public HashSet<UUID> forPlayers;

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -11,7 +12,11 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+
+import java.util.function.Consumer;
 
 public class CooldownCommand extends AbstractCommand {
 
@@ -59,6 +64,15 @@ public class CooldownCommand extends AbstractCommand {
     // -->
 
     private enum Type {GLOBAL, PLAYER}
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
+            if (script instanceof InteractScriptContainer) {
+                addOne.accept(script.getName());
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

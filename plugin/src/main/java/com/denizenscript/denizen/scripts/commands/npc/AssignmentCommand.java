@@ -11,10 +11,13 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class AssignmentCommand extends AbstractCommand {
 
@@ -60,6 +63,15 @@ public class AssignmentCommand extends AbstractCommand {
     // -->
 
     private enum Action {SET, REMOVE}
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
+            if (script instanceof AssignmentScriptContainer) {
+                addOne.accept(script.getName());
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

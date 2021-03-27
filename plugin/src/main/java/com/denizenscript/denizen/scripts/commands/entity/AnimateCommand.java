@@ -17,6 +17,7 @@ import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class AnimateCommand extends AbstractCommand {
 
@@ -64,6 +65,21 @@ public class AnimateCommand extends AbstractCommand {
     // Use to make a wolf NPC shake.
     // - animate <npc> animation:wolf_shake
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("animation:")) {
+            for (EntityEffect effect : EntityEffect.values()) {
+                addOne.accept("animation:" + effect.name());
+            }
+            for (PlayerAnimation anim : PlayerAnimation.values()) {
+                addOne.accept("animation:" + anim.name());
+            }
+            for (String nmsAnim : AnimationHelper.entityAnimations.keySet()) {
+                addOne.accept("animation:" + nmsAnim);
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

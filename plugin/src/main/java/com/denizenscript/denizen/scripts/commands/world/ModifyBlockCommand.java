@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
@@ -103,6 +104,15 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // Use to modify the ground beneath the player's feet.
     // - modifyblock <cuboid[<player.location.add[2,-1,2]>|<player.location.add[-2,-1,-2]>]> RED_WOOL
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Material material : Material.values()) {
+            if (material.isBlock()) {
+                addOne.accept(material.name());
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

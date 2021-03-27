@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class PlayEffectCommand extends AbstractCommand {
 
@@ -91,6 +92,18 @@ public class PlayEffectCommand extends AbstractCommand {
     // -->
 
     @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        if (arg.startsWith("effect:")) {
+            for (String particle : NMSHandler.getParticleHelper().particles.keySet()) {
+                addOne.accept("effect:" + particle);
+            }
+            for (Effect effect : Effect.values()) {
+                addOne.accept("effect:" + effect.name());
+            }
+        }
+    }
+
+    @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         ParticleHelper particleHelper = NMSHandler.getParticleHelper();
         for (Argument arg : scriptEntry.getProcessedArgs()) {
@@ -132,9 +145,6 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                     continue;
-                }
-                else if (NMSHandler.getParticleHelper().effectRemap.containsKey(arg.getValue().toUpperCase())) {
-                    scriptEntry.addObject("effect", NMSHandler.getParticleHelper().effectRemap.get(arg.getValue().toUpperCase()));
                 }
             }
             if (!scriptEntry.hasObject("radius")

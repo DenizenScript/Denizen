@@ -43,9 +43,7 @@ public class GameRuleCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(WorldTag.class)) {
                 scriptEntry.addObject("world", arg.asType(WorldTag.class));
@@ -60,17 +58,12 @@ public class GameRuleCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("world")) {
             throw new InvalidArgumentsException("Must specify a world!");
         }
-
         if (!scriptEntry.hasObject("gamerule")) {
             throw new InvalidArgumentsException("Must specify a gamerule!");
         }
-
         if (!scriptEntry.hasObject("value")) {
             throw new InvalidArgumentsException("Must specify a value!");
         }
@@ -81,12 +74,9 @@ public class GameRuleCommand extends AbstractCommand {
         WorldTag world = scriptEntry.getObjectTag("world");
         ElementTag gamerule = scriptEntry.getElement("gamerule");
         ElementTag value = scriptEntry.getElement("value");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
         }
-
-        // Execute
         if (!world.getWorld().setGameRuleValue(gamerule.asString(), value.asString())) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Invalid gamerule!");
         }

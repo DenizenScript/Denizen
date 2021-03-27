@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DropCommand extends AbstractCommand {
 
@@ -71,6 +73,18 @@ public class DropCommand extends AbstractCommand {
     // -->
 
     enum Action {DROP_ITEM, DROP_EXP, DROP_ENTITY}
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Material material : Material.values()) {
+            if (material.isItem()) {
+                addOne.accept(material.name());
+            }
+        }
+        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
+            addOne.accept(itemScript);
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

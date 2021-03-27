@@ -13,9 +13,11 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Material;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ShowFakeCommand extends AbstractCommand {
 
@@ -74,6 +76,15 @@ public class ShowFakeCommand extends AbstractCommand {
     // Use to place fake lava that the player is standing in, for all the server to see
     // - showfake lava <player.location> players:<server.online_players>
     // -->
+
+    @Override
+    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        for (Material material : Material.values()) {
+            if (material.isBlock()) {
+                addOne.accept(material.name());
+            }
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
