@@ -228,7 +228,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 YamlConfiguration mechs = getConfigurationSection("mechanisms");
                 for (StringHolder key : mechs.getKeys(false)) {
                     ObjectTag obj = CoreUtilities.objectToTagForm(mechs.get(key.low), context, true, true);
-                    stack.safeAdjust(new Mechanism(new ElementTag(key.low), new ElementTag(obj.toString()), context));
+                    stack.safeAdjust(new Mechanism(new ElementTag(key.low), obj, context));
                 }
             }
             // Set Display Name

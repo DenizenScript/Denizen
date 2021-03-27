@@ -26,7 +26,7 @@ public class SpawnEntityHelper {
             EntityTag entity = new EntityTag(bukkitEntity);
             for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
                 if (EntityTag.earlyValidMechanisms.contains(CoreUtilities.toLowerCase(mechanism.getName()))) {
-                    entity.safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue(), mechanism.context));
+                    entity.safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.value, mechanism.context));
                     mechanisms.remove(mechanism);
                 }
             }

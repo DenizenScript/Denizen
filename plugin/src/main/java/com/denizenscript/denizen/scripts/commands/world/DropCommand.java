@@ -189,7 +189,7 @@ public class DropCommand extends AbstractCommand {
                 for (int x = 0; x < quantity.asInt(); x++) {
                     ArrayList<Mechanism> mechanisms = new ArrayList<>();
                     for (Mechanism mechanism : entity.getWaitingMechanisms()) {
-                        mechanisms.add(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue()));
+                        mechanisms.add(new Mechanism(new ElementTag(mechanism.getName()), mechanism.value));
                     }
                     EntityTag ent = new EntityTag(entity.getEntityType(), mechanisms);
                     ent.spawnAt(location);

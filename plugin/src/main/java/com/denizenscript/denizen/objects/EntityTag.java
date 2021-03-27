@@ -817,7 +817,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             for (Mechanism mechanism : mechanisms) {
-                safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.getValue(), mechanism.context));
+                safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.value, mechanism.context));
             }
             mechanisms.clear();
         }
@@ -1114,43 +1114,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 || (entity != null && rememberedEntities.containsKey(entity.getUniqueId())) || isFake;  // || isSaved()
     }
 
-    public boolean matchesEntity(String ent) {
-        if (ent.equalsIgnoreCase("entity")) {
-            return true;
-        }
-        if (ent.equalsIgnoreCase("npc")) {
-            return this.isCitizensNPC();
-        }
-        if (ent.equalsIgnoreCase("player")) {
-            return this.isPlayer();
-        }
-        if (ent.equalsIgnoreCase("vehicle")) {
-            return entity instanceof Vehicle;
-        }
-        if (ent.equalsIgnoreCase("projectile")) {
-            return entity instanceof Projectile;
-        }
-        if (ent.equalsIgnoreCase("hanging")) {
-            return entity instanceof Hanging;
-        }
-        if (ent.equalsIgnoreCase(getName())) {
-            return true;
-        }
-        if (ent.equalsIgnoreCase(entity_type.getLowercaseName())) {
-            return true;
-        }
-        if (entity != null && getEntityScript() != null) {
-            return ent.equalsIgnoreCase(getEntityScript());
-        }
-        if (uuid != null && uuid.toString().equals(ent)) {
-            return true;
-        }
-        return false;
-    }
-
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+        PropertyParser.registerPropertyTagHandlers(tagProcessor);
 
         /////////////////////
         //   UNSPAWNED ATTRIBUTES
@@ -2518,24 +2485,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (object.isSpawnedOrValidForTag()) {
                 waitingMechs = new ArrayList<>();
                 for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(object).map.entrySet()) {
-                    waitingMechs.add(new Mechanism(new ElementTag(property.getKey().str), new ElementTag(property.getValue().toString())));
+                    waitingMechs.add(new Mechanism(new ElementTag(property.getKey().str), property.getValue()));
                 }
             }
             else {
                 waitingMechs = new ArrayList<>(object.getWaitingMechanisms());
             }
             return new EntityTag(object.entity_type, waitingMechs);
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.property_map>
-        // @returns MapTag
-        // @group properties
-        // @description
-        // Returns the entity's property map.
-        // -->
-        registerTag("property_map", (attribute, object) -> {
-            return PropertyParser.getPropertiesMap(object);
         });
     }
 

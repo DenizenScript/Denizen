@@ -1125,6 +1125,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+        PropertyParser.registerPropertyTagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <InventoryTag.empty_slots>
@@ -2231,17 +2232,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return null;
         });
         tagProcessor.registerFutureTagDeprecation("smelting", "input");
-
-        // <--[tag]
-        // @attribute <InventoryTag.property_map>
-        // @returns MapTag
-        // @group properties
-        // @description
-        // Returns the inventory's property map.
-        // -->
-        registerTag("property_map", (attribute, object) -> {
-            return PropertyParser.getPropertiesMap(object);
-        });
     }
 
     public static ObjectTagProcessor<InventoryTag> tagProcessor = new ObjectTagProcessor<>();

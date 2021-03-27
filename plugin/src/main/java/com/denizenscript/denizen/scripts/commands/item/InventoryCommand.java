@@ -169,7 +169,7 @@ public class InventoryCommand extends AbstractCommand {
                     && isAdjust) {
                 if (arg.hasPrefix()) {
                     scriptEntry.addObject("mechanism", new ElementTag(arg.getPrefix().getValue()));
-                    scriptEntry.addObject("mechanism_value", arg.asElement());
+                    scriptEntry.addObject("mechanism_value", arg.object);
                 }
                 else {
                     scriptEntry.addObject("mechanism", arg.asElement());
@@ -221,7 +221,7 @@ public class InventoryCommand extends AbstractCommand {
         InventoryTag destination = destinationentry.getValue();
         ElementTag slot = scriptEntry.getElement("slot");
         ElementTag mechanism = scriptEntry.getElement("mechanism");
-        ElementTag mechanismValue = scriptEntry.getElement("mechanism_value");
+        ObjectTag mechanismValue = scriptEntry.getObjectTag("mechanism_value");
         DataAction flagAction = (DataAction) scriptEntry.getObject("flag_action");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {

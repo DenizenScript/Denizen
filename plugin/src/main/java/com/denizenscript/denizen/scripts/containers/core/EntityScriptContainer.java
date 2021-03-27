@@ -85,7 +85,7 @@ public class EntityScriptContainer extends ScriptContainer {
             for (StringHolder string : strings) {
                 if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
                     ObjectTag obj = CoreUtilities.objectToTagForm(getContents().get(string.low), context, true, true);
-                    entity.safeAdjust(new Mechanism(new ElementTag(string.low), new ElementTag(obj.toString()), context));
+                    entity.safeAdjust(new Mechanism(new ElementTag(string.low), obj, context));
                 }
             }
             if (entity == null || entity.isUnique()) {

@@ -40,7 +40,6 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
 import java.util.Map;
 
 public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject {
@@ -512,42 +511,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-
-        // <--[tag]
-        // @attribute <ItemTag.with[<mechanism>=<value>;...]>
-        // @returns ItemTag
-        // @group properties
-        // @description
-        // Returns a copy of the item with mechanism adjustments applied.
-        // -->
-        registerTag("with", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                Debug.echoError("ItemTag.with[...] tag must have an input mechanism list.");
-            }
-            ItemTag item = new ItemTag(object.getItemStack().clone());
-            List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
-            for (int i = 1; i < properties.size(); i++) {
-                List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
-                if (data.size() != 2) {
-                    Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
-                }
-                else {
-                    item.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag(data.get(1)), attribute.context));
-                }
-            }
-            return item;
-        });
-
-        // <--[tag]
-        // @attribute <ItemTag.property_map>
-        // @returns MapTag
-        // @group properties
-        // @description
-        // Returns the item's property map.
-        // -->
-        registerTag("property_map", (attribute, object) -> {
-            return PropertyParser.getPropertiesMap(object);
-        });
+        PropertyParser.registerPropertyTagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <ItemTag.repairable>

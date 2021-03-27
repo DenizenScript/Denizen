@@ -23,8 +23,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
-import java.util.List;
-
 public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
     // <--[language]
@@ -98,7 +96,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     @Override
     public ObjectTag duplicate() {
         if (hasModernData()) {
-            return new MaterialTag(getModernData());
+            return new MaterialTag(getModernData().clone());
         }
         else {
             return new MaterialTag(getMaterial());
@@ -237,6 +235,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+        PropertyParser.registerPropertyTagHandlers(tagProcessor);
 
         // <--[tag]
         // @attribute <MaterialTag.is_ageable>
@@ -706,43 +705,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             Tag<Material> tagBlock = Bukkit.getTag("blocks", key, Material.class);
             Tag<Material> tagItem = Bukkit.getTag("items", key, Material.class);
             return new ElementTag((tagBlock != null && tagBlock.isTagged(object.getMaterial()) || (tagItem != null && tagItem.isTagged(object.getMaterial()))));
-        });
-
-        // <--[tag]
-        // @attribute <MaterialTag.with[<mechanism>=<value>;...]>
-        // @returns MaterialTag
-        // @group properties
-        // @description
-        // Returns a copy of the material with mechanism adjustments applied.
-        // -->
-        registerTag("with", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("MaterialTag.with[...] tag must have an input mechanism list.");
-                return null;
-            }
-            MaterialTag mat = new MaterialTag(object.getModernData().clone());
-            List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
-            for (int i = 1; i < properties.size(); i++) {
-                List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
-                if (data.size() != 2) {
-                    Debug.echoError("Invalid property string '" + properties.get(i) + "'!");
-                }
-                else {
-                    mat.safeApplyProperty(new Mechanism(new ElementTag(data.get(0)), new ElementTag(data.get(1)), attribute.context));
-                }
-            }
-            return mat;
-        });
-
-        // <--[tag]
-        // @attribute <MaterialTag.property_map>
-        // @returns MapTag
-        // @group properties
-        // @description
-        // Returns the material's property map.
-        // -->
-        registerTag("property_map", (attribute, object) -> {
-            return PropertyParser.getPropertiesMap(object);
         });
     }
 

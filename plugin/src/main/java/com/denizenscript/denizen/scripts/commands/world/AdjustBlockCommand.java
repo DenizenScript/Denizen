@@ -71,7 +71,7 @@ public class AdjustBlockCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("mechanism")) {
                 if (arg.hasPrefix()) {
                     scriptEntry.addObject("mechanism", new ElementTag(arg.getPrefix().getValue()));
-                    scriptEntry.addObject("mechanism_value", arg.asElement());
+                    scriptEntry.addObject("mechanism_value", arg.object);
                 }
                 else {
                     scriptEntry.addObject("mechanism", arg.asElement());
@@ -92,7 +92,7 @@ public class AdjustBlockCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag mechanismName = scriptEntry.getElement("mechanism");
-        ElementTag value = scriptEntry.getElement("mechanism_value");
+        ObjectTag value = scriptEntry.getObjectTag("mechanism_value");
         ElementTag noPhysics = scriptEntry.getElement("no_physics");
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         if (scriptEntry.dbCallShouldDebug()) {
