@@ -526,4 +526,67 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         }
         return null;
     }
+
+    public static BukkitScriptEntryData getScriptEntryData(ScriptQueue queue) {
+        if (queue.getLastEntryExecuted() != null) {
+            return (BukkitScriptEntryData) queue.getLastEntryExecuted().entryData;
+        }
+        else if (queue.getEntries().size() > 0) {
+            return (BukkitScriptEntryData) queue.getEntries().get(0).entryData;
+        }
+        return null;
+    }
+
+    @Override
+    public ObjectTag getSpecialDef(String def, ScriptQueue queue) {
+        if (def.equals("__player")) {
+            BukkitScriptEntryData data = getScriptEntryData(queue);
+            if (data == null) {
+                return null;
+            }
+            return data.getPlayer();
+        }
+        else if (def.equals("__npc")) {
+            BukkitScriptEntryData data = getScriptEntryData(queue);
+            if (data == null) {
+                return null;
+            }
+            return data.getNPC();
+        }
+        return null;
+    }
+
+
+    @Override
+    public boolean setSpecialDef(String def, ScriptQueue queue, ObjectTag value) {
+        if (def.equals("__player")) {
+            BukkitScriptEntryData baseData = getScriptEntryData(queue);
+            if (baseData == null) {
+                return true;
+            }
+            PlayerTag player = value.asType(PlayerTag.class, baseData.getTagContext());
+            if (queue.getLastEntryExecuted() != null) {
+                ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).setPlayer(player);
+            }
+            for (ScriptEntry entry : queue.getEntries()) {
+                ((BukkitScriptEntryData) entry.entryData).setPlayer(player);
+            }
+            return true;
+        }
+        else if (def.equals("__npc")) {
+            BukkitScriptEntryData baseData = getScriptEntryData(queue);
+            if (baseData == null) {
+                return true;
+            }
+            NPCTag npc = value.asType(NPCTag.class, baseData.getTagContext());
+            if (queue.getLastEntryExecuted() != null) {
+                ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).setNPC(npc);
+            }
+            for (ScriptEntry entry : queue.getEntries()) {
+                ((BukkitScriptEntryData) entry.entryData).setNPC(npc);
+            }
+            return true;
+        }
+        return false;
+    }
 }
