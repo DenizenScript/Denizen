@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
@@ -705,6 +706,20 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             Tag<Material> tagBlock = Bukkit.getTag("blocks", key, Material.class);
             Tag<Material> tagItem = Bukkit.getTag("items", key, Material.class);
             return new ElementTag((tagBlock != null && tagBlock.isTagged(object.getMaterial()) || (tagItem != null && tagItem.isTagged(object.getMaterial()))));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.advanced_matches[<matcher>]>
+        // @returns ElementTag(Boolean)
+        // @group element checking
+        // @description
+        // Returns whether the material matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
+        // -->
+        registerTag("advanced_matches", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(BukkitScriptEvent.tryMaterial(object, attribute.getContext(1)));
         });
     }
 

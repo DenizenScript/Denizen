@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
@@ -779,6 +780,20 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             return map;
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.advanced_matches[<matcher>]>
+        // @returns ElementTag(Boolean)
+        // @group element checking
+        // @description
+        // Returns whether the world matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
+        // -->
+        registerTag("advanced_matches", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(BukkitScriptEvent.tryWorld(object, attribute.getContext(1)));
         });
     }
 

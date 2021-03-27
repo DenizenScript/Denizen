@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
@@ -712,6 +713,20 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         // -->
         registerTag("formatted", (attribute, object) -> {
             return new ElementTag(object.formattedName());
+        });
+
+        // <--[tag]
+        // @attribute <ItemTag.advanced_matches[<matcher>]>
+        // @returns ElementTag(Boolean)
+        // @group element checking
+        // @description
+        // Returns whether the item matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
+        // -->
+        registerTag("advanced_matches", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(BukkitScriptEvent.tryItem(object, attribute.getContext(1)));
         });
     }
 

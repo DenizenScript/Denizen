@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
@@ -2492,6 +2493,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 waitingMechs = new ArrayList<>(object.getWaitingMechanisms());
             }
             return new EntityTag(object.entity_type, waitingMechs);
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.advanced_matches[<matcher>]>
+        // @returns ElementTag(Boolean)
+        // @group element checking
+        // @description
+        // Returns whether the entity matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
+        // -->
+        registerTag("advanced_matches", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(BukkitScriptEvent.tryEntity(object, attribute.getContext(1)));
         });
     }
 

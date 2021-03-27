@@ -852,7 +852,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // -->
 
-    public boolean tryWorld(WorldTag world, String comparedto) {
+    public static boolean tryWorld(WorldTag world, String comparedto) {
         if (comparedto.equals("world")) {
             return true;
         }
@@ -862,7 +862,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runGenericCheck(comparedto, world.getName());
     }
 
-    public boolean compareInventoryToMatch(InventoryTag inv, MatchHelper matcher) {
+    public static boolean compareInventoryToMatch(InventoryTag inv, MatchHelper matcher) {
         if (matcher instanceof InverseMatchHelper) {
             return !compareInventoryToMatch(inv, ((InverseMatchHelper) matcher).matcher);
         }
@@ -885,7 +885,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean tryInventory(InventoryTag inv, String comparedto) {
+    public static boolean tryInventory(InventoryTag inv, String comparedto) {
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (comparedto.equals("inventory")) {
             return true;
@@ -900,7 +900,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return compareInventoryToMatch(inv, matcher);
     }
 
-    public boolean tryItem(ItemTag item, String comparedto) {
+    public static boolean tryItem(ItemTag item, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || item == null) {
             return false;
         }
@@ -933,7 +933,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean tryMaterial(MaterialTag mat, String comparedto) {
+    public static boolean tryMaterial(MaterialTag mat, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || mat == null) {
             return false;
         }
@@ -957,7 +957,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean tryEntity(EntityTag entity, String comparedto) {
+    public static boolean tryEntity(EntityTag entity, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || entity == null) {
             return false;
         }
