@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -228,7 +229,7 @@ public class PlayerFlagHandler implements Listener {
     }
 
     public static void saveFlags(UUID id, String flagData) {
-        SavableMapFlagTracker.saveToFile(new File(dataFolder, id.toString()).getPath(), flagData);
+        CoreUtilities.journallingFileSave(new File(dataFolder, id.toString() + ".dat").getPath(), flagData);
     }
 
     @EventHandler

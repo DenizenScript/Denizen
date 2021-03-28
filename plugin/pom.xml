@@ -32,7 +32,7 @@
         <!-- Basic dependencies -->
         <dependency>
             <groupId>net.citizensnpcs</groupId>
-            <artifactId>citizens</artifactId>
+            <artifactId>citizens-main</artifactId>
             <version>${citizens.version}</version>
             <type>jar</type>
             <scope>provided</scope>

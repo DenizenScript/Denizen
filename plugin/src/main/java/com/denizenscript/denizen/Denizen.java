@@ -52,6 +52,7 @@ import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
+import com.denizenscript.denizencore.scripts.commands.queue.RunLaterCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
@@ -525,6 +526,7 @@ public class Denizen extends JavaPlugin {
         }
         worldFlags.shutdown();
         worldFlags.init();
+        RunLaterCommand.init(new File(getDataFolder(), "run_later.yml").getPath());
         if (new File(getDataFolder(), "saves.yml").exists()) {
             LegacySavesUpdater.updateLegacySaves();
         }
@@ -555,6 +557,7 @@ public class Denizen extends JavaPlugin {
         }
         PlayerFlagHandler.saveAllNow(canSleep);
         worldFlags.saveAll();
+        RunLaterCommand.saveToFile(canSleep);
     }
 
     @Override

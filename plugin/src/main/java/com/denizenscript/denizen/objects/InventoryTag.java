@@ -1793,21 +1793,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(-1);
         });
 
-        // <--[tag]
-        // @attribute <InventoryTag.find[<item>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the location of the first slot that contains the item.
-        // Returns -1 if there's no match.
-        // -->
         registerTag("find", (attribute, object) -> {
-            // <--[tag]
-            // @attribute <InventoryTag.find.material[<material>|...]>
-            // @returns ElementTag(Number)
-            // @description
-            // Returns the location of the first slot that contains any of the given materials.
-            // Returns -1 if there's no match.
-            // -->
+            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("material", 2)) {
                 ListTag list = attribute.contextAsType(2, ListTag.class);
                 if (list == null) {
@@ -1828,13 +1815,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return new ElementTag(slot);
             }
 
-            // <--[tag]
-            // @attribute <InventoryTag.find.scriptname[<item>]>
-            // @returns ElementTag(Number)
-            // @description
-            // Returns the location of the first slot that contains the item with the specified script name.
-            // Returns -1 if there's no match.
-            // -->
             if (attribute.startsWith("scriptname", 2)) {
                 String scrname = attribute.contextAsType(2, ItemTag.class).getScriptName();
                 if (scrname == null) {
@@ -1870,15 +1850,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(slot);
         });
 
-        // <--[tag]
-        // @attribute <InventoryTag.find_imperfect[<item>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the location of the first slot that contains the item.
-        // Returns -1 if there's no match.
-        // Will match item script to item script, even if one is edited.
-        // -->
         registerTag("find_imperfect", (attribute, object) -> {
+            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
                 return null;
             }

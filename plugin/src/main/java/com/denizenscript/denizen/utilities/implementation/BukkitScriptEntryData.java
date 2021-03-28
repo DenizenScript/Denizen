@@ -6,6 +6,8 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.entity.Entity;
 
 public class BukkitScriptEntryData extends ScriptEntryData {
@@ -88,6 +90,30 @@ public class BukkitScriptEntryData extends ScriptEntryData {
         }
         else {
             return "player=p@" + player.getName() + "   npc=n@" + npc.getId();
+        }
+    }
+
+    @Override
+    public YamlConfiguration save() {
+        YamlConfiguration out = new YamlConfiguration();
+        if (hasPlayer()) {
+            out.set("player", getPlayer().savable());
+        }
+        if (hasNPC()) {
+            out.set("npc", getNPC().savable());
+        }
+        return out;
+    }
+
+    @Override
+    public void load(YamlConfiguration config) {
+        String player = config.getString("player", null);
+        if (player != null) {
+            setPlayer(PlayerTag.valueOf(player, CoreUtilities.errorButNoDebugContext));
+        }
+        String npc = config.getString("npc", null);
+        if (npc != null) {
+            setNPC(NPCTag.valueOf(npc, CoreUtilities.errorButNoDebugContext));
         }
     }
 }
