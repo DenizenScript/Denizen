@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.paper;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
@@ -9,6 +10,7 @@ import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.Bukkit;
 
 public class PaperModule {
 
@@ -24,6 +26,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(new PlayerAbsorbsExperienceScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerBeaconEffectScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerClicksFakeEntityScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerClicksInRecipeBookScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJumpsScriptEventPaperImpl());
         ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
@@ -44,5 +47,8 @@ public class PaperModule {
 
         // Paper Tags
         new PaperTagBase();
+
+        // Other helpers
+        Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
     }
 }

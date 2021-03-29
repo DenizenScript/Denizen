@@ -341,7 +341,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 result.setSize(size);
             }
         }
-        if (result == null) {
+        if (result == null && holder != null) {
             ScriptTag script = ScriptTag.valueOf(holder, context);
             if (script != null && (script.getContainer() instanceof InventoryScriptContainer)) {
                 result = ((InventoryScriptContainer) script.getContainer()).getInventoryFrom(context);
