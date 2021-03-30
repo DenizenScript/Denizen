@@ -9,14 +9,13 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-/**
- * This class is to serve as a placeholder until a better attributes system is available!
- */
+@Deprecated
 public class ItemAttributeNBT implements Property {
 
     public static boolean describes(ObjectTag item) {
@@ -53,15 +52,8 @@ public class ItemAttributeNBT implements Property {
             return null;
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.nbt_attributes>
-        // @returns ListTag
-        // @group properties
-        // @mechanism ItemTag.nbt_attributes
-        // @description
-        // Returns the NBT attribute data from the item, in a format that matches the mechanism input.
-        // -->
         if (attribute.startsWith("nbt_attributes")) {
+            Deprecations.legacyAttributeProperties.warn(attribute.context);
             return getList().getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -82,10 +74,6 @@ public class ItemAttributeNBT implements Property {
 
     @Override
     public String getPropertyString() {
-        ListTag list = getList();
-        if (!list.isEmpty()) {
-            return list.identify();
-        }
         return null;
     }
 
@@ -97,18 +85,8 @@ public class ItemAttributeNBT implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object ItemTag
-        // @name nbt_attributes
-        // @input ListTag
-        // @description
-        // Sets the Denizen NBT attributes for this item in the format attribute/slot/op/amount|...
-        // Attribute is text (<@link url http://minecraft.gamepedia.com/Attribute>), slot is the name of the slot,
-        // op is the number code for operation, and amount is a decimal.
-        // @tags
-        // <ItemTag.nbt_attributes>
-        // -->
         if (mechanism.matches("nbt_attributes")) {
+            Deprecations.legacyAttributeProperties.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
                 mechanism.echoError("Cannot apply NBT to AIR!");
                 return;

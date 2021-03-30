@@ -4,81 +4,68 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.inventory.EquipmentSlot;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
-public class EntityAttributes implements Property {
+public class EntityAttributeBaseValues implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Attributable;
     }
 
-    public static EntityAttributes getFrom(ObjectTag entity) {
+    public static EntityAttributeBaseValues getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
         else {
-            return new EntityAttributes((EntityTag) entity);
+            return new EntityAttributeBaseValues((EntityTag) entity);
         }
     }
 
     public static final String[] handledTags = new String[] {
-            "has_attribute", "attribute_value", "attribute_base_value", "attribute_default_value", "attributes"
+            "has_attribute", "attribute_value", "attribute_base_value", "attribute_default_value"
     };
 
     public static final String[] handledMechs = new String[] {
-            "attributes"
+            "attribute_base_values"
     };
 
-    private EntityAttributes(EntityTag entity) {
+    private EntityAttributeBaseValues(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
 
-    public static String stringify(AttributeModifier modifier) {
-        return EscapeTagBase.escape(modifier.getName()) + "/" + modifier.getAmount() + "/" + modifier.getOperation().name()
-                + "/" + (modifier.getSlot() == null ? "any" : modifier.getSlot().name());
-    }
-
-    public ListTag getAttributes() {
-        ListTag list = new ListTag();
-        for (org.bukkit.attribute.Attribute attribute : org.bukkit.attribute.Attribute.values()) {
-            AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attribute);
-            if (instance == null) {
-                continue;
+    public MapTag attributeBaseValues() {
+        MapTag result = new MapTag();
+        Attributable ent = (Attributable) entity.getBukkitEntity();
+        for (org.bukkit.attribute.Attribute attr : org.bukkit.attribute.Attribute.values()) {
+            AttributeInstance instance = ent.getAttribute(attr);
+            if (instance != null) {
+                result.putObject(attr.name(), new ElementTag(instance.getBaseValue()));
             }
-            StringBuilder modifiers = new StringBuilder();
-            for (AttributeModifier modifier : instance.getModifiers()) {
-                modifiers.append("/").append(stringify(modifier));
-            }
-            list.add(EscapeTagBase.escape(attribute.name()) + "/" + instance.getBaseValue() + modifiers.toString());
         }
-        return list;
+        return result;
     }
 
     @Override
     public String getPropertyString() {
-        ListTag list = getAttributes();
-        if (list.size() > 0) {
-            return list.identify();
+        MapTag map = attributeBaseValues();
+        if (map.map.isEmpty()) {
+            return null;
         }
-        return null;
+        return map.savable();
     }
 
     @Override
     public String getPropertyId() {
-        return "attributes";
+        return "attribute_base_values";
     }
 
     @Override
@@ -89,21 +76,8 @@ public class EntityAttributes implements Property {
         }
 
         // <--[tag]
-        // @attribute <EntityTag.attributes>
-        // @returns ListTag
-        // @mechanism EntityTag.attributes
-        // @group properties
-        // @description
-        // Returns a list of all attributes on the entity, formatted in a way that can be sent back into the 'attributes' mechanism.
-        // -->
-        if (attribute.startsWith("attributes")) {
-            return getAttributes().getObjectAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <EntityTag.has_attribute[<attribute>]>
         // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.attributes
         // @group properties
         // @description
         // Returns whether the entity has the named attribute.
@@ -118,7 +92,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attribute_value[<attribute>]>
         // @returns ElementTag(Decimal)
-        // @mechanism EntityTag.attributes
+        // @mechanism EntityTag.attribute_base_values
         // @group properties
         // @description
         // Returns the final calculated value of the named attribute for the entity.
@@ -138,7 +112,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attribute_base_value[<attribute>]>
         // @returns ElementTag(Decimal)
-        // @mechanism EntityTag.attributes
+        // @mechanism EntityTag.attribute_base_values
         // @group properties
         // @description
         // Returns the base value of the named attribute for the entity.
@@ -158,7 +132,7 @@ public class EntityAttributes implements Property {
         // <--[tag]
         // @attribute <EntityTag.attribute_default_value[<attribute>]>
         // @returns ElementTag(Decimal)
-        // @mechanism EntityTag.attributes
+        // @mechanism EntityTag.attribute_base_values
         // @group properties
         // @description
         // Returns the default value of the named attribute for the entity.
@@ -183,44 +157,29 @@ public class EntityAttributes implements Property {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name attributes
-        // @input ListTag
+        // @name attribute_base_values
+        // @input MapTag
         // @description
-        // Changes the attributes of an entity.
-        // Specify a list of attributes in the format: name/base_value/(modifier_name/mod_amount/mod_operation/mod_slot/...)
-        // For example: GENERIC_ARMOR/5/boost/3/add_number/any/reduction/-5/add_number/chest
-        // Note that the 'slot' value is probably just ignored.
-        //
-        // Valid operations are ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
+        // Sets the base value of an entity's attributes.
+        // Specify a MapTag where the keys are attribute names, and values are the new base values.
+        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // @tags
         // <EntityTag.has_attribute>
-        // <EntityTag.attributes>
         // <EntityTag.attribute_default_value>
         // <EntityTag.attribute_base_value>
         // <EntityTag.attribute_value>
         // -->
-        if (mechanism.matches("attributes") && mechanism.hasValue()) {
+        if (mechanism.matches("attribute_base_values") && mechanism.requireObject(MapTag.class)) {
+            MapTag input = mechanism.valueAsType(MapTag.class);
             Attributable ent = (Attributable) entity.getBukkitEntity();
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            for (String str : list) {
-                List<String> subList = CoreUtilities.split(str, '/');
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(EscapeTagBase.unEscape(subList.get(0)).toUpperCase());
+            for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
+                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {
                     mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                     continue;
                 }
-                instance.setBaseValue(Double.parseDouble(subList.get(1)));
-                for (AttributeModifier modifier : instance.getModifiers()) {
-                    instance.removeModifier(modifier);
-                }
-                for (int x = 2; x < subList.size(); x += 4) {
-                    String slot = subList.get(x + 3).toUpperCase();
-                    AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), EscapeTagBase.unEscape(subList.get(x)),
-                            Double.parseDouble(subList.get(x + 1)), AttributeModifier.Operation.valueOf(subList.get(x + 2).toUpperCase()),
-                                    slot.equals("ANY") ? null : EquipmentSlot.valueOf(slot));
-                    instance.addModifier(modifier);
-                }
+                instance.setBaseValue(Double.parseDouble(subValue.getValue().toString()));
             }
         }
     }

@@ -35,7 +35,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAreaEffectCloud.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorBonus.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArrowDamage.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityAttributes.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityAttributeBaseValues.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityAttributeModifiers.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBoatType.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
@@ -119,6 +120,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(InventoryUniquifier.class, InventoryTag.class);
 
         // register core ItemTag properties
+        PropertyParser.registerProperty(ItemAttributeModifiers.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemAttributeNBT.class, ItemTag.class);
         PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
         PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
         PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
@@ -141,7 +144,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemLore.class, ItemTag.class);
         PropertyParser.registerProperty(ItemMap.class, ItemTag.class);
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemAttributeNBT.class, ItemTag.class);
         PropertyParser.registerProperty(ItemPatterns.class, ItemTag.class);
         PropertyParser.registerProperty(ItemPotion.class, ItemTag.class);
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);

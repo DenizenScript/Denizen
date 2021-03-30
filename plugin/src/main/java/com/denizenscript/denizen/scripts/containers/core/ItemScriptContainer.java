@@ -56,6 +56,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //   mechanisms:
     //     # An example of a mechanism to apply
     //     unbreakable: true
+    //     # Other common example
+    //     custom_model_data: 5
+    //     # This mess demonstrates how to add a custom attribute modifier.
+    //     attribute_modifiers:
+    //         generic_armor:
+    //             - <map.with[operation].as[add_number].with[amount].as[5].with[slot].as[head]>
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
     //   # | Some item scripts should have this key!
