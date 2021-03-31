@@ -146,18 +146,14 @@ public class ItemAttributeModifiers implements Property {
         }
 
         // <--[mechanism]
-        // @object EntityTag
+        // @object ItemTag
         // @name add_attribute_modifiers
         // @input MapTag
         // @description
-        // Adds attribute modifiers to an entity without altering existing modifiers.
-        // All input is the same as <@link mechanism EntityTag.attribute_modifiers>.
+        // Adds attribute modifiers to an item without altering existing modifiers.
+        // All input is the same as <@link mechanism ItemTag.attribute_modifiers>.
         // @tags
-        // <EntityTag.has_attribute>
-        // <EntityTag.attribute_modifiers>
-        // <EntityTag.attribute_default_value>
-        // <EntityTag.attribute_base_value>
-        // <EntityTag.attribute_value>
+        // <ItemTag.attribute_modifiers>
         // -->
         if (mechanism.matches("add_attribute_modifiers") && mechanism.requireObject(MapTag.class)) {
             ItemMeta meta = item.getItemMeta();
@@ -172,17 +168,13 @@ public class ItemAttributeModifiers implements Property {
         }
 
         // <--[mechanism]
-        // @object EntityTag
+        // @object ItemTag
         // @name remove_attribute_modifiers
         // @input ListTag
         // @description
-        // Removes attribute modifiers from an entity. Specify a list of attribute names or modifier UUIDs as input.
+        // Removes attribute modifiers from an item. Specify a list of attribute names or modifier UUIDs as input.
         // @tags
-        // <EntityTag.has_attribute>
-        // <EntityTag.attribute_modifiers>
-        // <EntityTag.attribute_default_value>
-        // <EntityTag.attribute_base_value>
-        // <EntityTag.attribute_value>
+        // <ItemTag.attribute_modifiers>
         // -->
         if (mechanism.matches("remove_attribute_modifiers") && mechanism.requireObject(ListTag.class)) {
             ItemMeta meta = item.getItemMeta();

@@ -51,15 +51,6 @@ public class ItemNBT implements Property {
             return null;
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.has_nbt[<key>]>
-        // @returns ElementTag(Boolean)
-        // @mechanism ItemTag.nbt
-        // @group properties
-        // @deprecated Use has_flag[...] instead.
-        // @description
-        // Deprecated: use <@link tag FlaggableObject.has_flag> instead.
-        // -->
         if (attribute.startsWith("has_nbt")) {
             Deprecations.itemNbt.warn(attribute.context);
             return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
@@ -72,15 +63,6 @@ public class ItemNBT implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.nbt[<key>]>
-        // @returns ElementTag
-        // @mechanism ItemTag.nbt
-        // @group properties
-        // @deprecated Use flag[...] instead.
-        // @description
-        // Deprecated: use <@link tag FlaggableObject.flag> instead.
-        // -->
         if (attribute.matches("nbt")) {
             Deprecations.itemNbt.warn(attribute.context);
             if (!attribute.hasContext(1)) {
@@ -131,17 +113,6 @@ public class ItemNBT implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object ItemTag
-        // @name remove_nbt
-        // @input ListTag
-        // @deprecated Use 'flag' instead.
-        // @description
-        // Deprecated: use <@link mechanism ItemTag.flag> instead.
-        // @tags
-        // <ItemTag.nbt>
-        // <ItemTag.has_nbt>
-        // -->
         if (mechanism.matches("remove_nbt")) {
             Deprecations.itemNbt.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
@@ -162,17 +133,6 @@ public class ItemNBT implements Property {
             item.setItemStack(itemStack);
         }
 
-        // <--[mechanism]
-        // @object ItemTag
-        // @name nbt
-        // @input ListTag
-        // @deprecated Use 'flag' instead.
-        // @description
-        // Deprecated: use <@link mechanism ItemTag.flag> instead.
-        // @tags
-        // <ItemTag.nbt>
-        // <ItemTag.has_nbt>
-        // -->
         if (mechanism.matches("nbt")) {
             Deprecations.itemNbt.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {

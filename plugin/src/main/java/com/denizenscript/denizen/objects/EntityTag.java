@@ -3021,7 +3021,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @name velocity
         // @input LocationTag
         // @description
-        // Sets the entity's movement velocity.
+        // Sets the entity's movement velocity vector.
         // @tags
         // <EntityTag.velocity>
         // -->
@@ -3034,7 +3034,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @name move
         // @input LocationTag
         // @description
-        // Forces an entity to move in the direction of the velocity specified.
+        // Forces an entity to move in the direction of the velocity vector specified.
         // -->
         if (mechanism.matches("move") && mechanism.requireObject(LocationTag.class)) {
             NMSHandler.getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());

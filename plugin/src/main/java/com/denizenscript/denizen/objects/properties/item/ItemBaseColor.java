@@ -48,12 +48,13 @@ public class ItemBaseColor implements Property {
     private DyeColor getBaseColor() {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BlockStateMeta) {
-            if (item.getBukkitMaterial() == Material.SHIELD) { // Hack to avoid blank shields misdisplaying as white
-                if (!itemMeta.serialize().containsKey("internal")) {
+            DyeColor color = ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getBaseColor();
+            if (color == DyeColor.WHITE && item.getBukkitMaterial() == Material.SHIELD) { // Hack to avoid blank shields misdisplaying as white
+                if (ItemRawNBT.getFrom(item).getFullNBTMap().getObject("BlockEntityTag") == null) {
                     return null;
                 }
             }
-            return ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getBaseColor();
+            return color;
         }
         else {
             return ((BannerMeta) itemMeta).getBaseColor();

@@ -1786,7 +1786,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
                     if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
-                        return new ElementTag(i);
+                        return new ElementTag(i + 1);
                     }
                 }
             }
