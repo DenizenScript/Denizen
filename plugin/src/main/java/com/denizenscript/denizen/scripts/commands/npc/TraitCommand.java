@@ -58,6 +58,7 @@ public class TraitCommand extends AbstractCommand {
     // Use to add the Sentinel trait to the linked NPC.
     // - trait state:true sentinel
     //
+    // @Usage
     // Use to toggle the MobProx trait on the linked NPC.
     // - trait mobprox
     //

@@ -58,7 +58,7 @@ public class AttachCommand extends AbstractCommand {
     // Note that attaches involving a player will not be properly visible to that player, but will still be visible to *other* players.
     //
     // @Tags
-    // None.
+    // None
     //
     // @Usage
     // Use to attach random NPC to the air 3 blocks above a linked NPC.

@@ -1189,7 +1189,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @mechanism LocationTag.patterns
         // @description
         // Lists the patterns of the banner at this location in the form "COLOR/PATTERN|COLOR/PATTERN" etc.
-        // For the list of possible colors, see <@link url hhttps://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
         // For the list of possible patterns, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
         // -->
         registerTag("patterns", (attribute, object) -> {

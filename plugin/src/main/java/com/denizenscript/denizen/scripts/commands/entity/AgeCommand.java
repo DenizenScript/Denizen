@@ -43,6 +43,8 @@ public class AgeCommand extends AbstractCommand {
     // @Usage
     // Use to make an ageable entity a permanant baby.
     // - age <[some_entity]> baby lock
+    //
+    // @Usage
     // ...or a mature adult.
     // - age <[some_entity]> adult lock
     //

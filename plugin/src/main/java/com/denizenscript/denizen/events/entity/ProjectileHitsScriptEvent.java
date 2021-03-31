@@ -48,6 +48,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ shoots [^\s]+$
     //
+    // @Group Entity
+    //
     // @Location true
     //
     // @Triggers when a projectile shot by an entity hits a block.
