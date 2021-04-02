@@ -27,10 +27,6 @@ import java.util.*;
 
 public class DenizenNPCHelper implements Listener {
 
-    public static DenizenNPCHelper getCurrentInstance() {
-        return Denizen.getInstance().getNPCHelper();
-    }
-
     private Denizen plugin;
     private ActionHandler actionHandler;
 
@@ -139,7 +135,6 @@ public class DenizenNPCHelper implements Listener {
             EntityDespawnScriptEvent.instance.entity = new EntityTag(event.getNPC().getEntity());
             EntityDespawnScriptEvent.instance.cause = new ElementTag("CITIZENS");
             EntityDespawnScriptEvent.instance.fire(event);
-
             npc.action("despawn", null);
         }
     }

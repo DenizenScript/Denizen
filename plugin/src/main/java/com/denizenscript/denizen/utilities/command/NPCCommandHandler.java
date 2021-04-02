@@ -16,6 +16,8 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Anchors;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.command.CommandSender;
@@ -211,6 +213,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasFlag('r')) {
             trait.removeAssignment(PlayerTag.mirrorBukkitPlayer(player));
+            npc.removeTrait(AssignmentTrait.class);
             Messaging.sendInfo(sender, npc.getName() + "'s assignment has been removed.");
             return;
         }
@@ -355,7 +358,8 @@ public class NPCCommandHandler {
             return;
         }
         Block block = targetLocation.getBlock();
-        if (block.getBlockData() instanceof Stairs || (block.getBlockData() instanceof Slab && ((Slab) block.getBlockData()).getType() == Slab.Type.BOTTOM)) {
+        BlockData data = block.getBlockData();
+        if (data instanceof Stairs || data instanceof Bed || (data instanceof Slab && ((Slab) data).getType() == Slab.Type.BOTTOM)) {
             targetLocation.setY(targetLocation.getBlockY() + 0.3);
         }
         else if (block.getType().isSolid()) {

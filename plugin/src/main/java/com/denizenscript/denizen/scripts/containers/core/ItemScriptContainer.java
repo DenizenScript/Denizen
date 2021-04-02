@@ -121,9 +121,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # You are allowed to have non-3x3 shapes (can be any value 1-3 x 1-3, so for example 1x3, 2x1, and 2x2 are fine).
     //           # For an empty slot, use "air".
     //           # By default, items require an exact match. For a material-based match, use the format "material:MaterialNameHere" like "material:stick".
-    //           # To make multiple different items match for any slot, just separate them with slashes, like "stick/stone". To match multiple materials, use "material:a/b/c".
-    //           # You can also make a dynamic matcher using '*', like "material:*_log" to match any log block or 'test_*' to match any item script that has name starting with 'test_'.
-    //           # Note that to require multiple of an item as an input, the only option is to use multiple slots. A single slot cannot require a quantity of items, as that is not part of the minecraft recipe system.
+    //           # To make multiple different items match for any slot, just separate them with slashes, like "stick/stone".
+    //           # To match multiple materials, use "material:a/b/c".
+    //           # You can also make a dynamic matcher using '*', like "material:*_log" to match any log block,
+    //           # or 'test_*' to match any item script that has name starting with 'test_'.
+    //           # Note that to require multiple of an item as an input, the only option is to use multiple slots.
+    //           # A single slot cannot require a quantity of items, as that is not part of the minecraft recipe system.
     //           # | All recipes must include this key!
     //           input:
     //           - ItemTag|ItemTag|ItemTag

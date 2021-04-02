@@ -57,7 +57,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // <--[command]
     // @Name Schematic
     // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>)
-    // @Group World
+    // @Group world
     // @Required 2
     // @Maximum 11
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
