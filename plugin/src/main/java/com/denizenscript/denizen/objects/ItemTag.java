@@ -238,7 +238,12 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        setItemStack(CustomNBT.addCustomNBT(getItemStack(), "flags", tracker.toString(), "Denizen"));
+        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.map.isEmpty()) {
+            setItemStack(CustomNBT.removeCustomNBT(getItemStack(), "flags", "Denizen"));
+        }
+        else {
+            setItemStack(CustomNBT.addCustomNBT(getItemStack(), "flags", tracker.toString(), "Denizen"));
+        }
         flagTrackerCache = tracker;
     }
 

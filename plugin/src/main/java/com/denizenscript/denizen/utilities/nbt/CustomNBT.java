@@ -265,7 +265,12 @@ public class CustomNBT {
         }
         // Remove custom NBT
         denizenTag = denizenTag.createBuilder().remove(CoreUtilities.toLowerCase(key)).build();
-        compoundTag = compoundTag.createBuilder().put(basekey, denizenTag).build();
+        if (denizenTag.getValue().isEmpty()) {
+            compoundTag = compoundTag.createBuilder().remove(basekey).build();
+        }
+        else {
+            compoundTag = compoundTag.createBuilder().put(basekey, denizenTag).build();
+        }
         // Write tag back
         return NMSHandler.getItemHelper().setNbtData(itemStack, compoundTag);
     }
