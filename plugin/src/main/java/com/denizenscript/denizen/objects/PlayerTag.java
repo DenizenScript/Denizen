@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
-import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
@@ -12,6 +12,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
+import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
@@ -40,6 +41,7 @@ import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -2897,7 +2899,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // See also <@link mechanism PlayerTag.hide_entity>.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(EntityTag.class)) {
-            NMSHandler.getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            HideEntitiesHelper.unhideEntity(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2918,7 +2920,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         Debug.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
                     }
                     else {
-                        NMSHandler.getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity());
+                        HideEntitiesHelper.hideEntity(getPlayerEntity(), entity.getBukkitEntity());
                     }
                 }
                 else {
@@ -2927,6 +2929,52 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else {
                 Debug.echoError("Must specify an entity to hide!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name hide_entities
+        // @input ElementTag
+        // @description
+        // Hides a matchable type of entity from the player. Can use any advanced entity matchers per <@link language Advanced Script Event Matching>.
+        // To hide a specific entity from the player, use <@link mechanism PlayerTag.hide_entity>.
+        // To remove hide sets, use <@link mechanism PlayerTag.unhide_entities>.
+        // Note that dynamic matchables like 'entity_flagged' will behave in unexpected ways when dynamically changing.
+        // -->
+        if (mechanism.matches("hide_entities") && mechanism.hasValue()) {
+            HideEntitiesHelper.PlayerHideMap map = HideEntitiesHelper.playerHides.computeIfAbsent(getUUID(), (k) -> new HideEntitiesHelper.PlayerHideMap());
+            String hideMe = mechanism.getValue().asString();
+            map.matchersHidden.add(hideMe);
+            if (isOnline()) {
+                for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
+                    if (BukkitScriptEvent.tryEntity(new EntityTag(ent), hideMe) && map.shouldHide(ent)) {
+                        NMSHandler.getEntityHelper().sendHidePacket(getPlayerEntity(), ent);
+                    }
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name unhide_entities
+        // @input ElementTag
+        // @description
+        // Removes any entity hides added by <@link mechanism PlayerTag.hide_entities>. Input must exactly match the input given to the hide mechanism.
+        // -->
+        if (mechanism.matches("unhide_entities") && mechanism.hasValue()) {
+            HideEntitiesHelper.PlayerHideMap map = HideEntitiesHelper.playerHides.computeIfAbsent(getUUID(), (k) -> new HideEntitiesHelper.PlayerHideMap());
+            String unhideMe = mechanism.getValue().asString();
+            map.matchersHidden.remove(unhideMe);
+            if (map.matchersHidden.isEmpty() && map.entitiesHidden.isEmpty() && map.overridinglyShow.isEmpty()) {
+                HideEntitiesHelper.playerHides.remove(getUUID());
+            }
+            if (isOnline()) {
+                for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
+                    if (BukkitScriptEvent.tryEntity(new EntityTag(ent), unhideMe) && !map.shouldHide(ent)) {
+                        NMSHandler.getEntityHelper().sendHidePacket(getPlayerEntity(), ent);
+                    }
+                }
             }
         }
 
@@ -3585,10 +3633,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else {
                 if (mechanism.matches("show_to_players")) {
-                    EntityHelper.removeHide(EntityHelper.DEFAULT_HIDE, getUUID());
+                    HideEntitiesHelper.removeHide(null, getUUID());
                 }
                 if (mechanism.matches("hide_from_players")) {
-                    NMSHandler.getEntityHelper().addHide(EntityHelper.DEFAULT_HIDE, getUUID());
+                    HideEntitiesHelper.addHide(null, getUUID());
                 }
             }
         }

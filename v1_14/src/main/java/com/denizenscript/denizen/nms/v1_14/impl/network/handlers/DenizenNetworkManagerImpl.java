@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.v1_14.impl.network.handlers;
 
-import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.v1_14.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_14.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_14.impl.blocks.BlockLightImpl;
@@ -11,6 +10,7 @@ import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
+import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
@@ -308,11 +308,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean isHidden(Entity entity) {
-        return entity != null && NMSHandler.getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity().getUniqueId());
+        return entity != null && HideEntitiesHelper.playerShouldHide(player.getBukkitEntity().getUniqueId(), entity.getBukkitEntity());
     }
 
     public boolean processHiddenEntitiesForPacket(Packet<?> packet) {
-        if (EntityHelper.hiddenEntitiesEntPl.isEmpty()) {
+        if (!HideEntitiesHelper.hasAnyHides()) {
             return false;
         }
         try {

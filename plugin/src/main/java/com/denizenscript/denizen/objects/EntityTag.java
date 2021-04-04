@@ -10,10 +10,7 @@ import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
-import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
-import com.denizenscript.denizen.utilities.entity.FakeEntity;
-import com.denizenscript.denizen.utilities.entity.Position;
+import com.denizenscript.denizen.utilities.entity.*;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.DenizenCore;
@@ -3151,7 +3148,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         if (mechanism.matches("show_to_players")) {
-            NMSHandler.getEntityHelper().unhideEntity(null, getBukkitEntity());
+            HideEntitiesHelper.unhideEntity(null, getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3165,7 +3162,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         if (mechanism.matches("hide_from_players")) {
-            NMSHandler.getEntityHelper().hideEntity(null, getBukkitEntity());
+            HideEntitiesHelper.hideEntity(null, getBukkitEntity());
         }
 
         // <--[mechanism]

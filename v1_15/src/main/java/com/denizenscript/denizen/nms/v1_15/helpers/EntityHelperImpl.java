@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_15.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_15.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
@@ -419,7 +420,6 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void sendHidePacket(Player pl, Entity entity) {
         if (entity instanceof Player) {
-            ensurePlayerHiding();
             pl.hidePlayer(Denizen.getInstance(), (Player) entity);
             return;
         }

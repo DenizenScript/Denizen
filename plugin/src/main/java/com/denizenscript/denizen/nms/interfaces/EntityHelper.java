@@ -1,22 +1,15 @@
 package com.denizenscript.denizen.nms.interfaces;
 
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -89,154 +82,6 @@ public abstract class EntityHelper {
                                 final double maxRange, final boolean allowWander, final boolean teleport);
 
     public abstract void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback);
-
-    public class EnforcePlayerHides implements Listener {
-
-        public Plugin denizenPlugin;
-
-        @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
-            for (UUID id : hiddenByDefaultPlayers) {
-                Entity pTarget = Bukkit.getEntity(id);
-                if (pTarget instanceof Player) {
-                    event.getPlayer().hidePlayer(Denizen.getInstance(), (Player) pTarget);
-                }
-            }
-            final Player pl = event.getPlayer();
-            final Set<UUID> hides = hiddenEntitiesPlEnt.get(pl.getUniqueId());
-            if (hides == null || hides.isEmpty()) {
-                return;
-            }
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (pl.isOnline()) {
-                        for (UUID id : hides) {
-                            Entity ent = Bukkit.getEntity(id);
-                            if (ent != null) {
-                                sendHidePacket(pl, ent);
-                            }
-                        }
-                    }
-                }
-            }.runTaskLater(denizenPlugin, 5);
-        }
-    }
-
-    public void ensurePlayerHiding() {
-        if (EPH == null) {
-            Plugin pl = Bukkit.getPluginManager().getPlugin("Denizen"); // Very lazy way to get the correct plugin instance
-            EPH = new EnforcePlayerHides();
-            EPH.denizenPlugin = pl;
-            Bukkit.getPluginManager().registerEvents(EPH, pl);
-        }
-    }
-
-    public boolean addHide(UUID player, UUID entity) {
-        Set<UUID> hidden = hiddenEntitiesEntPl.computeIfAbsent(entity, k -> new HashSet<>());
-        if (player.equals(DEFAULT_HIDE)) {
-            for (UUID pl : hidden) {
-                Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
-                if (plHid != null) {
-                    plHid.remove(entity);
-                }
-            }
-            hidden.clear();
-        }
-        else {
-            Set<UUID> plHid = hiddenEntitiesPlEnt.computeIfAbsent(player, k -> new HashSet<>());
-            plHid.add(entity);
-        }
-        return hidden.add(player);
-    }
-
-    public void hideEntity(Player player, Entity entity) {
-        if (player == null) {
-            addHide(DEFAULT_HIDE, entity.getUniqueId());
-            if (entity instanceof Player) {
-                hiddenByDefaultPlayers.add(entity.getUniqueId());
-            }
-            for (Player pl : Bukkit.getOnlinePlayers()) {
-                sendHidePacket(pl, entity);
-            }
-            return;
-        }
-        if (isHiddenByDefault(entity.getUniqueId())) {
-            removeHide(player.getUniqueId(), entity.getUniqueId());
-        }
-        else {
-            addHide(player.getUniqueId(), entity.getUniqueId());
-        }
-        sendHidePacket(player, entity);
-    }
-
-    public static boolean removeHide(UUID player, UUID entity) {
-        Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
-        if (hidden == null) {
-            return false;
-        }
-        boolean toRet = hidden.remove(player);
-        if (player.equals(DEFAULT_HIDE)) {
-            for (UUID pl : hidden) {
-                Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
-                if (plHid != null) {
-                    plHid.remove(entity);
-                }
-            }
-            hidden.clear();
-        }
-        else {
-            Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
-            if (plHid != null) {
-                plHid.remove(entity);
-            }
-        }
-        return toRet;
-    }
-
-    public void unhideEntity(Player player, Entity entity) {
-        if (player == null) {
-            removeHide(DEFAULT_HIDE, entity.getUniqueId());
-            if (entity instanceof Player) {
-                hiddenByDefaultPlayers.remove(entity.getUniqueId());
-            }
-            for (Player pl : Bukkit.getOnlinePlayers()) {
-                sendShowPacket(pl, entity);
-            }
-            return;
-        }
-        if (isHiddenByDefault(entity.getUniqueId())) {
-            addHide(player.getUniqueId(), entity.getUniqueId());
-        }
-        else {
-            removeHide(player.getUniqueId(), entity.getUniqueId());
-        }
-        sendShowPacket(player, entity);
-    }
-
-    public static UUID DEFAULT_HIDE = new UUID(0, 0);
-
-    public boolean isHiddenByDefault(UUID id) {
-        Set<UUID> hiding = hiddenEntitiesEntPl.get(id);
-        return hiding != null && hiding.contains(DEFAULT_HIDE);
-    }
-
-    public boolean isHidden(Player player, UUID id) {
-        if (isHiddenByDefault(id)) {
-            Set<UUID> hiding = hiddenEntitiesEntPl.get(id);
-            return hiding == null || !hiding.contains(player.getUniqueId());
-        }
-        Set<UUID> hiding = hiddenEntitiesEntPl.get(id);
-        return hiding != null && hiding.contains(player.getUniqueId());
-    }
-
-    public static Map<UUID, Set<UUID>> hiddenEntitiesEntPl = new HashMap<>();
-
-    public static Map<UUID, Set<UUID>> hiddenEntitiesPlEnt = new HashMap<>();
-
-    public static EnforcePlayerHides EPH = null;
-
-    public static Set<UUID> hiddenByDefaultPlayers = new HashSet<>();
 
     public abstract void sendHidePacket(Player pl, Entity entity);
 
