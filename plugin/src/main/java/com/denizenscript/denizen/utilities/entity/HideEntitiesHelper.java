@@ -18,6 +18,8 @@ public class HideEntitiesHelper {
 
     public static class PlayerHideMap {
 
+        public UUID player;
+
         public HashSet<UUID> entitiesHidden = new HashSet<>();
 
         public HashSet<UUID> overridinglyShow = new HashSet<>();
@@ -35,6 +37,12 @@ public class HideEntitiesHelper {
                 EntityTag entityTag = new EntityTag(entity);
                 for (String matchable : matchersHidden) {
                     if (BukkitScriptEvent.tryEntity(entityTag, matchable)) {
+                        if (entity instanceof Player) {
+                            Player thisPlayer = Bukkit.getPlayer(player);
+                            if (thisPlayer != null && thisPlayer.canSee((Player) entity)) {
+                                thisPlayer.hidePlayer(Denizen.getInstance(), (Player) entity);
+                            }
+                        }
                         return true;
                     }
                 }
@@ -67,6 +75,16 @@ public class HideEntitiesHelper {
         return !playerHides.isEmpty() || !defaultHidden.isEmpty();
     }
 
+    public static PlayerHideMap getPlayerMapFor(UUID player) {
+        PlayerHideMap map = playerHides.get(player);
+        if (map == null) {
+            map = new PlayerHideMap();
+            map.player = player;
+            playerHides.put(player, map);
+        }
+        return map;
+    }
+
     public static boolean playerShouldHide(UUID player, Entity ent) {
         PlayerHideMap map = playerHides.get(player);
         if (map == null) {
@@ -80,7 +98,7 @@ public class HideEntitiesHelper {
         if (player == null) {
             return defaultHidden.add(entity);
         }
-        PlayerHideMap map = playerHides.computeIfAbsent(player, k -> new PlayerHideMap());
+        PlayerHideMap map = getPlayerMapFor(player);
         map.overridinglyShow.remove(entity);
         return map.entitiesHidden.add(entity);
     }
@@ -106,6 +124,7 @@ public class HideEntitiesHelper {
         if (defaultHidden.contains(entity) || (map != null && map.shouldHideViaMatcher(Bukkit.getEntity(entity)))) {
             if (map == null) {
                 map = new PlayerHideMap();
+                map.player = player;
                 playerHides.put(player, map);
             }
             map.entitiesHidden.remove(entity);

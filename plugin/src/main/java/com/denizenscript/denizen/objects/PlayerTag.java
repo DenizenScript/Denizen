@@ -2943,7 +2943,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Note that dynamic matchables like 'entity_flagged' will behave in unexpected ways when dynamically changing.
         // -->
         if (mechanism.matches("hide_entities") && mechanism.hasValue()) {
-            HideEntitiesHelper.PlayerHideMap map = HideEntitiesHelper.playerHides.computeIfAbsent(getUUID(), (k) -> new HideEntitiesHelper.PlayerHideMap());
+            HideEntitiesHelper.PlayerHideMap map = HideEntitiesHelper.getPlayerMapFor(getUUID());
             String hideMe = mechanism.getValue().asString();
             map.matchersHidden.add(hideMe);
             if (isOnline()) {
@@ -2963,7 +2963,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Removes any entity hides added by <@link mechanism PlayerTag.hide_entities>. Input must exactly match the input given to the hide mechanism.
         // -->
         if (mechanism.matches("unhide_entities") && mechanism.hasValue()) {
-            HideEntitiesHelper.PlayerHideMap map = HideEntitiesHelper.playerHides.computeIfAbsent(getUUID(), (k) -> new HideEntitiesHelper.PlayerHideMap());
+            HideEntitiesHelper.PlayerHideMap map = HideEntitiesHelper.getPlayerMapFor(getUUID());
             String unhideMe = mechanism.getValue().asString();
             map.matchersHidden.remove(unhideMe);
             if (map.matchersHidden.isEmpty() && map.entitiesHidden.isEmpty() && map.overridinglyShow.isEmpty()) {
@@ -2972,7 +2972,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
                     if (BukkitScriptEvent.tryEntity(new EntityTag(ent), unhideMe) && !map.shouldHide(ent)) {
-                        NMSHandler.getEntityHelper().sendHidePacket(getPlayerEntity(), ent);
+                        NMSHandler.getEntityHelper().sendShowPacket(getPlayerEntity(), ent);
                     }
                 }
             }
