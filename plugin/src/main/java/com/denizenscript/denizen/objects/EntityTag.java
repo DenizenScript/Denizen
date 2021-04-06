@@ -706,21 +706,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
         else if (entity != null && isUnique()) {
-            entity.teleport(location);
-            if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
-                NMSHandler.getEntityHelper().teleport(entity, location);
-            }
-            else {
-                List<Entity> passengers = entity.getPassengers();
-                if (!passengers.isEmpty()) {
-                    Position.dismount(passengers);
-                    entity.teleport(location);
-                    for (Entity passenger : passengers) {
-                        passenger.teleport(location);
-                        entity.addPassenger(passenger);
-                    }
-                }
-            }
+            teleport(location);
         }
         else {
             if (entity_type != null) {
