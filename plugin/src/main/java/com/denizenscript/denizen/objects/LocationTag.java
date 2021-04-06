@@ -3445,6 +3445,57 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
             return new ElementTag(((Jukebox) state).isPlaying());
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.age>
+        // @returns DurationTag
+        // @mechanism LocationTag.age
+        // @description
+        // Returns the age of an end gateway.
+        // -->
+        registerTag("age", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof EndGateway)) {
+                attribute.echoError("'age' tag is only valid for end_gateway blocks.");
+                return null;
+            }
+
+            return new DurationTag(((EndGateway) state).getAge());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.is_exact_teleport>
+        // @returns ElementTag(Boolean)
+        // @mechanism LocationTag.is_exact_teleport
+        // @description
+        // Returns whether an end gateway is 'exact teleport' - if false, the destination will be randomly chosen *near* the destination.
+        // -->
+        registerTag("is_exact_teleport", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof EndGateway)) {
+                attribute.echoError("'is_exact_teleport' tag is only valid for end_gateway blocks.");
+                return null;
+            }
+
+            return new ElementTag(((EndGateway) state).isExactTeleport());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.exit_location>
+        // @returns LocationTag
+        // @mechanism LocationTag.exit_location
+        // @description
+        // Returns the exit location of an end gateway block.
+        // -->
+        registerTag("exit_location", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof EndGateway)) {
+                attribute.echoError("'exit_location' tag is only valid for end_gateway blocks.");
+                return null;
+            }
+
+            return new LocationTag(((EndGateway) state).getExitLocation());
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -4042,6 +4093,67 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 Debug.echoError("'jukebox_play' mechanism can only be called on a jukebox block.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name age
+        // @input DurationTag
+        // @description
+        // Sets the age of an end gateway.
+        // @tags
+        // <LocationTag.age>
+        // -->
+        if (mechanism.matches("age") && mechanism.requireObject(DurationTag.class)) {
+            BlockState state = getBlockState();
+            if (state instanceof EndGateway) {
+                ((EndGateway) state).setAge(mechanism.valueAsType(DurationTag.class).getTicks());
+                state.update();
+            }
+            else {
+                Debug.echoError("'age' mechanism can only be called on end gateway blocks.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name is_exact_teleport
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether an end gateway is 'exact teleport' - if false, the destination will be randomly chosen *near* the destination.
+        // @tags
+        // <LocationTag.is_exact_teleport>
+        // -->
+        if (mechanism.matches("is_exact_teleport") && mechanism.requireObject(DurationTag.class)) {
+            BlockState state = getBlockState();
+            if (state instanceof EndGateway) {
+                ((EndGateway) state).setExactTeleport(mechanism.getValue().asBoolean());
+                state.update();
+            }
+            else {
+                Debug.echoError("'is_exact_teleport' mechanism can only be called on end gateway blocks.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name exit_location
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets the exit location of an end gateway block.
+        // See also <@link mechanism LocationTag.is_exact_teleport>.
+        // @tags
+        // <LocationTag.exit_location>
+        // -->
+        if (mechanism.matches("exit_location") && mechanism.requireObject(DurationTag.class)) {
+            BlockState state = getBlockState();
+            if (state instanceof EndGateway) {
+                ((EndGateway) state).setExitLocation(mechanism.valueAsType(LocationTag.class));
+                state.update();
+            }
+            else {
+                Debug.echoError("'exit_location' mechanism can only be called on end gateway blocks.");
             }
         }
 
