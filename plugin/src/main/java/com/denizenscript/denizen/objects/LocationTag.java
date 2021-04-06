@@ -3493,8 +3493,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 attribute.echoError("'exit_location' tag is only valid for end_gateway blocks.");
                 return null;
             }
-
-            return new LocationTag(((EndGateway) state).getExitLocation());
+            Location loc = ((EndGateway) state).getExitLocation();
+            if (loc == null) {
+                return null;
+            }
+            return new LocationTag(loc);
         });
     }
 
@@ -4125,7 +4128,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @tags
         // <LocationTag.is_exact_teleport>
         // -->
-        if (mechanism.matches("is_exact_teleport") && mechanism.requireObject(DurationTag.class)) {
+        if (mechanism.matches("is_exact_teleport") && mechanism.requireBoolean()) {
             BlockState state = getBlockState();
             if (state instanceof EndGateway) {
                 ((EndGateway) state).setExactTeleport(mechanism.getValue().asBoolean());
@@ -4139,14 +4142,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[mechanism]
         // @object LocationTag
         // @name exit_location
-        // @input ElementTag(Boolean)
+        // @input LocationTag
         // @description
         // Sets the exit location of an end gateway block.
         // See also <@link mechanism LocationTag.is_exact_teleport>.
         // @tags
         // <LocationTag.exit_location>
         // -->
-        if (mechanism.matches("exit_location") && mechanism.requireObject(DurationTag.class)) {
+        if (mechanism.matches("exit_location") && mechanism.requireObject(LocationTag.class)) {
             BlockState state = getBlockState();
             if (state instanceof EndGateway) {
                 ((EndGateway) state).setExitLocation(mechanism.valueAsType(LocationTag.class));
