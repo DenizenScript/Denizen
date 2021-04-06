@@ -114,6 +114,10 @@ public class AdvancementHelperImpl extends AdvancementHelper {
 
     @Override
     public void grant(com.denizenscript.denizen.nms.util.Advancement advancement, Player player) {
+        if (advancement.length > 1) {
+            grantPartial(advancement, player, advancement.length);
+            return;
+        }
         if (advancement.temporary) {
             Advancement nmsAdvancement = asNMSCopy(advancement);
             AdvancementProgress progress = new AdvancementProgress();

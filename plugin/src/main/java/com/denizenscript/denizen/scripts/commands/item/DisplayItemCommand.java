@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
+
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -16,6 +18,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
@@ -81,9 +84,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
@@ -100,15 +101,12 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("item")) {
             throw new InvalidArgumentsException("Must specify an item to display.");
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
         }
-
         if (!scriptEntry.hasObject("duration")) {
             scriptEntry.addObject("duration", new DurationTag(60));
         }
@@ -138,6 +136,17 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         }
     }
 
+    public void onItemDespawn(ItemDespawnEvent event) {
+        if (protectedEntities.contains(event.getEntity().getUniqueId())) {
+            event.setCancelled(true);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
+                if (event.getEntity().isValid() && !event.getEntity().isDead()) {
+                    NMSHandler.getEntityHelper().setTicksLived(event.getEntity(), -1000);
+                }
+            }, 1);
+        }
+    }
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
@@ -155,24 +164,20 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         // Drop the item
         final Item dropped = location.getWorld().dropItem(location.getBlockLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
         dropped.setVelocity(dropped.getVelocity().multiply(0));
-        dropped.setPickupDelay(duration.getTicksAsInt() + 1000);
-        dropped.setTicksLived(duration.getTicksAsInt() + 1000);
+        dropped.setPickupDelay(32767);
+        NMSHandler.getEntityHelper().setTicksLived(dropped, -duration.getTicksAsInt());
         if (!dropped.isValid()) {
             Debug.echoDebug(scriptEntry, "Item failed to spawned (likely blocked by some plugin).");
             return;
         }
         final UUID itemUUID = dropped.getUniqueId();
         protectedEntities.add(itemUUID);
-
-        // Remember the item entity
         scriptEntry.addObject("dropped", new EntityTag(dropped));
-
-        // Remove it later
         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                 () -> {
+                    protectedEntities.remove(itemUUID);
                     if (dropped.isValid() && !dropped.isDead()) {
                         dropped.remove();
-                        protectedEntities.remove(itemUUID);
                     }
                 }, duration.getTicks());
     }
