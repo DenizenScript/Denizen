@@ -169,7 +169,7 @@ public class CuboidBlockSet implements BlockSet {
         int index = 0;
         int cx = center_x;
         center_x = center_z;
-        center_z = x_width - cx;
+        center_z = x_width - 1 - cx;
         for (int x = 0; x < z_height; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = x_width - 1; z >= 0; z--) {

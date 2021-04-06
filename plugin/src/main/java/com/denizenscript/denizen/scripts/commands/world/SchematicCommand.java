@@ -380,9 +380,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     while (ang < 0) {
                         ang = 360 + ang;
                     }
-                    while (ang > 360) {
+                    while (ang >= 360) {
                         ang -= 360;
                     }
+                    ang = 360 - ang;
                     while (ang > 0) {
                         ang -= 90;
                         schematics.get(name.asString().toUpperCase()).rotateOne();
