@@ -4059,6 +4059,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     ((Jukebox) state).setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
                 }
                 else {
+                    NMSHandler.getBlockHelper().makeBlockStateRaw(state);
                     ((Jukebox) state).setRecord(null);
                 }
                 state.update();

@@ -82,4 +82,8 @@ public interface BlockHelper {
     default BlockData parseBlockData(Material material, String otherData) {
         throw new UnsupportedOperationException();
     }
+
+    default void makeBlockStateRaw(BlockState state) {
+        throw new UnsupportedOperationException();
+    }
 }
