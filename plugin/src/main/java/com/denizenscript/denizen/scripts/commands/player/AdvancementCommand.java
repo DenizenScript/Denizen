@@ -25,16 +25,16 @@ public class AdvancementCommand extends AbstractCommand {
 
     public AdvancementCommand() {
         setName("advancement");
-        setSyntax("advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)");
-        setRequiredArguments(1, 13);
+        setSyntax("advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>) (progress_length:<#>)");
+        setRequiredArguments(1, 14);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Advancement
-    // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
+    // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>) (progress_length:<#>)
     // @Required 1
-    // @Maximum 13
+    // @Maximum 14
     // @Short Controls a custom advancement.
     // @Group player
     //
@@ -56,6 +56,9 @@ public class AdvancementCommand extends AbstractCommand {
     // The announce argument sets whether the advancement should display a chat message to the server when a player completes it. Default is true.
     // The hidden argument sets whether the advancement should be hidden until it is completed.
     // The x and y arguments are offsets based on the size of an advancement icon in the menu. They are required for custom tabs to look reasonable.
+    //
+    // When creating an advancement, optionally specify 'progress_length' to make it require multiple parts.
+    // When granting an advancement, optionally specify 'progress_length' to only grant partial progress.
     //
     // To award a pre-existing vanilla advancement, instead use <@link mechanism PlayerTag.award_advancement>
     //
@@ -156,6 +159,11 @@ public class AdvancementCommand extends AbstractCommand {
                     && arg.matchesFloat()) {
                 scriptEntry.addObject("y", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("progress_length")
+                    && arg.matchesPrefix("progress_length")
+                    && arg.matchesInteger()) {
+                scriptEntry.addObject("progress_length", arg.asElement());
+            }
             else {
                 arg.reportUnhandled();
             }
@@ -194,12 +202,14 @@ public class AdvancementCommand extends AbstractCommand {
         ElementTag hidden = scriptEntry.getElement("hidden");
         ElementTag x = scriptEntry.getElement("x");
         ElementTag y = scriptEntry.getElement("y");
+        ElementTag progressLength = scriptEntry.getElement("progress_length");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, id.debug() + (parent != null ? parent.debug() : "")
                     + (delete != null ? delete.debug() : "") + (grant != null ? grant.debug() : "")
                     + (revoke != null ? revoke.debug() : "")
                     + icon.debug() + title.debug() + description.debug()
                     + (background != null ? background.debug() : "")
+                    + (progressLength != null ? progressLength.debug() : "")
                     + frame.debug() + toast.debug() + announce.debug() + hidden.debug() + x.debug() + y.debug());
         }
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
@@ -228,7 +238,7 @@ public class AdvancementCommand extends AbstractCommand {
             final Advancement advancement = new Advancement(false, key, parentKey,
                     icon.getItemStack(), title.asString(), description.asString(),
                     backgroundKey, Advancement.Frame.valueOf(frame.asString().toUpperCase()),
-                    toast.asBoolean(), announce.asBoolean(), hidden.asBoolean(), x.asFloat(), y.asFloat());
+                    toast.asBoolean(), announce.asBoolean(), hidden.asBoolean(), x.asFloat(), y.asFloat(), progressLength == null ? 1 : progressLength.asInt());
             advancementHelper.register(advancement);
             customRegistered.put(key, advancement);
         }
@@ -241,7 +251,12 @@ public class AdvancementCommand extends AbstractCommand {
             for (PlayerTag target : grant.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
-                    advancementHelper.grant(advancement, player);
+                    if (progressLength == null) {
+                        advancementHelper.grant(advancement, player);
+                    }
+                    else {
+                        advancementHelper.grantPartial(advancement, player, progressLength.asInt());
+                    }
                 }
             }
         }

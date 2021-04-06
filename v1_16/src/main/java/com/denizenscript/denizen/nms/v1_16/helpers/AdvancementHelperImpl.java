@@ -14,6 +14,7 @@ import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,6 +81,38 @@ public class AdvancementHelperImpl extends AdvancementHelper {
     }
 
     @Override
+    public void grantPartial(com.denizenscript.denizen.nms.util.Advancement advancement, Player player, int len) {
+        if (advancement.length <= 1) {
+            grant(advancement, player);
+            return;
+        }
+        if (advancement.temporary) {
+            Advancement nmsAdvancement = asNMSCopy(advancement);
+            AdvancementProgress progress = new AdvancementProgress();
+            Map<String, Criterion> criteria = new HashMap<>();
+            String[][] requirements = new String[advancement.length][];
+            for (int i = 0; i < advancement.length; i++) {
+                criteria.put(IMPOSSIBLE_KEY + i, new Criterion(new CriterionTriggerImpossible.a()));
+                requirements[i] = new String[] { IMPOSSIBLE_KEY + i };
+            }
+            progress.a(IMPOSSIBLE_CRITERIA, IMPOSSIBLE_REQUIREMENTS);
+            for (int i = 0; i < len; i++) {
+                progress.a(IMPOSSIBLE_KEY + i); // complete impossible criteria
+            }
+            PacketHelperImpl.sendPacket(player, new PacketPlayOutAdvancements(false,
+                    Collections.singleton(nmsAdvancement),
+                    Collections.emptySet(),
+                    Collections.singletonMap(nmsAdvancement.getName(), progress)));
+        }
+        else {
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.key));
+            for (int i = 0; i < len; i++) {
+                ((CraftPlayer) player).getHandle().getAdvancementData().grantCriteria(nmsAdvancement, IMPOSSIBLE_KEY + i);
+            }
+        }
+    }
+
+    @Override
     public void grant(com.denizenscript.denizen.nms.util.Advancement advancement, Player player) {
         if (advancement.temporary) {
             Advancement nmsAdvancement = asNMSCopy(advancement);
@@ -134,7 +167,17 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 asMinecraftKey(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.a(advancement.xOffset, advancement.yOffset);
-        return new Advancement(key, parent, display, AdvancementRewards.a, IMPOSSIBLE_CRITERIA, IMPOSSIBLE_REQUIREMENTS);
+        Map<String, Criterion> criteria = IMPOSSIBLE_CRITERIA;
+        String[][] requirements = IMPOSSIBLE_REQUIREMENTS;
+        if (advancement.length > 1) {
+            criteria = new HashMap<>();
+            requirements = new String[advancement.length][];
+            for (int i = 0; i < advancement.length; i++) {
+                criteria.put(IMPOSSIBLE_KEY + i, new Criterion(new CriterionTriggerImpossible.a()));
+                requirements[i] = new String[] { IMPOSSIBLE_KEY + i };
+            }
+        }
+        return new Advancement(key, parent, display, AdvancementRewards.a, criteria, requirements);
     }
 
     private static MinecraftKey asMinecraftKey(NamespacedKey key) {

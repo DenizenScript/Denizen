@@ -132,7 +132,7 @@ public class ToastCommand extends AbstractCommand {
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(Denizen.getInstance(), UUID.randomUUID().toString()), null,
                 icon.getItemStack(), text.asString(), "", backgroundKey,
-                Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0);
+                Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0, 1);
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
         for (PlayerTag target : targets) {
             Player player = target.getPlayerEntity();

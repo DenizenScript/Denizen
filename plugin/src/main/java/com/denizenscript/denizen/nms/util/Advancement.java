@@ -22,11 +22,13 @@ public class Advancement {
     public float xOffset;
     public float yOffset;
 
+    public int length;
+
     public boolean registered;
 
     public Advancement(boolean temporary, NamespacedKey key, NamespacedKey parent, ItemStack icon,
                        String title, String description, NamespacedKey background, Frame frame,
-                       boolean toast, boolean announceToChat, boolean hidden, float xOffset, float yOffset) {
+                       boolean toast, boolean announceToChat, boolean hidden, float xOffset, float yOffset, int length) {
         this.temporary = temporary;
         this.key = key;
         this.parent = parent;
@@ -40,5 +42,6 @@ public class Advancement {
         this.hidden = hidden;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
+        this.length = length;
     }
 }
