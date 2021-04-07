@@ -3077,6 +3077,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, exclude the slot and item to stop showing the fake equipment, if any, on the specified entity.
         // - adjust <player> fake_equipment:<[some_entity]>|chest|diamond_chestplate
         // - adjust <player> fake_equipment:<player>|head|jack_o_lantern
+        // Consider instead using <@link command fakeequip>.
         // -->
         if (mechanism.matches("fake_equipment")) {
             if (!mechanism.getValue().asString().isEmpty()) {

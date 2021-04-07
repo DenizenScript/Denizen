@@ -206,12 +206,14 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void resetEquipment(Player player, LivingEntity entity) {
         EntityEquipment equipment = entity.getEquipment();
-        showEquipment(player, entity, EquipmentSlot.HAND, equipment.getItemInMainHand());
-        showEquipment(player, entity, EquipmentSlot.OFF_HAND, equipment.getItemInOffHand());
-        showEquipment(player, entity, EquipmentSlot.HEAD, equipment.getHelmet());
-        showEquipment(player, entity, EquipmentSlot.CHEST, equipment.getChestplate());
-        showEquipment(player, entity, EquipmentSlot.LEGS, equipment.getLeggings());
-        showEquipment(player, entity, EquipmentSlot.FEET, equipment.getBoots());
+        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack>> pairList = new ArrayList<>();
+        pairList.add(new Pair<>(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(equipment.getItemInMainHand())));
+        pairList.add(new Pair<>(EnumItemSlot.OFFHAND, CraftItemStack.asNMSCopy(equipment.getItemInOffHand())));
+        pairList.add(new Pair<>(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(equipment.getHelmet())));
+        pairList.add(new Pair<>(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(equipment.getChestplate())));
+        pairList.add(new Pair<>(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(equipment.getLeggings())));
+        pairList.add(new Pair<>(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(equipment.getBoots())));
+        sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
     }
 
     @Override

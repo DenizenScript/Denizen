@@ -63,6 +63,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(BurnCommand.class);
         registerCommand(CastCommand.class);
         registerCommand(EquipCommand.class);
+        registerCommand(FakeEquipCommand.class);
         registerCommand(FeedCommand.class);
         registerCommand(FlyCommand.class);
         registerCommand(FollowCommand.class);

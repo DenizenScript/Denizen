@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
@@ -19,6 +20,7 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
+import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
@@ -33,6 +35,7 @@ import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_16_R3.CraftParticle;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -142,6 +145,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field ENTITY_METADATA_EID = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("a");
     public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("b");
     public static Field WORLD_PARTICLES_PARTICLETYPE = ReflectionHelper.getFields(PacketPlayOutWorldParticles.class).get("j");
+    public static Field ENTITY_EQUIPMENT_EID = ReflectionHelper.getFields(PacketPlayOutEntityEquipment.class).get("a");
+    public static Field ENTITY_EQUIPMENT_DATALIST = ReflectionHelper.getFields(PacketPlayOutEntityEquipment.class).get("b");
 
     public static Object duplo(Object a) {
         try {
@@ -184,11 +189,70 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             || processParticlesForPacket(packet)
             || processDisguiseForPacket(packet, genericfuturelistener)
             || processMetadataChangesForPacket(packet, genericfuturelistener)
+            || processEquipmentForPacket(packet, genericfuturelistener)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
             return;
         }
         processBlockLightForPacket(packet);
         oldManager.sendPacket(packet, genericfuturelistener);
+    }
+
+    public boolean processEquipmentForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (FakeEquipCommand.overrides.isEmpty()) {
+            return false;
+        }
+        try {
+            if (packet instanceof PacketPlayOutEntityEquipment) {
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                if (playersMap == null) {
+                    return false;
+                }
+                int eid = ENTITY_EQUIPMENT_EID.getInt(packet);
+                Entity ent = player.world.getEntity(eid);
+                if (ent == null) {
+                    return false;
+                }
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUniqueID());
+                if (override == null) {
+                    return false;
+                }
+                List<Pair<EnumItemSlot, ItemStack>> equipment = new ArrayList<>((List) ENTITY_EQUIPMENT_DATALIST.get(packet));
+                PacketPlayOutEntityEquipment newPacket = new PacketPlayOutEntityEquipment();
+                ENTITY_EQUIPMENT_EID.setInt(newPacket, eid);
+                ENTITY_EQUIPMENT_DATALIST.set(newPacket, equipment);
+                for (int i = 0; i < equipment.size(); i++) {
+                    Pair<EnumItemSlot, ItemStack> pair =  equipment.get(i);
+                    ItemStack use = pair.getSecond();
+                    switch (pair.getFirst()) {
+                        case MAINHAND:
+                            use = override.hand == null ? use : CraftItemStack.asNMSCopy(override.hand.getItemStack());
+                            break;
+                        case OFFHAND:
+                            use = override.offhand == null ? use : CraftItemStack.asNMSCopy(override.offhand.getItemStack());
+                            break;
+                        case CHEST:
+                            use = override.chest == null ? use : CraftItemStack.asNMSCopy(override.chest.getItemStack());
+                            break;
+                        case HEAD:
+                            use = override.head == null ? use : CraftItemStack.asNMSCopy(override.head.getItemStack());
+                            break;
+                        case LEGS:
+                            use = override.legs == null ? use : CraftItemStack.asNMSCopy(override.legs.getItemStack());
+                            break;
+                        case FEET:
+                            use = override.boots == null ? use : CraftItemStack.asNMSCopy(override.boots.getItemStack());
+                            break;
+                    }
+                    equipment.set(i, new Pair<>(pair.getFirst(), use));
+                }
+                oldManager.sendPacket(newPacket, genericfuturelistener);
+                return true;
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return false;
     }
 
     public boolean processParticlesForPacket(Packet<?> packet) {
