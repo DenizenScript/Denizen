@@ -264,6 +264,9 @@ public class SittingTrait extends Trait implements Listener {
                 else if (npc != null && !npc.isSpawned()) {
                     cancel();
                 }
+                else if (!holder.isSpawned()) {
+                    cancel();
+                }
                 else if (!NMS.getPassengers(holder.getEntity()).contains(entity)) {
                     holder.getEntity().addPassenger(entity);
                 }
