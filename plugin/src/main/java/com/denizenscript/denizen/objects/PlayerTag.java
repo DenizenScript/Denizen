@@ -2308,6 +2308,24 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return disguise.fakeToSelf.entity;
         });
+
+        // <--[tag]
+        // @attribute <PlayerTag.spectator_target>
+        // @returns EntityTag
+        // @mechanism PlayerTag.spectator_target
+        // @description
+        // Returns the entity that a spectator-mode player is currently spectating, if any.
+        // -->
+        registerTag("spectator_target", (attribute, object) -> {
+            if (object.getPlayerEntity().getGameMode() != GameMode.SPECTATOR) {
+                return null;
+            }
+            Entity target = object.getPlayerEntity().getSpectatorTarget();
+            if (target == null) {
+                return null;
+            }
+            return new EntityTag(target);
+        });
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -3169,10 +3187,33 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name spectator_target
+        // @input EntityTag
+        // @description
+        // Switches the player to spectator mode and causes them to immediately start spectating an entity.
+        // To instead fake this effect, use <@link mechanism PlayerTag.spectate>
+        // Give no input to detach the player from any target.
+        // @tags
+        // <PlayerTag.spectator_target>
+        // -->
+        if (mechanism.matches("spectator_target")) {
+            if (mechanism.hasValue()) {
+                getPlayerEntity().setGameMode(GameMode.SPECTATOR);
+                getPlayerEntity().setSpectatorTarget(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            }
+            else if (getPlayerEntity().getGameMode() == GameMode.SPECTATOR) {
+                getPlayerEntity().setSpectatorTarget(null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name spectate
         // @input EntityTag
         // @description
-        // Forces the player to spectate from the entity's point of view.
+        // Forces the player to spectate from the entity's point of view, using a packet (meaning, the player starts spectating clientside, but not serverside).
+        // The player will not move from their existing location serverside.
+        // To cause real spectator mode spectating, use <@link mechanism PlayerTag.spectator_target>
         // Note that in some cases you may want to force the player into the spectate gamemode prior to using this mechanism.
         // Note: They cannot cancel the spectating without a re-log -- you must make them spectate themselves to cancel the effect.
         // (i.e. - adjust <player> spectate:<player>)
