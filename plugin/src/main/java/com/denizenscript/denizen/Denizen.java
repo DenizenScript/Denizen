@@ -311,6 +311,7 @@ public class Denizen extends JavaPlugin {
                 writer.write(updated);
                 writer.close();
                 configOutput.close();
+                reloadConfig();
             }
         }
         catch (Exception e) {
@@ -319,9 +320,9 @@ public class Denizen extends JavaPlugin {
         try {
             worldScriptHelper = new BukkitWorldScriptHelper();
             itemScriptHelper = new ItemScriptHelper();
-            InventoryScriptHelper in_helper = new InventoryScriptHelper();
-            EntityScriptHelper es_helper = new EntityScriptHelper();
-            CommandScriptHelper cs_helper = new CommandScriptHelper();
+            new InventoryScriptHelper();
+            new EntityScriptHelper();
+            new CommandScriptHelper();
         }
         catch (Exception e) {
             Debug.echoError(e);

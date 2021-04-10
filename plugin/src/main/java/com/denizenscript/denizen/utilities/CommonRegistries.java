@@ -78,6 +78,7 @@ public class CommonRegistries {
         new TradeTagBase();
         new WorldTagBase();
         // Other bases
+        new CustomColorTagBase();
         new ServerTagBase();
         new TextTagBase();
         new ParseTagBase();

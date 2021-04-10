@@ -120,7 +120,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
-
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("force_along")
@@ -194,18 +193,17 @@ public class PushCommand extends AbstractCommand implements Holdable {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final ScriptTag script = scriptEntry.getObjectTag("script");
         final ListTag definitions = scriptEntry.getObjectTag("definitions");
-        final double speed = scriptEntry.getElement("speed").asDouble();
-        final int maxTicks = ((DurationTag) scriptEntry.getObject("duration")).getTicksAsInt();
+        ElementTag speedElement = scriptEntry.getElement("speed");
+        DurationTag duration = (DurationTag) scriptEntry.getObject("duration");
         ElementTag force_along = scriptEntry.getElement("force_along");
         ElementTag precision = scriptEntry.getElement("precision");
         ElementTag ignore_collision = scriptEntry.getElement("ignore_collision");
-        final boolean ignoreCollision = ignore_collision != null && ignore_collision.asBoolean();
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                     ArgumentHelper.debugObj("entities", entities.toString()) +
-                    ArgumentHelper.debugObj("destination", destination) +
-                    ArgumentHelper.debugObj("speed", speed) +
-                    ArgumentHelper.debugObj("max ticks", maxTicks) +
+                    destination.debug() +
+                    speedElement.debug() +
+                    duration.debug() +
                     (script != null ? script.debug() : "") +
                     force_along.debug() +
                     precision.debug() +
@@ -214,6 +212,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     (ignore_collision != null ? ignore_collision.debug() : "") +
                     (definitions != null ? definitions.debug() : ""));
         }
+        final boolean ignoreCollision = ignore_collision != null && ignore_collision.asBoolean();
+        final double speed = speedElement.asDouble();
+        final int maxTicks = duration.getTicksAsInt();
         final boolean forceAlong = force_along.asBoolean();
         // Keep a ListTag of entities that can be called using <entry[name].pushed_entities> later in the script queue
         final ListTag entityList = new ListTag();

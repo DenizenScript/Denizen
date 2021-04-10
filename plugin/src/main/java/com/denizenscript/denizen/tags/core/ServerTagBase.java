@@ -559,6 +559,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all registered advancement names.
         // Generally used with <@link tag PlayerTag.has_advancement>.
+        // See also <@link url https://minecraft.fandom.com/wiki/Advancement>.
         // -->
         if (attribute.startsWith("advancement_types") || attribute.startsWith("list_advancements")) {
             if (attribute.matches("list_advancements")) {

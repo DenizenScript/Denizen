@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.commands.entity.RemoveCommand;
+import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -9,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.nio.charset.Charset;
@@ -91,6 +93,16 @@ public class Settings {
         PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
         MapTagBasedFlagTracker.skipAllCleanings = config.getBoolean("Saves.Skip flag cleaning", false);
         RemoveCommand.alwaysWarnOnMassRemove = config.getBoolean("Commands.Remove.Always warn on mass delete", false);
+        ConfigurationSection colorSection = config.getConfigurationSection("Colors");
+        if (colorSection != null) {
+            CustomColorTagBase.customColorsRaw.clear();
+            CustomColorTagBase.customColors.clear();
+            CustomColorTagBase.defaultColor = null;
+            for (String key : colorSection.getKeys(false)) {
+                CustomColorTagBase.customColorsRaw.put(CoreUtilities.toLowerCase(key), colorSection.getString(key));
+            }
+            CustomColorTagBase.defaultColorRaw = CustomColorTagBase.customColorsRaw.getOrDefault("default", CustomColorTagBase.defaultColorRaw);
+        }
     }
 
     private static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,

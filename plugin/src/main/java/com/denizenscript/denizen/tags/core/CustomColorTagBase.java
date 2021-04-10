@@ -1,0 +1,51 @@
+package com.denizenscript.denizen.tags.core;
+
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.md_5.bungee.api.ChatColor;
+
+import java.util.HashMap;
+
+public class CustomColorTagBase {
+
+    public static HashMap<String, String> customColorsRaw = new HashMap<>();
+
+    public  static String defaultColorRaw = ChatColor.WHITE.toString();
+
+    public static HashMap<String, String> customColors = new HashMap<>();
+
+    public  static String defaultColor = null;
+
+    public CustomColorTagBase() {
+
+        // <--[tag]
+        // @attribute <&[<color>]>
+        // @returns ElementTag
+        // @description
+        // Returns a custom color value based on the common base color names defined in the Denizen config file.
+        // If the color name is unrecognized, returns the value of color named 'default'.
+        // Default color names are 'base', 'emphasis', 'warning', 'error'.
+        // -->
+        TagManager.registerTagHandler("&", attribute -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            String key = CoreUtilities.toLowerCase(attribute.getContext(1));
+            String result = customColors.get(key);
+            if (result != null) {
+                return new ElementTag(result);
+            }
+            String unparsed = customColorsRaw.get(key);
+            if (unparsed != null) {
+                result = TagManager.tag(unparsed, attribute.context);
+                customColors.put(key, result);
+                return new ElementTag(result);
+            }
+            if (defaultColor == null) {
+                defaultColor = TagManager.tag(defaultColorRaw, attribute.context);
+            }
+            return new ElementTag(defaultColor);
+        });
+    }
+}
