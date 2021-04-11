@@ -64,7 +64,7 @@ public class ItemRawNBT implements Property {
                 // Potions
                 "CustomPotionEffects", "Potion", "CustomPotionColor",
                 // Crossbow specific
-                "ChargedProjectiles",
+                "ChargedProjectiles", "Charged",
                 // Book specific
                 "resolved", "generation", "author", "title", "pages",
                 // Player Head specific
