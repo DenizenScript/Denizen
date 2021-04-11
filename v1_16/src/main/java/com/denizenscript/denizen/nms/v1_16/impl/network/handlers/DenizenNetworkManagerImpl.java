@@ -147,6 +147,12 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public static Field WORLD_PARTICLES_PARTICLETYPE = ReflectionHelper.getFields(PacketPlayOutWorldParticles.class).get("j");
     public static Field ENTITY_EQUIPMENT_EID = ReflectionHelper.getFields(PacketPlayOutEntityEquipment.class).get("a");
     public static Field ENTITY_EQUIPMENT_DATALIST = ReflectionHelper.getFields(PacketPlayOutEntityEquipment.class).get("b");
+    public static Field ENTITY_STATUS_EID = ReflectionHelper.getFields(PacketPlayOutEntityStatus.class).get("a");
+    public static Field ENTITY_STATUS_CODE = ReflectionHelper.getFields(PacketPlayOutEntityStatus.class).get("b");
+    public static Field WINDOW_ITEMS_WINDOW = ReflectionHelper.getFields(PacketPlayOutWindowItems.class).get("a");
+    public static Field WINDOW_ITEMS_CONTENTS = ReflectionHelper.getFields(PacketPlayOutWindowItems.class).get("b");
+    public static Field SET_SLOT_WINDOW = ReflectionHelper.getFields(PacketPlayOutSetSlot.class).get("a");
+    public static Field SET_SLOT_SLOT = ReflectionHelper.getFields(PacketPlayOutSetSlot.class).get("b");
 
     public static Object duplo(Object a) {
         try {
@@ -245,6 +251,100 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     }
                     equipment.set(i, new Pair<>(pair.getFirst(), use));
                 }
+                oldManager.sendPacket(newPacket, genericfuturelistener);
+                return true;
+            }
+            else if (packet instanceof PacketPlayOutEntityStatus) {
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                if (playersMap == null) {
+                    return false;
+                }
+                int eid = ENTITY_STATUS_EID.getInt(packet);
+                Entity ent = player.world.getEntity(eid);
+                if (ent == null) {
+                    return false;
+                }
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUniqueID());
+                if (override == null) {
+                    return false;
+                }
+                return ENTITY_STATUS_CODE.getByte(packet) == (byte) 55 && (override.hand != null || override.offhand != null);
+            }
+            else if (packet instanceof PacketPlayOutWindowItems) {
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                if (playersMap == null) {
+                    return false;
+                }
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+                if (override == null) {
+                    return false;
+                }
+                int window = WINDOW_ITEMS_WINDOW.getInt(packet);
+                if (window != 0) {
+                    return false;
+                }
+                List<ItemStack> items = (List<ItemStack>) WINDOW_ITEMS_CONTENTS.get(packet);
+                if (override.head != null) {
+                    items.set(5, CraftItemStack.asNMSCopy(override.head.getItemStack()));
+                }
+                if (override.chest != null) {
+                    items.set(6, CraftItemStack.asNMSCopy(override.chest.getItemStack()));
+                }
+                if (override.legs != null) {
+                    items.set(7, CraftItemStack.asNMSCopy(override.legs.getItemStack()));
+                }
+                if (override.boots != null) {
+                    items.set(8, CraftItemStack.asNMSCopy(override.boots.getItemStack()));
+                }
+                if (override.offhand != null) {
+                    items.set(45, CraftItemStack.asNMSCopy(override.offhand.getItemStack()));
+                }
+                if (override.hand != null) {
+                    items.set(player.inventory.itemInHandIndex + 36, CraftItemStack.asNMSCopy(override.hand.getItemStack()));
+                }
+                PacketPlayOutWindowItems newPacket = new PacketPlayOutWindowItems();
+                WINDOW_ITEMS_WINDOW.setInt(newPacket, window);
+                WINDOW_ITEMS_CONTENTS.set(newPacket, items);
+                oldManager.sendPacket(newPacket, genericfuturelistener);
+                return true;
+            }
+            else if (packet instanceof PacketPlayOutSetSlot) {
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                if (playersMap == null) {
+                    return false;
+                }
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+                if (override == null) {
+                    return false;
+                }
+                int window = SET_SLOT_WINDOW.getInt(packet);
+                if (window != 0) {
+                    return false;
+                }
+                int slot = SET_SLOT_SLOT.getInt(packet);
+                org.bukkit.inventory.ItemStack item = null;
+                if (slot == 5 && override.head != null) {
+                    item = override.head.getItemStack();
+                }
+                else if (slot == 6 && override.chest != null) {
+                    item = override.chest.getItemStack();
+                }
+                else if (slot == 7 && override.legs != null) {
+                    item = override.legs.getItemStack();
+                }
+                else if (slot == 8 && override.boots != null) {
+                    item = override.boots.getItemStack();
+                }
+                else if (slot == 45 && override.offhand != null) {
+                    item = override.offhand.getItemStack();
+                }
+                else if (slot == player.inventory.itemInHandIndex + 36 && override.hand != null) {
+                    item = override.hand.getItemStack();
+                }
+                if (item == null) {
+                    return false;
+                }
+                PacketPlayOutSetSlot newPacket = new PacketPlayOutSetSlot(window, slot, CraftItemStack.asNMSCopy(item));
                 oldManager.sendPacket(newPacket, genericfuturelistener);
                 return true;
             }
