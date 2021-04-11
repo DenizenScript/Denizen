@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_16.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketInSteerVehicleImpl;
+import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.util.concurrent.Future;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
@@ -54,6 +57,42 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void a(PacketPlayInBlockDig packet) {
         packetHandler.receiveDigPacket(player.getBukkitEntity());
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInArmAnimation packet) {
+        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+        if (playersMap != null) {
+            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+            if (override != null && (override.hand != null || override.offhand != null)) {
+                player.getBukkitEntity().updateInventory();
+            }
+        }
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInHeldItemSlot packet) {
+        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+        if (playersMap != null) {
+            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+            if (override != null && override.hand != null) {
+                Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 2);
+            }
+        }
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInWindowClick packet) {
+        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+        if (playersMap != null) {
+            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+            if (override != null && packet.b() == 0) {
+                Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
+            }
+        }
         super.a(packet);
     }
 

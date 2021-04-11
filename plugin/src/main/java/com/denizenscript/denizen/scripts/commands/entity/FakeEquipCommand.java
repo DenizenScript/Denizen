@@ -25,15 +25,15 @@ public class FakeEquipCommand extends AbstractCommand {
 
     public FakeEquipCommand() {
         setName("fakeequip");
-        setSyntax("fakeequip [<entity>|...] (for:<player>|...) [duration:<duration>/reset] (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)");
-        setRequiredArguments(2, 9);
+        setSyntax("fakeequip [<entity>|...] (for:<player>|...) (duration:<duration>/reset) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)");
+        setRequiredArguments(1, 9);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name FakeEquip
-    // @Syntax fakeequip [<entity>|...] (for:<player>|...) [duration:<duration>/reset] (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
-    // @Required 2
+    // @Syntax fakeequip [<entity>|...] (for:<player>|...) (duration:<duration>/reset) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
+    // @Required 1
     // @Maximum 9
     // @Short Fake-equips items and armor on a list of entities for players to see without real change.
     // @Group entity
@@ -47,7 +47,7 @@ public class FakeEquipCommand extends AbstractCommand {
     //
     // The changes will remain in place for as long as the duration is specified (even if the real equipment is changed).
     // The changes can be manually reset early by using the 'reset' argument.
-    // A duration of '0' means forever.
+    // If you do not provide a duration, the fake equipment will last until manually reset.
     // This does not persist across server restarts.
     //
     // Set the item to 'air' to unequip any slot.
@@ -124,9 +124,6 @@ public class FakeEquipCommand extends AbstractCommand {
         if (equipment.isEmpty() && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Must specify equipment!");
         }
-        if (!scriptEntry.hasObject("duration") && !scriptEntry.hasObject("reset")) {
-            throw new InvalidArgumentsException("Must specify a duration, or 'reset'!");
-        }
         if (!scriptEntry.hasObject("for")) {
             PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
             if (player == null) {
@@ -134,7 +131,6 @@ public class FakeEquipCommand extends AbstractCommand {
             }
             scriptEntry.addObject("for", Collections.singletonList(player));
         }
-        scriptEntry.defaultObject("duration", new DurationTag(10));
         scriptEntry.addObject("equipment", equipment);
     }
 
