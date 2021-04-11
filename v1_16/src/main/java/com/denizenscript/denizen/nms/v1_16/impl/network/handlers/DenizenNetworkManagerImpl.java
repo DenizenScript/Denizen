@@ -261,14 +261,24 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 }
                 int eid = ENTITY_STATUS_EID.getInt(packet);
                 Entity ent = player.world.getEntity(eid);
-                if (ent == null) {
+                if (!(ent instanceof EntityLiving)) {
                     return false;
                 }
                 FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUniqueID());
-                if (override == null) {
+                if (override == null || (override.hand == null && override.offhand == null)) {
                     return false;
                 }
-                return ENTITY_STATUS_CODE.getByte(packet) == (byte) 55 && (override.hand != null || override.offhand != null);
+                if (ENTITY_STATUS_CODE.getByte(packet) != (byte) 55) {
+                    return false;
+                }
+                List<Pair<EnumItemSlot, ItemStack>> equipment = new ArrayList<>();
+                ItemStack hand = override.hand != null ? CraftItemStack.asNMSCopy(override.hand.getItemStack()) : ((EntityLiving) ent).getItemInMainHand();
+                ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((EntityLiving) ent).getItemInOffHand();
+                equipment.add(new Pair<>(EnumItemSlot.MAINHAND, hand));
+                equipment.add(new Pair<>(EnumItemSlot.OFFHAND, offhand));
+                PacketPlayOutEntityEquipment newPacket = new PacketPlayOutEntityEquipment(eid, equipment);
+                oldManager.sendPacket(newPacket, genericfuturelistener);
+                return true;
             }
             else if (packet instanceof PacketPlayOutWindowItems) {
                 HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
