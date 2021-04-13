@@ -1875,7 +1875,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 int degrees = 45;
                 LocationTag facingLoc;
                 if (LocationTag.matches(attribute.getContext(1))) {
-                    facingLoc = object.clone();
+                    facingLoc = attribute.contextAsType(1, LocationTag.class);
                 }
                 else if (EntityTag.matches(attribute.getContext(1))) {
                     facingLoc = attribute.contextAsType(1, EntityTag.class).getLocation();
