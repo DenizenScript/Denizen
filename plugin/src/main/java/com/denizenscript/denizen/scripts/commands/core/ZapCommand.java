@@ -98,14 +98,16 @@ public class ZapCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(ScriptTag.class)
                     && arg.asType(ScriptTag.class).getContainer() instanceof InteractScriptContainer
-                    && !arg.matchesPrefix("step")) {
+                    && arg.limitToOnlyPrefix("script")) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
-            else if (!scriptEntry.hasObject("step")) {
+            else if (!scriptEntry.hasObject("step")
+                    && arg.limitToOnlyPrefix("step")) {
                 scriptEntry.addObject("step", arg.asElement());
             }
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(DurationTag.class)) {
+                    && arg.matchesArgumentType(DurationTag.class)
+                    && arg.limitToOnlyPrefix("duration")) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else {
@@ -139,14 +141,11 @@ public class ZapCommand extends AbstractCommand implements Listener {
     public void execute(final ScriptEntry scriptEntry) {
         final ScriptTag script = scriptEntry.getObjectTag("script");
         DurationTag duration = scriptEntry.getObjectTag("duration");
+        ElementTag stepElement = scriptEntry.getElement("step");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry).debug() + script.debug()
-                    + (scriptEntry.hasObject("step")
-                    ? scriptEntry.getElement("step").debug() : ArgumentHelper.debugObj("step", "++ (inc)"))
-                    + (duration != null ? duration.debug() : ""));
+            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry), script, stepElement != null ? stepElement.debug() : ArgumentHelper.debugObj("step", "++ (inc)"), duration);
         }
-
-        String step = scriptEntry.hasObject("step") ? scriptEntry.getElement("step").asString() : null;
+        String step = stepElement == null ? null : stepElement.asString();
         String currentStep = InteractScriptHelper.getCurrentStep(Utilities.getEntryPlayer(scriptEntry), script.getName());
         // Special-case for backwards compatibility: ability to use ZAP to count up steps.
         if (step == null) {

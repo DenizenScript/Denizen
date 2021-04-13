@@ -127,12 +127,7 @@ public class NarrateCommand extends AbstractCommand {
             text = TagManager.tag(text, context);
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("Narrating", text)
-                            + ArgumentHelper.debugList("Targets", targets)
-                            + (formatObj != null ? formatObj.debug() : "")
-                            + (perPlayerObj != null ? perPlayerObj.debug() : "")
-                            + (from != null ? from.debug() : ""));
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Narrating", text), ArgumentHelper.debugList("Targets", targets), formatObj, perPlayerObj, from);
         }
         UUID fromId = null;
         if (from != null) {

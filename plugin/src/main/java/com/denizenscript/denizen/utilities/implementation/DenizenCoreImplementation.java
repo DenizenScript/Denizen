@@ -91,6 +91,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
+    public void debugReport(Debuggable debuggable, String s, Object... values) {
+        Debug.report(debuggable, s, values);
+    }
+
+    @Override
     public void debugApproval(String message) {
         Debug.echoApproval(message);
     }

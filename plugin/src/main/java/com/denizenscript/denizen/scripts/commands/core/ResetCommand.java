@@ -92,10 +92,7 @@ public class ResetCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
         ScriptTag script = scriptEntry.getObjectTag("script");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    (players != null ? players.debug() : "")
-                            + ArgumentHelper.debugObj("type", type)
-                            + (script != null ? script.debug() : ""));
+            Debug.report(scriptEntry, getName(), players, ArgumentHelper.debugObj("type", type), script);
         }
         // Deal with GLOBAL_COOLDOWN reset first, since there's no player/players involved
         if (type == Type.GLOBAL_COOLDOWN) {

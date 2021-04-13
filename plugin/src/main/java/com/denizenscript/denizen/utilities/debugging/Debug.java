@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.core.ConsoleOutputScriptEvent;
 import com.denizenscript.denizencore.events.core.ScriptGeneratesErrorScriptEvent;
 import com.denizenscript.denizencore.events.core.ServerGeneratesExceptionScriptEvent;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.CommandExecutor;
@@ -65,6 +66,25 @@ public class Debug {
         }
         // ScriptContainer can't be traced to a queue
         return null;
+    }
+
+    public static void report(Debuggable caller, String name, Object... values) {
+        if (!showDebug || !shouldDebug(caller)) {
+            return;
+        }
+        StringBuilder output = new StringBuilder();
+        for (Object obj : values) {
+            if (obj == null) {
+                continue;
+            }
+            if (obj instanceof ObjectTag) {
+                output.append(((ObjectTag) obj).debug());
+            }
+            else {
+                output.append(obj.toString());
+            }
+        }
+        echo("<Y>+> <G>Executing '<Y>" + name + "<G>': " + trimMessage(output.toString()), caller);
     }
 
     /**
