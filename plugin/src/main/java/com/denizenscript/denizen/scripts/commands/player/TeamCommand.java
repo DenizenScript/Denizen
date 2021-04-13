@@ -174,7 +174,11 @@ public class TeamCommand extends AbstractCommand {
         }
         Team team = board.getTeam(name.asString());
         if (team == null) {
-            team = board.registerNewTeam(name.asString());
+            String low = CoreUtilities.toLowerCase(name.asString());
+            team = board.getTeams().stream().filter(t -> CoreUtilities.toLowerCase(t.getName()).equals(low)).findFirst().orElse(null);
+            if (team == null) {
+                team = board.registerNewTeam(name.asString());
+            }
         }
         if (add != null) {
             for (String string : add) {
