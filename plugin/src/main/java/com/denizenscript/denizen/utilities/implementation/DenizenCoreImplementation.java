@@ -566,6 +566,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                 return true;
             }
             PlayerTag player = value.asType(PlayerTag.class, baseData.getTagContext());
+            if (player == null) {
+                return false;
+            }
             if (queue.getLastEntryExecuted() != null) {
                 ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).setPlayer(player);
             }
@@ -580,6 +583,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
                 return true;
             }
             NPCTag npc = value.asType(NPCTag.class, baseData.getTagContext());
+            if (npc == null) {
+                return false;
+            }
             if (queue.getLastEntryExecuted() != null) {
                 ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).setNPC(npc);
             }
