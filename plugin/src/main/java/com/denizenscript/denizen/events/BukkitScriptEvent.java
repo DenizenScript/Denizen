@@ -7,6 +7,7 @@ import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -43,12 +44,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // "<block>" usually indicates that a MaterialTag will be matched against.
     // This means you can specify any valid block material name, like "stone" or "air".
+    // You can also use "vanilla_tagged:<vanilla_tag_name>".
     // You can also use "block" or "material" as catch-alls.
     //
     // "<item>" or similar expects of course an ItemTag.
     // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
     // Items can also be used with an "item_flagged" secondary prefix, so for an event that has "with:<item>", you can also do "with:item_flagged:<flag name>".
     // For item matchers that aren't switches, this works similarly, like "on player consumes item_flagged:myflag:" (note that this is not a switch).
+    // You can also use "vanilla_tagged:<vanilla_tag_name>".
     //
     // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
     // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
@@ -255,7 +258,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean couldMatchBlockOrItem(String text) {
-        if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion") || text.startsWith("item_flagged:")) {
+        if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion") || text.startsWith("item_flagged:") || text.startsWith("vanilla_tagged:")) {
             return true;
         }
         if (MaterialTag.matches(text)) {
@@ -285,7 +288,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean couldMatchBlock(String text) {
-        if (text.equals("block") || text.equals("material")) {
+        if (text.equals("block") || text.equals("material") || text.startsWith("vanilla_tagged:")) {
             return true;
         }
         if (text.equals("item")) {
@@ -313,7 +316,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (text.equals("item") || text.equals("potion")) {
             return true;
         }
-        if (text.startsWith("item_flagged:")) {
+        if (text.startsWith("item_flagged:") || text.startsWith("vanilla_tagged:")) {
             return true;
         }
         if (MaterialTag.matches(text)) {
@@ -913,6 +916,20 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             return true;
         }
+        if (comparedto.startsWith("vanilla_tagged:")) {
+            String tagCheck = comparedto.substring("vanilla_tagged:".length());
+            HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(item.getItemStack().getType());
+            if (tags == null) {
+                return false;
+            }
+            MatchHelper matcher = createMatcher(tagCheck);
+            for (String tag : tags) {
+                if (matcher.doesMatch(tag)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         if (comparedto.equals("item")) {
             return true;
         }
@@ -934,6 +951,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean tryMaterial(MaterialTag mat, String comparedto) {
+        return tryMaterial(mat.getMaterial(), comparedto);
+    }
+
+    public static boolean tryMaterial(Material mat, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || mat == null) {
             return false;
         }
@@ -941,9 +962,23 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("block") || comparedto.equals("material")) {
             return true;
         }
+        if (comparedto.startsWith("vanilla_tagged:")) {
+            String tagCheck = comparedto.substring("vanilla_tagged:".length());
+            HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(mat);
+            if (tags == null) {
+                return false;
+            }
+            MatchHelper matcher = createMatcher(tagCheck);
+            for (String tag : tags) {
+                if (matcher.doesMatch(tag)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         MaterialTag quickOf = MaterialTag.quickOfNamed(comparedto);
         if (quickOf != null) {
-            if (quickOf.getMaterial() != mat.getMaterial()) {
+            if (quickOf.getMaterial() != mat) {
                 return false;
             }
             if (quickOf.equals(mat)) {

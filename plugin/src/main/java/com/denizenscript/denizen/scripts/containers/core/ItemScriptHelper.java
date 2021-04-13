@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
+
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -94,16 +96,15 @@ public class ItemScriptHelper implements Listener {
             String entry = ingredientText.get(i);
             if (ScriptEvent.isAdvancedMatchable(entry)) {
                 boolean any = false;
-                ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(entry);
                 for (Material material : Material.values()) {
-                    if (matcher.doesMatch(CoreUtilities.toLowerCase(material.name()))) {
+                    if (BukkitScriptEvent.tryMaterial(material, entry)) {
                         outputItems.add(new ItemStack(material, 1));
                         any = true;
                     }
                 }
                 if (exact) {
                     for (ItemScriptContainer possibleContainer : ItemScriptHelper.item_scripts.values()) {
-                        if (matcher.doesMatch(CoreUtilities.toLowerCase(possibleContainer.getName()))) {
+                        if (BukkitScriptEvent.tryItem(possibleContainer.getCleanReference(), entry)) {
                             outputItems.add(possibleContainer.getCleanReference().getItemStack());
                             any = true;
                         }

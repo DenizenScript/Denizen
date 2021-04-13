@@ -8,6 +8,7 @@ import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContain
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -2081,6 +2082,37 @@ public class ServerTagBase {
         // -->
         else if (attribute.startsWith("last_reload")) {
             event.setReplacedObject(new TimeTag(Denizen.getInstance().lastReloadTime).getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.vanilla_tags>
+        // @returns ListTag
+        // @description
+        // Returns a list of vanilla tags (applicable to blocks, fluids, or items). See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // -->
+        else if (attribute.startsWith("vanilla_tags")) {
+            event.setReplacedObject(new ListTag(VanillaTagHelper.tagsByKey.keySet()).getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.vanilla_tagged_materials[<tag>]>
+        // @returns ListTag(MaterialTag)
+        // @description
+        // Returns a list of materials referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // -->
+        else if (attribute.startsWith("vanilla_tagged_materials")) {
+            if (!attribute.hasContext(1)) {
+                return;
+            }
+            HashSet<Material> materials = VanillaTagHelper.tagsByKey.get(CoreUtilities.toLowerCase(attribute.getContext(1)));
+            if (materials == null) {
+                return;
+            }
+            ListTag list = new ListTag();
+            for (Material material : materials) {
+                list.addObject(new MaterialTag(material));
+            }
+            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

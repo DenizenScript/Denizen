@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.properties.material.*;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -12,17 +13,21 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.meta.BlockStateMeta;
+
+import java.util.HashSet;
 
 public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
@@ -690,14 +695,8 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             return new ElementTag(res);
         });
 
-        // <--[tag]
-        // @attribute <MaterialTag.has_vanilla_data_tag[<data_tag_name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether this material has the specified Minecraft vanilla Data Pack Tag.
-        // See <@link url https://minecraft.gamepedia.com/Tag>.
-        // -->
         registerTag("has_vanilla_data_tag", (attribute, object) -> {
+            Deprecations.materialHasDataPackTag.warn(attribute.context);
             if (!attribute.hasContext(1)) {
                 attribute.echoError("MaterialTag.has_vanilla_data_tag[...] tag must have an input value.");
                 return null;
@@ -711,7 +710,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // <--[tag]
         // @attribute <MaterialTag.advanced_matches[<matcher>]>
         // @returns ElementTag(Boolean)
-        // @group element checking
         // @description
         // Returns whether the material matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
@@ -720,6 +718,20 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
                 return null;
             }
             return new ElementTag(BukkitScriptEvent.tryMaterial(object, attribute.getContext(1)));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.vanilla_tags>
+        // @returns ListTag
+        // @description
+        // Returns a list of vanilla tags that apply to this material. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // -->
+        registerTag("vanilla_tags", (attribute, object) -> {
+            HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(object.getMaterial());
+            if (tags == null) {
+                return null;
+            }
+            return new ListTag(tags);
         });
     }
 
