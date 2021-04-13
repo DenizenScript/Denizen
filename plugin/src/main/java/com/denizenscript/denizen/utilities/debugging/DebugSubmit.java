@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.objects.core.TimeTag;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -105,6 +106,7 @@ public class DebugSubmit extends Thread {
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                     + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
+                    + "\nLast reload: " + new DurationTag((System.currentTimeMillis() - Denizen.getInstance().lastReloadTime) / 1000.0).formatted(false) + " ago"
                     + "\n\n").replace(ChatColor.COLOR_CHAR, (char) 0x01)) + recording)
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server

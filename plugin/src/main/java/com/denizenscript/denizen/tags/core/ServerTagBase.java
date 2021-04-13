@@ -2074,6 +2074,16 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.last_reload>
+        // @returns TimeTag
+        // @description
+        // Returns the time that Denizen scripts were last reloaded.
+        // -->
+        else if (attribute.startsWith("last_reload")) {
+            event.setReplacedObject(new TimeTag(Denizen.getInstance().lastReloadTime).getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.plugins_handling_event[<bukkit event>]>
         // @returns ListTag(PluginTag)
         // @description

@@ -133,6 +133,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void onScriptReload() {
         Depends.setupEconomy();
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
+        Denizen.getInstance().lastReloadTime = System.currentTimeMillis();
     }
 
     @Override

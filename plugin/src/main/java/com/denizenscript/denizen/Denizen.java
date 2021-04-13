@@ -130,6 +130,8 @@ public class Denizen extends JavaPlugin {
 
     public SavableMapFlagTracker serverFlagMap;
 
+    public long lastReloadTime;
+
     /*
      * Sets up Denizen on start of the CraftBukkit server.
      */
