@@ -139,7 +139,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // @Usage
     // Use to set a temporary flag on the player's held item.
-    // - inventory flag slot:<player.held_item_slot> my_target:<player.cursor_on> duration:1d
+    // - inventory flag slot:hand my_target:<player.cursor_on> duration:1d
     // -->
 
     private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
@@ -262,7 +262,7 @@ public class InventoryCommand extends AbstractCommand {
                             + (duration != null ? duration.debug() : "")
                             + slot.debug());
         }
-        int slotId = SlotHelper.nameToIndex(slot.asString());
+        int slotId = SlotHelper.nameToIndexFor(slot.asString(), destination.getInventory().getHolder());
         if (slotId < 0) {
             if (slotId == -1) {
                 Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot (unrecognized)!");

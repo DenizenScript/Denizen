@@ -123,7 +123,10 @@ public class FakeItemCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("items", items) + elSlot.debug() + duration.debug()
                     + ArgumentHelper.debugList("players", players) + player_only.debug());
         }
-        int slot = SlotHelper.nameToIndex(elSlot.asString());
+        if (players.size() == 0) {
+            return;
+        }
+        int slot = SlotHelper.nameToIndex(elSlot.asString(), players.get(0).getPlayerEntity());
         if (slot == -1) {
             Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + elSlot.asString() + "' is not a valid slot!");
             return;

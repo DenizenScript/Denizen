@@ -419,7 +419,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case SLOT: {
                 for (String slot : slotList) {
-                    int slotId = SlotHelper.nameToIndex(slot);
+                    int slotId = SlotHelper.nameToIndexFor(slot, inventory.getInventory().getHolder());
                     if (slotId == -1 || slotId >= inventory.getSize()) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot + "' is not a valid slot!");
                         return;

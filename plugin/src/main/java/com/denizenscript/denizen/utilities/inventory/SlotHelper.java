@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.utilities.inventory;
 
 import com.denizenscript.denizencore.objects.ArgumentHelper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -66,6 +69,7 @@ public class SlotHelper {
     // @description
     // Whenever a script component requires a slot ID (such as the take command, when using '- take slot:#')
     // you can give the slot ID input as either a number of the 1-based index (where the first slot is 1, the second is 2, etc.)
+    // If the slot given is 'hand', for a player the held item slot will be used, for any other entity the slot will be 1.
     // OR you can give the following names (valid for player inventories only):
     // BOOTS: equivalent to 37
     // LEGGINGS: equivalent to 38
@@ -125,14 +129,21 @@ public class SlotHelper {
         nameIndexMap.put("offhand", OFFHAND);
     }
 
+    public static int nameToIndexFor(String name, InventoryHolder holder) {
+        return nameToIndex(name, holder instanceof Entity ? (Entity) holder : null);
+    }
+
     /**
      * Converts a user given slot name (or number) to a valid internal slot index.
      * Will subtract 1 from a user-given number, per Denizen standard for user input (1-based slot index).
      */
-    public static int nameToIndex(String name) {
+    public static int nameToIndex(String name, Entity entity) {
         name = name.toLowerCase().replace("_", "");
         if (name.endsWith("s")) {
             name = name.substring(0, name.length() - 1);
+        }
+        if (name.equals("hand")) {
+            return entity instanceof Player ? ((Player) entity).getInventory().getHeldItemSlot() : 0;
         }
         Integer matched = nameIndexMap.get(name);
         if (matched != null) {

@@ -1996,7 +1996,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return null;
             }
             else if (slots.size() == 1) {
-                int slot = SlotHelper.nameToIndex(attribute.getContext(1));
+                int slot = SlotHelper.nameToIndexFor(attribute.getContext(1), object.getInventory().getHolder());
                 if (slot < 0) {
                     slot = 0;
                 }
@@ -2008,7 +2008,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             else {
                 ListTag result = new ListTag();
                 for (String slotText : slots) {
-                    int slot = SlotHelper.nameToIndex(slotText);
+                    int slot = SlotHelper.nameToIndexFor(slotText, object.getInventory().getHolder());
                     if (slot < 0) {
                         slot = 0;
                     }

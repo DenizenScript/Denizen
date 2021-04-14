@@ -158,7 +158,7 @@ public class ServerTagBase {
         // Returns the slot ID number for an input slot (see <@link language Slot Inputs>).
         // -->
         if (attribute.startsWith("slot_id") && attribute.hasContext(1)) {
-            int slotId = SlotHelper.nameToIndex(attribute.getContext(1));
+            int slotId = SlotHelper.nameToIndex(attribute.getContext(1), null);
             if (slotId != -1) {
                 event.setReplacedObject(new ElementTag(slotId).getObjectAttribute(attribute.fulfill(1)));
             }

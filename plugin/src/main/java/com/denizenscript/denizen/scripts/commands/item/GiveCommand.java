@@ -184,7 +184,7 @@ public class GiveCommand extends AbstractCommand {
                     if (set_quantity) {
                         is.setAmount(quantity.asInt());
                     }
-                    int slotId = SlotHelper.nameToIndex(slot.asString());
+                    int slotId = SlotHelper.nameToIndexFor(slot.asString(), inventory.getInventory().getHolder());
                     if (slotId == -1) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
                         return;
