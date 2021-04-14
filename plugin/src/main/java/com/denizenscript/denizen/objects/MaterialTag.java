@@ -243,201 +243,64 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         PropertyParser.registerPropertyTagHandlers(tagProcessor);
 
-        // <--[tag]
-        // @attribute <MaterialTag.is_ageable>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is an ageable material.
-        // When this returns true, <@link tag MaterialTag.age>, <@link tag MaterialTag.maximum_age>,
-        // and <@link mechanism MaterialTag.age> are accessible.
-        // -->
         registerTag("is_ageable", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialAge.describes(object));
         }, "is_plant");
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_campfire>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a campfire material.
-        // When this returns true, <@link tag MaterialTag.signal_fire>,
-        // and <@link mechanism MaterialTag.signal_fire> are accessible.
-        // -->
         registerTag("is_campfire", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialCampfire.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_directional>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a directional material.
-        // When this returns true, <@link tag MaterialTag.direction>, <@link tag MaterialTag.valid_directions>,
-        // and <@link mechanism MaterialTag.direction> are accessible.
-        // -->
         registerTag("is_directional", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialDirectional.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.has_multiple_faces>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a material that has multiple faces.
-        // When this returns true, <@link tag MaterialTag.faces>, <@link tag MaterialTag.valid_faces>,
-        // and <@link mechanism MaterialTag.faces> are accessible.
-        // -->
         registerTag("has_multiple_faces", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialFaces.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.can_drag>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a material that can cause dragging (like bubble columns).
-        // When this returns true, <@link tag MaterialTag.drags>
-        // and <@link mechanism MaterialTag.drags> are accessible.
-        // -->
         registerTag("can_drag", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialDrags.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_bisected>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material type is a bisected material type (doors, beds, double chests, double plants, ...).
-        // Some MaterialTag instances, such as single chests, may return true for this tag even though the specific material instance is not bisected.
-        // When this returns true, <@link tag MaterialTag.half>, <@link tag MaterialTag.relative_vector>
-        // and <@link mechanism MaterialTag.half> are accessible.
-        // -->
         registerTag("is_bisected", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialHalf.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.has_leaf_size>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material has a bamboo leaf size (currently only bamboo).
-        // When this returns true, <@link tag MaterialTag.leaf_size>,
-        // and <@link mechanism MaterialTag.leaf_size> are accessible.
-        // -->
         registerTag("has_leaf_size", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialLeafSize.describes(object));
         }, "is_bamboo");
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_levelable>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a levelable material.
-        // When this returns true, <@link tag MaterialTag.level>, <@link tag MaterialTag.maximum_level>,
-        // and <@link mechanism MaterialTag.level> are accessible.
-        // -->
         registerTag("is_levelable", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialLevel.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_lightable>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a lightable material.
-        // When this returns true, <@link tag MaterialTag.lit>,
-        // and <@link mechanism MaterialTag.lit> are accessible.
-        // -->
         registerTag("is_lightable", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialLightable.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_leaves>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a leaves material.
-        // When this returns true, <@link tag LocationTag.tree_distance>,
-        // <@link tag MaterialTag.persistent>, and
-        // <@link mechanism MaterialTag.persistent> are accessible.
-        // -->
         registerTag("is_leaves", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialPersistent.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.has_count>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material has a 'count' value, which applies to SeaPickles and TurtleEggs.
-        // When this returns true, <@link tag MaterialTag.count>,
-        // <@link tag MaterialTag.count_max>, <@link tag MaterialTag.count_min>,
-        // and <@link mechanism MaterialTag.count> are accessible.
-        // -->
         registerTag("has_count", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialCount.describes(object));
         }, "is_pickle");
-
-        // <--[tag]
-        // @attribute <MaterialTag.has_type>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material has a block sub-type.
-        // When this returns true, <@link tag MaterialTag.type>,
-        // and <@link mechanism MaterialTag.type> are accessible.
-        // -->
         registerTag("has_type", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialBlockType.describes(object));
         }, "is_slab");
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_snowable>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is snowable.
-        // When this returns true, <@link tag MaterialTag.snowy>,
-        // and <@link mechanism MaterialTag.snowy> are accessible.
-        // -->
         registerTag("is_snowable", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialSnowable.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_switch>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is a switch.
-        // When this returns true, <@link tag MaterialTag.switch_face>,
-        // and <@link mechanism MaterialTag.switch_face> are accessible.
-        // -->
         registerTag("is_switch", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialSwitchFace.describes(object));
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_waterloggable>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the material is able to be waterlogged.
-        // When this returns true, <@link tag MaterialTag.waterlogged>,
-        // and <@link mechanism MaterialTag.waterlogged> are accessible.
-        // -->
         registerTag("is_waterloggable", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialWaterlogged.describes(object));
         });
 
