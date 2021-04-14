@@ -187,6 +187,7 @@ public class ScriptEventRegistry {
 
         // Server events
         ScriptEvent.registerScriptEvent(new CommandScriptEvent());
+        ScriptEvent.registerScriptEvent(new InternalEventScriptEvent());
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(new ListPingScriptEvent.ListPingScriptEventSpigotImpl());
         }
