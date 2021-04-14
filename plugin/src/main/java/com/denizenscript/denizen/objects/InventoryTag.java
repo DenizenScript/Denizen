@@ -1215,7 +1215,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
             // NOTE: Could just also convert items to an array and pass it all in at once...
             for (ItemTag itm : items) {
-                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack().clone());
                 if (!leftovers.isEmpty()) {
                     return new ElementTag(false);
                 }
@@ -1262,7 +1262,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
             }
             for (ItemTag item: items) {
-                dummyInv.add(0, item.getItemStack());
+                dummyInv.add(0, item.getItemStack().clone());
             }
             return dummyInv;
         });
