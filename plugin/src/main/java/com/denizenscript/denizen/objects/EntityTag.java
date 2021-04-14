@@ -2368,7 +2368,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity is currently disguised, either globally (if no context input given), or to the specified player.
         // Relates to <@link command disguise>.
         // -->
-        registerTag("is_disguised", (attribute, object) -> {
+        registerSpawnedOnlyTag("is_disguised", (attribute, object) -> {
             HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
             if (map == null) {
                 return new ElementTag(false);
@@ -2394,7 +2394,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity type the entity is disguised as, either globally (if no context input given), or to the specified player.
         // Relates to <@link command disguise>.
         // -->
-        registerTag("disguised_type", (attribute, object) -> {
+        registerSpawnedOnlyTag("disguised_type", (attribute, object) -> {
             HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
             if (map == null) {
                 return null;
@@ -2428,7 +2428,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the fake entity used to disguise the entity in other's views, either globally (if no context input given), or to the specified player.
         // Relates to <@link command disguise>.
         // -->
-        registerTag("disguise_to_others", (attribute, object) -> {
+        registerSpawnedOnlyTag("disguise_to_others", (attribute, object) -> {
             HashMap<UUID, DisguiseCommand.TrackedDisguise> map = DisguiseCommand.disguises.get(object.getUUID());
             if (map == null) {
                 return null;
@@ -2490,6 +2490,30 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return new ElementTag(BukkitScriptEvent.tryEntity(object, attribute.getContext(1)));
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.has_equipped[<item-matcher>]>
+        // @returns ElementTag(Boolean)
+        // @group element checking
+        // @description
+        // Returns whether the entity has any armor equipment item that matches the given item matcher, using the system behind <@link language Advanced Script Event Matching>.
+        // For example, has_equipped[diamond_*] will return true if the entity is wearing at least one piece of diamond armor.
+        // -->
+        registerSpawnedOnlyTag("has_equipped", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            if (!object.isLivingEntity()) {
+                return null;
+            }
+            String matcher = attribute.getContext(1);
+            for (ItemStack item : object.getLivingEntity().getEquipment().getArmorContents()) {
+                if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                    return new ElementTag(true);
+                }
+            }
+            return new ElementTag(false);
         });
     }
 
