@@ -559,6 +559,7 @@ public class NPCCommandHandler {
         MirrorTrait trait = npc.getOrAddTrait(MirrorTrait.class);
         if (trait.mirror) {
             trait.disableMirror();
+            npc.removeTrait(MirrorTrait.class);
             Messaging.send(sender, npc.getName() + " is no longer mirroring player skins.");
         }
         else {
@@ -581,6 +582,7 @@ public class NPCCommandHandler {
         MirrorNameTrait trait = npc.getOrAddTrait(MirrorNameTrait.class);
         if (trait.mirror) {
             trait.disableMirror();
+            npc.removeTrait(MirrorNameTrait.class);
             Messaging.send(sender, npc.getName() + " is no longer mirroring player names.");
         }
         else {

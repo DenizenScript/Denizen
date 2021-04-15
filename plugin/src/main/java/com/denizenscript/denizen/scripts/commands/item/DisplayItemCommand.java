@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -149,21 +150,16 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ItemTag item = scriptEntry.getObjectTag("item");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         LocationTag location = scriptEntry.getObjectTag("location");
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    item.debug()
-                            + duration.debug()
-                            + location.debug());
+            Debug.report(scriptEntry, getName(), item, duration, location);
         }
-
         // Drop the item
         final Item dropped = location.getWorld().dropItem(location.getBlockLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
-        dropped.setVelocity(dropped.getVelocity().multiply(0));
+        dropped.setVelocity(new Vector(0, 0, 0));
+        dropped.setGravity(false);
         dropped.setPickupDelay(32767);
         NMSHandler.getEntityHelper().setTicksLived(dropped, -duration.getTicksAsInt());
         if (!dropped.isValid()) {
