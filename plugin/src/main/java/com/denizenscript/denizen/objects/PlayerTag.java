@@ -2515,6 +2515,29 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name revoke_advancement
+        // @input ElementTag
+        // @description
+        // Un-awards an advancement from the player.
+        // @tags
+        // <PlayerTag.has_advancement[<name>]>
+        // -->
+        if (mechanism.matches("revoke_advancement")) {
+            Advancement adv = AdvancementHelper.getAdvancement(mechanism.getValue().asString());
+            if (adv == null) {
+                if (mechanism.shouldDebug()) {
+                    Debug.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
+                }
+                return;
+            }
+            AdvancementProgress prog = getPlayerEntity().getAdvancementProgress(adv);
+            for (String criteria : prog.getRemainingCriteria()) {
+                prog.revokeCriteria(criteria);
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name fake_absorption_health
         // @input ElementTag(Decimal)
         // @description
