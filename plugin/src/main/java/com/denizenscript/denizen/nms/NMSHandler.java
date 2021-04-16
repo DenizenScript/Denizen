@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
@@ -30,7 +31,9 @@ public abstract class NMSHandler {
 
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;
-        String packageName = javaPlugin.getServer().getClass().getPackage().getName();
+        Class<?> serverClass = javaPlugin.getServer().getClass();
+        ReflectionHelper.giveReflectiveAccess(serverClass, ReflectionHelper.class);
+        String packageName = serverClass.getPackage().getName();
         int indexOfSubRevision = packageName.indexOf('R');
         if (indexOfSubRevision > 0) {
             // "v1_14_R1" should become "v1_14"

@@ -1717,13 +1717,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(false);
         });
 
-        // <--[tag]
-        // @attribute <InventoryTag.contains_any[<item>|...]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the inventory contains any of the specified items.
-        // -->
         registerTag("contains_any", (attribute, object) -> {
+            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1733,12 +1728,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             int qty = 1;
 
-            // <--[tag]
-            // @attribute <InventoryTag.contains_any[<item>|...].quantity[<#>]>
-            // @returns ElementTag(Boolean)
-            // @description
-            // Returns whether the inventory contains a certain quantity of any of the specified items.
-            // -->
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
                     Deprecations.qtyTags.warn(attribute.context);

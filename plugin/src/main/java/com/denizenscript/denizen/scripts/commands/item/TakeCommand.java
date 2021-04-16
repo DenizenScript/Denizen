@@ -72,7 +72,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // If an economy is registered, using 'money' instead of an item will take money from the player's economy balance.
     //
-    // Material, Flagged, Slot, Bydisplay, and Scriptname all sort a list as input to take multiple different item types at once.
+    // Flagged, Slot, Bydisplay all take a list as input to take multiple different item types at once.
     //
     // If no quantity is specified, exactly 1 item will be taken.
     //
@@ -92,7 +92,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // @Usage
     // Use to take an arrow from the player's enderchest
-    // - take material:arrow from:<player.enderchest>
+    // - take item:arrow from:<player.enderchest>
     //
     // @Usage
     // Use to take the current holding item from the player's hand
@@ -100,7 +100,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // @Usage
     // Use to take 5 emeralds from the player's inventory
-    // - take material:emerald quantity:5
+    // - take item:emerald quantity:5
     // -->
 
     private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED, MATCHER}
@@ -119,6 +119,16 @@ public class TakeCommand extends AbstractCommand {
         else if (arg.startsWith("scriptname:")) {
             for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
                 addOne.accept("scriptname:" + itemScript);
+            }
+        }
+        else if (arg.startsWith("item:")) {
+            for (Material material : Material.values()) {
+                if (material.isItem()) {
+                    addOne.accept("item:" + material.name());
+                }
+            }
+            for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
+                addOne.accept("item:" + itemScript);
             }
         }
     }

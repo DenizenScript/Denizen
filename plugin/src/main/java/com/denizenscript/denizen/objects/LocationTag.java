@@ -3368,7 +3368,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // If the location is part of a double-block structure (double chests, double plants, doors, beds, etc),
         // returns the location of the other block in the double-block structure.
-        // You can test if this will be valid with <@link tag MaterialTag.is_bisected>.
         // -->
         registerTag("other_block", (attribute, object) -> {
             Block b = object.getBlockForTag(attribute);
