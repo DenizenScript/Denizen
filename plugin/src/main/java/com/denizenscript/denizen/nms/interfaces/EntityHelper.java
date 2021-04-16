@@ -81,7 +81,7 @@ public abstract class EntityHelper {
     public abstract void follow(final Entity target, final Entity follower, final double speed, final double lead,
                                 final double maxRange, final boolean allowWander, final boolean teleport);
 
-    public abstract void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback);
+    public abstract void walkTo(final LivingEntity entity, Location location, Double speed, final Runnable callback);
 
     public abstract void sendHidePacket(Player pl, Entity entity);
 

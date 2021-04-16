@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
@@ -345,7 +344,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback) {
+    public void walkTo(final LivingEntity entity, Location location, Double speed, final Runnable callback) {
         if (entity == null || location == null) {
             return;
         }
@@ -373,7 +372,9 @@ public class EntityHelperImpl extends EntityHelper {
             entityNavigation.a(path, 1D);
             entityNavigation.a(2D);
             final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getBaseValue();
-            nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+            if (speed != null) {
+                nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+            }
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -387,11 +388,13 @@ public class EntityHelperImpl extends EntityHelper {
                     if (aiDisabled && entity instanceof Wolf) {
                         ((Wolf) entity).setAngry(false);
                     }
-                    if (entityNavigation.n() || path.b()) {
+                    if (entityNavigation.m() || path.c()) {
                         if (callback != null) {
                             callback.run();
                         }
-                        nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
+                        if (speed != null) {
+                            nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
+                        }
                         if (aiDisabled) {
                             entity.setAI(false);
                         }

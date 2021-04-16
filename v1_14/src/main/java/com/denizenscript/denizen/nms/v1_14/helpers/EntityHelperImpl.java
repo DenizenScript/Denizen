@@ -343,7 +343,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void walkTo(final LivingEntity entity, Location location, double speed, final Runnable callback) {
+    public void walkTo(final LivingEntity entity, Location location, Double speed, final Runnable callback) {
         if (entity == null || location == null) {
             return;
         }
@@ -366,7 +366,9 @@ public class EntityHelperImpl extends EntityHelper {
             entityNavigation.a(path, 1D);
             entityNavigation.a(2D);
             final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getBaseValue();
-            nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+            if (speed != null) {
+                nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+            }
             new BukkitRunnable() {
                 @Override
                 public void run() {
