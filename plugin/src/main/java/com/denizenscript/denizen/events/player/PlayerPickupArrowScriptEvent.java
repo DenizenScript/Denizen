@@ -74,7 +74,7 @@ public class PlayerPickupArrowScriptEvent extends BukkitScriptEvent implements L
             return new EntityTag(event.getArrow());
         }
         else if (name.equals("item")) {
-            return new ItemTag(event.getItem());
+            return new ItemTag(event.getItem().getItemStack());
         }
         return super.getContext(name);
     }

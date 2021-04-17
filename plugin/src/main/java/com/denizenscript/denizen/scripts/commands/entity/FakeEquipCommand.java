@@ -62,7 +62,7 @@ public class FakeEquipCommand extends AbstractCommand {
     //
     // @Usage
     // Use to fake-equip an iron helmet on two defined players.
-    // - fake-equip <[player]>|<[someplayer]> head:iron_helmet duration:1m
+    // - fakeequip <[player]>|<[someplayer]> head:iron_helmet duration:1m
     //
     // @Usage
     // Use to fake-unequip all armor off the player.
@@ -70,7 +70,7 @@ public class FakeEquipCommand extends AbstractCommand {
     //
     // @Usage
     // Use to make all players within 30 blocks of an entity see it permanently equip a shield.
-    // - equip <[entity]> offhand:shield for:<[entity].find.players.within[30]> duration:0
+    // - fakeequip <[entity]> offhand:shield for:<[entity].find.players.within[30]> duration:0
     //
     // -->
 

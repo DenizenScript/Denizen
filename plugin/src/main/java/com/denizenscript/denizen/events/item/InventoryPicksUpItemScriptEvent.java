@@ -97,7 +97,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     public void onInvPicksUpItem(InventoryPickupItemEvent event) {
         this.event = event;
         inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
-        item = new ItemTag(event.getItem());
+        item = new ItemTag(event.getItem().getItemStack());
         fire(event);
     }
 }

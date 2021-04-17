@@ -35,7 +35,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
@@ -212,12 +211,8 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
             this.item = new ItemStack(Material.AIR, 0);
         }
         else {
-            this.item = item;
+            this.item = item.clone();
         }
-    }
-
-    public ItemTag(Item item) {
-        this(item.getItemStack());
     }
 
     /////////////////////
@@ -417,6 +412,19 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
 
     public boolean isRepairable() {
         return getItemMeta() instanceof Damageable;
+    }
+
+    public boolean matchesRawExact(ItemTag item) {
+        ItemTag thisItem = this;
+        if (thisItem.getItemStack().getAmount() != 1) {
+            thisItem = new ItemTag(thisItem.getItemStack().clone());
+            thisItem.getItemStack().setAmount(1);
+        }
+        if (item.getItemStack().getAmount() != 1) {
+            item = new ItemTag(item.getItemStack().clone());
+            item.getItemStack().setAmount(1);
+        }
+        return thisItem.identify().equals(item.identify());
     }
 
     //////////////////////////////

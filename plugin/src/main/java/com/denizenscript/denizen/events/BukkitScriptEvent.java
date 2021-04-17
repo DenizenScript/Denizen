@@ -52,6 +52,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // Items can also be used with an "item_flagged" secondary prefix, so for an event that has "with:<item>", you can also do "with:item_flagged:<flag name>".
     // For item matchers that aren't switches, this works similarly, like "on player consumes item_flagged:myflag:" (note that this is not a switch).
     // You can also use "vanilla_tagged:<vanilla_tag_name>".
+    // You can also use "raw_exact:<item>" to do an exact raw item data comparison (almost always a bad idea to use).
     //
     // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
     // You can generally specify any potentially relevant entity type, such as "creeper" under "<entity>", or "arrow" for "<projectile>",
@@ -907,14 +908,19 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto == null || comparedto.isEmpty() || item == null) {
             return false;
         }
+        String rawComparedTo = comparedto;
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (comparedto.startsWith("item_flagged:")) {
-            for (String flag : CoreUtilities.split(comparedto.substring("item_flagged:".length()), '|')) {
+            for (String flag : CoreUtilities.split(rawComparedTo.substring("item_flagged:".length()), '|')) {
                 if (!item.getFlagTracker().hasFlag(flag)) {
                     return false;
                 }
             }
             return true;
+        }
+        if (comparedto.startsWith("raw_exact:")) {
+            ItemTag compareItem = ItemTag.valueOf(rawComparedTo.substring("raw_exact:".length()), CoreUtilities.errorButNoDebugContext);
+            return compareItem != null && compareItem.matchesRawExact(item);
         }
         if (comparedto.startsWith("vanilla_tagged:")) {
             String tagCheck = comparedto.substring("vanilla_tagged:".length());

@@ -36,14 +36,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/raw_exact:<item>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/raw_exact:<item>/item:<matcher>] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -65,6 +65,8 @@ public class TakeCommand extends AbstractCommand {
     // Using 'bydisplay:' will take items with the specified display name.
     //
     // Using 'bycover:' will take a written book by the specified book title + author pair.
+    //
+    // Using 'raw_exact:' will compare all raw details of an item exactly. This is almost always a bad idea to use.
     //
     // Using 'item:' will take items that match an advanced item matcher, using the system behind <@link language Advanced Script Event Matching>.
     //
@@ -103,7 +105,7 @@ public class TakeCommand extends AbstractCommand {
     // - take item:emerald quantity:5
     // -->
 
-    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED, MATCHER}
+    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED, RAWEXACT, MATCHER}
 
     public static HashSet<Type> requiresPlayerTypes = new HashSet<>(Arrays.asList(Type.XP, Type.MONEY, Type.ITEMINHAND, Type.CURSORITEM));
 
@@ -204,6 +206,12 @@ public class TakeCommand extends AbstractCommand {
                 Deprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.SCRIPTNAME);
                 scriptEntry.addObject("scriptitem", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("type")
+                    && !scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("raw_exact")) {
+                scriptEntry.addObject("type", Type.RAWEXACT);
+                scriptEntry.addObject("items", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
@@ -341,13 +349,23 @@ public class TakeCommand extends AbstractCommand {
                 Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(-quantity.asInt());
                 break;
             }
+            case RAWEXACT: {
+                if (items == null) {
+                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify item/items!");
+                    return;
+                }
+                for (ItemTag targetItem : items) {
+                    takeByMatcher(inventory, (item) -> targetItem.matchesRawExact(new ItemTag(item)), quantity.asInt());
+                }
+                break;
+            }
             case ITEM: {
                 if (items == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Must specify item/items!");
                     return;
                 }
                 for (ItemTag item : items) {
-                    ItemStack is = item.getItemStack();
+                    ItemStack is = item.getItemStack().clone();
                     is.setAmount(quantity.asInt());
                     if (!removeItem(inventory.getInventory(), item, item.getAmount())) {
                         Debug.echoDebug(scriptEntry, "Inventory does not contain at least " + quantity.asInt() + " of " + item.identify() + "... Taking all...");
