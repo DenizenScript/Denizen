@@ -1453,18 +1453,27 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return new LocationTag(object.getTargetBlockSafe(set, range));
             }
 
-            // <--[tag]
-            // @attribute <EntityTag.location.standing_on>
-            // @returns LocationTag
-            // @group location
-            // @description
-            // Returns the location of what the entity is standing on.
-            // -->
             if (attribute.startsWith("standing_on", 2)) {
+                Deprecations.entityStandingOn.warn(attribute.context);
                 attribute.fulfill(1);
                 return new LocationTag(object.entity.getLocation().clone().add(0, -0.5f, 0));
             }
             return new LocationTag(object.entity.getLocation());
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.standing_on>
+        // @returns LocationTag
+        // @group location
+        // @description
+        // Returns the location of the block the entity is standing on top of (if on the ground, returns null if in the air).
+        // -->
+        registerSpawnedOnlyTag("standing_on", (attribute, object) -> {
+            if (!object.getBukkitEntity().isOnGround()) {
+                return null;
+            }
+            Location loc = object.getBukkitEntity().getLocation().clone().subtract(0, 0.05f, 0);
+            return new LocationTag(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         });
 
         // <--[tag]
