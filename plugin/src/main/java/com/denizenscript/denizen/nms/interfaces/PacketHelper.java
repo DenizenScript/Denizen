@@ -82,4 +82,8 @@ public interface PacketHelper {
     default void sendEntityEffect(Player player, Entity entity, byte effectId) {
         throw new UnsupportedOperationException();
     }
+
+    default int getPacketStats(Player player, boolean sent) {
+        throw new UnsupportedOperationException();
+    }
 }

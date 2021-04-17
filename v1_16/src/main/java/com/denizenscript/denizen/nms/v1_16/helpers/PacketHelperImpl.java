@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
+import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
@@ -363,6 +364,12 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void sendEntityEffect(Player player, Entity entity, byte effectId) {
         sendPacket(player, new PacketPlayOutEntityStatus(((CraftEntity) entity).getHandle(), effectId));
+    }
+
+    @Override
+    public int getPacketStats(Player player, boolean sent) {
+        DenizenNetworkManagerImpl netMan = (DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager;
+        return sent ? netMan.packetsSent : netMan.packetsReceived;
     }
 
     public static void sendPacket(Player player, Packet packet) {

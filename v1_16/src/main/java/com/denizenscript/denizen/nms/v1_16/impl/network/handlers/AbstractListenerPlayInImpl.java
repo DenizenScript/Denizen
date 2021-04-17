@@ -15,10 +15,12 @@ import java.util.Set;
 public class AbstractListenerPlayInImpl extends PlayerConnection {
 
     public final PlayerConnection oldListener;
+    public final DenizenNetworkManagerImpl denizenNetworkManager;
 
-    public AbstractListenerPlayInImpl(NetworkManager networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
+    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
         this.oldListener = oldListener;
+        this.denizenNetworkManager = networkManager;
     }
 
     @Override
@@ -87,6 +89,7 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     }
 
     public void handlePacketIn(Packet<PacketListenerPlayIn> packet) {
+        denizenNetworkManager.packetsReceived++;
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getName());
         }

@@ -2316,7 +2316,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the entity that a spectator-mode player is currently spectating, if any.
         // -->
-        registerTag("spectator_target", (attribute, object) -> {
+        registerOnlineOnlyTag("spectator_target", (attribute, object) -> {
             if (object.getPlayerEntity().getGameMode() != GameMode.SPECTATOR) {
                 return null;
             }
@@ -2325,6 +2325,26 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return new EntityTag(target);
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.packets_sent>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns a total count of how many network packets have been sent to this player while they have been online.
+        // -->
+        registerOnlineOnlyTag("packets_sent", (attribute, object) -> {
+            return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), true));
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.packets_received>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns a total count of how many network packets have been received from this player while they have been online.
+        // -->
+        registerOnlineOnlyTag("packets_received", (attribute, object) -> {
+            return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), false));
         });
     }
 

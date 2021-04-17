@@ -63,6 +63,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public final DenizenPacketListenerImpl packetListener;
     public final EntityPlayer player;
     public final DenizenPacketHandler packetHandler;
+    public int packetsSent, packetsReceived;
 
     public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, DenizenPacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
@@ -188,6 +189,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getName());
         }
+        packetsSent++;
         if (processAttachToForPacket(packet)
             || processHiddenEntitiesForPacket(packet)
             || processPacketHandlerForPacket(packet)

@@ -26,7 +26,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     public String brand = "unknown";
 
-    public DenizenPacketListenerImpl(NetworkManager networkManager, EntityPlayer entityPlayer) {
+    public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, EntityPlayer entityPlayer) {
         super(networkManager, entityPlayer, entityPlayer.playerConnection);
     }
 
