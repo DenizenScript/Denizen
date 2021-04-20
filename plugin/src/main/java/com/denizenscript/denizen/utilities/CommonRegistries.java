@@ -118,16 +118,65 @@ public class CommonRegistries {
                 if (inp == null) {
                     return false;
                 }
-                Class<? extends ObjectTag> inpType = inp.getObjectTagClass();
-                if (inpType == EntityTag.class || inpType == PlayerTag.class || inpType == NPCTag.class) {
+                if (inp instanceof PlayerTag || inp instanceof EntityTag || inp instanceof NPCTag) {
                     return true;
                 }
-                if (inpType == ElementTag.class) {
+                if (inp instanceof ElementTag) {
                     String simple = inp.identifySimple();
                     int atIndex = simple.indexOf('@');
                     if (atIndex != -1) {
                         String code = simple.substring(0, atIndex);
                         if (!code.equals("e") && !code.equals("p") && !code.equals("n") && !code.equals("el")) {
+                            if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+        CoreUtilities.typeCheckers.put(PlayerTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but allows instanceof EntityTag
+            @Override
+            public boolean canBecome(ObjectTag inp) {
+                if (inp == null) {
+                    return false;
+                }
+                if (inp instanceof PlayerTag || inp instanceof EntityTag) {
+                    return true;
+                }
+                if (inp instanceof ElementTag) {
+                    String simple = inp.identifySimple();
+                    int atIndex = simple.indexOf('@');
+                    if (atIndex != -1) {
+                        String code = simple.substring(0, atIndex);
+                        if (!code.equals("p") && !code.equals("el")) {
+                            if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+        CoreUtilities.typeCheckers.put(NPCTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but allows instanceof EntityTag
+            @Override
+            public boolean canBecome(ObjectTag inp) {
+                if (inp == null) {
+                    return false;
+                }
+                if (inp instanceof NPCTag || inp instanceof EntityTag) {
+                    return true;
+                }
+                if (inp instanceof ElementTag) {
+                    String simple = inp.identifySimple();
+                    int atIndex = simple.indexOf('@');
+                    if (atIndex != -1) {
+                        String code = simple.substring(0, atIndex);
+                        if (!code.equals("n") && !code.equals("el")) {
                             if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
                                 return false;
                             }
@@ -163,8 +212,6 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
         CoreUtilities.registerTypeAsNoOtherTypeCode(LocationTag.class, "l");
         CoreUtilities.registerTypeAsNoOtherTypeCode(MaterialTag.class, "m");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(NPCTag.class, "n");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(PlayerTag.class, "p");
         CoreUtilities.registerTypeAsNoOtherTypeCode(PluginTag.class, "pl");
         CoreUtilities.registerTypeAsNoOtherTypeCode(PolygonTag.class, "polygon");
         CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");

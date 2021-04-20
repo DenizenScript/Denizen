@@ -252,12 +252,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", (attribute, object) -> {
-            ArrayList<EntityTag> entities = new ArrayList<>();
+            ListTag entities = new ListTag();
             for (Entity entity : object.getLivingEntitiesForTag()) {
-                entities.add(new EntityTag(entity));
+                entities.addObject(new EntityTag(entity).getDenizenObject());
             }
-
-            return new ListTag(entities);
+            return entities;
         });
 
         // <--[tag]
@@ -267,14 +266,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a list of online players in this world.
         // -->
         registerTag("players", (attribute, object) -> {
-            ArrayList<PlayerTag> players = new ArrayList<>();
+            ListTag players = new ListTag();
             for (Player player : object.getWorld().getPlayers()) {
                 if (!EntityTag.isNPC(player)) {
-                    players.add(new PlayerTag(player));
+                    players.addObject(new PlayerTag(player));
                 }
             }
-
-            return new ListTag(players);
+            return players;
         });
 
         // <--[tag]
@@ -284,15 +282,14 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a list of spawned NPCs in this world.
         // -->
         registerTag("spawned_npcs", (attribute, object) -> {
-            ArrayList<NPCTag> npcs = new ArrayList<>();
+            ListTag npcs = new ListTag();
             World thisWorld = object.getWorld();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (npc.isSpawned() && npc.getEntity().getLocation().getWorld().equals(thisWorld)) {
-                    npcs.add(new NPCTag(npc));
+                    npcs.addObject(new NPCTag(npc));
                 }
             }
-
-            return new ListTag(npcs);
+            return npcs;
         });
 
         // <--[tag]
@@ -302,18 +299,18 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a list of all NPCs in this world.
         // -->
         registerTag("npcs", (attribute, object) -> {
-            ArrayList<NPCTag> npcs = new ArrayList<>();
+            ListTag npcs = new ListTag();
             World thisWorld = object.getWorld();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 Location location = npc.getStoredLocation();
                 if (location != null) {
                     World world = location.getWorld();
                     if (world != null && world.equals(thisWorld)) {
-                        npcs.add(new NPCTag(npc));
+                        npcs.addObject(new NPCTag(npc));
                     }
                 }
             }
-            return new ListTag(npcs);
+            return npcs;
         });
 
         /////////////////////
