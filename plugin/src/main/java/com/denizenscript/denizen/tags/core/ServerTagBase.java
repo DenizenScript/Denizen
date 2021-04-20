@@ -1233,7 +1233,7 @@ public class ServerTagBase {
             File f = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(f)) {
-                    attribute.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
                     return;
                 }
             }
@@ -1255,7 +1255,7 @@ public class ServerTagBase {
             File folder = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(folder)) {
-                    attribute.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
                     return;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
@@ -2197,12 +2197,12 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("delete_file") && mechanism.hasValue()) {
             if (!Settings.allowDelete()) {
-                Debug.echoError("File deletion disabled by administrator.");
+                Debug.echoError("File deletion disabled by administrator (refer to mechanism documentation).");
                 return;
             }
             File file = new File(Denizen.getInstance().getDataFolder(), mechanism.getValue().asString());
             if (!Utilities.canWriteToFile(file)) {
-                Debug.echoError("Cannot delete that file (unsafe path).");
+                Debug.echoError("Cannot write to that file path due to security settings in Denizen/config.yml.");
                 return;
             }
             try {
@@ -2302,7 +2302,7 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("restart")) {
             if (!Settings.allowServerRestart()) {
-                Debug.echoError("Server restart disabled by administrator. Consider using 'shutdown'.");
+                Debug.echoError("Server restart disabled by administrator (refer to mechanism documentation). Consider using 'shutdown'.");
                 return;
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server restarted by a Denizen script, see config to prevent this!");
@@ -2342,7 +2342,7 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("shutdown")) {
             if (!Settings.allowServerStop()) {
-                Debug.echoError("Server stop disabled by administrator. Consider using 'restart'.");
+                Debug.echoError("Server stop disabled by administrator (refer to mechanism documentation). Consider using 'restart'.");
                 return;
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server shutdown by a Denizen script, see config to prevent this!");

@@ -186,7 +186,7 @@ public class DenizenMapManager {
         if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://")) {
             File f = new File(imagesFolder, file);
             if (!Utilities.canReadFile(f)) {
-                Debug.echoError("Server config denies reading files in that location.");
+                Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
                 return null;
             }
             return f.getPath();

@@ -170,11 +170,11 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 File folder = new File(copy_from.asString().replace("w@", ""));
                 final File newFolder = new File(worldName.asString());
                 if (!Utilities.canReadFile(folder)) {
-                    Debug.echoError("Cannot copy from that folder path.");
+                    Debug.echoError("Cannot copy from that folder path due to security settings in Denizen/config.yml.");
                     return false;
                 }
                 if (!Utilities.canWriteToFile(newFolder)) {
-                    Debug.echoError("Cannot copy to that new folder path.");
+                    Debug.echoError("Cannot copy to that new folder path due to security settings in Denizen/config.yml.");
                     return false;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {

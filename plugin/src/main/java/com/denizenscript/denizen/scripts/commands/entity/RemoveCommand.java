@@ -119,7 +119,7 @@ public class RemoveCommand extends AbstractCommand {
                 }
                 Debug.echoDebug(scriptEntry, "Removed " + removed + " entities from the world.");
                 if (alwaysWarnOnMassRemove) {
-                    Debug.echoError("Remove command 'Always warn on mass delete' is enabled - mass removal of '" + entity.getEntityType() + "' performed, removing " + removed + " entities.");
+                    Debug.echoError("Remove command 'Always warn on mass delete' in Denizen config is enabled - mass removal of '" + entity.getEntityType() + "' performed, removing " + removed + " entities.");
                 }
             }
         }

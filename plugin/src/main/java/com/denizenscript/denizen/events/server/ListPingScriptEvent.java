@@ -87,7 +87,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             }
             File file = new File(iconFile);
             if (!Utilities.canReadFile(file)) {
-                Debug.echoError("Cannot read icon file '" + iconFile + "'");
+                Debug.echoError("Cannot read icon file '" + iconFile + "' due to security settings in Denizen/config.yml");
                 return false;
             }
             try {

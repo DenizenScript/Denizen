@@ -13,7 +13,7 @@ Debug:
   Line length: 300
   # The max length of debug output. After this length, all further output will be cut off.
   Trim length limit: 1024
-  # Whether to permit the "server.redirect_logging" mechanism
+  # Whether to permit the "system.redirect_logging" mechanism
   Allow console redirection: false
   # Whether to send basic statistic information to the Denizen central server.
   # This is purely to maintain basic information on things like how many servers run any given version of Denizen.
@@ -154,7 +154,7 @@ Commands:
         Allow logging: true
   Yaml:
         # Whether the YAML command (or any other file-alteration command) is allowed to save outside the minecraft server folder.
-        # Set to 'false' if you're worried about security.
+        # Set to 'false' if you want good security.
         Allow saving outside folder: false
         # Optionally: set a limited path, where all edits must be contained to.
         # A good path to use for extra security is: plugins/Denizen/data/

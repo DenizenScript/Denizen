@@ -300,7 +300,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 String directory = URLDecoder.decode(System.getProperty("user.dir"));
                 File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schem");
                 if (!Utilities.canReadFile(f)) {
-                    Debug.echoError("Server config denies reading files in that location.");
+                    Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -481,7 +481,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 String extension = ".schem";
                 File f = new File(directory + "/plugins/Denizen/schematics/" + fname + extension);
                 if (!Utilities.canWriteToFile(f)) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
+                    Debug.echoError("Cannot write to that file path due to security settings in Denizen/config.yml.");
                     scriptEntry.setFinished(true);
                     return;
                 }

@@ -117,7 +117,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         boolean cancel = scriptEntry.hasObject("cancel");
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
         if (!cancel && !Utilities.canReadFile(file)) {
-            Debug.echoError("Server config denies reading files in that location.");
+            Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
             return;
         }
         if (!cancel && !file.exists()) {

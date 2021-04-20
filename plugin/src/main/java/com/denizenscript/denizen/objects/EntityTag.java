@@ -78,8 +78,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public static HashSet<String> earlyValidMechanisms = new HashSet<>(Arrays.asList(
             "max_health", "health_data", "health",
             "visible", "armor_pose", "arms", "base_plate", "is_small", "marker",
-            "velocity", "age", "is_using_riptide", "size", "item"
+            "velocity", "age", "is_using_riptide", "size"
     ));
+    // Definitely not valid: "item"
 
     private static final Map<UUID, Entity> rememberedEntities = new HashMap<>();
 
