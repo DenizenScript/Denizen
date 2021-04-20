@@ -83,6 +83,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // @Tags
     // <entry[saveName].shot_entity> returns the single entity that was shot (as in, the projectile) (if you only shot one).
     // <entry[saveName].shot_entities> returns a ListTag of entities that were shot (as in, the projectiles).
+    // <entry[saveName].hit_entities> returns a ListTag of entities that were hit (if any). (Only works when you ~wait for the command).
     //
     // @Usage
     // Use to shoot an arrow from the NPC to perfectly hit the player.
@@ -326,22 +327,23 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 // are met
                 if (!flying) {
                     this.cancel();
+                    ListTag hitEntities = new ListTag();
+                    for (EntityTag entity : entities) {
+                        if (arrows.containsKey(entity.getUUID())) {
+                            EntityTag hit = arrows.get(entity.getUUID());
+                            arrows.remove(entity.getUUID());
+                            if (hit != null) {
+                                hitEntities.addObject(hit);
+                            }
+                        }
+                    }
+                    scriptEntry.addObject("hit_entities", hitEntities);
                     if (script != null) {
                         if (lastLocation == null) {
                             lastLocation = start;
                         }
                         if (lastVelocity == null) {
                             lastVelocity = start_vel;
-                        }
-                        ListTag hitEntities = new ListTag();
-                        for (EntityTag entity : entities) {
-                            if (arrows.containsKey(entity.getUUID())) {
-                                EntityTag hit = arrows.get(entity.getUUID());
-                                arrows.remove(entity.getUUID());
-                                if (hit != null) {
-                                    hitEntities.addObject(hit);
-                                }
-                            }
                         }
                         Consumer<ScriptQueue> configure = (queue) -> {
                             queue.addDefinition("location", lastLocation);
@@ -360,7 +362,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 }
             }
         };
-        if (script != null || !scriptEntry.shouldWaitFor()) {
+        if (script != null || scriptEntry.shouldWaitFor()) {
             task.runTaskTimer(Denizen.getInstance(), 1, 2);
         }
     }
