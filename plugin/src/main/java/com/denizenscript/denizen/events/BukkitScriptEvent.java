@@ -713,10 +713,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     return true;
                 }
             }
-            for (World world : Bukkit.getWorlds()) {
-                if (matcher.doesMatch(CoreUtilities.toLowerCase(world.getName()))) {
-                    return true;
-                }
+            if (matcher.doesMatch(CoreUtilities.toLowerCase(location.getWorld().getName()))) {
+                return true;
             }
             return false;
         }
