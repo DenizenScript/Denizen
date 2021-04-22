@@ -2551,7 +2551,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             AdvancementProgress prog = getPlayerEntity().getAdvancementProgress(adv);
-            for (String criteria : prog.getRemainingCriteria()) {
+            for (String criteria : prog.getAwardedCriteria()) {
                 prog.revokeCriteria(criteria);
             }
         }

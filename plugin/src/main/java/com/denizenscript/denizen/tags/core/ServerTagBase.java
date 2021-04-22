@@ -273,7 +273,7 @@ public class ServerTagBase {
                 return;
             }
             String[] shape = ((ShapedRecipe) recipe).getShape();
-            event.setReplacedObject(new ElementTag(shape[0].length() + "x" + shape.length));
+            event.setReplacedObject(new ElementTag(shape[0].length() + "x" + shape.length).getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -290,7 +290,7 @@ public class ServerTagBase {
             if (recipe == null) {
                 return;
             }
-            event.setReplacedObject(new ElementTag(Utilities.getRecipeType(recipe)));
+            event.setReplacedObject(new ElementTag(Utilities.getRecipeType(recipe)).getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -306,7 +306,7 @@ public class ServerTagBase {
             if (recipe == null) {
                 return;
             }
-            event.setReplacedObject(new ItemTag(recipe.getResult()));
+            event.setReplacedObject(new ItemTag(recipe.getResult()).getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
