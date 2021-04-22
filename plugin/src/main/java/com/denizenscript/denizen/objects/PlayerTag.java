@@ -1277,7 +1277,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
 
             // <--[tag]
-            // @attribute <PlayerTag.has_permission[permission.node].world[<world name>]>
+            // @attribute <PlayerTag.has_permission[permission.node].world[<world>]>
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the player has the specified node in regards to the
@@ -1296,7 +1296,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     return null;
                 }
                 attribute.fulfill(1);
-
+                if (world.startsWith("w@")) {
+                    world = world.substring(2);
+                }
                 return new ElementTag(Depends.permissions.playerHas(world, object.getOfflinePlayer(), permission));
             }
 

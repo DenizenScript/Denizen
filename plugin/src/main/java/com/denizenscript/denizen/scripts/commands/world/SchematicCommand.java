@@ -636,7 +636,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         }
 
         // <--[tag]
-        // @attribute <schematic[<name>].cuboid[<origin location>]>
+        // @attribute <schematic[<name>].cuboid[<origin_location>]>
         // @returns CuboidTag
         // @description
         // Returns a cuboid of where the schematic would be if it was pasted at an origin.

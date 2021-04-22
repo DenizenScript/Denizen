@@ -2005,7 +2005,7 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.player_is_valid[<player name>]>
+        // @attribute <server.player_is_valid[<player_name>]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether a player exists under the specified name.
@@ -2116,7 +2116,7 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.plugins_handling_event[<bukkit event>]>
+        // @attribute <server.plugins_handling_event[<bukkit_event>]>
         // @returns ListTag(PluginTag)
         // @description
         // Returns a list of all plugins that handle a given Bukkit event.
