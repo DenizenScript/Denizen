@@ -610,6 +610,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (location == null) {
             return false;
         }
+        if (inputText.startsWith("!")) {
+            return !inCheckInternal(path, location, inputText.substring(1));
+        }
+        return inCheckInternal(path, location, inputText);
+    }
+
+    public boolean inCheckInternal(ScriptPath path, Location location, String inputText) {
         String lower = CoreUtilities.toLowerCase(inputText);
         if (lower.contains(":")) {
             if (lower.startsWith("world_flagged:")) {
