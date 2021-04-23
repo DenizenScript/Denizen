@@ -1,14 +1,24 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.objects.CuboidTag;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Painting;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
 
 public class CuboidBlockSet implements BlockSet {
 
@@ -85,6 +95,8 @@ public class CuboidBlockSet implements BlockSet {
 
     public int center_z;
 
+    public ListTag entities = null;
+
     @Override
     public FullBlockData[] getBlocks() {
         return blocks;
@@ -94,6 +106,97 @@ public class CuboidBlockSet implements BlockSet {
         Location low = loc.clone().subtract(center_x, center_y, center_z);
         Location high = low.clone().add(x_width, y_length, z_height);
         return new CuboidTag(low, high);
+    }
+
+    public static BlockFace rotateFaceOneBackwards(BlockFace face) {
+        switch (face) {
+            case NORTH:
+                return BlockFace.EAST;
+            case EAST:
+                return BlockFace.SOUTH;
+            case SOUTH:
+                return BlockFace.WEST;
+            case WEST:
+                return BlockFace.NORTH;
+            default:
+                return BlockFace.SELF;
+        }
+    }
+
+    public static BlockFace rotateFaceOne(BlockFace face) {
+        switch (face) {
+            case NORTH:
+                return BlockFace.WEST;
+            case EAST:
+                return BlockFace.NORTH;
+            case SOUTH:
+                return BlockFace.EAST;
+            case WEST:
+                return BlockFace.SOUTH;
+            default:
+                return BlockFace.SELF;
+        }
+    }
+
+    public void buildEntities(CuboidTag cuboid, Location center) {
+        entities = new ListTag();
+        for (Entity ent : cuboid.getWorld().getEntities()) {
+            if (cuboid.isInsideCuboid(ent.getLocation())) {
+                EntityType type = ent.getType();
+                if (type == EntityType.PAINTING || type == EntityType.ITEM_FRAME) {
+                    MapTag data = new MapTag();
+                    data.putObject("entity", new EntityTag(ent).describe());
+                    data.putObject("rotation", new ElementTag(0));
+                    Vector offset = ent.getLocation().toVector().subtract(center.toVector());
+                    if (ent instanceof Painting) { // Compensate for painting locations being very stupid
+                        //offset.setY(offset.getY() - 0.1);
+                        //offset.add(rotateFaceOneBackwards(ent.getFacing()).getDirection().multiply(0.1));
+                    }
+                    data.putObject("offset", new LocationTag(offset));
+                    entities.addObject(data);
+                }
+            }
+        }
+    }
+
+    public void pasteEntities(LocationTag relative) {
+        if (entities == null) {
+            return;
+        }
+        for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
+            LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
+            int rotation = data.getObject("rotation").asType(ElementTag.class, CoreUtilities.noDebugContext).asInt();
+            EntityTag entity = data.getObject("entity").asType(EntityTag.class, CoreUtilities.noDebugContext);
+            if (entity == null || offset == null) {
+                continue;
+            }
+            entity = entity.duplicate();
+            offset = offset.clone();
+            if (rotation != 0) {
+                ArrayList<Mechanism> mechs = new ArrayList<>(entity.getWaitingMechanisms().size());
+                for (Mechanism mech : entity.getWaitingMechanisms()) {
+                    if (mech.getName().equals("rotation")) {
+                        String rotationName = mech.getValue().asString();
+                        BlockFace face = BlockFace.valueOf(rotationName.toUpperCase());
+                        for (int i = 0; i < rotation; i += 90) {
+                            face = rotateFaceOne(face);
+                        }
+                        offset.add(face.getDirection().multiply(0.1)); // Compensate for hanging locations being very stupid
+                        mechs.add(new Mechanism(new ElementTag("rotation"), new ElementTag(face.name()), CoreUtilities.noDebugContext));
+                    }
+                    else {
+                        mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));
+                    }
+                }
+                entity.mechanisms = mechs;
+            }
+            else {
+                for (Mechanism mechanism : entity.mechanisms) {
+                    mechanism.context = CoreUtilities.noDebugContext;
+                }
+            }
+            entity.spawnAt(relative.clone().add(offset));
+        }
     }
 
     public void setBlockSingle(FullBlockData block, int x, int y, int z, InputParams input) {
@@ -164,7 +267,29 @@ public class CuboidBlockSet implements BlockSet {
         SchematicCommand.noPhys = false;
     }
 
+    public void rotateEntitiesOne() {
+        if (entities == null) {
+            return;
+        }
+        ListTag outEntities = new ListTag();
+        for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
+            LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
+            int rotation = data.getObject("rotation").asType(ElementTag.class, CoreUtilities.noDebugContext).asInt();
+            offset = new LocationTag(null, offset.getZ(), offset.getY(), -offset.getX() + 1);
+            rotation += 90;
+            while (rotation >= 360) {
+                rotation -= 360;
+            }
+            data = data.duplicate();
+            data.putObject("offset", offset);
+            data.putObject("rotation", new ElementTag(rotation));
+            outEntities.addObject(data);
+        }
+        entities = outEntities;
+    }
+
     public void rotateOne() {
+        rotateEntitiesOne();
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         int cx = center_x;

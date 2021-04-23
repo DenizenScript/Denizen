@@ -40,8 +40,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>)");
-        setRequiredArguments(2, 11);
+        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities)");
+        setRequiredArguments(2, 12);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
@@ -56,10 +56,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>)
+    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities)
     // @Group world
     // @Required 2
-    // @Maximum 11
+    // @Maximum 12
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
     //
     // @Description
@@ -93,6 +93,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The "fake_to" option can be specified to cause the schematic paste to be a fake (packet-based, see <@link command showfake>)
     // block set, instead of actually modifying the blocks in the world.
     // This takes an optional duration as "fake_duration" for how long the fake blocks should remain.
+    //
+    // The "create" and "paste" options allow the "entities" argument to be specified - when used, entities will be copied or pasted.
+    // At current time, entity types included will be: Paintings, ItemFrames.
     //
     // The schematic command is ~waitable as an alternative to 'delayed' argument. Refer to <@link language ~waitable>.
     //
@@ -183,6 +186,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     && arg.matches("noair")) {
                 scriptEntry.addObject("noair", new ElementTag("true"));
             }
+            else if (!scriptEntry.hasObject("entities")
+                    && arg.matches("entities")) {
+                scriptEntry.addObject("entities", new ElementTag("true"));
+            }
             else if (!scriptEntry.hasObject("mask")
                     && arg.matchesPrefix("mask")
                     && arg.matchesArgumentList(MaterialTag.class)) {
@@ -200,7 +207,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
+                scriptEntry.addObject("location", arg.asType(LocationTag.class).getBlockLocation());
             }
             else if (!scriptEntry.hasObject("cuboid")
                     && arg.matchesArgumentType(CuboidTag.class)) {
@@ -231,23 +238,15 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag noair = scriptEntry.getElement("noair");
         ElementTag delayed = scriptEntry.getElement("delayed");
         ElementTag maxDelayMs = scriptEntry.getElement("max_delay_ms");
+        ElementTag copyEntities = scriptEntry.getElement("entities");
         LocationTag location = scriptEntry.getObjectTag("location");
         List<MaterialTag> mask = (List<MaterialTag>) scriptEntry.getObject("mask");
         List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
         DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type.debug()
-                    + name.debug()
-                    + (location != null ? location.debug() : "")
-                    + (filename != null ? filename.debug() : "")
-                    + (cuboid != null ? cuboid.debug() : "")
-                    + (angle != null ? angle.debug() : "")
-                    + (noair != null ? noair.debug() : "")
-                    + (delayed != null ? delayed.debug() + maxDelayMs.debug() : "")
-                    + (mask != null ? ArgumentHelper.debugList("mask", mask) : "")
-                    + (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : "")
-                    + (fakeDuration != null ? fakeDuration.debug() : ""));
+            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, fakeDuration,
+                    (mask != null ? ArgumentHelper.debugList("mask", mask) : ""), (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : ""));
         }
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
@@ -273,6 +272,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     if (delayed != null && delayed.asBoolean()) {
                         set = new CuboidBlockSet();
                         set.buildDelayed(cuboid, location, () -> {
+                            if (copyEntities != null && copyEntities.asBoolean()) {
+                                set.buildEntities(cuboid, location);
+                            }
                             schematics.put(name.asString().toUpperCase(), set);
                             scriptEntry.setFinished(true);
                         }, maxDelayMs.asLong());
@@ -280,6 +282,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     else {
                         scriptEntry.setFinished(true);
                         set = new CuboidBlockSet(cuboid, location);
+                        if (copyEntities != null && copyEntities.asBoolean()) {
+                            set.buildEntities(cuboid, location);
+                        }
                         schematics.put(name.asString().toUpperCase(), set);
                     }
                 }
@@ -445,6 +450,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     input.centerLocation = location;
                     input.noAir = noair != null && noair.asBoolean();
                     input.fakeTo = fakeTo;
+                    if (fakeTo != null && copyEntities != null && copyEntities.asBoolean()) {
+                        Debug.echoError(scriptEntry.getResidingQueue(), "Cannot fake paste entities currently.");
+                        scriptEntry.setFinished(true);
+                        return;
+                    }
                     if (fakeDuration == null) {
                         fakeDuration = new DurationTag(0);
                     }
@@ -455,12 +465,21 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             input.mask.add(material.getMaterial());
                         }
                     }
+                    set = schematics.get(name.asString().toUpperCase());
                     if (delayed != null && delayed.asBoolean()) {
-                        schematics.get(name.asString().toUpperCase()).setBlocksDelayed(() -> scriptEntry.setFinished(true), input, maxDelayMs.asLong());
+                        set.setBlocksDelayed(() -> {
+                            if (copyEntities != null && copyEntities.asBoolean()) {
+                                set.pasteEntities(location);
+                            }
+                            scriptEntry.setFinished(true);
+                        }, input, maxDelayMs.asLong());
                     }
                     else {
+                        set.setBlocks(input);
+                        if (copyEntities != null && copyEntities.asBoolean()) {
+                            set.pasteEntities(location);
+                        }
                         scriptEntry.setFinished(true);
-                        schematics.get(name.asString().toUpperCase()).setBlocks(input);
                     }
                 }
                 catch (Exception ex) {

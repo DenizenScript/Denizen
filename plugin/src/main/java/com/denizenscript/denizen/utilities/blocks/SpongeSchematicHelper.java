@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -23,6 +24,7 @@ import java.util.zip.GZIPOutputStream;
 public class SpongeSchematicHelper {
 
     // Referenced from WorldEdit source and Sponge schematic format v2 documentation
+    // Some values are custom and specific to Denizen
     public static CuboidBlockSet fromSpongeStream(InputStream is) {
         CuboidBlockSet cbs = new CuboidBlockSet();
         try {
@@ -34,6 +36,10 @@ public class SpongeSchematicHelper {
             }
             CompoundTag schematicTag = (CompoundTag) rootTag.getTag();
             Map<String, Tag> schematic = schematicTag.getValue();
+            if (schematic.containsKey("DenizenEntities")) {
+                String entities = getChildTag(schematic, "DenizenEntities", StringTag.class).getValue();
+                cbs.entities = ListTag.valueOf(entities, CoreUtilities.errorButNoDebugContext);
+            }
             short width = getChildTag(schematic, "Width", ShortTag.class).getValue();
             short length = getChildTag(schematic, "Length", ShortTag.class).getValue();
             short height = getChildTag(schematic, "Height", ShortTag.class).getValue();
@@ -143,6 +149,9 @@ public class SpongeSchematicHelper {
             schematic.put("Length", new ShortTag((short) (blockSet.z_height)));
             schematic.put("Height", new ShortTag((short) (blockSet.y_length)));
             schematic.put("DenizenOffset", new IntArrayTag(new int[] {blockSet.center_x, blockSet.center_y, blockSet.center_z}));
+            if (blockSet.entities != null) {
+                schematic.put("DenizenEntities", new StringTag(blockSet.entities.toString()));
+            }
             Map<String, Tag> palette = new HashMap<>();
             ByteArrayOutputStream blocksBuffer = new ByteArrayOutputStream((blockSet.x_width) * (blockSet.y_length) * (blockSet.z_height));
             ArrayList<Tag> tileEntities = new ArrayList<>();
