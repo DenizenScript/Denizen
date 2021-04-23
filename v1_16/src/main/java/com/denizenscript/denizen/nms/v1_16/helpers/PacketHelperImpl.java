@@ -3,7 +3,12 @@ package com.denizenscript.denizen.nms.v1_16.helpers;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.blocks.FakeBlock;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
@@ -244,6 +249,15 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public boolean showSignEditor(Player player, Location location) {
+        if (location == null) {
+            LocationTag fakeSign = new LocationTag(player.getLocation());
+            fakeSign.setY(0);
+            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1));
+            BlockPosition pos = new BlockPosition(fakeSign.getX(), 0, fakeSign.getZ());
+            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.fakeSignExpected = pos;
+            sendPacket(player, new PacketPlayOutOpenSignEditor(pos));
+            return true;
+        }
         TileEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPosition(location.getBlockX(),
                 location.getBlockY(), location.getBlockZ()));
         if (tileEntity instanceof TileEntitySign) {

@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.handlers;
 
+import com.denizenscript.denizen.events.player.PlayerChangesSignScriptEvent;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketInSteerVehicleImpl;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -13,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import javax.annotation.Nullable;
@@ -25,6 +29,8 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     private static DenizenPacketHandler packetHandler;
 
     public String brand = "unknown";
+
+    public BlockPosition fakeSignExpected;
 
     public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, EntityPlayer entityPlayer) {
         super(networkManager, entityPlayer, entityPlayer.playerConnection);
@@ -105,6 +111,22 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
             PacketDataSerializer newData = new PacketDataSerializer(packet.data.copy());
             int i = newData.i(); // read off the varInt of length to get rid of it
             brand = StandardCharsets.UTF_8.decode(newData.nioBuffer()).toString();
+        }
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInUpdateSign packet) {
+        if (fakeSignExpected != null && packet.b().equals(fakeSignExpected)) {
+            fakeSignExpected = null;
+            PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
+            evt.cancelled = false;
+            evt.material = new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN);
+            evt.location = new LocationTag(getPlayer().getLocation());
+            LocationTag loc = evt.location.clone();
+            loc.setY(0);
+            evt.event = new SignChangeEvent(loc.getBlock(), getPlayer(), packet.c());
+            evt.fire(evt.event);
         }
         super.a(packet);
     }

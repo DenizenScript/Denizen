@@ -3390,9 +3390,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input LocationTag
         // @description
         // Allows the player to edit an existing sign. To create a sign, see <@link command Sign>.
+        // Give no input to make a fake edit interface.
         // -->
-        if (mechanism.matches("edit_sign") && mechanism.requireObject(LocationTag.class)) {
-            if (!NMSHandler.getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class))) {
+        if (mechanism.matches("edit_sign")) {
+            if (!NMSHandler.getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.hasValue() ? mechanism.valueAsType(LocationTag.class) : null)) {
                 Debug.echoError("Can't edit non-sign materials!");
             }
         }

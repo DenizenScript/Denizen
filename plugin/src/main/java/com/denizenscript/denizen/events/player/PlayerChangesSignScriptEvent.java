@@ -67,16 +67,13 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-
         String mat = path.eventArgLowerAt(2);
         if (!mat.equals("sign") && (!tryMaterial(material, mat))) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -113,7 +110,12 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             case "new":
                 return new ListTag(Arrays.asList(event.getLines()));
             case "old":
-                return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()));
+                if (event.getBlock().getState() instanceof Sign) {
+                    return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()));
+                }
+                else {
+                    return null;
+                }
         }
         return super.getContext(name);
     }
