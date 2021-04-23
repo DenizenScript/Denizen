@@ -22,11 +22,11 @@ public class EntityCustomName implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "custom_name_visible", "custom_name"
+            "custom_name"
     };
 
     public static final String[] handledMechs = new String[] {
-            "custom_name_visibility", "custom_name_visible", "custom_name"
+            "custom_name"
     };
 
     private EntityCustomName(EntityTag ent) {
@@ -50,22 +50,6 @@ public class EntityCustomName implements Property {
 
         if (attribute == null) {
             return null;
-        }
-
-        // <--[tag]
-        // @attribute <EntityTag.custom_name_visible>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.custom_name_visible
-        // @group attributes
-        // @description
-        // Returns true if the entity's custom name is visible.
-        // -->
-        if (attribute.startsWith("custom_name_visible") || attribute.startsWith("custom_name.visible")) {
-            int fulfilled = 1;
-            if (attribute.startsWith("custom_name.visible")) {
-                fulfilled = 2;
-            }
-            return new ElementTag(entity.getBukkitEntity().isCustomNameVisible()).getObjectAttribute(attribute.fulfill(fulfilled));
         }
 
         // <--[tag]
@@ -95,20 +79,6 @@ public class EntityCustomName implements Property {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name custom_name_visible
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the custom name is visible.
-        // @tags
-        // <EntityTag.custom_name_visible>
-        // -->
-        if ((mechanism.matches("custom_name_visibility") || mechanism.matches("custom_name_visible"))
-                && mechanism.requireBoolean()) {
-            entity.getBukkitEntity().setCustomNameVisible(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
         // @name custom_name
         // @input ElementTag
         // @description
@@ -116,7 +86,7 @@ public class EntityCustomName implements Property {
         // @tags
         // <EntityTag.custom_name>
         // -->
-        else if (mechanism.matches("custom_name")) {
+        if (mechanism.matches("custom_name")) {
             entity.getBukkitEntity().setCustomName(CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
         }
 
