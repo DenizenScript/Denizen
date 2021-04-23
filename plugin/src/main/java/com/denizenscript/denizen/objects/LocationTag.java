@@ -596,7 +596,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public LocationTag add(Location input) {
-        super.add(input);
+        super.add(input.getX(), input.getY(), input.getZ());
         return this;
     }
 

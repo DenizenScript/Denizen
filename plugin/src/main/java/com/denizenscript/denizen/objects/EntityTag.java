@@ -764,7 +764,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             // <EntityTag.fallingblock_material>
                             // -->
                             for (Mechanism mech : mechanisms) {
-                                if (mech.getName().equalsIgnoreCase("fallingblock_type")) {
+                                if (mech.getName().equals("fallingblock_type")) {
                                     material = mech.valueAsType(MaterialTag.class);
                                     mechanisms.remove(mech);
                                     break;
@@ -778,6 +778,42 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         // This is currently the only way to spawn a falling block
                         entity = location.getWorld().spawnFallingBlock(location, material.getModernData());
                         uuid = entity.getUniqueId();
+                    }
+                    else if (entity_type.getBukkitEntityType() == EntityType.PAINTING) {
+                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
+                        location = location.clone();
+                        Painting painting = (Painting) entity;
+                        Art art = null;
+                        BlockFace face = null;
+                        try {
+                            for (Mechanism mech : mechanisms) {
+                                if (mech.getName().equals("painting")) {
+                                    art = Art.valueOf(mech.getValue().asString().toUpperCase());
+                                }
+                                else if (mech.getName().equals("rotation")) {
+                                    face = BlockFace.valueOf(mech.getValue().asString().toUpperCase());
+                                }
+                            }
+                        }
+                        catch (Exception ex) {
+                            // ignore
+                        }
+                        if (art != null && face != null) { // Paintings are the worst
+                            if (art.getBlockHeight() % 2 == 0) {
+                                location.subtract(0, 1, 0);
+                            }
+                            if (art.getBlockWidth() % 2 == 0) {
+                                if (face == BlockFace.WEST) {
+                                    location.subtract(0, 0, 1);
+                                }
+                                else if (face == BlockFace.SOUTH) {
+                                    location.subtract(1, 0, 0);
+                                }
+                            }
+                            painting.teleport(location);
+                            painting.setFacingDirection(face, true);
+                            painting.setArt(art, true);
+                        }
                     }
                     else {
                         entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
@@ -2475,17 +2511,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity's full description, including all properties.
         // -->
         registerTag("describe", (attribute, object) -> {
-            ArrayList<Mechanism> waitingMechs;
-            if (object.isSpawnedOrValidForTag()) {
-                waitingMechs = new ArrayList<>();
-                for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(object).map.entrySet()) {
-                    waitingMechs.add(new Mechanism(new ElementTag(property.getKey().str), property.getValue()));
-                }
-            }
-            else {
-                waitingMechs = new ArrayList<>(object.getWaitingMechanisms());
-            }
-            return new EntityTag(object.entity_type, waitingMechs);
+            return object.describe();
         });
 
         // <--[tag]
@@ -2527,6 +2553,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
     }
 
+    public EntityTag describe() {
+        ArrayList<Mechanism> waitingMechs;
+        if (isSpawnedOrValidForTag()) {
+            waitingMechs = new ArrayList<>();
+            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).map.entrySet()) {
+                waitingMechs.add(new Mechanism(new ElementTag(property.getKey().str), property.getValue()));
+            }
+        }
+        else {
+            waitingMechs = new ArrayList<>(getWaitingMechanisms());
+        }
+        return new EntityTag(entity_type, waitingMechs);
+    }
+
     public static ObjectTagProcessor<EntityTag> tagProcessor = new ObjectTagProcessor<>();
 
     public static void registerSpawnedOnlyTag(String name, TagRunnable.ObjectInterface<EntityTag> runnable, String... variants) {
@@ -2551,7 +2591,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return tagProcessor.getObjectAttribute(this, attribute);
     }
 
-    private ArrayList<Mechanism> mechanisms = new ArrayList<>();
+    public ArrayList<Mechanism> mechanisms = new ArrayList<>();
 
     public ArrayList<Mechanism> getWaitingMechanisms() {
         return mechanisms;
