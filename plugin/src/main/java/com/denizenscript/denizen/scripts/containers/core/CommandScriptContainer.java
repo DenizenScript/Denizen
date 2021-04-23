@@ -173,7 +173,12 @@ public class CommandScriptContainer extends ScriptContainer {
     public HashMap<Integer, String> tabCompletionTaggables;
 
     public String getCommandName() {
-        return CoreUtilities.toLowerCase(getString("name", null));
+        String name = getString("name", null);
+        if (name == null) {
+            Debug.echoError("Command script '" + getName() + "' is missing required 'name'' key!");
+            return null;
+        }
+        return CoreUtilities.toLowerCase(name);
     }
 
     public String getDescription() {

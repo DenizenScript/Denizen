@@ -80,8 +80,9 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   procedural items:
     //     - define list <list>
     //     - foreach <server.online_players>:
-    //       - define item player_head[skull_skin=<[value].name>]
-    //       - define list <[list].include[<[item]>]>
+    //       # Insert some form of complex doesn't-fit-in-just-a-tag logic here
+    //       - define item <[value].skull_item>
+    //       - define list:->:<[item]>
     //     - determine <[list]>
     //
     //   # You can specify the items in the slots of the inventory. For empty spaces, simply put an empty "slot" value, like "[]".
