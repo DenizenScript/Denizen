@@ -2215,7 +2215,52 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
             }
             found.objectForms.sort((ent1, ent2) -> object.compare(((EntityFormObject) ent1).getLocation(), ((EntityFormObject) ent2).getLocation()));
-            return new ListTag(found.objectForms);
+            return found;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.find_blocks[(<matcher>)].within[<#.#>]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a list of blocks within a radius, with an optional search parameter for the block material.
+        // Note: current implementation measures the center of nearby block's distance from the exact given location.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // -->
+        registerTag("find_blocks", (attribute, object) -> {
+            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            if (!attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
+                return null;
+            }
+            double radius = attribute.getDoubleContext(2);
+            attribute.fulfill(1);
+            ListTag found = new ListTag();
+            int max = Settings.blockTagsMaxBlocks();
+            int index = 0;
+            Location tstart = object.getBlockLocation();
+            double tstartY = tstart.getY();
+            int radiusInt = (int) radius;
+            fullloop:
+            for (int y = -radiusInt; y <= radiusInt; y++) {
+                double newY = y + tstartY;
+                if (newY < 0 || newY > 255) {
+                    continue;
+                }
+                for (int x = -radiusInt; x <= radiusInt; x++) {
+                    for (int z = -radiusInt; z <= radiusInt; z++) {
+                        index++;
+                        if (index > max) {
+                            break fullloop;
+                        }
+                        if (Utilities.checkLocation(object, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
+                            if (matcher == null || BukkitScriptEvent.tryMaterial(new LocationTag(tstart.clone().add(x, y, z)).getBlockTypeForTag(attribute), matcher)) {
+                                found.addObject(new LocationTag(tstart.clone().add(x, y, z)));
+                            }
+                        }
+                    }
+                }
+            }
+            found.objectForms.sort((loc1, loc2) -> object.compare((LocationTag) loc1, (LocationTag) loc2));
+            return found;
         });
 
         registerTag("find", (attribute, object) -> {
@@ -2224,15 +2269,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             double radius = attribute.getDoubleContext(3);
 
-            // <--[tag]
-            // @attribute <LocationTag.find.blocks[(<material>|...)].within[<#>]>
-            // @returns ListTag(LocationTag)
-            // @description
-            // Returns a list of matching blocks within a radius.
-            // Note: current implementation measures the center of nearby block's distance from the exact given location.
-            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
-            // -->
             if (attribute.startsWith("blocks", 2)) {
+                Deprecations.locationFindEntities.warn(attribute.context);
                 ArrayList<LocationTag> found = new ArrayList<>();
                 List<MaterialTag> materials = new ArrayList<>();
                 if (attribute.hasContext(2)) {
