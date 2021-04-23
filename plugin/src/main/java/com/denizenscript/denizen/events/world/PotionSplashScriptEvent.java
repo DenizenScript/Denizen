@@ -18,7 +18,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     // potion splash
     // <item> splashes
     //
-    // @Regex ^on [^\s]+ splashes$
+    // @Regex ^on [^\s]+ splash(es)?$
     //
     // @Group World
     //

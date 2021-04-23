@@ -38,7 +38,10 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Warning Using this will forcibly sync the chat thread.
     //
+    // @Switch message:<matcher> to only process the event if the chat message matches an advanced matcher.
+    //
     // @Triggers when a player chats.
+    //
     // @Context
     // <context.message> returns the player's message as an Element.
     // <context.format> returns the chat message's raw format.
@@ -79,6 +82,9 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, player.getLocation())) {
+            return false;
+        }
+        if (!runGenericSwitchCheck(path, "message", getMessage())) {
             return false;
         }
         return super.matches(path);
