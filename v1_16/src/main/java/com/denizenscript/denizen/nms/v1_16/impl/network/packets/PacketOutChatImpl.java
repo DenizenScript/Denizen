@@ -78,7 +78,7 @@ public class PacketOutChatImpl implements PacketOutChat {
                 MESSAGE.set(internal, Handler.componentToNMS(FormattedTextHelper.parse(message, ChatColor.WHITE)));
             }
             else {
-                internal.components = new BaseComponent[]{new TextComponent(message)};
+                internal.components = FormattedTextHelper.parse(message, ChatColor.WHITE);
             }
         }
         catch (Exception e) {
