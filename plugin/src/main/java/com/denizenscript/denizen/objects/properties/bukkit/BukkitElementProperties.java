@@ -18,6 +18,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Color;
 
 import java.nio.charset.StandardCharsets;
 
@@ -649,6 +650,44 @@ public class BukkitElementProperties implements Property {
             StringBuilder output = new StringBuilder(str.length() * 3);
             for (int i = 0; i < str.length(); i++) {
                 output.append(ChatColor.COLOR_CHAR).append(pattern.charAt(i % pattern.length())).append(str.charAt(i));
+            }
+            return new ElementTag(output.toString());
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.hex_rainbow[(<length>)]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Returns the element with RGB rainbow colors applied.
+        // Optionally, specify a length (how many characters before the colors repeat). If unspecified, will use the input element length.
+        // If the element starts with a hex color code, that will be used as the starting color of the rainbow.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("hex_rainbow", (attribute, object) -> {
+            String str = object.asString();
+            int[] HSB = new int[] { 0, 255, 255 };
+            if (str.startsWith(ChatColor.COLOR_CHAR + "x") && str.length() > 14) {
+                char[] colors = new char[6];
+                for (int i = 0; i < 6; i++) {
+                    colors[i] = str.charAt(3 + (i * 2));
+                }
+                int rgb = Integer.parseInt(new String(colors), 16);
+                HSB = new ColorTag(Color.fromRGB(rgb)).toHSB();
+                str = str.substring(14);
+            }
+            float hue = HSB[0] / 255f;
+            str = ChatColor.stripColor(str);
+            int length = str.length();
+            if (attribute.hasContext(1)) {
+                length = attribute.getIntContext(1);
+            }
+            float increment = 1.0f / length;
+            StringBuilder output = new StringBuilder(str.length() * 8);
+            for (int i = 0; i < str.length(); i++) {
+                String hex = Integer.toHexString(ColorTag.fromHSB(HSB).getColor().asRGB());
+                output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(str.charAt(i));
+                hue += increment;
+                HSB[0] = Math.round(hue * 255f);
             }
             return new ElementTag(output.toString());
         });
