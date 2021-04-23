@@ -95,7 +95,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // This takes an optional duration as "fake_duration" for how long the fake blocks should remain.
     //
     // The "create" and "paste" options allow the "entities" argument to be specified - when used, entities will be copied or pasted.
-    // At current time, entity types included will be: Paintings, ItemFrames.
+    // At current time, entity types included will be: Paintings, ItemFrames, ArmorStands.
     //
     // The schematic command is ~waitable as an alternative to 'delayed' argument. Refer to <@link language ~waitable>.
     //

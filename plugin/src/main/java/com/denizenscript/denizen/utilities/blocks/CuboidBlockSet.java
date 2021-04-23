@@ -14,11 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Painting;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class CuboidBlockSet implements BlockSet {
 
@@ -108,21 +109,6 @@ public class CuboidBlockSet implements BlockSet {
         return new CuboidTag(low, high);
     }
 
-    public static BlockFace rotateFaceOneBackwards(BlockFace face) {
-        switch (face) {
-            case NORTH:
-                return BlockFace.EAST;
-            case EAST:
-                return BlockFace.SOUTH;
-            case SOUTH:
-                return BlockFace.WEST;
-            case WEST:
-                return BlockFace.NORTH;
-            default:
-                return BlockFace.SELF;
-        }
-    }
-
     public static BlockFace rotateFaceOne(BlockFace face) {
         switch (face) {
             case NORTH:
@@ -138,21 +124,18 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
+    public static HashSet<EntityType> copyTypes = new HashSet<>(Arrays.asList(EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND));
+
     public void buildEntities(CuboidTag cuboid, Location center) {
         entities = new ListTag();
         for (Entity ent : cuboid.getWorld().getEntities()) {
             if (cuboid.isInsideCuboid(ent.getLocation())) {
-                EntityType type = ent.getType();
-                if (type == EntityType.PAINTING || type == EntityType.ITEM_FRAME) {
+                if (copyTypes.contains(ent.getType())) {
                     MapTag data = new MapTag();
                     data.putObject("entity", new EntityTag(ent).describe());
                     data.putObject("rotation", new ElementTag(0));
                     Vector offset = ent.getLocation().toVector().subtract(center.toVector());
-                    if (ent instanceof Painting) { // Compensate for painting locations being very stupid
-                        //offset.setY(offset.getY() - 0.1);
-                        //offset.add(rotateFaceOneBackwards(ent.getFacing()).getDirection().multiply(0.1));
-                    }
-                    data.putObject("offset", new LocationTag(offset));
+                    data.putObject("offset", new LocationTag((String) null, offset.getX(), offset.getY(), offset.getZ(), ent.getLocation().getYaw(), ent.getLocation().getPitch()));
                     entities.addObject(data);
                 }
             }
@@ -195,7 +178,10 @@ public class CuboidBlockSet implements BlockSet {
                     mechanism.context = CoreUtilities.noDebugContext;
                 }
             }
-            entity.spawnAt(relative.clone().add(offset));
+            Location spawnLoc = relative.clone().add(offset);
+            spawnLoc.setYaw(offset.getYaw() + rotation);
+            spawnLoc.setPitch(offset.getPitch());
+            entity.spawnAt(spawnLoc);
         }
     }
 
@@ -275,7 +261,7 @@ public class CuboidBlockSet implements BlockSet {
         for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
             LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
             int rotation = data.getObject("rotation").asType(ElementTag.class, CoreUtilities.noDebugContext).asInt();
-            offset = new LocationTag(null, offset.getZ(), offset.getY(), -offset.getX() + 1);
+            offset = new LocationTag((String) null, offset.getZ(), offset.getY(), -offset.getX() + 1, offset.getYaw(), offset.getPitch());
             rotation += 90;
             while (rotation >= 360) {
                 rotation -= 360;
