@@ -17,9 +17,6 @@ public class ServerStopScriptEvent extends BukkitScriptEvent {
     //
     // @Triggers when the server is shutting down.
     //
-    // @Context
-    // None.
-    //
     // -->
 
     public ServerStopScriptEvent() {

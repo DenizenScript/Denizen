@@ -48,7 +48,7 @@ public class EntitySmall implements Property {
 
     @Override
     public String getPropertyId() {
-        return "small";
+        return "is_small";
     }
 
     @Override
