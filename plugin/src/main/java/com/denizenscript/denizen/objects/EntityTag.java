@@ -1307,30 +1307,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <EntityTag.item_in_hand>
-        // @returns ItemTag
-        // @mechanism EntityTag.item_in_hand
-        // @group inventory
-        // @description
-        // Returns the item the entity is holding, or air if none.
-        // -->
-        registerSpawnedOnlyTag("item_in_hand", (attribute, object) -> {
-            return new ItemTag(object.getLivingEntity().getEquipment().getItemInMainHand());
-        }, "iteminhand");
-
-        // <--[tag]
-        // @attribute <EntityTag.item_in_offhand>
-        // @returns ItemTag
-        // @mechanism EntityTag.item_in_offhand
-        // @group inventory
-        // @description
-        // Returns the item the entity is holding in their off hand, or air if none.
-        // -->
-        registerSpawnedOnlyTag("item_in_offhand", (attribute, object) -> {
-            return new ItemTag(object.getLivingEntity().getEquipment().getItemInOffHand());
-        }, "iteminoffhand");
-
-        // <--[tag]
         // @attribute <EntityTag.is_trading>
         // @returns ElementTag(Boolean)
         // @description
@@ -2624,34 +2600,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("Cannot adjust entity " + this);
             }
             return;
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name item_in_hand
-        // @input ItemTag
-        // @description
-        // Sets the item in the entity's hand.
-        // The entity must be living.
-        // @tags
-        // <EntityTag.item_in_hand>
-        // -->
-        if (mechanism.matches("item_in_hand")) {
-            getLivingEntity().getEquipment().setItemInMainHand(mechanism.valueAsType(ItemTag.class).getItemStack());
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name item_in_offhand
-        // @input ItemTag
-        // @description
-        // Sets the item in the entity's offhand.
-        // The entity must be living.
-        // @tags
-        // <EntityTag.item_in_offhand>
-        // -->
-        if (mechanism.matches("item_in_offhand")) {
-            getLivingEntity().getEquipment().setItemInOffHand(mechanism.valueAsType(ItemTag.class).getItemStack());
         }
 
         if (mechanism.matches("attach_to")) {

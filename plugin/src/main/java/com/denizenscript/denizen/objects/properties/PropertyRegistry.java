@@ -20,7 +20,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class PropertyRegistry {
 
-    public static void registermainProperties() {
+    public static void registerMainProperties() {
         // register properties that add Bukkit code to core objects
         PropertyParser.registerProperty(BukkitScriptProperties.class, ScriptTag.class);
         PropertyParser.registerProperty(BukkitQueueProperties.class, QueueTag.class);
@@ -83,6 +83,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityInventory.class, EntityTag.class);
         PropertyParser.registerProperty(EntityIsShowingBottom.class, EntityTag.class);
         PropertyParser.registerProperty(EntityItem.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityItemInHand.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityItemInOffHand.class, EntityTag.class);
         PropertyParser.registerProperty(EntityJumpStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityKnockback.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);

@@ -363,7 +363,7 @@ public class Denizen extends JavaPlugin {
         }
         try {
             // Initialize all properties
-            PropertyRegistry.registermainProperties();
+            PropertyRegistry.registerMainProperties();
         }
         catch (Exception e) {
             Debug.echoError(e);
