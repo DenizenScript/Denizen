@@ -33,6 +33,8 @@ public class FormattedTextHelper {
     // Also be aware that click events, hover events, etc. are exclusively limited to the chat bar and the pages of books, as you cannot mouse over anything else.
     //
     // Also note that RGB colors use a format that Spigot invented, meaning they will work in places that use Spigot's parser OR Denizen's version, but nowhere that uses the vanilla format still.
+    //
+    // Thanks to Paper's implementation of component APIs where Spigot was too lazy to, Paper servers have advanced text formatting available in more areas.
     // -->
 
 

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -37,7 +38,7 @@ public class EntityCustomName implements Property {
 
     @Override
     public String getPropertyString() {
-        return entity.getBukkitEntity().getCustomName();
+        return AdvancedTextImpl.instance.getCustomName(entity.getBukkitEntity());
     }
 
     @Override
@@ -61,7 +62,7 @@ public class EntityCustomName implements Property {
         // Returns the entity's custom name (as set by plugin or name tag item), if any.
         // -->
         else if (attribute.startsWith("custom_name")) {
-            String name = entity.getBukkitEntity().getCustomName();
+            String name = AdvancedTextImpl.instance.getCustomName(entity.getBukkitEntity());
             if (name == null) {
                 return null;
             }
@@ -87,7 +88,7 @@ public class EntityCustomName implements Property {
         // <EntityTag.custom_name>
         // -->
         if (mechanism.matches("custom_name")) {
-            entity.getBukkitEntity().setCustomName(CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
+            AdvancedTextImpl.instance.setCustomName(entity.getBukkitEntity(), CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
         }
 
     }

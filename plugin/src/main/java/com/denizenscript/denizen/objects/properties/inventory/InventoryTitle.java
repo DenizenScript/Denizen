@@ -1,13 +1,12 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,7 +36,7 @@ public class InventoryTitle implements Property {
 
     public String getTitle() {
         if (inventory.getInventory() != null) {
-            String title = NMSHandler.getInstance().getTitle(inventory.getInventory());
+            String title = AdvancedTextImpl.instance.getTitle(inventory.getInventory());
             if (title != null) {
                 if (!title.startsWith("container.")) {
                     return title;
@@ -96,21 +95,21 @@ public class InventoryTitle implements Property {
                 return;
             }
             String title = mechanism.getValue().asString();
-            if (inventory.getInventory() != null && NMSHandler.getInstance().getTitle(inventory.getInventory()).equals(title)) {
+            if (inventory.getInventory() != null && AdvancedTextImpl.instance.getTitle(inventory.getInventory()).equals(title)) {
                 return;
             }
             inventory.uniquifier = null;
             if (inventory.getInventory() == null) {
-                inventory.setInventory(Bukkit.getServer().createInventory(null, InventoryTag.maxSlots, title));
+                inventory.setInventory(AdvancedTextImpl.instance.createInventory(null, InventoryTag.maxSlots, title));
                 InventoryTag.trackTemporaryInventory(inventory);
                 return;
             }
             ItemStack[] contents = inventory.getContents();
             if (inventory.getInventory().getType() == InventoryType.CHEST) {
-                inventory.setInventory(Bukkit.getServer().createInventory(null, inventory.getSize(), title));
+                inventory.setInventory(AdvancedTextImpl.instance.createInventory(null, inventory.getSize(), title));
             }
             else {
-                inventory.setInventory(Bukkit.getServer().createInventory(null, inventory.getInventory().getType(), title));
+                inventory.setInventory(AdvancedTextImpl.instance.createInventory(null, inventory.getInventory().getType(), title));
             }
             inventory.setContents(contents);
             InventoryTag.trackTemporaryInventory(inventory);

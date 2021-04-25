@@ -74,6 +74,10 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // Despite the 'cached' class name, there's no actual internal cache.
     public static HashMap<String, CachedServerIcon> iconCache = new HashMap<>();
 
+    public void setMotd(String text) {
+        event.setMotd(text);
+    }
+
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
@@ -107,11 +111,11 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             if (ArgumentHelper.matchesInteger(values.get(0))) {
                 event.setMaxPlayers(Integer.parseInt(values.get(0)));
                 if (values.size() == 2) {
-                    event.setMotd(values.get(1));
+                    setMotd(values.get(1));
                 }
             }
             else {
-                event.setMotd(determination);
+                setMotd(determination);
             }
             return true;
         }

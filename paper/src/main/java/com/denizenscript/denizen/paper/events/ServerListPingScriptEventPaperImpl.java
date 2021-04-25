@@ -2,12 +2,14 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.server.ListPingScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
@@ -48,8 +50,15 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
     }
 
     @Override
+    public void setMotd(String text) {
+        event.motd(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+    }
+
+    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
+            case "motd":
+                return new ElementTag(PaperModule.stringifyComponent(event.motd(), ChatColor.WHITE));
             case "protocol_version":
                 return new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
             case "version_name":

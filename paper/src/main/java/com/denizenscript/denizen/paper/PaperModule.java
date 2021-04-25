@@ -7,9 +7,16 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
+import com.denizenscript.denizen.paper.utilities.PaperAdvancedTextImpl;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 
 public class PaperModule {
@@ -50,5 +57,22 @@ public class PaperModule {
 
         // Other helpers
         Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
+        AdvancedTextImpl.instance = new PaperAdvancedTextImpl();
+    }
+
+    public static Component parseFormattedText(String text, ChatColor baseColor) {
+        return jsonToComponent(ComponentSerializer.toString(FormattedTextHelper.parse(text, baseColor)));
+    }
+
+    public static String stringifyComponent(Component component, ChatColor baseColor) {
+        return FormattedTextHelper.stringify(ComponentSerializer.parse(componentToJson(component)), baseColor);
+    }
+
+    public static Component jsonToComponent(String json) {
+        return GsonComponentSerializer.gson().deserialize(json);
+    }
+
+    public static String componentToJson(Component component) {
+        return GsonComponentSerializer.gson().serialize(component);
     }
 }
