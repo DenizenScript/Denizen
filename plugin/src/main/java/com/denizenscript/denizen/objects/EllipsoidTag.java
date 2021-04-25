@@ -147,9 +147,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    private LocationTag center;
+    public LocationTag center;
 
-    private LocationTag size;
+    public LocationTag size;
 
     public String noteName = null;
 
