@@ -102,14 +102,28 @@ public class EconomyScriptContainer extends ScriptContainer {
             return autoTag(value.replace("<amount", "<element[" + amountText + "]"), player);
         }
 
+        public void validateThread() {
+            if (!Bukkit.isPrimaryThread()) {
+                try {
+                    throw new RuntimeException("Stack reference");
+                }
+                catch (RuntimeException ex) {
+                    Debug.echoError("Warning: economy access from wrong thread, errors will result");
+                    Debug.echoError(ex);
+                }
+            }
+        }
+
         public String autoTag(String value, OfflinePlayer player) {
             if (value == null) {
                 return null;
             }
+            validateThread();
             return TagManager.tag(value, new BukkitTagContext(player == null ? null : new PlayerTag(player), null, new ScriptTag(backingScript)));
         }
 
         public String runSubScript(String pathName, OfflinePlayer player, double amount) {
+            validateThread();
             List<ScriptEntry> entries = backingScript.getEntries(new BukkitScriptEntryData(new PlayerTag(player), null), pathName);
             InstantQueue queue = new InstantQueue(backingScript.getName());
             queue.addEntries(entries);

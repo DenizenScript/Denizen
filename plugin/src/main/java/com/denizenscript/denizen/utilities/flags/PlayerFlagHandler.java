@@ -172,7 +172,7 @@ public class PlayerFlagHandler implements Listener {
         return cache.tracker;
     }
 
-    public static Future loadAsync(UUID id) {
+    public static Future loadAsync(UUID id) { // Note: this method is called sync, but triggers an async load
         try {
             CachedPlayerFlag cache = playerFlagTrackerCache.get(id);
             if (cache != null) {

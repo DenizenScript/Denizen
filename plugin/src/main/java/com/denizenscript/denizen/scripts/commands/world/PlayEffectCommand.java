@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
@@ -194,7 +193,6 @@ public class PlayEffectCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
         scriptEntry.defaultObject("data", new ElementTag(0));
         scriptEntry.defaultObject("radius", new ElementTag(15));
         scriptEntry.defaultObject("quantity", new ElementTag(1));
