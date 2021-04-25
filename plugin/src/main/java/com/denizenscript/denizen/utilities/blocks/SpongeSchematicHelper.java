@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -46,15 +47,12 @@ public class SpongeSchematicHelper {
             int originX = 0;
             int originY = 0;
             int originZ = 0;
-            try {
+            if (schematic.containsKey("DenizenOffset")) {
                 // Note: "Offset" contains complete nonsense from WE, so just don't touch it.
                 int[] offsetArr = getChildTag(schematic, "DenizenOffset", IntArrayTag.class).getValue();
                 originX = offsetArr[0];
                 originY = offsetArr[1];
                 originZ = offsetArr[2];
-            }
-            catch (Exception e) {
-                // Default origin, why not
             }
             cbs.x_width = width;
             cbs.z_height = length;
@@ -124,6 +122,13 @@ public class SpongeSchematicHelper {
                 cbs.blocks[cbsIndex] = block;
                 index++;
             }
+            if (schematic.containsKey("DenizenFlags")) {
+                Map<String, Tag> flags = getChildTag(schematic, "DenizenFlags", CompoundTag.class).getValue();
+                for (Map.Entry<String, Tag> flagData : flags.entrySet()) {
+                    int flagIndex = Integer.valueOf(flagData.getKey());
+                    cbs.blocks[flagIndex].flags = MapTag.valueOf(((StringTag) flagData.getValue()).getValue(), CoreUtilities.noDebugContext);
+                }
+            }
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -190,6 +195,17 @@ public class SpongeSchematicHelper {
             schematic.put("Palette", NMSHandler.getInstance().createCompoundTag(palette));
             schematic.put("BlockData", new ByteArrayTag(blocksBuffer.toByteArray()));
             schematic.put("BlockEntities", new JNBTListTag(CompoundTag.class, tileEntities));
+            if (blockSet.hasFlags) {
+                Map<String, Tag> flagMap = new HashMap<>();
+                for (int i = 0; i < blockSet.blocks.length; i++) {
+                    if (blockSet.blocks[i].flags != null) {
+                        flagMap.put(String.valueOf(i), new StringTag(blockSet.blocks[i].flags.toString()));
+                    }
+                }
+                if (!flagMap.isEmpty()) {
+                    schematic.put("DenizenFlags", NMSHandler.getInstance().createCompoundTag(flagMap));
+                }
+            }
             CompoundTag schematicTag = NMSHandler.getInstance().createCompoundTag(schematic);
             NBTOutputStream stream = new NBTOutputStream(new GZIPOutputStream(os));
             stream.writeNamedTag("Schematic", schematicTag);

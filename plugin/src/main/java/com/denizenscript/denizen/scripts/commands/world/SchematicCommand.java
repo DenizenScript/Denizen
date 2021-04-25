@@ -40,8 +40,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities)");
-        setRequiredArguments(2, 12);
+        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
+        setRequiredArguments(2, 13);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
@@ -56,10 +56,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities)
+    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)
     // @Group world
     // @Required 2
-    // @Maximum 12
+    // @Maximum 13
     // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
     //
     // @Description
@@ -96,6 +96,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     //
     // The "create" and "paste" options allow the "entities" argument to be specified - when used, entities will be copied or pasted.
     // At current time, entity types included will be: Paintings, ItemFrames, ArmorStands.
+    //
+    // The "create" option allows the "flags" argument to be specified - when used, block location flags will be copied.
     //
     // The schematic command is ~waitable as an alternative to 'delayed' argument. Refer to <@link language ~waitable>.
     //
@@ -190,6 +192,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     && arg.matches("entities")) {
                 scriptEntry.addObject("entities", new ElementTag("true"));
             }
+            else if (!scriptEntry.hasObject("flags")
+                    && arg.matches("flags")) {
+                scriptEntry.addObject("flags", new ElementTag("true"));
+            }
             else if (!scriptEntry.hasObject("mask")
                     && arg.matchesPrefix("mask")
                     && arg.matchesArgumentList(MaterialTag.class)) {
@@ -239,13 +245,14 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag delayed = scriptEntry.getElement("delayed");
         ElementTag maxDelayMs = scriptEntry.getElement("max_delay_ms");
         ElementTag copyEntities = scriptEntry.getElement("entities");
+        ElementTag flags = scriptEntry.getElement("flags");
         LocationTag location = scriptEntry.getObjectTag("location");
         List<MaterialTag> mask = (List<MaterialTag>) scriptEntry.getObject("mask");
         List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
         DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, fakeDuration,
+            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, fakeDuration, flags,
                     (mask != null ? ArgumentHelper.debugList("mask", mask) : ""), (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : ""));
         }
         CuboidBlockSet set;
@@ -277,11 +284,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             }
                             schematics.put(name.asString().toUpperCase(), set);
                             scriptEntry.setFinished(true);
-                        }, maxDelayMs.asLong());
+                        }, maxDelayMs.asLong(), flags != null && flags.asBoolean());
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        set = new CuboidBlockSet(cuboid, location);
+                        set = new CuboidBlockSet(cuboid, location, flags != null && flags.asBoolean());
                         if (copyEntities != null && copyEntities.asBoolean()) {
                             set.buildEntities(cuboid, location);
                         }

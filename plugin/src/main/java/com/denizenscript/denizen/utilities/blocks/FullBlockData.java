@@ -2,12 +2,34 @@ package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Axis;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 
+import java.util.Map;
+
 public class FullBlockData {
+
+    public FullBlockData(Block block, boolean copyFlags) {
+        this(block);
+        if (copyFlags) {
+            MapTagBasedFlagTracker flagMap = (MapTagBasedFlagTracker) new LocationTag(block.getLocation()).getFlagTracker();
+            flags = new MapTag();
+            for (String flag : flagMap.listAllFlags()) {
+                flags.putObject(flag, flagMap.getRootMap(flag));
+            }
+            if (flags.map.isEmpty()) {
+                flags = null;
+            }
+        }
+    }
 
     public FullBlockData(Block block) {
         this(block.getBlockData());
@@ -118,10 +140,18 @@ public class FullBlockData {
 
     public CompoundTag tileEntityData;
 
+    public MapTag flags;
+
     public void set(Block block, boolean physics) {
         block.setBlockData(data, physics);
         if (tileEntityData != null) {
             NMSHandler.getBlockHelper().setNbtData(block, tileEntityData);
+        }
+        if (flags != null) {
+            MapTagBasedFlagTracker flagMap = (MapTagBasedFlagTracker) new LocationTag(block.getLocation()).getFlagTracker();
+            for (Map.Entry<StringHolder, ObjectTag> entry : flags.map.entrySet()) {
+                flagMap.setRootMap(entry.getKey().str, entry.getValue().asType(MapTag.class, CoreUtilities.noDebugContext));
+            }
         }
     }
 }

@@ -26,7 +26,8 @@ public class CuboidBlockSet implements BlockSet {
     public CuboidBlockSet() {
     }
 
-    public CuboidBlockSet(CuboidTag cuboid, Location center) {
+    public CuboidBlockSet(CuboidTag cuboid, Location center, boolean copyFlags) {
+        hasFlags = copyFlags;
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
         x_width = (int) ((high.getX() - low.getX()) + 1);
@@ -40,13 +41,14 @@ public class CuboidBlockSet implements BlockSet {
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks[index++] = new FullBlockData(low.clone().add(x, y, z).getBlock());
+                    blocks[index++] = new FullBlockData(low.clone().add(x, y, z).getBlock(), copyFlags);
                 }
             }
         }
     }
 
-    public void buildDelayed(CuboidTag cuboid, Location center, Runnable runme, long maxDelayMs) {
+    public void buildDelayed(CuboidTag cuboid, Location center, Runnable runme, long maxDelayMs, boolean copyFlags) {
+        hasFlags = copyFlags;
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
         x_width = (int) ((high.getX() - low.getX()) + 1);
@@ -66,7 +68,7 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index % ((long) (z_height));
                     long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index - y - z) / ((long) (y_length * z_height));
-                    blocks[index] = new FullBlockData(low.clone().add(x, y, z).getBlock());
+                    blocks[index] = new FullBlockData(low.clone().add(x, y, z).getBlock(), copyFlags);
                     index++;
                     if (System.currentTimeMillis() - start > maxDelayMs) {
                         SchematicCommand.noPhys = false;
@@ -83,6 +85,8 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public FullBlockData[] blocks = null;
+
+    public boolean hasFlags = false;
 
     public int x_width;
 
