@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.flags;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -148,6 +148,9 @@ public class PlayerFlagHandler implements Listener {
                 cache = softRef.get();
                 if (cache != null) {
                     cache.lastAccessed = System.currentTimeMillis();
+                    if (Debug.verbose) {
+                        Debug.echoError("Verbose - flag tracker updated for " + id);
+                    }
                     playerFlagTrackerCache.put(id, cache);
                     secondaryPlayerFlagTrackerCache.remove(id);
                     return cache.tracker;
@@ -156,6 +159,9 @@ public class PlayerFlagHandler implements Listener {
             cache = new CachedPlayerFlag();
             cache.lastAccessed = System.currentTimeMillis();
             cache.loadingNow = true;
+            if (Debug.verbose) {
+                Debug.echoError("Verbose - flag tracker updated for " + id);
+            }
             playerFlagTrackerCache.put(id, cache);
             loadFlags(id, cache);
         }
@@ -183,6 +189,9 @@ public class PlayerFlagHandler implements Listener {
                 cache = softRef.get();
                 if (cache != null) {
                     cache.lastAccessed = System.currentTimeMillis();
+                    if (Debug.verbose) {
+                        Debug.echoError("Verbose - flag tracker updated for " + id);
+                    }
                     playerFlagTrackerCache.put(id, cache);
                     secondaryPlayerFlagTrackerCache.remove(id);
                     return null;
@@ -191,6 +200,9 @@ public class PlayerFlagHandler implements Listener {
             CachedPlayerFlag newCache = new CachedPlayerFlag();
             newCache.lastAccessed = System.currentTimeMillis();
             newCache.loadingNow = true;
+            if (Debug.verbose) {
+                Debug.echoError("Verbose - flag tracker updated for " + id);
+            }
             playerFlagTrackerCache.put(id, newCache);
             CompletableFuture future = new CompletableFuture();
             new BukkitRunnable() {
