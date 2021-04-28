@@ -522,11 +522,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag("item", (attribute, object) -> {
             ItemTag item = new ItemTag(object, 1);
-            if (item.getItemMeta() instanceof BlockStateMeta) {
-                BlockState state = NMSHandler.getBlockHelper().generateBlockState(object.material);
-                state.setBlockData(object.modernData);
-                ((BlockStateMeta) item.getItemMeta()).setBlockState(state);
-            }
             return item;
         });
 
