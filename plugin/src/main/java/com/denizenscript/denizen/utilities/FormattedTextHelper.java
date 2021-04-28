@@ -64,6 +64,9 @@ public class FormattedTextHelper {
     }
 
     public static String stringify(BaseComponent[] components, ChatColor baseColor) {
+        if (components == null) {
+            return null;
+        }
         if (components.length == 0) {
             return "";
         }
@@ -100,6 +103,9 @@ public class FormattedTextHelper {
     }
 
     public static String stringify(BaseComponent component) {
+        if (component == null) {
+            return null;
+        }
         StringBuilder builder = new StringBuilder(128);
         ChatColor color = component.getColorRaw();
         if (color != null) {
@@ -192,6 +198,9 @@ public class FormattedTextHelper {
     }
 
     public static BaseComponent[] parse(String str, ChatColor baseColor) {
+        if (str == null) {
+            return null;
+        }
         return parse(str, baseColor, true);
     }
 
@@ -360,6 +369,9 @@ public class FormattedTextHelper {
     }
 
     public static BaseComponent[] parse(String str, ChatColor baseColor, boolean cleanBase) {
+        if (str == null) {
+            return null;
+        }
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
         if (firstChar == -1) {

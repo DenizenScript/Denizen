@@ -61,18 +61,30 @@ public class PaperModule {
     }
 
     public static Component parseFormattedText(String text, ChatColor baseColor) {
+        if (text == null) {
+            return null;
+        }
         return jsonToComponent(ComponentSerializer.toString(FormattedTextHelper.parse(text, baseColor)));
     }
 
     public static String stringifyComponent(Component component, ChatColor baseColor) {
+        if (component == null) {
+            return null;
+        }
         return FormattedTextHelper.stringify(ComponentSerializer.parse(componentToJson(component)), baseColor);
     }
 
     public static Component jsonToComponent(String json) {
+        if (json == null) {
+            return null;
+        }
         return GsonComponentSerializer.gson().deserialize(json);
     }
 
     public static String componentToJson(Component component) {
+        if (component == null) {
+            return null;
+        }
         return GsonComponentSerializer.gson().serialize(component);
     }
 }
