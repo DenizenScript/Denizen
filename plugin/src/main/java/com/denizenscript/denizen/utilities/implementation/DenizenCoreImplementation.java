@@ -300,9 +300,10 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     public static String cleanseLog(String input) {
-        String esc = String.valueOf((char) 0x1b);
+        char esc_char = (char) 0x1b;
+        String esc = String.valueOf(esc_char);
         String repc = String.valueOf(ChatColor.COLOR_CHAR);
-        if (input.contains(esc)) {
+        if (input.indexOf(esc_char) != -1) {
             input = StringUtils.replace(input, esc + "[0;30;22m", repc + "0");
             input = StringUtils.replace(input, esc + "[0;34;22m", repc + "1");
             input = StringUtils.replace(input, esc + "[0;32;22m", repc + "2");

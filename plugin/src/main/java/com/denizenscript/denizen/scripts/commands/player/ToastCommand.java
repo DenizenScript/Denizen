@@ -26,16 +26,16 @@ public class ToastCommand extends AbstractCommand {
 
     public ToastCommand() {
         setName("toast");
-        setSyntax("toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)");
-        setRequiredArguments(1, 5);
+        setSyntax("toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal)");
+        setRequiredArguments(1, 4);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Toast
-    // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)
+    // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal)
     // @Required 1
-    // @Maximum 5
+    // @Maximum 4
     // @Short Shows the player a custom advancement toast.
     // @Group player
     //
@@ -44,8 +44,6 @@ public class ToastCommand extends AbstractCommand {
     // If no target is specified it will default to the attached player.
     // The icon argument changes the icon displayed in the toast pop-up notification.
     // The frame argument changes the type of advancement.
-    // The background texture can be specified as a file path with an optional namespace key prefix.
-    // By default, the background texture is "minecraft:textures/gui/advancements/backgrounds/adventure.png"
     //
     // @Tags
     // None
@@ -82,10 +80,6 @@ public class ToastCommand extends AbstractCommand {
                     && arg.matchesEnum(Advancement.Frame.values())) {
                 scriptEntry.addObject("frame", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("background")
-                    && arg.matchesPrefix("background")) {
-                scriptEntry.addObject("background", arg.asElement());
-            }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
             }
@@ -106,7 +100,6 @@ public class ToastCommand extends AbstractCommand {
         }
         scriptEntry.defaultObject("icon", new ItemTag(Material.AIR));
         scriptEntry.defaultObject("frame", new ElementTag("TASK"));
-        scriptEntry.defaultObject("background", new ElementTag("textures/gui/advancements/backgrounds/adventure.png"));
     }
 
     @SuppressWarnings("unchecked")
@@ -114,24 +107,14 @@ public class ToastCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         ElementTag text = scriptEntry.getElement("text");
         ElementTag frame = scriptEntry.getElement("frame");
-        ElementTag background = scriptEntry.getElement("background");
         ItemTag icon = scriptEntry.getObjectTag("icon");
         final List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
-                    + background.debug() + ArgumentHelper.debugList("targets", targets));
-        }
-        NamespacedKey backgroundKey;
-        int index = background.asString().indexOf(':');
-        if (index == -1) {
-            backgroundKey = NamespacedKey.minecraft(background.asString());
-        }
-        else {
-            backgroundKey = new NamespacedKey(background.asString().substring(0, index), background.asString().substring(index + 1));
+            Debug.report(scriptEntry, name, text, frame, icon, ArgumentHelper.debugList("targets", targets));
         }
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(Denizen.getInstance(), UUID.randomUUID().toString()), null,
-                icon.getItemStack(), text.asString(), "", backgroundKey,
+                icon.getItemStack(), text.asString(), "", null,
                 Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0, 1);
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
         for (PlayerTag target : targets) {
