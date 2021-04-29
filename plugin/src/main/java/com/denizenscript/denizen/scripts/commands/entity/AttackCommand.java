@@ -82,9 +82,11 @@ public class AttackCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("target")) {
             scriptEntry.addObject("target", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
-        scriptEntry.defaultObject("entities", Utilities.entryHasNPC(scriptEntry) ? Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
         if (!scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("Must specify entity/entities!");
+            scriptEntry.defaultObject("entities", Utilities.entryHasNPC(scriptEntry) ? Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
+            if (!scriptEntry.hasObject("entities")) {
+                throw new InvalidArgumentsException("Must specify entity/entities!");
+            }
         }
         if (!scriptEntry.hasObject("target") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a target!");
