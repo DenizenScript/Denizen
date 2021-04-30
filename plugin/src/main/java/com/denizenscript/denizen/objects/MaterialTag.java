@@ -587,7 +587,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag("vanilla_tags", (attribute, object) -> {
             HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(object.getMaterial());
             if (tags == null) {
-                return null;
+                return new ListTag();
             }
             return new ListTag(tags);
         });
