@@ -130,9 +130,6 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
     //   # | All command scripts MUST have this key!
     //   script:
-    //   - if !<player.is_op||<context.server>>:
-    //     - narrate "<red>You do not have permission for that command."
-    //     - stop
     //   - narrate Yay!
     //   - narrate "My command worked!"
     //   - narrate "And I typed '/<context.alias> <context.raw_args>'!"

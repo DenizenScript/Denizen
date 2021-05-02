@@ -4,10 +4,13 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -324,5 +327,35 @@ public abstract class EntityHelper {
 
     public void setEndermanAngry(Entity entity, boolean angry) {
         throw new UnsupportedOperationException();
+    }
+
+    public static EntityDamageEvent fireFakeDamageEvent(Entity target, Entity source, EntityDamageEvent.DamageCause cause, float amount) {
+        EntityDamageEvent ede = source == null ? new EntityDamageEvent(target, cause, amount) : new EntityDamageByEntityEvent(source, target, cause, amount);
+        Bukkit.getPluginManager().callEvent(ede);
+        return ede;
+    }
+
+    public void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause) {
+        if (cause == null) {
+            if (source == null) {
+                target.damage(amount);
+            }
+            else {
+                target.damage(amount, source);
+            }
+        }
+        else {
+            EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
+            if (!ede.isCancelled()) {
+                target.setLastDamageCause(ede);
+                if (source == null) {
+                    target.damage(ede.getFinalDamage());
+                }
+                else {
+                    target.damage(ede.getFinalDamage(), source);
+                }
+                target.setLastDamageCause(ede);
+            }
+        }
     }
 }

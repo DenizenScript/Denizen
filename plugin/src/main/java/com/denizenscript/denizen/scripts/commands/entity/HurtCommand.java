@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -10,8 +11,6 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
@@ -21,16 +20,16 @@ public class HurtCommand extends AbstractCommand {
 
     public HurtCommand() {
         setName("hurt");
-        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>) (source_once)");
+        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>)");
         setRequiredArguments(0, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Hurt
-    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>) (source_once)
+    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>)
     // @Required 0
-    // @Maximum 5
+    // @Maximum 4
     // @Short Hurts the player or a list of entities.
     // @Group entity
     //
@@ -42,13 +41,13 @@ public class HurtCommand extends AbstractCommand {
     //
     // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage (half a heart).
     //
-    // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
-    // be warned this does not always work as intended, and is liable to glitch.
-    // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
-    // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
-    // than using the raw damage input number. See <@link language damage cause> for damage causes.
-    // To make the source only be included in the initial damage event, and not the application of damage, specify 'source_once'.
-    // Note that 'cause' values are hacked in, similarly to the 'source' value.
+    // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker.
+    //
+    // You may also specify a damage cause to fire a proper damage event with the given cause, only doing the damage if the event wasn't cancelled.
+    // Calculates the 'final damage' rather than using the raw damage input number. See <@link language damage cause> for damage causes.
+    //
+    // Using a valid 'cause' value is best when trying to replicate natural damage, excluding it is best when trying to force the raw damage through.
+    // Note that using invalid or impossible causes may lead to bugs
     //
     // @Tags
     // <EntityTag.health>
@@ -139,30 +138,8 @@ public class HurtCommand extends AbstractCommand {
                 Debug.echoDebug(scriptEntry, entity + " is not a living entity!");
                 continue;
             }
-            if (cause == null) {
-                if (source == null) {
-                    entity.getLivingEntity().damage(amount);
-                }
-                else {
-                    entity.getLivingEntity().damage(amount, source.getBukkitEntity());
-                }
-            }
-            else {
-                EntityDamageEvent.DamageCause causeEnum = EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase());
-                EntityDamageEvent ede = source == null ? new EntityDamageEvent(entity.getBukkitEntity(), causeEnum, amount) :
-                        new EntityDamageByEntityEvent(source.getBukkitEntity(), entity.getBukkitEntity(), causeEnum, amount);
-                Bukkit.getPluginManager().callEvent(ede);
-                if (!ede.isCancelled()) {
-                    entity.getLivingEntity().setLastDamageCause(ede);
-                    if (source == null || (source_once != null && source_once.asBoolean())) {
-                        entity.getLivingEntity().damage(ede.getFinalDamage());
-                    }
-                    else {
-                        entity.getLivingEntity().damage(ede.getFinalDamage(), source.getBukkitEntity());
-                    }
-                    entity.getLivingEntity().setLastDamageCause(ede);
-                }
-            }
+            EntityDamageEvent.DamageCause causeEnum = cause == null ? null : EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase());
+            NMSHandler.getEntityHelper().damage(entity.getLivingEntity(), (float) amount, source == null ? null : source.getBukkitEntity(), causeEnum);
         }
     }
 }

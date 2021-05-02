@@ -19,9 +19,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.*;
+import org.bukkit.craftbukkit.v1_16_R3.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
@@ -672,5 +674,124 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setEndermanAngry(Entity entity, boolean angry) {
         ((CraftEnderman) entity).getHandle().getDataWatcher().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+    }
+
+    @Override
+    public void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause) {
+        if (target == null) {
+            return;
+        }
+        EntityLiving nmsTarget = ((CraftLivingEntity) target).getHandle();
+        net.minecraft.server.v1_16_R3.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
+        CraftEventFactory.entityDamage = nmsSource;
+        try {
+            DamageSource src = DamageSource.GENERIC;
+            if (nmsSource != null) {
+                if (nmsSource instanceof EntityHuman) {
+                    src = DamageSource.playerAttack((EntityHuman) nmsSource);
+                }
+                else if (nmsSource instanceof EntityLiving) {
+                    src = DamageSource.mobAttack((EntityLiving) nmsSource);
+                }
+            }
+            if (cause != null) {
+                switch (cause) {
+                    case CONTACT:
+                        src = DamageSource.CACTUS;
+                        break;
+                    case ENTITY_ATTACK:
+                        src = DamageSource.mobAttack(nmsSource instanceof EntityLiving ? (EntityLiving) nmsSource : null);
+                        break;
+                    case ENTITY_SWEEP_ATTACK:
+                        if (src != DamageSource.GENERIC) {
+                            src.sweep();
+                        }
+                        break;
+                    case PROJECTILE:
+                        src = DamageSource.projectile(nmsSource, source instanceof Projectile && ((Projectile) source).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) source).getShooter()).getHandle() : null);
+                        break;
+                    case SUFFOCATION:
+                        src = DamageSource.STUCK;
+                        break;
+                    case FALL:
+                        src = DamageSource.FALL;
+                        break;
+                    case FIRE:
+                        src = DamageSource.FIRE;
+                        break;
+                    case FIRE_TICK:
+                        src = DamageSource.BURN;
+                        break;
+                    case MELTING:
+                        src = CraftEventFactory.MELTING;
+                        break;
+                    case LAVA:
+                        src = DamageSource.LAVA;
+                        break;
+                    case DROWNING:
+                        src = DamageSource.DROWN;
+                        break;
+                    case BLOCK_EXPLOSION:
+                        src = DamageSource.d(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof EntityLiving ? (EntityLiving) ((TNTPrimed) nmsSource).getSource() : null);
+                        break;
+                    case ENTITY_EXPLOSION:
+                        src = DamageSource.d(nmsSource instanceof EntityLiving ? (EntityLiving) nmsSource : null);
+                        break;
+                    case VOID:
+                        src = DamageSource.OUT_OF_WORLD;
+                        break;
+                    case LIGHTNING:
+                        src = DamageSource.LIGHTNING;
+                        break;
+                    case STARVATION:
+                        src = DamageSource.STARVE;
+                        break;
+                    case POISON:
+                        src = CraftEventFactory.POISON;
+                        break;
+                    case MAGIC:
+                        src = DamageSource.MAGIC;
+                        break;
+                    case WITHER:
+                        src = DamageSource.WITHER;
+                        break;
+                    case FALLING_BLOCK:
+                        src = DamageSource.FALLING_BLOCK;
+                        break;
+                    case THORNS:
+                        src = DamageSource.a(nmsSource);
+                        break;
+                    case DRAGON_BREATH:
+                        src = DamageSource.DRAGON_BREATH;
+                        break;
+                    case CUSTOM:
+                        src = DamageSource.GENERIC;
+                        break;
+                    case FLY_INTO_WALL:
+                        src = DamageSource.FLY_INTO_WALL;
+                        break;
+                    case HOT_FLOOR:
+                        src = DamageSource.HOT_FLOOR;
+                        break;
+                    case CRAMMING:
+                        src = DamageSource.CRAMMING;
+                        break;
+                    case DRYOUT:
+                        src = DamageSource.DRYOUT;
+                        break;
+                    //case SUICIDE:
+                    default:
+                        EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
+                        if (ede.isCancelled()) {
+                            return;
+                        }
+                        break;
+                }
+            }
+            nmsTarget.damageEntity(src, amount);
+        }
+        finally {
+            CraftEventFactory.entityDamage = null;
+        }
     }
 }
