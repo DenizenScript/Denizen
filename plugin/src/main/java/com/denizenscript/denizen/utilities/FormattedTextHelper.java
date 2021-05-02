@@ -204,20 +204,20 @@ public class FormattedTextHelper {
         return parse(str, baseColor, true);
     }
 
-    public static int findEndIndexFor(String base, String type, int startAt) {
+    public static int findEndIndexFor(String base, String startSymbol, String endSymbol, int startAt) {
         int layers = 1;
         while (true) {
             int next = base.indexOf(ChatColor.COLOR_CHAR, startAt);
             if (next == -1) {
                 return -1;
             }
-            if (next + type.length() + 2 >= base.length()) {
+            if (next + endSymbol.length() >= base.length()) {
                 return -1;
             }
-            if (base.startsWith("[" + type + "=", next + 1)) {
+            if (base.startsWith(startSymbol, next + 1)) {
                 layers++;
             }
-            else if (base.startsWith("[/" + type + "]", next + 1)){
+            else if (base.startsWith(endSymbol, next + 1)){
                 layers--;
                 if (layers == 0) {
                     return next;
@@ -225,6 +225,10 @@ public class FormattedTextHelper {
             }
             startAt = next + 1;
         }
+    }
+
+    public static int findEndIndexFor(String base, String type, int startAt) {
+        return findEndIndexFor(base, "[" + type + "=", "[/" + type + "]", startAt);
     }
 
     public static AsciiMatcher allowedCharCodes = new AsciiMatcher("0123456789abcdefABCDEFklmnorxKLMNORX[");
@@ -404,7 +408,7 @@ public class FormattedTextHelper {
         char[] chars = str.toCharArray();
         int started = 0;
         TextComponent nextText = new TextComponent();
-        TextComponent lastText = new TextComponent();
+        TextComponent lastText;
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == ChatColor.COLOR_CHAR && i + 1 < chars.length) {
                 char code = chars[i + 1];
@@ -424,7 +428,6 @@ public class FormattedTextHelper {
                     if (innardBase.size() == 2) {
                         nextText.setText(nextText.getText() + str.substring(started, i));
                         base.addExtra(nextText);
-                        TextComponent doublelasttext = lastText;
                         lastText = nextText;
                         nextText = copyFormatToNewText(lastText);
                         nextText.setText("");
@@ -540,23 +543,54 @@ public class FormattedTextHelper {
                                 }
                             }
                             else if (innardBase.get(1).equals("font")) {
-                                nextText.setFont(doublelasttext.getFont());
+                                nextText.setFont(base.getFont());
                             }
                             else {
-                                nextText.setColor(doublelasttext.getColor());
+                                nextText.setColor(base.getColor());
                             }
                         }
                         else if (innardType.equals("color")) {
                             String colorChar = innardBase.get(1);
+                            ChatColor color = null;
                             if (colorChar.length() == 1) {
-                                nextText.setColor(ChatColor.getByChar(colorChar.charAt(0)));
+                                color = ChatColor.getByChar(colorChar.charAt(0));
                             }
                             else if (colorChar.length() == 7) {
-                                nextText.setColor(ChatColor.of(colorChar));
+                                color = ChatColor.of(colorChar);
+                            }
+                            else if (Debug.verbose) {
+                                Debug.echoError("Text parse issue: cannot interpret color '" + innardBase.get(1) + "'.");
+                            }
+                            if (color != null) {
+                                int endIndex = findEndIndexFor(str, "[color=", "[reset=color]", i + 1);
+                                if (endIndex == -1) {
+                                    nextText.setColor(color);
+                                }
+                                else {
+                                    TextComponent colorText = new TextComponent();
+                                    colorText.setColor(color);
+                                    for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), color, false)) {
+                                        colorText.addExtra(subComponent);
+                                    }
+                                    lastText.addExtra(colorText);
+                                    endBracket = endIndex + "&[reset=color".length();
+                                }
                             }
                         }
                         else if (innardType.equals("font")) {
-                            nextText.setFont(innardBase.get(1));
+                            int endIndex = findEndIndexFor(str, "[font=", "[reset=font]", i + 1);
+                            if (endIndex == -1) {
+                                nextText.setFont(innardBase.get(1));
+                            }
+                            else {
+                                TextComponent fontText = new TextComponent();
+                                fontText.setFont(innardBase.get(1));
+                                for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                                    fontText.addExtra(subComponent);
+                                }
+                                lastText.addExtra(fontText);
+                                endBracket = endIndex + "&[reset=font".length();
+                            }
                         }
                         else {
                             if (Debug.verbose) {

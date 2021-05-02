@@ -592,7 +592,7 @@ public class BukkitElementProperties implements Property {
                 }
             }
             else if (colorName.length() == 7 && colorName.startsWith("#")) {
-                return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=f]");
+                return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
             }
             else if (colorName.startsWith("co@")) {
                 ColorTag color = ColorTag.valueOf(colorName, attribute.context);
@@ -600,19 +600,20 @@ public class BukkitElementProperties implements Property {
                 while (hex.length() < 6) {
                     hex.insert(0, "0");
                 }
-                return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=f]");
+                return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
             }
             if (colorOut == null) {
                 try {
                     ChatColor color = ChatColor.of(colorName.toUpperCase());
-                    colorOut = color.toString();
+                    String colorStr = color.toString().replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace("x", "#");
+                    colorOut = ChatColor.COLOR_CHAR + "[color=" + colorStr + "]";
                 }
                 catch (IllegalArgumentException ex) {
                     attribute.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
                     return null;
                 }
             }
-            return new ElementTag(colorOut + object.asString() + ChatColor.COLOR_CHAR + "[reset=" + colorOut.substring(1) + "]");
+            return new ElementTag(colorOut + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
         });
 
         // <--[tag]

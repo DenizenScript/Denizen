@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public class HurtCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("source_once")
                     && arg.matches("source_once")) {
+                Deprecations.hurtSourceOne.warn(scriptEntry);
                 scriptEntry.addObject("source_once", new ElementTag(true));
             }
             else {
@@ -124,13 +126,8 @@ public class HurtCommand extends AbstractCommand {
         EntityTag source = scriptEntry.getObjectTag("source");
         ElementTag amountElement = scriptEntry.getElement("amount");
         ElementTag cause = scriptEntry.getElement("cause");
-        ElementTag source_once = scriptEntry.getElement("source_once");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), amountElement.debug()
-                    + ArgumentHelper.debugList("entities", entities)
-                    + (source_once == null ? "" : source_once.debug())
-                    + (cause == null ? "" : cause.debug())
-                    + (source == null ? "" : source.debug()));
+            Debug.report(scriptEntry, getName(), amountElement, ArgumentHelper.debugList("entities", entities), cause, source);
         }
         double amount = amountElement.asDouble();
         for (EntityTag entity : entities) {
