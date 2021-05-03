@@ -128,6 +128,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         if (string.startsWith("polygon@")) {
             string = string.substring("polygon@".length());
         }
+        if (string.contains("@")) {
+            return null;
+        }
         Notable saved = NotableManager.getSavedObject(string);
         if (saved instanceof PolygonTag) {
             return (PolygonTag) saved;

@@ -82,6 +82,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (string.startsWith("ellipsoid@")) {
             string = string.substring(10);
         }
+        if (string.contains("@")) {
+            return null;
+        }
         Notable noted = NotableManager.getSavedObject(string);
         if (noted instanceof EllipsoidTag) {
             return (EllipsoidTag) noted;
