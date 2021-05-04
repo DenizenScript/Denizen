@@ -94,15 +94,15 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     //
     // @Usage
     // Use to modify an entire cuboid to half stone, half dirt.
-    // - modifyblock <cuboid[<player.location>|<player.cursor_on>]> stone|dirt
+    // - modifyblock <player.location.to_cuboid[<player.cursor_on>]> stone|dirt
     //
     // @Usage
     // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
-    // - modifyblock <cuboid[<player.location>|<player.cursor_on>]> stone|dirt 25|25
+    // - modifyblock <player.location.to_cuboid[<player.cursor_on>]> stone|dirt 25|25
     //
     // @Usage
     // Use to modify the ground beneath the player's feet.
-    // - modifyblock <cuboid[<player.location.add[2,-1,2]>|<player.location.add[-2,-1,-2]>]> RED_WOOL
+    // - modifyblock <player.location.add[2,-1,2].to_cuboid[<player.location.add[-2,-1,-2]>]> RED_WOOL
     // -->
 
     @Override

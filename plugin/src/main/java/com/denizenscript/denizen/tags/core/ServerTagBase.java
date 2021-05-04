@@ -1530,12 +1530,15 @@ public class ServerTagBase {
                 return;
             }
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (CoreUtilities.equalsIgnoreCase(player.getName(), matchInput)) {
+                String nameLow = CoreUtilities.toLowerCase(player.getName());
+                if (nameLow.equals(matchInput)) {
                     matchPlayer = player;
                     break;
                 }
-                else if (CoreUtilities.toLowerCase(player.getName()).contains(matchInput) && matchPlayer == null) {
-                    matchPlayer = player;
+                else if (nameLow.contains(matchInput)) {
+                    if (matchPlayer == null || nameLow.startsWith(matchInput)) {
+                        matchPlayer = player;
+                    }
                 }
             }
 
@@ -1561,12 +1564,15 @@ public class ServerTagBase {
                 return;
             }
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
-                if (CoreUtilities.equalsIgnoreCase(entry.getKey(), matchInput)) {
+                String nameLow = CoreUtilities.toLowerCase(entry.getKey());
+                if (nameLow.equals(matchInput)) {
                     matchPlayer = entry.getValue();
                     break;
                 }
-                else if (CoreUtilities.toLowerCase(entry.getKey()).contains(matchInput) && matchPlayer == null) {
-                    matchPlayer = entry.getValue();
+                else if (nameLow.contains(matchInput)) {
+                    if (matchPlayer == null || nameLow.startsWith(matchInput)) {
+                        matchPlayer = entry.getValue();
+                    }
                 }
             }
             if (matchPlayer != null) {

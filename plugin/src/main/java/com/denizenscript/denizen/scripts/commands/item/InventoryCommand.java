@@ -126,6 +126,10 @@ public class InventoryCommand extends AbstractCommand {
     // - inventory exclude origin:stick|stone
     //
     // @Usage
+    // Use to clear the player's inventory entirely.
+    // - inventory clear
+    //
+    // @Usage
     // Use to swap two players' inventories.
     // - inventory swap d:<[playerOne].inventory> o:<[playerTwo].inventory>
     //
