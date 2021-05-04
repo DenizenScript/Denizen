@@ -1556,9 +1556,10 @@ public class ServerTagBase {
         // Returns any player (online or offline) that best matches the input name.
         // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns player object for 'bob',
         // input 'bobb' returns player object for 'bobby', and input 'b' returns player object for 'bo'.
+        // When both an online player and an offline player match the name search, the online player will be returned.
         // -->
         if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
-            UUID matchPlayer = null;
+            PlayerTag matchPlayer = null;
             String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
             if (matchInput.isEmpty()) {
                 return;
@@ -1566,17 +1567,24 @@ public class ServerTagBase {
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
                 String nameLow = CoreUtilities.toLowerCase(entry.getKey());
                 if (nameLow.equals(matchInput)) {
-                    matchPlayer = entry.getValue();
+                    matchPlayer = new PlayerTag(entry.getValue());
                     break;
                 }
                 else if (nameLow.contains(matchInput)) {
-                    if (matchPlayer == null || nameLow.startsWith(matchInput)) {
-                        matchPlayer = entry.getValue();
+                    PlayerTag newMatch = new PlayerTag(entry.getValue());
+                    if (matchPlayer == null) {
+                        matchPlayer = newMatch;
+                    }
+                    else if (newMatch.isOnline() && !matchPlayer.isOnline()) {
+                        matchPlayer = newMatch;
+                    }
+                    else if (nameLow.startsWith(matchInput) && (newMatch.isOnline() == matchPlayer.isOnline())) {
+                        matchPlayer = newMatch;
                     }
                 }
             }
             if (matchPlayer != null) {
-                event.setReplacedObject(new PlayerTag(matchPlayer).getObjectAttribute(attribute.fulfill(1)));
+                event.setReplacedObject(matchPlayer.getObjectAttribute(attribute.fulfill(1)));
             }
 
             return;
