@@ -1884,13 +1884,18 @@ public class ServerTagBase {
             }
 
             // <--[tag]
-            // @attribute <server.ban_info[<address>].expiration>
-            // @returns DurationTag
+            // @attribute <server.ban_info[<address>].expiration_time>
+            // @returns TimeTag
             // @description
             // Returns the expiration of the ip address's ban, if it is banned.
             // Potentially can be null.
             // -->
-            if (attribute.startsWith("expiration") && ban.getExpiration() != null) {
+            if (attribute.startsWith("expiration_time") && ban.getExpiration() != null) {
+                event.setReplacedObject(new TimeTag(ban.getExpiration().getTime())
+                        .getObjectAttribute(attribute.fulfill(1)));
+            }
+            else if (attribute.startsWith("expiration") && ban.getExpiration() != null) {
+                Deprecations.timeTagRewrite.warn(attribute.context);
                 event.setReplacedObject(new DurationTag(ban.getExpiration().getTime() / 50)
                         .getObjectAttribute(attribute.fulfill(1)));
             }
@@ -1907,12 +1912,17 @@ public class ServerTagBase {
             }
 
             // <--[tag]
-            // @attribute <server.ban_info[<address>].created>
-            // @returns DurationTag
+            // @attribute <server.ban_info[<address>].created_time>
+            // @returns TimeTag
             // @description
             // Returns when the ip address's ban was created, if it is banned.
             // -->
+            else if (attribute.startsWith("created_time")) {
+                event.setReplacedObject(new TimeTag(ban.getCreated().getTime())
+                        .getObjectAttribute(attribute.fulfill(1)));
+            }
             else if (attribute.startsWith("created")) {
+                Deprecations.timeTagRewrite.warn(attribute.context);
                 event.setReplacedObject(new DurationTag(ban.getCreated().getTime() / 50)
                         .getObjectAttribute(attribute.fulfill(1)));
             }

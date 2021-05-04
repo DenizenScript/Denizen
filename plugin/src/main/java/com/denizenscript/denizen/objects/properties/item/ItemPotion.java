@@ -238,6 +238,7 @@ public class ItemPotion implements Property {
                 // @group properties
                 // @description
                 // Returns whether the potion effect is ambient.
+                // "Ambient" effects in vanilla came from a beacon, while non-ambient came from a potion.
                 // -->
                 if (attribute.startsWith("is_ambient")) {
                     return new ElementTag(meta.getCustomEffects().get(potN).isAmbient())

@@ -1127,6 +1127,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new TimeTag(ban.getCreated().getTime());
         });
         registerTag("ban_created", (attribute, object) -> {
+            Deprecations.timeTagRewrite.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
