@@ -47,9 +47,9 @@ public class BanCommand extends AbstractCommand {
     // <PlayerTag.ban_created_time>
     // <PlayerTag.ban_source>
     // <server.is_banned[<address>]>
-    // <server.ban_info[<address>].expiration>
+    // <server.ban_info[<address>].expiration_time>
     // <server.ban_info[<address>].reason>
-    // <server.ban_info[<address>].created>
+    // <server.ban_info[<address>].created_time>
     // <server.ban_info[<address>].source>
     // <server.banned_addresses>
     // <server.banned_players>
