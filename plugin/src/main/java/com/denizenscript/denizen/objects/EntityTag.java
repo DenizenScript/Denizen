@@ -1414,6 +1414,29 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
+        // @attribute <EntityTag.cursor_on_solid[(<range>)]>
+        // @returns LocationTag
+        // @group location
+        // @description
+        // Returns the location of the solid block the entity is looking at.
+        // Optionally, specify a maximum range to find the location from (defaults to 200).
+        // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
+        // Note that this will return null if there is no solid block in range.
+        // This only uses solid blocks, ie it ignores passable blocks like tall-grass. Use <@link tag EntityTag.cursor_on> to include passable blocks.
+        // -->
+        registerSpawnedOnlyTag("cursor_on_solid", (attribute, object) -> {
+            double range = attribute.getDoubleContext(1);
+            if (range <= 0) {
+                range = 200;
+            }
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true);
+            if (traced != null && traced.getHitBlock() != null) {
+                return new LocationTag(traced.getHitBlock().getLocation());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.cursor_on[(<range>)]>
         // @returns LocationTag
         // @group location
@@ -1421,14 +1444,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the location of the block the entity is looking at.
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
-        // Note that this will return null if there is no solid block in range.
+        // Note that this will return null if there is no block in range.
+        // This uses all blocks, ie it includes passable blocks like tall-grass and water. Use <@link tag EntityTag.cursor_on> to include passable blocks.
         // -->
         registerSpawnedOnlyTag("cursor_on", (attribute, object) -> {
             double range = attribute.getDoubleContext(1);
             if (range <= 0) {
                 range = 200;
             }
-            RayTraceResult traced = object.getWorld().rayTraceBlocks(object.getEyeLocation(), object.getEyeLocation().getDirection(), range);
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.ALWAYS, false);
             if (traced != null && traced.getHitBlock() != null) {
                 return new LocationTag(traced.getHitBlock().getLocation());
             }
