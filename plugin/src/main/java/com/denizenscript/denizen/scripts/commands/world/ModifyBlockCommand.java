@@ -62,6 +62,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // @Required 2
     // @Maximum 8
     // @Short Modifies blocks.
+    // @Synonyms SetBlock,ChangeBlock,PlaceBlock,BreakBlock
     // @Group world
     //
     // @Description

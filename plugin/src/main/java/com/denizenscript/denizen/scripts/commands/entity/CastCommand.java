@@ -31,6 +31,7 @@ public class CastCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 8
     // @Short Casts a potion effect to a list of entities.
+    // @Synonyms Potion,Magic
     // @Group entity
     //
     // @Description

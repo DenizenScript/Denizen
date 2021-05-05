@@ -37,6 +37,7 @@ public class SwitchCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 3
     // @Short Switches state of the block.
+    // @Synonyms Toggle,Lever,Activate
     // @Group world
     //
     // @Description

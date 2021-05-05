@@ -32,6 +32,7 @@ public class HurtCommand extends AbstractCommand {
     // @Required 0
     // @Maximum 4
     // @Short Hurts the player or a list of entities.
+    // @Synonyms Damage,Injure
     // @Group entity
     //
     // @Description

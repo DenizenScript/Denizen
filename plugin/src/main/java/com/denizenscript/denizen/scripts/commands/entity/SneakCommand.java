@@ -33,6 +33,7 @@ public class SneakCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 4
     // @Short Causes the entity to start or stop sneaking.
+    // @Synonyms Crouch,Shift
     // @Group entity
     //
     // @Description

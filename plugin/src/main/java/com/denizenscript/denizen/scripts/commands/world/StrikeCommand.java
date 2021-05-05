@@ -28,6 +28,7 @@ public class StrikeCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 2
     // @Short Strikes lightning down upon the location.
+    // @Synonyms Lightning
     // @Group world
     //
     // @Description

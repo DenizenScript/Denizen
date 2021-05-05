@@ -31,6 +31,7 @@ public class ChatCommand extends AbstractCommand {
     // @Maximum 4
     // @Plugin Citizens
     // @Short Causes an NPC/NPCs to send a chat message to nearby players.
+    // @Synonyms Say,Speak
     // @Group player
     //
     // @Description

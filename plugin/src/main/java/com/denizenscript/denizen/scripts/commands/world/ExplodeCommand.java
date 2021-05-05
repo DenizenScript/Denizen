@@ -29,6 +29,7 @@ public class ExplodeCommand extends AbstractCommand {
     // @Required 0
     // @Maximum 5
     // @Short Causes an explosion at the location.
+    // @Synonyms Detonate,Bomb,TNT
     // @Group world
     //
     // @Description

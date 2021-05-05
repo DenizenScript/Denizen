@@ -28,6 +28,7 @@ public class BurnCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 2
     // @Short Sets a list of entities on fire.
+    // @Synonyms Ignite,Fire,Torch
     // @Group entity
     //
     // @Description

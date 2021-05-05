@@ -50,6 +50,7 @@ public class PlayEffectCommand extends AbstractCommand {
     // @Required 2
     // @Maximum 8
     // @Short Plays a visible or audible effect at the location.
+    // @Synonyms Particle
     // @Group world
     //
     // @Description

@@ -32,6 +32,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     // @Required 1
     // @Maximum 6
     // @Short Rotates a list of entities.
+    // @Synonyms Spin
     // @Group entity
     //
     // @Description

@@ -34,6 +34,7 @@ public class ShowFakeCommand extends AbstractCommand {
     // @Required 2
     // @Maximum 4
     // @Short Makes the player see a block change that didn't actually happen.
+    // @Synonyms FakeBlock
     // @Group player
     //
     // @Description

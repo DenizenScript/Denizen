@@ -24,19 +24,21 @@ public class NoteCommand extends AbstractCommand {
     // @Syntax note [<Notable ObjectTag>/remove] [as:<name>]
     // @Required 2
     // @Maximum 2
-    // @Short Adds or removes a notable object.
+    // @Short Adds or removes a named note of an object to the server.
+    // @Synonyms Notable
     // @Group core
     // @Guide https://guide.denizenscript.com/guides/advanced/notables.html
     //
     // @Description
-    // Add or remove a notable object that can be referenced in events or scripts.
+    // Add or remove a 'note' to the server, persistently naming an object that can be referenced in events or scripts.
+    // Only works for object types that are 'notable'.
     // Noted objects are "permanent" versions of other ObjectTags. (See: <@link language ObjectTags>)
     // Noted objects keep their properties when added.
     //
     // Notable object types: CuboidTag, EllipsoidTag, PolygonTag, LocationTag, InventoryTag
     //
     // @Tags
-    // <server.notables[<type>]>
+    // <server.notes[<type>]>
     // <CuboidTag.note_name>
     // <InventoryTag.note_name>
     // <LocationTag.note_name>

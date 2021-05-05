@@ -35,6 +35,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     // @Required 1
     // @Maximum 7
     // @Short Creates a new world, or loads an existing world.
+    // @Synonyms LoadWorld
     // @Group world
     //
     // @Description

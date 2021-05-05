@@ -31,6 +31,7 @@ public class PlaySoundCommand extends AbstractCommand {
     // @Required 2
     // @Maximum 7
     // @Short Plays a sound at the location or to a list of players.
+    // @Synonyms Noise
     // @Group world
     //
     // @Description

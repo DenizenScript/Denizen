@@ -37,6 +37,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     // @Required 0
     // @Maximum 3
     // @Short Changes the current interact script step.
+    // @Synonyms Step
     // @Group core
     // @Guide https://guide.denizenscript.com/guides/npcs/interact-scripts.html
     //

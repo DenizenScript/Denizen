@@ -35,6 +35,7 @@ public class LookCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 3
     // @Short Causes the NPC or other entity to look at a target location.
+    // @Synonyms Turn,Face
     // @Group entity
     //
     // @Description

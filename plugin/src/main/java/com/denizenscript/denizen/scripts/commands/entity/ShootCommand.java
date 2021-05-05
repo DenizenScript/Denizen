@@ -54,6 +54,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // @Required 1
     // @Maximum 11
     // @Short Shoots an entity through the air, useful for things like firing arrows.
+    // @Synonyms Launch
     // @Group entity
     //
     // @Description

@@ -33,6 +33,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
     // @Required 1
     // @Maximum 4
     // @Short Plays a midi file at a given location or to a list of players using note block sounds.
+    // @Synonyms Music
     // @Group world
     //
     // @Description
