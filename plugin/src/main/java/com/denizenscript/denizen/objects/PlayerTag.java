@@ -3298,6 +3298,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ItemTag
         // @description
         // Displays a book to a player. Must be a WRITTEN_BOOK item.
+        // For simple usage, consider specifying a book script name as the input.
         // -->
         if (mechanism.matches("show_book")
                 && mechanism.requireObject(ItemTag.class)) {

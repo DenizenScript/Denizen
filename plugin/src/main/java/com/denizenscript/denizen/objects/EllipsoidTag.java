@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -671,34 +672,23 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         }
 
         // <--[tag]
-        // @attribute <EllipsoidTag.entities[(<entity>|...)]>
+        // @attribute <EllipsoidTag.entities[(<matcher>)]>
         // @returns ListTag(EntityTag)
         // @description
-        // Gets a list of all entities currently within the EllipsoidTag, with an optional search parameter for the entity type.
+        // Gets a list of all entities currently within the EllipsoidTag, with an optional search parameter for the entity.
         // -->
         registerTag("entities", (attribute, object) -> {
-            ArrayList<EntityTag> entities = new ArrayList<>();
-            ListTag types = new ListTag();
-            if (attribute.hasContext(1)) {
-                types = attribute.contextAsType(1, ListTag.class);
-            }
+            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            ListTag entities = new ListTag();
             for (Entity ent : new WorldTag(object.center.getWorld()).getEntitiesForTag()) {
                 EntityTag current = new EntityTag(ent);
                 if (object.contains(ent.getLocation())) {
-                    if (!types.isEmpty()) {
-                        for (String type : types) {
-                            if (current.identifySimpleType().equalsIgnoreCase(type)) {
-                                entities.add(current);
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        entities.add(new EntityTag(ent));
+                    if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
+                        entities.addObject(new EntityTag(ent).getDenizenObject());
                     }
                 }
             }
-            return new ListTag(entities);
+            return entities;
         });
 
         // <--[tag]
