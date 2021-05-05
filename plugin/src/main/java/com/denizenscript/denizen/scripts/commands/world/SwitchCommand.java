@@ -159,14 +159,21 @@ public class SwitchCommand extends AbstractCommand {
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
     public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, boolean physics) {
-        MaterialSwitchable switchable = MaterialSwitchable.getFrom(new MaterialTag(interactLocation.getBlock().getBlockData()));
+        Block block = interactLocation.getBlock();
+        MaterialTag materialTag = new MaterialTag(block.getBlockData());
+        MaterialSwitchable switchable = MaterialSwitchable.getFrom(materialTag);
         if (switchable == null) {
             return;
         }
         boolean currentState = switchable.getState();
         if ((switchState.equals(SwitchState.ON) && !currentState) || (switchState.equals(SwitchState.OFF) && currentState) || switchState.equals(SwitchState.TOGGLE)) {
             switchable.setState(!currentState);
-            interactLocation.getBlock().setBlockData(switchable.material.getModernData());
+            if (physics) {
+                block.setBlockData(switchable.material.getModernData());
+            }
+            else {
+                ModifyBlockCommand.setBlock(block.getLocation(), materialTag, false, null);
+            }
             if (switchable.material.getModernData() instanceof Bisected) {
                 Location other = interactLocation.clone();
                 if (((Bisected) switchable.material.getModernData()).getHalf() == Bisected.Half.TOP) {
@@ -185,7 +192,9 @@ public class SwitchCommand extends AbstractCommand {
             if (physics) {
                 AdjustBlockCommand.applyPhysicsAt(interactLocation);
             }
-            Debug.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " + (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
+            if (scriptEntry.dbCallShouldDebug()) {
+                Debug.echoDebug(scriptEntry, "Switched " + block.getType().toString() + "! Current state now: " + (switchState(block) ? "ON" : "OFF"));
+            }
         }
     }
 }
