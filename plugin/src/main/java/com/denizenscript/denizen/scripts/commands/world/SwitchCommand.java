@@ -37,7 +37,7 @@ public class SwitchCommand extends AbstractCommand {
     // @Required 1
     // @Maximum 3
     // @Short Switches state of the block.
-    // @Synonyms Toggle,Lever,Activate
+    // @Synonyms Toggle,Lever,Activate,Power,Redstone
     // @Group world
     //
     // @Description
@@ -60,7 +60,6 @@ public class SwitchCommand extends AbstractCommand {
     //
     // @Tags
     // <LocationTag.switched>
-    // <MaterialTag.is_switchable>
     // <MaterialTag.switched>
     //
     // @Usage

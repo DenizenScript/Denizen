@@ -6,8 +6,10 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.block.data.Lightable;
 
+@Deprecated
 public class MaterialLightable implements Property {
 
     public static boolean describes(ObjectTag material) {
@@ -37,15 +39,8 @@ public class MaterialLightable implements Property {
 
     public static void registerTags() {
 
-        // <--[tag]
-        // @attribute <MaterialTag.lit>
-        // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.lit
-        // @group properties
-        // @description
-        // Returns whether a lightable material (such as a redstone torch) is lit currently.
-        // -->
         PropertyParser.<MaterialLightable>registerTag("lit", (attribute, material) -> {
+            Deprecations.materialLit.warn(attribute.context);
             return new ElementTag(material.getLightable().isLit());
         });
     }
@@ -56,7 +51,7 @@ public class MaterialLightable implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getLightable().isLit());
+        return null;
     }
 
     @Override
@@ -67,16 +62,8 @@ public class MaterialLightable implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name lit
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether a lightable material (such as a redstone torch) is lit currently.
-        // @tags
-        // <MaterialTag.lit>
-        // -->
         if (mechanism.matches("lit") && mechanism.requireBoolean()) {
+            Deprecations.materialLit.warn(mechanism.context);
             getLightable().setLit(mechanism.getValue().asBoolean());
         }
     }

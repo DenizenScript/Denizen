@@ -6,8 +6,10 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.block.data.type.Campfire;
 
+@Deprecated
 public class MaterialCampfire implements Property {
 
     public static boolean describes(ObjectTag material) {
@@ -37,15 +39,8 @@ public class MaterialCampfire implements Property {
 
     public static void registerTags() {
 
-        // <--[tag]
-        // @attribute <MaterialTag.signal_fire>
-        // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.signal_fire
-        // @group properties
-        // @description
-        // Returns whether this campfire will produce longer smoke trails, or not.
-        // -->
         PropertyParser.<MaterialCampfire>registerTag("signal_fire", (attribute, material) -> {
+            Deprecations.materialCampfire.warn(attribute.context);
             return new ElementTag(material.getCampfire().isSignalFire());
         });
     }
@@ -67,16 +62,8 @@ public class MaterialCampfire implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name signal_fire
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets a campfire block to have longer smoke trails, or not.
-        // @tags
-        // <MaterialTag.signal_fire>
-        // -->
         if (mechanism.matches("signal_fire") && mechanism.requireBoolean()) {
+            Deprecations.materialCampfire.warn(mechanism.context);
             getCampfire().setSignalFire(mechanism.getValue().asBoolean());
         }
     }

@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.BubbleColumn;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.PistonHead;
 
@@ -23,7 +24,8 @@ public class MaterialMode implements Property {
         }
         BlockData data = mat.getModernData();
         return data instanceof Comparator
-                || data instanceof PistonHead;
+                || data instanceof PistonHead
+                || data instanceof BubbleColumn;
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -56,6 +58,7 @@ public class MaterialMode implements Property {
         // Returns a block's mode.
         // For comparators, output is COMPARE or SUBTRACT.
         // For piston_heads, output is NORMAL or SHORT.
+        // For bubble-columns, output is NORMAL or DRAG.
         // -->
         PropertyParser.<MaterialMode>registerTag("mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -70,6 +73,10 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof PistonHead;
     }
 
+    public boolean isBubbleColumn() {
+        return material.getModernData() instanceof BubbleColumn;
+    }
+
     public Comparator getComparator() {
         return (Comparator) material.getModernData();
     }
@@ -78,10 +85,17 @@ public class MaterialMode implements Property {
         return (PistonHead) material.getModernData();
     }
 
+    public BubbleColumn getBubbleColumn() {
+        return (BubbleColumn) material.getModernData();
+    }
+
     @Override
     public String getPropertyString() {
         if (isComparator()) {
             return getComparator().getMode().name();
+        }
+        else if (isBubbleColumn()) {
+            return getBubbleColumn().isDrag() ? "DRAG" : "NORMAL";
         }
         else {
             return getPistonHead().isShort() ? "SHORT" : "NORMAL";
@@ -104,12 +118,16 @@ public class MaterialMode implements Property {
         // Set a block's mode.
         // For comparators, input is COMPARE or SUBTRACT.
         // For piston_heads, input is NORMAL or SHORT.
+        // For bubble-columns, input is NORMAL or DRAG.
         // @tags
         // <MaterialTag.mode>
         // -->
         if (mechanism.matches("mode") && mechanism.requireEnum(false, Comparator.Mode.values())) {
             if (isComparator() && mechanism.requireEnum(false, Comparator.Mode.values())) {
                 getComparator().setMode(Comparator.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isBubbleColumn()) {
+                getBubbleColumn().setDrag(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "drag"));
             }
             else if (isPistonHead()) {
                 getPistonHead().setShort(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "short"));

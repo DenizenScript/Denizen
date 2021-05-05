@@ -6,7 +6,9 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Campfire;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.TechnicalPiston;
 
@@ -22,7 +24,8 @@ public class MaterialBlockType implements Property {
         }
         BlockData data = mat.getModernData();
         return data instanceof Slab
-                || data instanceof TechnicalPiston;
+                || data instanceof TechnicalPiston
+                || data instanceof Campfire;
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -53,8 +56,9 @@ public class MaterialBlockType implements Property {
         // @group properties
         // @description
         // Returns the current type of the block.
-        // For slabs, input is TOP, BOTTOM, or DOUBLE.
-        // For piston_heads, input is NORMAL or STICKY.
+        // For slabs, output is TOP, BOTTOM, or DOUBLE.
+        // For piston_heads, output is NORMAL or STICKY.
+        // For campfires, output is NORMAL or SIGNAL.
         // -->
         PropertyParser.<MaterialBlockType>registerTag("type", (attribute, material) -> {
             return new ElementTag(material.getSlab().getType().name());
@@ -69,6 +73,10 @@ public class MaterialBlockType implements Property {
         return material.getModernData() instanceof TechnicalPiston;
     }
 
+    public boolean isCampfire() {
+        return material.getModernData() instanceof Campfire;
+    }
+
     public Slab getSlab() {
         return (Slab) material.getModernData();
     }
@@ -77,10 +85,17 @@ public class MaterialBlockType implements Property {
         return (TechnicalPiston) material.getModernData();
     }
 
+    public Campfire getCampfire() {
+        return (Campfire) material.getModernData();
+    }
+
     @Override
     public String getPropertyString() {
         if (isSlab()) {
             return String.valueOf(getSlab().getType());
+        }
+        else if (isCampfire()) {
+            return getCampfire().isSignalFire() ? "SIGNAL" : "NORMAL";
         }
         else {
             return String.valueOf(getPistonHead().getType());
@@ -103,12 +118,16 @@ public class MaterialBlockType implements Property {
         // Sets the current type of the block.
         // For slabs, input is TOP, BOTTOM, or DOUBLE.
         // For piston_heads, input is NORMAL or STICKY.
+        // For campfires, input is NORMAL or SIGNAL.
         // @tags
         // <MaterialTag.type>
         // -->
         if (mechanism.matches("type") || (mechanism.matches("slab_type"))) {
             if (isSlab() && mechanism.requireEnum(false, Slab.Type.values())) {
                 getSlab().setType(Slab.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isCampfire()) {
+                getCampfire().setSignalFire(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "signal"));
             }
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));

@@ -303,6 +303,10 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             Deprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialWaterlogged.describes(object));
         });
+        registerTag("is_switchable", (attribute, object) -> {
+            Deprecations.materialPropertyTags.warn(attribute.context);
+            return new ElementTag(MaterialSwitchable.describes(object));
+        });
 
         // <--[tag]
         // @attribute <MaterialTag.has_gravity>
@@ -418,16 +422,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag("is_solid", (attribute, object) -> {
             return new ElementTag(object.material.isSolid());
-        });
-
-        // <--[tag]
-        // @attribute <MaterialTag.is_switchable>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the material is Openable, Powerable, or a Dispenser.
-        // -->
-        registerTag("is_switchable", (attribute, object) -> {
-            return new ElementTag(MaterialSwitchable.describes(object));
         });
 
         // <--[tag]
