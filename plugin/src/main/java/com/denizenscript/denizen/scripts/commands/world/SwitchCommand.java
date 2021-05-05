@@ -26,16 +26,16 @@ public class SwitchCommand extends AbstractCommand {
 
     public SwitchCommand() {
         setName("switch");
-        setSyntax("switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)");
-        setRequiredArguments(1, 3);
+        setSyntax("switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>) (no_physics)");
+        setRequiredArguments(1, 4);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Switch
-    // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
+    // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>) (no_physics)
     // @Required 1
-    // @Maximum 3
+    // @Maximum 4
     // @Short Switches state of the block.
     // @Synonyms Toggle,Lever,Activate,Power,Redstone
     // @Group world
@@ -57,6 +57,8 @@ public class SwitchCommand extends AbstractCommand {
     //
     // This will generally (but not always) function equivalently to a user right-clicking the block
     // (so it will open and close doors, flip levers on and off, press and depress buttons, ...).
+    //
+    // Optionally specify 'no_physics' to not apply a physics update after switching.
     //
     // @Tags
     // <LocationTag.switched>
@@ -90,7 +92,11 @@ public class SwitchCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            if (!scriptEntry.hasObject("locations") &&
+            if (!scriptEntry.hasObject("no_physics") &&
+                    arg.matches("no_physics")) {
+                scriptEntry.addObject("no_physics", new ElementTag(true));
+            }
+            else if (!scriptEntry.hasObject("locations") &&
                     arg.matchesArgumentList(LocationTag.class)) {
                 scriptEntry.addObject("locations", arg.asType(ListTag.class));
             }
@@ -116,18 +122,18 @@ public class SwitchCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         final ListTag interactLocations = scriptEntry.getObjectTag("locations");
-        long duration = ((DurationTag) scriptEntry.getObject("duration")).getTicks();
+        DurationTag duration = scriptEntry.getObjectTag("duration");
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
+        ElementTag noPhysics = scriptEntry.getElement("no_physics");
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), interactLocations.debug()
-                    + ArgumentHelper.debugObj("duration", duration + "t")
-                    + ArgumentHelper.debugObj("switchstate", switchState.name()));
+            Debug.report(scriptEntry, getName(), interactLocations, duration, noPhysics, ArgumentHelper.debugObj("switchstate", switchState.name()));
         }
+        final boolean physics = noPhysics == null || !noPhysics.asBoolean();
         for (final LocationTag interactLocation : interactLocations.filter(LocationTag.class, scriptEntry)) {
-            switchBlock(scriptEntry, interactLocation, switchState);
+            switchBlock(scriptEntry, interactLocation, switchState, physics);
             // If duration set, schedule a delayed task.
-            if (duration > 0) {
+            if (duration.getTicks() > 0) {
                 // If this block already had a delayed task, cancel it.
                 if (taskMap.containsKey(interactLocation)) {
                     try {
@@ -138,7 +144,7 @@ public class SwitchCommand extends AbstractCommand {
                 }
                 Debug.echoDebug(scriptEntry, "Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
-                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE), duration));
+                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, physics), duration.getTicks()));
             }
         }
     }
@@ -152,7 +158,7 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
-    public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState) {
+    public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, boolean physics) {
         MaterialSwitchable switchable = MaterialSwitchable.getFrom(new MaterialTag(interactLocation.getBlock().getBlockData()));
         if (switchable == null) {
             return;
@@ -172,9 +178,13 @@ public class SwitchCommand extends AbstractCommand {
                 MaterialSwitchable switchable2 = MaterialSwitchable.getFrom(new MaterialTag(other.getBlock().getBlockData()));
                 switchable2.setState(!currentState);
                 other.getBlock().setBlockData(switchable2.material.getModernData());
-                AdjustBlockCommand.applyPhysicsAt(other);
+                if (physics) {
+                    AdjustBlockCommand.applyPhysicsAt(other);
+                }
             }
-            AdjustBlockCommand.applyPhysicsAt(interactLocation);
+            if (physics) {
+                AdjustBlockCommand.applyPhysicsAt(interactLocation);
+            }
             Debug.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " + (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
         }
     }
