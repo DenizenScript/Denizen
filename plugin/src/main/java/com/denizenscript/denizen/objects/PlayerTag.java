@@ -2327,7 +2327,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (target == null) {
                 return null;
             }
-            return new EntityTag(target);
+            return new EntityTag(target).getDenizenObject();
         });
 
         // <--[tag]

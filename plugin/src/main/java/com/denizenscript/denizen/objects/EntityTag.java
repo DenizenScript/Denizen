@@ -497,7 +497,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public EntityFormObject getDenizenObject() {
         if (entity == null && npc == null) {
-            return null;
+            return this;
         }
         if (isCitizensNPC()) {
             return getDenizenNPC();
@@ -1328,7 +1328,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerSpawnedOnlyTag("trading_with", (attribute, object) -> {
             if (object.entity instanceof Merchant
                     && ((Merchant) object.entity).getTrader() != null) {
-                return new EntityTag(((Merchant) object.entity).getTrader());
+                return new EntityTag(((Merchant) object.entity).getTrader()).getDenizenObject();
             }
             return null;
         });
@@ -1627,7 +1627,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag("leash_holder", (attribute, object) -> {
             if (object.isLivingEntity() && object.getLivingEntity().isLeashed()) {
-                return new EntityTag(object.getLivingEntity().getLeashHolder());
+                return new EntityTag(object.getLivingEntity().getLeashHolder()).getDenizenObject();
             }
             return null;
         }, "get_leash_holder");
@@ -1658,7 +1658,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag("passenger", (attribute, object) -> {
             if (!object.entity.isEmpty()) {
-                return new EntityTag(object.entity.getPassenger());
+                return new EntityTag(object.entity.getPassenger()).getDenizenObject();
             }
             return null;
         }, "get_passenger");
@@ -1693,7 +1693,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!(object.getLivingEntity() instanceof HumanEntity)) {
                 return null;
             }
-            return new EntityTag(((HumanEntity) object.getLivingEntity()).getShoulderEntityLeft());
+            return new EntityTag(((HumanEntity) object.getLivingEntity()).getShoulderEntityLeft()).getDenizenObject();
         });
 
         // <--[tag]
@@ -1710,7 +1710,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!(object.getLivingEntity() instanceof HumanEntity)) {
                 return null;
             }
-            return new EntityTag(((HumanEntity) object.getLivingEntity()).getShoulderEntityRight());
+            return new EntityTag(((HumanEntity) object.getLivingEntity()).getShoulderEntityRight()).getDenizenObject();
         });
 
         // <--[tag]
@@ -1722,7 +1722,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag("vehicle", (attribute, object) -> {
             if (object.entity.isInsideVehicle()) {
-                return new EntityTag(object.entity.getVehicle());
+                return new EntityTag(object.entity.getVehicle()).getDenizenObject();
             }
             return null;
         }, "get_vehicle");
@@ -2003,13 +2003,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (object.getBukkitEntity() instanceof Creature) {
                 Entity target = ((Creature) object.getLivingEntity()).getTarget();
                 if (target != null) {
-                    return new EntityTag(target);
+                    return new EntityTag(target).getDenizenObject();
                 }
             }
             else if (object.getBukkitEntity() instanceof ShulkerBullet) {
                 Entity target = ((ShulkerBullet) object.getLivingEntity()).getTarget();
                 if (target != null) {
-                    return new EntityTag(target);
+                    return new EntityTag(target).getDenizenObject();
                 }
             }
             return null;
@@ -2048,7 +2048,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 result = object.getWorld().rayTrace(object.getEyeLocation(), object.getEyeLocation().getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> !e.equals(object.getBukkitEntity()));
             }
             if (result != null && result.getHitEntity() != null) {
-                return new EntityTag(result.getHitEntity());
+                return new EntityTag(result.getHitEntity()).getDenizenObject();
             }
             return null;
         });
