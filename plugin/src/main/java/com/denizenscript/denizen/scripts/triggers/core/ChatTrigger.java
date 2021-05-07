@@ -305,8 +305,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         }
                     }
                     else if (keyword.contains("|")) {
-                        for (String subkeyword : CoreUtilities.split(keywordLow, '|')) {
-                            if (messageLow.contains(subkeyword)) {
+                        for (String subkeyword : CoreUtilities.split(keyword, '|')) {
+                            if (messageLow.contains(CoreUtilities.toLowerCase(subkeyword))) {
                                 id = entry.getKey();
                                 replacementText = triggerText.replace(matcher.group(), subkeyword);
                                 matched = true;
