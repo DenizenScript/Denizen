@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Age;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Breedable;
 import org.bukkit.entity.Zombie;
 
 public class EntityAge implements Property {
@@ -47,13 +48,7 @@ public class EntityAge implements Property {
     EntityTag ageable;
 
     public boolean isBaby() {
-        if (ageable.getBukkitEntity() instanceof Zombie) {
-            return ((Zombie) ageable.getBukkitEntity()).isBaby();
-        }
-        else {
-            return !((Ageable) ageable.getBukkitEntity()).isAdult();
-        }
-
+        return !((Ageable) ageable.getBukkitEntity()).isAdult();
     }
 
     public void setBaby(boolean bool) {
@@ -65,10 +60,7 @@ public class EntityAge implements Property {
             ageable_npc.getOrAddTrait(Age.class).setAge(bool ? -24000 : 0);
         }
         else {
-            if (ageable.getBukkitEntity() instanceof Zombie) {
-                ((Zombie) ageable.getBukkitEntity()).setBaby(bool);
-            }
-            else if (bool) {
+            if (bool) {
                 ((Ageable) ageable.getBukkitEntity()).setBaby();
             }
             else {
@@ -84,7 +76,7 @@ public class EntityAge implements Property {
         }
         else {
             if (ageable.getBukkitEntity() instanceof Zombie) {
-                ((Zombie) ageable.getBukkitEntity()).setBaby(val >= 0);
+                setBaby(val < 0);
             }
             else {
                 ((Ageable) ageable.getBukkitEntity()).setAge(val);
@@ -94,7 +86,7 @@ public class EntityAge implements Property {
 
     public int getAge() {
         if (ageable.getBukkitEntity() instanceof Zombie) {
-            return ((Zombie) ageable.getBukkitEntity()).isBaby() ? -24000 : 0;
+            return ((Zombie) ageable.getBukkitEntity()).isAdult() ? 0 : -24000;
         }
         else {
             return ((Ageable) ageable.getBukkitEntity()).getAge();
@@ -102,17 +94,23 @@ public class EntityAge implements Property {
     }
 
     public void setLock(boolean bool) {
-        if (!(ageable.getBukkitEntity() instanceof Zombie)) {
-            ((Ageable) ageable.getBukkitEntity()).setAgeLock(bool);
+        if (ageable.getBukkitEntity() instanceof Breedable) {
+            ((Breedable) ageable.getBukkitEntity()).setAgeLock(bool);
         }
     }
 
     public boolean getLock() {
-        return (ageable.getBukkitEntity() instanceof Zombie) || ((Ageable) ageable.getBukkitEntity()).getAgeLock();
+        if (ageable.getBukkitEntity() instanceof Breedable) {
+            return ((Breedable) ageable.getBukkitEntity()).getAgeLock();
+        }
+        return true;
     }
 
     @Override
     public String getPropertyString() {
+        if (ageable.getBukkitEntity() instanceof Zombie) {
+            return ((Zombie) ageable.getBukkitEntity()).isAdult() ? "adult" : "baby";
+        }
         return getAge() + (getLock() ? "|locked" : "");
     }
 
