@@ -6,8 +6,6 @@ import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R3.ChatMessageType;
 import net.minecraft.server.v1_16_R3.IChatBaseComponent;
@@ -29,12 +27,12 @@ public class PacketOutChatImpl implements PacketOutChat {
         try {
             IChatBaseComponent baseComponent = (IChatBaseComponent) MESSAGE.get(internal);
             if (baseComponent != null) {
-                message = baseComponent.getString();
+                message = FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE);
                 rawJson = IChatBaseComponent.ChatSerializer.a(baseComponent);
             }
             else {
                 if (internal.components != null) {
-                    message = BaseComponent.toPlainText(internal.components);
+                    message = FormattedTextHelper.stringify(internal.components, ChatColor.WHITE);
                     rawJson = ComponentSerializer.toString(internal.components);
                 }
                 bungee = true;
