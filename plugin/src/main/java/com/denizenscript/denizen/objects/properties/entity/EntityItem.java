@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -65,10 +66,11 @@ public class EntityItem implements Property {
             return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
         }
         else if (item.getBukkitEntity() instanceof Enderman) {
-            Material mat = ((Enderman) item.getBukkitEntity()).getCarriedBlock().getMaterial();
-            if (mat == null) {
-                mat = Material.AIR;
+            BlockData data = ((Enderman) item.getBukkitEntity()).getCarriedBlock();
+            if (data == null) {
+                return new ItemTag(Material.AIR);
             }
+            Material mat = data.getMaterial();
             return new ItemTag(mat);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && item.getBukkitEntity() instanceof ThrowableProjectile) {
