@@ -69,7 +69,7 @@ public class FishingTrait extends Trait {
     // @Actions
     // start fishing
     //
-    // @Triggers when the NPC starts fishing.
+    // @Triggers when the NPC starts fishing. See also <@link command fish>.
     //
     // @Context
     // None
@@ -94,7 +94,7 @@ public class FishingTrait extends Trait {
     // @Actions
     // stop fishing
     //
-    // @Triggers when the NPC stops fishing.
+    // @Triggers when the NPC stops fishing. See also <@link command fish>.
     //
     // @Context
     // None
@@ -155,7 +155,7 @@ public class FishingTrait extends Trait {
     // @Actions
     // cast fishing rod
     //
-    // @Triggers when the NPC casts a fishing rod.
+    // @Triggers when the NPC casts a fishing rod. See also <@link command fish>.
     //
     // @Context
     // None
@@ -170,9 +170,8 @@ public class FishingTrait extends Trait {
         double v = 34;
         double g = 20;
         Location from = npc.getEntity().getLocation();
-        from = from.add(0, .33, 0);
+        from = from.add(0, 0.33, 0);
         Location to = fishingLocation;
-
         Vector test = to.clone().subtract(from).toVector();
         double elev = test.getY();
         Double testAngle = launchAngle(from, to, v, elev, g);
@@ -192,9 +191,8 @@ public class FishingTrait extends Trait {
         }
         victor.setY(Math.tan(launchAngle) * dist);
         victor = normalizeVector(victor);
-        v = v + (.5 * Math.pow(hangtime, 2));
-        //Random rand = new Random(1234);
-        v = v + (CoreUtilities.getRandom().nextDouble() - .8) / 2;
+        v += 0.5 * Math.pow(hangtime, 2);
+        v += (CoreUtilities.getRandom().nextDouble() - 0.8) / 2;
         victor = victor.multiply(v / 20.0);
 
         if (npc.getEntity() instanceof Player) {
@@ -209,7 +207,18 @@ public class FishingTrait extends Trait {
     // @Actions
     // reel in fishing rod
     //
-    // @Triggers when the NPC reels in its fishing rod.
+    // @Triggers when the NPC reels in its fishing rod. See also <@link command fish>.
+    //
+    // @Context
+    // None
+    //
+    // -->
+
+    // <--[action]
+    // @Actions
+    // catch fish
+    //
+    // @Triggers when the NPC catches a fish. See also <@link command fish>.
     //
     // @Context
     // None
