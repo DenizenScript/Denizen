@@ -56,7 +56,7 @@ public class EntityScriptContainer extends ScriptContainer {
     //   age: baby/adult/<#>
     // </code>
     //
-    // MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/entitytag.>
+    // MORE OPTIONS ARE LISTED HERE: <@link url https://meta.denizenscript.com/Docs/Mechanisms/entitytag.>
     //
     // -->
 

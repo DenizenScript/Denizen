@@ -192,7 +192,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     // - assign set script:MyScript npc:<entry[save].created_npc>
     //
     // Denizen tracks a "linked player" and a "linked NPC" in queues and the commands within.
-    // Many commands automatically operate on the linked player/NPC or by default or exclusively
+    // Many commands automatically operate on the linked player/NPC default or exclusively
     // (for example, "give" defaults to giving items to the linked player but that can be changed with the "to" argument,
     // "assignment" exclusively changes the assignment of the linked NPC, and that cannot be changed except by the global NPC argument).
     //

@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // @Context
     // <context.entity> returns the EntityTag the player is clicking on.
     // <context.item> returns the ItemTag the player is clicking with.
+    // <context.hand> returns "offhand" or "mainhand" to indicate which hand was used to fire the event. Some events fire twice - once for each hand.
     // <context.click_position> returns a LocationTag of the click position (as a world-less vector, relative to the entity's center). This is only available when clicking armor stands.
     //
     // @Player Always.
@@ -94,6 +96,9 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         else if (name.equals("item")) {
             return item;
         }
+        else if (name.equals("hand")) {
+            return new ElementTag(event.getHand() == EquipmentSlot.OFF_HAND ? "offhand" : "mainhand");
+        }
         else if (name.equals("location")) {
             Deprecations.playerRightClicksEntityContext.warn();
             return entity.getLocation();
@@ -118,11 +123,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     }
 
     public void playerRightClicksEntityHandler(PlayerInteractEntityEvent event) {
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
         entity = new EntityTag(event.getRightClicked());
-        item = new ItemTag(event.getPlayer().getEquipment().getItemInMainHand());
+        item = new ItemTag(event.getPlayer().getEquipment().getItem(event.getHand()));
         this.event = event;
         fire(event);
     }
