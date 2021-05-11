@@ -77,14 +77,14 @@ public class FishingHelperImpl implements FishingHelper {
     }
 
     private ItemStack catchRandomJunk(EntityFishingHook fishHook) {
-        return getRandomReward(fishHook, LootTables.ac);
+        return getRandomReward(fishHook, LootTables.ah);
     }
 
     private ItemStack catchRandomTreasure(EntityFishingHook fishHook) {
-        return getRandomReward(fishHook, LootTables.ad);
+        return getRandomReward(fishHook, LootTables.ai);
     }
 
     private ItemStack catchRandomFish(EntityFishingHook fishHook) {
-        return getRandomReward(fishHook, LootTables.ae);
+        return getRandomReward(fishHook, LootTables.aj);
     }
 }
