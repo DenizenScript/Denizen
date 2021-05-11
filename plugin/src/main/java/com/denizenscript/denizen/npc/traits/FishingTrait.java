@@ -227,10 +227,6 @@ public class FishingTrait extends Trait {
     private void reel() {
         new NPCTag(npc).action("reel in fishing rod", null);
         int chance = (int) (Math.random() * 100);
-        if (fishHook != null && fishHook.isValid()) {
-            fishHook.remove();
-            fishHook = null;
-        }
         if (catchPercent > chance && fishHook != null && catchType != FishingHelper.CatchType.NONE) {
             try {
                 fish.remove();
@@ -250,6 +246,10 @@ public class FishingTrait extends Trait {
                 fish.setVelocity(new Vector(d5 * d9, d6 * d9 + Math.sqrt(d8) * 0.08D, d7 * d9));
             }
             new NPCTag(npc).action("catch fish", null);
+        }
+        if (fishHook != null && fishHook.isValid()) {
+            fishHook.remove();
+            fishHook = null;
         }
         if (npc.getEntity() instanceof Player) {
             PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());

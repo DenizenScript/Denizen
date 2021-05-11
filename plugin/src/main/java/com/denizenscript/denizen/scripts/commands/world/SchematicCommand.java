@@ -626,6 +626,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // @returns MaterialTag
         // @description
         // Returns the material for the block at the location in the schematic.
+        // An input location of 0,0,0 corresponds to the minimum corner of the schematic.
         // -->
         if (attribute.startsWith("block")) {
             if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
