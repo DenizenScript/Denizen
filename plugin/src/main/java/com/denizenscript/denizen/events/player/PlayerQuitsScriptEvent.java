@@ -20,6 +20,8 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (quit|quits)$
     //
+    // @Synonyms Player Disconnects,Player Logs Off,Player Leaves
+    //
     // @Group Player
     //
     // @Triggers when a player quit the server.

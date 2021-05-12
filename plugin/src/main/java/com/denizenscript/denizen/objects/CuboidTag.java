@@ -423,6 +423,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             LocationTag loc_2 = pair.high;
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
+            list.addObject(new LocationTag(loc_2.getWorld(), loc_2.getBlockX(), y, loc_2.getBlockZ()));
             for (int x = loc_1.getBlockX(); x < loc_1.getBlockX() + x_distance; x++) {
                 list.addObject(new LocationTag(loc_1.getWorld(), x, y, loc_2.getBlockZ()));
                 list.addObject(new LocationTag(loc_1.getWorld(), x, y, loc_1.getBlockZ()));

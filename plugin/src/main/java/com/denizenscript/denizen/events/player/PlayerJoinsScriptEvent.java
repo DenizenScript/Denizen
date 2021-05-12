@@ -20,7 +20,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (joins|join)$
     //
-    // @Switch in:<area> to only process the event if the player will be within a specified area.
+    // @Location true
     //
     // @Group Player
     //
