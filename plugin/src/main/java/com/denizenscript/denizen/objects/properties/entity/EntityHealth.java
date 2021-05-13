@@ -143,7 +143,7 @@ public class EntityHealth implements Property {
 
         // <--[tag]
         // @attribute <EntityTag.health_data>
-        // @returns ElementTag)
+        // @returns ElementTag
         // @mechanism EntityTag.health
         // @group attributes
         // @description

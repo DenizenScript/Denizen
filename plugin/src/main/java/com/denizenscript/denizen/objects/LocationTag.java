@@ -45,6 +45,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
@@ -3211,6 +3212,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             BlockState state = object.getBlockStateForTag(attribute);
             if (state instanceof Lootable) {
                 return new ElementTag(((Lootable) state).getLootTable() != null);
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.loot_table_id>
+        // @returns ElementTag
+        // @mechanism LocationTag.clear_loot_table
+        // @description
+        // Returns an element indicating the minecraft key for the loot-table for the chest at this location (if any).
+        // -->
+        registerTag("loot_table_id", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (state instanceof Lootable) {
+                LootTable table = ((Lootable) state).getLootTable();
+                if (table != null) {
+                    return new ElementTag(table.getKey().toString());
+                }
             }
             return null;
         });
