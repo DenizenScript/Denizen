@@ -42,6 +42,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.*;
+import org.bukkit.loot.LootTable;
+import org.bukkit.loot.Lootable;
 import org.bukkit.potion.*;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -2550,6 +2552,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             return new ElementTag(false);
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.loot_table_id>
+        // @returns ElementTag
+        // @description
+        // Returns an element indicating the minecraft key for the loot-table for the entity (if any).
+        // -->
+        registerSpawnedOnlyTag("loot_table_id", (attribute, object) -> {
+            if (object.getBukkitEntity() instanceof Lootable) {
+                LootTable table = ((Lootable) object.getBukkitEntity()).getLootTable();
+                if (table != null) {
+                    return new ElementTag(table.getKey().toString());
+                }
+            }
+            return null;
         });
     }
 
