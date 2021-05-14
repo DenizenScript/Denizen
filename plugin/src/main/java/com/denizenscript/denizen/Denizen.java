@@ -172,7 +172,7 @@ public class Denizen extends JavaPlugin {
         }
         else {
             getLogger().warning("-------------------------------------");
-            getLogger().warning("Running incompatible Java version! Minecraft is built for Java 8, and Paper is built for Java 11. Older versions will not work, and newer versions will cause errors (due to Oracle removing reflection support)!");
+            getLogger().warning("Running completely untested Java version. Minecraft is built for Java 8, and Paper is built for Java 11. Other Java versions are not guaranteed to function properly.");
             getLogger().warning("Found java version: " + javaVersion);
             getLogger().warning("-------------------------------------");
         }
