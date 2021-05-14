@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities.maps;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.NaturalOrderComparator;
 import org.bukkit.Bukkit;
@@ -88,12 +89,7 @@ public class DenizenMapManager {
                         String file = objectsData.getString(objectKey + ".image");
                         int width = objectsData.getInt(objectKey + ".width", 0);
                         int height = objectsData.getInt(objectKey + ".height", 0);
-                        if (CoreUtilities.toLowerCase(file).endsWith(".gif")) {
-                            object = new MapAnimatedImage(xTag, yTag, visibilityTag, debug, file, width, height);
-                        }
-                        else {
-                            object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
-                        }
+                        object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
                         break;
                     case "TEXT":
                         object = new MapText(xTag, yTag, visibilityTag, debug,
@@ -204,6 +200,8 @@ public class DenizenMapManager {
 
     public static HashSet<String> failedUrls = new HashSet<>();
 
+    public static AsciiMatcher allowedExtensionText = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz" + "0123456789");
+
     private static String downloadImage(URL url) {
         try {
             if (failedUrls.contains(url.toString())) {
@@ -223,7 +221,7 @@ public class DenizenMapManager {
             BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
             int lastDot = urlString.lastIndexOf('.');
             String fileName = String.format("%0" + (6 - String.valueOf(downloadCount).length()) + "d", downloadCount)
-                    + (lastDot > 0 ? urlString.substring(lastDot) : "");
+                    + (lastDot > 0 ? allowedExtensionText.trimToMatches(urlString.substring(lastDot)) : "");
             File output = new File(imageDownloads, fileName);
             FileImageOutputStream out = new FileImageOutputStream(output);
             int i;

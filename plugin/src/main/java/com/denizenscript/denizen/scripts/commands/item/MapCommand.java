@@ -4,7 +4,6 @@ import com.denizenscript.denizen.scripts.containers.core.MapScriptContainer;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.maps.DenizenMapRenderer;
-import com.denizenscript.denizen.utilities.maps.MapAnimatedImage;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
@@ -176,10 +175,7 @@ public class MapCommand extends AbstractCommand {
         ElementTag x = scriptEntry.getElement("x-value");
         ElementTag y = scriptEntry.getElement("y-value");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
-                    + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
-                    + (script != null ? script.debug() : "") + resize.debug() + (width != null ? width.debug() : "")
-                    + (height != null ? height.debug() : "") + x.debug() + y.debug());
+            Debug.report(scriptEntry, getName(), id, create, reset, resetLoc, image, script, resize, width, height, x, y);
         }
         MapView map;
         if (create != null) {
@@ -226,13 +222,8 @@ public class MapCommand extends AbstractCommand {
                 int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
                 if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
                     dmr.autoUpdate = true;
-                    dmr.addObject(new MapAnimatedImage(x.asString(), y.asString(), "true", false, image.asString(),
-                            wide, high));
                 }
-                else {
-                    dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(),
-                            wide, high));
-                }
+                dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(), wide, high));
             }
         }
     }

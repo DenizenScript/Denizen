@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
+import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
@@ -30,6 +31,8 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.map.CraftMapCanvas;
+import org.bukkit.craftbukkit.v1_16_R3.map.CraftMapView;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -37,6 +40,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapPalette;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -384,6 +389,35 @@ public class PacketHelperImpl implements PacketHelper {
     public int getPacketStats(Player player, boolean sent) {
         DenizenNetworkManagerImpl netMan = (DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager;
         return sent ? netMan.packetsSent : netMan.packetsReceived;
+    }
+
+    public static MethodHandle CANVAS_GET_BUFFER = ReflectionHelper.getMethodHandle(CraftMapCanvas.class, "getBuffer");
+    public static Field MAPVIEW_WORLDMAP = ReflectionHelper.getFields(CraftMapView.class).get("worldMap");
+
+    @Override
+    public void setMapData(MapCanvas canvas, byte[] bytes, int x, int y, MapImage image) {
+        if (x > 127 || y > 127) {
+            return;
+        }
+        try {
+            int width = Math.min(image.width, 128 - x), height = Math.min(image.height, 128 - y);
+            byte[] buffer = (byte[]) CANVAS_GET_BUFFER.invoke(canvas);
+            for (int x2 = x < 0 ? -x : 0; x2 < width; ++x2) {
+                for (int y2 = y < 0 ? -y : 0; y2 < height; ++y2) {
+                    byte p = bytes[y2 * image.width + x2];
+                    if (p != MapPalette.TRANSPARENT) {
+                        buffer[(y2 + y) * 128 + (x2 + x)] = p;
+                    }
+                }
+            }
+            // Flag the whole image as dirty
+            WorldMap map = (WorldMap) MAPVIEW_WORLDMAP.get(canvas.getMapView());
+            map.flagDirty(Math.max(x, 0), Math.max(y, 0));
+            map.flagDirty(width + x - 1, height + y - 1);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     public static void sendPacket(Player player, Packet packet) {

@@ -116,12 +116,7 @@ public class MapScriptContainer extends ScriptContainer {
                         String image = objectSection.getString("image");
                         int width = Integer.parseInt(objectSection.getString("width", "0"));
                         int height = Integer.parseInt(objectSection.getString("height", "0"));
-                        if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
-                            renderer.addObject(new MapAnimatedImage(x, y, visible, debug, image, width, height));
-                        }
-                        else {
-                            renderer.addObject(new MapImage(x, y, visible, debug, image, width, height));
-                        }
+                        renderer.addObject(new MapImage(x, y, visible, debug, image, width, height));
                         break;
                     case "text":
                         if (!objectSection.contains("text")) {
