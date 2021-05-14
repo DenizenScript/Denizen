@@ -100,10 +100,10 @@ public class AnimateCommand extends AbstractCommand {
                 if (arg.matchesEnum(PlayerAnimation.values())) {
                     scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
                 }
-                else if (arg.matchesEnum(EntityEffect.values())) {
+                if (arg.matchesEnum(EntityEffect.values())) {
                     scriptEntry.addObject("effect", EntityEffect.valueOf(arg.getValue().toUpperCase()));
                 }
-                else if (animationHelper.hasEntityAnimation(arg.getValue())) {
+                if (animationHelper.hasEntityAnimation(arg.getValue())) {
                     scriptEntry.addObject("nms_animation", arg.getValue());
                 }
             }
@@ -148,13 +148,17 @@ public class AnimateCommand extends AbstractCommand {
                             entity.getBukkitEntity().playEffect(effect);
                         }
                     }
-                    else {
+                    else if (nmsAnimation != null) {
                         EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(nmsAnimation);
                         entityAnimation.play(entity.getBukkitEntity());
+                    }
+                    else {
+                        Debug.echoError("No way to play the given animation on entity '" + entity + "'");
                     }
                 }
                 catch (Exception e) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
+                    Debug.echoError(e);
                 }
             }
         }
