@@ -140,7 +140,7 @@ public class NarrateCommand extends AbstractCommand {
         }
         FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
         if (targets == null) {
-            Bukkit.getServer().getConsoleSender().sendMessage(format != null ? format.getFormattedText(text, scriptEntry) : text);
+            Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(text, scriptEntry) : text, ChatColor.WHITE));
             return;
         }
         for (PlayerTag player : targets) {
