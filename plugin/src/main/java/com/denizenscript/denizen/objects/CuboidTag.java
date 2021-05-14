@@ -110,8 +110,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
             string = string.substring("cu@".length());
         }
-        if (string.contains("@")) {
-            return null;
+        if (CoreUtilities.contains(string, '@')) {
+            if (CoreUtilities.contains(string, '|') && string.contains("l@")) {
+                Debug.echoError("Warning: likely improperly constructed CuboidTag '" + string + "' - use to_cuboid");
+            }
+            else {
+                return null;
+            }
         }
         if (CoreUtilities.contains(string, '|')) {
             ListTag positions = ListTag.valueOf(string, context);
