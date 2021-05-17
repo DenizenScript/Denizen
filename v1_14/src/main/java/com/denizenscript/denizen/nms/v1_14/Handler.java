@@ -22,24 +22,25 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.minecraft.server.v1_14_R1.Entity;
-import net.minecraft.server.v1_14_R1.IInventory;
-import net.minecraft.server.v1_14_R1.INamableTileEntity;
-import net.minecraft.server.v1_14_R1.MinecraftServer;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_14_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.spigotmc.AsyncCatcher;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class Handler extends NMSHandler {
@@ -222,5 +223,22 @@ public class Handler extends NMSHandler {
     @Override
     public String stringForHover(HoverEvent hover) {
         return FormattedTextHelper.stringify(hover.getValue(), ChatColor.WHITE);
+    }
+
+    @Override
+    public boolean containerHas(PersistentDataContainer container, NamespacedKey key) {
+        return ((CraftPersistentDataContainer) container).getRaw().containsKey(key.toString());
+    }
+
+    @Override
+    public String containerGetString(PersistentDataContainer container, NamespacedKey key) {
+        NBTBase base = ((CraftPersistentDataContainer) container).getRaw().get(key.toString());
+        if (base instanceof NBTTagString) {
+            return base.asString();
+        }
+        else if (base instanceof NBTTagByteArray) {
+            return new String(((NBTTagByteArray) base).getBytes(), StandardCharsets.UTF_8);
+        }
+        return null;
     }
 }

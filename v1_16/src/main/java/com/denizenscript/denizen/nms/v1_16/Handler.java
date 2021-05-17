@@ -31,19 +31,23 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_16_R3.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.spigotmc.AsyncCatcher;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class Handler extends NMSHandler {
@@ -252,6 +256,23 @@ public class Handler extends NMSHandler {
         else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    @Override
+    public boolean containerHas(PersistentDataContainer container, NamespacedKey key) {
+        return ((CraftPersistentDataContainer) container).getRaw().containsKey(key.toString());
+    }
+
+    @Override
+    public String containerGetString(PersistentDataContainer container, NamespacedKey key) {
+        NBTBase base = ((CraftPersistentDataContainer) container).getRaw().get(key.toString());
+        if (base instanceof NBTTagString) {
+            return base.asString();
+        }
+        else if (base instanceof NBTTagByteArray) {
+            return new String(((NBTTagByteArray) base).getBytes(), StandardCharsets.UTF_8);
+        }
+        return null;
     }
 
     public static BaseComponent[] componentToSpigot(IChatBaseComponent nms) {

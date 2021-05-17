@@ -110,6 +110,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
             string = string.substring("cu@".length());
         }
+        Notable noted = NotableManager.getSavedObject(string);
+        if (noted instanceof CuboidTag) {
+            return (CuboidTag) noted;
+        }
         if (CoreUtilities.contains(string, '@')) {
             if (CoreUtilities.contains(string, '|') && string.contains("l@")) {
                 Debug.echoError("Warning: likely improperly constructed CuboidTag '" + string + "' - use to_cuboid");
@@ -184,12 +188,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return toReturn;
             }
         }
-
-        Notable noted = NotableManager.getSavedObject(string);
-        if (noted instanceof CuboidTag) {
-            return (CuboidTag) noted;
-        }
-
         if (context == null || context.showErrors()) {
             Debug.echoError("Minor: valueOf CuboidTag returning null: " + string);
         }

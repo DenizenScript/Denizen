@@ -14,9 +14,11 @@ import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -175,4 +177,8 @@ public abstract class NMSHandler {
     public abstract String getTitle(Inventory inventory);
 
     public abstract String stringForHover(HoverEvent hover);
+
+    public abstract boolean containerHas(PersistentDataContainer container, NamespacedKey key);
+
+    public abstract String containerGetString(PersistentDataContainer container, NamespacedKey key);
 }

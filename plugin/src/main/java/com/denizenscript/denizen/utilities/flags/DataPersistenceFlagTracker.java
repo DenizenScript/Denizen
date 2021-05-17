@@ -66,7 +66,7 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
             if (!key.getNamespace().equals("denizen") || !key.getKey().startsWith("flag_")) {
                 continue;
             }
-            ObjectTag map = holder.getPersistentDataContainer().get(key, DataPersistenceHelper.PERSISTER_TYPE);
+            ObjectTag map = DataPersistenceHelper.getDenizenKey(holder, key.getKey());
             if (!(map instanceof MapTag)) {
                 continue;
             }

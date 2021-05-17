@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -11,15 +12,17 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * Helper class for PersistentDataContainers.
  */
 public class DataPersistenceHelper {
 
-    public static class DenizenObjectType implements PersistentDataType<String, ObjectTag> {
+    public static class DenizenObjectType implements PersistentDataType<byte[], ObjectTag> {
         @Override
-        public Class<String> getPrimitiveType() {
-            return String.class;
+        public Class<byte[]> getPrimitiveType() {
+            return byte[].class;
         }
 
         @Override
@@ -28,13 +31,13 @@ public class DataPersistenceHelper {
         }
 
         @Override
-        public String toPrimitive(ObjectTag complex, PersistentDataAdapterContext context) {
-            return complex.toString();
+        public byte[] toPrimitive(ObjectTag complex, PersistentDataAdapterContext context) {
+            return complex.toString().getBytes(StandardCharsets.UTF_8);
         }
 
         @Override
-        public ObjectTag fromPrimitive(String primitive, PersistentDataAdapterContext context) {
-            return ObjectFetcher.pickObjectFor(primitive, CoreUtilities.noDebugContext);
+        public ObjectTag fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
+            return ObjectFetcher.pickObjectFor(new String(primitive, StandardCharsets.UTF_8), CoreUtilities.noDebugContext);
         }
     }
 
@@ -49,15 +52,16 @@ public class DataPersistenceHelper {
     }
 
     public static boolean hasDenizenKey(PersistentDataHolder holder, String keyName) {
-        return holder.getPersistentDataContainer().has(new NamespacedKey(Denizen.getInstance(), keyName), PERSISTER_TYPE);
+        return NMSHandler.getInstance().containerHas(holder.getPersistentDataContainer(), new NamespacedKey(Denizen.getInstance(), keyName));
     }
 
     public static ObjectTag getDenizenKey(PersistentDataHolder holder, String keyName) {
         try {
-            return holder.getPersistentDataContainer().get(new NamespacedKey(Denizen.getInstance(), keyName), PERSISTER_TYPE);
-        }
-        catch (NullPointerException ex) {
-            return null;
+            String str = NMSHandler.getInstance().containerGetString(holder.getPersistentDataContainer(), new NamespacedKey(Denizen.getInstance(), keyName));
+            if (str == null) {
+                return null;
+            }
+            return ObjectFetcher.pickObjectFor(str, CoreUtilities.noDebugContext);
         }
         catch (IllegalArgumentException ex) {
             if (holder instanceof Entity) {
