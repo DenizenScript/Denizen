@@ -58,10 +58,21 @@ public class ItemScriptContainer extends ScriptContainer {
     //     unbreakable: true
     //     # Other common example
     //     custom_model_data: 5
-    //     # This mess demonstrates how to add a custom attribute modifier.
+    //     # This demonstrates how to add a custom attribute modifier.
     //     attribute_modifiers:
+    //         # One subkey for each attribute you want to modify.
     //         generic_armor:
-    //             - <map.with[operation].as[add_number].with[amount].as[5].with[slot].as[head]>
+    //             # Each attribute can have a list of modifiers, using numbered keys. They will be applied in numeric order, low to high.
+    //             1:
+    //                 # Each modifier requires keys 'operation' and 'amount', and can optionally have keys 'name', 'slot', and 'id'.
+    //                 # Operations can be: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
+    //                 operation: add_number
+    //                 amount: 5
+    //                 # Slots can be: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
+    //                 slot: head
+    //                 # ID is a UUID used to uniquely identify modifiers. If unspecified the ID will be randomly generated.
+    //                 # Items with modifiers that lack IDs cannot be stacked due to the random generation.
+    //                 id: 10000000-1000-1000-1000-100000000000
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
     //   # | Some item scripts should have this key!
@@ -78,7 +89,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # | Most item scripts should exclude this key!
     //   durability: 12
     //
-    //   # Each line must specify a valid Minecranft enchantment name.
+    //   # Each line must specify a valid Minecraft enchantment name.
     //   # | Some item scripts should have this key!
     //   enchantments:
     //   - enchantment_name:level

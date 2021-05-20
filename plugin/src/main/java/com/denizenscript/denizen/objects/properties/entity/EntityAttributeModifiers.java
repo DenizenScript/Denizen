@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class EntityAttributeModifiers implements Property {
 
@@ -194,6 +195,26 @@ public class EntityAttributeModifiers implements Property {
         return null;
     }
 
+    public static void addAttributeModifiers(Consumer<AttributeModifier> addModifier, org.bukkit.attribute.Attribute attr, ObjectTag subValue) {
+        if (subValue instanceof MapTag) {
+            MapTag attrMap = (MapTag) subValue;
+            List<StringHolder> keys = new ArrayList<>(attrMap.map.keySet());
+            keys.sort((k, k2) -> {
+                int a = Integer.parseInt(k.str);
+                int b = Integer.parseInt(k2.str);
+                return Integer.compare(a, b);
+            });
+            for (StringHolder index : keys) {
+                addModifier.accept(modiferForMap(attr, (MapTag) attrMap.map.get(index)));
+            }
+        }
+        else {
+            for (ObjectTag listValue : (((ListTag) subValue).objectForms)) {
+                addModifier.accept(modiferForMap(attr, (MapTag) listValue));
+            }
+        }
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 
@@ -204,7 +225,7 @@ public class EntityAttributeModifiers implements Property {
         // @description
         // Sets the attribute modifiers of an entity.
         // This is a SET operation, meaning pre-existing modifiers are removed.
-        // Specify a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
+        // Specify a MapTag where the keys are attribute names, and values are a ListTag of modifiers (or a numbered-index MapTag),
         // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and optional keys 'name', 'slot', and 'id'.
         // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
         // Valid slots: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
@@ -218,21 +239,24 @@ public class EntityAttributeModifiers implements Property {
         // <EntityTag.attribute_value>
         // -->
         if (mechanism.matches("attribute_modifiers") && mechanism.requireObject(MapTag.class)) {
-            MapTag input = mechanism.valueAsType(MapTag.class);
-            Attributable ent = (Attributable) entity.getBukkitEntity();
-            for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                AttributeInstance instance = ent.getAttribute(attr);
-                if (instance == null) {
-                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
-                    continue;
+            try {
+                MapTag input = mechanism.valueAsType(MapTag.class);
+                Attributable ent = (Attributable) entity.getBukkitEntity();
+                for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
+                    org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
+                    AttributeInstance instance = ent.getAttribute(attr);
+                    if (instance == null) {
+                        mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+                        continue;
+                    }
+                    for (AttributeModifier modifier : instance.getModifiers()) {
+                        instance.removeModifier(modifier);
+                    }
+                    addAttributeModifiers(instance::addModifier, attr, subValue.getValue());
                 }
-                for (AttributeModifier modifier : instance.getModifiers()) {
-                    instance.removeModifier(modifier);
-                }
-                for (ObjectTag listValue : (((ListTag) subValue.getValue()).objectForms)) {
-                    instance.addModifier(modiferForMap(attr, (MapTag) listValue));
-                }
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
             }
         }
 
@@ -251,18 +275,21 @@ public class EntityAttributeModifiers implements Property {
         // <EntityTag.attribute_value>
         // -->
         if (mechanism.matches("add_attribute_modifiers") && mechanism.requireObject(MapTag.class)) {
-            MapTag input = mechanism.valueAsType(MapTag.class);
-            Attributable ent = (Attributable) entity.getBukkitEntity();
-            for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                AttributeInstance instance = ent.getAttribute(attr);
-                if (instance == null) {
-                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
-                    continue;
+            try {
+                MapTag input = mechanism.valueAsType(MapTag.class);
+                Attributable ent = (Attributable) entity.getBukkitEntity();
+                for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
+                    org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
+                    AttributeInstance instance = ent.getAttribute(attr);
+                    if (instance == null) {
+                        mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+                        continue;
+                    }
+                    addAttributeModifiers(instance::addModifier, attr, subValue.getValue());
                 }
-                for (ObjectTag listValue : (((ListTag) subValue.getValue()).objectForms)) {
-                    instance.addModifier(modiferForMap(attr, (MapTag) listValue));
-                }
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
             }
         }
 

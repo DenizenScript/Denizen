@@ -135,10 +135,7 @@ public class ItemAttributeModifiers implements Property {
             MapTag map = mechanism.valueAsType(MapTag.class);
             for (Map.Entry<StringHolder, ObjectTag> mapEntry : map.map.entrySet()) {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
-                for (ObjectTag modifier : ((ListTag) mapEntry.getValue()).objectForms) {
-                    AttributeModifier attrMod = EntityAttributeModifiers.modiferForMap(attr, (MapTag) modifier);
-                    metaMap.put(attr, attrMod);
-                }
+                EntityAttributeModifiers.addAttributeModifiers((mod) -> metaMap.put(attr, mod), attr, mapEntry.getValue());
             }
             ItemMeta meta = item.getItemMeta();
             meta.setAttributeModifiers(metaMap);
@@ -160,9 +157,7 @@ public class ItemAttributeModifiers implements Property {
             MapTag input = mechanism.valueAsType(MapTag.class);
             for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                for (ObjectTag listValue : (((ListTag) subValue.getValue()).objectForms)) {
-                    meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
-                }
+                EntityAttributeModifiers.addAttributeModifiers((mod) -> meta.addAttributeModifier(attr, mod), attr, subValue.getValue());
             }
             item.setItemMeta(meta);
         }
