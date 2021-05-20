@@ -32,7 +32,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     // @Context
     // <context.entity> returns the EntityTag that created the portal.
     // <context.world> returns the WorldTag the portal was created in.
-    // <context.reason> returns an ElementTag of the reason the portal was created. (FIRE or OBC_DESTINATION)
+    // <context.reason> returns an ElementTag of the reason the portal was created. (FIRE, NETHER_PAIR, END_PLATFORM)
     // <context.blocks> returns a ListTag of all the blocks that will become portal blocks.
     //
     // -->

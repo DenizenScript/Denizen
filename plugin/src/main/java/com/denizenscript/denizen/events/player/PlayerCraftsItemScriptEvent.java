@@ -41,6 +41,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     // <context.amount> returns the amount of the item that will be crafted (usually 1, except when shift clicked. Can be above 64).
     // <context.recipe> returns a ListTag of ItemTags in the recipe.
     // <context.recipe_id> returns the ID of the recipe that is being crafted.
+    // <context.click_type> returns an ElementTag with the name of the click type. Click type list: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/inventory/ClickType.html>
     //
     // @Determine
     // ItemTag to change the item that is crafted.
@@ -115,6 +116,9 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
                 amount *= RecipeHelper.getMaximumOutputQuantity(event.getRecipe(), event.getInventory());
             }
             return new ElementTag(amount);
+        }
+        else if (name.equals("click_type")) {
+            return new ElementTag(event.getClick().name());
         }
         else if (name.equals("recipe")) {
             ListTag recipe = new ListTag();

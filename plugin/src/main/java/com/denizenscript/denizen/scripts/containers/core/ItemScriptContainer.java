@@ -61,6 +61,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //     # This demonstrates how to add a custom attribute modifier.
     //     attribute_modifiers:
     //         # One subkey for each attribute you want to modify.
+    //         # Valid attribute names are listed at https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html
     //         generic_armor:
     //             # Each attribute can have a list of modifiers, using numbered keys. They will be applied in numeric order, low to high.
     //             1:
