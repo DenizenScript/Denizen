@@ -8,37 +8,34 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.containers.core.TaskScriptContainer;
+import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.ScriptUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ClickableCommand extends AbstractCommand {
 
     public ClickableCommand() {
         setName("clickable");
-        setSyntax("clickable [<script>] (def:<element>|...) (usages:<#>) (for:<player>|...) (until:<duration>)");
+        setSyntax("clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
         setRequiredArguments(1, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Clickable
-    // @Syntax clickable [<script>] (def:<element>|...) (usages:<#>) (for:<player>|...) (until:<duration>)
+    // @Syntax clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)
     // @Required 1
     // @Maximum 5
     // @Short Generates a clickable command for players.
@@ -87,6 +84,7 @@ public class ClickableCommand extends AbstractCommand {
     public static class Clickable {
         public HashSet<UUID> forPlayers;
         public ListTag definitions;
+        public MapTag defMap;
         public ScriptTag script;
         public String path;
         public NPCTag npc;
@@ -115,16 +113,28 @@ public class ClickableCommand extends AbstractCommand {
                 clickables.remove(id);
             }
         }
+        Consumer<ScriptQueue> configure = (queue) -> {
+            if (clickable.defMap != null) {
+                for (Map.Entry<StringHolder, ObjectTag> val : clickable.defMap.map.entrySet()) {
+                    queue.addDefinition(val.getKey().str, val.getValue());
+                }
+            }
+        };
         ScriptUtilities.createAndStartQueue(clickable.script.getContainer(), clickable.path,
-                new BukkitScriptEntryData(new PlayerTag(player), clickable.npc), null, null, null, null, clickable.definitions, clickable.context);
+                new BukkitScriptEntryData(new PlayerTag(player), clickable.npc), null, configure, null, null, clickable.definitions, clickable.context);
     }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        MapTag defMap = new MapTag();
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("definitions")
                     && arg.matchesPrefix("def")) {
                 scriptEntry.addObject("definitions", arg.asType(ListTag.class));
+            }
+            else if (arg.matchesPrefix("defmap")
+                    && arg.matchesArgumentType(MapTag.class)) {
+                defMap.map.putAll(arg.asType(MapTag.class).map);
             }
             else if (!scriptEntry.hasObject("usages")
                     && arg.matchesPrefix("usages")
@@ -140,6 +150,10 @@ public class ClickableCommand extends AbstractCommand {
                     && arg.matchesPrefix("for")
                     && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("for_players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
+            }
+            else if (arg.hasPrefix()
+                    && arg.getPrefix().getRawValue().startsWith("def.")) {
+                defMap.putObject(arg.getPrefix().getRawValue().substring("def.".length()), arg.object);
             }
             else if (!scriptEntry.hasObject("script")) {
                 String scriptName = arg.getRawValue();
@@ -163,6 +177,9 @@ public class ClickableCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("script")) {
             throw new InvalidArgumentsException("Missing script argument!");
         }
+        if (!defMap.map.isEmpty()) {
+            scriptEntry.addObject("def_map", defMap);
+        }
     }
 
     @Override
@@ -173,13 +190,9 @@ public class ClickableCommand extends AbstractCommand {
         ElementTag usages = scriptEntry.getElement("usages");
         ListTag definitions = scriptEntry.getObjectTag("definitions");
         DurationTag until = scriptEntry.getObjectTag("until");
+        MapTag defMap = scriptEntry.getObjectTag("def_map");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), script.debug()
-                    + (path == null ? "" : path.debug())
-                    + (usages == null ? "" : usages.debug())
-                    + (definitions == null ? "" : definitions.debug())
-                    + (until == null ? "" : until.debug())
-                    + (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
+            Debug.report(scriptEntry, getName(), script, path, usages, definitions, defMap, until, (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
         }
         UUID id = UUID.randomUUID();
         Clickable newClickable = new Clickable();
@@ -190,6 +203,7 @@ public class ClickableCommand extends AbstractCommand {
         newClickable.until = until == null ? 0 : (System.currentTimeMillis() + until.getMillis());
         newClickable.context = scriptEntry.context;
         newClickable.npc = Utilities.getEntryNPC(scriptEntry);
+        newClickable.defMap = defMap;
         if (forPlayers != null) {
             newClickable.forPlayers = new HashSet<>(forPlayers.size());
             for (PlayerTag player : forPlayers) {
