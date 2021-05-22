@@ -1239,6 +1239,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("remove_assignment")) {
             getAssignmentTrait().removeAssignment(null);
+            npc.removeTrait(AssignmentTrait.class);
         }
 
         // <--[mechanism]
