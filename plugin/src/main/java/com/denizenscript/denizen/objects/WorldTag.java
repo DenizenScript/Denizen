@@ -218,26 +218,18 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <WorldTag.entities[(<entity>|...)]>
+        // @attribute <WorldTag.entities[(<matcher>)]>
         // @returns ListTag(EntityTag)
         // @description
         // Returns a list of entities in this world.
-        // Optionally specify entity types to filter down to.
+        // Optionally specify an entity type matcher to filter down to.
         // -->
         registerTag("entities", (attribute, object) -> {
             ListTag entities = new ListTag();
-            ListTag typeFilter = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
+            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
             for (Entity entity : object.getEntitiesForTag()) {
                 EntityTag current = new EntityTag(entity);
-                if (typeFilter != null) {
-                    for (String type : typeFilter) {
-                        if (current.comparedTo(type)) {
-                            entities.addObject(current.getDenizenObject());
-                            break;
-                        }
-                    }
-                }
-                else {
+                if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
                     entities.addObject(current.getDenizenObject());
                 }
             }

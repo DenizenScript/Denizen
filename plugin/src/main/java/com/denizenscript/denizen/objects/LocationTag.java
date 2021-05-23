@@ -722,7 +722,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         public AreaContainmentObject areaLimit;
 
-        public HashSet<Material> requiredMaterials;
+        public Material requiredMaterial;
+
+        public String matcher;
 
         public void run(LocationTag start, AreaContainmentObject area) {
             iterationLimit = Settings.blockTagsMaxBlocks();
@@ -738,7 +740,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!loc.isChunkLoaded()) {
                 return;
             }
-            if (!requiredMaterials.contains(loc.getBlock().getType())) {
+            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !BukkitScriptEvent.tryMaterial(loc.getBlock().getType(), matcher)) {
                 return;
             }
             result.add(loc);
@@ -2109,10 +2111,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                     return null;
                 }
-                flooder.requiredMaterials = new HashSet<>();
 
                 // <--[tag]
-                // @attribute <LocationTag.flood_fill[<limit>].types[<material>|...]>
+                // @attribute <LocationTag.flood_fill[<limit>].types[<matcher>]>
                 // @returns ListTag(LocationTag)
                 // @description
                 // Returns the set of all blocks, starting at the given location,
@@ -2124,13 +2125,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 // The result will be an empty list if the block at the start location is not one of the input materials.
                 // -->
                 if (attribute.startsWith("types", 2) && attribute.hasContext(2)) {
-                    for (MaterialTag material : attribute.contextAsType(2, ListTag.class).filter(MaterialTag.class, attribute.context)) {
-                        flooder.requiredMaterials.add(material.getMaterial());
-                    }
+                    flooder.matcher = attribute.getContext(2);
                     attribute.fulfill(1);
                 }
                 else {
-                    flooder.requiredMaterials.add(object.getBlock().getType());
+                    flooder.requiredMaterial = object.getBlock().getType();
                 }
                 flooder.run(object, area);
             }
