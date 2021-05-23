@@ -345,7 +345,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     public String action(String actionName, PlayerTag player, Map<String, ObjectTag> context) {
         if (getCitizen() != null) {
             if (getCitizen().hasTrait(AssignmentTrait.class)) {
-                return Denizen.getInstance().getNPCHelper().getActionHandler().doAction(actionName, this, player, getAssignmentTrait().getAssignment(), context);
+                return Denizen.getInstance().npcHelper.getActionHandler().doAction(actionName, this, player, getAssignmentTrait().getAssignment(), context);
             }
         }
         return "none";

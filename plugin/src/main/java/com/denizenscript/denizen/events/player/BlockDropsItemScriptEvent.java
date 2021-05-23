@@ -29,7 +29,7 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when a player breaks a block.
+    // @Triggers when a items drop from a block due to a player breaking the block in survival mode.
     //
     // @Context
     // <context.location> returns the LocationTag the block was broken at.

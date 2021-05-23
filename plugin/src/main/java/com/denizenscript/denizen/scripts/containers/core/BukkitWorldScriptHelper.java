@@ -12,6 +12,7 @@ import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -118,5 +119,13 @@ public class BukkitWorldScriptHelper implements Listener {
             return;
         }
         new DataPersistenceFlagTracker(event.getChunk()).doTotalClean();
+    }
+
+    public static void cleanAllWorldChunkFlags() {
+        for (World world : Bukkit.getWorlds()) {
+            for (Chunk chunk : world.getLoadedChunks()) {
+                new DataPersistenceFlagTracker(chunk).doTotalClean();
+            }
+        }
     }
 }

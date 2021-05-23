@@ -273,7 +273,7 @@ public class DenizenCommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
             DenizenCore.reloadScripts();
-            denizen.notableManager().reloadNotables();
+            denizen.notableManager.reloadNotables();
             denizen.reloadSaves();
             Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
@@ -288,7 +288,7 @@ public class DenizenCommandHandler {
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("notes")) {
-                denizen.notableManager().reloadNotables();
+                denizen.notableManager.reloadNotables();
                 Messaging.send(sender, "Denizen note data reloaded from disk to memory.");
                 return;
             }

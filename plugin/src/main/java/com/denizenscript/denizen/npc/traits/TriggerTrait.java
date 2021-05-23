@@ -47,7 +47,7 @@ public class TriggerTrait extends Trait implements Listener {
                 properly_set.put(entry.getKey(), entry.getValue());
             }
         }
-        for (String triggerName : Denizen.getInstance().getTriggerRegistry().list().keySet()) {
+        for (String triggerName : Denizen.getInstance().triggerRegistry.list().keySet()) {
             if (!enabled.containsKey(triggerName)) {
                 enabled.put(triggerName, Settings.triggerEnabled(triggerName));
                 properly_set.put(triggerName, false);
@@ -57,7 +57,7 @@ public class TriggerTrait extends Trait implements Listener {
 
     @Override
     public void onSpawn() {
-        for (String triggerName : Denizen.getInstance().getTriggerRegistry().list().keySet()) {
+        for (String triggerName : Denizen.getInstance().triggerRegistry.list().keySet()) {
             if (!enabled.containsKey(triggerName)) {
                 enabled.put(triggerName, Settings.triggerEnabled(triggerName));
             }
@@ -67,7 +67,7 @@ public class TriggerTrait extends Trait implements Listener {
     @Override
     public void load(DataKey key) {
         if (!key.keyExists("properly_set") && key.keyExists("enabled")) {
-            for (final String triggerName : Denizen.getInstance().getTriggerRegistry().list().keySet()) {
+            for (final String triggerName : Denizen.getInstance().triggerRegistry.list().keySet()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> properly_set.put(triggerName, key.getBoolean("enabled." + triggerName)));
             }
         }
@@ -165,7 +165,7 @@ public class TriggerTrait extends Trait implements Listener {
 
     public boolean triggerCooldownOnly(AbstractTrigger triggerClass, PlayerTag player) {
         // Check cool down, return false if not yet met
-        if (!Denizen.getInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass)) {
+        if (!Denizen.getInstance().triggerRegistry.checkCooldown(npc, player, triggerClass)) {
             return false;
         }
         // Check engaged
@@ -173,7 +173,7 @@ public class TriggerTrait extends Trait implements Listener {
             return false;
         }
         // Set cool down
-        Denizen.getInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()));
+        Denizen.getInstance().triggerRegistry.setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()));
         return true;
     }
 
@@ -196,7 +196,7 @@ public class TriggerTrait extends Trait implements Listener {
         String trigger_type = triggerClass.getName();
 
         // Check cool down, return false if not yet met
-        if (!Denizen.getInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass)) {
+        if (!Denizen.getInstance().triggerRegistry.checkCooldown(npc, player, triggerClass)) {
             return new TriggerContext(false);
         }
 
@@ -224,7 +224,7 @@ public class TriggerTrait extends Trait implements Listener {
         }
 
         // Set cool down
-        Denizen.getInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type));
+        Denizen.getInstance().triggerRegistry.setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type));
 
         // Grab the determination of the action
         String determination = new NPCTag(npc).action(trigger_type, player, context);

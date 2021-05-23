@@ -105,9 +105,9 @@ public class NotableManager {
         }
         reverseObjects.clear();
         // Find each type of notable
-        for (String key : Denizen.getInstance().notableManager().getNotables().getKeys(false)) {
+        for (String key : Denizen.getInstance().notableManager.getNotables().getKeys(false)) {
             Class<? extends ObjectTag> clazz = reverse_objects.get(key);
-            ConfigurationSection section = Denizen.getInstance().notableManager().getNotables().getConfigurationSection(key);
+            ConfigurationSection section = Denizen.getInstance().notableManager.getNotables().getConfigurationSection(key);
             if (section == null) {
                 continue;
             }
@@ -140,7 +140,7 @@ public class NotableManager {
      * Called on by '/denizen save'.
      */
     private static void _saveNotables() {
-        FileConfiguration notables = Denizen.getInstance().notableManager().getNotables();
+        FileConfiguration notables = Denizen.getInstance().notableManager.getNotables();
         for (String key : notables.getKeys(false)) {
             notables.set(key, null);
         }

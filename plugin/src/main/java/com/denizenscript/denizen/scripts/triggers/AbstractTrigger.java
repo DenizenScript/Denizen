@@ -26,7 +26,7 @@ public abstract class AbstractTrigger {
     public AbstractTrigger as(String triggerName) {
         this.name = triggerName.toUpperCase();
         // Register command with Registry
-        Denizen.getInstance().getTriggerRegistry().register(triggerName, this);
+        Denizen.getInstance().triggerRegistry.register(triggerName, this);
         onEnable();
         return this;
     }

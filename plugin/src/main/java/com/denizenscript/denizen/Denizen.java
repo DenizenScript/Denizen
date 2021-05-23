@@ -30,7 +30,6 @@ import com.denizenscript.denizen.utilities.debugging.StatsRecord;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
-import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
@@ -77,7 +76,7 @@ import java.util.logging.Logger;
 
 public class Denizen extends JavaPlugin {
 
-    private static Denizen instance;
+    public static Denizen instance;
 
     public static Denizen getInstance() {
         return instance;
@@ -90,33 +89,18 @@ public class Denizen extends JavaPlugin {
 
     public CommandManager commandManager;
 
-    private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
-    private TriggerRegistry triggerRegistry = new TriggerRegistry();
-    private DenizenNPCHelper npcHelper;
+    public BukkitCommandRegistry commandRegistry;
+    public TriggerRegistry triggerRegistry;
+    public DenizenNPCHelper npcHelper;
 
+    @Deprecated
     public BukkitCommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 
-    public DenizenNPCHelper getNPCHelper() {
-        return npcHelper;
-    }
-
-    public TriggerRegistry getTriggerRegistry() {
-        return triggerRegistry;
-    }
-
-    public TagManager tagManager = new TagManager();
-    public NotableManager notableManager = new NotableManager();
+    public TagManager tagManager;
+    public NotableManager notableManager;
     public OldEventManager eventManager;
-
-    public TagManager tagManager() {
-        return tagManager;
-    }
-
-    public NotableManager notableManager() {
-        return notableManager;
-    }
 
     public BukkitWorldScriptHelper worldScriptHelper;
 
@@ -191,6 +175,10 @@ public class Denizen extends JavaPlugin {
                     + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
             getLogger().warning("-------------------------------------");
         }
+        commandRegistry = new BukkitCommandRegistry();
+        triggerRegistry = new TriggerRegistry();
+        notableManager = new NotableManager();
+        tagManager = new TagManager();
         try {
             // Activate dependencies
             Depends.initialize();
@@ -263,8 +251,8 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            DenizenCore.setCommandRegistry(getCommandRegistry());
-            getCommandRegistry().registerCommands();
+            DenizenCore.setCommandRegistry(commandRegistry);
+            commandRegistry.registerCommands();
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -341,7 +329,7 @@ public class Denizen extends JavaPlugin {
         // Register Core Members in the Denizen Registries
         try {
             if (Depends.citizens != null) {
-                getTriggerRegistry().registerCoreMembers();
+                triggerRegistry.registerCoreMembers();
             }
         }
         catch (Exception e) {
@@ -349,7 +337,7 @@ public class Denizen extends JavaPlugin {
         }
         try {
             AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
-            tagManager().registerCoreTags();
+            tagManager.registerCoreTags();
             CommonRegistries.registerMainTagHandlers();
             eventManager = new OldEventManager();
             // Register all the modern script events
@@ -422,11 +410,7 @@ public class Denizen extends JavaPlugin {
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();
                 if (!MapTagBasedFlagTracker.skipAllCleanings && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-                    for (World world : Bukkit.getWorlds()) {
-                        for (Chunk chunk : world.getLoadedChunks()) {
-                            new DataPersistenceFlagTracker(chunk).doTotalClean();
-                        }
-                    }
+                    BukkitWorldScriptHelper.cleanAllWorldChunkFlags();
                 }
                 Debug.log("Denizen fully loaded at: " + TimeTag.now().format());
             }
@@ -488,7 +472,7 @@ public class Denizen extends JavaPlugin {
         notableManager.saveNotables();
         ScoreboardHelper._saveScoreboards();
         InventoryScriptHelper._savePlayerInventories();
-        getCommandRegistry().disableCoreMembers();
+        commandRegistry.disableCoreMembers();
         triggerRegistry.disableCoreMembers();
         DenizenCore.logInterceptor.standardOutput();
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");

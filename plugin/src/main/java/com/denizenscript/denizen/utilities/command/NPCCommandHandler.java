@@ -251,7 +251,7 @@ public class NPCCommandHandler {
                 triggerName = args.getJoinedStrings(1);
             }
             // Check to make sure trigger exists
-            if (Denizen.getInstance().getTriggerRegistry().get(triggerName) == null) {
+            if (Denizen.getInstance().triggerRegistry.get(triggerName) == null) {
                 Messaging.sendError(sender, "'" + triggerName.toUpperCase() + "' trigger does not exist.");
                 Messaging.send(sender, "<f>Usage: /npc trigger [trigger_name] [(--cooldown #)|(--radius #)|(-t)]");
                 Messaging.send(sender, "");
