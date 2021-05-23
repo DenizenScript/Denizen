@@ -121,6 +121,10 @@ Commands:
       To target: "[<[talker].name>] -> You: <[message]>"
       With target to bystanders: "[<[talker].name>] -> <[target].name>: <[message]>"
       With targets to bystanders: "[<[talker].name>] -> [<[targets]>]: <[message]>"
+  CreateWorld:
+        # Whether non-alphanumeric symbols are allowed in world names. Letters, numbers, unicode text, '-', '_', and ' ' are allowed always.
+        # If this is changed to 'true', then other symbols like '/' can be used in a world name (effectively putting the world inside a subfolder).
+        Allow symbols in names: false
   Delete:
         # Whether scripts are allowed to delete files from your server
         # This is mostly to clean up saves, but could potentially be abused.

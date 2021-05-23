@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -8,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -139,6 +141,14 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
 
     public static HashSet<String> excludedExtensionsForCopyFrom = new HashSet<>(Collections.singleton("lock"));
 
+    public static AsciiMatcher forbiddenSymbols = new AsciiMatcher("");
+
+    static {
+        for (int i = 0; i < 256; i++) {
+            forbiddenSymbols.accepted[i] = !((i >= 'a' && i <= 'z') || (i >= 'A' && i <= 'Z') || (i >= '0' && i <= '9') || (i == '_') || (i == '-') || (i == ' '));
+        }
+    }
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag worldName = scriptEntry.getElement("world_name");
@@ -149,33 +159,33 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
         ElementTag settings = scriptEntry.getElement("settings");
         ElementTag seed = scriptEntry.getElement("seed");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), worldName.debug() +
-                    (generator != null ? generator.debug() : "") +
-                    environment.debug() +
-                    (copy_from != null ? copy_from.debug() : "") +
-                    (settings != null ? settings.debug() : "") +
-                    worldType.debug() +
-                    (seed != null ? seed.debug() : ""));
+            Debug.report(scriptEntry, getName(), worldName, generator, environment, copy_from, settings, worldType, seed);
         }
         if (Bukkit.getWorld(worldName.asString()) != null) {
             Debug.echoDebug(scriptEntry, "CreateWorld doing nothing, world by that name already loaded.");
             scriptEntry.setFinished(true);
             return;
         }
+        if (!Settings.cache_createWorldSymbols && forbiddenSymbols.containsAnyMatch(worldName.asString())) {
+            Debug.echoError("Cannot use world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
+            scriptEntry.setFinished(true);
+            return;
+        }
+        final File newFolder = new File(worldName.asString());
+        if (!Utilities.canWriteToFile(newFolder)) {
+            Debug.echoError("Cannot copy to that new folder path due to security settings in Denizen/config.yml.");
+            scriptEntry.setFinished(true);
+            return;
+        }
         Supplier<Boolean> copyRunnable = () -> {
             try {
-                if (copy_from.asString().contains("..")) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world name!");
+                if (!Settings.cache_createWorldSymbols && forbiddenSymbols.containsAnyMatch(copy_from.asString())) {
+                    Debug.echoError("Cannot use copy_from world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
                     return false;
                 }
                 File folder = new File(copy_from.asString().replace("w@", ""));
-                final File newFolder = new File(worldName.asString());
                 if (!Utilities.canReadFile(folder)) {
                     Debug.echoError("Cannot copy from that folder path due to security settings in Denizen/config.yml.");
-                    return false;
-                }
-                if (!Utilities.canWriteToFile(newFolder)) {
-                    Debug.echoError("Cannot copy to that new folder path due to security settings in Denizen/config.yml.");
                     return false;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {

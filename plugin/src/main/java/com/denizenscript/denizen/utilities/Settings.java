@@ -57,6 +57,7 @@ public class Settings {
         cache_healthTraitBlockDrops = config.getBoolean("Traits.Health.Block drops", false);
         cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
         cache_whileMaxLoops = config.getInt("Commands.While.Max loops", 10000);
+        cache_createWorldSymbols = config.getBoolean("Commands.CreateWorld.Allow symbols in names", false);
         cache_allowWebget = config.getBoolean("Commands.Webget.Allow", true);
         cache_allowFilecopy = config.getBoolean("Commands.Filecopy.Allow copying files", true);
         cache_allowDelete = config.getBoolean("Commands.Delete.Allow file deletion", true);
@@ -105,7 +106,7 @@ public class Settings {
         }
     }
 
-    private static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,
+    public static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,
             cache_showExHelp, cache_showExDebug, cache_allowConsoleRedirection, cache_canRecordStats,
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
             cache_healthTraitRespawnEnabled, cache_allowWebget, cache_allowFilecopy, cache_allowDelete,
@@ -113,22 +114,22 @@ public class Settings {
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
-            cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe;
+            cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe, cache_createWorldSymbols;
 
-    private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
+    public static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
             cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath,
             cache_scriptEncoding, cache_debugPrefix;
 
-    private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
+    public static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
             cache_chatHistoryMaxMessages, cache_tagTimeout, cache_debugLimitPerTick;
 
-    private static long cache_warningRate;
+    public static long cache_warningRate;
 
-    private static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
+    public static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
 
-    private static DurationTag cache_worldScriptTimeEventFrequency;
+    public static DurationTag cache_worldScriptTimeEventFrequency;
 
     public static boolean useDefaultScriptPath() {
         return cache_useDefaultScriptPath;
@@ -136,10 +137,6 @@ public class Settings {
 
     public static String getAlternateScriptPath() {
         return cache_getAlternateScriptPath;
-    }
-
-    public static String scriptEncoding() {
-        return cache_scriptEncoding;
     }
 
     /**
