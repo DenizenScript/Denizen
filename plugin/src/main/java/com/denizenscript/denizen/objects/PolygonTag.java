@@ -328,7 +328,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return addTo;
     }
 
-    public ListTag getBlocks(List<MaterialTag> materials, Attribute attribute) {
+    public ListTag getBlocks(String matcher, Attribute attribute) {
         int max = Settings.blockTagsMaxBlocks();
         ListTag addTo = new ListTag();
         List<LocationTag> flatShell = generateFlatBlockShell(yMin);
@@ -336,7 +336,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             for (LocationTag loc : flatShell) {
                 LocationTag newLoc = loc.clone();
                 newLoc.setY(y);
-                if (CuboidTag.matchesMaterialList(newLoc, materials, attribute)) {
+                if (matcher == null || BukkitScriptEvent.tryMaterial(newLoc.getBlockTypeForTag(attribute), matcher)) {
                     addTo.addObject(newLoc);
                 }
             }
@@ -828,18 +828,14 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         });
 
         // <--[tag]
-        // @attribute <PolygonTag.blocks[(<material>|...)]>
+        // @attribute <PolygonTag.blocks[(<matcher>)]>
         // @returns ListTag(LocationTag)
         // @description
         // Returns a list of block locations within the polygon.
         // Optionally, specify a list of materials to only return locations with that block type.
         // -->
         registerTag("blocks", (attribute, polygon) -> {
-            List<MaterialTag> materials = null;
-            if (attribute.hasContext(1)) {
-                materials = attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context);
-            }
-            return polygon.getBlocks(materials, attribute);
+            return polygon.getBlocks(attribute.hasContext(1) ? attribute.getContext(1) : null, attribute);
         });
 
         // <--[tag]

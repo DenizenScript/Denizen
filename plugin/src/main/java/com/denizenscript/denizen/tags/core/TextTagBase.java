@@ -328,7 +328,7 @@ public class TextTagBase {
         // @attribute <n>
         // @returns ElementTag
         // @description
-        // Returns a newline symbol, for use in books.
+        // Returns a newline symbol.
         // -->
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override

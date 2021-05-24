@@ -496,21 +496,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return getBlocks(null, attribute);
     }
 
-    public static boolean matchesMaterialList(Location loc, List<MaterialTag> materials, Attribute attribute) {
-        if (materials == null) {
-            return true;
-        }
-        MaterialTag mat = new MaterialTag(new LocationTag(loc).getBlockForTag(attribute));
-        for (MaterialTag material : materials) {
-            if (mat.equals(material) || mat.getMaterial() == material.getMaterial()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public ListTag getBlocks(List<MaterialTag> materials, Attribute attribute) {
-        List<LocationTag> locs = getBlocks_internal(materials, attribute);
+    public ListTag getBlocks(String matcher, Attribute attribute) {
+        List<LocationTag> locs = getBlocks_internal(matcher, attribute);
         ListTag list = new ListTag();
         for (LocationTag loc : locs) {
             list.addObject(loc);
@@ -518,8 +505,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return list;
     }
 
-    public List<LocationTag> getBlocks_internal(List<MaterialTag> materials, Attribute attribute) {
-        if (materials == null) {
+    public List<LocationTag> getBlocks_internal(String matcher, Attribute attribute) {
+        if (matcher == null) {
             return getBlockLocationsUnfiltered(true);
         }
         int max = Settings.blockTagsMaxBlocks();
@@ -538,7 +525,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                         if (loc.getY() < 0 || loc.getY() > 255) {
                             continue;
                         }
-                        if (matchesMaterialList(loc, materials, attribute)) {
+                        if (BukkitScriptEvent.tryMaterial(loc.getBlockTypeForTag(attribute), matcher)) {
                             list.add(loc);
                         }
                         index++;
@@ -581,7 +568,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return getSpawnableBlocks(null, attribute);
     }
 
-    public ListTag getSpawnableBlocks(List<MaterialTag> mats, Attribute attribute) {
+    public ListTag getSpawnableBlocks(String matcher, Attribute attribute) {
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
         ListTag list = new ListTag();
@@ -597,8 +584,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                         loc = new LocationTag(loc_1.clone().add(x, y, z));
                         if (loc.getBlockTypeForTag(attribute).isAir()
                                 && (new LocationTag(loc.clone().add(0, 1, 0)).getBlockTypeForTag(attribute)).isAir()
-                                && ((mats == null ? new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
-                                : matchesMaterialList(loc.clone().add(0, -1, 0), mats, attribute)))) {
+                                && ((matcher == null ? new LocationTag(loc.clone().add(0, -1, 0)).getBlockTypeForTag(attribute).isSolid()
+                                : BukkitScriptEvent.tryMaterial(loc.clone().add(0, -1, 0).getBlockTypeForTag(attribute), matcher)))) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
                             loc.add(0.5, 0, 0.5);
@@ -785,15 +772,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
-        // @attribute <CuboidTag.blocks[(<material>|...)]>
+        // @attribute <CuboidTag.blocks[(<matcher>)]>
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location within the CuboidTag.
-        // Optionally, specify a list of materials to only return locations with that block type.
+        // Optionally, specify a material match to only return locations with that block type.
         // -->
         registerTag("blocks", (attribute, cuboid) -> {
             if (attribute.hasContext(1)) {
-                return new ListTag(cuboid.getBlocks(attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context), attribute));
+                return new ListTag(cuboid.getBlocks(attribute.getContext(1), attribute));
             }
             else {
                 return new ListTag(cuboid.getBlocks(attribute));
@@ -855,7 +842,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // -->
         registerTag("spawnable_blocks", (attribute, cuboid) -> {
             if (attribute.hasContext(1)) {
-                return new ListTag(cuboid.getSpawnableBlocks(attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context), attribute));
+                return new ListTag(cuboid.getSpawnableBlocks(attribute.getContext(1), attribute));
             }
             else {
                 return new ListTag(cuboid.getSpawnableBlocks(attribute));

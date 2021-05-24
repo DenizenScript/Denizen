@@ -163,12 +163,12 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         return getBlocks(null, attribute);
     }
 
-    public ListTag getBlocks(List<MaterialTag> materials, Attribute attribute) {
+    public ListTag getBlocks(String matcher, Attribute attribute) {
         List<LocationTag> initial = new CuboidTag(new Location(center.getWorld(),
                 center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ()),
                 new Location(center.getWorld(),
                         center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ()))
-                .getBlocks_internal(materials, attribute);
+                .getBlocks_internal(matcher, attribute);
         ListTag list = new ListTag();
         for (LocationTag loc : initial) {
             if (contains(loc)) {
@@ -429,15 +429,15 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         });
 
         // <--[tag]
-        // @attribute <EllipsoidTag.blocks[<material>|...]>
+        // @attribute <EllipsoidTag.blocks[(<matcher>)]>
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location within the EllipsoidTag.
-        // Optionally, specify a list of materials to only return locations with that block type.
+        // Optionally, specify a material matcher to only return locations with that block type.
         // -->
         registerTag("blocks", (attribute, object) -> {
             if (attribute.hasContext(1)) {
-                return new ListTag(object.getBlocks(attribute.contextAsType(1, ListTag.class).filter(MaterialTag.class, attribute.context), attribute));
+                return new ListTag(object.getBlocks(attribute.getContext(1), attribute));
             }
             else {
                 return new ListTag(object.getBlocks(attribute));
