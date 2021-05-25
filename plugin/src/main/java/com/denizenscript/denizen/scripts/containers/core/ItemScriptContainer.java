@@ -271,6 +271,7 @@ public class ItemScriptContainer extends ScriptContainer {
                     line = TagManager.tag(line, context);
                     lore.add(line);
                 }
+                CoreUtilities.fixNewLinesToListSeparation(lore);
                 NMSHandler.getItemHelper().setLore(stack, lore);
             }
             // Set Durability
