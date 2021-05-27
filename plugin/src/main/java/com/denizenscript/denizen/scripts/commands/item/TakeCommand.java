@@ -74,7 +74,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // If an economy is registered, using 'money' instead of an item will take money from the player's economy balance.
     //
-    // Flagged, Slot, Bydisplay all take a list as input to take multiple different item types at once.
+    // Flagged, Slot, ByDisplay, and Raw_Exact, all take a list as input to take multiple different item types at once.
     //
     // If no quantity is specified, exactly 1 item will be taken.
     //

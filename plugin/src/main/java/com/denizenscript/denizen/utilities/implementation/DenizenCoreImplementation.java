@@ -563,7 +563,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return null;
     }
 
-
     @Override
     public boolean setSpecialDef(String def, ScriptQueue queue, ObjectTag value) {
         if (def.equals("__player")) {

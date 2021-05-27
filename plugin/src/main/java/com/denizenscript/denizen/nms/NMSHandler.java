@@ -178,6 +178,8 @@ public abstract class NMSHandler {
 
     public abstract String stringForHover(HoverEvent hover);
 
+    public abstract ArrayList<String> containerListFlags(PersistentDataContainer container, String prefix);
+
     public abstract boolean containerHas(PersistentDataContainer container, NamespacedKey key);
 
     public abstract String containerGetString(PersistentDataContainer container, NamespacedKey key);

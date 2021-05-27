@@ -67,15 +67,12 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String target = path.eventArgLowerAt(0);
-
         if (!tryEntity(entity, target)) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

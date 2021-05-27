@@ -590,5 +590,4 @@ public class Denizen extends JavaPlugin {
         }
         return null;
     }
-
 }

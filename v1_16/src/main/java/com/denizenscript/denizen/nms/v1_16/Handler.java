@@ -48,6 +48,7 @@ import org.spigotmc.AsyncCatcher;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Handler extends NMSHandler {
@@ -256,6 +257,18 @@ public class Handler extends NMSHandler {
         else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    @Override
+    public ArrayList<String> containerListFlags(PersistentDataContainer container, String prefix) {
+        prefix = "denizen:" + prefix;
+        ArrayList<String> output = new ArrayList<>();
+        for (String key : ((CraftPersistentDataContainer) container).getRaw().keySet()) {
+            if (key.startsWith(prefix)) {
+                output.add(key.substring(prefix.length()));
+            }
+        }
+        return output;
     }
 
     @Override
