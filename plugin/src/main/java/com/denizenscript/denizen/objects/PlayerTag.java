@@ -1982,9 +1982,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism PlayerTag.gamemode
         // @description
         // Returns the name of the gamemode the player is currently set to.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag("gamemode", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getGameMode().name());
+        registerTag("gamemode", (attribute, object) -> {
+            if (object.isOnline()) {
+                return new ElementTag(object.getPlayerEntity().getGameMode().name());
+            }
+            return new ElementTag(object.getNBTEditor().getGameMode().name());
         });
 
         // <--[tag]
@@ -2832,6 +2836,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Sets the game mode of the player.
         // Valid gamemodes are survival, creative, adventure, and spectator.
+        // Works with offline players.
         // @tags
         // <PlayerTag.gamemode>
         // -->
