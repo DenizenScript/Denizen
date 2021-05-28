@@ -271,7 +271,7 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public GameMode getGameMode() {
-        return GameMode.values()[this.compound.getInt("playerGameType")];
+        return GameMode.getByValue(this.compound.getInt("playerGameType"));
     }
 
     @SuppressWarnings("deprecation")//Will most likely break in 1.7
