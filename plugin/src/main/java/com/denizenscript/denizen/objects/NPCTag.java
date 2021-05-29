@@ -1135,6 +1135,24 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
+        // @attribute <NPCTag.navigator_look_at>
+        // @returns LocationTag
+        // @mechanism NPCTag.navigator_look_at
+        // @description
+        // Returns the location the NPC will currently look at while moving, if any.
+        // -->
+        registerTag("navigator_look_at", (attribute, object) -> {
+            if (object.getNavigator().getLocalParameters().lookAtFunction() == null) {
+                return null;
+            }
+            Location res = object.getNavigator().getLocalParameters().lookAtFunction().apply(object.getNavigator());
+            if (res == null) {
+                return null;
+            }
+            return new LocationTag(res);
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.is_fighting>
         // @returns ElementTag(Boolean)
         // @description
@@ -1634,6 +1652,27 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("path_distance_margin") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().pathDistanceMargin(mechanism.getValue().asDouble());
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name navigator_look_at
+        // @input LocationTag
+        // @description
+        // Sets the location the NPC will currently look at while moving.
+        // Give no value to let the NPC automatically look where it's going.
+        // Should be set after the NPC has started moving.
+        // @tags
+        // <NPCTag.navigator_look_at>
+        // -->
+        if (mechanism.matches("navigator_look_at")) {
+            if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                final LocationTag loc = mechanism.valueAsType(LocationTag.class);
+                getNavigator().getLocalParameters().lookAtFunction((n) -> loc);
+            }
+            else {
+                getNavigator().getLocalParameters().lookAtFunction(null);
+            }
         }
 
         // <--[mechanism]
