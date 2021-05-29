@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -1390,7 +1391,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the name of the player as shown in the player list.
         // -->
         registerOnlineOnlyTag("list_name", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getPlayerListName());
+            return new ElementTag(AdvancedTextImpl.instance.getPlayerListName(object.getPlayerEntity()));
         });
 
         // <--[tag]
@@ -2869,7 +2870,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.list_name>
         // -->
         if (mechanism.matches("player_list_name")) {
-            getPlayerEntity().setPlayerListName(mechanism.getValue().asString());
+            AdvancedTextImpl.instance.setPlayerListName(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]

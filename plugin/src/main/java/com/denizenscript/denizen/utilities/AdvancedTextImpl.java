@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.nms.NMSHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -29,5 +30,13 @@ public class AdvancedTextImpl {
 
     public String getCustomName(Entity entity) {
         return entity.getCustomName();
+    }
+
+    public void setPlayerListName(Player player, String name) {
+        player.setPlayerListName(name);
+    }
+
+    public String getPlayerListName(Player player) {
+        return player.getPlayerListName();
     }
 }
