@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
+import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -571,6 +572,23 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.custom_color[<name>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Makes the input text colored by the custom color value based on the common base color names defined in the Denizen config file.
+        // If the color name is unrecognized, returns the value of color named 'default'.
+        // Default color names are 'base', 'emphasis', 'warning', 'error'.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // -->
+        PropertyParser.<BukkitElementProperties>registerTag("custom_color", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + CustomColorTagBase.getColor(attribute.getContext(1), attribute.context) + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.color[<color>]>
         // @returns ElementTag
         // @group text manipulation
@@ -593,6 +611,9 @@ public class BukkitElementProperties implements Property {
             }
             else if (colorName.length() == 7 && colorName.startsWith("#")) {
                 return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+            }
+            else if (colorName.length() == 14 && colorName.startsWith(ChatColor.COLOR_CHAR + "x")) {
+                return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + CoreUtilities.replace(colorName.substring(2), String.valueOf(ChatColor.COLOR_CHAR), "") + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
             }
             else if (colorName.startsWith("co@")) {
                 ColorTag color = ColorTag.valueOf(colorName, attribute.context);

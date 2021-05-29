@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
@@ -17,6 +18,24 @@ public class CustomColorTagBase {
 
     public  static String defaultColor = null;
 
+    public static String getColor(String name, TagContext context) {
+        String key = CoreUtilities.toLowerCase(name);
+        String result = customColors.get(key);
+        if (result != null) {
+            return result;
+        }
+        String unparsed = customColorsRaw.get(key);
+        if (unparsed != null) {
+            result = TagManager.tag(unparsed, context);
+            customColors.put(key, result);
+            return result;
+        }
+        if (defaultColor == null) {
+            defaultColor = TagManager.tag(defaultColorRaw, context);
+        }
+        return defaultColor;
+    }
+
     public CustomColorTagBase() {
 
         // <--[tag]
@@ -31,21 +50,7 @@ public class CustomColorTagBase {
             if (!attribute.hasContext(1)) {
                 return null;
             }
-            String key = CoreUtilities.toLowerCase(attribute.getContext(1));
-            String result = customColors.get(key);
-            if (result != null) {
-                return new ElementTag(result);
-            }
-            String unparsed = customColorsRaw.get(key);
-            if (unparsed != null) {
-                result = TagManager.tag(unparsed, attribute.context);
-                customColors.put(key, result);
-                return new ElementTag(result);
-            }
-            if (defaultColor == null) {
-                defaultColor = TagManager.tag(defaultColorRaw, attribute.context);
-            }
-            return new ElementTag(defaultColor);
+            return new ElementTag(getColor(attribute.getContext(1), attribute.context));
         });
     }
 }
