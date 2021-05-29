@@ -171,7 +171,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             scriptEntry.setFinished(true);
             return;
         }
-        final File newFolder = new File(worldName.asString());
+        final File newFolder = new File(Bukkit.getWorldContainer(), worldName.asString());
         if (!Utilities.canWriteToFile(newFolder)) {
             Debug.echoError("Cannot copy to that new folder path due to security settings in Denizen/config.yml.");
             scriptEntry.setFinished(true);
@@ -183,7 +183,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                     Debug.echoError("Cannot use copy_from world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
                     return false;
                 }
-                File folder = new File(copy_from.asString().replace("w@", ""));
+                File folder = new File(Bukkit.getWorldContainer(), copy_from.asString().replace("w@", ""));
                 if (!Utilities.canReadFile(folder)) {
                     Debug.echoError("Cannot copy from that folder path due to security settings in Denizen/config.yml.");
                     return false;
@@ -198,11 +198,11 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 }
                 CoreUtilities.copyDirectory(folder, newFolder, excludedExtensionsForCopyFrom);
                 Debug.echoDebug(scriptEntry, "Copied " + folder.getName() + " to " + newFolder.getName());
-                File file = new File(worldName.asString() + "/uid.dat");
+                File file = new File(Bukkit.getWorldContainer(), worldName.asString() + "/uid.dat");
                 if (file.exists()) {
                     file.delete();
                 }
-                File file2 = new File(worldName.asString() + "/session.lock");
+                File file2 = new File(Bukkit.getWorldContainer(), worldName.asString() + "/session.lock");
                 if (file2.exists()) {
                     file2.delete();
                 }

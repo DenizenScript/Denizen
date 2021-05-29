@@ -26,7 +26,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
@@ -900,7 +899,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 Debug.echoError("Unable to delete due to config.");
                 return;
             }
-            File folder = new File(getWorld().getName());
+            File folder = getWorld().getWorldFolder();
             Bukkit.getServer().unloadWorld(getWorld(), false);
             try {
                 CoreUtilities.deleteDirectory(folder);
