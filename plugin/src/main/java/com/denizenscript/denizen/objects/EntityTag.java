@@ -2582,7 +2582,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         else {
             waitingMechs = new ArrayList<>(getWaitingMechanisms());
         }
-        return new EntityTag(entity_type, waitingMechs);
+        EntityTag entity = new EntityTag(entity_type, waitingMechs);
+        entity.entityScript = entityScript;
+        return entity;
     }
 
     public static ObjectTagProcessor<EntityTag> tagProcessor = new ObjectTagProcessor<>();
