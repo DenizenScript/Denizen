@@ -34,7 +34,7 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.location> returns the LocationTag the block was broken at.
     // <context.material> returns the MaterialTag of the block that was broken.
-    // <context.drop_entities> returns a ListTag of EntityTags of type DROPPED_ITEM.
+    // <context.drop_entities> returns a ListTag of EntityTags of type DROPPED_ITEM. To get the list of ItemTags, just tack ".parse[item}" onto this context tag.
     //
     // @Player Always.
     //

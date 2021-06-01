@@ -233,11 +233,10 @@ public class CuboidBlockSet implements BlockSet {
                     }
                 }
                 SchematicCommand.noPhys = false;
+                cancel();
                 if (runme != null) {
                     runme.run();
                 }
-                cancel();
-
             }
         }.runTaskTimer(Denizen.getInstance(), 1, 1);
     }

@@ -65,25 +65,20 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
-
         String victim = path.eventArgLowerAt(2);
         if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && !tryEntity(target, victim)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         int index = path.eventArgLowerAt(3).equals("because") ? 3 : (path.eventArgAt(2).equals("because") ? 2 : -1);
         if (index > 0 && !path.eventArgLowerAt(index + 1).equals(CoreUtilities.toLowerCase(reason.toString()))) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -97,6 +92,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         String determination = determinationObj.toString();
         if (EntityTag.matches(determination)) {
             target = EntityTag.valueOf(determination, getTagContext(path));
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }
