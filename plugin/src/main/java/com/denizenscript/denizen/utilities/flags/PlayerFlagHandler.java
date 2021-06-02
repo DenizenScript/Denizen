@@ -136,8 +136,12 @@ public class PlayerFlagHandler implements Listener {
     }
 
     public static void loadFlags(UUID id, CachedPlayerFlag cache) {
-        cache.tracker = SavableMapFlagTracker.loadFlagFile(new File(dataFolder, id.toString()).getPath());
-        cache.loadingNow = false;
+        try {
+            cache.tracker = SavableMapFlagTracker.loadFlagFile(new File(dataFolder, id.toString()).getPath());
+        }
+        finally {
+            cache.loadingNow = false;
+        }
     }
 
     public static AbstractFlagTracker getTrackerFor(UUID id) {
@@ -166,12 +170,24 @@ public class PlayerFlagHandler implements Listener {
             loadFlags(id, cache);
         }
         else {
-            while (cache.loadingNow) {
-                try {
-                    Thread.sleep(1);
-                }
-                catch (InterruptedException ex) {
-                    Debug.echoError(ex);
+            if (cache.loadingNow) {
+                long start = System.currentTimeMillis();
+                while (cache.loadingNow) {
+                    if (System.currentTimeMillis() - start > 15 * 1000) {
+                        Debug.echoError("Flag loading timeout, errors may follow");
+                        cache = playerFlagTrackerCache.remove(id);
+                        if (cache != null && !cache.loadingNow) {
+                            return cache.tracker;
+                        }
+                        return null;
+                    }
+                    try {
+                        Thread.sleep(1);
+                    }
+                    catch (InterruptedException ex) {
+                        Debug.echoError(ex);
+                        return cache.tracker;
+                    }
                 }
             }
         }
