@@ -175,10 +175,7 @@ public class PlayerFlagHandler implements Listener {
                 while (cache.loadingNow) {
                     if (System.currentTimeMillis() - start > 15 * 1000) {
                         Debug.echoError("Flag loading timeout, errors may follow");
-                        cache = playerFlagTrackerCache.remove(id);
-                        if (cache != null && !cache.loadingNow) {
-                            return cache.tracker;
-                        }
+                        playerFlagTrackerCache.remove(id);
                         return null;
                     }
                     try {

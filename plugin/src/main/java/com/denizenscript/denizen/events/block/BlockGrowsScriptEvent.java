@@ -56,7 +56,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
             return true;
         }
         MaterialTag mat = MaterialTag.valueOf(block, CoreUtilities.noDebugContext);
-        return mat != null && !mat.isStructure();
+        return mat == null || !mat.isStructure();
     }
 
     @Override
