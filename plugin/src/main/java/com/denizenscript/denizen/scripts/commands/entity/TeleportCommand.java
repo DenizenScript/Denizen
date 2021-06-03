@@ -13,11 +13,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -117,16 +112,6 @@ public class TeleportCommand extends AbstractCommand {
                 NMSHandler.getEntityHelper().snapPositionTo(entity.getBukkitEntity(), location.toVector());
                 NMSHandler.getEntityHelper().look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
-            }
-            // Call a Bukkit event for compatibility with "on entity teleports"
-            // world event and other plugins
-            if (entity.isSpawned()) {
-                if (entity.getBukkitEntityType() != EntityType.PLAYER) {
-                    Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
-                }
-                else {
-                    Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent((Player) entity.getBukkitEntity(), entity.getLocation(), location));
-                }
             }
             entity.spawnAt(location);
         }
