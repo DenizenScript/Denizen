@@ -840,7 +840,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             for (Mechanism mechanism : mechanisms) {
-                safeAdjust(new Mechanism(new ElementTag(mechanism.getName()), mechanism.value, mechanism.context));
+                safeAdjust(new Mechanism(mechanism.getName(), mechanism.value, mechanism.context));
             }
             mechanisms.clear();
         }
@@ -2513,7 +2513,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity's full description, including all properties.
         // -->
         registerTag("describe", (attribute, object) -> {
-            return object.describe();
+            return object.describe(attribute.context);
         });
 
         // <--[tag]
@@ -2571,12 +2571,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
     }
 
-    public EntityTag describe() {
+    public EntityTag describe(TagContext context) {
         ArrayList<Mechanism> waitingMechs;
         if (isSpawnedOrValidForTag()) {
             waitingMechs = new ArrayList<>();
             for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).map.entrySet()) {
-                waitingMechs.add(new Mechanism(new ElementTag(property.getKey().str), property.getValue()));
+                waitingMechs.add(new Mechanism(property.getKey().str, property.getValue(), context));
             }
         }
         else {

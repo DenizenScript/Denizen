@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -85,7 +84,7 @@ public class EntityScriptContainer extends ScriptContainer {
             for (StringHolder string : strings) {
                 if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
                     ObjectTag obj = CoreUtilities.objectToTagForm(getContents().get(string.low), context, true, true);
-                    entity.safeAdjust(new Mechanism(new ElementTag(string.low), obj, context));
+                    entity.safeAdjust(new Mechanism(string.low, obj, context));
                 }
             }
             if (entity == null || entity.isUnique()) {

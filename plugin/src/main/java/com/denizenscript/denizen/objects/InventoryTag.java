@@ -379,7 +379,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             String name = CoreUtilities.toLowerCase(data.get(0));
             String description = ObjectFetcher.unescapeProperty(data.get(1));
             ElementTag descriptionElement = new ElementTag(description);
-            Mechanism mechanism = new Mechanism(new ElementTag(data.get(0)), descriptionElement, context);
+            Mechanism mechanism = new Mechanism(data.get(0), descriptionElement, context);
             if (!name.equals("holder") && !name.equals("uniquifier") && !name.equals("size") && !name.equals("script_name")) {
                 result.safeAdjust(mechanism);
             }

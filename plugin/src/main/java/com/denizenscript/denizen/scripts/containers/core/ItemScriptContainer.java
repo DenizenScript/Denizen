@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.LeatherColorer;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -249,7 +248,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 YamlConfiguration mechs = getConfigurationSection("mechanisms");
                 for (StringHolder key : mechs.getKeys(false)) {
                     ObjectTag obj = CoreUtilities.objectToTagForm(mechs.get(key.low), context, true, true);
-                    stack.safeAdjust(new Mechanism(new ElementTag(key.low), obj, context));
+                    stack.safeAdjust(new Mechanism(key.low, obj, context));
                 }
             }
             // Set Display Name

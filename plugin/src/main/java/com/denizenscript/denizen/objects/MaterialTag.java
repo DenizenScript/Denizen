@@ -25,7 +25,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.HashSet;
 

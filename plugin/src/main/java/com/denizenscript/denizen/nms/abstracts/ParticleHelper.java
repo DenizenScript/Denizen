@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizen.nms.interfaces.Particle;
-import org.bukkit.Effect;
 
 import java.util.ArrayList;
 import java.util.HashMap;

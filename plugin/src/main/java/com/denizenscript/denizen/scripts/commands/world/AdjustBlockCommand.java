@@ -116,7 +116,7 @@ public class AdjustBlockCommand extends AbstractCommand {
             Block block = location.getBlock();
             BlockData data = block.getBlockData();
             MaterialTag specialMaterial = new MaterialTag(data);
-            Mechanism mechanism = new Mechanism(mechanismName, value, scriptEntry.entryData.getTagContext());
+            Mechanism mechanism = new Mechanism(mechanismName.asString(), value, scriptEntry.entryData.getTagContext());
             specialMaterial.safeAdjust(mechanism);
             if (doPhysics) {
                 block.setBlockData(data, false);

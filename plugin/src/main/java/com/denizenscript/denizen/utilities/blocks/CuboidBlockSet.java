@@ -137,7 +137,7 @@ public class CuboidBlockSet implements BlockSet {
             if (cuboid.isInsideCuboid(ent.getLocation())) {
                 if (copyTypes.contains(ent.getType())) {
                     MapTag data = new MapTag();
-                    data.putObject("entity", new EntityTag(ent).describe());
+                    data.putObject("entity", new EntityTag(ent).describe(null));
                     data.putObject("rotation", new ElementTag(0));
                     Vector offset = ent.getLocation().toVector().subtract(center.toVector());
                     data.putObject("offset", new LocationTag((String) null, offset.getX(), offset.getY(), offset.getZ(), ent.getLocation().getYaw(), ent.getLocation().getPitch()));
@@ -171,7 +171,7 @@ public class CuboidBlockSet implements BlockSet {
                                 face = rotateFaceOne(face);
                             }
                             offset.add(face.getDirection().multiply(0.1)); // Compensate for hanging locations being very stupid
-                            mechs.add(new Mechanism(new ElementTag("rotation"), new ElementTag(face.name()), CoreUtilities.noDebugContext));
+                            mechs.add(new Mechanism("rotation", new ElementTag(face.name()), CoreUtilities.noDebugContext));
                         }
                         else {
                             mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));
