@@ -17,7 +17,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftSkull;
@@ -221,6 +223,21 @@ public class BlockHelperImpl implements BlockHelper {
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void doRandomTick(Location location) {
+        BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        Chunk nmsChunk = ((CraftChunk) location.getChunk()).getHandle();
+        IBlockData nmsBlock = nmsChunk.getType(pos);
+        WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
+        if (nmsBlock.isTicking()) {
+            nmsBlock.b(nmsWorld, pos, nmsWorld.random);
+        }
+        Fluid fluid = nmsBlock.getFluid();
+        if (fluid.f()) {
+            fluid.b(nmsWorld, pos, nmsWorld.random);
         }
     }
 }

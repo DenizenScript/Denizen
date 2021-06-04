@@ -4216,6 +4216,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
         }
 
+        // <--[mechanism]
+        // @object LocationTag
+        // @name vanilla_tick
+        // @input None
+        // @description
+        // Causes an immediate vanilla tick at a block location (normally processed at random according to the randomTickSpeed gamerule).
+        // -->
+        if (mechanism.matches("vanilla_tick")) {
+            NMSHandler.getBlockHelper().doRandomTick(this);
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

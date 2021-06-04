@@ -86,4 +86,8 @@ public interface BlockHelper {
     default void makeBlockStateRaw(BlockState state) {
         throw new UnsupportedOperationException();
     }
+
+    default void doRandomTick(Location location) {
+        throw new UnsupportedOperationException();
+    }
 }
