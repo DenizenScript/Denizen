@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities.blocks;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -151,41 +152,46 @@ public class CuboidBlockSet implements BlockSet {
             return;
         }
         for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
-            LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
-            int rotation = data.getObject("rotation").asType(ElementTag.class, CoreUtilities.noDebugContext).asInt();
-            EntityTag entity = data.getObject("entity").asType(EntityTag.class, CoreUtilities.noDebugContext);
-            if (entity == null || offset == null) {
-                continue;
-            }
-            entity = entity.duplicate();
-            offset = offset.clone();
-            if (rotation != 0) {
-                ArrayList<Mechanism> mechs = new ArrayList<>(entity.getWaitingMechanisms().size());
-                for (Mechanism mech : entity.getWaitingMechanisms()) {
-                    if (mech.getName().equals("rotation")) {
-                        String rotationName = mech.getValue().asString();
-                        BlockFace face = BlockFace.valueOf(rotationName.toUpperCase());
-                        for (int i = 0; i < rotation; i += 90) {
-                            face = rotateFaceOne(face);
+            try {
+                LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
+                int rotation = data.getObject("rotation").asType(ElementTag.class, CoreUtilities.noDebugContext).asInt();
+                EntityTag entity = data.getObject("entity").asType(EntityTag.class, CoreUtilities.noDebugContext);
+                if (entity == null || offset == null) {
+                    continue;
+                }
+                entity = entity.duplicate();
+                offset = offset.clone();
+                if (rotation != 0) {
+                    ArrayList<Mechanism> mechs = new ArrayList<>(entity.getWaitingMechanisms().size());
+                    for (Mechanism mech : entity.getWaitingMechanisms()) {
+                        if (mech.getName().equals("rotation")) {
+                            String rotationName = mech.getValue().asString();
+                            BlockFace face = BlockFace.valueOf(rotationName.toUpperCase());
+                            for (int i = 0; i < rotation; i += 90) {
+                                face = rotateFaceOne(face);
+                            }
+                            offset.add(face.getDirection().multiply(0.1)); // Compensate for hanging locations being very stupid
+                            mechs.add(new Mechanism(new ElementTag("rotation"), new ElementTag(face.name()), CoreUtilities.noDebugContext));
                         }
-                        offset.add(face.getDirection().multiply(0.1)); // Compensate for hanging locations being very stupid
-                        mechs.add(new Mechanism(new ElementTag("rotation"), new ElementTag(face.name()), CoreUtilities.noDebugContext));
+                        else {
+                            mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));
+                        }
                     }
-                    else {
-                        mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));
+                    entity.mechanisms = mechs;
+                }
+                else {
+                    for (Mechanism mechanism : entity.mechanisms) {
+                        mechanism.context = CoreUtilities.noDebugContext;
                     }
                 }
-                entity.mechanisms = mechs;
+                Location spawnLoc = relative.clone().add(offset);
+                spawnLoc.setYaw(offset.getYaw() + rotation);
+                spawnLoc.setPitch(offset.getPitch());
+                entity.spawnAt(spawnLoc);
             }
-            else {
-                for (Mechanism mechanism : entity.mechanisms) {
-                    mechanism.context = CoreUtilities.noDebugContext;
-                }
+            catch (Exception ex) {
+                Debug.echoError(ex);
             }
-            Location spawnLoc = relative.clone().add(offset);
-            spawnLoc.setYaw(offset.getYaw() + rotation);
-            spawnLoc.setPitch(offset.getPitch());
-            entity.spawnAt(spawnLoc);
         }
     }
 
