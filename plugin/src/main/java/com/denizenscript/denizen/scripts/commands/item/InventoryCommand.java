@@ -236,7 +236,7 @@ public class InventoryCommand extends AbstractCommand {
         scriptEntry.defaultObject("slot", new ElementTag(1));
         scriptEntry.defaultObject("destination",
                 Utilities.entryHasPlayer(scriptEntry) ?
-                        new AbstractMap.SimpleEntry<>(0, Utilities.getEntryPlayer(scriptEntry).getDenizenEntity().getInventory()) : null);
+                        new AbstractMap.SimpleEntry<>(0, Utilities.getEntryPlayer(scriptEntry).getInventory()) : null);
         if (!scriptEntry.hasObject("destination")) {
             throw new InvalidArgumentsException("Must specify a Destination Inventory!");
         }

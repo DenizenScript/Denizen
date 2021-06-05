@@ -991,7 +991,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (quickOf.getMaterial() != mat) {
                 return false;
             }
-            if (quickOf.equals(mat)) {
+            if (quickOf.getMaterial().equals(mat)) {
                 return true;
             }
         }
