@@ -89,7 +89,7 @@ public class ItemLore implements Property {
         if (lore == null) {
             return null;
         }
-        return new ListTag(lore);
+        return new ListTag(lore, true);
     }
 
     @Override

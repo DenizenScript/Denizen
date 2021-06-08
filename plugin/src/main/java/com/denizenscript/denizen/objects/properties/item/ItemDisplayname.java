@@ -63,7 +63,7 @@ public class ItemDisplayname implements Property {
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
-                return new ElementTag(NMSHandler.getItemHelper().getDisplayName(item))
+                return new ElementTag(NMSHandler.getItemHelper().getDisplayName(item), true)
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }

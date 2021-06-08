@@ -70,7 +70,7 @@ public class ItemBook implements Property {
         // Returns the author of the book.
         // -->
         if (attribute.startsWith("book_author") && item.getBukkitMaterial() == Material.WRITTEN_BOOK) {
-            return new ElementTag(getBookInfo().getAuthor())
+            return new ElementTag(getBookInfo().getAuthor(), true)
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -83,7 +83,7 @@ public class ItemBook implements Property {
         // Returns the title of the book.
         // -->
         if (attribute.startsWith("book_title") && item.getBukkitMaterial() == Material.WRITTEN_BOOK) {
-            return new ElementTag(getBookInfo().getTitle())
+            return new ElementTag(getBookInfo().getTitle(), true)
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -98,7 +98,7 @@ public class ItemBook implements Property {
         if (attribute.startsWith("book_pages")) {
             ListTag output = new ListTag();
             for (BaseComponent[] page : getBookInfo().spigot().getPages()) {
-                output.add(FormattedTextHelper.stringify(page, ChatColor.BLACK));
+                output.addObject(new ElementTag(FormattedTextHelper.stringify(page, ChatColor.BLACK), true));
             }
             return output.getObjectAttribute(attribute.fulfill(1));
         }
@@ -179,14 +179,14 @@ public class ItemBook implements Property {
         MapTag outMap = new MapTag();
         BookMeta bookInfo = (BookMeta) item.getItemMeta();
         if (item.getBukkitMaterial().equals(Material.WRITTEN_BOOK) && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
-            outMap.putObject("author", new ElementTag(bookInfo.getAuthor()));
-            outMap.putObject("title", new ElementTag(bookInfo.getTitle()));
+            outMap.putObject("author", new ElementTag(bookInfo.getAuthor(), true));
+            outMap.putObject("title", new ElementTag(bookInfo.getTitle(), true));
         }
         if (bookInfo.hasPages()) {
             List<BaseComponent[]> pages = bookInfo.spigot().getPages();
             ListTag pageList = new ListTag(pages.size());
             for (BaseComponent[] page : pages) {
-                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page, ChatColor.BLACK)));
+                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page, ChatColor.BLACK), true));
             }
             outMap.putObject("pages", pageList);
         }

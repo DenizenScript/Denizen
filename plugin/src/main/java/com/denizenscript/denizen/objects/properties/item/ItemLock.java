@@ -65,7 +65,10 @@ public class ItemLock implements Property {
         // Returns the lock password of this item.
         // -->
         if (attribute.startsWith("lock")) {
-            return new ElementTag(isLocked() ? getItemLock() : null).getObjectAttribute(attribute.fulfill(1));
+            if (!isLocked()) {
+                return null;
+            }
+            return new ElementTag(getItemLock(), true).getObjectAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

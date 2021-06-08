@@ -67,7 +67,7 @@ public class EntityCustomName implements Property {
                 return null;
             }
             else {
-                return new ElementTag(name).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(name, true).getObjectAttribute(attribute.fulfill(1));
             }
         }
         else {

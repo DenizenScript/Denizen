@@ -2172,7 +2172,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             if (!(object.inventory instanceof AnvilInventory)) {
                 return null;
             }
-            return new ElementTag(((AnvilInventory) object.inventory).getRenameText());
+            return new ElementTag(((AnvilInventory) object.inventory).getRenameText(), true);
         });
 
         // <--[tag]

@@ -40,7 +40,7 @@ public class ItemSignContents implements Property {
     };
 
     private ListTag getSignContents() {
-        return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLines()));
+        return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLines()), true);
     }
 
     private ItemSignContents(ItemTag _item) {

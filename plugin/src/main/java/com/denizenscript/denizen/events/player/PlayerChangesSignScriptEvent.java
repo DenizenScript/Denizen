@@ -108,10 +108,10 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             case "material":
                 return material;
             case "new":
-                return new ListTag(Arrays.asList(event.getLines()));
+                return new ListTag(Arrays.asList(event.getLines()), true);
             case "old":
                 if (event.getBlock().getState() instanceof Sign) {
-                    return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()));
+                    return new ListTag(Arrays.asList(((Sign) event.getBlock().getState()).getLines()), true);
                 }
                 else {
                     return null;
