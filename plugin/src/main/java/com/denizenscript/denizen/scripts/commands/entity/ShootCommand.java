@@ -85,6 +85,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // <entry[saveName].shot_entity> returns the single entity that was shot (as in, the projectile) (if you only shot one).
     // <entry[saveName].shot_entities> returns a ListTag of entities that were shot (as in, the projectiles).
     // <entry[saveName].hit_entities> returns a ListTag of entities that were hit (if any). (Only works when you ~wait for the command).
+    // <entry[saveName].location> returns the last known location of the last shot entity.
     //
     // @Usage
     // Use to shoot an arrow from the NPC to perfectly hit the player.
@@ -300,7 +301,6 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
         }
         final LocationTag start = new LocationTag(lastEntity.getLocation());
-        final Vector start_vel = lastEntity.getVelocity();
         // A task used to trigger a script if the entity is no longer
         // being shot, when the script argument is used
         BukkitRunnable task = new BukkitRunnable() {
@@ -338,16 +338,14 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                             }
                         }
                     }
+                    if (lastLocation == null) {
+                        lastLocation = start;
+                    }
+                    scriptEntry.addObject("location", new LocationTag(lastLocation));
                     scriptEntry.addObject("hit_entities", hitEntities);
                     if (script != null) {
-                        if (lastLocation == null) {
-                            lastLocation = start;
-                        }
-                        if (lastVelocity == null) {
-                            lastVelocity = start_vel;
-                        }
                         Consumer<ScriptQueue> configure = (queue) -> {
-                            queue.addDefinition("location", lastLocation);
+                            queue.addDefinition("location", new LocationTag(lastLocation));
                             queue.addDefinition("shot_entities", entityList);
                             queue.addDefinition("last_entity", lastEntity);
                             queue.addDefinition("hit_entities", hitEntities);
