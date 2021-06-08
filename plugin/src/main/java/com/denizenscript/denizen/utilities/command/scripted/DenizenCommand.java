@@ -120,9 +120,9 @@ public class DenizenCommand extends Command {
             raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
         }
         List<String> args = Arrays.asList(ArgumentHelper.buildArgs(raw_args));
-        context.put("args", new ListTag(args));
-        context.put("raw_args", new ElementTag(raw_args));
-        context.put("alias", new ElementTag(commandLabel));
+        context.put("args", new ListTag(args, true));
+        context.put("raw_args", new ElementTag(raw_args, true));
+        context.put("alias", new ElementTag(commandLabel, true));
         PlayerTag player = null;
         NPCTag npc = null;
         if (commandSender instanceof Player) {
@@ -182,9 +182,9 @@ public class DenizenCommand extends Command {
             raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
         }
         List<String> args = Arrays.asList(ArgumentHelper.buildArgs(raw_args));
-        context.put("args", new ListTag(args));
-        context.put("raw_args", new ElementTag(raw_args));
-        context.put("alias", new ElementTag(alias));
+        context.put("args", new ListTag(args, true));
+        context.put("raw_args", new ElementTag(raw_args, true));
+        context.put("alias", new ElementTag(alias, true));
         PlayerTag player = null;
         NPCTag npc = null;
         if (commandSender instanceof Player) {

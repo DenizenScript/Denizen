@@ -644,7 +644,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         registerTag("chat_history_list", (attribute, object) -> {
-            return new ListTag(PlayerTagBase.playerChatHistory.get(object.getUUID()));
+            return new ListTag(PlayerTagBase.playerChatHistory.get(object.getUUID()), true);
         });
 
         // <--[tag]
@@ -668,7 +668,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (messages.size() < x || x < 1) {
                 return null;
             }
-            return new ElementTag(messages.get(x - 1));
+            return new ElementTag(messages.get(x - 1), true);
         });
 
         /////////////////////
@@ -689,7 +689,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
                 return null;
             }
-            return new ElementTag(Depends.economy.format(Depends.economy.getBalance(object.getOfflinePlayer())));
+            return new ElementTag(Depends.economy.format(Depends.economy.getBalance(object.getOfflinePlayer())), true);
         });
 
         // <--[tag]
@@ -1071,7 +1071,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             for (String group : Depends.permissions.getGroups()) {
                 if (Depends.permissions.playerInGroup(world != null ? world.getName() : null, object.getOfflinePlayer(), group)) {
-                    list.add(group);
+                    list.addObject(new ElementTag(group, true));
                 }
             }
             return list;
@@ -1111,7 +1111,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
             }
-            return new ElementTag(ban.getReason());
+            return new ElementTag(ban.getReason(), true);
         });
 
         // <--[tag]
@@ -1147,7 +1147,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
             }
-            return new ElementTag(ban.getSource());
+            return new ElementTag(ban.getSource(), true);
         });
 
         registerTag("ban_info", (attribute, object) -> {
@@ -1391,7 +1391,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the name of the player as shown in the player list.
         // -->
         registerOnlineOnlyTag("list_name", (attribute, object) -> {
-            return new ElementTag(AdvancedTextImpl.instance.getPlayerListName(object.getPlayerEntity()));
+            return new ElementTag(AdvancedTextImpl.instance.getPlayerListName(object.getPlayerEntity()), true);
         });
 
         // <--[tag]
@@ -1402,7 +1402,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the display name of the player, which may contain prefixes and suffixes, colors, etc.
         // -->
         registerOnlineOnlyTag("display_name", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getDisplayName());
+            return new ElementTag(object.getPlayerEntity().getDisplayName(), true);
         });
 
         // Documented in EntityTag
@@ -1410,14 +1410,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("list", 2) && object.isOnline()) {
                 Deprecations.playerNameTags.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(object.getPlayerEntity().getPlayerListName());
+                return new ElementTag(object.getPlayerEntity().getPlayerListName(), true);
             }
             if (attribute.startsWith("display", 2) && object.isOnline()) {
                 Deprecations.playerNameTags.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(object.getPlayerEntity().getDisplayName());
+                return new ElementTag(object.getPlayerEntity().getDisplayName(), true);
             }
-            return new ElementTag(object.getName());
+            return new ElementTag(object.getName(), true);
         });
 
         // <--[tag]
@@ -1428,7 +1428,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // On normal clients, will say "vanilla". On broken clients, will say "unknown". Modded clients will identify themselves (though not guaranteed!).
         // -->
         registerOnlineOnlyTag("client_brand", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getPlayerHelper().getPlayerBrand(object.getPlayerEntity()));
+            return new ElementTag(NMSHandler.getPlayerHelper().getPlayerBrand(object.getPlayerEntity()), true);
         });
 
         // <--[tag]
@@ -1438,7 +1438,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the current locale of the player.
         // -->
         registerOnlineOnlyTag("locale", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getLocale());
+            return new ElementTag(object.getPlayerEntity().getLocale(), true);
         });
 
         /////////////////////
@@ -1563,7 +1563,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (sidebar == null) {
                 return null;
             }
-            return new ListTag(sidebar.getLinesText());
+            return new ListTag(sidebar.getLinesText(), true);
         });
 
         // <--[tag]
@@ -1577,7 +1577,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (sidebar == null) {
                 return null;
             }
-            return new ElementTag(sidebar.getTitle());
+            return new ElementTag(sidebar.getTitle(), true);
         });
 
         // <--[tag]
@@ -1823,7 +1823,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the displayed text in the nameplate of the player.
         // -->
         registerOnlineOnlyTag("nameplate", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerName(object.getPlayerEntity()));
+            return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerName(object.getPlayerEntity()), true);
         });
 
         /////////////////////
@@ -2195,7 +2195,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (prefix == null) {
                 return null;
             }
-            return new ElementTag(prefix);
+            return new ElementTag(prefix, true);
         });
 
         // <--[tag]
@@ -2219,7 +2219,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (suffix == null) {
                 return null;
             }
-            return new ElementTag(suffix);
+            return new ElementTag(suffix, true);
         });
 
         // <--[tag]

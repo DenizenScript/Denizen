@@ -119,13 +119,13 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("command")) {
-            return new ElementTag(commandName);
+            return new ElementTag(commandName, true);
         }
         else if (name.equals("raw_args")) {
-            return new ElementTag(cleanMessageArgs());
+            return new ElementTag(cleanMessageArgs(), true);
         }
         else if (name.equals("args")) {
-            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(cleanMessageArgs())));
+            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(cleanMessageArgs())), true);
         }
         else if (name.equals("server")) {
             return new ElementTag(sourceType.equals("server"));

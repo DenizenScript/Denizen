@@ -1253,7 +1253,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag("name", (attribute, object) -> {
-            return new ElementTag(object.getName());
+            return new ElementTag(object.getName(), true);
         });
 
         /////////////////////
