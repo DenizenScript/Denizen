@@ -104,7 +104,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   flags:
     //     # Each line within the flags section should be a flag name as a key, and the flag value as the value.
     //     # You can use lists or maps here the way you would expect them to work.
-    //     my_flag: my_value
+    //     my_flag: my value
     //
     //   # You can optionally add crafting recipes for your item script.
     //   # Note that recipes won't show in the recipe book when you add a new item script, until you either reconnect or use the "resend_recipes" mechanism.

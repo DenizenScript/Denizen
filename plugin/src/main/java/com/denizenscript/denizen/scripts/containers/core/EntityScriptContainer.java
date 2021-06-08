@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -15,6 +16,8 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class EntityScriptContainer extends ScriptContainer {
@@ -44,6 +47,16 @@ public class EntityScriptContainer extends ScriptContainer {
     //   # | All entity scripts MUST have this key!
     //   entity_type: BASE_ENTITY_TYPE_HERE
     //
+    //   # If you want custom data that won't be parsed, use the 'data' root key.
+    //   # | Some entity scripts should have this key!
+    //   data:
+    //     example_key: example value
+    //
+    //   # You can set flags on the entity when it spawns.
+    //   # | Some item scripts should have this key!
+    //   flags:
+    //     my_flag: my value
+    //
     //   # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
     //
     //   # Whether the entity has the default AI
@@ -69,6 +82,8 @@ public class EntityScriptContainer extends ScriptContainer {
         return getEntityFrom(null, null);
     }
 
+    public static HashSet<String> nonMechanismKeys = new HashSet<>(Arrays.asList("entity_type", "type", "debug", "custom", "data", "flags"));
+
     public EntityTag getEntityFrom(PlayerTag player, NPCTag npc) {
         EntityTag entity;
         try {
@@ -80,9 +95,17 @@ public class EntityScriptContainer extends ScriptContainer {
             else {
                 throw new Exception("Missing entity_type argument!");
             }
+            if (contains("flags")) {
+                YamlConfiguration flagSection = getConfigurationSection("flags");
+                MapTagFlagTracker tracker = new MapTagFlagTracker();
+                for (StringHolder key : flagSection.getKeys(false)) {
+                    tracker.setFlag(key.str, CoreUtilities.objectToTagForm(flagSection.get(key.str), context, true, true), null);
+                }
+                entity.safeAdjust(new Mechanism("flag_map", tracker.map, context));
+            }
             Set<StringHolder> strings = getContents().getKeys(false);
             for (StringHolder string : strings) {
-                if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
+                if (!nonMechanismKeys.contains(string.low)) {
                     ObjectTag obj = CoreUtilities.objectToTagForm(getContents().get(string.low), context, true, true);
                     entity.safeAdjust(new Mechanism(string.low, obj, context));
                 }

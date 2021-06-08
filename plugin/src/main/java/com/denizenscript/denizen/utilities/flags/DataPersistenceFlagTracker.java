@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.DataPersistenceHelper;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataHolder;
@@ -28,21 +29,27 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
 
     public String keyPrefix = "flag_";
 
+    public static AsciiMatcher allowedKeyText = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz_/.-0123456789");
+
+    public static String cleanKeyName(String input) {
+        return allowedKeyText.trimToMatches(CoreUtilities.toLowerCase(input));
+    }
+
     @Override
     public MapTag getRootMap(String key) {
-        return (MapTag) DataPersistenceHelper.getDenizenKey(holder, keyPrefix + CoreUtilities.toLowerCase(key));
+        return (MapTag) DataPersistenceHelper.getDenizenKey(holder, keyPrefix + cleanKeyName(key));
     }
 
     @Override
     public void setRootMap(String key, MapTag map) {
         if (map == null) {
-            DataPersistenceHelper.removeDenizenKey(holder, keyPrefix + CoreUtilities.toLowerCase(key));
+            DataPersistenceHelper.removeDenizenKey(holder, keyPrefix + cleanKeyName(key));
             return;
         }
         if (map.map.containsKey(expirationString) || map.map.get(valueString) instanceof MapTag) {
             holder.getPersistentDataContainer().set(expireNeededKey, PersistentDataType.STRING, "true");
         }
-        DataPersistenceHelper.setDenizenKey(holder, keyPrefix + CoreUtilities.toLowerCase(key), map);
+        DataPersistenceHelper.setDenizenKey(holder, keyPrefix + cleanKeyName(key), map);
     }
 
     @Override

@@ -64,6 +64,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFirework.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFixed.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityFlags.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
             PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
         }
