@@ -85,7 +85,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // <entry[saveName].shot_entity> returns the single entity that was shot (as in, the projectile) (if you only shot one).
     // <entry[saveName].shot_entities> returns a ListTag of entities that were shot (as in, the projectiles).
     // <entry[saveName].hit_entities> returns a ListTag of entities that were hit (if any). (Only works when you ~wait for the command).
-    // <entry[saveName].location> returns the last known location of the last shot entity.
+    // <entry[saveName].location> returns the last known location of the last shot entity. (Only works when you ~wait for the command).
     //
     // @Usage
     // Use to shoot an arrow from the NPC to perfectly hit the player.

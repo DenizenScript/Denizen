@@ -43,7 +43,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     public ModifyBlockCommand() {
         setName("modifyblock");
-        setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>) (max_delayed_ms:<#>)");
+        setSyntax("modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>) (max_delay_ms:<#>)");
         setRequiredArguments(2, 8);
         Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         // Keep the list empty automatically - we don't want to still block physics so much later that something else edited the block!
@@ -58,7 +58,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     // <--[command]
     // @Name ModifyBlock
-    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>) (max_delayed_ms:<#>)
+    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (no_physics/naturally:<tool>) (delayed) (<script>) (<percent chance>|...) (source:<player>) (max_delay_ms:<#>)
     // @Required 2
     // @Maximum 8
     // @Short Modifies blocks.
@@ -76,7 +76,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // Use 'naturally:' when setting a block to air to break it naturally, meaning that it will drop items. Specify the tool item that should be used for calculating drops.
     //
     // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
-    // Optionally, specify 'max_delayed_ms' to control how many milliseconds the 'delayed' set can run for in any given tick (defaults to 50).
+    // Optionally, specify 'max_delay_ms' to control how many milliseconds the 'delayed' set can run for in any given tick (defaults to 50).
     //
     // Note that specifying a list of locations will take more time in parsing than in the actual block modification.
     //
@@ -159,7 +159,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                     && arg.matchesArgumentType(PlayerTag.class)) {
                 scriptEntry.addObject("source", arg.asType(PlayerTag.class));
             }
-            else if (arg.matches("no_physics")) {
+            else if (!scriptEntry.hasObject("physics")
+                    && arg.matches("no_physics")) {
                 scriptEntry.addObject("physics", new ElementTag(false));
             }
             else if (!scriptEntry.hasObject("natural")
@@ -181,10 +182,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 scriptEntry.addObject("delayed", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("script")
+                    && arg.limitToOnlyPrefix("script")
                     && arg.matchesArgumentType(ScriptTag.class)) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
-            else if (!scriptEntry.hasObject("percents")) {
+            else if (!scriptEntry.hasObject("percents")
+                    && arg.limitToOnlyPrefix("percents")) {
                 scriptEntry.addObject("percents", arg.asType(ListTag.class));
             }
             else {

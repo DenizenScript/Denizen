@@ -30,7 +30,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when a block explodes.
+    // @Triggers when a block explodes (like a bed in the nether. For TNT, refer to the "entity explodes" event instead).
     //
     // @Context
     // <context.blocks> returns a ListTag of blocks that the entity blew up.

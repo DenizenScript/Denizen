@@ -30,7 +30,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when an entity explodes.
+    // @Triggers when an entity explodes (primed_tnt, creeper, etc).
     //
     // @Context
     // <context.blocks> returns a ListTag of blocks that the entity blew up.

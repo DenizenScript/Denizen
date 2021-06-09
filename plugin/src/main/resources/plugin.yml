@@ -47,6 +47,7 @@ permissions:
       denizen.npc.assign: true
       denizen.npc.constants: true
       denizen.npc.pushable: true
+      denizen.npc.mirror: true
   denizen.npc.*:
     description: Gives access to the /npc commands added by Denizen
     default: op
