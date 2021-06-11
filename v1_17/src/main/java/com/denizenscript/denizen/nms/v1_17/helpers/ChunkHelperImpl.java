@@ -4,12 +4,12 @@ import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementat
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.protocol.game.PacketPlayOutMapChunk;
-import net.minecraft.server.level.ChunkProviderServer;
-import net.minecraft.server.level.PlayerChunk;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.world.level.ChunkCoordIntPair;
-import net.minecraft.world.level.levelgen.HeightMap;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
 import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
@@ -26,10 +26,10 @@ public class ChunkHelperImpl implements ChunkHelper {
     public final static MethodHandle worldThreadFieldSetter;
 
     static {
-        chunkProviderServerThreadField = ReflectionHelper.getFields(ChunkProviderServer.class).get("serverThread");
-        chunkProviderServerThreadFieldSetter = ReflectionHelper.getFinalSetter(ChunkProviderServer.class, "serverThread");
-        worldThreadField = ReflectionHelper.getFields(net.minecraft.world.level.World.class).get("serverThread");
-        worldThreadFieldSetter = ReflectionHelper.getFinalSetter(net.minecraft.world.level.World.class, "serverThread");
+        chunkProviderServerThreadField = ReflectionHelper.getFields(ServerChunkCache.class).get("mainThread");
+        chunkProviderServerThreadFieldSetter = ReflectionHelper.getFinalSetter(ServerChunkCache.class, "mainThread");
+        worldThreadField = ReflectionHelper.getFields(net.minecraft.world.level.Level.class).get("thread");
+        worldThreadFieldSetter = ReflectionHelper.getFinalSetter(net.minecraft.world.level.Level.class, "thread");
     }
 
     public Thread resetServerThread;
@@ -42,8 +42,8 @@ public class ChunkHelperImpl implements ChunkHelper {
         if (resetServerThread != null) {
             return;
         }
-        WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-        ChunkProviderServer provider = nmsWorld.getChunkProvider();
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+        ServerChunkCache provider = nmsWorld.getChunkProvider();
         try {
             resetServerThread = (Thread) chunkProviderServerThreadField.get(provider);
             chunkProviderServerThreadFieldSetter.invoke(provider, Thread.currentThread());
@@ -62,8 +62,8 @@ public class ChunkHelperImpl implements ChunkHelper {
         if (resetServerThread == null) {
             return;
         }
-        WorldServer nmsWorld = ((CraftWorld) world).getHandle();
-        ChunkProviderServer provider = nmsWorld.getChunkProvider();
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+        ServerChunkCache provider = nmsWorld.getChunkProvider();
         try {
             chunkProviderServerThreadFieldSetter.invoke(provider, resetServerThread);
             worldThreadFieldSetter.invoke(nmsWorld, resetServerThread);
@@ -76,27 +76,24 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void refreshChunkSections(Chunk chunk) {
-        // TODO: 1.16: is false for 'Ignore old data' in the packets below good?
-        PacketPlayOutMapChunk lowPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 255); // 00000000 11111111
-        PacketPlayOutMapChunk highPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65280); // 11111111 00000000
-        ChunkCoordIntPair pos = new ChunkCoordIntPair(chunk.getX(), chunk.getZ());
-        PlayerChunk playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().playerChunkMap.visibleChunks.get(pos.pair());
+        ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(((CraftChunk) chunk).getHandle());
+        ChunkPos pos = new ChunkPos(chunk.getX(), chunk.getZ());
+        ChunkHolder playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().chunkMap.l.get(pos.toLong());
         if (playerChunk == null) {
             return;
         }
-        playerChunk.players.a(pos, false).forEach(player -> {
-            player.playerConnection.sendPacket(lowPacket);
-            player.playerConnection.sendPacket(highPacket);
+        playerChunk.playerProvider.getPlayers(pos, false).forEach(player -> {
+            player.connection.send(packet);
         });
     }
 
     @Override
     public int[] getHeightMap(Chunk chunk) {
-        HeightMap map = ((CraftChunk) chunk).getHandle().heightMap.get(HeightMap.Type.MOTION_BLOCKING);
+        Heightmap map = ((CraftChunk) chunk).getHandle().heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
         int[] outputMap = new int[256];
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
-                outputMap[x * 16 + y] = map.a(x, y);
+                outputMap[x * 16 + y] = map.getFirstAvailable(x, y);
             }
         }
         return outputMap;

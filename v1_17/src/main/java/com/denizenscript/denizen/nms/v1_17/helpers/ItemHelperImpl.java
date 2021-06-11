@@ -19,7 +19,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.IRegistry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.*;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.entity.TileEntityFurnace;
@@ -46,8 +46,8 @@ import java.util.*;
 public class ItemHelperImpl extends ItemHelper {
 
     public static IRecipe<?> getNMSRecipe(NamespacedKey key) {
-        MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
+        ResourceKey nmsKey = CraftNamespacedKey.toMinecraft(key);
+        for (Object2ObjectLinkedOpenHashMap<ResourceKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
             IRecipe<?> recipe = recipeMap.get(nmsKey);
             if (recipe != null) {
                 return recipe;
@@ -59,7 +59,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(IRegistry.ITEM.get(MinecraftKey.a(material.getKey().getKey())), size);
+            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(IRegistry.ITEM.get(ResourceKey.a(material.getKey().getKey())), size);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -82,16 +82,16 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void removeRecipe(NamespacedKey key) {
-        MinecraftKey nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
+        ResourceKey nmsKey = CraftNamespacedKey.toMinecraft(key);
+        for (Object2ObjectLinkedOpenHashMap<ResourceKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
             recipeMap.remove(nmsKey);
         }
     }
 
     @Override
     public void clearDenizenRecipes() {
-        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
-            for (MinecraftKey key : new ArrayList<>(recipeMap.keySet())) {
+        for (Object2ObjectLinkedOpenHashMap<ResourceKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
+            for (ResourceKey key : new ArrayList<>(recipeMap.keySet())) {
                 if (key.getNamespace().equalsIgnoreCase("denizen")) {
                     recipeMap.remove(key);
                 }
@@ -128,7 +128,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact) {
-        MinecraftKey key = new MinecraftKey("denizen", keyName);
+        ResourceKey key = new ResourceKey("denizen", keyName);
         RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
         RecipeCooking recipe;
         if (type.equalsIgnoreCase("smoker")) {
@@ -148,7 +148,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
-        MinecraftKey key = new MinecraftKey("denizen", keyName);
+        ResourceKey key = new ResourceKey("denizen", keyName);
         RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
         RecipeStonecutting recipe = new RecipeStonecutting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
@@ -156,7 +156,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact) {
-        MinecraftKey key = new MinecraftKey("denizen", keyName);
+        ResourceKey key = new ResourceKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
         for (int i = 0; i < ingredients.size(); i++) {
             ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));

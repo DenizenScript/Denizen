@@ -18,8 +18,8 @@ import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.network.protocol.game.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
@@ -36,12 +36,12 @@ public class ProfileEditorImpl extends ProfileEditor {
 
     @Override
     protected void updatePlayer(Player player, final boolean isSkinChanging) {
-        final EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        final ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         final UUID uuid = player.getUniqueId();
         PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (!p.getUniqueId().equals(uuid)) {
-                PacketHelperImpl.sendPacket(p, destroyPacket);
+                PacketHelperImpl.send(p, destroyPacket);
             }
         }
         new BukkitRunnable() {
@@ -50,13 +50,13 @@ public class ProfileEditorImpl extends ProfileEditor {
                 PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
                 PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    PacketHelperImpl.sendPacket(player, playerInfo);
+                    PacketHelperImpl.send(player, playerInfo);
                     if (!player.getUniqueId().equals(uuid)) {
-                        PacketHelperImpl.sendPacket(player, spawnPacket);
+                        PacketHelperImpl.send(player, spawnPacket);
                     }
                     else {
                         if (isSkinChanging) {
-                            ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(entityPlayer, (WorldServer) entityPlayer.world, true, player.getLocation(), false);
+                            ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
                         }
                         player.updateInventory();
                     }
@@ -95,7 +95,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(action);
                     List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
                     newPacketDataList.add(data);
-                    manager.oldManager.sendPacket(newPacket);
+                    manager.oldManager.send(newPacket);
                 }
                 else {
                     String rename = RenameCommand.getCustomNameFor(gameProfile.getId(), manager.player.getBukkitEntity(), false);
@@ -112,7 +112,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     IChatBaseComponent displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : (IChatBaseComponent) playerInfoData_displayName.get(data);
                     Object newData = playerInfoData_construct.newInstance(newPacket, patchedProfile, playerInfoData_latency.getInt(data), playerInfoData_gamemode.get(data), displayName);
                     newPacketDataList.add(newData);
-                    manager.oldManager.sendPacket(newPacket);
+                    manager.oldManager.send(newPacket);
                 }
             }
             return false;

@@ -29,27 +29,18 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.SectionPosition;
-import net.minecraft.core.particles.ParticleParam;
-import net.minecraft.network.EnumProtocol;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketDataSerializer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.Connection;
+import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.protocol.EnumProtocolDirection;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.DataWatcher;
-import net.minecraft.network.syncher.DataWatcherObject;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.network.PlayerConnection;
-import net.minecraft.util.MathHelper;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityLiving;
-import net.minecraft.world.entity.EnumItemSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_17_R1.CraftParticle;
@@ -66,11 +57,11 @@ import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.*;
 
-public class DenizenNetworkManagerImpl extends NetworkManager {
+public class DenizenNetworkManagerImpl extends Connection {
 
     public static void copyPacket(Packet<?> original, Packet<?> newPacket) {
         try {
-            PacketDataSerializer copier = new PacketDataSerializer(Unpooled.buffer());
+            FriendlyByteBuf copier = new FriendlyByteBuf(Unpooled.buffer());
             original.b(copier);
             newPacket.a(copier);
         }
@@ -79,26 +70,26 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
     }
 
-    public final NetworkManager oldManager;
+    public final Connection oldManager;
     public final DenizenPacketListenerImpl packetListener;
-    public final EntityPlayer player;
+    public final ServerPlayer player;
     public final DenizenPacketHandler packetHandler;
     public int packetsSent, packetsReceived;
 
-    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, DenizenPacketHandler packetHandler) {
+    public DenizenNetworkManagerImpl(ServerPlayer entityPlayer, Connection oldManager, DenizenPacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
         this.packetListener = new DenizenPacketListenerImpl(this, entityPlayer);
-        oldManager.setPacketListener(packetListener);
+        oldManager.setListener(packetListener);
         this.player = this.packetListener.player;
         this.packetHandler = packetHandler;
     }
 
     public static void setNetworkManager(Player player, DenizenPacketHandler packetHandler) {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-        PlayerConnection playerConnection = entityPlayer.playerConnection;
-        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.networkManager, packetHandler));
+        ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        ServerGamePacketListenerImpl playerConnection = entityPlayer.connection;
+        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.connection, packetHandler));
     }
 
     @Override
@@ -107,12 +98,12 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    public void setProtocol(EnumProtocol enumprotocol) {
+    public void setProtocol(ConnectionProtocol enumprotocol) {
         oldManager.setProtocol(enumprotocol);
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext channelhandlercontext) throws Exception {
+    public void channelInactive(ChannelHandlerContext channelhandlercontext) {
         oldManager.channelInactive(channelhandlercontext);
     }
 
@@ -122,8 +113,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) throws Exception {
-        // TODO: Check mapping update. Previously overrode 'a', and channelRead0 was overriden separately.
+    protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) {
         if (oldManager.channel.isOpen()) {
             try {
                 packet.a(this.packetListener);
@@ -135,8 +125,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    public void setPacketListener(PacketListener packetlistener) {
-        oldManager.setPacketListener(packetlistener);
+    public void setListener(PacketListener packetlistener) {
+        oldManager.setListener(packetlistener);
     }
 
     public static Field ENTITY_ID_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("a");
@@ -200,12 +190,12 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     @Override
-    public void sendPacket(Packet<?> packet) {
-        sendPacket(packet, null);
+    public void send(Packet<?> packet) {
+        send(packet, null);
     }
 
     @Override
-    public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getName());
         }
@@ -222,7 +212,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             return;
         }
         processBlockLightForPacket(packet);
-        oldManager.sendPacket(packet, genericfuturelistener);
+        oldManager.send(packet, genericfuturelistener);
     }
 
     public boolean processEquipmentForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
@@ -231,16 +221,16 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
         try {
             if (packet instanceof PacketPlayOutEntityEquipment) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
                 if (playersMap == null) {
                     return false;
                 }
                 int eid = ENTITY_EQUIPMENT_EID.getInt(packet);
-                Entity ent = player.world.getEntity(eid);
+                Entity ent = player.level.getEntity(eid);
                 if (ent == null) {
                     return false;
                 }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUniqueID());
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUUID());
                 if (override == null) {
                     return false;
                 }
@@ -273,20 +263,20 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     }
                     equipment.set(i, new Pair<>(pair.getFirst(), use));
                 }
-                oldManager.sendPacket(newPacket, genericfuturelistener);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
             else if (packet instanceof PacketPlayOutEntityStatus) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
                 if (playersMap == null) {
                     return false;
                 }
                 int eid = ENTITY_STATUS_EID.getInt(packet);
-                Entity ent = player.world.getEntity(eid);
+                Entity ent = player.level.getEntity(eid);
                 if (!(ent instanceof EntityLiving)) {
                     return false;
                 }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUniqueID());
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUUID());
                 if (override == null || (override.hand == null && override.offhand == null)) {
                     return false;
                 }
@@ -299,15 +289,15 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 equipment.add(new Pair<>(EnumItemSlot.MAINHAND, hand));
                 equipment.add(new Pair<>(EnumItemSlot.OFFHAND, offhand));
                 PacketPlayOutEntityEquipment newPacket = new PacketPlayOutEntityEquipment(eid, equipment);
-                oldManager.sendPacket(newPacket, genericfuturelistener);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
             else if (packet instanceof PacketPlayOutWindowItems) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
                 if (playersMap == null) {
                     return false;
                 }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
                 if (override == null) {
                     return false;
                 }
@@ -337,15 +327,15 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 PacketPlayOutWindowItems newPacket = new PacketPlayOutWindowItems();
                 WINDOW_ITEMS_WINDOW.setInt(newPacket, window);
                 WINDOW_ITEMS_CONTENTS.set(newPacket, items);
-                oldManager.sendPacket(newPacket, genericfuturelistener);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
             else if (packet instanceof PacketPlayOutSetSlot) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
                 if (playersMap == null) {
                     return false;
                 }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
                 if (override == null) {
                     return false;
                 }
@@ -377,7 +367,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     return false;
                 }
                 PacketPlayOutSetSlot newPacket = new PacketPlayOutSetSlot(window, slot, CraftItemStack.asNMSCopy(item));
-                oldManager.sendPacket(newPacket, genericfuturelistener);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
         }
@@ -393,7 +383,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
         try {
             if (packet instanceof PacketPlayOutWorldParticles) {
-                HashSet<Particle> hidden = HideParticles.hidden.get(player.getUniqueID());
+                HashSet<Particle> hidden = HideParticles.hidden.get(player.getUUID());
                 if (hidden == null) {
                     return false;
                 }
@@ -421,15 +411,15 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             if (packet instanceof PacketPlayOutEntityMetadata) {
                 PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
                 int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
-                Entity ent = player.world.getEntity(eid);
+                Entity ent = player.level.getEntity(eid);
                 if (ent == null) {
                     return false;
                 }
-                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(ent.getUniqueID());
+                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(ent.getUUID());
                 if (playerMap == null) {
                     return false;
                 }
-                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUniqueID());
+                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUUID());
                 if (disguise == null) {
                     disguise = playerMap.get(null);
                     if (disguise == null) {
@@ -454,14 +444,14 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             flags |= 0x20; // Invisible flag
                             data.add(new DataWatcher.Item(watcherObject, flags));
                             PacketPlayOutEntityMetadata updatedPacket = getModifiedMetadataFor(altPacket);
-                            oldManager.sendPacket(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
+                            oldManager.send(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
                             return true;
                         }
                     }
                 }
                 else {
                     PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata(ent.getId(), ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getDataWatcher(), true);
-                    oldManager.sendPacket(altPacket, genericfuturelistener);
+                    oldManager.send(altPacket, genericfuturelistener);
                     return true;
                 }
                 return false;
@@ -477,15 +467,15 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 ider = ENTITY_ID_SPAWNENTLIVING.getInt(packet);
             }
             if (ider != -1) {
-                Entity e = player.getWorld().getEntity(ider);
+                Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
-                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(e.getUniqueID());
+                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(e.getUUID());
                 if (playerMap == null) {
                     return false;
                 }
-                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUniqueID());
+                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUUID());
                 if (disguise == null) {
                     disguise = playerMap.get(null);
                     if (disguise == null) {
@@ -511,12 +501,12 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
         try {
             int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
-            Entity ent = player.world.getEntity(eid);
+            Entity ent = player.level.getEntity(eid);
             if (ent == null) {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
-            String nameToApply = RenameCommand.getCustomNameFor(ent.getUniqueID(), player.getBukkitEntity(), false);
-            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUniqueID(), player.getUniqueID());
+            String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
+            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUniqueID(), player.getUUID());
             if (nameToApply == null && forceSneak == null) {
                 return null;
             }
@@ -569,15 +559,15 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         if (altPacket == null) {
             return false;
         }
-        oldManager.sendPacket(altPacket, genericfuturelistener);
+        oldManager.send(altPacket, genericfuturelistener);
         return true;
     }
 
     public void tryProcessMovePacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
-        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
                     Packet pNew = (Packet) duplo(packet);
                     ENTITY_ID_PACKENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
@@ -603,7 +593,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                         }
                         Vector goalPosition = att.fixedForOffset(new Vector(e.locX(), e.locY(), e.locZ()), e.yaw, e.pitch);
-                        Vector oldPos = att.visiblePositions.get(player.getUniqueID());
+                        Vector oldPos = att.visiblePositions.get(player.getUUID());
                         boolean forceTele = false;
                         if (oldPos == null) {
                             oldPos = att.attached.getLocation().toVector();
@@ -627,7 +617,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             if (NMSHandler.debugPackets) {
                                 Debug.log("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
-                            oldManager.sendPacket(newTeleportPacket);
+                            oldManager.send(newTeleportPacket);
                         }
                         else {
                             POS_X_PACKENT.setShort(pNew, (short) MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
@@ -640,14 +630,14 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             if (NMSHandler.debugPackets) {
                                 Debug.log("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
-                            oldManager.sendPacket(pNew);
+                            oldManager.send(pNew);
                         }
                     }
                     else {
                         if (NMSHandler.debugPackets) {
                             Debug.log("Attach Replica-Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
                         }
-                        oldManager.sendPacket(pNew);
+                        oldManager.send(pNew);
                     }
                 }
             }
@@ -660,17 +650,17 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public void tryProcessVelocityPacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
-        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
                     Packet pNew = (Packet) duplo(packet);
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
                         Debug.log("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
                     }
-                    oldManager.sendPacket(pNew);
+                    oldManager.send(pNew);
                 }
             }
         }
@@ -682,10 +672,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public void tryProcessTeleportPacketForAttach(Packet<?> packet, Entity e, Vector relative) throws IllegalAccessException {
-        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUniqueID());
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUniqueID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
                     Packet pNew = (Packet) duplo(packet);
                     ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
@@ -713,8 +703,8 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             Debug.log("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with raw yaw " + yaw + " adapted to " + newYaw);
                         }
                     }
-                    att.visiblePositions.put(player.getUniqueID(), resultPos.clone());
-                    oldManager.sendPacket(pNew);
+                    att.visiblePositions.put(player.getUUID(), resultPos.clone());
+                    oldManager.send(pNew);
                 }
             }
         }
@@ -734,30 +724,30 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         try {
             if (packet instanceof PacketPlayOutEntity) {
                 int ider = ENTITY_ID_PACKENT.getInt(packet);
-                Entity e = player.getWorld().getEntity(ider);
+                Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
                 tryProcessMovePacketForAttach(packet, e);
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
                 int ider = ENTITY_ID_PACKVELENT.getInt(packet);
-                Entity e = player.getWorld().getEntity(ider);
+                Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
                 tryProcessVelocityPacketForAttach(packet, e);
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
             else if (packet instanceof PacketPlayOutEntityTeleport) {
                 int ider = ENTITY_ID_PACKTELENT.getInt(packet);
-                Entity e = player.getWorld().getEntity(ider);
+                Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
                 tryProcessTeleportPacketForAttach(packet, e, VECTOR_ZERO);
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
         }
         catch (Exception ex) {
@@ -781,7 +771,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                     || packet instanceof PacketPlayOutSpawnEntityPainting
                     || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
                 PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntityImpl(player, packet);
-                Entity entity = player.getWorld().getEntity(spawnEntity.getEntityId());
+                Entity entity = player.getLevel().getEntity(spawnEntity.getEntityId());
                 if (isHidden(entity)) {
                     return true;
                 }
@@ -801,7 +791,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 ider = ENTITY_ID_PACKTELENT.getInt(packet);
             }
             if (ider != -1) {
-                Entity e = player.getWorld().getEntity(ider);
+                Entity e = player.getLevel().getEntity(ider);
                 if (isHidden(e)) {
                     return true;
                 }
@@ -816,9 +806,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public void processFakePlayerSpawn(Entity entity) {
         if (entity instanceof EntityFakePlayerImpl) {
             final EntityFakePlayerImpl fakePlayer = (EntityFakePlayerImpl) entity;
-            sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+            send(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
             Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(),
-                    () -> sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer)), 5);
+                    () -> send(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer)), 5);
         }
     }
 
@@ -835,10 +825,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
         if (packet instanceof PacketPlayOutChat && packetHandler.shouldInterceptChatPacket()) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
+            return packetHandler.send(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
         }
         else if (packet instanceof PacketPlayOutEntityMetadata && packetHandler.shouldInterceptMetadata()) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
+            return packetHandler.send(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
         }
         return false;
     }
@@ -849,43 +839,43 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         }
         try {
             if (packet instanceof PacketPlayOutMapChunk) {
-                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());
+                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUUID());
                 if (map == null) {
                     return false;
                 }
                 int chunkX = CHUNKX_MAPCHUNK.getInt(packet);
                 int chunkZ = CHUNKZ_MAPCHUNK.getInt(packet);
-                ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getWorld().getWorld().getName());
-                List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUniqueID(), chunkCoord);
+                ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getLevel().getWorld().getName());
+                List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUUID(), chunkCoord);
                 if (blocks == null || blocks.isEmpty()) {
                     return false;
                 }
                 PacketPlayOutMapChunk newPacket = FakeBlockHelper.handleMapChunkPacket((PacketPlayOutMapChunk) packet, blocks);
-                oldManager.sendPacket(newPacket, genericfuturelistener);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
             else if (packet instanceof PacketPlayOutMultiBlockChange) {
-                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUniqueID());
+                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUUID());
                 if (map == null) {
                     return false;
                 }
                 SectionPosition coord = (SectionPosition) SECTIONPOS_MULTIBLOCKCHANGE.get(packet);
-                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), player.getWorld().getWorld().getName());
+                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), player.getLevel().getWorld().getName());
                 if (!map.byChunk.containsKey(coordinateDenizen)) {
                     return false;
                 }
                 PacketPlayOutMultiBlockChange newPacket = new PacketPlayOutMultiBlockChange();
                 copyPacket(packet, newPacket);
-                LocationTag location = new LocationTag(player.getWorld().getWorld(), 0, 0, 0);
+                LocationTag location = new LocationTag(player.getLevel().getWorld(), 0, 0, 0);
                 short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(newPacket);
-                IBlockData[] originalDataArray = (IBlockData[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);
+                BlockState[] originalDataArray = (IBlockData[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);
                 short[] offsetArray = Arrays.copyOf(originalOffsetArray, originalOffsetArray.length);
-                IBlockData[] dataArray = Arrays.copyOf(originalDataArray, originalDataArray.length);
+                BlockState[] dataArray = Arrays.copyOf(originalDataArray, originalDataArray.length);
                 OFFSETARRAY_MULTIBLOCKCHANGE.set(newPacket, offsetArray);
                 BLOCKARRAY_MULTIBLOCKCHANGE.set(newPacket, dataArray);
                 for (int i = 0; i < offsetArray.length; i++) {
                     short offset = offsetArray[i];
-                    BlockPosition pos = coord.g(offset);
+                    BlockPos pos = coord.g(offset);
                     location.setX(pos.getX());
                     location.setY(pos.getY());
                     location.setZ(pos.getZ());
@@ -894,30 +884,30 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                         dataArray[i] = FakeBlockHelper.getNMSState(block);
                     }
                 }
-                oldManager.sendPacket(newPacket, genericfuturelistener);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
             else if (packet instanceof PacketPlayOutBlockChange) {
-                BlockPosition pos = (BlockPosition) BLOCKPOS_BLOCKCHANGE.get(packet);
-                LocationTag loc = new LocationTag(player.getWorld().getWorld(), pos.getX(), pos.getY(), pos.getZ());
+                BlockPos pos = (BlockPos) BLOCKPOS_BLOCKCHANGE.get(packet);
+                LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
                 if (block != null) {
                     PacketPlayOutBlockChange newPacket = new PacketPlayOutBlockChange();
                     copyPacket(packet, newPacket);
                     newPacket.block = FakeBlockHelper.getNMSState(block);
-                    oldManager.sendPacket(newPacket, genericfuturelistener);
+                    oldManager.send(newPacket, genericfuturelistener);
                     return true;
                 }
             }
             else if (packet instanceof PacketPlayOutBlockBreak) {
-                BlockPosition pos = (BlockPosition) BLOCKPOS_BLOCKBREAK.get(packet);
-                LocationTag loc = new LocationTag(player.getWorld().getWorld(), pos.getX(), pos.getY(), pos.getZ());
-                FakeBlock block = FakeBlock.getFakeBlockFor(player.getUniqueID(), loc);
+                BlockPos pos = (BlockPos) BLOCKPOS_BLOCKBREAK.get(packet);
+                LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
+                FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {
                     PacketPlayOutBlockBreak newPacket = new PacketPlayOutBlockBreak();
                     copyPacket(packet, newPacket);
                     BLOCKDATA_BLOCKBREAK.set(newPacket, FakeBlockHelper.getNMSState(block));
-                    oldManager.sendPacket(newPacket, genericfuturelistener);
+                    oldManager.send(newPacket, genericfuturelistener);
                     return true;
                 }
             }
@@ -933,10 +923,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             return;
         }
         if (packet instanceof PacketPlayOutLightUpdate) {
-            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.world);
+            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutLightUpdate) packet, player.level);
         }
         else if (packet instanceof PacketPlayOutBlockChange) {
-            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutBlockChange) packet, player.world);
+            BlockLightImpl.checkIfLightsBrokenByPacket((PacketPlayOutBlockChange) packet, player.level);
         }
     }
 
@@ -1021,9 +1011,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         Field directionField = null;
         MethodHandle managerField = null;
         try {
-            directionField = NetworkManager.class.getDeclaredField("h");
+            directionField = Connection.class.getDeclaredField("receiving");
             directionField.setAccessible(true);
-            managerField = ReflectionHelper.getFinalSetter(PlayerConnection.class, "networkManager");
+            managerField = ReflectionHelper.getFinalSetter(ServerGamePacketListenerImpl.class, "connection");
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -1032,10 +1022,10 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         networkManagerField = managerField;
     }
 
-    private static EnumProtocolDirection getProtocolDirection(NetworkManager networkManager) {
-        EnumProtocolDirection direction = null;
+    private static PacketFlow getProtocolDirection(Connection networkManager) {
+        PacketFlow direction = null;
         try {
-            direction = (EnumProtocolDirection) protocolDirectionField.get(networkManager);
+            direction = (PacketFlow) protocolDirectionField.get(networkManager);
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -1043,7 +1033,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         return direction;
     }
 
-    private static void setNetworkManager(PlayerConnection playerConnection, NetworkManager networkManager) {
+    private static void setNetworkManager(ServerGamePacketListenerImpl playerConnection, Connection networkManager) {
         try {
             networkManagerField.invoke(playerConnection, networkManager);
         }

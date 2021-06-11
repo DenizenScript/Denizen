@@ -6,11 +6,11 @@ import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketDataSerializer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.PacketPlayOutMapChunk;
 import net.minecraft.util.DataBits;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSection;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 
@@ -26,7 +26,7 @@ public class FakeBlockHelper {
     public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("g");
     public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("e");
 
-    public static IBlockData getNMSState(FakeBlock block) {
+    public static BlockState getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData()).getState();
     }
 
@@ -42,7 +42,7 @@ public class FakeBlockHelper {
         return false;
     }
 
-    public static int indexInPalette(IBlockData data) {
+    public static int indexInPalette(BlockState data) {
         return ChunkSection.GLOBAL_PALETTE.a(data);
     }
 
@@ -66,8 +66,8 @@ public class FakeBlockHelper {
             // TODO: properly update HeightMap?
             int bitmask = BITMASK_MAPCHUNK.getInt(packet);
             byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);
-            PacketDataSerializer serial = new PacketDataSerializer(Unpooled.wrappedBuffer(data));
-            PacketDataSerializer outputSerial = new PacketDataSerializer(Unpooled.buffer(data.length));
+            FriendlyByteBuf serial = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+            FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(data.length));
             boolean isFull = packet.f();
             List<NBTTagCompound> blockEntities = new ArrayList<>((List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet));
             BLOCKENTITIES_MAPCHUNK.set(packet, blockEntities);
@@ -136,7 +136,7 @@ public class FakeBlockHelper {
                             blockY -= (blockY >> 4) * 16;
                             blockZ -= (blockZ >> 4) * 16;
                             int blockIndex = blockArrayIndex(blockX, blockY, blockZ);
-                            IBlockData replacementData = getNMSState(block);
+                            BlockState replacementData = getNMSState(block);
                             int globalPaletteIndex = indexInPalette(replacementData);
                             int subPaletteId = getPaletteSubId(palette, globalPaletteIndex);
                             if (subPaletteId == -1) {

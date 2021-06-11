@@ -24,20 +24,20 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.DataWatcherObject;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.EntityTrackerEntry;
-import net.minecraft.server.level.PlayerChunkMap;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.OpList;
 import net.minecraft.server.players.OpListEntry;
 import net.minecraft.stats.RecipeBookServer;
 import net.minecraft.world.entity.EntityLiving;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.item.crafting.IRecipe;
-import net.minecraft.world.level.ChunkCoordIntPair;
+import net.minecraft.world.level.ChunkPos;
 import org.bukkit.*;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -60,7 +60,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aD");
 
-    public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(PlayerConnection.class);
+    public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class);
     public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("C");
     public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("E");
 
@@ -79,16 +79,16 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void stopSound(Player player, String sound, SoundCategory category) {
-        MinecraftKey soundKey = sound == null ? null : new MinecraftKey(sound);
+        ResourceKey soundKey = sound == null ? null : new ResourceKey(sound);
         net.minecraft.sounds.SoundCategory nmsCategory = category == null ? null : net.minecraft.sounds.SoundCategory.valueOf(category.name());
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, nmsCategory));
+        ((CraftPlayer) player).getHandle().connection.send(new PacketPlayOutStopSound(soundKey, nmsCategory));
     }
 
     @Override
     public void deTrackEntity(Player player, Entity entity) {
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        WorldServer world = (WorldServer) nmsPlayer.world;
-        PlayerChunkMap.EntityTracker tracker = world.getChunkProvider().playerChunkMap.trackedEntities.get(entity.getEntityId());
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        ServerLevel world = (ServerLevel) nmsPlayer.level;
+        ChunkMap.EntityTracker tracker = world.getChunkProvider().chunkMap.trackedEntities.get(entity.getEntityId());
         if (tracker == null) {
             return;
         }
@@ -155,9 +155,9 @@ public class PlayerHelperImpl extends PlayerHelper {
         fake.entity.isFakeValid = true;
         List<TrackerData> trackers = new ArrayList<>();
         fake.triggerSpawnPacket = (player) -> {
-            EntityPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
-            PlayerConnection conn = nmsPlayer.playerConnection;
-            final EntityTrackerEntry tracker = new EntityTrackerEntry(world.getHandle(), nmsEntity, 1, true, conn::sendPacket, Collections.singleton(nmsPlayer));
+            ServerPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
+            ServerGamePacketListenerImpl conn = nmsPlayer.connection;
+            final EntityTrackerEntry tracker = new EntityTrackerEntry(world.getHandle(), nmsEntity, 1, true, conn::send, Collections.singleton(nmsPlayer));
             tracker.b(nmsPlayer);
             final TrackerData data = new TrackerData();
             data.player = player;
@@ -209,12 +209,12 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void sendEntityDestroy(Player player, Entity entity) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(entity.getEntityId()));
+        ((CraftPlayer) player).getHandle().connection.send(new PacketPlayOutEntityDestroy(entity.getEntityId()));
     }
 
     @Override
     public int getFlyKickCooldown(Player player) {
-        PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+        ServerGamePacketListenerImpl conn = ((CraftPlayer) player).getHandle().connection;
         if (conn instanceof AbstractListenerPlayInImpl) {
             conn = ((AbstractListenerPlayInImpl) conn).oldListener;
         }
@@ -230,7 +230,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void setFlyKickCooldown(Player player, int ticks) {
         ticks = 80 - ticks;
-        PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+        ServerGamePacketListenerImpl conn = ((CraftPlayer) player).getHandle().connection;
         if (conn instanceof AbstractListenerPlayInImpl) {
             conn = ((AbstractListenerPlayInImpl) conn).oldListener;
         }
@@ -280,9 +280,9 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public boolean hasChunkLoaded(Player player, Chunk chunk) {
-        return ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().playerChunkMap
-                .a(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()), false)
-                .anyMatch(entityPlayer -> entityPlayer.getUniqueID().equals(player.getUniqueId()));
+        return ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().chunkMap
+                .a(new ChunkPos(chunk.getX(), chunk.getZ()), false)
+                .anyMatch(entityPlayer -> entityPlayer.getUUID().equals(player.getUniqueId()));
     }
 
     @Override
@@ -308,7 +308,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void showEndCredits(Player player) {
         ((CraftPlayer) player).getHandle().viewingCredits = true;
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1f));
+        ((CraftPlayer) player).getHandle().connection.send(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1f));
     }
 
     @Override
@@ -325,7 +325,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void resendRecipeDetails(Player player) {
         Collection<IRecipe<?>> recipes = ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().b();
         PacketPlayOutRecipeUpdate updatePacket = new PacketPlayOutRecipeUpdate(recipes);
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(updatePacket);
+        ((CraftPlayer) player).getHandle().connection.send(updatePacket);
     }
 
     @Override
@@ -348,7 +348,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public String getPlayerBrand(Player player) {
-        return ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.brand;
+        return ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.networkManager).packetListener.brand;
     }
 
     @Override

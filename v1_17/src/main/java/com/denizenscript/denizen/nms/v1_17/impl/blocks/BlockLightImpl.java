@@ -5,16 +5,17 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.core.BlockPosition;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutLightUpdate;
 import net.minecraft.server.level.LightEngineThreaded;
-import net.minecraft.world.level.ChunkCoordIntPair;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.EnumSkyBlock;
 import net.minecraft.world.level.World;
 import net.minecraft.world.level.chunk.Chunk;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.IChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.NibbleArray;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.level.lighting.LightEngineBlock;
@@ -57,7 +58,7 @@ public class BlockLightImpl extends BlockLight {
     public static void enqueueRunnable(Chunk chunk, Runnable runnable) {
         LightEngine lightEngine = chunk.e();
         if (lightEngine instanceof LightEngineThreaded) {
-            ChunkCoordIntPair coord = chunk.getPos();
+            ChunkPos coord = chunk.getPos();
             try {
                 LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x, coord.z, LIGHTENGINETHREADED_UPDATE_PRE, runnable);
             }
@@ -104,7 +105,7 @@ public class BlockLightImpl extends BlockLight {
 
     public static void checkIfLightsBrokenByPacket(PacketPlayOutBlockChange packet, World world) {
         try {
-            BlockPosition pos = (BlockPosition) PACKETPLAYOUTBLOCKCHANGE_POSITION.get(packet);
+            BlockPos pos = (BlockPos) PACKETPLAYOUTBLOCKCHANGE_POSITION.get(packet);
             int chunkX = pos.getX() >> 4;
             int chunkZ = pos.getZ() >> 4;
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
@@ -193,7 +194,7 @@ public class BlockLightImpl extends BlockLight {
         return false;
     }
 
-    public static void runResetFor(final Chunk chunk, final BlockPosition pos) {
+    public static void runResetFor(final Chunk chunk, final BlockPos pos) {
         Runnable runnable = () -> {
             LightEngine lightEngine = chunk.e();
             LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
@@ -202,7 +203,7 @@ public class BlockLightImpl extends BlockLight {
         enqueueRunnable(chunk, runnable);
     }
 
-    public static void runSetFor(final Chunk chunk, final BlockPosition pos, final int level) {
+    public static void runSetFor(final Chunk chunk, final BlockPos pos, final int level) {
         Runnable runnable = () -> {
             LightEngine lightEngine = chunk.e();
             LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
@@ -243,10 +244,10 @@ public class BlockLightImpl extends BlockLight {
         sendNearbyChunkUpdates(((CraftChunk) getChunk()).getHandle());
     }
 
-    public static void sendNearbyChunkUpdates(Chunk chunk) {
-        ChunkCoordIntPair pos = chunk.getPos();
+    public static void sendNearbyChunkUpdates(LevelChunk chunk) {
+        ChunkPos pos = chunk.getPos();
         for (Vector vec : RELATIVE_CHUNKS) {
-            IChunkAccess other = chunk.getWorld().getChunkAt(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ(), ChunkStatus.FULL, false);
+            IChunkAccess other = chunk.getLevel().getChunkAt(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ(), ChunkStatus.FULL, false);
             if (other instanceof Chunk) {
                 sendSingleChunkUpdate((Chunk) other);
             }
@@ -256,10 +257,10 @@ public class BlockLightImpl extends BlockLight {
     public static void sendSingleChunkUpdate(Chunk chunk) {
         doNotCheck = true;
         LightEngine lightEngine = chunk.e();
-        ChunkCoordIntPair pos = chunk.getPos();
+        ChunkPos pos = chunk.getPos();
         PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(pos, lightEngine, true); // TODO: 1.16: should 'trust edges' be true here?
-        chunk.world.getChunkProvider().playerChunkMap.a(pos, false).forEach((player) -> {
-            player.playerConnection.sendPacket(packet);
+        chunk.world.getChunkProvider().chunkMap.a(pos, false).forEach((player) -> {
+            player.connection.send(packet);
         });
         doNotCheck = false;
     }

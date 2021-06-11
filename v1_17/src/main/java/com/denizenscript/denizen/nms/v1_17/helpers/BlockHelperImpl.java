@@ -10,18 +10,16 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.TileEntity;
-import net.minecraft.world.level.block.state.IBlockData;
-import net.minecraft.world.level.chunk.Chunk;
-import net.minecraft.world.level.material.EnumPistonReaction;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -62,8 +60,8 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void applyPhysics(Location location) {
-        BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        ((CraftWorld) location.getWorld()).getHandle().applyPhysics(pos, CraftMagicNumbers.getBlock(location.getBlock().getType()));
+        BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        ((CraftWorld) location.getWorld()).getHandle().updateNeighborsAt(pos, CraftMagicNumbers.getBlock(location.getBlock().getType()));
     }
 
     @Override
@@ -80,7 +78,7 @@ public class BlockHelperImpl implements BlockHelper {
         return blocks;
     }
 
-    public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
+    public <T extends BlockEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
             return (T) craftBlockEntityState_tileEntity.get(cbs);
         }
@@ -92,7 +90,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
-        GameProfile profile = getTE(((CraftSkull) skull)).gameProfile;
+        GameProfile profile = getTE(((CraftSkull) skull)).owner;
         if (profile == null) {
             return null;
         }
@@ -120,9 +118,9 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
         if (te != null) {
-            NBTTagCompound compound = new NBTTagCompound();
+            net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
             te.save(compound);
             return CompoundTagImpl.fromNMSTag(compound);
         }
@@ -136,9 +134,9 @@ public class BlockHelperImpl implements BlockHelper {
         builder.putInt("y", block.getY());
         builder.putInt("z", block.getZ());
         ctag = builder.build();
-        BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
-        te.load(((CraftBlockData) block.getBlockData()).getState(), ((CompoundTagImpl) ctag).toNMSTag());
+        BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
+        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos, true);
+        te.load(((CompoundTagImpl) ctag).toNMSTag());
     }
 
     private static net.minecraft.world.level.block.Block getBlockFrom(Material material) {
@@ -150,10 +148,10 @@ public class BlockHelperImpl implements BlockHelper {
             return null;
         }
         Item item = is.getItem();
-        if (!(item instanceof ItemBlock)) {
+        if (!(item instanceof BlockItem)) {
             return null;
         }
-        return ((ItemBlock) item).getBlock();
+        return ((BlockItem) item).getBlock();
     }
 
     @Override
@@ -168,7 +166,7 @@ public class BlockHelperImpl implements BlockHelper {
             return false;
         }
         // protected final float durability;
-        ReflectionHelper.setFieldValue(net.minecraft.world.level.block.state.BlockBase.class, "durability", block, resistance);
+        ReflectionHelper.setFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, "explosionResistance", block, resistance);
         return true;
     }
 
@@ -178,7 +176,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (block == null) {
             return 0;
         }
-        return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBase.class, "durability", block);
+        return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, "explosionResistance", block);
     }
 
     @Override
@@ -186,11 +184,11 @@ public class BlockHelperImpl implements BlockHelper {
         return new CraftBlockState(mat);
     }
 
-    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.world.level.block.state.BlockBase.class).get("material");
+    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.world.level.block.state.BlockBehaviour.class).get("material");
 
-    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.level.material.Material.class, "T");
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.level.material.Material.class, "pushReaction");
 
-    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.level.block.state.BlockBase.BlockData.class, "strength");
+    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, "destroySpeed");
 
     public net.minecraft.world.level.block.Block getMaterialBlock(Material bukkitMaterial) {
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
@@ -214,7 +212,7 @@ public class BlockHelperImpl implements BlockHelper {
     @Override
     public void setPushReaction(Material mat, String reaction) {
         try {
-            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), EnumPistonReaction.valueOf(reaction));
+            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), PushReaction.valueOf(reaction));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -223,13 +221,13 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockStength(Material mat) {
-        return getMaterialBlock(mat).getBlockData().strength;
+        return getMaterialBlock(mat).defaultBlockState().destroySpeed;
     }
 
     @Override
     public void setBlockStrength(Material mat, float strength) {
         try {
-            BLOCK_STRENGTH_SETTER.invoke(getMaterialBlock(mat).getBlockData(), strength);
+            BLOCK_STRENGTH_SETTER.invoke(getMaterialBlock(mat).defaultBlockState(), strength);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -238,16 +236,16 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void doRandomTick(Location location) {
-        BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        Chunk nmsChunk = ((CraftChunk) location.getChunk()).getHandle();
-        IBlockData nmsBlock = nmsChunk.getType(pos);
-        WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
-        if (nmsBlock.isTicking()) {
-            nmsBlock.b(nmsWorld, pos, nmsWorld.random);
+        BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        LevelChunk nmsChunk = ((CraftChunk) location.getChunk()).getHandle();
+        net.minecraft.world.level.block.state.BlockState nmsBlock = nmsChunk.getBlockState(pos);
+        ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
+        if (nmsBlock.isRandomlyTicking()) {
+            nmsBlock.tick(nmsWorld, pos, nmsWorld.random);
         }
-        Fluid fluid = nmsBlock.getFluid();
-        if (fluid.f()) {
-            fluid.b(nmsWorld, pos, nmsWorld.random);
+        FluidState fluid = nmsBlock.getFluidState();
+        if (fluid.isRandomlyTicking()) {
+            fluid.animateTick(nmsWorld, pos, nmsWorld.random);
         }
     }
 }

@@ -11,11 +11,10 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.network.PacketDataSerializer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
-import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,10 +33,10 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     public String brand = "unknown";
 
-    public BlockPosition fakeSignExpected;
+    public BlockPos fakeSignExpected;
 
-    public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, EntityPlayer entityPlayer) {
-        super(networkManager, entityPlayer, entityPlayer.playerConnection);
+    public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer) {
+        super(networkManager, entityPlayer, entityPlayer.connection);
     }
 
     public static void enable(DenizenPacketHandler handler) {
@@ -72,9 +71,9 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void a(PacketPlayInArmAnimation packet) {
-        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
         if (playersMap != null) {
-            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
             if (override != null && (override.hand != null || override.offhand != null)) {
                 player.getBukkitEntity().updateInventory();
             }
@@ -84,9 +83,9 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void a(PacketPlayInHeldItemSlot packet) {
-        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
         if (playersMap != null) {
-            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
             if (override != null && override.hand != null) {
                 Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 2);
             }
@@ -96,9 +95,9 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void a(PacketPlayInWindowClick packet) {
-        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUniqueID());
+        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
         if (playersMap != null) {
-            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUniqueID());
+            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
             if (override != null && packet.b() == 0) {
                 Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
             }
@@ -112,7 +111,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
             Debug.log("Custom packet payload: " + packet.tag.toString() + " sent from " + player.getName());
         }
         if (packet.tag.getNamespace().equals("minecraft") && packet.tag.getKey().equals("brand")) {
-            PacketDataSerializer newData = new PacketDataSerializer(packet.data.copy());
+            FriendlyByteBuf newData = new FriendlyByteBuf(packet.data.copy());
             int i = newData.i(); // read off the varInt of length to get rid of it
             brand = StandardCharsets.UTF_8.decode(newData.nioBuffer()).toString();
         }
@@ -137,7 +136,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void a(PacketPlayInFlying packet) {
-        if (DenizenPacketHandler.forceNoclip.contains(player.getUniqueID())) {
+        if (DenizenPacketHandler.forceNoclip.contains(player.getUUID())) {
             player.noclip = true;
         }
         super.a(packet);
@@ -145,8 +144,8 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     // For compatibility with other plugins using Reflection weirdly...
     @Override
-    public void sendPacket(Packet packet) {
-        super.sendPacket(packet);
+    public void send(Packet packet) {
+        super.send(packet);
     }
 
     @Override

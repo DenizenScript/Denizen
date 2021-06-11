@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
-import net.minecraft.resources.MinecraftKey;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.entity.projectile.EntityFishingHook;
@@ -71,8 +71,8 @@ public class FishingHelperImpl implements FishingHelper {
         }
     }
 
-    public ItemStack getRandomReward(EntityFishingHook hook, MinecraftKey key) {
-        WorldServer worldServer = (WorldServer) hook.getWorld();
+    public ItemStack getRandomReward(EntityFishingHook hook, ResourceKey key) {
+        ServerLevel worldServer = (ServerLevel) hook.getWorld();
         LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder(worldServer);
         LootTableRegistry registry = hook.getWorld().getMinecraftServer().getLootTableRegistry();
         // registry.getLootTable(key).getLootContextParameterSet()
@@ -84,7 +84,7 @@ public class FishingHelperImpl implements FishingHelper {
 
     @Override
     public FishHook spawnHook(Location location, Player player) {
-        WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
+        ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         EntityFishingHook hook = new EntityFishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0);
         nmsWorld.addEntity(hook);
         return (FishHook) hook.getBukkitEntity();

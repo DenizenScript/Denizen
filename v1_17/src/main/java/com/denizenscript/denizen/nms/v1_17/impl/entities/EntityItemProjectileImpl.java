@@ -75,16 +75,16 @@ public class EntityItemProjectileImpl extends EntityProjectile {
     }
 
     @Override
-    public void saveData(NBTTagCompound nbttagcompound) {
+    public void saveData(net.minecraft.nbt.CompoundTag nbttagcompound) {
         if (!this.getItemStack().isEmpty()) {
-            nbttagcompound.set("Item", this.getItemStack().save(new NBTTagCompound()));
+            nbttagcompound.set("Item", this.getItemStack().save(new net.minecraft.nbt.CompoundTag()));
         }
         super.saveData(nbttagcompound);
     }
 
     @Override
-    public void loadData(NBTTagCompound nbttagcompound) {
-        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("Item");
+    public void loadData(net.minecraft.nbt.CompoundTag nbttagcompound) {
+        net.minecraft.nbt.CompoundTag nbttagcompound1 = nbttagcompound.getCompound("Item");
         this.setItemStack(ItemStack.a(nbttagcompound1));
         if (this.getItemStack().isEmpty()) {
             this.die();

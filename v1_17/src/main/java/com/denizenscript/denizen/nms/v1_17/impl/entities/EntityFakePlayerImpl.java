@@ -2,36 +2,33 @@ package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakeNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakePlayerConnectionImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakePlayerConnectionImplImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.protocol.EnumProtocolDirection;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.PlayerInteractManager;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.level.EnumGamemode;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
-public class EntityFakePlayerImpl extends EntityPlayer {
+public class EntityFakePlayerImpl extends ServerPlayer {
 
-    public EntityFakePlayerImpl(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager, boolean doAdd) {
-        super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
+    public EntityFakePlayerImpl(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile, boolean doAdd) {
+        super(minecraftserver, worldserver, gameprofile);
         try {
             Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayerImpl((CraftServer) Bukkit.getServer(), this));
         }
         catch (Exception ex) {
             Debug.echoError(ex);
         }
-        playerinteractmanager.setGameMode(EnumGamemode.SURVIVAL);
-        NetworkManager networkManager = new FakeNetworkManagerImpl(EnumProtocolDirection.CLIENTBOUND);
-        playerConnection = new FakePlayerConnectionImpl(minecraftserver, networkManager, this);
-        networkManager.setPacketListener(playerConnection);
-        datawatcher.set(EntityHuman.bi, (byte) 127);
+        Connection networkManager = new FakeNetworkManagerImpl(PacketFlow.CLIENTBOUND);
+        connection = new FakePlayerConnectionImplImpl(minecraftserver, networkManager, this);
+        networkManager.setPacketListener(connection);
+        getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
         if (doAdd) {
             worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }

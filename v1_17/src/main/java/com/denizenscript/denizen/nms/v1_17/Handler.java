@@ -28,14 +28,13 @@ import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.chat.IChatMutableComponent;
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.IInventory;
-import net.minecraft.world.INamableTileEntity;
+import net.minecraft.world.Container;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -94,7 +93,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("d4b392244df170796f8779ef0fc1f2e9");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("acd6e6c27e5a0a9440afba70a96c27c9");
     }
 
     @Override
@@ -137,10 +136,10 @@ public class Handler extends NMSHandler {
                 MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
                 GameProfile gameProfile1 = null;
                 if (gameProfile.getId() != null) {
-                    gameProfile1 = minecraftServer.getUserCache().getProfile(gameProfile.getId());
+                    gameProfile1 = minecraftServer.getProfileCache().get(gameProfile.getId());
                 }
                 if (gameProfile1 == null && gameProfile.getName() != null) {
-                    gameProfile1 = minecraftServer.getUserCache().getProfile(gameProfile.getName());
+                    gameProfile1 = minecraftServer.getProfileCache().get(gameProfile.getName());
                 }
                 if (gameProfile1 == null) {
                     gameProfile1 = gameProfile;
@@ -155,7 +154,7 @@ public class Handler extends NMSHandler {
                     }
                 }
                 if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
-                    gameProfile1 = minecraftServer.getMinecraftSessionService().fillProfileProperties(gameProfile1, true);
+                    gameProfile1 = minecraftServer.getSessionService().fillProfileProperties(gameProfile1, true);
                 }
                 Property property = Iterables.getFirst(gameProfile1.getProperties().get("textures"), null);
                 return new PlayerProfile(gameProfile1.getName(), gameProfile1.getId(),
@@ -178,9 +177,9 @@ public class Handler extends NMSHandler {
 
     @Override
     public String getTitle(Inventory inventory) {
-        IInventory nms = ((CraftInventory) inventory).getInventory();
-        if (nms instanceof INamableTileEntity) {
-            return CraftChatMessage.fromComponent(((INamableTileEntity) nms).getDisplayName());
+        Container nms = ((CraftInventory) inventory).getInventory();
+        if (nms instanceof Nameable) {
+            return CraftChatMessage.fromComponent(((Nameable) nms).getDisplayName());
         }
         else if (MINECRAFT_INVENTORY.isInstance(nms)) {
             try {
@@ -286,23 +285,23 @@ public class Handler extends NMSHandler {
 
     @Override
     public String containerGetString(PersistentDataContainer container, NamespacedKey key) {
-        NBTBase base = ((CraftPersistentDataContainer) container).getRaw().get(key.toString());
-        if (base instanceof NBTTagString) {
-            return base.asString();
+        net.minecraft.nbt.Tag base = ((CraftPersistentDataContainer) container).getRaw().get(key.toString());
+        if (base instanceof StringTag) {
+            return base.getAsString();
         }
-        else if (base instanceof NBTTagByteArray) {
-            return new String(((NBTTagByteArray) base).getBytes(), StandardCharsets.UTF_8);
+        else if (base instanceof ByteArrayTag) {
+            return new String(((ByteArrayTag) base).getAsByteArray(), StandardCharsets.UTF_8);
         }
         return null;
     }
 
-    public static BaseComponent[] componentToSpigot(IChatBaseComponent nms) {
-        String json = IChatBaseComponent.ChatSerializer.a(nms);
+    public static BaseComponent[] componentToSpigot(Component nms) {
+        String json = Component.Serializer.toJson(nms);
         return ComponentSerializer.parse(json);
     }
 
-    public static IChatMutableComponent componentToNMS(BaseComponent[] spigot) {
+    public static MutableComponent componentToNMS(BaseComponent[] spigot) {
         String json = ComponentSerializer.toString(spigot);
-        return IChatBaseComponent.ChatSerializer.b(json);
+        return Component.Serializer.fromJson(json);
     }
 }

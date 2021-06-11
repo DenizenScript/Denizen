@@ -51,7 +51,7 @@ public class SidebarImpl extends Sidebar {
     public void sendUpdate() {
         List<ScoreboardTeam> oldTeams = generatedTeams;
         generatedTeams = new ArrayList<>();
-        PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj1, 0));
+        PacketHelperImpl.send(player, new PacketPlayOutScoreboardObjective(this.obj1, 0));
         for (int i = 0; i < this.lines.length; i++) {
             String line = this.lines[i];
             if (line == null) {
@@ -62,25 +62,25 @@ public class SidebarImpl extends Sidebar {
             team.getPlayerNameSet().add(lineId);
             team.setPrefix(Handler.componentToNMS(FormattedTextHelper.parse(line, ChatColor.WHITE)));
             generatedTeams.add(team);
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardTeam(team, 0));
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, obj1.getName(), lineId, this.scores[i]));
+            PacketHelperImpl.send(player, new PacketPlayOutScoreboardTeam(team, 0));
+            PacketHelperImpl.send(player, new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, obj1.getName(), lineId, this.scores[i]));
         }
-        PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardDisplayObjective(1, this.obj1));
-        PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
+        PacketHelperImpl.send(player, new PacketPlayOutScoreboardDisplayObjective(1, this.obj1));
+        PacketHelperImpl.send(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
         ScoreboardObjective temp = this.obj2;
         this.obj2 = this.obj1;
         this.obj1 = temp;
         for (ScoreboardTeam team : oldTeams) {
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
+            PacketHelperImpl.send(player, new PacketPlayOutScoreboardTeam(team, 1));
         }
     }
 
     @Override
     public void remove() {
         for (ScoreboardTeam team : generatedTeams) {
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
+            PacketHelperImpl.send(player, new PacketPlayOutScoreboardTeam(team, 1));
         }
         generatedTeams.clear();
-        PacketHelperImpl.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
+        PacketHelperImpl.send(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
     }
 }

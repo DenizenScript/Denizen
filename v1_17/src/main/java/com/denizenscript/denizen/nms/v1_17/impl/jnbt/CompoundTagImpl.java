@@ -1,6 +1,17 @@
 package com.denizenscript.denizen.nms.v1_17.impl.jnbt;
 
 import com.denizenscript.denizen.nms.util.jnbt.*;
+import com.denizenscript.denizen.nms.util.jnbt.ByteArrayTag;
+import com.denizenscript.denizen.nms.util.jnbt.ByteTag;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.util.jnbt.DoubleTag;
+import com.denizenscript.denizen.nms.util.jnbt.EndTag;
+import com.denizenscript.denizen.nms.util.jnbt.FloatTag;
+import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
+import com.denizenscript.denizen.nms.util.jnbt.IntTag;
+import com.denizenscript.denizen.nms.util.jnbt.LongTag;
+import com.denizenscript.denizen.nms.util.jnbt.ShortTag;
+import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import net.minecraft.nbt.*;
 
@@ -19,32 +30,32 @@ public class CompoundTagImpl extends CompoundTag {
         super(value);
     }
 
-    public NBTTagCompound toNMSTag() {
-        NBTTagCompound tag = new NBTTagCompound();
+    public net.minecraft.nbt.CompoundTag toNMSTag() {
+        net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
         for (Map.Entry<String, Tag> entry : value.entrySet()) {
             if (entry.getValue() instanceof IntTag) {
-                tag.setInt(entry.getKey(), ((IntTag) entry.getValue()).getValue());
+                tag.putInt(entry.getKey(), ((IntTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof ByteTag) {
-                tag.setByte(entry.getKey(), ((ByteTag) entry.getValue()).getValue());
+                tag.putByte(entry.getKey(), ((ByteTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof ByteArrayTag) {
-                tag.setByteArray(entry.getKey(), ((ByteArrayTag) entry.getValue()).getValue());
+                tag.putByteArray(entry.getKey(), ((ByteArrayTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof CompoundTag) {
-                tag.set(entry.getKey(), ((CompoundTagImpl) entry.getValue()).toNMSTag());
+                tag.put(entry.getKey(), ((CompoundTagImpl) entry.getValue()).toNMSTag());
             }
             else if (entry.getValue() instanceof DoubleTag) {
-                tag.setDouble(entry.getKey(), ((DoubleTag) entry.getValue()).getValue());
+                tag.putDouble(entry.getKey(), ((DoubleTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof FloatTag) {
-                tag.setFloat(entry.getKey(), ((FloatTag) entry.getValue()).getValue());
+                tag.putFloat(entry.getKey(), ((FloatTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof IntArrayTag) {
-                tag.setIntArray(entry.getKey(), ((IntArrayTag) entry.getValue()).getValue());
+                tag.putIntArray(entry.getKey(), ((IntArrayTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof JNBTListTag) {
-                NBTTagList list = new NBTTagList();
+                ListTag list = new ListTag();
                 List<Tag> tags = ((JNBTListTag) entry.getValue()).getValue();
                 for (Tag btag : tags) {
                     HashMap<String, Tag> btags = new HashMap<>();
@@ -52,69 +63,69 @@ public class CompoundTagImpl extends CompoundTag {
                     CompoundTagImpl comp = new CompoundTagImpl(btags);
                     list.add(comp.toNMSTag().get("test"));
                 }
-                tag.set(entry.getKey(), list);
+                tag.put(entry.getKey(), list);
             }
             else if (entry.getValue() instanceof LongTag) {
-                tag.setLong(entry.getKey(), ((LongTag) entry.getValue()).getValue());
+                tag.putLong(entry.getKey(), ((LongTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof ShortTag) {
-                tag.setShort(entry.getKey(), ((ShortTag) entry.getValue()).getValue());
+                tag.putShort(entry.getKey(), ((ShortTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof StringTag) {
-                tag.setString(entry.getKey(), ((StringTag) entry.getValue()).getValue());
+                tag.putString(entry.getKey(), ((StringTag) entry.getValue()).getValue());
             }
         }
         return tag;
     }
 
-    public static CompoundTag fromNMSTag(NBTTagCompound tag) {
+    public static CompoundTag fromNMSTag(net.minecraft.nbt.CompoundTag tag) {
         HashMap<String, Tag> tags = new HashMap<>();
-        for (String key : tag.getKeys()) {
-            NBTBase base = tag.get(key);
-            if (base instanceof NBTTagInt) {
-                tags.put(key, new IntTag(((NBTTagInt) base).asInt()));
+        for (String key : tag.getAllKeys()) {
+            net.minecraft.nbt.Tag base = tag.get(key);
+            if (base instanceof net.minecraft.nbt.IntTag) {
+                tags.put(key, new IntTag(((net.minecraft.nbt.IntTag) base).getAsInt()));
             }
-            else if (base instanceof NBTTagByte) {
-                tags.put(key, new ByteTag(((NBTTagByte) base).asByte()));
+            else if (base instanceof net.minecraft.nbt.ByteTag) {
+                tags.put(key, new ByteTag(((net.minecraft.nbt.ByteTag) base).getAsByte()));
             }
-            else if (base instanceof NBTTagFloat) {
-                tags.put(key, new FloatTag(((NBTTagFloat) base).asFloat()));
+            else if (base instanceof net.minecraft.nbt.FloatTag) {
+                tags.put(key, new FloatTag(((net.minecraft.nbt.FloatTag) base).getAsFloat()));
             }
-            else if (base instanceof NBTTagDouble) {
-                tags.put(key, new DoubleTag(((NBTTagDouble) base).asDouble()));
+            else if (base instanceof net.minecraft.nbt.DoubleTag) {
+                tags.put(key, new DoubleTag(((net.minecraft.nbt.DoubleTag) base).getAsDouble()));
             }
-            else if (base instanceof NBTTagByteArray) {
-                tags.put(key, new ByteArrayTag(((NBTTagByteArray) base).getBytes()));
+            else if (base instanceof net.minecraft.nbt.ByteArrayTag) {
+                tags.put(key, new ByteArrayTag(((net.minecraft.nbt.ByteArrayTag) base).getAsByteArray()));
             }
-            else if (base instanceof NBTTagIntArray) {
-                tags.put(key, new IntArrayTag(((NBTTagIntArray) base).getInts()));
+            else if (base instanceof net.minecraft.nbt.IntArrayTag) {
+                tags.put(key, new IntArrayTag(((net.minecraft.nbt.IntArrayTag) base).getAsIntArray()));
             }
-            else if (base instanceof NBTTagCompound) {
-                tags.put(key, fromNMSTag(((NBTTagCompound) base)));
+            else if (base instanceof net.minecraft.nbt.CompoundTag) {
+                tags.put(key, fromNMSTag(((net.minecraft.nbt.CompoundTag) base)));
             }
-            else if (base instanceof NBTTagEnd) {
+            else if (base instanceof net.minecraft.nbt.EndTag) {
                 tags.put(key, new EndTag());
             }
-            else if (base instanceof NBTTagLong) {
-                tags.put(key, new LongTag(((NBTTagLong) base).asLong()));
+            else if (base instanceof net.minecraft.nbt.LongTag) {
+                tags.put(key, new LongTag(((net.minecraft.nbt.LongTag) base).getAsLong()));
             }
-            else if (base instanceof NBTTagShort) {
-                tags.put(key, new ShortTag(((NBTTagShort) base).asShort()));
+            else if (base instanceof net.minecraft.nbt.ShortTag) {
+                tags.put(key, new ShortTag(((net.minecraft.nbt.ShortTag) base).getAsShort()));
             }
-            else if (base instanceof NBTTagString) {
-                tags.put(key, new StringTag(base.asString()));
+            else if (base instanceof net.minecraft.nbt.StringTag) {
+                tags.put(key, new StringTag(base.getAsString()));
             }
-            else if (base instanceof NBTTagList) {
-                NBTTagList list = (NBTTagList) base;
+            else if (base instanceof ListTag) {
+                ListTag list = (ListTag) base;
                 if (list.size() > 0) {
-                    NBTBase nbase = list.get(0);
-                    NBTTagCompound comp = new NBTTagCompound();
-                    comp.set("test", nbase);
+                    net.minecraft.nbt.Tag nbase = list.get(0);
+                    net.minecraft.nbt.CompoundTag comp = new net.minecraft.nbt.CompoundTag();
+                    comp.put("test", nbase);
                     ListTagBuilder ltb = new ListTagBuilder(fromNMSTag(comp).getValue().get("test").getClass());
                     for (int i = 0; i < list.size(); i++) {
-                        NBTBase nbase2 = list.get(i);
-                        NBTTagCompound comp2 = new NBTTagCompound();
-                        comp2.set("test", nbase2);
+                        net.minecraft.nbt.Tag nbase2 = list.get(i);
+                        net.minecraft.nbt.CompoundTag comp2 = new net.minecraft.nbt.CompoundTag();
+                        comp2.put("test", nbase2);
                         ltb.add(fromNMSTag(comp2).getValue().get("test"));
                     }
                     tags.put(key, ltb.build());

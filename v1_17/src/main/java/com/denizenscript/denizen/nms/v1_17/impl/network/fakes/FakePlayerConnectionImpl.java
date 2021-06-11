@@ -1,19 +1,19 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.fakes;
 
-import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-public class FakePlayerConnectionImpl extends PlayerConnection {
+public class FakePlayerConnectionImplImpl extends ServerGamePacketListenerImpl {
 
-    public FakePlayerConnectionImpl(MinecraftServer minecraftserver, NetworkManager networkmanager, EntityPlayer entityplayer) {
+    public FakePlayerConnectionImplImpl(MinecraftServer minecraftserver, Connection networkmanager, ServerPlayer entityplayer) {
         super(minecraftserver, networkmanager, entityplayer);
     }
 
     @Override
-    public void sendPacket(Packet packet) {
+    public void send(Packet packet) {
         // Do nothing
     }
 }

@@ -9,14 +9,14 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import net.minecraft.core.BlockPosition;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.network.syncher.DataWatcherObject;
-import net.minecraft.resources.MinecraftKey;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.PlayerChunkMap;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.RecipeBook;
 import net.minecraft.stats.RecipeBookServer;
 import net.minecraft.world.EnumHand;
@@ -150,9 +150,9 @@ public class EntityHelperImpl extends EntityHelper {
     public List<String> getDiscoveredRecipes(Player player) {
         try {
             RecipeBookServer book = ((CraftPlayer) player).getHandle().getRecipeBook();
-            Set<MinecraftKey> set = (Set<MinecraftKey>) RECIPE_BOOK_DISCOVERED_SET.get(book);
+            Set<ResourceKey> set = (Set<ResourceKey>) RECIPE_BOOK_DISCOVERED_SET.get(book);
             List<String> output = new ArrayList<>();
-            for (MinecraftKey key : set) {
+            for (ResourceKey key : set) {
                 output.add(key.toString());
             }
             return output;
@@ -221,7 +221,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
-        BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         ((CraftBlock) location.getBlock()).getNMS().interact(((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND,
                 new MovingObjectPositionBlock(new Vec3D(0, 0, 0), null, pos, false));
@@ -439,13 +439,13 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public List<Player> getPlayersThatSee(Entity entity) {
-        PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
-        PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().world).getChunkProvider().chunkMap;
+        ChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
         ArrayList<Player> output = new ArrayList<>();
         if (entityTracker == null) {
             return output;
         }
-        for (EntityPlayer player : entityTracker.trackedPlayers) {
+        for (ServerPlayer player : entityTracker.trackedPlayers) {
             output.add(player.getBukkitEntity());
         }
         return output;
@@ -462,16 +462,16 @@ public class EntityHelperImpl extends EntityHelper {
             return;
         }
         CraftPlayer craftPlayer = (CraftPlayer) pl;
-        EntityPlayer entityPlayer = craftPlayer.getHandle();
-        if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
+        ServerPlayer entityPlayer = craftPlayer.getHandle();
+        if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().world).getChunkProvider().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
+            ChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
             }
             if (Denizen.supportsPaper) { // Workaround for Paper issue
-                entityPlayer.playerConnection.sendPacket(new PacketPlayOutEntityDestroy(other.getId()));
+                entityPlayer.connection.send(new PacketPlayOutEntityDestroy(other.getId()));
             }
         }
     }
@@ -483,11 +483,11 @@ public class EntityHelperImpl extends EntityHelper {
             return;
         }
         CraftPlayer craftPlayer = (CraftPlayer) pl;
-        EntityPlayer entityPlayer = craftPlayer.getHandle();
-        if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
+        ServerPlayer entityPlayer = craftPlayer.getHandle();
+        if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().world).getChunkProvider().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
+            ChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
                 entry.updatePlayer(entityPlayer);
@@ -622,7 +622,7 @@ public class EntityHelperImpl extends EntityHelper {
         net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         nmsEntity.yaw = loc.getYaw();
         nmsEntity.pitch = loc.getPitch();
-        if (nmsEntity instanceof EntityPlayer) {
+        if (nmsEntity instanceof ServerPlayer) {
             nmsEntity.teleportAndSync(loc.getX(), loc.getY(), loc.getZ());
         }
         nmsEntity.setPosition(loc.getX(), loc.getY(), loc.getZ());

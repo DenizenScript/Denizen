@@ -20,15 +20,15 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.BlockPosition;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.network.syncher.DataWatcherObject;
 import net.minecraft.server.level.EntityTrackerEntry;
-import net.minecraft.server.level.PlayerChunkMap;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.entity.EntityLiving;
 import net.minecraft.world.entity.EntityTypes;
@@ -39,7 +39,7 @@ import net.minecraft.world.entity.monster.EntityEnderman;
 import net.minecraft.world.entity.monster.EntitySpider;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TileEntitySign;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.saveddata.maps.WorldMap;
@@ -83,13 +83,13 @@ public class PacketHelperImpl implements PacketHelper {
     public void setFakeAbsorption(Player player, float value) {
         DataWatcher dw = new DataWatcher(null);
         dw.register(ENTITY_HUMAN_DATA_WATCHER_ABSORPTION, value);
-        sendPacket(player, new PacketPlayOutEntityMetadata(player.getEntityId(), dw, true));
+        send(player, new PacketPlayOutEntityMetadata(player.getEntityId(), dw, true));
     }
 
     @Override
     public void resetWorldBorder(Player player) {
         WorldBorder wb = ((CraftWorld) player.getWorld()).getHandle().getWorldBorder();
-        sendPacket(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+        send(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
     }
 
     @Override
@@ -108,13 +108,13 @@ public class PacketHelperImpl implements PacketHelper {
             wb.setSize(size);
         }
 
-        sendPacket(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+        send(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
     }
 
     @Override
     public void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly) {
         int windowId = playerOnly ? 0 : ((CraftPlayer) player).getHandle().activeContainer.windowId;
-        sendPacket(player, new PacketPlayOutSetSlot(windowId, slot, CraftItemStack.asNMSCopy(itemStack)));
+        send(player, new PacketPlayOutSetSlot(windowId, slot, CraftItemStack.asNMSCopy(itemStack)));
     }
 
     @Override
@@ -128,12 +128,12 @@ public class PacketHelperImpl implements PacketHelper {
                 Debug.echoError(ex);
             }
         }
-        sendPacket(player, packet);
+        send(player, packet);
     }
 
     @Override
     public void respawn(Player player) {
-        ((CraftPlayer) player).getHandle().playerConnection.a(
+        ((CraftPlayer) player).getHandle().connection.a(
                 new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN));
     }
 
@@ -158,34 +158,34 @@ public class PacketHelperImpl implements PacketHelper {
 
         // Spectating an entity then immediately respawning the player prevents a client shader update,
         // allowing the player to retain whatever vision the mob they spectated had.
-        sendPacket(player, new PacketPlayOutSpawnEntityLiving(entity));
-        sendPacket(player, new PacketPlayOutCamera(entity));
+        send(player, new PacketPlayOutSpawnEntityLiving(entity));
+        send(player, new PacketPlayOutCamera(entity));
         ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(),
                 ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false);
     }
 
     @Override
     public void showDemoScreen(Player player) {
-        sendPacket(player, new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.f, 0f));
+        send(player, new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.f, 0f));
     }
 
     @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
-        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
+        BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
         Block block = ((CraftWorld) location.getWorld()).getHandle().getType(position).getBlock();
-        sendPacket(player, new PacketPlayOutBlockAction(position, block, action, state));
+        send(player, new PacketPlayOutBlockAction(position, block, action, state));
     }
 
     @Override
     public void showBlockCrack(Player player, int id, Location location, int progress) {
-        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        sendPacket(player, new PacketPlayOutBlockBreakAnimation(id, position, progress));
+        BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
+        send(player, new PacketPlayOutBlockBreakAnimation(id, position, progress));
     }
 
     @Override
     public void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) {
-        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        sendPacket(player, new PacketPlayOutTileEntityData(position, action, ((CompoundTagImpl) compoundTag).toNMSTag()));
+        BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
+        send(player, new PacketPlayOutTileEntityData(position, action, ((CompoundTagImpl) compoundTag).toNMSTag()));
     }
 
     @Override
@@ -211,7 +211,7 @@ public class PacketHelperImpl implements PacketHelper {
         PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
         packet.header = Handler.componentToNMS(FormattedTextHelper.parse(header, ChatColor.WHITE));
         packet.footer = Handler.componentToNMS(FormattedTextHelper.parse(footer, ChatColor.WHITE));
-        sendPacket(player, packet);
+        send(player, packet);
     }
 
     @Override
@@ -221,12 +221,12 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        sendPacket(player, new PacketPlayOutTitle(fadeInTicks, stayTicks, fadeOutTicks));
+        send(player, new PacketPlayOutTitle(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
-            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
+            send(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
         }
         if (subtitle != null) {
-            sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
+            send(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
         }
     }
 
@@ -235,7 +235,7 @@ public class PacketHelperImpl implements PacketHelper {
         Pair<EnumItemSlot, net.minecraft.world.item.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
         ArrayList<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> pairList = new ArrayList<>();
         pairList.add(pair);
-        sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
+        send(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
     }
 
     @Override
@@ -248,17 +248,17 @@ public class PacketHelperImpl implements PacketHelper {
         pairList.add(new Pair<>(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(equipment.getChestplate())));
         pairList.add(new Pair<>(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(equipment.getLeggings())));
         pairList.add(new Pair<>(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(equipment.getBoots())));
-        sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
+        send(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
     }
 
     @Override
     public void openBook(Player player, EquipmentSlot hand) {
-        sendPacket(player, new PacketPlayOutOpenBook(hand == EquipmentSlot.OFF_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND));
+        send(player, new PacketPlayOutOpenBook(hand == EquipmentSlot.OFF_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND));
     }
 
     @Override
     public void showHealth(Player player, float health, int food, float saturation) {
-        sendPacket(player, new PacketPlayOutUpdateHealth(health, food, saturation));
+        send(player, new PacketPlayOutUpdateHealth(health, food, saturation));
     }
 
     @Override
@@ -268,7 +268,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showExperience(Player player, float experience, int level) {
-        sendPacket(player, new PacketPlayOutExperience(experience, 0, level));
+        send(player, new PacketPlayOutExperience(experience, 0, level));
     }
 
     @Override
@@ -282,20 +282,20 @@ public class PacketHelperImpl implements PacketHelper {
             LocationTag fakeSign = new LocationTag(player.getLocation());
             fakeSign.setY(0);
             FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1));
-            BlockPosition pos = new BlockPosition(fakeSign.getX(), 0, fakeSign.getZ());
-            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.fakeSignExpected = pos;
-            sendPacket(player, new PacketPlayOutOpenSignEditor(pos));
+            BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
+            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.networkManager).packetListener.fakeSignExpected = pos;
+            send(player, new PacketPlayOutOpenSignEditor(pos));
             return true;
         }
-        TileEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPosition(location.getBlockX(),
+        BlockEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPos(location.getBlockX(),
                 location.getBlockY(), location.getBlockZ()));
         if (tileEntity instanceof TileEntitySign) {
             TileEntitySign sign = (TileEntitySign) tileEntity;
             // Prevent client crashing by sending current state of the sign
-            sendPacket(player, sign.getUpdatePacket());
+            send(player, sign.getUpdatePacket());
             sign.isEditable = true;
             sign.a((EntityHuman) ((CraftPlayer) player).getHandle());
-            sendPacket(player, new PacketPlayOutOpenSignEditor(sign.getPosition()));
+            send(player, new PacketPlayOutOpenSignEditor(sign.getPosition()));
             return true;
         }
         else {
@@ -305,7 +305,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void forceSpectate(Player player, Entity entity) {
-        sendPacket(player, new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
+        send(player, new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
     }
 
     public static MethodHandle ENTITY_METADATA_EID_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutEntityMetadata.class, "a");
@@ -331,12 +331,12 @@ public class PacketHelperImpl implements PacketHelper {
         try {
             if (entity.getType() == EntityType.PLAYER) {
                 if (listMode) {
-                    sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, ((CraftPlayer) player).getHandle()));
+                    send(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, ((CraftPlayer) player).getHandle()));
                 }
                 else {
                     // For player entities, force a respawn packet and let the dynamic intercept correct the details
-                    PlayerChunkMap tracker = ((WorldServer) ((CraftEntity) entity).getHandle().world).getChunkProvider().playerChunkMap;
-                    PlayerChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
+                    ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().world).getChunkProvider().chunkMap;
+                    ChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
                     if (entityTracker != null) {
                         try {
                             EntityTrackerEntry entry = (EntityTrackerEntry) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
@@ -358,7 +358,7 @@ public class PacketHelperImpl implements PacketHelper {
             list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
             list.add(new DataWatcher.Item<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
             ENTITY_METADATA_LIST_SETTER.invoke(packet, list);
-            sendPacket(player, packet);
+            send(player, packet);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -375,7 +375,7 @@ public class PacketHelperImpl implements PacketHelper {
         team.setCollisionRule(ScoreboardTeamBase.EnumTeamPush.NEVER);
         HashMap<UUID, ScoreboardTeam> map = noCollideTeamMap.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
         map.put(noCollide, team);
-        sendPacket(player, new PacketPlayOutScoreboardTeam(team, 0));
+        send(player, new PacketPlayOutScoreboardTeam(team, 0));
     }
 
     @Override
@@ -390,7 +390,7 @@ public class PacketHelperImpl implements PacketHelper {
         }
         ScoreboardTeam team = map.remove(noCollide);
         if (team != null) {
-            sendPacket(player, new PacketPlayOutScoreboardTeam(team, 1));
+            send(player, new PacketPlayOutScoreboardTeam(team, 1));
         }
         if (map.isEmpty()) {
             noCollideTeamMap.remove(player.getUniqueId());
@@ -401,17 +401,17 @@ public class PacketHelperImpl implements PacketHelper {
     public void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
         DataWatcher dw = new DataWatcher(null);
         dw.register(ENTITY_DATA_WATCHER_FLAGS, ((CraftEntity) entity).getHandle().getDataWatcher().get(ENTITY_DATA_WATCHER_FLAGS));
-        sendPacket(player, new PacketPlayOutEntityMetadata(entity.getEntityId(), dw, true));
+        send(player, new PacketPlayOutEntityMetadata(entity.getEntityId(), dw, true));
     }
 
     @Override
     public void sendEntityEffect(Player player, Entity entity, byte effectId) {
-        sendPacket(player, new PacketPlayOutEntityStatus(((CraftEntity) entity).getHandle(), effectId));
+        send(player, new PacketPlayOutEntityStatus(((CraftEntity) entity).getHandle(), effectId));
     }
 
     @Override
     public int getPacketStats(Player player, boolean sent) {
-        DenizenNetworkManagerImpl netMan = (DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager;
+        DenizenNetworkManagerImpl netMan = (DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.networkManager;
         return sent ? netMan.packetsSent : netMan.packetsReceived;
     }
 
@@ -444,7 +444,7 @@ public class PacketHelperImpl implements PacketHelper {
         }
     }
 
-    public static void sendPacket(Player player, Packet packet) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    public static void send(Player player, Packet packet) {
+        ((CraftPlayer) player).getHandle().connection.send(packet);
     }
 }

@@ -14,7 +14,7 @@ import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.server.level.PlayerInteractManager;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -96,7 +96,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
             throw new IllegalArgumentException("You must specify a name with no more than 16 characters for FAKE_PLAYER entity skins!");
         }
         CraftWorld world = (CraftWorld) location.getWorld();
-        WorldServer worldServer = world.getHandle();
+        ServerLevel worldServer = world.getHandle();
         PlayerProfile playerProfile = new PlayerProfile(name, null);
         if (skin == null && !name.matches(".*[^A-Za-z0-9_].*")) {
             playerProfile = NMSHandler.getInstance().fillPlayerProfile(playerProfile);
@@ -120,8 +120,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         gameProfile.getProperties().put("textures",
                 new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
 
-        final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getMinecraftServer(), worldServer,
-                gameProfile, new PlayerInteractManager(worldServer), doAdd);
+        final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getServer(), worldServer, gameProfile, doAdd);
 
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());

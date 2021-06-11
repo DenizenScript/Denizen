@@ -6,13 +6,13 @@ import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.CriterionTriggerImpossible;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.network.protocol.game.PacketPlayOutAdvancements;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.AdvancementDataPlayer;
 import net.minecraft.server.AdvancementDataWorld;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
@@ -28,7 +28,7 @@ import java.util.Set;
 public class AdvancementHelperImpl extends AdvancementHelper {
 
     private static final String IMPOSSIBLE_KEY = "impossible";
-    private static final Map<String, Criterion> IMPOSSIBLE_CRITERIA = Collections.singletonMap(IMPOSSIBLE_KEY, new Criterion(new CriterionTriggerImpossible.a()));
+    private static final Map<String, Criterion> IMPOSSIBLE_CRITERIA = Collections.singletonMap(IMPOSSIBLE_KEY, new Criterion(new ImpossibleTrigger.a()));
     private static final String[][] IMPOSSIBLE_REQUIREMENTS = new String[][]{{IMPOSSIBLE_KEY}};
 
     public static AdvancementDataWorld getAdvancementDataWorld() {
@@ -70,8 +70,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         if (advancement.temporary || !advancement.registered) {
             return;
         }
-        Map<MinecraftKey, Advancement> advancements = getAdvancementDataWorld().REGISTRY.advancements;
-        MinecraftKey key = asMinecraftKey(advancement.key);
+        Map<ResourceKey, Advancement> advancements = getAdvancementDataWorld().REGISTRY.advancements;
+        ResourceKey key = asResourceKey(advancement.key);
         Advancement nms = advancements.get(key);
         if (advancement.parent == null) {
             Set<Advancement> roots = ReflectionHelper.getFieldValue(Advancements.class, "c", getAdvancementDataWorld().REGISTRY);
@@ -99,20 +99,20 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             Map<String, Criterion> criteria = new HashMap<>();
             String[][] requirements = new String[advancement.length][];
             for (int i = 0; i < advancement.length; i++) {
-                criteria.put(IMPOSSIBLE_KEY + i, new Criterion(new CriterionTriggerImpossible.a()));
+                criteria.put(IMPOSSIBLE_KEY + i, new Criterion(new ImpossibleTrigger.a()));
                 requirements[i] = new String[] { IMPOSSIBLE_KEY + i };
             }
             progress.a(IMPOSSIBLE_CRITERIA, IMPOSSIBLE_REQUIREMENTS);
             for (int i = 0; i < len; i++) {
                 progress.a(IMPOSSIBLE_KEY + i); // complete impossible criteria
             }
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutAdvancements(false,
+            PacketHelperImpl.send(player, new PacketPlayOutAdvancements(false,
                     Collections.singleton(nmsAdvancement),
                     Collections.emptySet(),
                     Collections.singletonMap(nmsAdvancement.getName(), progress)));
         }
         else {
-            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.key));
             for (int i = 0; i < len; i++) {
                 ((CraftPlayer) player).getHandle().getAdvancementData().grantCriteria(nmsAdvancement, IMPOSSIBLE_KEY + i);
             }
@@ -130,13 +130,13 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             AdvancementProgress progress = new AdvancementProgress();
             progress.a(IMPOSSIBLE_CRITERIA, IMPOSSIBLE_REQUIREMENTS);
             progress.a(IMPOSSIBLE_KEY); // complete impossible criteria
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutAdvancements(false,
+            PacketHelperImpl.send(player, new PacketPlayOutAdvancements(false,
                     Collections.singleton(nmsAdvancement),
                     Collections.emptySet(),
                     Collections.singletonMap(nmsAdvancement.getName(), progress)));
         }
         else {
-            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.key));
             ((CraftPlayer) player).getHandle().getAdvancementData().grantCriteria(nmsAdvancement, IMPOSSIBLE_KEY);
         }
     }
@@ -144,21 +144,21 @@ public class AdvancementHelperImpl extends AdvancementHelper {
     @Override
     public void revoke(com.denizenscript.denizen.nms.util.Advancement advancement, Player player) {
         if (advancement.temporary) {
-            PacketHelperImpl.sendPacket(player, new PacketPlayOutAdvancements(false,
+            PacketHelperImpl.send(player, new PacketPlayOutAdvancements(false,
                     Collections.emptySet(),
-                    Collections.singleton(asMinecraftKey(advancement.key)),
+                    Collections.singleton(asResourceKey(advancement.key)),
                     Collections.emptyMap()));
         }
         else {
-            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.key));
             ((CraftPlayer) player).getHandle().getAdvancementData().revokeCritera(nmsAdvancement, IMPOSSIBLE_KEY);
         }
     }
 
     @Override
     public void update(Player player) {
-        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        nmsPlayer.playerConnection.sendPacket(new PacketPlayOutAdvancements(true,
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.connection.send(new PacketPlayOutAdvancements(true,
                 Collections.emptySet(),
                 Collections.emptySet(),
                 Collections.emptyMap()));
@@ -169,13 +169,13 @@ public class AdvancementHelperImpl extends AdvancementHelper {
     }
 
     private static Advancement asNMSCopy(com.denizenscript.denizen.nms.util.Advancement advancement) {
-        MinecraftKey key = asMinecraftKey(advancement.key);
+        ResourceKey key = asResourceKey(advancement.key);
         Advancement parent = advancement.parent != null
-                ? getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.parent))
+                ? getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.parent))
                 : null;
         AdvancementDisplay display = new AdvancementDisplay(CraftItemStack.asNMSCopy(advancement.icon),
                 Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
-                asMinecraftKey(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
+                asResourceKey(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.a(advancement.xOffset, advancement.yOffset);
         Map<String, Criterion> criteria = IMPOSSIBLE_CRITERIA;
@@ -184,14 +184,14 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             criteria = new HashMap<>();
             requirements = new String[advancement.length][];
             for (int i = 0; i < advancement.length; i++) {
-                criteria.put(IMPOSSIBLE_KEY + i, new Criterion(new CriterionTriggerImpossible.a()));
+                criteria.put(IMPOSSIBLE_KEY + i, new Criterion(new ImpossibleTrigger.a()));
                 requirements[i] = new String[] { IMPOSSIBLE_KEY + i };
             }
         }
         return new Advancement(key, parent, display, AdvancementRewards.a, criteria, requirements);
     }
 
-    private static MinecraftKey asMinecraftKey(NamespacedKey key) {
-        return key != null ? new MinecraftKey(key.getNamespace(), key.getKey()) : null;
+    private static ResourceKey asResourceKey(NamespacedKey key) {
+        return key != null ? new ResourceKey(key.getNamespace(), key.getKey()) : null;
     }
 }

@@ -9,8 +9,8 @@ import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.network.PlayerConnection;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -18,12 +18,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public class AbstractListenerPlayInImpl extends PlayerConnection {
+public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
 
-    public final PlayerConnection oldListener;
+    public final ServerGamePacketListenerImpl oldListener;
     public final DenizenNetworkManagerImpl denizenNetworkManager;
 
-    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
+    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
@@ -75,8 +75,8 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     }
 
     @Override
-    public void sendPacket(final Packet packet) {
-        oldListener.sendPacket(packet);
+    public void send(final Packet packet) {
+        oldListener.send(packet);
     }
 
     @Override
@@ -178,7 +178,7 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
         handlePacketIn(packet);
         // TODO: The underlying issue that necessitated this fix in 1.16 is probably fixed in 1.17
         if (!(packet instanceof PacketPlayInFlying.PacketPlayInLook) && player.getVehicle() != null) {
-            player.playerConnection.sendPacket(new PacketPlayOutMount(player.getVehicle()));
+            player.connection.send(new PacketPlayOutMount(player.getVehicle()));
         }
         oldListener.a(packet);
     }

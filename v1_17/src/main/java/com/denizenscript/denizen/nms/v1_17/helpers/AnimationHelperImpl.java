@@ -25,23 +25,23 @@ public class AnimationHelperImpl extends AnimationHelper {
         });
         register("POLAR_BEAR_START_STANDING", entity -> {
             if (entity.getType() == EntityType.POLAR_BEAR) {
-                ((CraftPolarBear) entity).getHandle().t(true);
+                ((CraftPolarBear) entity).getHandle().setStanding(true);
             }
         });
         register("POLAR_BEAR_STOP_STANDING", entity -> {
             if (entity.getType() == EntityType.POLAR_BEAR) {
-                ((CraftPolarBear) entity).getHandle().t(false);
+                ((CraftPolarBear) entity).getHandle().setStanding(false);
             }
         });
         register("HORSE_BUCK", entity -> {
             if (entity instanceof Horse) {
-                ((CraftHorse) entity).getHandle().fm();
+                ((CraftHorse) entity).getHandle().makeMad();
             }
         });
         register("IRON_GOLEM_ATTACK", entity -> {
             if (entity instanceof IronGolem) {
                 Entity nmsEntity = ((CraftEntity) entity).getHandle();
-                nmsEntity.world.broadcastEntityEffect(nmsEntity, (byte) 4);
+                nmsEntity.level.broadcastEntityEvent(nmsEntity, (byte) 4);
             }
         });
     }
