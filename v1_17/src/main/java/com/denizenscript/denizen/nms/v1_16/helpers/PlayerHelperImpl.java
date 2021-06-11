@@ -22,17 +22,17 @@ import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_17_R1.*;
 import org.bukkit.*;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -65,7 +65,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void stopSound(Player player, String sound, SoundCategory category) {
         MinecraftKey soundKey = sound == null ? null : new MinecraftKey(sound);
-        net.minecraft.server.v1_16_R3.SoundCategory nmsCategory = category == null ? null : net.minecraft.server.v1_16_R3.SoundCategory.valueOf(category.name());
+        net.minecraft.server.v1_17_R1.SoundCategory nmsCategory = category == null ? null : net.minecraft.server.v1_17_R1.SoundCategory.valueOf(category.name());
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutStopSound(soundKey, nmsCategory));
     }
 
@@ -89,7 +89,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         CraftWorld world = ((CraftWorld) location.getWorld());
-        net.minecraft.server.v1_16_R3.Entity nmsEntity;
+        net.minecraft.server.v1_17_R1.Entity nmsEntity;
         if (entityType.isCustom()) {
             if (entityType.customEntityType == CustomEntityType.ITEM_PROJECTILE) {
                 org.bukkit.inventory.ItemStack itemStack = new ItemStack(Material.STONE);

@@ -3,9 +3,9 @@ package com.denizenscript.denizen.nms.v1_16.impl.network.packets;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSetSlot;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R3.ItemStack;
-import net.minecraft.server.v1_16_R3.PacketPlayOutSetSlot;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_17_R1.ItemStack;
+import net.minecraft.server.v1_17_R1.PacketPlayOutSetSlot;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;
 import java.util.Map;

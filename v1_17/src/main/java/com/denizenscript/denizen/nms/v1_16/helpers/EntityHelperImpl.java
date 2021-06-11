@@ -9,18 +9,18 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_17_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_16_R3.entity.*;
-import org.bukkit.craftbukkit.v1_16_R3.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_17_R1.entity.*;
+import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -39,9 +39,9 @@ public class EntityHelperImpl extends EntityHelper {
 
     public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("recipes");
 
-    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_16_R3.Entity.class, "setPose", EntityPose.class);
+    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_17_R1.Entity.class, "setPose", EntityPose.class);
 
-    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.Entity.class, "onGround");
+    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_17_R1.Entity.class, "onGround");
 
     @Override
     public void setInvisible(Entity entity, boolean invisible) {
@@ -100,7 +100,7 @@ public class EntityHelperImpl extends EntityHelper {
             else {
                 source = DamageSource.mobAttack(((CraftLivingEntity) attacker).getHandle());
             }
-            net.minecraft.server.v1_16_R3.Entity nmsTarget = ((CraftEntity) target).getHandle();
+            net.minecraft.server.v1_17_R1.Entity nmsTarget = ((CraftEntity) target).getHandle();
             if (nmsTarget.isInvulnerable(source)) {
                 return 0;
             }
@@ -204,7 +204,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public Entity getEntity(World world, UUID uuid) {
-        net.minecraft.server.v1_16_R3.Entity entity = ((CraftWorld) world).getHandle().getEntity(uuid);
+        net.minecraft.server.v1_17_R1.Entity entity = ((CraftWorld) world).getHandle().getEntity(uuid);
         return entity == null ? null : entity.getBukkitEntity();
     }
 
@@ -246,7 +246,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void stopWalking(Entity entity) {
-        net.minecraft.server.v1_16_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
@@ -255,7 +255,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public double getSpeed(Entity entity) {
-        net.minecraft.server.v1_16_R3.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return 0.0;
         }
@@ -265,7 +265,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setSpeed(Entity entity, double speed) {
-        net.minecraft.server.v1_16_R3.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return;
         }
@@ -280,7 +280,7 @@ public class EntityHelperImpl extends EntityHelper {
             return;
         }
 
-        final net.minecraft.server.v1_16_R3.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
+        final net.minecraft.server.v1_17_R1.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
         if (!(nmsEntityFollower instanceof EntityInsentient)) {
             return;
         }
@@ -351,7 +351,7 @@ public class EntityHelperImpl extends EntityHelper {
             return;
         }
 
-        net.minecraft.server.v1_16_R3.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return;
         }
@@ -440,7 +440,7 @@ public class EntityHelperImpl extends EntityHelper {
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
             PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
-            net.minecraft.server.v1_16_R3.Entity other = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_17_R1.Entity other = ((CraftEntity) entity).getHandle();
             PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
@@ -461,7 +461,7 @@ public class EntityHelperImpl extends EntityHelper {
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
             PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
-            net.minecraft.server.v1_16_R3.Entity other = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_17_R1.Entity other = ((CraftEntity) entity).getHandle();
             PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
@@ -487,7 +487,7 @@ public class EntityHelperImpl extends EntityHelper {
             look(entity, yaw, pitch);
         }
         else {
-            net.minecraft.server.v1_16_R3.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_17_R1.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = yaw - 360;
             handle.pitch = pitch;
         }
@@ -495,13 +495,13 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public float getBaseYaw(Entity entity) {
-        net.minecraft.server.v1_16_R3.Entity handle = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity handle = ((CraftEntity) entity).getHandle();
         return ((EntityLiving) handle).aB;
     }
 
     @Override
     public void look(Entity entity, float yaw, float pitch) {
-        net.minecraft.server.v1_16_R3.Entity handle = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity handle = ((CraftEntity) entity).getHandle();
         if (handle != null) {
             handle.yaw = yaw;
             if (handle instanceof EntityLiving) {
@@ -594,7 +594,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void teleport(Entity entity, Location loc) {
-        net.minecraft.server.v1_16_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_17_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         nmsEntity.yaw = loc.getYaw();
         nmsEntity.pitch = loc.getPitch();
         if (nmsEntity instanceof EntityPlayer) {
@@ -682,7 +682,7 @@ public class EntityHelperImpl extends EntityHelper {
             return;
         }
         EntityLiving nmsTarget = ((CraftLivingEntity) target).getHandle();
-        net.minecraft.server.v1_16_R3.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
+        net.minecraft.server.v1_17_R1.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
         CraftEventFactory.entityDamage = nmsSource;
         try {
             DamageSource src = DamageSource.GENERIC;

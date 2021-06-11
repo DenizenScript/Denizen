@@ -20,19 +20,19 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_17_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
-import org.bukkit.craftbukkit.v1_16_R3.CraftEquipmentSlot;
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.map.CraftMapCanvas;
-import org.bukkit.craftbukkit.v1_16_R3.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_17_R1.CraftEquipmentSlot;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.map.CraftMapCanvas;
+import org.bukkit.craftbukkit.v1_17_R1.map.CraftMapView;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -51,7 +51,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static final DataWatcherObject<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(EntityHuman.class, "c", null);
 
-    public static final DataWatcherObject<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R3.Entity.class, "S", null);
+    public static final DataWatcherObject<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.server.v1_17_R1.Entity.class, "S", null);
 
     public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutAbilities.class, "f");
 
@@ -208,8 +208,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
-        Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
-        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack>> pairList = new ArrayList<>();
+        Pair<EnumItemSlot, net.minecraft.server.v1_17_R1.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
+        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_17_R1.ItemStack>> pairList = new ArrayList<>();
         pairList.add(pair);
         sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
     }
@@ -217,7 +217,7 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void resetEquipment(Player player, LivingEntity entity) {
         EntityEquipment equipment = entity.getEquipment();
-        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack>> pairList = new ArrayList<>();
+        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_17_R1.ItemStack>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(equipment.getItemInMainHand())));
         pairList.add(new Pair<>(EnumItemSlot.OFFHAND, CraftItemStack.asNMSCopy(equipment.getItemInOffHand())));
         pairList.add(new Pair<>(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(equipment.getHelmet())));
@@ -292,8 +292,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     static {
         try {
-            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R3.Entity.class, "aq", null);
-            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_16_R3.Entity.class, "ar", null);
+            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_17_R1.Entity.class, "aq", null);
+            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_17_R1.Entity.class, "ar", null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();

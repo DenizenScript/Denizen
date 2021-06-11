@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_17_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -4,11 +4,11 @@ import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementat
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.server.v1_17_R1.*;
 import org.bukkit.World;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -23,8 +23,8 @@ public class ChunkHelperImpl implements ChunkHelper {
     static {
         chunkProviderServerThreadField = ReflectionHelper.getFields(ChunkProviderServer.class).get("serverThread");
         chunkProviderServerThreadFieldSetter = ReflectionHelper.getFinalSetter(ChunkProviderServer.class, "serverThread");
-        worldThreadField = ReflectionHelper.getFields(net.minecraft.server.v1_16_R3.World.class).get("serverThread");
-        worldThreadFieldSetter = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.World.class, "serverThread");
+        worldThreadField = ReflectionHelper.getFields(net.minecraft.server.v1_17_R1.World.class).get("serverThread");
+        worldThreadFieldSetter = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_17_R1.World.class, "serverThread");
     }
 
     public Thread resetServerThread;
