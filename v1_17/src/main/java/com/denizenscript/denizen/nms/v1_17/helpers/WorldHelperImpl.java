@@ -4,7 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.WorldHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.DifficultyDamageScaler;
+import net.minecraft.world.DifficultyInstance;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
@@ -25,7 +25,7 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public float getLocalDifficulty(Location location) {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        DifficultyDamageScaler scaler = ((CraftWorld) location.getWorld()).getHandle().getDamageScaler(pos);
-        return scaler.b();
+        DifficultyInstance scaler = ((CraftWorld) location.getWorld()).getHandle().getCurrentDifficultyAt(pos);
+        return scaler.getEffectiveDifficulty();
     }
 }

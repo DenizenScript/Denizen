@@ -10,31 +10,15 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
-import net.minecraft.network.syncher.DataWatcherObject;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.RecipeBook;
-import net.minecraft.stats.RecipeBookServer;
-import net.minecraft.world.EnumHand;
-import net.minecraft.world.damagesource.CombatMath;
+import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.GenericAttributes;
-import net.minecraft.world.entity.ai.navigation.NavigationAbstract;
-import net.minecraft.world.entity.item.EntityItem;
-import net.minecraft.world.entity.monster.EntityEnderman;
-import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.item.enchantment.EnchantmentManager;
-import net.minecraft.world.level.RayTrace;
-import net.minecraft.world.level.pathfinder.PathEntity;
-import net.minecraft.world.phys.AxisAlignedBB;
-import net.minecraft.world.phys.MovingObjectPosition;
-import net.minecraft.world.phys.MovingObjectPositionBlock;
-import net.minecraft.world.phys.Vec3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -48,6 +32,7 @@ import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -149,10 +134,10 @@ public class EntityHelperImpl extends EntityHelper {
 
     public List<String> getDiscoveredRecipes(Player player) {
         try {
-            RecipeBookServer book = ((CraftPlayer) player).getHandle().getRecipeBook();
-            Set<ResourceKey> set = (Set<ResourceKey>) RECIPE_BOOK_DISCOVERED_SET.get(book);
+            ServerRecipeBook book = ((CraftPlayer) player).getHandle().getRecipeBook();
+            Set<ResourceLocation> set = (Set<ResourceLocation>) RECIPE_BOOK_DISCOVERED_SET.get(book);
             List<String> output = new ArrayList<>();
-            for (ResourceKey key : set) {
+            for (ResourceLocation key : set) {
                 output.add(key.toString());
             }
             return output;
@@ -694,11 +679,11 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftGhast) entity).getHandle().t(attacking);
     }
 
-    public static final DataWatcherObject<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EntityEnderman.class, "bo", null);
+    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EntityEnderman.class, "bo", null);
 
     @Override
     public void setEndermanAngry(Entity entity, boolean angry) {
-        ((CraftEnderman) entity).getHandle().getDataWatcher().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+        ((CraftEnderman) entity).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
     }
 
     @Override

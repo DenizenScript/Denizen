@@ -16,13 +16,14 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.core.IRegistry;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.block.entity.TileEntityFurnace;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -45,10 +46,10 @@ import java.util.*;
 
 public class ItemHelperImpl extends ItemHelper {
 
-    public static IRecipe<?> getNMSRecipe(NamespacedKey key) {
-        ResourceKey nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<ResourceKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
-            IRecipe<?> recipe = recipeMap.get(nmsKey);
+    public static net.minecraft.world.item.crafting.Recipe<?> getNMSRecipe(NamespacedKey key) {
+        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(key);
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
+            net.minecraft.world.item.crafting.Recipe<?> recipe = recipeMap.get(nmsKey);
             if (recipe != null) {
                 return recipe;
             }
@@ -59,7 +60,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(IRegistry.ITEM.get(ResourceKey.a(material.getKey().getKey())), size);
+            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(Registry.ITEM.get(ResourceLocation.tryParse(material.getKey().getKey())), size);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -68,12 +69,12 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public Integer burnTime(Material material) {
-        return TileEntityFurnace.f().get(CraftMagicNumbers.getItem(material));
+        return AbstractFurnaceBlockEntity.getFuel().get(CraftMagicNumbers.getItem(material));
     }
 
     @Override
     public Recipe getRecipeById(NamespacedKey key) {
-        IRecipe<?> recipe = getNMSRecipe(key);
+        net.minecraft.world.item.crafting.Recipe<?> recipe = getNMSRecipe(key);
         if (recipe == null) {
             return null;
         }
@@ -82,16 +83,16 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void removeRecipe(NamespacedKey key) {
-        ResourceKey nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<ResourceKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
+        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(key);
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
             recipeMap.remove(nmsKey);
         }
     }
 
     @Override
     public void clearDenizenRecipes() {
-        for (Object2ObjectLinkedOpenHashMap<ResourceKey, IRecipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().recipes.values()) {
-            for (ResourceKey key : new ArrayList<>(recipeMap.keySet())) {
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
+            for (ResourceLocation key : new ArrayList<>(recipeMap.keySet())) {
                 if (key.getNamespace().equalsIgnoreCase("denizen")) {
                     recipeMap.remove(key);
                 }
@@ -116,53 +117,53 @@ public class ItemHelperImpl extends ItemHelper {
         }
     }
 
-    public static RecipeItemStack itemArrayToRecipe(ItemStack[] items, boolean exact) {
-        RecipeItemStack.StackProvider[] stacks = new RecipeItemStack.StackProvider[items.length];
+    public static Ingredient itemArrayToRecipe(ItemStack[] items, boolean exact) {
+        Ingredient.ItemValue[] stacks = new Ingredient.ItemValue[items.length];
         for (int i = 0; i < items.length; i++) {
-            stacks[i] = new RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(items[i]));
+            stacks[i] = new Ingredient.ItemValue(CraftItemStack.asNMSCopy(items[i]));
         }
-        RecipeItemStack itemRecipe = new RecipeItemStack(Arrays.stream(stacks));
+        Ingredient itemRecipe = new Ingredient(Arrays.stream(stacks));
         itemRecipe.exact = exact;
         return itemRecipe;
     }
 
     @Override
     public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact) {
-        ResourceKey key = new ResourceKey("denizen", keyName);
-        RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
-        RecipeCooking recipe;
+        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
+        AbstractCookingRecipe recipe;
         if (type.equalsIgnoreCase("smoker")) {
-            recipe = new RecipeSmoking(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmokingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("blast")) {
-            recipe = new RecipeBlasting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new BlastingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("campfire")) {
-            recipe = new RecipeCampfire(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new CampfireCookingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else {
-            recipe = new FurnaceRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmeltingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
-        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
-        ResourceKey key = new ResourceKey("denizen", keyName);
-        RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
-        RecipeStonecutting recipe = new RecipeStonecutting(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
-        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
+        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
+        StonecutterRecipe recipe = new StonecutterRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 
     @Override
     public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact) {
-        ResourceKey key = new ResourceKey("denizen", keyName);
-        ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
+        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        ArrayList<Ingredient> ingredientList = new ArrayList<>();
         for (int i = 0; i < ingredients.size(); i++) {
             ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));
         }
-        ShapelessRecipes recipe = new ShapelessRecipes(key, group, CraftItemStack.asNMSCopy(result), NonNullList.a(null, ingredientList.toArray(new RecipeItemStack[0])));
-        ((CraftServer) Bukkit.getServer()).getServer().getCraftingManager().addRecipe(recipe);
+        ShapelessRecipe recipe = new ShapelessRecipe(key, group, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 
     @Override
@@ -178,13 +179,13 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getJsonString(ItemStack itemStack) {
-        String json = CraftItemStack.asNMSCopy(itemStack).C().getChatModifier().toString().replace("\\", "\\\\").replace("\"", "\\\"");
+        String json = CraftItemStack.asNMSCopy(itemStack).getDisplayName().getStyle().toString().replace("\\", "\\\\").replace("\"", "\\\"");
         return json.substring(176, json.length() - 185);
     }
 
     @Override
     public String getRawHoverText(ItemStack itemStack) {
-        NBTTagCompound tag = CraftItemStack.asNMSCopy(itemStack).getTag();
+        net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(itemStack).getTag();
         if (tag == null) {
             return null;
         }
@@ -195,9 +196,9 @@ public class ItemHelperImpl extends ItemHelper {
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.world.item.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
         if (itemStack.hasTag()) {
-            NBTTagCompound tag = itemStack.getTag();
-            if (tag.hasKeyOfType("SkullOwner", 10)) {
-                GameProfile profile = GameProfileSerializer.deserialize(tag.getCompound("SkullOwner"));
+            net.minecraft.nbt.CompoundTag tag = itemStack.getTag();
+            if (tag.contains("SkullOwner", 10)) {
+                GameProfile profile = NbtUtils.readGameProfile(tag.getCompound("SkullOwner"));
                 if (profile != null) {
                     Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
                     return new PlayerProfile(profile.getName(), profile.getId(),
@@ -222,8 +223,8 @@ public class ItemHelperImpl extends ItemHelper {
             }
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
-        tag.set("SkullOwner", GameProfileSerializer.serialize(new NBTTagCompound(), gameProfile));
+        net.minecraft.nbt.CompoundTag tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new net.minecraft.nbt.CompoundTag();
+        tag.put("SkullOwner", NbtUtils.writeGameProfile(new net.minecraft.nbt.CompoundTag(), gameProfile));
         nmsItemStack.setTag(tag);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
@@ -231,7 +232,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public ItemStack addNbtData(ItemStack itemStack, String key, Tag value) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
+        net.minecraft.nbt.CompoundTag tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new net.minecraft.nbt.CompoundTag();
         CompoundTag compound = CompoundTagImpl.fromNMSTag(tag).createBuilder().put(key, value).build();
         nmsItemStack.setTag(((CompoundTagImpl) compound).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
@@ -270,12 +271,12 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public IntArrayTag convertUuidToNbt(UUID id) {
-        return new IntArrayTag(GameProfileSerializer.a(id).getInts());
+        return new IntArrayTag(NbtUtils.createUUID(id).getAsIntArray());
     }
 
     @Override
     public UUID convertNbtToUuid(IntArrayTag id) {
-        return GameProfileSerializer.a(new NBTTagIntArray(id.getValue()));
+        return NbtUtils.loadUUID(new net.minecraft.nbt.IntArrayTag(id.getValue()));
     }
 
     @Override
@@ -284,7 +285,7 @@ public class ItemHelperImpl extends ItemHelper {
             return null;
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        String jsonText = ((NBTTagCompound) nmsItemStack.getTag().get("display")).getString("Name");
+        String jsonText = ((net.minecraft.nbt.CompoundTag) nmsItemStack.getTag().get("display")).getString("Name");
         BaseComponent[] nameComponent = ComponentSerializer.parse(jsonText);
         return FormattedTextHelper.stringify(nameComponent, ChatColor.WHITE);
     }
@@ -295,7 +296,7 @@ public class ItemHelperImpl extends ItemHelper {
             return null;
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        NBTTagList list = ((NBTTagCompound) nmsItemStack.getTag().get("display")).getList("Lore", 8);
+        ListTag list = ((net.minecraft.nbt.CompoundTag) nmsItemStack.getTag().get("display")).getList("Lore", 8);
         List<String> outList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             BaseComponent[] lineComponent = ComponentSerializer.parse(list.getString(i));
@@ -307,37 +308,37 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public void setDisplayName(ItemTag item, String name) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        NBTTagCompound tag = nmsItemStack.getOrCreateTag();
-        NBTTagCompound display = tag.getCompound("display");
-        if (!tag.hasKey("display")) {
-            tag.set("display", display);
+        net.minecraft.nbt.CompoundTag tag = nmsItemStack.getOrCreateTag();
+        net.minecraft.nbt.CompoundTag display = tag.getCompound("display");
+        if (!tag.contains("display")) {
+            tag.put("display", display);
         }
         if (name == null || name.isEmpty()) {
-            display.set("Name", null);
+            display.put("Name", null);
             return;
         }
         BaseComponent[] components = FormattedTextHelper.parse(name, ChatColor.WHITE);
-        display.set("Name", NBTTagString.a(ComponentSerializer.toString(components)));
+        display.put("Name", net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(components)));
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 
     @Override
     public void setLore(ItemTag item, List<String> lore) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        NBTTagCompound tag = nmsItemStack.getOrCreateTag();
-        NBTTagCompound display = tag.getCompound("display");
-        if (!tag.hasKey("display")) {
-            tag.set("display", display);
+        net.minecraft.nbt.CompoundTag tag = nmsItemStack.getOrCreateTag();
+        net.minecraft.nbt.CompoundTag display = tag.getCompound("display");
+        if (!tag.contains("display")) {
+            tag.put("display", display);
         }
         if (lore == null || lore.isEmpty()) {
-            display.set("Lore", null);
+            display.put("Lore", null);
         }
         else {
-            NBTTagList tagList = new NBTTagList();
+            ListTag tagList = new ListTag();
             for (String line : lore) {
-                tagList.add(NBTTagString.a(ComponentSerializer.toString(FormattedTextHelper.parse(line, ChatColor.WHITE))));
+                tagList.add(net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(FormattedTextHelper.parse(line, ChatColor.WHITE))));
             }
-            display.set("Lore", tagList);
+            display.put("Lore", tagList);
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }

@@ -8,7 +8,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.network.protocol.game.PacketPlayOutAdvancements;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.AdvancementDataPlayer;
 import net.minecraft.server.AdvancementDataWorld;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -70,8 +70,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         if (advancement.temporary || !advancement.registered) {
             return;
         }
-        Map<ResourceKey, Advancement> advancements = getAdvancementDataWorld().REGISTRY.advancements;
-        ResourceKey key = asResourceKey(advancement.key);
+        Map<ResourceLocation, Advancement> advancements = getAdvancementDataWorld().REGISTRY.advancements;
+        ResourceLocation key = asResourceLocation(advancement.key);
         Advancement nms = advancements.get(key);
         if (advancement.parent == null) {
             Set<Advancement> roots = ReflectionHelper.getFieldValue(Advancements.class, "c", getAdvancementDataWorld().REGISTRY);
@@ -112,7 +112,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                     Collections.singletonMap(nmsAdvancement.getName(), progress)));
         }
         else {
-            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceLocation(advancement.key));
             for (int i = 0; i < len; i++) {
                 ((CraftPlayer) player).getHandle().getAdvancementData().grantCriteria(nmsAdvancement, IMPOSSIBLE_KEY + i);
             }
@@ -136,7 +136,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                     Collections.singletonMap(nmsAdvancement.getName(), progress)));
         }
         else {
-            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceLocation(advancement.key));
             ((CraftPlayer) player).getHandle().getAdvancementData().grantCriteria(nmsAdvancement, IMPOSSIBLE_KEY);
         }
     }
@@ -146,11 +146,11 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         if (advancement.temporary) {
             PacketHelperImpl.send(player, new PacketPlayOutAdvancements(false,
                     Collections.emptySet(),
-                    Collections.singleton(asResourceKey(advancement.key)),
+                    Collections.singleton(asResourceLocation(advancement.key)),
                     Collections.emptyMap()));
         }
         else {
-            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asResourceLocation(advancement.key));
             ((CraftPlayer) player).getHandle().getAdvancementData().revokeCritera(nmsAdvancement, IMPOSSIBLE_KEY);
         }
     }
@@ -169,13 +169,13 @@ public class AdvancementHelperImpl extends AdvancementHelper {
     }
 
     private static Advancement asNMSCopy(com.denizenscript.denizen.nms.util.Advancement advancement) {
-        ResourceKey key = asResourceKey(advancement.key);
+        ResourceLocation key = asResourceLocation(advancement.key);
         Advancement parent = advancement.parent != null
-                ? getAdvancementDataWorld().REGISTRY.advancements.get(asResourceKey(advancement.parent))
+                ? getAdvancementDataWorld().REGISTRY.advancements.get(asResourceLocation(advancement.parent))
                 : null;
         AdvancementDisplay display = new AdvancementDisplay(CraftItemStack.asNMSCopy(advancement.icon),
                 Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
-                asResourceKey(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
+                asResourceLocation(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.a(advancement.xOffset, advancement.yOffset);
         Map<String, Criterion> criteria = IMPOSSIBLE_CRITERIA;
@@ -191,7 +191,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         return new Advancement(key, parent, display, AdvancementRewards.a, criteria, requirements);
     }
 
-    private static ResourceKey asResourceKey(NamespacedKey key) {
-        return key != null ? new ResourceKey(key.getNamespace(), key.getKey()) : null;
+    private static ResourceLocation asResourceLocation(NamespacedKey key) {
+        return key != null ? new ResourceLocation(key.getNamespace(), key.getKey()) : null;
     }
 }

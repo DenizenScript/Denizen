@@ -36,8 +36,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -153,8 +157,8 @@ public class DenizenNetworkManagerImpl extends Connection {
     public static Field CHUNKZ_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("b");
     public static Field BLOCKPOS_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("c");
     public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(PacketPlayOutBlockBreak.class).get("d");
-    public static Field ENTITY_METADATA_EID = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("a");
-    public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(PacketPlayOutEntityMetadata.class).get("b");
+    public static Field ENTITY_METADATA_EID = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get("id");
+    public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get("packedItems");
     public static Field WORLD_PARTICLES_PARTICLETYPE = ReflectionHelper.getFields(PacketPlayOutWorldParticles.class).get("j");
     public static Field ENTITY_EQUIPMENT_EID = ReflectionHelper.getFields(PacketPlayOutEntityEquipment.class).get("a");
     public static Field ENTITY_EQUIPMENT_DATALIST = ReflectionHelper.getFields(PacketPlayOutEntityEquipment.class).get("b");
@@ -234,12 +238,12 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (override == null) {
                     return false;
                 }
-                List<Pair<EnumItemSlot, ItemStack>> equipment = new ArrayList<>((List) ENTITY_EQUIPMENT_DATALIST.get(packet));
+                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>((List) ENTITY_EQUIPMENT_DATALIST.get(packet));
                 PacketPlayOutEntityEquipment newPacket = new PacketPlayOutEntityEquipment();
                 ENTITY_EQUIPMENT_EID.setInt(newPacket, eid);
                 ENTITY_EQUIPMENT_DATALIST.set(newPacket, equipment);
                 for (int i = 0; i < equipment.size(); i++) {
-                    Pair<EnumItemSlot, ItemStack> pair =  equipment.get(i);
+                    Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack> pair =  equipment.get(i);
                     ItemStack use = pair.getSecond();
                     switch (pair.getFirst()) {
                         case MAINHAND:
@@ -283,11 +287,11 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (ENTITY_STATUS_CODE.getByte(packet) != (byte) 55) {
                     return false;
                 }
-                List<Pair<EnumItemSlot, ItemStack>> equipment = new ArrayList<>();
+                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>();
                 ItemStack hand = override.hand != null ? CraftItemStack.asNMSCopy(override.hand.getItemStack()) : ((EntityLiving) ent).getItemInMainHand();
                 ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((EntityLiving) ent).getItemInOffHand();
-                equipment.add(new Pair<>(EnumItemSlot.MAINHAND, hand));
-                equipment.add(new Pair<>(EnumItemSlot.OFFHAND, offhand));
+                equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.MAINHAND, hand));
+                equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand));
                 PacketPlayOutEntityEquipment newPacket = new PacketPlayOutEntityEquipment(eid, equipment);
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
@@ -408,8 +412,8 @@ public class DenizenNetworkManagerImpl extends Connection {
             return false;
         }
         try {
-            if (packet instanceof PacketPlayOutEntityMetadata) {
-                PacketPlayOutEntityMetadata metadataPacket = (PacketPlayOutEntityMetadata) packet;
+            if (packet instanceof ClientboundSetEntityDataPacket) {
+                ClientboundSetEntityDataPacket metadataPacket = (ClientboundSetEntityDataPacket) packet;
                 int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
                 Entity ent = player.level.getEntity(eid);
                 if (ent == null) {
@@ -430,27 +434,27 @@ public class DenizenNetworkManagerImpl extends Connection {
                     if (!disguise.shouldFake) {
                         return false;
                     }
-                    List<DataWatcher.Item<?>> data = (List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
-                    for (DataWatcher.Item item : data) {
-                        DataWatcherObject<?> watcherObject = item.a();
+                    List<SynchedEntityData.DataItem<?>> data = (List<SynchedEntityData.DataItem<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
+                    for (SynchedEntityData.DataItem item : data) {
+                        EntityDataAccessor<?> watcherObject = item.a();
                         int watcherId = watcherObject.a();
                         if (watcherId == 0) { // Entity flags
-                            PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata();
+                            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket();
                             copyPacket(metadataPacket, altPacket);
                             data = new ArrayList<>(data);
                             ENTITY_METADATA_LIST.set(altPacket, data);
                             data.remove(item);
                             byte flags = (byte) item.b();
                             flags |= 0x20; // Invisible flag
-                            data.add(new DataWatcher.Item(watcherObject, flags));
-                            PacketPlayOutEntityMetadata updatedPacket = getModifiedMetadataFor(altPacket);
+                            data.add(new SynchedEntityData.DataItem(watcherObject, flags));
+                            ClientboundSetEntityDataPacket updatedPacket = getModifiedMetadataFor(altPacket);
                             oldManager.send(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
                             return true;
                         }
                     }
                 }
                 else {
-                    PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata(ent.getId(), ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getDataWatcher(), true);
+                    ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(ent.getId(), ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getEntityData(), true);
                     oldManager.send(altPacket, genericfuturelistener);
                     return true;
                 }
@@ -495,7 +499,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         return false;
     }
 
-    public PacketPlayOutEntityMetadata getModifiedMetadataFor(PacketPlayOutEntityMetadata metadataPacket) {
+    public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
         if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty()) {
             return null;
         }
@@ -506,15 +510,15 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
             String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
-            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUniqueID(), player.getUUID());
+            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUUID(), player.getUUID());
             if (nameToApply == null && forceSneak == null) {
                 return null;
             }
-            List<DataWatcher.Item<?>> data = new ArrayList<>((List<DataWatcher.Item<?>>) ENTITY_METADATA_LIST.get(metadataPacket));
+            List<SynchedEntityData.DataItem<?>> data = new ArrayList<>((List<SynchedEntityData.DataItem<?>>) ENTITY_METADATA_LIST.get(metadataPacket));
             boolean any = false;
             for (int i = 0; i < data.size(); i++) {
-                DataWatcher.Item<?> item = data.get(i);
-                DataWatcherObject<?> watcherObject = item.a();
+                SynchedEntityData.DataItem<?> item = data.get(i);
+                EntityDataAccessor<?> watcherObject = item.a();
                 int watcherId = watcherObject.a();
                 if (watcherId == 0 && forceSneak != null) { // 0: Entity flags
                     byte val = (Byte) item.b();
@@ -524,23 +528,23 @@ public class DenizenNetworkManagerImpl extends Connection {
                     else {
                         val &= ~0x02;
                     }
-                    data.set(i, new DataWatcher.Item(watcherObject, val));
+                    data.set(i, new SynchedEntityData.DataItem(watcherObject, val));
                     any = true;
                 }
                 else if (watcherId == 2 && nameToApply != null) { // 2: Custom name metadata
                     Optional<IChatBaseComponent> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
-                    data.set(i, new DataWatcher.Item(watcherObject, name));
+                    data.set(i, new SynchedEntityData.DataItem(watcherObject, name));
                     any = true;
                 }
                 else if (watcherId == 3 && nameToApply != null) { // 3: custom name visible metadata
-                    data.set(i, new DataWatcher.Item(watcherObject, true));
+                    data.set(i, new SynchedEntityData.DataItem(watcherObject, true));
                     any = true;
                 }
             }
             if (!any) {
                 return null;
             }
-            PacketPlayOutEntityMetadata altPacket = new PacketPlayOutEntityMetadata();
+            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket();
             copyPacket(metadataPacket, altPacket);
             ENTITY_METADATA_LIST.set(altPacket, data);
             return altPacket;
@@ -552,10 +556,10 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processMetadataChangesForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
-        if (!(packet instanceof PacketPlayOutEntityMetadata)) {
+        if (!(packet instanceof ClientboundSetEntityDataPacket)) {
             return false;
         }
-        PacketPlayOutEntityMetadata altPacket = getModifiedMetadataFor((PacketPlayOutEntityMetadata) packet);
+        ClientboundSetEntityDataPacket altPacket = getModifiedMetadataFor((ClientboundSetEntityDataPacket) packet);
         if (altPacket == null) {
             return false;
         }
@@ -620,9 +624,9 @@ public class DenizenNetworkManagerImpl extends Connection {
                             oldManager.send(newTeleportPacket);
                         }
                         else {
-                            POS_X_PACKENT.setShort(pNew, (short) MathHelper.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
-                            POS_Y_PACKENT.setShort(pNew, (short) MathHelper.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
-                            POS_Z_PACKENT.setShort(pNew, (short) MathHelper.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_X_PACKENT.setShort(pNew, (short) Mth.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_Y_PACKENT.setShort(pNew, (short) Mth.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
+                            POS_Z_PACKENT.setShort(pNew, (short) Mth.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
                             if (isRotate) {
                                 YAW_PACKENT.setByte(pNew, yaw);
                                 PITCH_PACKENT.setByte(pNew, pitch);
@@ -781,7 +785,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             if (packet instanceof PacketPlayOutEntity) {
                 ider = ENTITY_ID_PACKENT.getInt(packet);
             }
-            else if (packet instanceof PacketPlayOutEntityMetadata) {
+            else if (packet instanceof ClientboundSetEntityDataPacket) {
                 ider = ENTITY_METADATA_EID.getInt(packet);
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {
@@ -827,8 +831,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (packet instanceof PacketPlayOutChat && packetHandler.shouldInterceptChatPacket()) {
             return packetHandler.send(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
         }
-        else if (packet instanceof PacketPlayOutEntityMetadata && packetHandler.shouldInterceptMetadata()) {
-            return packetHandler.send(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
+        else if (packet instanceof ClientboundSetEntityDataPacket && packetHandler.shouldInterceptMetadata()) {
+            return packetHandler.send(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
         }
         return false;
     }

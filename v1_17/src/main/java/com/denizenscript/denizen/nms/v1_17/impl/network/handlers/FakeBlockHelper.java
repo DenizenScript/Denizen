@@ -5,19 +5,14 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.PacketPlayOutMapChunk;
-import net.minecraft.util.DataBits;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkSection;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class FakeBlockHelper {
 
@@ -146,7 +141,7 @@ public class FakeBlockHelper {
                                 subPaletteId = paletteLen;
                                 paletteLen++;
                                 palette = newPalette;
-                                int newWidth = MathHelper.e(paletteLen);
+                                int newWidth = Mth.ceillog2(paletteLen);
                                 if (newWidth > width) {
                                     DataBits newBits = new DataBits(newWidth, 4096);
                                     for (int i = 0; i < bits.b(); i++) {

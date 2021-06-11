@@ -1,21 +1,20 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.entity.projectile.EntityFishingHook;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentManager;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.storage.loot.LootTableInfo;
-import net.minecraft.world.level.storage.loot.LootTableRegistry;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParameterSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParameters;
-import net.minecraft.world.phys.Vec3D;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftFishHook;
@@ -23,6 +22,7 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.List;
 
@@ -31,16 +31,16 @@ public class FishingHelperImpl implements FishingHelper {
     @Override
     public org.bukkit.inventory.ItemStack getResult(FishHook fishHook, CatchType catchType) {
         ItemStack result = null;
-        EntityFishingHook nmsHook = ((CraftFishHook) fishHook).getHandle();
+        FishingHook nmsHook = ((CraftFishHook) fishHook).getHandle();
         if (catchType == CatchType.DEFAULT) {
             float f = ((CraftWorld) fishHook.getWorld()).getHandle().random.nextFloat();
-            int i = EnchantmentManager.g((EntityHuman) nmsHook.getShooter());
-            int j = EnchantmentManager.a(Enchantments.LURE, (EntityHuman) nmsHook.getShooter());
+            int i = EnchantmentHelper.getMobLooting(nmsHook.getPlayerOwner());
+            int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.FISHING_LUCK, nmsHook.getPlayerOwner());
             float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
             float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
 
-            f1 = MathHelper.a(f1, 0.0F, 1.0F);
-            f2 = MathHelper.a(f2, 0.0F, 1.0F);
+            f1 = Mth.clamp(f1, 0.0F, 1.0F);
+            f2 = Mth.clamp(f2, 0.0F, 1.0F);
             if (f < f1) {
                 result = catchRandomJunk(nmsHook);
             }
@@ -71,34 +71,34 @@ public class FishingHelperImpl implements FishingHelper {
         }
     }
 
-    public ItemStack getRandomReward(EntityFishingHook hook, ResourceKey key) {
-        ServerLevel worldServer = (ServerLevel) hook.getWorld();
-        LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder(worldServer);
-        LootTableRegistry registry = hook.getWorld().getMinecraftServer().getLootTableRegistry();
+    public ItemStack getRandomReward(FishingHook hook, ResourceLocation key) {
+        ServerLevel worldServer = (ServerLevel) hook.level;
+        LootContext.Builder playerFishEvent2 = new LootContext.Builder(worldServer);
+        LootTables registry = ((ServerLevel) hook.level).getServer().getLootTables();
         // registry.getLootTable(key).getLootContextParameterSet()
-        LootTableInfo info = playerFishEvent2.set(LootContextParameters.ORIGIN, new Vec3D(hook.locX(), hook.locY(), hook.locZ()))
-                .set(LootContextParameters.TOOL, new ItemStack(Items.FISHING_ROD)).build(LootContextParameterSets.FISHING);
-        List<ItemStack> itemStacks = registry.getLootTable(key).populateLoot(info);
+        LootContext info = playerFishEvent2.withOptionalParameter(LootContextParams.ORIGIN, new Vec3(hook.getX(), hook.getY(), hook.getZ()))
+                .withOptionalParameter(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD)).create(LootContextParamSets.FISHING);
+        List<ItemStack> itemStacks = registry.get(key).getRandomItems(info);
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 
     @Override
     public FishHook spawnHook(Location location, Player player) {
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
-        EntityFishingHook hook = new EntityFishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0);
-        nmsWorld.addEntity(hook);
+        FishingHook hook = new FishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0);
+        nmsWorld.addEntity(hook, CreatureSpawnEvent.SpawnReason.CUSTOM);
         return (FishHook) hook.getBukkitEntity();
     }
 
-    private ItemStack catchRandomJunk(EntityFishingHook fishHook) {
-        return getRandomReward(fishHook, LootTables.ah);
+    private ItemStack catchRandomJunk(FishingHook fishHook) {
+        return getRandomReward(fishHook, BuiltInLootTables.FISHING_JUNK);
     }
 
-    private ItemStack catchRandomTreasure(EntityFishingHook fishHook) {
-        return getRandomReward(fishHook, LootTables.ai);
+    private ItemStack catchRandomTreasure(FishingHook fishHook) {
+        return getRandomReward(fishHook, BuiltInLootTables.FISHING_TREASURE);
     }
 
-    private ItemStack catchRandomFish(EntityFishingHook fishHook) {
-        return getRandomReward(fishHook, LootTables.aj);
+    private ItemStack catchRandomFish(FishingHook fishHook) {
+        return getRandomReward(fishHook, BuiltInLootTables.FISHING_FISH);
     }
 }

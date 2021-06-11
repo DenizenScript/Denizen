@@ -2,8 +2,6 @@ package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.projectile.EntitySpectralArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
@@ -14,8 +12,7 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 public class EntityFakeArrowImpl extends EntitySpectralArrow {
 
     public EntityFakeArrowImpl(CraftWorld craftWorld, Location location) {
-        // TODO: 1.14 - provide a custom EntityTypes?
-        super(EntityTypes.SPECTRAL_ARROW, craftWorld.getHandle());
+        super(net.minecraft.world.entity.EntityType.SPECTRAL_ARROW, craftWorld.getHandle());
         try {
             Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakeArrowImpl((CraftServer) Bukkit.getServer(), this));
         }

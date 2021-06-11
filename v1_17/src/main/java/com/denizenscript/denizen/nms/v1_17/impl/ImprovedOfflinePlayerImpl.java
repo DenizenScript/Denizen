@@ -117,7 +117,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     }
 
     private AttributeMapBase getAttributes() {
-        AttributeMapBase amb = new AttributeMapBase(AttributeDefaults.a(EntityTypes.PLAYER));
+        AttributeMapBase amb = new AttributeMapBase(AttributeDefaults.a(net.minecraft.world.entity.EntityType.PLAYER));
         amb.a(((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
         return amb;
     }
