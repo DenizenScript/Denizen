@@ -4,10 +4,13 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import org.bukkit.Location;
 
 import java.lang.invoke.MethodHandle;
@@ -21,7 +24,7 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     static {
         EntityDataAccessor<ItemStack> watcher = null;
         try {
-            watcher = (EntityDataAccessor<ItemStack>) ReflectionHelper.getFields(EntityItem.class).get("ITEM").get(null);
+            watcher = (EntityDataAccessor<ItemStack>) ReflectionHelper.getFields(ItemEntity.class).get("DATA_ITEM").get(null);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -32,18 +35,19 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     public EntityItemProjectileImpl(Level world, Location location, ItemStack item) {
         super((net.minecraft.world.entity.EntityType) net.minecraft.world.entity.EntityType.ITEM, world);
         try {
-            setBukkitEntityMethod.invoke(this, new CraftItemProjectileImpl(world.getServer(), this));
+            setBukkitEntityMethod.invoke(this, new CraftItemProjectileImpl(((ServerLevel) world).getServer().server, this));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-        setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        setPosRaw(location.getX(), location.getY(), location.getZ());
+        setRot(location.getYaw(), location.getPitch());
         setItemStack(item);
     }
 
     @Override
-    protected void initDatawatcher() {
-        this.getEntityData().register(ITEM, ItemStack.b);
+    protected void defineSynchedData() {
+        this.getEntityData().define(ITEM, ItemStack.EMPTY);
     }
 
     public ItemStack getItemStack() {
@@ -57,35 +61,36 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     }
 
     @Override
-    protected void a(MovingObjectPositionBlock movingobjectpositionblock) {
-        super.a(movingobjectpositionblock);
-        die();
+    protected void onHitBlock(BlockHitResult movingobjectpositionblock) {
+        super.onHitBlock(movingobjectpositionblock);
+        remove(RemovalReason.KILLED);
     }
 
     @Override
-    public void a(EntityDataAccessor<?> datawatcherobject) {
-        super.a(datawatcherobject);
+    public void onSyncedDataUpdated(EntityDataAccessor<?> datawatcherobject) {
+        super.onSyncedDataUpdated(datawatcherobject);
         if (ITEM.equals(datawatcherobject)) {
-            this.getItemStack().a(this);
+            this.getItemStack().setEntityRepresentation(this);
         }
     }
 
     @Override
-    public void saveData(net.minecraft.nbt.CompoundTag nbttagcompound) {
+    public boolean save(net.minecraft.nbt.CompoundTag nbttagcompound) {
         if (!this.getItemStack().isEmpty()) {
-            nbttagcompound.set("Item", this.getItemStack().save(new net.minecraft.nbt.CompoundTag()));
+            nbttagcompound.put("Item", this.getItemStack().save(new net.minecraft.nbt.CompoundTag()));
         }
-        super.saveData(nbttagcompound);
+        super.save(nbttagcompound);
+        return true;
     }
 
     @Override
-    public void loadData(net.minecraft.nbt.CompoundTag nbttagcompound) {
+    public void load(net.minecraft.nbt.CompoundTag nbttagcompound) {
         net.minecraft.nbt.CompoundTag nbttagcompound1 = nbttagcompound.getCompound("Item");
-        this.setItemStack(ItemStack.a(nbttagcompound1));
+        this.setItemStack(ItemStack.of(nbttagcompound1));
         if (this.getItemStack().isEmpty()) {
-            this.die();
+            this.remove(RemovalReason.KILLED);
         }
-        super.loadData(nbttagcompound);
+        super.load(nbttagcompound);
     }
 
     @Override

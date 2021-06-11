@@ -3,15 +3,13 @@ package com.denizenscript.denizen.nms.v1_17.impl;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.entity.ai.attributes.AttributeDefaults;
-import net.minecraft.world.entity.ai.attributes.AttributeMapBase;
-import net.minecraft.world.entity.ai.attributes.AttributeModifiable;
-import net.minecraft.world.entity.ai.attributes.GenericAttributes;
-import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.entity.player.PlayerInventory;
-import net.minecraft.world.inventory.InventoryEnderChest;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryPlayer;
@@ -30,9 +28,9 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         super(playeruuid);
     }
 
-    public class OfflinePlayerInventory extends PlayerInventory {
+    public class OfflinePlayerInventory extends net.minecraft.world.entity.player.Inventory {
 
-        public OfflinePlayerInventory(EntityHuman entityhuman) {
+        public OfflinePlayerInventory(net.minecraft.world.entity.player.Player entityhuman) {
             super(entityhuman);
         }
 
@@ -44,7 +42,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     public class OfflineCraftInventoryPlayer extends CraftInventoryPlayer {
 
-        public OfflineCraftInventoryPlayer(PlayerInventory inventory) {
+        public OfflineCraftInventoryPlayer(net.minecraft.world.entity.player.Inventory inventory) {
             super(inventory);
         }
 
@@ -59,8 +57,8 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         if (offlineInventories.containsKey(getUniqueId())) {
             return offlineInventories.get(getUniqueId());
         }
-        PlayerInventory inventory = new OfflinePlayerInventory(null);
-        inventory.b(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
+        net.minecraft.world.entity.player.Inventory inventory = new OfflinePlayerInventory(null);
+        inventory.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
         org.bukkit.inventory.PlayerInventory inv = new OfflineCraftInventoryPlayer(inventory);
         offlineInventories.put(getUniqueId(), inv);
         return inv;
@@ -69,8 +67,8 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public void setInventory(org.bukkit.inventory.PlayerInventory inventory) {
         CraftInventoryPlayer inv = (CraftInventoryPlayer) inventory;
-        NBTTagCompound nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
-        nbtTagCompound.set("Inventory", inv.getInventory().a(new NBTTagList()));
+        net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
+        nbtTagCompound.put("Inventory", inv.getInventory().save(new ListTag()));
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
@@ -82,8 +80,8 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         if (offlineEnderChests.containsKey(getUniqueId())) {
             return offlineEnderChests.get(getUniqueId());
         }
-        InventoryEnderChest endchest = new InventoryEnderChest(null);
-        endchest.a(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10));
+        PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
+        endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10));
         org.bukkit.inventory.Inventory inv = new CraftInventory(endchest);
         offlineEnderChests.put(getUniqueId(), inv);
         return inv;
@@ -91,8 +89,8 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     @Override
     public void setEnderChest(Inventory inventory) {
-        NBTTagCompound nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
-        nbtTagCompound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).g());
+        net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
+        nbtTagCompound.put("EnderItems", ((PlayerEnderChestContainer) ((CraftInventory) inventory).getInventory()).createTag());
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
@@ -101,30 +99,27 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     @Override
     public double getMaxHealth() {
-        AttributeModifiable maxHealth = getAttributes().a(GenericAttributes.MAX_HEALTH);
-        return maxHealth == null ? GenericAttributes.MAX_HEALTH.getDefault() : maxHealth.getValue();
+        AttributeInstance maxHealth = getAttributes().getInstance(Attributes.MAX_HEALTH);
+        return maxHealth == null ? Attributes.MAX_HEALTH.getDefaultValue() : maxHealth.getValue();
     }
 
     @Override
     public void setMaxHealth(double input) {
-        AttributeMapBase attributes = getAttributes();
-        AttributeModifiable maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
-        if (maxHealth == null) {
-            maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
-        }
-        maxHealth.setValue(input);
+        AttributeMap attributes = getAttributes();
+        AttributeInstance maxHealth = attributes.getInstance(Attributes.MAX_HEALTH);
+        maxHealth.setBaseValue(input);
         setAttributes(attributes);
     }
 
-    private AttributeMapBase getAttributes() {
-        AttributeMapBase amb = new AttributeMapBase(AttributeDefaults.a(net.minecraft.world.entity.EntityType.PLAYER));
-        amb.a(((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
+    private AttributeMap getAttributes() {
+        AttributeMap amb = new AttributeMap(DefaultAttributes.getSupplier(net.minecraft.world.entity.EntityType.PLAYER));
+        amb.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
         return amb;
     }
 
-    public void setAttributes(AttributeMapBase attributes) {
-        NBTTagCompound nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
-        nbtTagCompound.set("Attributes", attributes.c());
+    public void setAttributes(AttributeMap attributes) {
+        net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
+        nbtTagCompound.put("Attributes", attributes.save());
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
@@ -138,7 +133,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
             for (org.bukkit.World w : Bukkit.getWorlds()) {
                 this.file = new File(w.getWorldFolder(), "playerdata" + File.separator + this.player + ".dat");
                 if (this.file.exists()) {
-                    this.compound = CompoundTagImpl.fromNMSTag(NBTCompressedStreamTools.a(new FileInputStream(this.file)));
+                    this.compound = CompoundTagImpl.fromNMSTag(NbtIo.readCompressed(new FileInputStream(this.file)));
                     return true;
                 }
             }
@@ -153,7 +148,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public void savePlayerData() {
         if (this.exists) {
             try {
-                NBTCompressedStreamTools.a(((CompoundTagImpl) this.compound).toNMSTag(), new FileOutputStream(this.file));
+                NbtIo.writeCompressed(((CompoundTagImpl) this.compound).toNMSTag(), new FileOutputStream(this.file));
             }
             catch (Exception e) {
                 Debug.echoError(e);

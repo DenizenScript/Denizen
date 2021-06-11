@@ -10,15 +10,32 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.stats.RecipeBook;
 import net.minecraft.stats.ServerRecipeBook;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -47,9 +64,9 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("recipes");
+    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("highlight");
 
-    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.Entity.class, "setPose", EntityPose.class);
+    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.Entity.class, "setPose", Pose.class);
 
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, "onGround");
 
@@ -73,7 +90,7 @@ public class EntityHelperImpl extends EntityHelper {
         if (player instanceof Player) {
             ((Player) player).setSneaking(sneak);
         }
-        EntityPose pose = sneak ? EntityPose.CROUCHING : EntityPose.STANDING;
+        Pose pose = sneak ? Pose.CROUCHING : Pose.STANDING;
         try {
             ENTITY_SETPOSE.invoke(((CraftEntity) player).getHandle(), pose);
         }
@@ -84,12 +101,12 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public double getDamageTo(LivingEntity attacker, Entity target) {
-        EnumMonsterType monsterType;
+        MobType monsterType;
         if (target instanceof LivingEntity) {
-            monsterType = ((CraftLivingEntity) target).getHandle().getMonsterType();
+            monsterType = ((CraftLivingEntity) target).getHandle().getMobType();
         }
         else {
-            monsterType = EnumMonsterType.UNDEFINED;
+            monsterType = MobType.UNDEFINED;
         }
         double damage = 0;
         AttributeInstance attrib = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
@@ -97,7 +114,7 @@ public class EntityHelperImpl extends EntityHelper {
             damage = attrib.getValue();
         }
         if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
-            damage += EnchantmentManager.a(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
+            damage += EnchantmentHelper.getDamageBonus(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
         }
         if (damage <= 0) {
             return 0;
@@ -111,17 +128,17 @@ public class EntityHelperImpl extends EntityHelper {
                 source = DamageSource.mobAttack(((CraftLivingEntity) attacker).getHandle());
             }
             net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
-            if (nmsTarget.isInvulnerable(source)) {
+            if (nmsTarget.isInvulnerableTo(source)) {
                 return 0;
             }
-            if (!(nmsTarget instanceof EntityLiving)) {
+            if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity)) {
                 return damage;
             }
-            EntityLiving livingTarget = (EntityLiving) nmsTarget;
-            damage = CombatMath.a((float) damage, (float) livingTarget.getArmorStrength(), (float) livingTarget.getAttributeInstance(GenericAttributes.ARMOR_TOUGHNESS).getValue());
-            int enchantDamageModifier = EnchantmentManager.a(livingTarget.getArmorItems(), source);
+            net.minecraft.world.entity.LivingEntity livingTarget = (net.minecraft.world.entity.LivingEntity) nmsTarget;
+            damage = CombatRules.getDamageAfterAbsorb((float) damage, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+            int enchantDamageModifier = EnchantmentHelper.getDamageProtection(livingTarget.getArmorSlots(), source);
             if (enchantDamageModifier > 0) {
-                damage = CombatMath.a((float) damage, (float) enchantDamageModifier);
+                damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, (float) enchantDamageModifier);
             }
         }
         return damage;
@@ -175,7 +192,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setRiptide(Entity entity, boolean state) {
-        ((CraftLivingEntity) entity).getHandle().r(state ? 0 : 1);
+        ((CraftLivingEntity) entity).getHandle().startAutoSpinAttack(state ? 0 : 1);
     }
 
     @Override
@@ -195,21 +212,21 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public ItemStack getItemFromTrident(Entity entity) {
-        return CraftItemStack.asBukkitCopy(((CraftTrident) entity).getHandle().trident);
+        return CraftItemStack.asBukkitCopy(((CraftTrident) entity).getHandle().tridentItem);
     }
 
     @Override
     public void setItemForTrident(Entity entity, ItemStack item) {
-        ((CraftTrident) entity).getHandle().trident = CraftItemStack.asNMSCopy(item);
+        ((CraftTrident) entity).getHandle().tridentItem = CraftItemStack.asNMSCopy(item);
     }
 
     @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        ((CraftBlock) location.getBlock()).getNMS().interact(((CraftWorld) location.getWorld()).getHandle(),
-                craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND,
-                new MovingObjectPositionBlock(new Vec3D(0, 0, 0), null, pos, false));
+        ((CraftBlock) location.getBlock()).getNMS().use(((CraftWorld) location.getWorld()).getHandle(),
+                craftPlayer != null ? craftPlayer.getHandle() : null, InteractionHand.MAIN_HAND,
+                new BlockHitResult(new Vec3(0, 0, 0), null, pos, false));
     }
 
     @Override
@@ -220,15 +237,15 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setTarget(Creature entity, LivingEntity target) {
-        EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
+        net.minecraft.world.entity.LivingEntity nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
         ((CraftCreature) entity).getHandle().setGoalTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
         entity.setTarget(target);
     }
 
     @Override
     public CompoundTag getNbtData(Entity entity) {
-        NBTTagCompound compound = new NBTTagCompound();
-        ((CraftEntity) entity).getHandle().a_(compound);
+        net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
+        ((CraftEntity) entity).getHandle().saveAsPassenger(compound);
         return CompoundTagImpl.fromNMSTag(compound);
     }
 
@@ -257,30 +274,30 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void stopWalking(Entity entity) {
         net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof EntityInsentient)) {
+        if (!(nmsEntity instanceof Mob)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).getNavigation().o();
+        ((Mob) nmsEntity).getNavigation().stop();
     }
 
     @Override
     public double getSpeed(Entity entity) {
         net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof EntityInsentient)) {
+        if (!(nmsEntityEntity instanceof Mob)) {
             return 0.0;
         }
-        EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
-        return nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getBaseValue();
+        Mob nmsEntity = (Mob) nmsEntityEntity;
+        return nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
     }
 
     @Override
     public void setSpeed(Entity entity, double speed) {
         net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof EntityInsentient)) {
+        if (!(nmsEntityEntity instanceof Mob)) {
             return;
         }
-        EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
-        nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+        Mob nmsEntity = (Mob) nmsEntityEntity;
+        nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
     }
 
     @Override
@@ -291,11 +308,11 @@ public class EntityHelperImpl extends EntityHelper {
         }
 
         final net.minecraft.world.entity.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
-        if (!(nmsEntityFollower instanceof EntityInsentient)) {
+        if (!(nmsEntityFollower instanceof Mob)) {
             return;
         }
-        final EntityInsentient nmsFollower = (EntityInsentient) nmsEntityFollower;
-        final NavigationAbstract followerNavigation = nmsFollower.getNavigation();
+        final Mob nmsFollower = (Mob) nmsEntityFollower;
+        final PathNavigation followerNavigation = nmsFollower.getNavigation();
 
         UUID uuid = follower.getUniqueId();
 
@@ -314,9 +331,9 @@ public class EntityHelperImpl extends EntityHelper {
                 if (!target.isValid() || !follower.isValid()) {
                     this.cancel();
                 }
-                followerNavigation.a(2F);
+                followerNavigation.setSpeedModifier(2D);
                 Location targetLocation = target.getLocation();
-                PathEntity path;
+                Path path;
 
                 if (hasMax && !Utilities.checkLocation(targetLocation, follower.getLocation(), maxRange)
                         && !target.isDead() && target.isOnGround()) {
@@ -330,27 +347,27 @@ public class EntityHelperImpl extends EntityHelper {
                     }
                     else {
                         inRadius = false;
-                        path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), 0);
+                        path = followerNavigation.createPath(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), 0);
                         if (path != null) {
-                            followerNavigation.a(path, 1D);
-                            followerNavigation.a(2D);
+                            followerNavigation.moveTo(path, 1D);
+                            followerNavigation.setSpeedModifier(2D);
                         }
                     }
                 }
                 else if (!inRadius && !Utilities.checkLocation(targetLocation, follower.getLocation(), lead)) {
-                    path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), 0);
+                    path = followerNavigation.createPath(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), 0);
                     if (path != null) {
-                        followerNavigation.a(path, 1D);
-                        followerNavigation.a(2D);
+                        followerNavigation.moveTo(path, 1D);
+                        followerNavigation.setSpeedModifier(2D);
                     }
                 }
                 else {
                     inRadius = true;
                 }
                 if (inRadius && !allowWander) {
-                    followerNavigation.o();
+                    followerNavigation.stop();
                 }
-                nmsFollower.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+                nmsFollower.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
             }
         }.runTaskTimer(NMSHandler.getJavaPlugin(), 0, 10));
     }
@@ -362,13 +379,13 @@ public class EntityHelperImpl extends EntityHelper {
         }
 
         net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof EntityInsentient)) {
+        if (!(nmsEntityEntity instanceof Mob)) {
             return;
         }
-        final EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
-        final NavigationAbstract entityNavigation = nmsEntity.getNavigation();
+        final Mob nmsEntity = (Mob) nmsEntityEntity;
+        final PathNavigation entityNavigation = nmsEntity.getNavigation();
 
-        final PathEntity path;
+        final Path path;
         final boolean aiDisabled = !entity.hasAI();
         if (aiDisabled) {
             entity.setAI(true);
@@ -379,13 +396,13 @@ public class EntityHelperImpl extends EntityHelper {
                 Debug.echoError(ex);
             }
         }
-        path = entityNavigation.a(location.getX(), location.getY(), location.getZ(), 0);
+        path = entityNavigation.createPath(location.getX(), location.getY(), location.getZ(), 0);
         if (path != null) {
-            entityNavigation.a(path, 1D);
-            entityNavigation.a(2D);
-            final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getBaseValue();
+            entityNavigation.moveTo(path, 1D);
+            entityNavigation.setSpeedModifier(2D);
+            final double oldSpeed = nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
             if (speed != null) {
-                nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+                nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
             }
             new BukkitRunnable() {
                 @Override
@@ -400,12 +417,12 @@ public class EntityHelperImpl extends EntityHelper {
                     if (aiDisabled && entity instanceof Wolf) {
                         ((Wolf) entity).setAngry(false);
                     }
-                    if (entityNavigation.m() || path.c()) {
+                    if (entityNavigation.isDone() || path.isDone()) {
                         if (callback != null) {
                             callback.run();
                         }
                         if (speed != null) {
-                            nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
+                            nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(oldSpeed);
                         }
                         if (aiDisabled) {
                             entity.setAI(false);
@@ -424,14 +441,14 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public List<Player> getPlayersThatSee(Entity entity) {
-        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().world).getChunkProvider().chunkMap;
-        ChunkMap.EntityTracker entityTracker = tracker.trackedEntities.get(entity.getEntityId());
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkProvider().chunkMap;
+        ChunkMap.TrackedEntity entityTracker = tracker.G.get(entity.getEntityId());
         ArrayList<Player> output = new ArrayList<>();
         if (entityTracker == null) {
             return output;
         }
-        for (ServerPlayer player : entityTracker.trackedPlayers) {
-            output.add(player.getBukkitEntity());
+        for (ServerPlayerConnection player : entityTracker.seenBy) {
+            output.add(player.getPlayer().getBukkitEntity());
         }
         return output;
     }
@@ -449,14 +466,14 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         ServerPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().world).getChunkProvider().chunkMap;
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkProvider().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
+            ChunkMap.TrackedEntity entry = tracker.G.get(other.getId());
             if (entry != null) {
-                entry.clear(entityPlayer);
+                entry.removePlayer(entityPlayer);
             }
             if (Denizen.supportsPaper) { // Workaround for Paper issue
-                entityPlayer.connection.send(new PacketPlayOutEntityDestroy(other.getId()));
+                entityPlayer.connection.send(new ClientboundRemoveEntityPacket(other.getId()));
             }
         }
     }
@@ -470,11 +487,11 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         ServerPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().world).getChunkProvider().chunkMap;
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkProvider().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
+            ChunkMap.TrackedEntity entry = tracker.G.get(other.getId());
             if (entry != null) {
-                entry.clear(entityPlayer);
+                entry.removePlayer(entityPlayer);
                 entry.updatePlayer(entityPlayer);
             }
         }
@@ -498,50 +515,49 @@ public class EntityHelperImpl extends EntityHelper {
         }
         else {
             net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-            handle.yaw = yaw - 360;
-            handle.pitch = pitch;
+            handle.setYRot(yaw - 360);
+            handle.setXRot(pitch);
         }
     }
 
     @Override
     public float getBaseYaw(Entity entity) {
         net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((EntityLiving) handle).aB;
+        return ((net.minecraft.world.entity.LivingEntity) handle).yHeadRot;
     }
 
     @Override
     public void look(Entity entity, float yaw, float pitch) {
         net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
         if (handle != null) {
-            handle.yaw = yaw;
-            if (handle instanceof EntityLiving) {
-                EntityLiving livingHandle = (EntityLiving) handle;
+            handle.setYRot(yaw);
+            if (handle instanceof net.minecraft.world.entity.LivingEntity) {
+                net.minecraft.world.entity.LivingEntity livingHandle = (net.minecraft.world.entity.LivingEntity) handle;
                 while (yaw < -180.0F) {
                     yaw += 360.0F;
                 }
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.aB = yaw;
-                if (!(handle instanceof EntityHuman)) {
-                    livingHandle.aA = yaw;
+                livingHandle.yBodyRot = yaw;
+                if (!(handle instanceof net.minecraft.world.entity.player.Player)) {
+                    livingHandle.yBodyRotO = yaw;
                 }
-                livingHandle.setHeadRotation(yaw);
+                livingHandle.setYHeadRot(yaw);
             }
-            handle.pitch = pitch;
+            handle.setXRot(pitch);
         }
         else {
             Debug.echoError("Cannot set look direction for unspawned entity " + entity.getUniqueId());
         }
     }
 
-    private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
+    private static HitResult rayTrace(World world, Vector start, Vector end) {
         try {
             NMSHandler.getChunkHelper().changeChunkServerThread(world);
-            return ((CraftWorld) world).getHandle().rayTrace(new RayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
-                    new Vec3D(end.getX(), end.getY(), end.getZ()),
-                    // TODO: 1.14 - check if these collision options are reasonable (maybe provide the options for this method?)
-                    RayTrace.BlockCollisionOption.OUTLINE, RayTrace.FluidCollisionOption.NONE, null));
+            return ((CraftWorld) world).getHandle().clip(new ClipContext(new Vec3(start.getX(), start.getY(), start.getZ()),
+                    new Vec3(end.getX(), end.getY(), end.getZ()),
+                    ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
         }
         finally {
             NMSHandler.getChunkHelper().restoreServerThread(world);
@@ -550,11 +566,11 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public boolean canTrace(World world, Vector start, Vector end) {
-        MovingObjectPosition pos = rayTrace(world, start, end);
+        HitResult pos = rayTrace(world, start, end);
         if (pos == null) {
             return true;
         }
-        return pos.getType() == MovingObjectPosition.EnumMovingObjectType.MISS;
+        return pos.getType() == HitResult.Type.MISS;
     }
 
     @Override
@@ -566,13 +582,13 @@ public class EntityHelperImpl extends EntityHelper {
         double ny = Math.sin(start.getPitch() * (Math.PI / 180));
         double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
         Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
-        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
-        if (!(l instanceof MovingObjectPositionBlock) || l.getPos() == null) {
+        HitResult l = rayTrace(start.getWorld(), startVec, endVec);
+        if (!(l instanceof BlockHitResult) || l.getLocation() == null) {
             return null;
         }
-        Vector finalVec = new Vector(l.getPos().x, l.getPos().y, l.getPos().z);
+        Vector finalVec = new Vector(l.getLocation().x, l.getLocation().y, l.getLocation().z);
         MapTraceResult mtr = new MapTraceResult();
-        switch (((MovingObjectPositionBlock) l).getDirection()) {
+        switch (((BlockHitResult) l).getDirection()) {
             case NORTH:
                 mtr.angle = BlockFace.NORTH;
                 break;
@@ -594,28 +610,28 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void snapPositionTo(Entity entity, Vector vector) {
-        ((CraftEntity) entity).getHandle().setPositionRaw(vector.getX(), vector.getY(), vector.getZ());
+        ((CraftEntity) entity).getHandle().setPosRaw(vector.getX(), vector.getY(), vector.getZ());
     }
 
     @Override
     public void move(Entity entity, Vector vector) {
-        ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, new Vec3D(vector.getX(), vector.getY(), vector.getZ()));
+        ((CraftEntity) entity).getHandle().move(MoverType.SELF, new Vec3(vector.getX(), vector.getY(), vector.getZ()));
     }
 
     @Override
     public void teleport(Entity entity, Location loc) {
         net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        nmsEntity.yaw = loc.getYaw();
-        nmsEntity.pitch = loc.getPitch();
+        nmsEntity.setYRot(loc.getYaw());
+        nmsEntity.setXRot(loc.getPitch());
         if (nmsEntity instanceof ServerPlayer) {
-            nmsEntity.teleportAndSync(loc.getX(), loc.getY(), loc.getZ());
+            nmsEntity.teleportTo(loc.getX(), loc.getY(), loc.getZ());
         }
-        nmsEntity.setPosition(loc.getX(), loc.getY(), loc.getZ());
+        nmsEntity.setPos(loc.getX(), loc.getY(), loc.getZ());
     }
 
     @Override
     public BoundingBox getBoundingBox(Entity entity) {
-        AxisAlignedBB boundingBox = ((CraftEntity) entity).getHandle().getBoundingBox();
+        AABB boundingBox = ((CraftEntity) entity).getHandle().getBoundingBox();
         Vector position = new Vector(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
         Vector size = new Vector(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
         return new BoundingBox(position, size);
@@ -625,7 +641,7 @@ public class EntityHelperImpl extends EntityHelper {
     public void setBoundingBox(Entity entity, BoundingBox boundingBox) {
         Vector low = boundingBox.getLow();
         Vector high = boundingBox.getHigh();
-        ((CraftEntity) entity).getHandle().a(new AxisAlignedBB(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ()));
+        ((CraftEntity) entity).getHandle().setBoundingBox(new AABB(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ()));
     }
 
     @Override
@@ -648,38 +664,38 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setTicksLived(Entity entity, int ticks) {
         // Bypass Spigot's must-be-at-least-1-tick requirement, as negative tick counts are useful
-        ((CraftEntity) entity).getHandle().ticksLived = ticks;
+        ((CraftEntity) entity).getHandle().tickCount = ticks;
         if (entity instanceof CraftFallingBlock) {
-            ((CraftFallingBlock) entity).getHandle().ticksLived = ticks;
+            ((CraftFallingBlock) entity).getHandle().tickCount = ticks;
         }
         else if (entity instanceof CraftItem) {
-            ((EntityItem) ((CraftItem) entity).getHandle()).age = ticks;
+            ((ItemEntity) ((CraftItem) entity).getHandle()).age = ticks;
         }
     }
 
     @Override
     public int getShulkerPeek(Entity entity) {
-        return ((CraftShulker) entity).getHandle().eN();
+        return ((CraftShulker) entity).getHandle().getRawPeekAmount();
     }
 
     @Override
     public void setShulkerPeek(Entity entity, int peek) {
-        ((CraftShulker) entity).getHandle().a(peek);
+        ((CraftShulker) entity).getHandle().setRawPeekAmount(peek);
     }
 
     @Override
     public void setHeadAngle(Entity entity, float angle) {
-        EntityLiving handle = ((CraftLivingEntity) entity).getHandle();
-        handle.aB = angle;
-        handle.setHeadRotation(angle);
+        net.minecraft.world.entity.LivingEntity handle = ((CraftLivingEntity) entity).getHandle();
+        handle.yHeadRot = angle;
+        handle.setYHeadRot(angle);
     }
 
     @Override
     public void setGhastAttacking(Entity entity, boolean attacking) {
-        ((CraftGhast) entity).getHandle().t(attacking);
+        ((CraftGhast) entity).getHandle().setCharging(attacking);
     }
 
-    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EntityEnderman.class, "bo", null);
+    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, "DATA_CREEPY", null);
 
     @Override
     public void setEndermanAngry(Entity entity, boolean angry) {
@@ -691,17 +707,17 @@ public class EntityHelperImpl extends EntityHelper {
         if (target == null) {
             return;
         }
-        EntityLiving nmsTarget = ((CraftLivingEntity) target).getHandle();
+        net.minecraft.world.entity.LivingEntity nmsTarget = ((CraftLivingEntity) target).getHandle();
         net.minecraft.world.entity.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
         CraftEventFactory.entityDamage = nmsSource;
         try {
             DamageSource src = DamageSource.GENERIC;
             if (nmsSource != null) {
-                if (nmsSource instanceof EntityHuman) {
-                    src = DamageSource.playerAttack((EntityHuman) nmsSource);
+                if (nmsSource instanceof net.minecraft.world.entity.player.Player) {
+                    src = DamageSource.playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
                 }
-                else if (nmsSource instanceof EntityLiving) {
-                    src = DamageSource.mobAttack((EntityLiving) nmsSource);
+                else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity) {
+                    src = DamageSource.mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
                 }
             }
             if (cause != null) {
@@ -710,7 +726,7 @@ public class EntityHelperImpl extends EntityHelper {
                         src = DamageSource.CACTUS;
                         break;
                     case ENTITY_ATTACK:
-                        src = DamageSource.mobAttack(nmsSource instanceof EntityLiving ? (EntityLiving) nmsSource : null);
+                        src = DamageSource.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
                         break;
                     case ENTITY_SWEEP_ATTACK:
                         if (src != DamageSource.GENERIC) {
@@ -718,19 +734,19 @@ public class EntityHelperImpl extends EntityHelper {
                         }
                         break;
                     case PROJECTILE:
-                        src = DamageSource.projectile(nmsSource, source instanceof Projectile && ((Projectile) source).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) source).getShooter()).getHandle() : null);
+                        src = DamageSource.thrown(nmsSource, source instanceof Projectile && ((Projectile) source).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) source).getShooter()).getHandle() : null);
                         break;
                     case SUFFOCATION:
-                        src = DamageSource.STUCK;
+                        src = DamageSource.IN_WALL;
                         break;
                     case FALL:
                         src = DamageSource.FALL;
                         break;
                     case FIRE:
-                        src = DamageSource.FIRE;
+                        src = DamageSource.IN_FIRE;
                         break;
                     case FIRE_TICK:
-                        src = DamageSource.BURN;
+                        src = DamageSource.ON_FIRE;
                         break;
                     case MELTING:
                         src = CraftEventFactory.MELTING;
@@ -742,16 +758,16 @@ public class EntityHelperImpl extends EntityHelper {
                         src = DamageSource.DROWN;
                         break;
                     case BLOCK_EXPLOSION:
-                        src = DamageSource.d(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof EntityLiving ? (EntityLiving) ((TNTPrimed) nmsSource).getSource() : null);
+                        src = DamageSource.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null);
                         break;
                     case ENTITY_EXPLOSION:
-                        src = DamageSource.d(nmsSource instanceof EntityLiving ? (EntityLiving) nmsSource : null);
+                        src = DamageSource.explosion(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
                         break;
                     case VOID:
                         src = DamageSource.OUT_OF_WORLD;
                         break;
                     case LIGHTNING:
-                        src = DamageSource.LIGHTNING;
+                        src = DamageSource.LIGHTNING_BOLT;
                         break;
                     case STARVATION:
                         src = DamageSource.STARVE;
@@ -769,7 +785,7 @@ public class EntityHelperImpl extends EntityHelper {
                         src = DamageSource.FALLING_BLOCK;
                         break;
                     case THORNS:
-                        src = DamageSource.a(nmsSource);
+                        src = DamageSource.thorns(nmsSource);
                         break;
                     case DRAGON_BREATH:
                         src = DamageSource.DRAGON_BREATH;
@@ -787,7 +803,7 @@ public class EntityHelperImpl extends EntityHelper {
                         src = DamageSource.CRAMMING;
                         break;
                     case DRYOUT:
-                        src = DamageSource.DRYOUT;
+                        src = DamageSource.DRY_OUT;
                         break;
                     //case SUICIDE:
                     default:
@@ -798,7 +814,7 @@ public class EntityHelperImpl extends EntityHelper {
                         break;
                 }
             }
-            nmsTarget.damageEntity(src, amount);
+            nmsTarget.hurt(src, amount);
         }
         finally {
             CraftEventFactory.entityDamage = null;

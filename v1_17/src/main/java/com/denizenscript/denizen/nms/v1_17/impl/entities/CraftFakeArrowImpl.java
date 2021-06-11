@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
-import net.minecraft.world.entity.projectile.EntityArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArrow;
 
 public class CraftFakeArrowImpl extends CraftArrow implements FakeArrow {
 
-    public CraftFakeArrowImpl(CraftServer craftServer, EntityArrow entityArrow) {
+    public CraftFakeArrowImpl(CraftServer craftServer, AbstractArrow entityArrow) {
         super(craftServer, entityArrow);
     }
 

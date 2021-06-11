@@ -13,13 +13,13 @@ import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.level.PlayerInteractManager;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -42,7 +42,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
     public ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack) {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityItemProjectileImpl entity = new EntityItemProjectileImpl(world.getHandle(), location, CraftItemStack.asNMSCopy(itemStack));
-        world.getHandle().addEntity(entity);
+        world.getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
         return entity.getBukkitEntity();
     }
 
@@ -122,7 +122,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
 
         final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getServer(), worldServer, gameProfile, doAdd);
 
-        fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
+        fakePlayer.forceSetPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
         CraftFakePlayerImpl craftFakePlayer = fakePlayer.getBukkitEntity();
         craftFakePlayer.fullName = fullName;

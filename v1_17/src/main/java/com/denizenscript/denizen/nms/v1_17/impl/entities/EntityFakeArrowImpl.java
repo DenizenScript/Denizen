@@ -2,14 +2,16 @@ package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.minecraft.world.entity.projectile.SpectralArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
-public class EntityFakeArrowImpl extends EntitySpectralArrow {
+public class EntityFakeArrowImpl extends SpectralArrow {
 
     public EntityFakeArrowImpl(CraftWorld craftWorld, Location location) {
         super(net.minecraft.world.entity.EntityType.SPECTRAL_ARROW, craftWorld.getHandle());
@@ -19,8 +21,9 @@ public class EntityFakeArrowImpl extends EntitySpectralArrow {
         catch (Exception ex) {
             Debug.echoError(ex);
         }
-        setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        world.addEntity(this);
+        setPosRaw(location.getX(), location.getY(), location.getZ());
+        setRot(location.getYaw(), location.getPitch());
+        level.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 
     @Override
@@ -29,7 +32,7 @@ public class EntityFakeArrowImpl extends EntitySpectralArrow {
     }
 
     @Override
-    protected ItemStack getItemStack() {
+    protected ItemStack getPickupItem() {
         return new ItemStack(Items.ARROW);
     }
 

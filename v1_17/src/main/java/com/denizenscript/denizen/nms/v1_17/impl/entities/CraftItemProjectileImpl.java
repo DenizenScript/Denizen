@@ -76,7 +76,7 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
     @Override
     public void setShooter(ProjectileSource projectileSource) {
         if (projectileSource instanceof CraftEntity) {
-            getHandle().setShooter(((CraftEntity) projectileSource).getHandle());
+            getHandle().setOwner(((CraftEntity) projectileSource).getHandle());
         }
         else {
             getHandle().projectileSource = projectileSource;

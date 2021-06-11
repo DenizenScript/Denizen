@@ -69,11 +69,11 @@ import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
 
-    public static final EntityDataAccessor<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(EntityHuman.class, "c", null);
+    public static final EntityDataAccessor<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, "DATA_PLAYER_ABSORPTION_ID", null);
 
-    public static final EntityDataAccessor<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "S", null);
+    public static final EntityDataAccessor<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "DATA_SHARED_FLAGS_ID", null);
 
-    public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutAbilities.class, "f");
+    public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(ClientboundPlayerAbilitiesPacket.class, "walkingSpeed");
 
     @Override
     public void setFakeAbsorption(Player player, float value) {
@@ -85,7 +85,7 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void resetWorldBorder(Player player) {
         WorldBorder wb = ((CraftWorld) player.getWorld()).getHandle().getWorldBorder();
-        send(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+        send(player, new ClientboundInitializeBorderPacket(wb));
     }
 
     @Override
@@ -103,7 +103,7 @@ public class PacketHelperImpl implements PacketHelper {
             wb.setSize(size);
         }
 
-        send(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+        send(player, new ClientboundInitializeBorderPacket(wb));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
         BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
-        Block block = ((CraftWorld) location.getWorld()).getHandle().getType(position).getBlock();
+        Block block = ((CraftWorld) location.getWorld()).getHandle().getBlockState(position).getBlock();
         send(player, new ClientboundBlockEventPacket(position, block, action, state));
     }
 
@@ -215,12 +215,12 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        send(player, new PacketPlayOutTitle(fadeInTicks, stayTicks, fadeOutTicks));
+        send(player, new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
-            send(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
+            send(player, new ClientboundSetTitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
         }
         if (subtitle != null) {
-            send(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
+            send(player, new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
         }
     }
 

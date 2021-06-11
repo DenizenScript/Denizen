@@ -277,7 +277,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
                 int eid = ENTITY_STATUS_EID.getInt(packet);
                 Entity ent = player.level.getEntity(eid);
-                if (!(ent instanceof EntityLiving)) {
+                if (!(ent instanceof net.minecraft.world.entity.LivingEntity)) {
                     return false;
                 }
                 FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUUID());
@@ -288,8 +288,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                     return false;
                 }
                 List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>();
-                ItemStack hand = override.hand != null ? CraftItemStack.asNMSCopy(override.hand.getItemStack()) : ((EntityLiving) ent).getItemInMainHand();
-                ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((EntityLiving) ent).getItemInOffHand();
+                ItemStack hand = override.hand != null ? CraftItemStack.asNMSCopy(override.hand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getItemInMainHand();
+                ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getItemInOffHand();
                 equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.MAINHAND, hand));
                 equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand));
                 PacketPlayOutEntityEquipment newPacket = new PacketPlayOutEntityEquipment(eid, equipment);

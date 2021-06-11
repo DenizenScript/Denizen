@@ -64,11 +64,11 @@ public class FakeBlockHelper {
             FriendlyByteBuf serial = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
             FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(data.length));
             boolean isFull = packet.f();
-            List<NBTTagCompound> blockEntities = new ArrayList<>((List<NBTTagCompound>) BLOCKENTITIES_MAPCHUNK.get(packet));
+            List<net.minecraft.nbt.CompoundTag> blockEntities = new ArrayList<>((List<net.minecraft.nbt.CompoundTag>) BLOCKENTITIES_MAPCHUNK.get(packet));
             BLOCKENTITIES_MAPCHUNK.set(packet, blockEntities);
-            ListIterator<NBTTagCompound> iterator = blockEntities.listIterator();
+            ListIterator<net.minecraft.nbt.CompoundTag> iterator = blockEntities.listIterator();
             while (iterator.hasNext()) {
-                NBTTagCompound blockEnt = iterator.next();
+                net.minecraft.nbt.CompoundTag blockEnt = iterator.next();
                 int x = blockEnt.getInt("x");
                 int y = blockEnt.getInt("y");
                 int z = blockEnt.getInt("z");
@@ -82,7 +82,7 @@ public class FakeBlockHelper {
             }
             for (FakeBlock block : blocks) {
                 LocationTag loc = block.location;
-                NBTTagCompound newCompound = new NBTTagCompound();
+                net.minecraft.nbt.CompoundTag newCompound = new net.minecraft.nbt.CompoundTag();
                 newCompound.setInt("x", loc.getBlockX());
                 newCompound.setInt("y", loc.getBlockY());
                 newCompound.setInt("z", loc.getBlockZ());

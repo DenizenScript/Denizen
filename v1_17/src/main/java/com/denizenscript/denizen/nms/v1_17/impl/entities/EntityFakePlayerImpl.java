@@ -27,7 +27,7 @@ public class EntityFakePlayerImpl extends ServerPlayer {
         }
         Connection networkManager = new FakeNetworkManagerImpl(PacketFlow.CLIENTBOUND);
         connection = new FakePlayerConnectionImplImpl(minecraftserver, networkManager, this);
-        networkManager.setPacketListener(connection);
+        networkManager.setListener(connection);
         getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
         if (doAdd) {
             worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
