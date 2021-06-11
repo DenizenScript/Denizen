@@ -3,8 +3,8 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_17_R1.DataWatcher;
-import net.minecraft.server.v1_17_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata;
+import net.minecraft.network.syncher.DataWatcher;
 
 import java.lang.reflect.Field;
 import java.util.List;

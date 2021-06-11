@@ -20,7 +20,31 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.syncher.DataWatcher;
+import net.minecraft.network.syncher.DataWatcherObject;
+import net.minecraft.server.level.EntityTrackerEntry;
+import net.minecraft.server.level.PlayerChunkMap;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.EnumHand;
+import net.minecraft.world.entity.EntityLiving;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EnumItemSlot;
+import net.minecraft.world.entity.monster.EntityCaveSpider;
+import net.minecraft.world.entity.monster.EntityCreeper;
+import net.minecraft.world.entity.monster.EntityEnderman;
+import net.minecraft.world.entity.monster.EntitySpider;
+import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.TileEntitySign;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.saveddata.maps.WorldMap;
+import net.minecraft.world.scores.ScoreboardTeam;
+import net.minecraft.world.scores.ScoreboardTeamBase;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -51,7 +75,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static final DataWatcherObject<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(EntityHuman.class, "c", null);
 
-    public static final DataWatcherObject<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.server.v1_17_R1.Entity.class, "S", null);
+    public static final DataWatcherObject<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "S", null);
 
     public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(PacketPlayOutAbilities.class, "f");
 
@@ -208,8 +232,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
-        Pair<EnumItemSlot, net.minecraft.server.v1_17_R1.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
-        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_17_R1.ItemStack>> pairList = new ArrayList<>();
+        Pair<EnumItemSlot, net.minecraft.world.item.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
+        ArrayList<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> pairList = new ArrayList<>();
         pairList.add(pair);
         sendPacket(player, new PacketPlayOutEntityEquipment(entity.getEntityId(), pairList));
     }
@@ -217,7 +241,7 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void resetEquipment(Player player, LivingEntity entity) {
         EntityEquipment equipment = entity.getEquipment();
-        ArrayList<Pair<EnumItemSlot, net.minecraft.server.v1_17_R1.ItemStack>> pairList = new ArrayList<>();
+        ArrayList<Pair<EnumItemSlot, net.minecraft.world.item.ItemStack>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(equipment.getItemInMainHand())));
         pairList.add(new Pair<>(EnumItemSlot.OFFHAND, CraftItemStack.asNMSCopy(equipment.getItemInOffHand())));
         pairList.add(new Pair<>(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(equipment.getHelmet())));
@@ -292,8 +316,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     static {
         try {
-            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_17_R1.Entity.class, "aq", null);
-            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.server.v1_17_R1.Entity.class, "ar", null);
+            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "aq", null);
+            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "ar", null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();

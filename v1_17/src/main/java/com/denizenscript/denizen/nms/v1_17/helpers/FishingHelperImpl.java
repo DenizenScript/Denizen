@@ -1,7 +1,21 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.entity.projectile.EntityFishingHook;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentManager;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.storage.loot.LootTableInfo;
+import net.minecraft.world.level.storage.loot.LootTableRegistry;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParameterSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParameters;
+import net.minecraft.world.phys.Vec3D;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftFishHook;

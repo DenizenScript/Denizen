@@ -5,7 +5,14 @@ import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakeNetworkManager
 import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakePlayerConnectionImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.protocol.EnumProtocolDirection;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.PlayerInteractManager;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.entity.player.EntityHuman;
+import net.minecraft.world.level.EnumGamemode;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;

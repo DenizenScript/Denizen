@@ -3,7 +3,15 @@ package com.denizenscript.denizen.nms.v1_17.impl.entities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.syncher.DataWatcherObject;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.item.EntityItem;
+import net.minecraft.world.entity.projectile.EntityProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.World;
+import net.minecraft.world.phys.MovingObjectPositionBlock;
 import org.bukkit.Location;
 
 import java.lang.invoke.MethodHandle;

@@ -3,8 +3,8 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSetSlot;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_17_R1.ItemStack;
-import net.minecraft.server.v1_17_R1.PacketPlayOutSetSlot;
+import net.minecraft.network.protocol.game.PacketPlayOutSetSlot;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;

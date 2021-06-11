@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.impl.jnbt;
 
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.nbt.*;
 
 import java.util.HashMap;
 import java.util.List;

@@ -2,7 +2,10 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntityExperienceOrb;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
 

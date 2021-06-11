@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
-import net.minecraft.server.v1_17_R1.Entity;
+import net.minecraft.world.entity.Entity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftHorse;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPolarBear;

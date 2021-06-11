@@ -1,14 +1,14 @@
-package com.denizenscript.denizen.nms.v1_16;
+package com.denizenscript.denizen.nms.v1_17;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.*;
-import com.denizenscript.denizen.nms.v1_16.helpers.*;
-import com.denizenscript.denizen.nms.v1_16.impl.BiomeNMSImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.blocks.BlockLightImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenPacketListenerImpl;
+import com.denizenscript.denizen.nms.v1_17.helpers.*;
+import com.denizenscript.denizen.nms.v1_17.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.SidebarImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.blocks.BlockLightImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.network.handlers.DenizenPacketListenerImpl;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;

@@ -5,7 +5,13 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketDataSerializer;
+import net.minecraft.network.protocol.game.PacketPlayOutMapChunk;
+import net.minecraft.util.DataBits;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.chunk.ChunkSection;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;

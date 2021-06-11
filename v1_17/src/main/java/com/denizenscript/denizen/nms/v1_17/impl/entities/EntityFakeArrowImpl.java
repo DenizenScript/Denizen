@@ -2,10 +2,10 @@ package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_17_R1.EntitySpectralArrow;
-import net.minecraft.server.v1_17_R1.EntityTypes;
-import net.minecraft.server.v1_17_R1.ItemStack;
-import net.minecraft.server.v1_17_R1.Items;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.projectile.EntitySpectralArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;

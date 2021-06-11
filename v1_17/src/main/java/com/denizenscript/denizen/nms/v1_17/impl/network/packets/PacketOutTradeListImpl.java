@@ -4,9 +4,9 @@ import com.denizenscript.denizen.nms.interfaces.packets.PacketOutTradeList;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.TradeOffer;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.server.v1_17_R1.MerchantRecipe;
-import net.minecraft.server.v1_17_R1.MerchantRecipeList;
-import net.minecraft.server.v1_17_R1.PacketPlayOutOpenWindowMerchant;
+import net.minecraft.network.protocol.game.PacketPlayOutOpenWindowMerchant;
+import net.minecraft.world.item.trading.MerchantRecipe;
+import net.minecraft.world.item.trading.MerchantRecipeList;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;

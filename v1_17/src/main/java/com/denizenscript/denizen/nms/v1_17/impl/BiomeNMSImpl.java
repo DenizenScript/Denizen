@@ -2,7 +2,11 @@ package com.denizenscript.denizen.nms.v1_17.impl;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.core.IRegistry;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EnumCreatureType;
+import net.minecraft.world.level.biome.BiomeBase;
+import net.minecraft.world.level.biome.BiomeSettingsMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

@@ -6,7 +6,16 @@ import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_17_R1.*;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutScoreboardDisplayObjective;
+import net.minecraft.network.protocol.game.PacketPlayOutScoreboardObjective;
+import net.minecraft.network.protocol.game.PacketPlayOutScoreboardScore;
+import net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam;
+import net.minecraft.server.ScoreboardServer;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.ScoreboardObjective;
+import net.minecraft.world.scores.ScoreboardTeam;
+import net.minecraft.world.scores.criteria.IScoreboardCriteria;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

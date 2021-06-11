@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
-import net.minecraft.server.v1_17_R1.EntityArrow;
+import net.minecraft.world.entity.projectile.EntityArrow;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArrow;
 
