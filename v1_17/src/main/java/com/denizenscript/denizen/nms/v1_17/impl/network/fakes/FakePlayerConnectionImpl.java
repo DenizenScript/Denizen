@@ -6,9 +6,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-public class FakePlayerConnectionImplImpl extends ServerGamePacketListenerImpl {
+public class FakePlayerConnectionImpl extends ServerGamePacketListenerImpl {
 
-    public FakePlayerConnectionImplImpl(MinecraftServer minecraftserver, Connection networkmanager, ServerPlayer entityplayer) {
+    public FakePlayerConnectionImpl(MinecraftServer minecraftserver, Connection networkmanager, ServerPlayer entityplayer) {
         super(minecraftserver, networkmanager, entityplayer);
     }
 

@@ -5,21 +5,26 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
+import net.minecraft.util.BitStorage;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class FakeBlockHelper {
 
-    public static Field BITMASK_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("c");
-    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("f");
-    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("g");
-    public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(PacketPlayOutMapChunk.class).get("e");
+    public static Field BITMASK_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("c");
+    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("f");
+    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("g");
+    public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("e");
 
     public static BlockState getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData()).getState();
@@ -38,7 +43,7 @@ public class FakeBlockHelper {
     }
 
     public static int indexInPalette(BlockState data) {
-        return ChunkSection.GLOBAL_PALETTE.a(data);
+        return LevelChunkSection.GLOBAL_BLOCKSTATE_PALETTE.idFor(data);
     }
 
     public static int blockArrayIndex(int x, int y, int z) {
@@ -54,19 +59,20 @@ public class FakeBlockHelper {
         return -1;
     }
 
-    public static PacketPlayOutMapChunk handleMapChunkPacket(PacketPlayOutMapChunk originalPacket, List<FakeBlock> blocks) {
+    public static ClientboundLevelChunkPacket handleMapChunkPacket(ClientboundLevelChunkPacket originalPacket, List<FakeBlock> blocks) {
         try {
-            PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk();
-            DenizenNetworkManagerImpl.copyPacket(originalPacket, packet);
+            FriendlyByteBuf duplicator = new FriendlyByteBuf(Unpooled.buffer());
+            originalPacket.write(duplicator);
+            ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(duplicator);
             // TODO: properly update HeightMap?
             int bitmask = BITMASK_MAPCHUNK.getInt(packet);
             byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);
             FriendlyByteBuf serial = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
             FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(data.length));
-            boolean isFull = packet.f();
+            boolean isFull = true;//packet.f();
             List<net.minecraft.nbt.CompoundTag> blockEntities = new ArrayList<>((List<net.minecraft.nbt.CompoundTag>) BLOCKENTITIES_MAPCHUNK.get(packet));
             BLOCKENTITIES_MAPCHUNK.set(packet, blockEntities);
-            ListIterator<net.minecraft.nbt.CompoundTag> iterator = blockEntities.listIterator();
+            ListIterator<CompoundTag> iterator = blockEntities.listIterator();
             while (iterator.hasNext()) {
                 net.minecraft.nbt.CompoundTag blockEnt = iterator.next();
                 int x = blockEnt.getInt("x");
@@ -83,22 +89,22 @@ public class FakeBlockHelper {
             for (FakeBlock block : blocks) {
                 LocationTag loc = block.location;
                 net.minecraft.nbt.CompoundTag newCompound = new net.minecraft.nbt.CompoundTag();
-                newCompound.setInt("x", loc.getBlockX());
-                newCompound.setInt("y", loc.getBlockY());
-                newCompound.setInt("z", loc.getBlockZ());
-                newCompound.setString("id", block.material.getMaterial().getKey().toString());
+                newCompound.putInt("x", loc.getBlockX());
+                newCompound.putInt("y", loc.getBlockY());
+                newCompound.putInt("z", loc.getBlockZ());
+                newCompound.putString("id", block.material.getMaterial().getKey().toString());
                 blockEntities.add(newCompound);
             }
             for (int y = 0; y < 16; y++) {
                 if ((bitmask & (1 << y)) != 0) {
                     int blockCount = serial.readShort();
                     int width = serial.readUnsignedByte();
-                    int paletteLen = serial.i(); // readVarInt
+                    int paletteLen = serial.readVarInt();
                     int[] palette = new int[paletteLen];
                     for (int p = 0; p < paletteLen; p++) {
-                        palette[p] = serial.i();
+                        palette[p] = serial.readVarInt();
                     }
-                    int dataLen = serial.i();
+                    int dataLen = serial.readVarInt();
                     long[] blockListHelper = new long[dataLen];
                     for (int i = 0; i < blockListHelper.length; i++) {
                         blockListHelper[i] = serial.readLong();
@@ -106,11 +112,11 @@ public class FakeBlockHelper {
                     outputSerial.writeShort(blockCount);
                     if (!anyBlocksInSection(blocks, y)) {
                         outputSerial.writeByte(width);
-                        outputSerial.d(paletteLen); // writeVarInt
+                        outputSerial.writeVarInt(paletteLen);
                         for (int p = 0; p < paletteLen; p++) {
-                            outputSerial.d(palette[p]);
+                            outputSerial.writeVarInt(palette[p]);
                         }
-                        outputSerial.a(blockListHelper); // writeLongs
+                        outputSerial.writeLongArray(blockListHelper);
                         continue;
                     }
                     char dataBitsF = (char)(64 / width);
@@ -119,7 +125,7 @@ public class FakeBlockHelper {
                         return originalPacket; // This chunk is too-complex and is using non-standard chunk format. For now, just ignore it.
                         // TODO: Add support for processing very-complex chunks (DataPaletteHash might be responsible for the unique format?)
                     }
-                    DataBits bits = new DataBits(width, 4096, blockListHelper);
+                    BitStorage bits = new BitStorage(width, 4096, blockListHelper);
                     int minY = y << 4;
                     int maxY = (y << 4) + 16;
                     for (FakeBlock block : blocks) {
@@ -143,29 +149,29 @@ public class FakeBlockHelper {
                                 palette = newPalette;
                                 int newWidth = Mth.ceillog2(paletteLen);
                                 if (newWidth > width) {
-                                    DataBits newBits = new DataBits(newWidth, 4096);
-                                    for (int i = 0; i < bits.b(); i++) {
-                                        newBits.a(i, bits.a(i));
+                                    BitStorage newBits = new BitStorage(newWidth, 4096);
+                                    for (int i = 0; i < bits.getSize(); i++) {
+                                        newBits.getAndSet(i, bits.get(i));
                                     }
                                     bits = newBits;
                                     width = newWidth;
                                 }
                             }
-                            bits.a(blockIndex, subPaletteId);
+                            bits.getAndSet(blockIndex, subPaletteId);
                         }
                     }
                     outputSerial.writeByte(width);
-                    outputSerial.d(paletteLen);
+                    outputSerial.writeVarInt(paletteLen);
                     for (int p = 0; p < palette.length; p++) {
-                        outputSerial.d(palette[p]);
+                        outputSerial.writeVarInt(palette[p]);
                     }
-                    outputSerial.a(bits.a());
+                    outputSerial.writeLongArray(bits.getRaw());
                 }
             }
             if (isFull) {
                 int[] biomes = (int[]) BIOMESTORAGE_MAPCHUNK.get(packet);
                 if (biomes != null) {
-                    outputSerial.a(biomes);
+                    outputSerial.writeVarIntArray(biomes);
                 }
             }
             byte[] outputBytes = outputSerial.array();

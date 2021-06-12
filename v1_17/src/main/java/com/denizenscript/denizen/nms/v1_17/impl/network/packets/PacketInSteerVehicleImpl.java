@@ -1,33 +1,33 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketInSteerVehicle;
-import net.minecraft.network.protocol.game.PacketPlayInSteerVehicle;
+import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 
 public class PacketInSteerVehicleImpl implements PacketInSteerVehicle {
 
-    private PacketPlayInSteerVehicle internal;
+    private ServerboundPlayerInputPacket internal;
 
-    public PacketInSteerVehicleImpl(PacketPlayInSteerVehicle internal) {
+    public PacketInSteerVehicleImpl(ServerboundPlayerInputPacket internal) {
         this.internal = internal;
     }
 
     @Override
     public float getLeftwardInput() {
-        return internal.b();
+        return internal.getXxa();
     }
 
     @Override
     public float getForwardInput() {
-        return internal.c();
+        return internal.getZza();
     }
 
     @Override
     public boolean getJumpInput() {
-        return internal.d();
+        return internal.isJumping();
     }
 
     @Override
     public boolean getDismountInput() {
-        return internal.e();
+        return internal.isShiftKeyDown();
     }
 }

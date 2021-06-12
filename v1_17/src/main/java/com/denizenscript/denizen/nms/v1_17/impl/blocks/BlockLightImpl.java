@@ -6,19 +6,19 @@ import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
-import net.minecraft.network.protocol.game.PacketPlayOutLightUpdate;
-import net.minecraft.server.level.LightEngineThreaded;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.EnumSkyBlock;
-import net.minecraft.world.level.World;
-import net.minecraft.world.level.chunk.Chunk;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.chunk.IChunkAccess;
+import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.NibbleArray;
-import net.minecraft.world.level.lighting.LightEngine;
-import net.minecraft.world.level.lighting.LightEngineBlock;
+import net.minecraft.world.level.lighting.BlockLightEngine;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
@@ -32,13 +32,13 @@ import java.util.List;
 
 public class BlockLightImpl extends BlockLight {
 
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKX = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("a");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKZ = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("b");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("d");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA = ReflectionHelper.getFields(PacketPlayOutLightUpdate.class).get("h");
-    public static final Field PACKETPLAYOUTBLOCKCHANGE_POSITION = ReflectionHelper.getFields(PacketPlayOutBlockChange.class).get("a");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKX = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("a");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKZ = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("b");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("d");
+    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("h");
+    public static final Field PACKETPLAYOUTBLOCKCHANGE_POSITION = ReflectionHelper.getFields(ClientboundBlockUpdatePacket.class).get("a");
 
-    public static final Class LIGHTENGINETHREADED_UPDATE = LightEngineThreaded.class.getDeclaredClasses()[0];
+    public static final Class LIGHTENGINETHREADED_UPDATE = ThreadedLevelLightEngine.class.getDeclaredClasses()[0];
     public static final Object LIGHTENGINETHREADED_UPDATE_PRE;
 
     static {
@@ -52,12 +52,12 @@ public class BlockLightImpl extends BlockLight {
         LIGHTENGINETHREADED_UPDATE_PRE = preObj;
     }
 
-    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(LightEngineThreaded.class, "a",
+    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, "a",
             int.class, int.class,  LIGHTENGINETHREADED_UPDATE, Runnable.class);
 
-    public static void enqueueRunnable(Chunk chunk, Runnable runnable) {
-        LightEngine lightEngine = chunk.e();
-        if (lightEngine instanceof LightEngineThreaded) {
+    public static void enqueueRunnable(LevelChunk chunk, Runnable runnable) {
+        LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
+        if (lightEngine instanceof ThreadedLevelLightEngine) {
             ChunkPos coord = chunk.getPos();
             try {
                 LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x, coord.z, LIGHTENGINETHREADED_UPDATE_PRE, runnable);
@@ -103,18 +103,18 @@ public class BlockLightImpl extends BlockLight {
         return blockLight;
     }
 
-    public static void checkIfLightsBrokenByPacket(PacketPlayOutBlockChange packet, World world) {
+    public static void checkIfLightsBrokenByPacket(ClientboundBlockUpdatePacket packet, Level world) {
         try {
             BlockPos pos = (BlockPos) PACKETPLAYOUTBLOCKCHANGE_POSITION.get(packet);
             int chunkX = pos.getX() >> 4;
             int chunkZ = pos.getZ() >> 4;
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
-                Chunk chunk = world.getChunkAt(chunkX, chunkZ);
+                LevelChunk chunk = world.getChunkAt(chunkX, chunkZ);
                 boolean any = false;
                 for (Vector vec : RELATIVE_CHUNKS) {
-                    IChunkAccess other = world.getChunkAt(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ(), ChunkStatus.FULL, false);
-                    if (other instanceof Chunk) {
-                        List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(((Chunk) other).bukkitChunk));
+                    ChunkAccess other = world.getChunk(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ(), ChunkStatus.FULL, false);
+                    if (other instanceof LevelChunk) {
+                        List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(((LevelChunk) other).bukkitChunk));
                         if (lights != null) {
                             any = true;
                             for (BlockLight light : lights) {
@@ -133,7 +133,7 @@ public class BlockLightImpl extends BlockLight {
         }
     }
 
-    public static void checkIfLightsBrokenByPacket(PacketPlayOutLightUpdate packet, World world) {
+    public static void checkIfLightsBrokenByPacket(ClientboundLightUpdatePacket packet, Level world) {
         if (doNotCheck) {
             return;
         }
@@ -143,11 +143,11 @@ public class BlockLightImpl extends BlockLight {
             int bitMask = PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK.getInt(packet);
             List<byte[]> blockData = (List<byte[]>) PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA.get(packet);
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
-                IChunkAccess chk = world.getChunkAt(cX, cZ, ChunkStatus.FULL, false);
-                if (!(chk instanceof Chunk)) {
+                ChunkAccess chk = world.getChunk(cX, cZ, ChunkStatus.FULL, false);
+                if (!(chk instanceof LevelChunk)) {
                     return;
                 }
-                List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(((Chunk) chk).bukkitChunk));
+                List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(((LevelChunk) chk).bukkitChunk));
                 if (lights == null) {
                     return;
                 }
@@ -159,7 +159,7 @@ public class BlockLightImpl extends BlockLight {
                     }
                 }
                 if (any) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates((Chunk) chk), 3);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> sendNearbyChunkUpdates((LevelChunk) chk), 3);
                 }
             }, 1);
         }
@@ -181,11 +181,11 @@ public class BlockLightImpl extends BlockLight {
             if ((bitmask & (1 << i)) != 0) {
                 if (i == layer) {
                     byte[] blocks = data.get(found);
-                    NibbleArray arr = new NibbleArray(blocks);
+                    DataLayer arr = new DataLayer(blocks);
                     int x = blockLoc.getBlockX() - (chunkCoord.x << 4);
                     int y = blockLoc.getBlockY() % 16;
                     int z = blockLoc.getBlockZ() - (chunkCoord.z << 4);
-                    int level = arr.a(x, y, z);
+                    int level = arr.get(x, y, z);
                     return intendedLevel != level;
                 }
                 found++;
@@ -194,20 +194,20 @@ public class BlockLightImpl extends BlockLight {
         return false;
     }
 
-    public static void runResetFor(final Chunk chunk, final BlockPos pos) {
+    public static void runResetFor(final LevelChunk chunk, final BlockPos pos) {
         Runnable runnable = () -> {
-            LightEngine lightEngine = chunk.e();
-            LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
-            engineBlock.a(pos);
+            LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
+            BlockLightEngine engineBlock = (BlockLightEngine) lightEngine.getLayerListener(LightLayer.BLOCK);
+            engineBlock.checkBlock(pos);
         };
         enqueueRunnable(chunk, runnable);
     }
 
-    public static void runSetFor(final Chunk chunk, final BlockPos pos, final int level) {
+    public static void runSetFor(final LevelChunk chunk, final BlockPos pos, final int level) {
         Runnable runnable = () -> {
-            LightEngine lightEngine = chunk.e();
-            LightEngineBlock engineBlock = (LightEngineBlock) lightEngine.a(EnumSkyBlock.BLOCK);
-            engineBlock.a(pos, level);
+            LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
+            BlockLightEngine engineBlock = (BlockLightEngine) lightEngine.getLayerListener(LightLayer.BLOCK);
+            engineBlock.onBlockEmissionIncrease(pos, level);
         };
         enqueueRunnable(chunk, runnable);
     }
@@ -247,19 +247,19 @@ public class BlockLightImpl extends BlockLight {
     public static void sendNearbyChunkUpdates(LevelChunk chunk) {
         ChunkPos pos = chunk.getPos();
         for (Vector vec : RELATIVE_CHUNKS) {
-            IChunkAccess other = chunk.getLevel().getChunkAt(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ(), ChunkStatus.FULL, false);
-            if (other instanceof Chunk) {
-                sendSingleChunkUpdate((Chunk) other);
+            ChunkAccess other = chunk.getLevel().getChunk(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ(), ChunkStatus.FULL, false);
+            if (other instanceof LevelChunk) {
+                sendSingleChunkUpdate((LevelChunk) other);
             }
         }
     }
 
-    public static void sendSingleChunkUpdate(Chunk chunk) {
+    public static void sendSingleChunkUpdate(LevelChunk chunk) {
         doNotCheck = true;
-        LightEngine lightEngine = chunk.e();
+        LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
         ChunkPos pos = chunk.getPos();
-        PacketPlayOutLightUpdate packet = new PacketPlayOutLightUpdate(pos, lightEngine, true); // TODO: 1.16: should 'trust edges' be true here?
-        chunk.world.getChunkProvider().chunkMap.a(pos, false).forEach((player) -> {
+        ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(pos, lightEngine, null, null, true); // TODO: 1.16: should 'trust edges' be true here?
+        ((ServerChunkCache) chunk.getLevel().getChunkSource()).chunkMap.getPlayers(pos, false).forEach((player) -> {
             player.connection.send(packet);
         });
         doNotCheck = false;

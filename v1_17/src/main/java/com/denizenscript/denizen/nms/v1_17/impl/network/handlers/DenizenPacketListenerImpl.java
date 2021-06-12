@@ -8,12 +8,11 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -22,7 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.UUID;
@@ -45,32 +43,32 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     }
 
     @Override
-    public void a(final PacketPlayInSteerVehicle packet) {
+    public void handlePlayerInput(final ServerboundPlayerInputPacket packet) {
         if (!packetHandler.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet))) {
-            super.a(packet);
+            super.handlePlayerInput(packet);
         }
     }
 
     @Override
-    public void a(PacketPlayInResourcePackStatus packet) {
+    public void handleResourcePackResponse(ServerboundResourcePackPacket packet) {
         packetHandler.receivePacket(player.getBukkitEntity(), new PacketInResourcePackStatusImpl(packet));
-        super.a(packet);
+        super.handleResourcePackResponse(packet);
     }
 
     @Override
-    public void a(PacketPlayInBlockPlace packet) {
+    public void handleUseItem(ServerboundUseItemPacket packet) {
         packetHandler.receivePlacePacket(player.getBukkitEntity());
-        super.a(packet);
+        super.handleUseItem(packet);
     }
 
     @Override
-    public void a(PacketPlayInBlockDig packet) {
+    public void handlePlayerAction(ServerboundPlayerActionPacket packet) {
         packetHandler.receiveDigPacket(player.getBukkitEntity());
-        super.a(packet);
+        super.handlePlayerAction(packet);
     }
 
     @Override
-    public void a(PacketPlayInArmAnimation packet) {
+    public void handleAnimate(ServerboundSwingPacket packet) {
         HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
         if (playersMap != null) {
             FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
@@ -78,11 +76,11 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
                 player.getBukkitEntity().updateInventory();
             }
         }
-        super.a(packet);
+        super.handleAnimate(packet);
     }
 
     @Override
-    public void a(PacketPlayInHeldItemSlot packet) {
+    public void handleSetCarriedItem(ServerboundSetCarriedItemPacket packet) {
         HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
         if (playersMap != null) {
             FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
@@ -90,37 +88,37 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
                 Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 2);
             }
         }
-        super.a(packet);
+        super.handleSetCarriedItem(packet);
     }
 
     @Override
-    public void a(PacketPlayInWindowClick packet) {
+    public void handleContainerClick(ServerboundContainerClickPacket packet) {
         HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
         if (playersMap != null) {
             FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
-            if (override != null && packet.b() == 0) {
+            if (override != null && packet.getContainerId() == 0) {
                 Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
             }
         }
-        super.a(packet);
+        super.handleContainerClick(packet);
     }
 
     @Override
-    public void a(PacketPlayInCustomPayload packet) {
+    public void handleCustomPayload(ServerboundCustomPayloadPacket packet) {
         if (NMSHandler.debugPackets) {
-            Debug.log("Custom packet payload: " + packet.tag.toString() + " sent from " + player.getName());
+            Debug.log("Custom packet payload: " + packet.identifier.toString() + " sent from " + player.getName());
         }
-        if (packet.tag.getNamespace().equals("minecraft") && packet.tag.getKey().equals("brand")) {
+        if (packet.identifier.getNamespace().equals("minecraft") && packet.identifier.getPath().equals("brand")) {
             FriendlyByteBuf newData = new FriendlyByteBuf(packet.data.copy());
-            int i = newData.i(); // read off the varInt of length to get rid of it
+            int i = newData.readVarInt(); // read off the varInt of length to get rid of it
             brand = StandardCharsets.UTF_8.decode(newData.nioBuffer()).toString();
         }
-        super.a(packet);
+        super.handleCustomPayload(packet);
     }
 
     @Override
-    public void a(PacketPlayInUpdateSign packet) {
-        if (fakeSignExpected != null && packet.b().equals(fakeSignExpected)) {
+    public void handleSignUpdate(ServerboundSignUpdatePacket packet) {
+        if (fakeSignExpected != null && packet.getPos().equals(fakeSignExpected)) {
             fakeSignExpected = null;
             PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
             evt.cancelled = false;
@@ -128,29 +126,24 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
             evt.location = new LocationTag(getPlayer().getLocation());
             LocationTag loc = evt.location.clone();
             loc.setY(0);
-            evt.event = new SignChangeEvent(loc.getBlock(), getPlayer(), packet.c());
+            evt.event = new SignChangeEvent(loc.getBlock(), getPlayer(), packet.getLines());
             evt.fire(evt.event);
         }
-        super.a(packet);
+        super.handleSignUpdate(packet);
     }
 
     @Override
-    public void a(PacketPlayInFlying packet) {
+    public void handleMovePlayer(ServerboundMovePlayerPacket packet) {
         if (DenizenPacketHandler.forceNoclip.contains(player.getUUID())) {
-            player.noclip = true;
+            player.noPhysics = true;
         }
-        super.a(packet);
+        super.handleMovePlayer(packet);
     }
 
     // For compatibility with other plugins using Reflection weirdly...
     @Override
-    public void send(Packet packet) {
+    public void send(Packet<?> packet) {
         super.send(packet);
-    }
-
-    @Override
-    public void a(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
-        super.a(packet, genericfuturelistener);
     }
 
     public static class PlayerEventListener implements Listener {

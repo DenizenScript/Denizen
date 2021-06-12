@@ -10,7 +10,7 @@ public class FakeNetworkManagerImpl extends Connection {
     public FakeNetworkManagerImpl(PacketFlow enumprotocoldirection) {
         super(enumprotocoldirection);
         channel = new FakeChannelImpl(null);
-        socketAddress = new SocketAddress() {
+        address = new SocketAddress() {
         };
     }
 }

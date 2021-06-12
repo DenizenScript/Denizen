@@ -14,6 +14,10 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAddPlayerPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntityPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -34,7 +38,7 @@ public class ProfileEditorImpl extends ProfileEditor {
     protected void updatePlayer(Player player, final boolean isSkinChanging) {
         final ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         final UUID uuid = player.getUniqueId();
-        PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
+        ClientboundRemoveEntityPacket destroyPacket = new ClientboundRemoveEntityPacket(entityPlayer.getId());
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (!p.getUniqueId().equals(uuid)) {
                 PacketHelperImpl.send(p, destroyPacket);
@@ -43,8 +47,8 @@ public class ProfileEditorImpl extends ProfileEditor {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
-                PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
+                ClientboundPlayerInfoPacket playerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityPlayer);
+                ClientboundAddPlayerPacket spawnPacket = new ClientboundAddPlayerPacket(entityPlayer);
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     PacketHelperImpl.send(player, playerInfo);
                     if (!player.getUniqueId().equals(uuid)) {
@@ -61,15 +65,15 @@ public class ProfileEditorImpl extends ProfileEditor {
         }.runTaskLater(NMSHandler.getJavaPlugin(), 5);
     }
 
-    public static boolean handleAlteredProfiles(PacketPlayOutPlayerInfo packet, DenizenNetworkManagerImpl manager) {
+    public static boolean handleAlteredProfiles(ClientboundPlayerInfoPacket packet, DenizenNetworkManagerImpl manager) {
         if (ProfileEditor.mirrorUUIDs.isEmpty() && !RenameCommand.hasAnyDynamicRenames()) {
             return true;
         }
-        PacketPlayOutPlayerInfo.EnumPlayerInfoAction action = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "a", packet);
-        if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER && action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME) {
+        ClientboundPlayerInfoPacket.Action action = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "a", packet);
+        if (action != ClientboundPlayerInfoPacket.Action.ADD_PLAYER && action != ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME) {
             return true;
         }
-        List dataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", packet);
+        List dataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", packet);
         if (dataList == null) {
             return true;
         }
@@ -84,19 +88,19 @@ public class ProfileEditorImpl extends ProfileEditor {
             if (!any) {
                 return true;
             }
-            GameProfile ownProfile = manager.player.getProfile();
+            GameProfile ownProfile = manager.player.getGameProfile();
             for (Object data : dataList) {
                 GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
                 if (!ProfileEditor.mirrorUUIDs.contains(gameProfile.getId()) && !RenameCommand.customNames.containsKey(gameProfile.getId())) {
-                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(action);
-                    List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
+                    ClientboundPlayerInfoPacket newPacket = new ClientboundPlayerInfoPacket(action);
+                    List newPacketDataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", newPacket);
                     newPacketDataList.add(data);
                     manager.oldManager.send(newPacket);
                 }
                 else {
                     String rename = RenameCommand.getCustomNameFor(gameProfile.getId(), manager.player.getBukkitEntity(), false);
-                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(action);
-                    List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
+                    ClientboundPlayerInfoPacket newPacket = new ClientboundPlayerInfoPacket(action);
+                    List newPacketDataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", newPacket);
                     GameProfile patchedProfile = new GameProfile(gameProfile.getId(), rename != null ? (rename.length() > 16 ? rename.substring(0, 16) : rename) : gameProfile.getName());
                     if (ProfileEditor.mirrorUUIDs.contains(gameProfile.getId())) {
                         patchedProfile.getProperties().putAll(ownProfile.getProperties());
@@ -105,7 +109,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                         patchedProfile.getProperties().putAll(gameProfile.getProperties());
                     }
                     String listRename = RenameCommand.getCustomNameFor(gameProfile.getId(), manager.player.getBukkitEntity(), true);
-                    IChatBaseComponent displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : (IChatBaseComponent) playerInfoData_displayName.get(data);
+                    Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : (Component) playerInfoData_displayName.get(data);
                     Object newData = playerInfoData_construct.newInstance(newPacket, patchedProfile, playerInfoData_latency.getInt(data), playerInfoData_gamemode.get(data), displayName);
                     newPacketDataList.add(newData);
                     manager.oldManager.send(newPacket);
@@ -119,12 +123,12 @@ public class ProfileEditorImpl extends ProfileEditor {
         }
     }
 
-    public static void updatePlayerProfiles(PacketPlayOutPlayerInfo packet) {
-        PacketPlayOutPlayerInfo.EnumPlayerInfoAction action = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "a", packet);
-        if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER) {
+    public static void updatePlayerProfiles(ClientboundPlayerInfoPacket packet) {
+        ClientboundPlayerInfoPacket.Action action = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "a", packet);
+        if (action != ClientboundPlayerInfoPacket.Action.ADD_PLAYER) {
             return;
         }
-        List<?> dataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", packet);
+        List<?> dataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", packet);
         if (dataList != null) {
             try {
                 for (Object data : dataList) {
@@ -162,7 +166,7 @@ public class ProfileEditorImpl extends ProfileEditor {
         Field pidLatency = null, pidGamemode = null, pidGameProfile = null, pidDisplayName = null;
         Constructor pidConstruct = null;
         try {
-            for (Class clzz : PacketPlayOutPlayerInfo.class.getDeclaredClasses()) {
+            for (Class clzz : ClientboundPlayerInfoPacket.class.getDeclaredClasses()) {
                 if (CoreUtilities.toLowerCase(clzz.getName()).contains("infodata")) { // PlayerInfoData.
                     pid = clzz;
                     pidLatency = clzz.getDeclaredField("b");
