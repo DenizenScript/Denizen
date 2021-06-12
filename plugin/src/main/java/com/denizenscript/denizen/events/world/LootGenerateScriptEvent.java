@@ -38,6 +38,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     // <context.entity> returns an entity that caused loot generation, if any.
     // <context.inventory> returns the InventoryTag that loot is generating into.
     // <context.items> returns a ListTag of the items being generated.
+    // <context.loot_table_id> returns an element indicating the minecraft key for the loot-table that was generated.
     //
     // @Determine
     // "LOOT:" + ListTag(ItemTag) to change the list of items that will generate as loot.
@@ -116,6 +117,9 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
                 result.addObject(new ItemTag(item));
             }
             return result;
+        }
+        else if (name.equals("loot_table_id")) {
+            return new ElementTag(event.getLootTable().getKey().toString());
         }
         return super.getContext(name);
     }
