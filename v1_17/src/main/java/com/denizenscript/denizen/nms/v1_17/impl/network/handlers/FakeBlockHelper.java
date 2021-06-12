@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -16,15 +17,14 @@ import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
 
 public class FakeBlockHelper {
 
-    public static Field BITMASK_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("c");
-    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("f");
-    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("g");
-    public static Field BIOMESTORAGE_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("e");
+    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_buffer);
+    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_blockEntitiesTags);
 
     public static BlockState getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData()).getState();
@@ -63,12 +63,10 @@ public class FakeBlockHelper {
         try {
             ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
             // TODO: properly update HeightMap?
-            int bitmask = BITMASK_MAPCHUNK.getInt(packet);
-            byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);
-            FriendlyByteBuf serial = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
-            FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(data.length));
-            boolean isFull = true;//packet.f();
-            List<net.minecraft.nbt.CompoundTag> blockEntities = new ArrayList<>((List<net.minecraft.nbt.CompoundTag>) BLOCKENTITIES_MAPCHUNK.get(packet));
+            BitSet bitmask = packet.getAvailableSections();
+            FriendlyByteBuf serial = originalPacket.getReadBuffer();
+            FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(serial.readableBytes()));
+            List<net.minecraft.nbt.CompoundTag> blockEntities = new ArrayList<>(packet.getBlockEntitiesTags());
             BLOCKENTITIES_MAPCHUNK.set(packet, blockEntities);
             ListIterator<CompoundTag> iterator = blockEntities.listIterator();
             while (iterator.hasNext()) {
@@ -94,7 +92,7 @@ public class FakeBlockHelper {
                 blockEntities.add(newCompound);
             }
             for (int y = 0; y < 16; y++) {
-                if ((bitmask & (1 << y)) != 0) {
+                if (bitmask.get(y)) {
                     int blockCount = serial.readShort();
                     int width = serial.readUnsignedByte();
                     int paletteLen = serial.readVarInt();
@@ -166,11 +164,9 @@ public class FakeBlockHelper {
                     outputSerial.writeLongArray(bits.getRaw());
                 }
             }
-            if (isFull) {
-                int[] biomes = (int[]) BIOMESTORAGE_MAPCHUNK.get(packet);
-                if (biomes != null) {
-                    outputSerial.writeVarIntArray(biomes);
-                }
+            int[] biomes =  packet.getBiomes();
+            if (biomes != null) {
+                outputSerial.writeVarIntArray(biomes);
             }
             byte[] outputBytes = outputSerial.array();
             DATA_MAPCHUNK.set(packet, outputBytes);

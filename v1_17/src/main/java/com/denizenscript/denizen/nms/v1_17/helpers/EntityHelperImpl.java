@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
@@ -64,11 +65,13 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get("highlight");
+    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get(ReflectionMappingsInfo.RecipeBook_highlight);
 
-    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.Entity.class, "setPose", Pose.class);
+    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.Entity.class, null, Pose.class); // Entity#setPose(Pose)
 
-    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, "onGround");
+    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround);
+
+    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
 
     @Override
     public void setInvisible(Entity entity, boolean invisible) {
@@ -694,8 +697,6 @@ public class EntityHelperImpl extends EntityHelper {
     public void setGhastAttacking(Entity entity, boolean attacking) {
         ((CraftGhast) entity).getHandle().setCharging(attacking);
     }
-
-    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, "DATA_CREEPY", null);
 
     @Override
     public void setEndermanAngry(Entity entity, boolean angry) {

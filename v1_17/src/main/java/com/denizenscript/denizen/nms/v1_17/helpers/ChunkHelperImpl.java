@@ -26,10 +26,10 @@ public class ChunkHelperImpl implements ChunkHelper {
     public final static MethodHandle worldThreadFieldSetter;
 
     static {
-        chunkProviderServerThreadField = ReflectionHelper.getFields(ServerChunkCache.class).get("mainThread");
-        chunkProviderServerThreadFieldSetter = ReflectionHelper.getFinalSetter(ServerChunkCache.class, "mainThread");
-        worldThreadField = ReflectionHelper.getFields(net.minecraft.world.level.Level.class).get("thread");
-        worldThreadFieldSetter = ReflectionHelper.getFinalSetter(net.minecraft.world.level.Level.class, "thread");
+        chunkProviderServerThreadField = ReflectionHelper.getFields(ServerChunkCache.class).getFirstOfType(Thread.class);
+        chunkProviderServerThreadFieldSetter = ReflectionHelper.getFinalSetterForFirstOfType(ServerChunkCache.class, Thread.class);
+        worldThreadField = ReflectionHelper.getFields(net.minecraft.world.level.Level.class).getFirstOfType(Thread.class);
+        worldThreadFieldSetter = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.Level.class, Thread.class);
     }
 
     public Thread resetServerThread;

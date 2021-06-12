@@ -11,7 +11,6 @@ import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.Component;
@@ -27,8 +26,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,19 +66,18 @@ public class ProfileEditorImpl extends ProfileEditor {
         if (ProfileEditor.mirrorUUIDs.isEmpty() && !RenameCommand.hasAnyDynamicRenames()) {
             return true;
         }
-        ClientboundPlayerInfoPacket.Action action = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "a", packet);
+        ClientboundPlayerInfoPacket.Action action = packet.getAction();
         if (action != ClientboundPlayerInfoPacket.Action.ADD_PLAYER && action != ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME) {
             return true;
         }
-        List dataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", packet);
+        List<ClientboundPlayerInfoPacket.PlayerUpdate> dataList = packet.getEntries();
         if (dataList == null) {
             return true;
         }
         try {
             boolean any = false;
-            for (Object data : dataList) {
-                GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
-                if (ProfileEditor.mirrorUUIDs.contains(gameProfile.getId()) || RenameCommand.customNames.containsKey(gameProfile.getId())) {
+            for (ClientboundPlayerInfoPacket.PlayerUpdate data : dataList) {
+                if (ProfileEditor.mirrorUUIDs.contains(data.getProfile().getId()) || RenameCommand.customNames.containsKey(data.getProfile().getId())) {
                     any = true;
                 }
             }
@@ -89,28 +85,27 @@ public class ProfileEditorImpl extends ProfileEditor {
                 return true;
             }
             GameProfile ownProfile = manager.player.getGameProfile();
-            for (Object data : dataList) {
-                GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
-                if (!ProfileEditor.mirrorUUIDs.contains(gameProfile.getId()) && !RenameCommand.customNames.containsKey(gameProfile.getId())) {
+            for (ClientboundPlayerInfoPacket.PlayerUpdate data : dataList) {
+                if (!ProfileEditor.mirrorUUIDs.contains(data.getProfile().getId()) && !RenameCommand.customNames.containsKey(data.getProfile().getId())) {
                     ClientboundPlayerInfoPacket newPacket = new ClientboundPlayerInfoPacket(action);
-                    List newPacketDataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", newPacket);
+                    List<ClientboundPlayerInfoPacket.PlayerUpdate> newPacketDataList = newPacket.getEntries();
                     newPacketDataList.add(data);
                     manager.oldManager.send(newPacket);
                 }
                 else {
-                    String rename = RenameCommand.getCustomNameFor(gameProfile.getId(), manager.player.getBukkitEntity(), false);
+                    String rename = RenameCommand.getCustomNameFor(data.getProfile().getId(), manager.player.getBukkitEntity(), false);
                     ClientboundPlayerInfoPacket newPacket = new ClientboundPlayerInfoPacket(action);
-                    List newPacketDataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", newPacket);
-                    GameProfile patchedProfile = new GameProfile(gameProfile.getId(), rename != null ? (rename.length() > 16 ? rename.substring(0, 16) : rename) : gameProfile.getName());
-                    if (ProfileEditor.mirrorUUIDs.contains(gameProfile.getId())) {
+                    List<ClientboundPlayerInfoPacket.PlayerUpdate> newPacketDataList = newPacket.getEntries();
+                    GameProfile patchedProfile = new GameProfile(data.getProfile().getId(), rename != null ? (rename.length() > 16 ? rename.substring(0, 16) : rename) : data.getProfile().getName());
+                    if (ProfileEditor.mirrorUUIDs.contains(data.getProfile().getId())) {
                         patchedProfile.getProperties().putAll(ownProfile.getProperties());
                     }
                     else {
-                        patchedProfile.getProperties().putAll(gameProfile.getProperties());
+                        patchedProfile.getProperties().putAll(data.getProfile().getProperties());
                     }
-                    String listRename = RenameCommand.getCustomNameFor(gameProfile.getId(), manager.player.getBukkitEntity(), true);
-                    Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : (Component) playerInfoData_displayName.get(data);
-                    Object newData = playerInfoData_construct.newInstance(newPacket, patchedProfile, playerInfoData_latency.getInt(data), playerInfoData_gamemode.get(data), displayName);
+                    String listRename = RenameCommand.getCustomNameFor(data.getProfile().getId(), manager.player.getBukkitEntity(), true);
+                    Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : data.getDisplayName();
+                    ClientboundPlayerInfoPacket.PlayerUpdate newData = new ClientboundPlayerInfoPacket.PlayerUpdate(patchedProfile, data.getLatency(), data.getGameMode(), displayName);
                     newPacketDataList.add(newData);
                     manager.oldManager.send(newPacket);
                 }
@@ -124,15 +119,15 @@ public class ProfileEditorImpl extends ProfileEditor {
     }
 
     public static void updatePlayerProfiles(ClientboundPlayerInfoPacket packet) {
-        ClientboundPlayerInfoPacket.Action action = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "a", packet);
+        ClientboundPlayerInfoPacket.Action action = packet.getAction();
         if (action != ClientboundPlayerInfoPacket.Action.ADD_PLAYER) {
             return;
         }
-        List<?> dataList = ReflectionHelper.getFieldValue(ClientboundPlayerInfoPacket.class, "b", packet);
+        List<ClientboundPlayerInfoPacket.PlayerUpdate> dataList = packet.getEntries();
         if (dataList != null) {
             try {
-                for (Object data : dataList) {
-                    GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
+                for (ClientboundPlayerInfoPacket.PlayerUpdate data : dataList) {
+                    GameProfile gameProfile = data.getProfile();
                     if (fakeProfiles.containsKey(gameProfile.getId())) {
                         playerInfoData_gameProfile_Setter.invoke(data, getGameProfile(fakeProfiles.get(gameProfile.getId())));
                     }
@@ -150,48 +145,5 @@ public class ProfileEditorImpl extends ProfileEditor {
         return gameProfile;
     }
 
-    public static final Class playerInfoData;
-
-    public static final Field playerInfoData_latency,
-            playerInfoData_gamemode,
-            playerInfoData_gameProfile,
-            playerInfoData_displayName;
-
-    public static final MethodHandle playerInfoData_gameProfile_Setter;
-
-    public static final Constructor playerInfoData_construct;
-
-    static {
-        Class pid = null;
-        Field pidLatency = null, pidGamemode = null, pidGameProfile = null, pidDisplayName = null;
-        Constructor pidConstruct = null;
-        try {
-            for (Class clzz : ClientboundPlayerInfoPacket.class.getDeclaredClasses()) {
-                if (CoreUtilities.toLowerCase(clzz.getName()).contains("infodata")) { // PlayerInfoData.
-                    pid = clzz;
-                    pidLatency = clzz.getDeclaredField("b");
-                    pidLatency.setAccessible(true);
-                    pidGamemode = clzz.getDeclaredField("c");
-                    pidGamemode.setAccessible(true);
-                    pidGameProfile = clzz.getDeclaredField("d");
-                    pidGameProfile.setAccessible(true);
-                    pidDisplayName = clzz.getDeclaredField("e");
-                    pidDisplayName.setAccessible(true);
-                    pidConstruct = pid.getDeclaredConstructors()[0];
-                    pidConstruct.setAccessible(true);
-                    break;
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        playerInfoData = pid;
-        playerInfoData_latency = pidLatency;
-        playerInfoData_gamemode = pidGamemode;
-        playerInfoData_gameProfile = pidGameProfile;
-        playerInfoData_displayName = pidDisplayName;
-        playerInfoData_construct = pidConstruct;
-        playerInfoData_gameProfile_Setter = ReflectionHelper.getFinalSetter(pid, "d");
-    }
+    public static final MethodHandle playerInfoData_gameProfile_Setter = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundPlayerInfoPacket.PlayerUpdate.class, GameProfile.class);
 }

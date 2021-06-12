@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
@@ -165,8 +166,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (block == null) {
             return false;
         }
-        // protected final float durability;
-        ReflectionHelper.setFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, "explosionResistance", block, resistance);
+        ReflectionHelper.setFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, ReflectionMappingsInfo.BlockBehaviour_explosionResistance, block, resistance);
         return true;
     }
 
@@ -176,7 +176,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (block == null) {
             return 0;
         }
-        return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, "explosionResistance", block);
+        return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, ReflectionMappingsInfo.BlockBehaviour_explosionResistance, block);
     }
 
     @Override
@@ -184,11 +184,11 @@ public class BlockHelperImpl implements BlockHelper {
         return new CraftBlockState(mat);
     }
 
-    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.world.level.block.state.BlockBehaviour.class).get("material");
+    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.world.level.block.state.BlockBehaviour.class).getFirstOfType(net.minecraft.world.level.material.Material.class);
 
-    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.level.material.Material.class, "pushReaction");
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.material.Material.class, PushReaction.class);
 
-    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, "destroySpeed");
+    public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, float.class); // destroySpeed
 
     public net.minecraft.world.level.block.Block getMaterialBlock(Material bukkitMaterial) {
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();

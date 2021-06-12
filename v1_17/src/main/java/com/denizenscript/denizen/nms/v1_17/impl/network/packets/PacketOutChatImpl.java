@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 public class PacketOutChatImpl implements PacketOutChat {
 
@@ -102,8 +101,7 @@ public class PacketOutChatImpl implements PacketOutChat {
     private static final Field MESSAGE, POSITION;
 
     static {
-        Map<String, Field> fields = ReflectionHelper.getFields(ClientboundChatPacket.class);
-        MESSAGE = fields.get("a");
-        POSITION = fields.get("b");
+        MESSAGE = ReflectionHelper.getFields(ClientboundChatPacket.class).getFirstOfType(Component.class);
+        POSITION = ReflectionHelper.getFields(ClientboundChatPacket.class).getFirstOfType(ChatType.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.impl;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.util.random.WeightedRandomList;
@@ -59,14 +60,14 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setHumidity(float humidity) {
-        Object climate = ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, "climateSettings", biomeBase);
-        ReflectionHelper.setFieldValue(climate.getClass(), "downfall", climate, humidity);
+        Object climate = ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
+        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_downfall, climate, humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
-        Object climate = ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, "climateSettings", biomeBase);
-        ReflectionHelper.setFieldValue(climate.getClass(), "temperature", climate, temperature);
+        Object climate = ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
+        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_temperature, climate, temperature);
     }
 
     @Override

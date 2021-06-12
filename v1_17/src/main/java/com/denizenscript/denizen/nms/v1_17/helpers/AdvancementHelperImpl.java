@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -20,6 +21,7 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         return ((CraftServer) Bukkit.getServer()).getServer().getAdvancements();
     }
 
+    public static Field FIELD_ADVANCEMENTLIST_LISTENER = ReflectionHelper.getFields(AdvancementList.class).getFirstOfType(AdvancementList.Listener.class);
+
     @Override
     public void register(com.denizenscript.denizen.nms.util.Advancement advancement) {
         if (advancement.temporary || advancement.registered) {
@@ -42,17 +46,17 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         }
         Advancement nms = asNMSCopy(advancement);
         if (advancement.parent == null) {
-            Set<Advancement> roots = ReflectionHelper.getFieldValue(AdvancementList.class, "roots", getAdvancementDataWorld().advancements);
+            Set<Advancement> roots = ReflectionHelper.getFieldValue(AdvancementList.class, ReflectionMappingsInfo.AdvancementList_roots, getAdvancementDataWorld().advancements);
             roots.add(nms);
-            AdvancementList.Listener something = ReflectionHelper.getFieldValue(AdvancementList.class, "listener", getAdvancementDataWorld().advancements);
+            AdvancementList.Listener something = ReflectionHelper.getFieldValue(AdvancementList.class, FIELD_ADVANCEMENTLIST_LISTENER.getName(), getAdvancementDataWorld().advancements);
             if (something != null) {
                 something.onAddAdvancementRoot(nms);
             }
         }
         else {
-            Set<Advancement> branches = ReflectionHelper.getFieldValue(AdvancementList.class, "tasks", getAdvancementDataWorld().advancements);
+            Set<Advancement> branches = ReflectionHelper.getFieldValue(AdvancementList.class, ReflectionMappingsInfo.AdvancementList_tasks, getAdvancementDataWorld().advancements);
             branches.add(nms);
-            AdvancementList.Listener something = ReflectionHelper.getFieldValue(AdvancementList.class, "listener", getAdvancementDataWorld().advancements);
+            AdvancementList.Listener something = ReflectionHelper.getFieldValue(AdvancementList.class, FIELD_ADVANCEMENTLIST_LISTENER.getName(), getAdvancementDataWorld().advancements);
             if (something != null) {
                 something.onAddAdvancementTask(nms);
             }
@@ -74,11 +78,11 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         ResourceLocation key = asResourceLocation(advancement.key);
         Advancement nms = advancements.get(key);
         if (advancement.parent == null) {
-            Set<Advancement> roots = ReflectionHelper.getFieldValue(AdvancementList.class, "roots", getAdvancementDataWorld().advancements);
+            Set<Advancement> roots = ReflectionHelper.getFieldValue(AdvancementList.class, ReflectionMappingsInfo.AdvancementList_roots, getAdvancementDataWorld().advancements);
             roots.remove(nms);
         }
         else {
-            Set<Advancement> branches = ReflectionHelper.getFieldValue(AdvancementList.class, "tasks", getAdvancementDataWorld().advancements);
+            Set<Advancement> branches = ReflectionHelper.getFieldValue(AdvancementList.class, ReflectionMappingsInfo.AdvancementList_tasks, getAdvancementDataWorld().advancements);
             branches.remove(nms);
         }
         advancements.remove(key);

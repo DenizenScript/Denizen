@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -60,7 +61,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            ReflectionHelper.getFinalSetter(Item.class, "maxStackSize").invoke(Registry.ITEM.get(ResourceLocation.tryParse(material.getKey().getKey())), size);
+            ReflectionHelper.getFinalSetter(Item.class, ReflectionMappingsInfo.Item_maxStackSize).invoke(Registry.ITEM.get(ResourceLocation.tryParse(material.getKey().getKey())), size);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

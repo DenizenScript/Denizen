@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutTradeList;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.TradeOffer;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -12,7 +13,6 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PacketOutTradeListImpl implements PacketOutTradeList {
 
@@ -63,7 +63,6 @@ public class PacketOutTradeListImpl implements PacketOutTradeList {
         }
     }
 
-    private static final Map<String, Field> FIELDS = ReflectionHelper.getFields(ClientboundMerchantOffersPacket.class);
-    private static final Field CONTAINER = FIELDS.get("a");
-    private static final Field RECIPE_LIST = FIELDS.get("b");
+    private static final Field CONTAINER = ReflectionHelper.getFields(ClientboundMerchantOffersPacket.class).get(ReflectionMappingsInfo.ClientboundMerchantOffersPacket_containerId);
+    private static final Field RECIPE_LIST = ReflectionHelper.getFields(ClientboundMerchantOffersPacket.class).getFirstOfType(MerchantOffers.class);
 }

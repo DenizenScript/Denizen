@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.impl.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -26,19 +27,13 @@ import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
 import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 public class BlockLightImpl extends BlockLight {
 
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKX = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("a");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_CHUNKZ = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("b");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("d");
-    public static final Field PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA = ReflectionHelper.getFields(ClientboundLightUpdatePacket.class).get("h");
-    public static final Field PACKETPLAYOUTBLOCKCHANGE_POSITION = ReflectionHelper.getFields(ClientboundBlockUpdatePacket.class).get("a");
-
-    public static final Class LIGHTENGINETHREADED_UPDATE = ThreadedLevelLightEngine.class.getDeclaredClasses()[0];
+    public static final Class LIGHTENGINETHREADED_UPDATE = ThreadedLevelLightEngine.class.getDeclaredClasses()[0]; // TaskType
     public static final Object LIGHTENGINETHREADED_UPDATE_PRE;
 
     static {
@@ -52,7 +47,7 @@ public class BlockLightImpl extends BlockLight {
         LIGHTENGINETHREADED_UPDATE_PRE = preObj;
     }
 
-    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, "a",
+    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, ReflectionMappingsInfo.ThreadedLevelLightEngine_addTask,
             int.class, int.class,  LIGHTENGINETHREADED_UPDATE, Runnable.class);
 
     public static void enqueueRunnable(LevelChunk chunk, Runnable runnable) {
@@ -105,7 +100,7 @@ public class BlockLightImpl extends BlockLight {
 
     public static void checkIfLightsBrokenByPacket(ClientboundBlockUpdatePacket packet, Level world) {
         try {
-            BlockPos pos = (BlockPos) PACKETPLAYOUTBLOCKCHANGE_POSITION.get(packet);
+            BlockPos pos = packet.getPos();
             int chunkX = pos.getX() >> 4;
             int chunkZ = pos.getZ() >> 4;
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
@@ -138,10 +133,10 @@ public class BlockLightImpl extends BlockLight {
             return;
         }
         try {
-            int cX = PACKETPLAYOUTLIGHTUPDATE_CHUNKX.getInt(packet);
-            int cZ = PACKETPLAYOUTLIGHTUPDATE_CHUNKZ.getInt(packet);
-            int bitMask = PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_BITMASK.getInt(packet);
-            List<byte[]> blockData = (List<byte[]>) PACKETPLAYOUTLIGHTUPDATE_BLOCKLIGHT_DATA.get(packet);
+            int cX = packet.getX();
+            int cZ = packet.getZ();
+            BitSet bitMask = packet.getBlockYMask();
+            List<byte[]> blockData = packet.getBlockUpdates();
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
                 ChunkAccess chk = world.getChunk(cX, cZ, ChunkStatus.FULL, false);
                 if (!(chk instanceof LevelChunk)) {
@@ -170,15 +165,15 @@ public class BlockLightImpl extends BlockLight {
 
     public static boolean doNotCheck = false;
 
-    public boolean checkIfChangedBy(int bitmask, List<byte[]> data) {
+    public boolean checkIfChangedBy(BitSet bitmask, List<byte[]> data) {
         Location blockLoc = block.getLocation();
         int layer = (blockLoc.getBlockY() >> 4) + 1;
-        if ((bitmask & (1 << layer)) == 0) {
+        if (!bitmask.get(layer)) {
             return false;
         }
         int found = 0;
         for (int i = 0; i < 16; i++) {
-            if ((bitmask & (1 << i)) != 0) {
+            if (bitmask.get(i)) {
                 if (i == layer) {
                     byte[] blocks = data.get(found);
                     DataLayer arr = new DataLayer(blocks);

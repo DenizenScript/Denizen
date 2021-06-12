@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.v1_17.Handler;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.CraftFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.EntityItemProjectileImpl;
@@ -57,18 +58,18 @@ import java.util.*;
 
 public class PlayerHelperImpl extends PlayerHelper {
 
-    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(LivingEntity.class).get("attackStrengthTicker");
+    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(LivingEntity.class).get(ReflectionMappingsInfo.LivingEntity_attackStrengthTicker);
 
     public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class);
-    public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("C");
-    public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("E");
+    public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount);
+    public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount);
 
     public static final EntityDataAccessor<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
 
     static {
         EntityDataAccessor<Byte> skinlayers = null;
         try {
-            skinlayers = (EntityDataAccessor<Byte>) ReflectionHelper.getFields(net.minecraft.world.entity.player.Player.class).get("DATA_PLAYER_MODE_CUSTOMISATION").get(null);
+            skinlayers = (EntityDataAccessor<Byte>) ReflectionHelper.getFields(net.minecraft.world.entity.player.Player.class).get(ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION).get(null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();

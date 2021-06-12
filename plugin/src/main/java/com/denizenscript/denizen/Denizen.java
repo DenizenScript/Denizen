@@ -152,13 +152,9 @@ public class Denizen extends JavaPlugin {
         }
         else if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10")) {
             getLogger().warning("Running unreliable Java version. Minecraft is built for Java 8, and Paper is built for Java 11. Other Java versions are not guaranteed to function properly.");
-            getLogger().warning("Found java version: " + javaVersion);
         }
         else {
-            getLogger().warning("-------------------------------------");
-            getLogger().warning("Running completely untested Java version. Minecraft is built for Java 8, and Paper is built for Java 11. Other Java versions are not guaranteed to function properly.");
-            getLogger().warning("Found java version: " + javaVersion);
-            getLogger().warning("-------------------------------------");
+            getLogger().info("Running on mostly supported Java 16. Full validation of Denizen on Java 16 is still in-progress.");
         }
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");

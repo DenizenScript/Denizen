@@ -10,7 +10,6 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 public class PacketOutWindowItemsImpl implements PacketOutWindowItems {
 
@@ -50,10 +49,5 @@ public class PacketOutWindowItemsImpl implements PacketOutWindowItems {
         }
     }
 
-    private static final Field CONTENTS;
-
-    static {
-        Map<String, Field> fields = ReflectionHelper.getFields(ClientboundContainerSetContentPacket.class);
-        CONTENTS = fields.get("b");
-    }
+    private static final Field CONTENTS = ReflectionHelper.getFields(ClientboundContainerSetContentPacket.class).getFirstOfType(List.class);
 }

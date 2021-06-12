@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -69,11 +70,31 @@ import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
 
-    public static final EntityDataAccessor<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, "DATA_PLAYER_ABSORPTION_ID", null);
+    public static final EntityDataAccessor<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_ABSORPTION_ID, null);
 
-    public static final EntityDataAccessor<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "DATA_SHARED_FLAGS_ID", null);
+    public static final EntityDataAccessor<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_SHARED_FLAGS_ID, null);
 
-    public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(ClientboundPlayerAbilitiesPacket.class, "walkingSpeed");
+    public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(ClientboundPlayerAbilitiesPacket.class, ReflectionMappingsInfo.ClientboundPlayerAbilitiesPacket_walkingSpeed);
+
+    public static MethodHandle ENTITY_METADATA_LIST_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundSetEntityDataPacket.class, List.class); // packedItems
+
+    public static Field ENTITY_TRACKER_ENTRY_GETTER = ReflectionHelper.getFields(ChunkMap.TrackedEntity.class).getFirstOfType(ServerEntity.class);
+
+    public static MethodHandle CANVAS_GET_BUFFER = ReflectionHelper.getMethodHandle(CraftMapCanvas.class, "getBuffer");
+    public static Field MAPVIEW_WORLDMAP = ReflectionHelper.getFields(CraftMapView.class).get("worldMap");
+
+    public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA;
+    public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
+
+    static {
+        try {
+            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME, null);
+            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME_VISIBLE, null);
+        }
+        catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+    }
 
     @Override
     public void setFakeAbsorption(Player player, float value) {
@@ -301,23 +322,6 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, new ClientboundSetCameraPacket(((CraftEntity) entity).getHandle()));
     }
 
-    public static MethodHandle ENTITY_METADATA_LIST_SETTER = ReflectionHelper.getFinalSetter(ClientboundSetEntityDataPacket.class, "packedItems");
-
-    public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA;
-    public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
-
-    static {
-        try {
-            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "DATA_CUSTOM_NAME", null);
-            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, "DATA_CUSTOM_NAME_VISIBLE", null);
-        }
-        catch (Throwable ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public static Field ENTITY_TRACKER_ENTRY_GETTER = ReflectionHelper.getFields(ChunkMap.TrackedEntity.class).get("serverEntity");
-
     @Override
     public void sendRename(Player player, Entity entity, String name, boolean listMode) {
         try {
@@ -406,9 +410,6 @@ public class PacketHelperImpl implements PacketHelper {
         DenizenNetworkManagerImpl netMan = (DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection;
         return sent ? netMan.packetsSent : netMan.packetsReceived;
     }
-
-    public static MethodHandle CANVAS_GET_BUFFER = ReflectionHelper.getMethodHandle(CraftMapCanvas.class, "getBuffer");
-    public static Field MAPVIEW_WORLDMAP = ReflectionHelper.getFields(CraftMapView.class).get("worldMap");
 
     @Override
     public void setMapData(MapCanvas canvas, byte[] bytes, int x, int y, MapImage image) {

@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_17.Handler;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_17.impl.blocks.BlockLightImpl;
@@ -137,41 +138,24 @@ public class DenizenNetworkManagerImpl extends Connection {
         oldManager.setListener(packetlistener);
     }
 
-    public static Field ENTITY_ID_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("a");
-    public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(ClientboundSetEntityMotionPacket.class).get("a");
-    public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get("a");
-    public static Field ENTITY_ID_NAMEDENTSPAWN = ReflectionHelper.getFields(ClientboundAddPlayerPacket.class).get("a");
-    public static Field ENTITY_ID_SPAWNENT = ReflectionHelper.getFields(ClientboundAddEntityPacket.class).get("a");
-    public static Field ENTITY_ID_SPAWNENTLIVING = ReflectionHelper.getFields(ClientboundAddMobPacket.class).get("a");
-    public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get("b");
-    public static Field POS_Y_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get("c");
-    public static Field POS_Z_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get("d");
-    public static Field YAW_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get("e");
-    public static Field PITCH_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get("f");
-    public static Field POS_X_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("b");
-    public static Field POS_Y_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("c");
-    public static Field POS_Z_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("d");
-    public static Field YAW_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("e");
-    public static Field PITCH_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("f");
-    public static Field BLOCKPOS_BLOCKCHANGE = ReflectionHelper.getFields(ClientboundBlockUpdatePacket.class).get("a");
-    public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get("a");
-    public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get("b");
-    public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get("c");
-    public static Field CHUNKX_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("a");
-    public static Field CHUNKZ_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("b");
-    public static Field BLOCKPOS_BLOCKBREAK = ReflectionHelper.getFields(ClientboundBlockBreakAckPacket.class).get("c");
-    public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(ClientboundBlockBreakAckPacket.class).get("d");
-    public static Field ENTITY_METADATA_EID = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get("id");
-    public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get("packedItems");
-    public static Field WORLD_PARTICLES_PARTICLETYPE = ReflectionHelper.getFields(ClientboundLevelParticlesPacket.class).get("j");
-    public static Field ENTITY_EQUIPMENT_EID = ReflectionHelper.getFields(ClientboundSetEquipmentPacket.class).get("a");
-    public static Field ENTITY_EQUIPMENT_DATALIST = ReflectionHelper.getFields(ClientboundSetEquipmentPacket.class).get("b");
-    public static Field ENTITY_STATUS_EID = ReflectionHelper.getFields(ClientboundEntityEventPacket.class).get("a");
-    public static Field ENTITY_STATUS_CODE = ReflectionHelper.getFields(ClientboundEntityEventPacket.class).get("b");
-    public static Field WINDOW_ITEMS_WINDOW = ReflectionHelper.getFields(ClientboundContainerSetContentPacket.class).get("a");
-    public static Field WINDOW_ITEMS_CONTENTS = ReflectionHelper.getFields(ClientboundContainerSetContentPacket.class).get("b");
-    public static Field SET_SLOT_WINDOW = ReflectionHelper.getFields(ClientboundContainerSetSlotPacket.class).get("a");
-    public static Field SET_SLOT_SLOT = ReflectionHelper.getFields(ClientboundContainerSetSlotPacket.class).get("b");
+    public static Field ENTITY_ID_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_entityId);
+    public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(ClientboundSetEntityMotionPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityMotionPacket_id);
+    public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id);
+    public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_x);
+    public static Field POS_Y_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_y);
+    public static Field POS_Z_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_z);
+    public static Field YAW_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_yRot);
+    public static Field PITCH_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_xRot);
+    public static Field POS_X_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_xa);
+    public static Field POS_Y_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_ya);
+    public static Field POS_Z_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_za);
+    public static Field YAW_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_yRot);
+    public static Field PITCH_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_xRot);
+    public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos);
+    public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions);
+    public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states);
+    public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(ClientboundBlockBreakAckPacket.class).get(ReflectionMappingsInfo.ClientboundBlockBreakAckPacket_state);
+    public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityDataPacket_packedItems);
 
     public static Object duplo(Object a) {
         try {
@@ -233,7 +217,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (playersMap == null) {
                     return false;
                 }
-                int eid = ENTITY_EQUIPMENT_EID.getInt(packet);
+                int eid = ((ClientboundSetEquipmentPacket) packet).getEntity();
                 Entity ent = player.level.getEntity(eid);
                 if (ent == null) {
                     return false;
@@ -242,7 +226,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (override == null) {
                     return false;
                 }
-                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>((List) ENTITY_EQUIPMENT_DATALIST.get(packet));
+                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>(((ClientboundSetEquipmentPacket) packet).getSlots());
                 ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(eid, equipment);
                 for (int i = 0; i < equipment.size(); i++) {
                     Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack> pair =  equipment.get(i);
@@ -277,8 +261,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (playersMap == null) {
                     return false;
                 }
-                int eid = ENTITY_STATUS_EID.getInt(packet);
-                Entity ent = player.level.getEntity(eid);
+                Entity ent = ((ClientboundEntityEventPacket) packet).getEntity(player.level);
                 if (!(ent instanceof net.minecraft.world.entity.LivingEntity)) {
                     return false;
                 }
@@ -286,7 +269,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (override == null || (override.hand == null && override.offhand == null)) {
                     return false;
                 }
-                if (ENTITY_STATUS_CODE.getByte(packet) != (byte) 55) {
+                if (((ClientboundEntityEventPacket) packet).getEventId() != (byte) 55) {
                     return false;
                 }
                 List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>();
@@ -294,7 +277,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getOffhandItem();
                 equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.MAINHAND, hand));
                 equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand));
-                ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(eid, equipment);
+                ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(ent.getId(), equipment);
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -307,11 +290,11 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (override == null) {
                     return false;
                 }
-                int window = WINDOW_ITEMS_WINDOW.getInt(packet);
+                int window = ((ClientboundContainerSetContentPacket) packet).getContainerId();
                 if (window != 0) {
                     return false;
                 }
-                NonNullList<ItemStack> items = (NonNullList<ItemStack>) WINDOW_ITEMS_CONTENTS.get(packet);
+                NonNullList<ItemStack> items = (NonNullList<ItemStack>) ((ClientboundContainerSetContentPacket) packet).getItems();
                 if (override.head != null) {
                     items.set(5, CraftItemStack.asNMSCopy(override.head.getItemStack()));
                 }
@@ -343,11 +326,11 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (override == null) {
                     return false;
                 }
-                int window = SET_SLOT_WINDOW.getInt(packet);
+                int window = ((ClientboundContainerSetSlotPacket) packet).getContainerId();
                 if (window != 0) {
                     return false;
                 }
-                int slot = SET_SLOT_SLOT.getInt(packet);
+                int slot = ((ClientboundContainerSetSlotPacket) packet).getSlot();
                 org.bukkit.inventory.ItemStack item = null;
                 if (slot == 5 && override.head != null) {
                     item = override.head.getItemStack();
@@ -391,7 +374,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (hidden == null) {
                     return false;
                 }
-                ParticleOptions particle = (ParticleOptions) WORLD_PARTICLES_PARTICLETYPE.get(packet);
+                ParticleOptions particle = ((ClientboundLevelParticlesPacket) packet).getParticle();
                 Particle bukkitParticle = CraftParticle.toBukkit(particle);
                 if (hidden.contains(bukkitParticle)) {
                     return true;
@@ -414,7 +397,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         try {
             if (packet instanceof ClientboundSetEntityDataPacket) {
                 ClientboundSetEntityDataPacket metadataPacket = (ClientboundSetEntityDataPacket) packet;
-                int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
+                int eid = metadataPacket.getId();
                 Entity ent = player.level.getEntity(eid);
                 if (ent == null) {
                     return false;
@@ -434,7 +417,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     if (!disguise.shouldFake) {
                         return false;
                     }
-                    List<SynchedEntityData.DataItem<?>> data = (List<SynchedEntityData.DataItem<?>>) ENTITY_METADATA_LIST.get(metadataPacket);
+                    List<SynchedEntityData.DataItem<?>> data = metadataPacket.getUnpackedData();
                     for (SynchedEntityData.DataItem item : data) {
                         EntityDataAccessor<?> watcherObject = item.getAccessor();
                         int watcherId = watcherObject.getId();
@@ -461,13 +444,13 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             int ider = -1;
             if (packet instanceof ClientboundAddPlayerPacket) {
-                ider = ENTITY_ID_NAMEDENTSPAWN.getInt(packet);
+                ider = ((ClientboundAddPlayerPacket) packet).getEntityId();
             }
             else if (packet instanceof ClientboundAddEntityPacket) {
-                ider = ENTITY_ID_SPAWNENT.getInt(packet);
+                ider = ((ClientboundAddEntityPacket) packet).getId();
             }
             else if (packet instanceof ClientboundAddMobPacket) {
-                ider = ENTITY_ID_SPAWNENTLIVING.getInt(packet);
+                ider = ((ClientboundAddMobPacket) packet).getId();
             }
             if (ider != -1) {
                 Entity e = player.getLevel().getEntity(ider);
@@ -503,7 +486,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             return null;
         }
         try {
-            int eid = ENTITY_METADATA_EID.getInt(metadataPacket);
+            int eid = metadataPacket.getId();
             Entity ent = player.level.getEntity(eid);
             if (ent == null) {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
@@ -513,7 +496,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             if (nameToApply == null && forceSneak == null) {
                 return null;
             }
-            List<SynchedEntityData.DataItem<?>> data = new ArrayList<>((List<SynchedEntityData.DataItem<?>>) ENTITY_METADATA_LIST.get(metadataPacket));
+            List<SynchedEntityData.DataItem<?>> data = new ArrayList<>(metadataPacket.getUnpackedData());
             boolean any = false;
             for (int i = 0; i < data.size(); i++) {
                 SynchedEntityData.DataItem<?> item = data.get(i);
@@ -565,13 +548,13 @@ public class DenizenNetworkManagerImpl extends Connection {
         return true;
     }
 
-    public void tryProcessMovePacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
+    public void tryProcessMovePacketForAttach(ClientboundMoveEntityPacket packet, Entity e) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    Packet pNew = (Packet) duplo(packet);
+                    ClientboundMoveEntityPacket pNew = (ClientboundMoveEntityPacket) duplo(packet);
                     ENTITY_ID_PACKENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (att.positionalOffset != null && (packet instanceof ClientboundMoveEntityPacket.Pos || packet instanceof ClientboundMoveEntityPacket.PosRot)) {
                         boolean isRotate = packet instanceof ClientboundMoveEntityPacket.PosRot;
@@ -582,8 +565,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                             pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
                         }
                         else if (isRotate) {
-                            yaw = YAW_PACKENT.getByte(packet);
-                            pitch = PITCH_PACKENT.getByte(packet);
+                            yaw = packet.getyRot();
+                            pitch = packet.getxRot();
                         }
                         else {
                             yaw = EntityAttachmentHelper.compressAngle(e.getYRot());
@@ -651,13 +634,13 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
     }
 
-    public void tryProcessVelocityPacketForAttach(Packet<?> packet, Entity e) throws IllegalAccessException {
+    public void tryProcessVelocityPacketForAttach(ClientboundSetEntityMotionPacket packet, Entity e) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    Packet pNew = (Packet) duplo(packet);
+                    ClientboundSetEntityMotionPacket pNew = new ClientboundSetEntityMotionPacket(copyPacket(packet));
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
                         Debug.log("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
@@ -673,13 +656,13 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
     }
 
-    public void tryProcessTeleportPacketForAttach(Packet<?> packet, Entity e, Vector relative) throws IllegalAccessException {
+    public void tryProcessTeleportPacketForAttach(ClientboundTeleportEntityPacket packet, Entity e, Vector relative) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    Packet pNew = (Packet) duplo(packet);
+                    ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(copyPacket(packet));
                     ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew)).add(relative);
                     if (att.positionalOffset != null) {
@@ -691,8 +674,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                             pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
                         }
                         else {
-                            yaw = YAW_PACKTELENT.getByte(packet);
-                            pitch = PITCH_PACKTELENT.getByte(packet);
+                            yaw = packet.getyRot();
+                            pitch = packet.getxRot();
                         }
                         byte newYaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
                         pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
@@ -730,25 +713,25 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (e == null) {
                     return false;
                 }
-                tryProcessMovePacketForAttach(packet, e);
+                tryProcessMovePacketForAttach((ClientboundMoveEntityPacket) packet, e);
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket) {
-                int ider = ENTITY_ID_PACKVELENT.getInt(packet);
+                int ider = ((ClientboundSetEntityMotionPacket) packet).getId();
                 Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
-                tryProcessVelocityPacketForAttach(packet, e);
+                tryProcessVelocityPacketForAttach((ClientboundSetEntityMotionPacket) packet, e);
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
             else if (packet instanceof ClientboundTeleportEntityPacket) {
-                int ider = ENTITY_ID_PACKTELENT.getInt(packet);
+                int ider = ((ClientboundTeleportEntityPacket) packet).getId();
                 Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
-                tryProcessTeleportPacketForAttach(packet, e, VECTOR_ZERO);
+                tryProcessTeleportPacketForAttach((ClientboundTeleportEntityPacket) packet, e, VECTOR_ZERO);
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
         }
@@ -767,35 +750,45 @@ public class DenizenNetworkManagerImpl extends Connection {
             return false;
         }
         try {
-            if (packet instanceof ClientboundAddPlayerPacket
-                    || packet instanceof ClientboundAddEntityPacket
-                    || packet instanceof ClientboundAddMobPacket
-                    || packet instanceof ClientboundAddPaintingPacket
-                    || packet instanceof ClientboundAddExperienceOrbPacket) {
-                PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntityImpl(player, packet);
-                Entity entity = player.getLevel().getEntity(spawnEntity.getEntityId());
-                if (isHidden(entity)) {
-                    return true;
-                }
-                processFakePlayerSpawn(entity);
-            }
             int ider = -1;
-            if (packet instanceof ClientboundMoveEntityPacket) {
+            if (packet instanceof ClientboundAddPlayerPacket) {
+                ider = ((ClientboundAddPlayerPacket) packet).getEntityId();
+            }
+            else if (packet instanceof ClientboundAddEntityPacket) {
+                ider = ((ClientboundAddEntityPacket) packet).getId();
+            }
+            else if (packet instanceof ClientboundAddMobPacket) {
+                ider = ((ClientboundAddMobPacket) packet).getId();
+            }
+            else if (packet instanceof ClientboundAddPaintingPacket) {
+                ider = ((ClientboundAddPaintingPacket) packet).getId();
+            }
+            else if (packet instanceof ClientboundAddExperienceOrbPacket) {
+                ider = ((ClientboundAddExperienceOrbPacket) packet).getId();
+            }
+            else if (packet instanceof ClientboundMoveEntityPacket) {
                 ider = ENTITY_ID_PACKENT.getInt(packet);
             }
             else if (packet instanceof ClientboundSetEntityDataPacket) {
-                ider = ENTITY_METADATA_EID.getInt(packet);
+                ider = ((ClientboundSetEntityDataPacket) packet).getId();
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket) {
-                ider = ENTITY_ID_PACKVELENT.getInt(packet);
+                ider = ((ClientboundSetEntityMotionPacket) packet).getId();
             }
             else if (packet instanceof ClientboundTeleportEntityPacket) {
-                ider = ENTITY_ID_PACKTELENT.getInt(packet);
+                ider = ((ClientboundTeleportEntityPacket) packet).getId();
             }
             if (ider != -1) {
                 Entity e = player.getLevel().getEntity(ider);
                 if (isHidden(e)) {
                     return true;
+                }
+                if (packet instanceof ClientboundAddPlayerPacket
+                        || packet instanceof ClientboundAddEntityPacket
+                        || packet instanceof ClientboundAddMobPacket
+                        || packet instanceof ClientboundAddPaintingPacket
+                        || packet instanceof ClientboundAddExperienceOrbPacket) {
+                    processFakePlayerSpawn(e);
                 }
             }
         }
@@ -845,8 +838,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (map == null) {
                     return false;
                 }
-                int chunkX = CHUNKX_MAPCHUNK.getInt(packet);
-                int chunkZ = CHUNKZ_MAPCHUNK.getInt(packet);
+                int chunkX = ((ClientboundLevelChunkPacket) packet).getX();
+                int chunkZ = ((ClientboundLevelChunkPacket) packet).getZ();
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getLevel().getWorld().getName());
                 List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUUID(), chunkCoord);
                 if (blocks == null || blocks.isEmpty()) {
@@ -889,7 +882,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             else if (packet instanceof ClientboundBlockUpdatePacket) {
-                BlockPos pos = (BlockPos) BLOCKPOS_BLOCKCHANGE.get(packet);
+                BlockPos pos = ((ClientboundBlockUpdatePacket) packet).getPos();
                 LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {
@@ -899,7 +892,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
             }
             else if (packet instanceof ClientboundBlockBreakAckPacket) {
-                BlockPos pos = (BlockPos) BLOCKPOS_BLOCKBREAK.get(packet);
+                BlockPos pos = ((ClientboundBlockBreakAckPacket) packet).getPos();
                 LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {
@@ -1009,9 +1002,9 @@ public class DenizenNetworkManagerImpl extends Connection {
         Field directionField = null;
         MethodHandle managerField = null;
         try {
-            directionField = Connection.class.getDeclaredField("receiving");
+            directionField = ReflectionHelper.getFields(Connection.class).get(ReflectionMappingsInfo.Connection_receiving);
             directionField.setAccessible(true);
-            managerField = ReflectionHelper.getFinalSetter(ServerGamePacketListenerImpl.class, "connection");
+            managerField = ReflectionHelper.getFinalSetter(ServerGamePacketListenerImpl.class, ReflectionMappingsInfo.ServerGamePacketListenerImpl_connection);
         }
         catch (Exception e) {
             Debug.echoError(e);
