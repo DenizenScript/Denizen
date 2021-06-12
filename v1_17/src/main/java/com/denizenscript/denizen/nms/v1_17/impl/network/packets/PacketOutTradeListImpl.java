@@ -4,9 +4,9 @@ import com.denizenscript.denizen.nms.interfaces.packets.PacketOutTradeList;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.TradeOffer;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.protocol.game.PacketPlayOutOpenWindowMerchant;
-import net.minecraft.world.item.trading.MerchantRecipe;
-import net.minecraft.world.item.trading.MerchantRecipeList;
+import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;
@@ -16,21 +16,21 @@ import java.util.Map;
 
 public class PacketOutTradeListImpl implements PacketOutTradeList {
 
-    private PacketPlayOutOpenWindowMerchant internal;
+    private ClientboundMerchantOffersPacket internal;
     private int container;
     private List<TradeOffer> tradeOffers;
 
-    public PacketOutTradeListImpl(PacketPlayOutOpenWindowMerchant internal) {
+    public PacketOutTradeListImpl(ClientboundMerchantOffersPacket internal) {
         this.internal = internal;
         try {
             container = (int) CONTAINER.get(internal);
-            MerchantRecipeList list = (MerchantRecipeList) RECIPE_LIST.get(internal);
+            MerchantOffers list = (MerchantOffers) RECIPE_LIST.get(internal);
             tradeOffers = new ArrayList<>();
-            for (MerchantRecipe recipe : list) {
-                tradeOffers.add(new TradeOffer(CraftItemStack.asBukkitCopy(recipe.sellingItem),
-                        CraftItemStack.asBukkitCopy(recipe.buyingItem1),
-                        CraftItemStack.asBukkitCopy(recipe.buyingItem2),
-                        recipe.isFullyUsed(), recipe.uses, recipe.maxUses,
+            for (MerchantOffer recipe : list) {
+                tradeOffers.add(new TradeOffer(CraftItemStack.asBukkitCopy(recipe.result),
+                        CraftItemStack.asBukkitCopy(recipe.baseCostA),
+                        CraftItemStack.asBukkitCopy(recipe.costB),
+                        recipe.isOutOfStock(), recipe.uses, recipe.maxUses,
                         recipe.rewardExp, recipe.xp, recipe.priceMultiplier));
             }
         }
@@ -46,9 +46,9 @@ public class PacketOutTradeListImpl implements PacketOutTradeList {
 
     @Override
     public void setTradeOffers(List<TradeOffer> tradeOffers) {
-        MerchantRecipeList list = new MerchantRecipeList();
+        MerchantOffers list = new MerchantOffers();
         for (TradeOffer offer : tradeOffers) {
-            MerchantRecipe recipe = new MerchantRecipe(CraftItemStack.asNMSCopy(offer.getFirstCost()),
+            MerchantOffer recipe = new MerchantOffer(CraftItemStack.asNMSCopy(offer.getFirstCost()),
                     CraftItemStack.asNMSCopy(offer.getSecondCost()),
                     CraftItemStack.asNMSCopy(offer.getProduct()),
                     offer.getCurrentUses(), offer.getMaxUses(), offer.xp, offer.priceMultiplier);
@@ -63,7 +63,7 @@ public class PacketOutTradeListImpl implements PacketOutTradeList {
         }
     }
 
-    private static final Map<String, Field> FIELDS = ReflectionHelper.getFields(PacketPlayOutOpenWindowMerchant.class);
+    private static final Map<String, Field> FIELDS = ReflectionHelper.getFields(ClientboundMerchantOffersPacket.class);
     private static final Field CONTAINER = FIELDS.get("a");
     private static final Field RECIPE_LIST = FIELDS.get("b");
 }

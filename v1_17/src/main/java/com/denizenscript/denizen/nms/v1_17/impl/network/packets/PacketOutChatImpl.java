@@ -7,28 +7,28 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.network.chat.ChatMessageType;
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.protocol.game.PacketPlayOutChat;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundChatPacket;
 
 import java.lang.reflect.Field;
 import java.util.Map;
 
 public class PacketOutChatImpl implements PacketOutChat {
 
-    private PacketPlayOutChat internal;
+    private ClientboundChatPacket internal;
     private String message;
     private String rawJson;
     private boolean bungee;
-    private ChatMessageType position;
+    private ChatType position;
 
-    public PacketOutChatImpl(PacketPlayOutChat internal) {
+    public PacketOutChatImpl(ClientboundChatPacket internal) {
         this.internal = internal;
         try {
-            IChatBaseComponent baseComponent = (IChatBaseComponent) MESSAGE.get(internal);
+            Component baseComponent = (Component) MESSAGE.get(internal);
             if (baseComponent != null) {
                 message = FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE);
-                rawJson = IChatBaseComponent.ChatSerializer.a(baseComponent);
+                rawJson = Component.Serializer.toJson(baseComponent);
             }
             else {
                 if (internal.components != null) {
@@ -37,7 +37,7 @@ public class PacketOutChatImpl implements PacketOutChat {
                 }
                 bungee = true;
             }
-            position = (ChatMessageType) POSITION.get(internal);
+            position = (ChatType) POSITION.get(internal);
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -88,7 +88,7 @@ public class PacketOutChatImpl implements PacketOutChat {
     public void setRawJson(String rawJson) {
         try {
             if (!bungee) {
-                MESSAGE.set(internal, IChatBaseComponent.ChatSerializer.a(rawJson));
+                MESSAGE.set(internal, Component.Serializer.fromJson(rawJson));
             }
             else {
                 internal.components = ComponentSerializer.parse(rawJson);
@@ -102,7 +102,7 @@ public class PacketOutChatImpl implements PacketOutChat {
     private static final Field MESSAGE, POSITION;
 
     static {
-        Map<String, Field> fields = ReflectionHelper.getFields(PacketPlayOutChat.class);
+        Map<String, Field> fields = ReflectionHelper.getFields(ClientboundChatPacket.class);
         MESSAGE = fields.get("a");
         POSITION = fields.get("b");
     }

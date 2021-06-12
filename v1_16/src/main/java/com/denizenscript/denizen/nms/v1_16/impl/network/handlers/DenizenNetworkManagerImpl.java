@@ -8,7 +8,6 @@ import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketOutEntityMetadataImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.packets.PacketOutSpawnEntityImpl;
-import com.denizenscript.denizen.nms.v1_17.impl.network.packets.*;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;

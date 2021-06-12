@@ -35,8 +35,8 @@ public class PacketOutEntityMetadataImpl implements PacketOutEntityMetadata {
     @Override
     public boolean checkForGlow() {
         for (SynchedEntityData.DataItem<?> data : metadata) {
-            if (data.a().a() == 0) {
-                // TODO: Instead of cancelling, casually strip out the 0x40 "Glowing" metadata rather than cancelling entirely?
+            if (data.getAccessor().getId() == 0) {
+                // TODO: strip out the 0x40 "Glowing" metadata rather than cancelling entirely?
                 return true;
             }
         }

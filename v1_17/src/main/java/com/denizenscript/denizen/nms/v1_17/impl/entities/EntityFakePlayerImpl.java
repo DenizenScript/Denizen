@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakeNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakePlayerConnectionImplImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.network.fakes.FakePlayerConnectionImpl;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.network.Connection;
@@ -26,7 +26,7 @@ public class EntityFakePlayerImpl extends ServerPlayer {
             Debug.echoError(ex);
         }
         Connection networkManager = new FakeNetworkManagerImpl(PacketFlow.CLIENTBOUND);
-        connection = new FakePlayerConnectionImplImpl(minecraftserver, networkManager, this);
+        connection = new FakePlayerConnectionImpl(minecraftserver, networkManager, this);
         networkManager.setListener(connection);
         getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
         if (doAdd) {

@@ -123,10 +123,10 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
             PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
             evt.cancelled = false;
             evt.material = new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN);
-            evt.location = new LocationTag(getPlayer().getLocation());
+            evt.location = new LocationTag(player.getBukkitEntity().getLocation());
             LocationTag loc = evt.location.clone();
             loc.setY(0);
-            evt.event = new SignChangeEvent(loc.getBlock(), getPlayer(), packet.getLines());
+            evt.event = new SignChangeEvent(loc.getBlock(), player.getBukkitEntity(), packet.getLines());
             evt.fire(evt.event);
         }
         super.handleSignUpdate(packet);

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSetSlot;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.protocol.game.PacketPlayOutSetSlot;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class PacketOutSetSlotImpl implements PacketOutSetSlot {
 
-    private PacketPlayOutSetSlot internal;
+    private ClientboundContainerSetSlotPacket internal;
     private org.bukkit.inventory.ItemStack itemStack;
 
-    public PacketOutSetSlotImpl(PacketPlayOutSetSlot internal) {
+    public PacketOutSetSlotImpl(ClientboundContainerSetSlotPacket internal) {
         this.internal = internal;
         try {
             ItemStack nms = (ItemStack) ITEM_STACK.get(internal);
@@ -44,7 +44,7 @@ public class PacketOutSetSlotImpl implements PacketOutSetSlot {
     private static final Field ITEM_STACK;
 
     static {
-        Map<String, Field> fields = ReflectionHelper.getFields(PacketPlayOutSetSlot.class);
+        Map<String, Field> fields = ReflectionHelper.getFields(ClientboundContainerSetSlotPacket.class);
         ITEM_STACK = fields.get("c");
     }
 }

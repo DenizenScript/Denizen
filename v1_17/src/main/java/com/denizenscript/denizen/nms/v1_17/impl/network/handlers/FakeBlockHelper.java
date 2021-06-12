@@ -61,9 +61,7 @@ public class FakeBlockHelper {
 
     public static ClientboundLevelChunkPacket handleMapChunkPacket(ClientboundLevelChunkPacket originalPacket, List<FakeBlock> blocks) {
         try {
-            FriendlyByteBuf duplicator = new FriendlyByteBuf(Unpooled.buffer());
-            originalPacket.write(duplicator);
-            ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(duplicator);
+            ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
             // TODO: properly update HeightMap?
             int bitmask = BITMASK_MAPCHUNK.getInt(packet);
             byte[] data = (byte[]) DATA_MAPCHUNK.get(packet);

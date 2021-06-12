@@ -4,7 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.packets.PacketOutWindowItems;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.protocol.game.PacketPlayOutWindowItems;
+import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
@@ -14,14 +14,14 @@ import java.util.Map;
 
 public class PacketOutWindowItemsImpl implements PacketOutWindowItems {
 
-    private PacketPlayOutWindowItems internal;
+    private ClientboundContainerSetContentPacket internal;
     private List<org.bukkit.inventory.ItemStack> contents;
 
-    public PacketOutWindowItemsImpl(PacketPlayOutWindowItems internal) {
+    public PacketOutWindowItemsImpl(ClientboundContainerSetContentPacket internal) {
         this.internal = internal;
         try {
             List<ItemStack> nms = (List<ItemStack>) CONTENTS.get(internal);
-            contents = NonNullList.a();
+            contents = NonNullList.create();
             for (ItemStack itemStack : nms) {
                 contents.add(CraftItemStack.asBukkitCopy(itemStack));
             }
@@ -38,7 +38,7 @@ public class PacketOutWindowItemsImpl implements PacketOutWindowItems {
 
     @Override
     public void setContents(org.bukkit.inventory.ItemStack[] contents) {
-        List<ItemStack> nms = NonNullList.a();
+        List<ItemStack> nms = NonNullList.create();
         for (org.bukkit.inventory.ItemStack content : contents) {
             nms.add(CraftItemStack.asNMSCopy(content));
         }
@@ -53,7 +53,7 @@ public class PacketOutWindowItemsImpl implements PacketOutWindowItems {
     private static final Field CONTENTS;
 
     static {
-        Map<String, Field> fields = ReflectionHelper.getFields(PacketPlayOutWindowItems.class);
+        Map<String, Field> fields = ReflectionHelper.getFields(ClientboundContainerSetContentPacket.class);
         CONTENTS = fields.get("b");
     }
 }
