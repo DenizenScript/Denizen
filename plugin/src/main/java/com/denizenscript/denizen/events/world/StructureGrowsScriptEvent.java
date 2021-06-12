@@ -4,9 +4,11 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
@@ -30,6 +32,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // @Location true
     //
     // @Cancellable true
+    //
+    // @Player when a player caused the structure growth to occur (eg with bonemeal).
     //
     // @Triggers when a structure (a tree or a mushroom) grows in a world.
     //
@@ -83,6 +87,11 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public String getName() {
         return "StructureGrow";
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override

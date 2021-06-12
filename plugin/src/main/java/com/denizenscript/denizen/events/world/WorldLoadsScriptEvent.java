@@ -41,6 +41,9 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
         if (!path.eventArgLowerAt(1).equals("loads")) {
             return false;
         }
+        if (path.eventArgLowerAt(2).equals("crossbow")) {
+            return false;
+        }
         return true;
     }
 
