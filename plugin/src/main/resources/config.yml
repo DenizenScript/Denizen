@@ -47,7 +47,7 @@ Scripts:
         Frequency of check: 250t
   Interact:
     # Default speed for interact script queues
-    Queue speed: 0.5s
+    Queue speed: instant
   # Default speed for new queues (via run command usually)
   Queue speed: instant
   Scripts location:
