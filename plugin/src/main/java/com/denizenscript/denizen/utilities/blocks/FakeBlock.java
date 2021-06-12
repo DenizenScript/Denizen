@@ -22,6 +22,7 @@ public class FakeBlock {
         public Map<ChunkCoordinate, List<FakeBlock>> byChunk = new HashMap<>();
 
         public FakeBlock getOrAdd(PlayerTag player, LocationTag location) {
+            location = new LocationTag(location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorldName());
             FakeBlock block = byLocation.get(location);
             if (block != null) {
                 return block;

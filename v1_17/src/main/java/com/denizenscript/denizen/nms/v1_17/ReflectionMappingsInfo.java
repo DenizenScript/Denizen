@@ -35,6 +35,8 @@ public class ReflectionMappingsInfo {
     public static String Biome_ClimateSettings_temperature = "c";
     public static String Biome_ClimateSettings_downfall = "e";
 
+    public static String ThreadedLevelLightEngine_Update_PRE_UPDATE = "a";
+
     public static String Connection_receiving = "i";
 
     public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "C";

@@ -39,7 +39,7 @@ public class BlockLightImpl extends BlockLight {
     static {
         Object preObj = null;
         try {
-            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_UPDATE).get("PRE_UPDATE").get(null);
+            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_UPDATE).get(ReflectionMappingsInfo.ThreadedLevelLightEngine_Update_PRE_UPDATE).get(null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();
