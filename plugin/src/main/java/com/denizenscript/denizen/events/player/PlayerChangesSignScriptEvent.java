@@ -6,6 +6,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -59,7 +60,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         String sign = path.eventArgAt(2);
-        if  (!sign.equals("sign") && !couldMatchBlock(sign)) {
+        if  (!sign.equals("sign") && !couldMatchBlock(sign, (m) -> CoreUtilities.toLowerCase(m.name()).endsWith("sign"))) {
             return false;
         }
         return true;

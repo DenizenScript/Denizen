@@ -31,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
@@ -288,6 +289,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean couldMatchBlock(String text) {
+        return couldMatchBlock(text, null);
+    }
+
+    public boolean couldMatchBlock(String text, Function<Material, Boolean> requirement) {
         if (text.equals("block") || text.equals("material") || text.startsWith("vanilla_tagged:")) {
             return true;
         }
@@ -304,7 +309,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (isAdvancedMatchable(text)) {
             MatchHelper matcher = createMatcher(text);
             for (Material material : Material.values()) {
-                if (material.isBlock() && matcher.doesMatch(material.name())) {
+                if (material.isBlock() && matcher.doesMatch(material.name()) && (requirement == null || requirement.apply(material))) {
                     return true;
                 }
             }
