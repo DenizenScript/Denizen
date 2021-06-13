@@ -542,6 +542,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Debug.echoError("Location flags are only available in 1.16+");
             return null;
         }
+        if (getWorld() == null) {
+            return null;
+        }
         return new DataPersistenceFlagTracker(getChunk(), "flag_tracker_" + getBlockX() + "_" + getBlockY() + "_" + getBlockZ() + "_");
     }
 
@@ -560,7 +563,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public String getReasonNotFlaggable() {
-        return "is the chunk loaded?";
+        if (getWorld() == null) {
+            return "missing world";
+        }
+        if (!isChunkLoadedSafe()) {
+            return "chunk is not loaded";
+        }
+        return "unknown reason";
     }
 
     /**
