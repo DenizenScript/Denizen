@@ -815,7 +815,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[tag]
         // @attribute <NPCTag.owner>
-        // @returns PlayerTag/ElementTag
+        // @returns PlayerTag
         // @mechanism NPCTag.owner
         // @description
         // Returns the owner of the NPC as a PlayerTag if it's a player, otherwise as just the name.

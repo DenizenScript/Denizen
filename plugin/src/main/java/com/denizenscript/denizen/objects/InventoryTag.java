@@ -1971,10 +1971,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
         // <--[tag]
         // @attribute <InventoryTag.slot[<#>|...]>
-        // @returns ItemTag or ListTag(ItemTag)
+        // @returns ObjectTag
         // @description
-        // If one slot is specified, returns the item in the specified slot.
-        // If more than what slot is specified, returns a list of the item in each given slot.
+        // If one slot is specified, returns the ItemTag in the specified slot.
+        // If more than what slot is specified, returns a ListTag(ItemTag) of the item in each given slot.
         // -->
         registerTag("slot", (attribute, object) -> {
             if (!attribute.hasContext(1)) {

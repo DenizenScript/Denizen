@@ -12,7 +12,7 @@ public class CuboidTagBase {
         // @returns CuboidTag
         // @description
         // Returns a cuboid object constructed from the input value.
-        // Refer to <@link language CuboidTag objects>.
+        // Refer to <@link objecttype CuboidTag>.
         // -->
         TagManager.registerTagHandler("cuboid", (attribute) -> {
             if (!attribute.hasContext(1)) {

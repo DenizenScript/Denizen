@@ -12,7 +12,7 @@ public class TradeTagBase {
         // @returns TradeTag
         // @description
         // Returns a trade object constructed from the input value.
-        // Refer to <@link language TradeTag objects>.
+        // Refer to <@link objecttype TradeTag>.
         // -->
         TagManager.registerTagHandler("trade", (attribute) -> {
             if (!attribute.hasContext(1)) {

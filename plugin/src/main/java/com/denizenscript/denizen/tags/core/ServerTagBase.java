@@ -616,7 +616,7 @@ public class ServerTagBase {
         // @returns ListTag(BiomeTag)
         // @description
         // Returns a list of all biomes known to the server.
-        // Generally used with <@link language BiomeTag Objects>.
+        // Generally used with <@link objecttype BiomeTag>.
         // This is based on Bukkit Biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
         // -->
         if (attribute.startsWith("biome_types") || attribute.startsWith("list_biome_types")) {
@@ -679,7 +679,7 @@ public class ServerTagBase {
         // @returns ListTag
         // @description
         // Returns a list of all entity types known to the server.
-        // Generally used with <@link language EntityTag Objects>.
+        // Generally used with <@link objecttype EntityTag>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>.
         // -->
         if (attribute.startsWith("entity_types") || attribute.startsWith("list_entity_types")) {
@@ -696,7 +696,7 @@ public class ServerTagBase {
         // @returns ListTag(MaterialTag)
         // @description
         // Returns a list of all materials known to the server.
-        // Generally used with <@link language MaterialTag Objects>.
+        // Generally used with <@link objecttype MaterialTag>.
         // This is only types listed in the Bukkit Material enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
         // -->
         if (attribute.startsWith("material_types") || attribute.startsWith("list_material_types")) {

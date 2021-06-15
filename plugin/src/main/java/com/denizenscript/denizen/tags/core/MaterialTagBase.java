@@ -12,7 +12,7 @@ public class MaterialTagBase {
         // @returns MaterialTag
         // @description
         // Returns a material object constructed from the input value.
-        // Refer to <@link language MaterialTag objects>.
+        // Refer to <@link objecttype MaterialTag>.
         // -->
         TagManager.registerTagHandler("material", (attribute) -> {
             if (!attribute.hasContext(1)) {

@@ -12,7 +12,7 @@ public class InventoryTagBase {
         // @returns InventoryTag
         // @description
         // Returns an inventory object constructed from the input value.
-        // Refer to <@link language InventoryTag objects>.
+        // Refer to <@link objecttype InventoryTag>.
         // -->
         TagManager.registerTagHandler("inventory", (attribute) -> {
             if (!attribute.hasContext(1)) {

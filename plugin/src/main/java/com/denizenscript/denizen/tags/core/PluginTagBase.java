@@ -12,7 +12,7 @@ public class PluginTagBase {
         // @returns PluginTag
         // @description
         // Returns a plugin object constructed from the input value.
-        // Refer to <@link language PluginTag objects>.
+        // Refer to <@link objecttype PluginTag>.
         // -->
         TagManager.registerTagHandler("plugin", (attribute) -> {
             if (!attribute.hasContext(1)) {

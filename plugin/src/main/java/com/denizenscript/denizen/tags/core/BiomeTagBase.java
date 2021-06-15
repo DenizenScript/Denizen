@@ -12,7 +12,7 @@ public class BiomeTagBase {
         // @returns BiomeTag
         // @description
         // Returns a biome object constructed from the input value.
-        // Refer to <@link language BiomeTag objects>.
+        // Refer to <@link objecttype BiomeTag>.
         // -->
         TagManager.registerTagHandler("biome", (attribute) -> {
             if (!attribute.hasContext(1)) {

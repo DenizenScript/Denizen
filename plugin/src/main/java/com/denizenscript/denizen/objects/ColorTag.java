@@ -198,7 +198,7 @@ public class ColorTag implements ObjectTag {
 
         // <--[tag]
         // @attribute <ColorTag.hex>
-        // @returns ElementTag)
+        // @returns ElementTag
         // @description
         // Returns a hex code formatting of this color, like '#ff00ff'.
         // -->

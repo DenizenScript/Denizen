@@ -12,7 +12,7 @@ public class PolygonTagBase {
         // @returns PolygonTag
         // @description
         // Returns a polygon object constructed from the input value.
-        // Refer to <@link language PolygonTag objects>.
+        // Refer to <@link objecttype PolygonTag>.
         // -->
         TagManager.registerTagHandler("polygon", (attribute) -> {
             if (!attribute.hasContext(1)) {

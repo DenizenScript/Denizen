@@ -12,7 +12,7 @@ public class EllipsoidTagBase {
         // @returns EllipsoidTag
         // @description
         // Returns an ellipsoid object constructed from the input value.
-        // Refer to <@link language EllipsoidTag objects>.
+        // Refer to <@link objecttype EllipsoidTag>.
         // -->
         TagManager.registerTagHandler("ellipsoid", (attribute) -> {
             if (!attribute.hasContext(1)) {

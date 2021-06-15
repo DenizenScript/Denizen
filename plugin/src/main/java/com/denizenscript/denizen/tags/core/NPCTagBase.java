@@ -34,7 +34,7 @@ public class NPCTagBase implements Listener {
         // @returns NPCTag
         // @description
         // Returns an npc object constructed from the input value.
-        // Refer to <@link language NPCTag objects>.
+        // Refer to <@link objecttype NPCTag>.
         // If no input value is specified, returns the linked NPC.
         // -->
         if (Depends.citizens != null) {

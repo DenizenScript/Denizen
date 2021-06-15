@@ -12,7 +12,7 @@ public class LocationTagBase {
         // @returns LocationTag
         // @description
         // Returns a location object constructed from the input value.
-        // Refer to <@link language LocationTag objects>.
+        // Refer to <@link objecttype LocationTag>.
         // -->
         TagManager.registerTagHandler("location", (attribute) -> {
             if (!attribute.hasContext(1)) {

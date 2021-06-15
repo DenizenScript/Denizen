@@ -12,7 +12,7 @@ public class WorldTagBase {
         // @returns WorldTag
         // @description
         // Returns a world object constructed from the input value.
-        // Refer to <@link language WorldTag objects>.
+        // Refer to <@link objecttype WorldTag>.
         // -->
         TagManager.registerTagHandler("world", (attribute) -> {
             if (!attribute.hasContext(1)) {

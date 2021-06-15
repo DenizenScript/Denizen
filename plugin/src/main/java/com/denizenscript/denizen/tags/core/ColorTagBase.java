@@ -12,7 +12,7 @@ public class ColorTagBase {
         // @returns ColorTag
         // @description
         // Returns a color object constructed from the input value.
-        // Refer to <@link language ColorTag objects>.
+        // Refer to <@link objecttype ColorTag>.
         // -->
         TagManager.registerTagHandler("color", (attribute) -> {
             if (!attribute.hasContext(1)) {

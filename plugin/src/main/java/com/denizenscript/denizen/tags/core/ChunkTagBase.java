@@ -12,7 +12,7 @@ public class ChunkTagBase {
         // @returns ChunkTag
         // @description
         // Returns a chunk object constructed from the input value.
-        // Refer to <@link language ChunkTag objects>.
+        // Refer to <@link objecttype ChunkTag>.
         // -->
         TagManager.registerTagHandler("chunk", (attribute) -> {
             if (!attribute.hasContext(1)) {

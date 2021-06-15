@@ -1409,11 +1409,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
                 // <--[tag]
                 // @attribute <LocationTag.skull_skin.full>
-                // @returns ElementTag|ElementTag
+                // @returns ElementTag
                 // @mechanism LocationTag.skull_skin
                 // @description
                 // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
                 // along with the permanently cached texture property.
+                // In format "uuid|texture" - separated by a pipe, but not a ListTag.
                 // -->
                 if (attribute.startsWith("full", 2)) {
                     attribute.fulfill(1);

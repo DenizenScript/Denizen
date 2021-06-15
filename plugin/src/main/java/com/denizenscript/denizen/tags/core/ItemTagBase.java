@@ -12,7 +12,7 @@ public class ItemTagBase {
         // @returns ItemTag
         // @description
         // Returns an item object constructed from the input value.
-        // Refer to <@link language ItemTag objects>.
+        // Refer to <@link objecttype ItemTag>.
         // -->
         TagManager.registerTagHandler("item", (attribute) -> {
             if (!attribute.hasContext(1)) {
