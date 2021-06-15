@@ -32,12 +32,25 @@ public class CommandScriptHelper implements Listener {
     public static Map<String, HelpTopic> helpTopics = null;
     public static final Map<String, CommandScriptContainer> commandScripts = new HashMap<>();
     public static boolean hasCommandInformation = true;
+    public static CommandScriptHelper instance;
+    public static boolean isInitialized = false;
 
     public CommandScriptHelper() {
+        instance = this;
+        if (Settings.cache_commandScriptAutoInit) {
+            init();
+        }
+    }
+
+    public static void init() {
+        if (isInitialized) {
+            return;
+        }
+        isInitialized = true;
         try {
             Server server = Bukkit.getServer();
 
-            server.getPluginManager().registerEvents(this, Denizen.getInstance());
+            server.getPluginManager().registerEvents(instance, Denizen.getInstance());
 
             // Get the CommandMap for the server
             Field commandMapField = server.getClass().getDeclaredField("commandMap");
@@ -136,7 +149,7 @@ public class CommandScriptHelper implements Listener {
      * @see #registerDenizenCommand(DenizenCommand)
      */
     public static void removeDenizenCommands() {
-        if (!hasCommandInformation) {
+        if (!hasCommandInformation || !isInitialized) {
             return;
         }
         for (String command : denizenCommands.keySet()) {
@@ -188,7 +201,7 @@ public class CommandScriptHelper implements Listener {
      * @param command   the command.
      * @param helpTopic the help topic for the command or command alias.
      */
-    private static void forceCommand(String name, DenizenCommand command, HelpTopic helpTopic) {
+    public static void forceCommand(String name, DenizenCommand command, HelpTopic helpTopic) {
         // Override any existing non-DenizenCommand commands, but save them just in case
         // TODO: use fallback prefixes for overridden commands instead?
         if (knownCommands.containsKey(name)) {

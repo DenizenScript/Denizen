@@ -90,6 +90,7 @@ public class Settings {
         cache_tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
         cache_warningRate = config.getLong("Tags.Warning rate", 10000);
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
+        cache_commandScriptAutoInit = config.getBoolean("Scripts.Command.Auto init", false);
         PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
         PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
         MapTagBasedFlagTracker.skipAllCleanings = config.getBoolean("Saves.Skip flag cleaning", false);
@@ -114,7 +115,8 @@ public class Settings {
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
-            cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe, cache_createWorldSymbols;
+            cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe, cache_createWorldSymbols,
+            cache_commandScriptAutoInit;
 
     public static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,

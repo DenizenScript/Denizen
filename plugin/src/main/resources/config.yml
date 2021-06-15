@@ -55,6 +55,11 @@ Scripts:
     Alternative folder path: 'plugins/Denizen'
   # What character encoding to use. 'default' indicates system default, 'utf8' is suggested as a preferred encoding in most cases.
   Encoding: utf8
+  Command:
+    # If set to 'true', the command scripts engine will automatically initialize when the server loads.
+    # If false, it will only initialize once at least one command script is loaded.
+    # This defaults to false to avoid any possible interference on servers that don't use command scripts.
+    Auto init: false
 
 # The default options for new Denizen NPCs
 
