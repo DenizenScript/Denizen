@@ -7,6 +7,7 @@ import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStopScriptEvent;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.PropertyRegistry;
@@ -16,6 +17,7 @@ import com.denizenscript.denizen.scripts.containers.ContainerRegistry;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.tags.core.NPCTagBase;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.command.DenizenCommandHandler;
@@ -175,11 +177,18 @@ public class Denizen extends JavaPlugin {
         triggerRegistry = new TriggerRegistry();
         notableManager = new NotableManager();
         tagManager = new TagManager();
+        boolean citizensBork = false;
         try {
             // Activate dependencies
             Depends.initialize();
-            if (Depends.citizens == null || !Depends.citizens.isEnabled()) {
-                getLogger().warning("Citizens does not seem to be activated! Denizen will have greatly reduced functionality!");
+            if (Depends.citizens == null) {
+                if (Bukkit.getPluginManager().getPlugin("Citizens") != null) {
+                    citizensBork = true;
+                    getLogger().warning("Citizens is present but does seem to be activated! You may have an error earlier in your logs, or you may have a broken plugin load order.");
+                }
+                else {
+                    getLogger().warning("Citizens does not seem to be available! Denizen will have greatly reduced functionality!");
+                }
             }
             startedSuccessful = true;
         }
@@ -383,8 +392,28 @@ public class Denizen extends JavaPlugin {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+        final boolean hadCitizensBork = citizensBork;
         // Run everything else on the first server tick
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            try {
+                if (hadCitizensBork) {
+                    Depends.setupCitizens();
+                    if (Depends.citizens != null) {
+                        getLogger().warning("Citizens was activated late - this means a plugin load order error occurred. You may have plugins with invalid 'plugin.yml' files (eg that use the 'loadbefore' directive, or that have circular dependencies).");
+                        npcHelper = new DenizenNPCHelper(this);
+                        Depends.citizens.registerCommandClass(NPCCommandHandler.class);
+                        TraitRegistry.registerMainTraits();
+                        triggerRegistry.registerCoreMembers();
+                        commandRegistry.registerCitizensCommands();
+                        ScriptEventRegistry.registerCitizensEvents();
+                        new NPCTagBase();
+                        ObjectFetcher.registerWithObjectFetcher(NPCTag.class, NPCTag.tagProcessor);
+                    }
+                }
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
             try {
                 exCommand.processTagList();
                 // Reload notables from notables.yml into memory
@@ -410,8 +439,8 @@ public class Denizen extends JavaPlugin {
                 }
                 Debug.log("Denizen fully loaded at: " + TimeTag.now().format());
             }
-            catch (Exception e) {
-                Debug.echoError(e);
+            catch (Throwable ex) {
+                Debug.echoError(ex);
             }
         }, 1);
         new BukkitRunnable() {

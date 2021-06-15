@@ -18,6 +18,12 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 
 public class ScriptEventRegistry {
 
+    public static void registerCitizensEvents() {
+        ScriptEvent.registerScriptEvent(new NPCNavigationScriptEvent());
+        ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
+        ScriptEvent.registerScriptEvent(new NPCStuckScriptEvent());
+    }
+
     public static void registerMainEvents() {
 
         // Block events
@@ -99,9 +105,7 @@ public class ScriptEventRegistry {
 
         // NPC events
         if (Depends.citizens != null) {
-            ScriptEvent.registerScriptEvent(new NPCNavigationScriptEvent());
-            ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
-            ScriptEvent.registerScriptEvent(new NPCStuckScriptEvent());
+            registerCitizensEvents();
         }
 
         // Item events

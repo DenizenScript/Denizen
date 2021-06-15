@@ -146,7 +146,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             if (Utilities.getEntryNPC(scriptEntry) == null
                     || !Utilities.getEntryNPC(scriptEntry).isValid()
                     || !Utilities.getEntryNPC(scriptEntry).isSpawned()) {
-                throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
+                throw new InvalidArgumentsException("Must have a valid spawned NPC attached, or an entity specified.");
             }
             else {
                 scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));

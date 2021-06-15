@@ -18,6 +18,8 @@ import com.denizenscript.denizencore.scripts.commands.CommandRegistry;
 
 public class BukkitCommandRegistry extends CommandRegistry {
 
+    public static BukkitCommandRegistry instance;
+
     public static class AutoNoCitizensCommand extends AbstractCommand {
 
         public static void registerMany(String... names) {
@@ -30,6 +32,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand cmd = new AutoNoCitizensCommand();
             cmd.name = name;
             cmd.syntax = "(Citizens Required)";
+            instance.register(cmd.name, cmd);
         }
 
         public String name;
@@ -44,7 +47,35 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
     }
 
+    public void registerCitizensCommands() {
+        // entity
+        registerCommand(AnimateCommand.class);
+        // npc
+        registerCommand(ActionCommand.class);
+        registerCommand(AnchorCommand.class);
+        registerCommand(AssignmentCommand.class);
+        registerCommand(BreakCommand.class);
+        registerCommand(CreateCommand.class);
+        registerCommand(DespawnCommand.class);
+        registerCommand(DisengageCommand.class);
+        registerCommand(EngageCommand.class);
+        registerCommand(FishCommand.class);
+        registerCommand(LookcloseCommand.class);
+        registerCommand(PauseCommand.class);
+        registerCommand(PauseCommand.ResumeCommand.class);
+        registerCommand(PoseCommand.class);
+        registerCommand(PushableCommand.class);
+        registerCommand(SitCommand.class);
+        registerCommand(SleepCommand.class);
+        registerCommand(StandCommand.class);
+        registerCommand(TraitCommand.class);
+        registerCommand(TriggerCommand.class);
+        registerCommand(VulnerableCommand.class);
+        // player
+    }
+
     public void registerCommands() {
+        instance = this;
 
         registerCoreCommands();
 
@@ -55,9 +86,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(ZapCommand.class);
         // entity
         registerCommand(AgeCommand.class);
-        if (Depends.citizens != null) {
-            registerCommand(AnimateCommand.class);
-        }
         registerCommand(AttachCommand.class);
         registerCommand(AttackCommand.class);
         registerCommand(BurnCommand.class);
@@ -93,36 +121,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(NBTCommand.class);
         registerCommand(ScribeCommand.class);
         registerCommand(TakeCommand.class);
-        // npc
-        if (Depends.citizens != null) {
-            registerCommand(ActionCommand.class);
-            registerCommand(AnchorCommand.class);
-            registerCommand(AssignmentCommand.class);
-            registerCommand(BreakCommand.class);
-            registerCommand(CreateCommand.class);
-            registerCommand(DespawnCommand.class);
-            registerCommand(DisengageCommand.class);
-            registerCommand(EngageCommand.class);
-            registerCommand(FishCommand.class);
-            registerCommand(LookcloseCommand.class);
-            registerCommand(PauseCommand.class);
-            registerCommand(PauseCommand.ResumeCommand.class);
-            registerCommand(PoseCommand.class);
-            registerCommand(PushableCommand.class);
-            registerCommand(SitCommand.class);
-            registerCommand(SleepCommand.class);
-            registerCommand(StandCommand.class);
-            registerCommand(TraitCommand.class);
-            registerCommand(TriggerCommand.class);
-            registerCommand(VulnerableCommand.class);
-        }
         // player
         registerCommand(ActionBarCommand.class);
         registerCommand(AdvancementCommand.class);
         registerCommand(BlockCrackCommand.class);
-        if (Depends.citizens != null) {
-            registerCommand(ChatCommand.class);
-        }
         registerCommand(ClickableCommand.class);
         registerCommand(CompassCommand.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
@@ -176,7 +178,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(WeatherCommand.class);
         registerCommand(WorldBorderCommand.class);
 
-        if (Depends.citizens == null) {
+        if (Depends.citizens != null) {
+            registerCitizensCommands();
+        }
+        else {
             AutoNoCitizensCommand.registerMany("ACTION", "ANCHOR", "ANIMATE", "ASSIGNMENT", "BREAK", "CHAT", "CREATE", "DESPAWN",
                     "DISENGAGE", "ENGAGE", "FISH", "LOOKCLOSE", "PAUSE", "RESUME", "POSE", "PUSHABLE", "RENAME", "SIT", "STAND", "TRAIT", "TRIGGER", "VULNERABLE");
         }

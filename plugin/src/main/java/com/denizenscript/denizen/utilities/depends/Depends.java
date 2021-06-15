@@ -21,12 +21,16 @@ public class Depends {
     public static Plugin vault = null;
 
     public static void initialize() {
-        vault = Bukkit.getServer().getPluginManager().getPlugin("Vault");
         setupBungee();
+        setupVault();
+        setupCitizens();
+    }
+
+    public static void setupVault() {
+        vault = Bukkit.getServer().getPluginManager().getPlugin("Vault");
         setupEconomy();
         setupPermissions();
         setupChat();
-        setupCitizens();
     }
 
     public static void setupBungee() {
