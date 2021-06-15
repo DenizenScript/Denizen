@@ -297,10 +297,10 @@ public class ItemHelperImpl extends ItemHelper {
             return null;
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        ListTag list = ((net.minecraft.nbt.CompoundTag) nmsItemStack.getTag().get("display")).getList("Lore", 8);
+        List<net.minecraft.nbt.Tag> list = ((net.minecraft.nbt.CompoundTag) nmsItemStack.getTag().get("display")).getList("Lore", 8);
         List<String> outList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            BaseComponent[] lineComponent = ComponentSerializer.parse(list.getString(i));
+            BaseComponent[] lineComponent = ComponentSerializer.parse(((ListTag) list).getString(i));
             outList.add(FormattedTextHelper.stringify(lineComponent, ChatColor.WHITE));
         }
         return outList;
@@ -335,11 +335,11 @@ public class ItemHelperImpl extends ItemHelper {
             display.put("Lore", null);
         }
         else {
-            ListTag tagList = new ListTag();
+            List<net.minecraft.nbt.Tag> tagList = new ListTag();
             for (String line : lore) {
                 tagList.add(net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(FormattedTextHelper.parse(line, ChatColor.WHITE))));
             }
-            display.put("Lore", tagList);
+            display.put("Lore", (ListTag) tagList);
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }

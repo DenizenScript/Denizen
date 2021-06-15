@@ -55,7 +55,7 @@ public class CompoundTagImpl extends CompoundTag {
                 tag.putIntArray(entry.getKey(), ((IntArrayTag) entry.getValue()).getValue());
             }
             else if (entry.getValue() instanceof JNBTListTag) {
-                ListTag list = new ListTag();
+                List<net.minecraft.nbt.Tag> list = new ListTag();
                 List<Tag> tags = ((JNBTListTag) entry.getValue()).getValue();
                 for (Tag btag : tags) {
                     HashMap<String, Tag> btags = new HashMap<>();
@@ -63,7 +63,7 @@ public class CompoundTagImpl extends CompoundTag {
                     CompoundTagImpl comp = new CompoundTagImpl(btags);
                     list.add(comp.toNMSTag().get("test"));
                 }
-                tag.put(entry.getKey(), list);
+                tag.put(entry.getKey(), (ListTag) list);
             }
             else if (entry.getValue() instanceof LongTag) {
                 tag.putLong(entry.getKey(), ((LongTag) entry.getValue()).getValue());
@@ -116,7 +116,7 @@ public class CompoundTagImpl extends CompoundTag {
                 tags.put(key, new StringTag(base.getAsString()));
             }
             else if (base instanceof ListTag) {
-                ListTag list = (ListTag) base;
+                List<net.minecraft.nbt.Tag> list = (List<net.minecraft.nbt.Tag>) base;
                 if (list.size() > 0) {
                     net.minecraft.nbt.Tag nbase = list.get(0);
                     net.minecraft.nbt.CompoundTag comp = new net.minecraft.nbt.CompoundTag();
