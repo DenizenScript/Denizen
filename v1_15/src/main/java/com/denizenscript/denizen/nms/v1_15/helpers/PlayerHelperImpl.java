@@ -78,7 +78,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         EntityTag entity = new EntityTag(nmsEntity.getBukkitEntity());
         for (Mechanism mechanism : mechanisms) {
-            entity.safeAdjust(mechanism);
+            entity.safeAdjustDuplicate(mechanism);
         }
         nmsEntity.dead = false;
         FakeEntity fake = new FakeEntity(players, location, entity.getBukkitEntity().getEntityId());
