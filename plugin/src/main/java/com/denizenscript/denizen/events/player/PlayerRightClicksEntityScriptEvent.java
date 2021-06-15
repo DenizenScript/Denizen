@@ -26,6 +26,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     //
     // @Location true
     // @Switch with:<item> to only process the event when the player is holding a specified item.
+    // @Switch type:<entity> to only run if the entity clicked matches the entity input.
     //
     // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <player> 1t') to prevent doubling actions.
     //
@@ -73,6 +74,9 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         }
         // Deprecated in favor of with: format
         if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !tryItem(item, path.eventArgLowerAt(isAt ? 6 : 5))) {
+            return false;
+        }
+        if (path.switches.containsKey("type") && !tryEntity(entity, path.switches.get("type"))) {
             return false;
         }
         return super.matches(path);

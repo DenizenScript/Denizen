@@ -35,6 +35,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Switch with:<item> to only process the event if a specified item was held.
     // @Switch using:hand/off_hand/either_hand to only process the event if the specified hand was used to click.
+    // @Switch type:<material> to only run if the block clicked matches the material input.
     // @Location true
     //
     // @Triggers when a player clicks on a block or in the air.
@@ -141,6 +142,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         if (!runInCheck(path, location != null ? location : event.getPlayer().getLocation())) {
+            return false;
+        }
+        if (path.switches.containsKey("type") && !tryMaterial(blockMaterial, path.switches.get("type"))) {
             return false;
         }
         return super.matches(path);
