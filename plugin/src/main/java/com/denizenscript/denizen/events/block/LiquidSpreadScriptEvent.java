@@ -19,6 +19,8 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ spreads$
     //
+    // @Switch type:<material> to only run if the block spreading matches the material input.
+    //
     // @Group Block
     //
     // @Location true
@@ -73,6 +75,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
             if (!mat.equals("liquid") && !tryMaterial(material, mat)) {
                 return false;
             }
+        }
+        if (path.switches.containsKey("type") && !tryMaterial(material, path.switches.get("type"))) {
+            return false;
         }
         if (!runInCheck(path, location) && !runInCheck(path, destination)) {
             return false;

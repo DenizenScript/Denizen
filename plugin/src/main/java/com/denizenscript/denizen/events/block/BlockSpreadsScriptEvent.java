@@ -17,6 +17,8 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Regex ^on [^\s]+ spreads$
     //
+    // @Switch type:<material> to only run if the block spreading matches the material input.
+    //
     // @Group Block
     //
     // @Location true
@@ -57,11 +59,13 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!runInCheck(path, location)) {
             return false;
         }
         if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (path.switches.containsKey("type") && !tryMaterial(material, path.switches.get("type"))) {
             return false;
         }
         return super.matches(path);
