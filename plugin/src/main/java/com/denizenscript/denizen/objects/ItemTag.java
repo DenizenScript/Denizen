@@ -44,9 +44,15 @@ import java.util.Map;
 
 public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
-    // <--[language]
-    // @name ItemTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name ItemTag
+    // @prefix i
+    // @base ElementTag
+    // @implements FlaggableObject, PropertyHolderObject
+    // @format
+    // The identity format for items is the basic material type name, or an item script name. Other data is specified in properties.
+    // For example, 'i@stick'.
+    //
     // @description
     // An ItemTag represents a holdable item generically.
     //
@@ -54,10 +60,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     //
     // ItemTags do NOT remember where they came from. If you read an item from an inventory, changing it
     // does not change the original item in the original inventory. You must set it back in.
-    //
-    // These use the object notation "i@".
-    // The identity format for items is the basic material type name, or an item script name. Other data is specified in properties.
-    // For example, 'i@stick'.
     //
     // Find a list of valid materials at:
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>

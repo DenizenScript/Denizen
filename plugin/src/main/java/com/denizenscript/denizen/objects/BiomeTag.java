@@ -23,17 +23,19 @@ import java.util.List;
 
 public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
-    // <--[language]
-    // @name BiomeTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name BiomeTag
+    // @prefix b
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
+    // The identity format for biomes is simply the biome name, as registered in Bukkit, for example: 'desert'.
+    //
     // @description
     // A BiomeTag represents a world biome type.
     //
     // A list of all valid Bukkit biomes can found be at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>
-    //
-    // These use the object notation "b@".
-    // The identity format for biomes is simply the biome name, as registered in Bukkit, for example: 'desert'.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the server saves file, under special sub-key "__biomes"

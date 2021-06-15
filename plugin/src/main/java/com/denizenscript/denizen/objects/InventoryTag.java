@@ -52,17 +52,19 @@ import java.util.*;
 
 public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
-    // <--[language]
-    // @name InventoryTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name InventoryTag
+    // @prefix in
+    // @base ElementTag
+    // @implements FlaggableObject, PropertyHolderObject
+    // @format
+    // The identity format for inventories is a the classification type of inventory to use. All other data is specified through properties.
+    //
     // @description
     // An InventoryTag represents an inventory, generically or attached to some in-the-world object.
     //
     // Inventories can be generically designed using inventory script containers,
     // and can be modified using the inventory command.
-    //
-    // These use the object notation "in@".
-    // The identity format for inventories is a the classification type of inventory to use. All other data is specified through properties.
     //
     // Valid inventory type classifications:
     // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"

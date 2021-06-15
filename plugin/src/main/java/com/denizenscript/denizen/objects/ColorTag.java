@@ -18,17 +18,18 @@ import java.util.List;
 
 public class ColorTag implements ObjectTag {
 
-    // <--[language]
-    // @name ColorTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name ColorTag
+    // @prefix co
+    // @base ElementTag
+    // @format
+    // The identity format for colors is <red>,<green>,<blue> or the name of a color.
+    // For example, 'co@50,64,128' or 'co@red'.
+    //
     // @description
     // A ColorTag represents an RGB color code.
     //
     // Note that a ColorTag is NOT a base dye color (used by wool, etc). That is handled by a separate naming system.
-    //
-    // These use the object notation "co@".
-    // The identity format for colors is <red>,<green>,<blue> or the name of a color.
-    // For example, 'co@50,64,128' or 'co@red'.
     //
     // Construction a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF'.
     //

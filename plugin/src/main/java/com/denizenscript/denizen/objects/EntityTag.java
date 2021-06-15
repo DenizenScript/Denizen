@@ -52,9 +52,15 @@ import java.util.*;
 
 public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject, Cloneable {
 
-    // <--[language]
-    // @name EntityTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name EntityTag
+    // @prefix e
+    // @base ElementTag
+    // @implements FlaggableObject, PropertyHolderObject
+    // @format
+    // The identity format for entities is a spawned entity's UUID, or an entity type.
+    // For example, 'e@abc123' or 'e@zombie'.
+    //
     // @description
     // An EntityTag represents a spawned entity, or a generic entity type.
     //
@@ -62,10 +68,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // PlayerTag and NPCTag objects.
     //
     // Note that a spawned entity can be a living entity (a player, NPC, or mob) or a nonliving entity (a painting, item frame, etc).
-    //
-    // These use the object notation "e@".
-    // The identity format for entities is a spawned entity's UUID, or an entity type.
-    // For example, 'e@abc123' or 'e@zombie'.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the world chunk files as a part of the entity's NBT.

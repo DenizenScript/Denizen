@@ -33,9 +33,14 @@ import java.util.List;
 
 public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
-    // <--[language]
-    // @name PolygonTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name PolygonTag
+    // @prefix polygon
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
+    // The identity format for polygons is <world>,<y-min>,<y-max>,<x1>,<z1>,... (the x,z pair repeats for as many points as the polygon has).
+    //
     // @description
     // A PolygonTag represents a polygonal region in the world.
     //
@@ -43,9 +48,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     // PolygonTags, in addition to a 2D polygon, contain a minimum and maximum Y coordinate, to allow them to function in 3D.
     //
     // PolygonTags are NOT polyhedra.
-    //
-    // These use the object notation "polygon@".
-    // The identity format for cuboids is <world>,<y-min>,<y-max>,<x1>,<z1>,... (the x,z pair repeats for as many points as the polygon has).
     //
     // A PolygonTag with 4 points at right angles would cover an area also possible to be defined by a CuboidTag, however all other shapes a PolygonTag can form are unique.
     //

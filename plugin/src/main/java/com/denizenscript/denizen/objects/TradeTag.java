@@ -14,9 +14,14 @@ import java.util.Collections;
 
 public class TradeTag implements ObjectTag, Adjustable {
 
-    // <--[language]
-    // @name TradeTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name TradeTag
+    // @prefix trade
+    // @base ElementTag
+    // @implements PropertyHolderObject
+    // @format
+    // The identity format for trades is just the text 'trade'. All other data is specified through properties.
+    //
     // @description
     // Merchant trades are the parts of a special merchant inventory that is typically viewed by right clicking
     // a villager entity. Any number of trades can fit in a single merchant inventory.
@@ -38,9 +43,6 @@ public class TradeTag implements ObjectTag, Adjustable {
     // <code>
     // - opentrades trade[max_uses=10;inputs=emerald[quantity=2];result=sponge]|trade[result=barrier]
     // </code>
-    //
-    // These use the object notation "trade@".
-    // The identity format for trades is just the text 'trade'. All other data is specified through properties.
     //
     // -->
 

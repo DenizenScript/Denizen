@@ -36,9 +36,16 @@ import java.util.List;
 
 public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
-    // <--[language]
-    // @name CuboidTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name CuboidTag
+    // @prefix cu
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
+    // The identity format for cuboids is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
+    // Multi-member cuboids can simply continue listing x,y,z pairs.
+    // For example, 'cu@space,1,2,3,4,5,6'.
+    //
     // @description
     // A CuboidTag represents a cuboidal region in the world.
     //
@@ -47,11 +54,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     //
     // One 'cuboid' consists of two points: the low point and a high point.
     // a CuboidTag can contain as many cuboids within itself as needed (this allows forming more complex shapes from a single CuboidTag).
-    //
-    // These use the object notation "cu@".
-    // The identity format for cuboids is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
-    // Multi-member cuboids can simply continue listing x,y,z pairs.
-    // For example, 'cu@space,1,2,3,4,5,6'.
     //
     // This object type can be noted.
     //

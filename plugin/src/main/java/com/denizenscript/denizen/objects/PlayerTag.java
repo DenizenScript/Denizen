@@ -56,14 +56,16 @@ import java.util.*;
 
 public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject {
 
-    // <--[language]
-    // @name PlayerTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name PlayerTag
+    // @prefix p
+    // @base EntityTag
+    // @implements FlaggableObject
+    // @format
+    // The identity format for players is the UUID of the relevant player.
+    //
     // @description
     // A PlayerTag represents a player in the game.
-    //
-    // These use the object notation "p@".
-    // The identity format for players is the UUID of the relevant player.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the file "plugins/Denizen/player_flags/(UUID).dat",

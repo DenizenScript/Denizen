@@ -18,15 +18,17 @@ import org.bukkit.plugin.Plugin;
 
 public class PluginTag implements ObjectTag, FlaggableObject {
 
-    // <--[language]
-    // @name PluginTag Objects
-    // @group Object System
-    // @description
-    // A PluginTag represents a Bukkit plugin on the server.
-    //
-    // These use the object notation "pl@".
+    // <--[ObjectType]
+    // @name PluginTag
+    // @prefix pl
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
     // The identity format for plugins is the plugin's registered name.
     // For example, 'pl@Denizen'.
+    //
+    // @description
+    // A PluginTag represents a Bukkit plugin on the server.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the server saves file, under special sub-key "__plugins"

@@ -52,15 +52,19 @@ import java.util.UUID;
 
 public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject, FlaggableObject {
 
-    // <--[language]
-    // @name NPCTag Objects
-    // @group Object System
-    // @description
-    // An NPCTag represents an NPC configured through Citizens.
-    //
-    // These use the object notation "n@".
+    // <--[ObjectType]
+    // @name NPCTag
+    // @prefix n
+    // @base EntityTag
+    // @implements FlaggableObject
+    // @format
     // The identity format for NPCs is the NPC's id number.
     // For example, 'n@5'.
+    // Or, an NPC's id number, followed by a comma, followed by a custom registry name.
+    // For example 'n@12,specialnpcs'
+    //
+    // @description
+    // An NPCTag represents an NPC configured through Citizens.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the Citizens saves.yml file, under the 'denizen_flags' trait.

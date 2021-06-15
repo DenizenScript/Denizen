@@ -30,15 +30,17 @@ import java.util.HashSet;
 
 public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
-    // <--[language]
-    // @name MaterialTag Objects
-    // @group Object System
-    // @description
-    // A MaterialTag represents a material (a type of block or item).
-    //
-    // These use the object notation "m@".
+    // <--[ObjectType]
+    // @name MaterialTag
+    // @prefix m
+    // @base ElementTag
+    // @implements FlaggableObject, PropertyHolderObject
+    // @format
     // The identity format for materials is the material type name.
     // For example, 'm@stick'.
+    //
+    // @description
+    // A MaterialTag represents a material (a type of block or item).
     //
     // Block materials may sometimes also contain property data,
     // for specific values on the block material such as the growth stage of a plant or the orientation of a stair block.

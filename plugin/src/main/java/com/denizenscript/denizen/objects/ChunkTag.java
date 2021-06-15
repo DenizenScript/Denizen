@@ -29,15 +29,17 @@ import java.util.*;
 
 public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
 
-    // <--[language]
-    // @name ChunkTag Objects
-    // @group Object System
-    // @description
-    // A ChunkTag represents a chunk in the world.
-    //
-    // These use the object notation "ch@".
+    // <--[ObjectType]
+    // @name ChunkTag
+    // @prefix ch
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
     // The identity format for chunks is <x>,<z>,<world>
     // For example, 'ch@5,3,world'.
+    //
+    // @description
+    // A ChunkTag represents a chunk in the world.
     //
     // Note that the X/Z pair are chunk coordinates, not block coordinates.
     // To convert from block coordinates to chunk coordinates, divide by 16 and round downward.

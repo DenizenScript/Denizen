@@ -33,18 +33,20 @@ import java.util.List;
 
 public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject, FlaggableObject {
 
-    // <--[language]
-    // @name EllipsoidTag Objects
-    // @group Object System
+    // <--[ObjectType]
+    // @name EllipsoidTag
+    // @prefix ellipsoid
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
+    // The identity format for ellipsoids is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
+    // For example, 'ellipsoid@1,2,3,space,7,7,7'.
+    //
     // @description
     // An EllipsoidTag represents an ellipsoidal region in the world.
     //
     // The word 'ellipsoid' means a less strict sphere.
     // Basically: an "ellipsoid" is to a 3D "sphere" what an "ellipse" (or "oval") is to a 2D "circle".
-    //
-    // These use the object notation "ellipsoid@".
-    // The identity format for ellipsoids is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
-    // For example, 'ellipsoid@1,2,3,space,7,7,7'.
     //
     // This object type can be noted.
     //

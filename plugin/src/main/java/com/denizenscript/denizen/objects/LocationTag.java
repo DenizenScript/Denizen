@@ -60,18 +60,21 @@ import java.util.*;
 
 public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
-    // <--[language]
-    // @name LocationTag Objects
-    // @group Object System
-    // @description
-    // A LocationTag represents a point in the world.
-    //
-    // These use the object notation "l@".
-    // Note that 'l' is a lowercase 'L', the first letter in 'location'.
+    // <--[ObjectType]
+    // @name LocationTag
+    // @prefix l
+    // @base ElementTag
+    // @implements FlaggableObject
+    // @format
     // The identity format for locations is <x>,<y>,<z>,<pitch>,<yaw>,<world>
     // Note that you can leave off the world, and/or pitch and yaw, and/or the z value.
     // You cannot leave off both the z and the pitch+yaw at the same time.
     // For example, 'l@1,2.15,3,45,90,space' or 'l@7.5,99,3.2'
+    //
+    // @description
+    // A LocationTag represents a point in the world.
+    //
+    // Note that 'l' prefix is a lowercase 'L', the first letter in 'location'.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the chunk file inside the world folder.
