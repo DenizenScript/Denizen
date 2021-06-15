@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -51,6 +52,7 @@ public class FakeEntity {
     }
 
     public static FakeEntity showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration) {
+        NetworkInterceptHelper.enable();
         FakeEntity fakeEntity = NMSHandler.getPlayerHelper().sendEntitySpawn(players, typeToSpawn.getEntityType(), location, typeToSpawn.getWaitingMechanisms(), -1, null, true);
         idsToEntities.put(fakeEntity.overrideUUID == null ? fakeEntity.entity.getUUID() : fakeEntity.overrideUUID, fakeEntity);
         for (PlayerTag player : players) {

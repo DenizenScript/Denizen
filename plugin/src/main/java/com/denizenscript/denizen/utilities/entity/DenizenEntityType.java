@@ -7,6 +7,7 @@ import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.interfaces.CustomEntity;
 import com.denizenscript.denizen.nms.interfaces.CustomEntityHelper;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -116,6 +117,7 @@ public class DenizenEntityType {
                                     break;
                                 }
                             }
+                            NetworkInterceptHelper.enable();
                             return customEntityHelper.spawnFakePlayer(location, name, skin);
                         }
                         break;

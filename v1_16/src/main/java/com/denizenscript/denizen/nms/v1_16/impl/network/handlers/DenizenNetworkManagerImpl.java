@@ -64,23 +64,21 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     public final NetworkManager oldManager;
     public final DenizenPacketListenerImpl packetListener;
     public final EntityPlayer player;
-    public final DenizenPacketHandler packetHandler;
     public int packetsSent, packetsReceived;
 
-    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager, DenizenPacketHandler packetHandler) {
+    public DenizenNetworkManagerImpl(EntityPlayer entityPlayer, NetworkManager oldManager) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
         this.packetListener = new DenizenPacketListenerImpl(this, entityPlayer);
         oldManager.setPacketListener(packetListener);
         this.player = this.packetListener.player;
-        this.packetHandler = packetHandler;
     }
 
-    public static void setNetworkManager(Player player, DenizenPacketHandler packetHandler) {
+    public static void setNetworkManager(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         PlayerConnection playerConnection = entityPlayer.playerConnection;
-        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.networkManager, packetHandler));
+        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.networkManager));
     }
 
     @Override
@@ -816,11 +814,11 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
     }
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
-        if (packet instanceof PacketPlayOutChat && packetHandler.shouldInterceptChatPacket()) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
+        if (packet instanceof PacketPlayOutChat && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
+            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
         }
-        else if (packet instanceof PacketPlayOutEntityMetadata && packetHandler.shouldInterceptMetadata()) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
+        else if (packet instanceof PacketPlayOutEntityMetadata && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
+            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));
         }
         return false;
     }

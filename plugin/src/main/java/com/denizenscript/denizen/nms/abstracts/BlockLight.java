@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -34,6 +35,7 @@ public abstract class BlockLight {
     }
 
     protected BlockLight(Location location, long ticks) {
+        NetworkInterceptHelper.enable();
         this.block = location.getBlock();
         this.chunk = location.getChunk();
         this.chunkCoord = new ChunkCoordinate(chunk);

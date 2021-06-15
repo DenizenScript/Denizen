@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -78,6 +79,7 @@ public class FakeBlock {
     }
 
     public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration) {
+        NetworkInterceptHelper.enable();
         for (PlayerTag player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;

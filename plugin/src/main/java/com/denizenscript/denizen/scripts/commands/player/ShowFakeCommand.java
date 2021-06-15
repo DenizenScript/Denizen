@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -131,6 +132,7 @@ public class ShowFakeCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        NetworkInterceptHelper.enable();
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag cancel = scriptEntry.getElement("cancel");
         List<MaterialTag> materials = (List<MaterialTag>) scriptEntry.getObject("materials");

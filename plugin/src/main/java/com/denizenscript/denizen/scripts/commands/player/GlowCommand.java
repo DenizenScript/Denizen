@@ -4,6 +4,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -93,6 +94,7 @@ public class GlowCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        NetworkInterceptHelper.enable();
         final ArrayList<EntityTag> entities = (ArrayList<EntityTag>) scriptEntry.getObject("entities");
         ElementTag glowing = scriptEntry.getElement("glowing");
         if (scriptEntry.dbCallShouldDebug()) {

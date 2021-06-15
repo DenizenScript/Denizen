@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
@@ -43,6 +44,7 @@ public class MirrorTrait extends Trait {
     }
 
     public void mirrorOn() {
+        NetworkInterceptHelper.enable();
         UUID uuid = getUUID(npc);
         if (!ProfileEditor.mirrorUUIDs.contains(uuid)) {
             ProfileEditor.mirrorUUIDs.add(uuid);

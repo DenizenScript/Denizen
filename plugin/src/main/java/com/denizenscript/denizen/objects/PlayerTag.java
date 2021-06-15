@@ -18,6 +18,7 @@ import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
@@ -1426,8 +1427,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the brand of the client, as sent via the "minecraft:brand" packet.
         // On normal clients, will say "vanilla". On broken clients, will say "unknown". Modded clients will identify themselves (though not guaranteed!).
+        // It may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this tag functions as expected.
         // -->
         registerOnlineOnlyTag("client_brand", (attribute, object) -> {
+            NetworkInterceptHelper.enable();
             return new ElementTag(NMSHandler.getPlayerHelper().getPlayerBrand(object.getPlayerEntity()), true);
         });
 
@@ -2340,8 +2343,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Number)
         // @description
         // Returns a total count of how many network packets have been sent to this player while they have been online.
+        // It may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this tag functions as expected.
         // -->
         registerOnlineOnlyTag("packets_sent", (attribute, object) -> {
+            NetworkInterceptHelper.enable();
             return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), true));
         });
 
@@ -2350,8 +2355,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Number)
         // @description
         // Returns a total count of how many network packets have been received from this player while they have been online.
+        // It may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this tag functions as expected.
         // -->
         registerOnlineOnlyTag("packets_received", (attribute, object) -> {
+            NetworkInterceptHelper.enable();
             return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), false));
         });
     }
@@ -3204,14 +3211,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
 
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name item_message
-        // @input ElementTag
-        // @description
-        // Shows the player an item message as if the item they are carrying had changed names to the input message.
-        // -->
         if (mechanism.matches("item_message")) {
+            Deprecations.itemMessage.warn(mechanism.context);
             ItemChangeMessage.sendMessage(getPlayerEntity(), mechanism.getValue().asString());
         }
 
@@ -3698,6 +3699,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 HideParticles.hidden.remove(getUUID());
             }
             else {
+                NetworkInterceptHelper.enable();
                 HashSet<Particle> particles = HideParticles.hidden.computeIfAbsent(getUUID(), k -> new HashSet<>());
                 Particle particle = Particle.valueOf(mechanism.getValue().asString().toUpperCase());
                 particles.add(particle);

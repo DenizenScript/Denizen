@@ -9,6 +9,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -130,6 +131,7 @@ public class RenameCommand extends AbstractCommand {
         ListTag targets = scriptEntry.getObjectTag("targets");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         if (perPlayer != null && perPlayer.asBoolean()) {
+            NetworkInterceptHelper.enable();
             if (scriptEntry.dbCallShouldDebug()) {
                 Debug.report(scriptEntry, getName(), name.debug()
                         + targets.debug()
@@ -262,6 +264,7 @@ public class RenameCommand extends AbstractCommand {
     }
 
     public static void addDynamicRename(Entity bukkitEntity, Player forPlayer, RenameData rename) {
+        NetworkInterceptHelper.enable();
         HashMap<UUID, RenameData> playerToFuncMap = customNames.computeIfAbsent(bukkitEntity.getUniqueId(), k -> new HashMap<>());
         playerToFuncMap.put(forPlayer == null ? null : forPlayer.getUniqueId(), rename);
         if (forPlayer == null) {

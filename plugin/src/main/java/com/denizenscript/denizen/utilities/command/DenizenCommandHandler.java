@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.command.manager.Paginator;
 import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -205,6 +206,7 @@ public class DenizenCommandHandler {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
+            NetworkInterceptHelper.enable();
             NMSHandler.debugPackets = !NMSHandler.debugPackets;
             Messaging.sendInfo(sender, (NMSHandler.debugPackets ? "Denizen debugger is now showing packet logs."
                     : "Denizen debugger is no longer showing packet logs."));

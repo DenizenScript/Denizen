@@ -8,18 +8,11 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
 import net.minecraft.server.v1_15_R1.*;
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
-
-    private static DenizenPacketHandler packetHandler;
 
     public String brand = "unknown";
 
@@ -27,33 +20,28 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
         super(networkManager, entityPlayer, entityPlayer.playerConnection);
     }
 
-    public static void enable(DenizenPacketHandler handler) {
-        packetHandler = handler;
-        Bukkit.getServer().getPluginManager().registerEvents(new PlayerEventListener(), NMSHandler.getJavaPlugin());
-    }
-
     @Override
     public void a(final PacketPlayInSteerVehicle packet) {
-        if (!packetHandler.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet))) {
+        if (!DenizenPacketHandler.instance.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet))) {
             super.a(packet);
         }
     }
 
     @Override
     public void a(PacketPlayInResourcePackStatus packet) {
-        packetHandler.receivePacket(player.getBukkitEntity(), new PacketInResourcePackStatusImpl(packet));
+        DenizenPacketHandler.instance.receivePacket(player.getBukkitEntity(), new PacketInResourcePackStatusImpl(packet));
         super.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBlockPlace packet) {
-        packetHandler.receivePlacePacket(player.getBukkitEntity());
+        DenizenPacketHandler.instance.receivePlacePacket(player.getBukkitEntity());
         super.a(packet);
     }
 
     @Override
     public void a(PacketPlayInBlockDig packet) {
-        packetHandler.receiveDigPacket(player.getBukkitEntity());
+        DenizenPacketHandler.instance.receiveDigPacket(player.getBukkitEntity());
         super.a(packet);
     }
 
@@ -86,12 +74,5 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void a(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         super.a(packet, genericfuturelistener);
-    }
-
-    public static class PlayerEventListener implements Listener {
-        @EventHandler(priority = EventPriority.LOWEST)
-        public void onPlayerJoin(PlayerJoinEvent event) {
-            DenizenNetworkManagerImpl.setNetworkManager(event.getPlayer(), packetHandler);
-        }
     }
 }

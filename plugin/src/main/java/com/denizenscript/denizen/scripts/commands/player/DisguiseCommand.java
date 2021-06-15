@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -307,6 +308,7 @@ public class DisguiseCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        NetworkInterceptHelper.enable();
         EntityTag entity = scriptEntry.getObjectTag("entity");
         EntityTag as = scriptEntry.getObjectTag("as");
         ElementTag cancel = scriptEntry.getElement("cancel");

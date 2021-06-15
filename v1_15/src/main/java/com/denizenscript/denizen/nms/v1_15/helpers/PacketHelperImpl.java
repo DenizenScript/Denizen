@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_15.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.v1_15.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_15.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
@@ -281,6 +282,11 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void forceSpectate(Player player, Entity entity) {
         sendPacket(player, new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
+    }
+
+    @Override
+    public void setNetworkManagerFor(Player player) {
+        DenizenNetworkManagerImpl.setNetworkManager(player);
     }
 
     public static void sendPacket(Player player, Packet packet) {

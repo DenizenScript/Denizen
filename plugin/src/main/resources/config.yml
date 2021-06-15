@@ -208,6 +208,11 @@ Packets:
   # It also enables hiding item script IDs and most likely has no real reason to be disabled.
   # Note that changing this setting requires a full server restart.
   Interception: true
+  # Whether to automatically initialize the packet interceptor at startup.
+  # If false, it will only initialize once at least one packet-interception command or event is used.
+  # This defaults to false to avoid any possible interference on servers that don't need packet interception.
+  # If this is false, some packet-interception related tags may not work.
+  Auto init: false
 
 # This is a special map of custom colors by name, for the '&' tag base to use. 'default' is used when the name is unrecognized. You can add extra keys here.
 # Tags work here and will be pre-parsed at load time. RGB color codes work here.

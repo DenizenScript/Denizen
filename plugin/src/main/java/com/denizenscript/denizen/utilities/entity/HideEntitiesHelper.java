@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -94,6 +95,7 @@ public class HideEntitiesHelper {
     }
 
     public static boolean addHide(UUID player, UUID entity) {
+        NetworkInterceptHelper.enable();
         ensurePlayerHiding();
         if (player == null) {
             return defaultHidden.add(entity);
@@ -117,6 +119,7 @@ public class HideEntitiesHelper {
     }
 
     public static boolean removeHide(UUID player, UUID entity) {
+        NetworkInterceptHelper.enable();
         if (player == null) {
             return defaultHidden.remove(entity);
         }

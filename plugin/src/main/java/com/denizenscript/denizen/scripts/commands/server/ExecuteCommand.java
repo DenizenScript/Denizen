@@ -5,6 +5,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -141,6 +142,7 @@ public class ExecuteCommand extends AbstractCommand {
                         boolean silentBool = silent.asBoolean();
                         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
                         if (silentBool) {
+                            NetworkInterceptHelper.enable();
                             silencedPlayers.add(player.getUniqueId());
                         }
                         player.performCommand(pcpe.getMessage().startsWith("/") ?
@@ -172,6 +174,7 @@ public class ExecuteCommand extends AbstractCommand {
                     if (!pcpe.isCancelled()) {
                         boolean silentBool = silent.asBoolean();
                         if (silentBool) {
+                            NetworkInterceptHelper.enable();
                             silencedPlayers.add(player.getUniqueId());
                         }
                         player.performCommand(pcpe.getMessage().startsWith("/") ?

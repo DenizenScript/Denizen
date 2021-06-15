@@ -10,7 +10,6 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
-import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
@@ -167,8 +166,6 @@ public abstract class NMSHandler {
     public abstract BiomeNMS getBiomeNMS(Biome biome);
 
     public abstract double[] getRecentTps();
-
-    public abstract void enablePacketInterception(DenizenPacketHandler packetHandler);
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
 

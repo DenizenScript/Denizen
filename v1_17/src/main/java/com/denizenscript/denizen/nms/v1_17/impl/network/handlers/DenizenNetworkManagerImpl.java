@@ -7,7 +7,6 @@ import com.denizenscript.denizen.nms.v1_17.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_17.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.EntityFakePlayerImpl;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
@@ -82,23 +81,21 @@ public class DenizenNetworkManagerImpl extends Connection {
     public final Connection oldManager;
     public final DenizenPacketListenerImpl packetListener;
     public final ServerPlayer player;
-    public final DenizenPacketHandler packetHandler;
     public int packetsSent, packetsReceived;
 
-    public DenizenNetworkManagerImpl(ServerPlayer entityPlayer, Connection oldManager, DenizenPacketHandler packetHandler) {
+    public DenizenNetworkManagerImpl(ServerPlayer entityPlayer, Connection oldManager) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
         this.packetListener = new DenizenPacketListenerImpl(this, entityPlayer);
         oldManager.setListener(packetListener);
         this.player = this.packetListener.player;
-        this.packetHandler = packetHandler;
     }
 
-    public static void setNetworkManager(Player player, DenizenPacketHandler packetHandler) {
+    public static void setNetworkManager(Player player) {
         ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl playerConnection = entityPlayer.connection;
-        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.connection, packetHandler));
+        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.connection));
     }
 
     @Override
@@ -819,11 +816,11 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
-        if (packet instanceof ClientboundChatPacket && packetHandler.shouldInterceptChatPacket()) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((ClientboundChatPacket) packet));
+        if (packet instanceof ClientboundChatPacket && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
+            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((ClientboundChatPacket) packet));
         }
-        else if (packet instanceof ClientboundSetEntityDataPacket && packetHandler.shouldInterceptMetadata()) {
-            return packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
+        else if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
+            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
         }
         return false;
     }

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_14.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.v1_14.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_14.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
@@ -282,6 +283,11 @@ public class PacketHelperImpl implements PacketHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+    }
+
+    @Override
+    public void setNetworkManagerFor(Player player) {
+        DenizenNetworkManagerImpl.setNetworkManager(player);
     }
 
     public static void sendPacket(Player player, Packet packet) {

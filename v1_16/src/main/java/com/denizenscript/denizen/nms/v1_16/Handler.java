@@ -8,11 +8,9 @@ import com.denizenscript.denizen.nms.v1_16.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenPacketListenerImpl;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -92,11 +90,6 @@ public class Handler extends NMSHandler {
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
-    }
-
-    @Override
-    public void enablePacketInterception(DenizenPacketHandler packetHandler) {
-        DenizenPacketListenerImpl.enable(packetHandler);
     }
 
     @Override

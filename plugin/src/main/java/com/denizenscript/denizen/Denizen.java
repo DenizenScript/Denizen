@@ -36,13 +36,13 @@ import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
-import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
@@ -361,8 +361,13 @@ public class Denizen extends JavaPlugin {
         catch (Exception e) {
             Debug.echoError(e);
         }
-        if (Settings.packetInterception()) {
-            NMSHandler.getInstance().enablePacketInterception(new DenizenPacketHandler());
+        try {
+            if (Settings.cache_packetInterceptAutoInit) {
+                NetworkInterceptHelper.enable();
+            }
+        }
+        catch (Exception e) {
+            Debug.echoError(e);
         }
         try {
             if (supportsPaper) {

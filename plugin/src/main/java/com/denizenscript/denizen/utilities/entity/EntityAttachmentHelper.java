@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.entity;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -257,6 +258,7 @@ public class EntityAttachmentHelper {
     }
 
     public static void forceAttachMove(EntityTag attached, EntityTag to, Vector offset, boolean matchRotation) {
+        NetworkInterceptHelper.enable();
         removeAttachment(attached.getUUID(), null);
         if (to == null) {
             return;

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.npc.traits.SneakingTrait;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -99,6 +100,7 @@ public class SneakCommand extends AbstractCommand {
     public static HashMap<UUID, HashMap<UUID, Boolean>> forceSetSneak = new HashMap<>();
 
     public static void updateFakeSneak(UUID entity, UUID player, boolean shouldSneak, boolean start) {
+        NetworkInterceptHelper.enable();
         HashMap<UUID, Boolean> subMap = forceSetSneak.get(entity);
         if (subMap == null) {
             if (!start) {

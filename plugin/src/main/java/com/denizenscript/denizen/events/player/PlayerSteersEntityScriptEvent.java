@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -88,6 +89,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     @Override
     public void init() {
+        NetworkInterceptHelper.enable();
         enabled = true;
     }
 

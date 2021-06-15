@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -163,6 +164,7 @@ public class FakeEquipCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        NetworkInterceptHelper.enable();
         EquipmentOverride equipment = (EquipmentOverride) scriptEntry.getObject("equipment");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         List<PlayerTag> playersFor = (List<PlayerTag>) scriptEntry.getObject("for");

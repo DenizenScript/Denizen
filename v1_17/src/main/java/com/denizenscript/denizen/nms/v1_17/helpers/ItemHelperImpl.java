@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;

@@ -3,6 +3,7 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -88,6 +89,8 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
         return "PlayerHoldsShield";
     }
 
+    public boolean enabled = false;
+
     @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(player, null);
@@ -102,6 +105,17 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
     }
 
     public static HashSet<UUID> raisedShields = new HashSet<>();
+
+    @Override
+    public void init() {
+        NetworkInterceptHelper.enable();
+        enabled = true;
+    }
+
+    @Override
+    public void destroy() {
+        enabled = false;
+    }
 
     public static void signalDidRaise(Player player) {
         if (raisedShields.contains(player.getUniqueId())) {

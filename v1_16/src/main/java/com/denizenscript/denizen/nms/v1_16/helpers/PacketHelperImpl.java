@@ -420,6 +420,11 @@ public class PacketHelperImpl implements PacketHelper {
         }
     }
 
+    @Override
+    public void setNetworkManagerFor(Player player) {
+        DenizenNetworkManagerImpl.setNetworkManager(player);
+    }
+
     public static void sendPacket(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }

@@ -25,9 +25,14 @@ import java.util.concurrent.FutureTask;
 
 public class DenizenPacketHandler {
 
+    public static DenizenPacketHandler instance;
+
     public static HashSet<UUID> forceNoclip = new HashSet<>();
 
     public void receivePacket(final Player player, final PacketInResourcePackStatus resourcePackStatus) {
+        if (!ResourcePackStatusScriptEvent.instance.enabled) {
+            return;
+        }
         Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
             ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
             event.status = new ElementTag(resourcePackStatus.getStatus());
@@ -69,6 +74,9 @@ public class DenizenPacketHandler {
     }
 
     public void receivePlacePacket(final Player player) {
+        if (!PlayerHoldsShieldEvent.instance.enabled) {
+            return;
+        }
         if (isHoldingShield(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                 PlayerHoldsShieldEvent.signalDidRaise(player);
@@ -77,6 +85,9 @@ public class DenizenPacketHandler {
     }
 
     public void receiveDigPacket(final Player player) {
+        if (!PlayerHoldsShieldEvent.instance.enabled) {
+            return;
+        }
         if (isHoldingShield(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                 PlayerHoldsShieldEvent.signalDidLower(player);
