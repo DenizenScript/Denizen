@@ -37,12 +37,12 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_16_R3.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.spigotmc.AsyncCatcher;
 
@@ -245,9 +245,20 @@ public class Handler extends NMSHandler {
         }
         else if (contentObject instanceof Item) {
             Item item = (Item) contentObject;
-            ItemStack itemStack = new ItemStack(org.bukkit.Material.getMaterial(item.getId()), item.getCount());
-            // TODO: Apply tag somehow
-            return new ItemTag(itemStack).identify();
+            try {
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setString("id", item.getId());
+                tag.setByte("Count", (byte) item.getCount());
+                if (item.getTag() != null && item.getTag().getNbt() != null) {
+                    tag.set("tag", MojangsonParser.parse(item.getTag().getNbt()));
+                }
+                net.minecraft.server.v1_16_R3.ItemStack itemStack = net.minecraft.server.v1_16_R3.ItemStack.a(tag);
+                return new ItemTag(CraftItemStack.asBukkitCopy(itemStack)).identify();
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+                return null;
+            }
         }
         else if (contentObject instanceof net.md_5.bungee.api.chat.hover.content.Entity) {
             net.md_5.bungee.api.chat.hover.content.Entity entity = (net.md_5.bungee.api.chat.hover.content.Entity) contentObject;

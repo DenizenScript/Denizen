@@ -30,12 +30,14 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -44,12 +46,12 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.spigotmc.AsyncCatcher;
 
@@ -252,9 +254,20 @@ public class Handler extends NMSHandler {
         }
         else if (contentObject instanceof Item) {
             Item item = (Item) contentObject;
-            ItemStack itemStack = new ItemStack(org.bukkit.Material.getMaterial(item.getId()), item.getCount());
-            // TODO: Apply tag somehow
-            return new ItemTag(itemStack).identify();
+            try {
+                net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+                tag.putString("id", item.getId());
+                tag.putByte("Count", (byte) item.getCount());
+                if (item.getTag() != null && item.getTag().getNbt() != null) {
+                    tag.put("tag", TagParser.parseTag(item.getTag().getNbt()));
+                }
+                ItemStack itemStack = ItemStack.of(tag);
+                return new ItemTag(CraftItemStack.asBukkitCopy(itemStack)).identify();
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+                return null;
+            }
         }
         else if (contentObject instanceof net.md_5.bungee.api.chat.hover.content.Entity) {
             net.md_5.bungee.api.chat.hover.content.Entity entity = (net.md_5.bungee.api.chat.hover.content.Entity) contentObject;
