@@ -30,7 +30,7 @@ public class WorldFlagHandler implements Listener {
     public void saveAll() {
         for (Map.Entry<String, SavableMapFlagTracker> flagTracker : worldFlagTrackers.entrySet()) {
             if (flagTracker.getValue().modified) {
-                flagTracker.getValue().saveToFile("./" + flagTracker.getKey() + "/denizen_flags");
+                flagTracker.getValue().saveToFile(flagPathFor(flagTracker.getKey()));
                 flagTracker.getValue().modified = false;
             }
         }
@@ -41,11 +41,15 @@ public class WorldFlagHandler implements Listener {
         worldFlagTrackers.clear();
     }
 
+    public static String flagPathFor(String worldName) {
+        return Bukkit.getWorldContainer().getPath() + "/" + worldName + "/denizen_flags";
+    }
+
     public static void loadWorldFlags(World world) {
         if (worldFlagTrackers.containsKey(world.getName())) {
             return;
         }
-        worldFlagTrackers.put(world.getName(), SavableMapFlagTracker.loadFlagFile("./" + world.getName() + "/denizen_flags"));
+        worldFlagTrackers.put(world.getName(), SavableMapFlagTracker.loadFlagFile(flagPathFor(world.getName())));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -58,7 +62,7 @@ public class WorldFlagHandler implements Listener {
         SavableMapFlagTracker flags = worldFlagTrackers.remove(event.getWorld().getName());
         if (flags != null && flags.modified) {
             flags.modified = false;
-            flags.saveToFile("./" + event.getWorld().getName() + "/denizen_flags");
+            flags.saveToFile(flagPathFor(event.getWorld().getName()));
         }
     }
 }
