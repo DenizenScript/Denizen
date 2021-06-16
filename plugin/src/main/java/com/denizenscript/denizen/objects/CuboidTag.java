@@ -40,7 +40,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     // @name CuboidTag
     // @prefix cu
     // @base ElementTag
-    // @implements FlaggableObject
+    // @implements FlaggableObject, AreaObject
     // @format
     // The identity format for cuboids is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
     // Multi-member cuboids can simply continue listing x,y,z pairs.

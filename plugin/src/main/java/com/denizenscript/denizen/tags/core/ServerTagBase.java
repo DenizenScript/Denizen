@@ -459,12 +459,23 @@ public class ServerTagBase {
             return;
         }
 
-        // Documented in AbstractFlagTracker
+        // <--[tag]
+        // @attribute <server.has_flag[<flag_name>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // See <@link tag FlaggableObject.has_flag>
+        // -->
         if (attribute.startsWith("has_flag")) {
             event.setReplacedObject(Denizen.getInstance().serverFlagMap.doHasFlagTag(attribute)
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
+        // <--[tag]
+        // @attribute <server.flag_expiration[<flag_name>]>
+        // @returns TimeTag
+        // @description
+        // See <@link tag FlaggableObject.flag_expiration>
+        // -->
         if (attribute.startsWith("flag_expiration")) {
             TimeTag exp = Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute);
             if (exp != null) {
@@ -473,6 +484,12 @@ public class ServerTagBase {
             }
             return;
         }
+        // <--[tag]
+        // @attribute <server.flag[<flag_name>]>
+        // @returns ObjectTag
+        // @description
+        // See <@link tag FlaggableObject.flag>
+        // -->
         if (attribute.startsWith("flag")) {
             ObjectTag flag = Denizen.getInstance().serverFlagMap.doFlagTag(attribute);
             if (flag != null) {
@@ -481,11 +498,23 @@ public class ServerTagBase {
             }
             return;
         }
+        // <--[tag]
+        // @attribute <server.list_flags>
+        // @returns ListTag
+        // @description
+        // See <@link tag FlaggableObject.list_flags>
+        // -->
         if (attribute.startsWith("list_flags")) {
             event.setReplacedObject(Denizen.getInstance().serverFlagMap.doListFlagsTag(attribute)
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
+        // <--[tag]
+        // @attribute <server.flag_map>
+        // @returns MapTag
+        // @description
+        // See <@link tag FlaggableObject.flag_map>
+        // -->
         if (attribute.startsWith("flag_map")) {
             event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagMapTag(attribute)
                     .getObjectAttribute(attribute.fulfill(1)));

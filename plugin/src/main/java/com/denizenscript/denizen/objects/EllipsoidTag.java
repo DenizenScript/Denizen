@@ -37,7 +37,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     // @name EllipsoidTag
     // @prefix ellipsoid
     // @base ElementTag
-    // @implements FlaggableObject
+    // @implements FlaggableObject, AreaObject
     // @format
     // The identity format for ellipsoids is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
