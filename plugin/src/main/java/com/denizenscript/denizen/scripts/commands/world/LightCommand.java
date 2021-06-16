@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
@@ -110,7 +111,7 @@ public class LightCommand extends AbstractCommand {
 
         }
 
-        if (location.getY() < 0 || location.getY() > 255) {
+        if (!Utilities.isLocationYSafe(location)) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");
             return;
         }

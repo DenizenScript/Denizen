@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -487,5 +488,19 @@ public class Utilities {
 
     public static NPCTag getEntryNPC(ScriptEntry entry) {
         return getEntryData(entry).getNPC();
+    }
+
+    public static boolean isLocationYSafe(Location loc) {
+        return isLocationYSafe(loc.getBlockY(), loc.getWorld());
+    }
+
+    public static boolean isLocationYSafe(double y, World world) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_16)) {
+            return y >= 0 && y <= 255;
+        }
+        if (world == null) {
+            return true;
+        }
+        return y >= world.getMinHeight() && y <= world.getMaxHeight();
     }
 }

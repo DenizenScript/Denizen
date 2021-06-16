@@ -301,6 +301,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
     }
 
     public static boolean isSafeBlock(Location loc) {
-        return loc.getBlockY() < 0 || loc.getBlockY() > 255 || !loc.getBlock().getType().isSolid();
+        return !Utilities.isLocationYSafe(loc) || !loc.getBlock().getType().isSolid();
     }
 }

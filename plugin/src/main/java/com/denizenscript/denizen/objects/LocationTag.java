@@ -2255,7 +2255,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             fullloop:
             for (int y = -radiusInt; y <= radiusInt; y++) {
                 double newY = y + tstartY;
-                if (newY < 0 || newY > 255) {
+                if (!Utilities.isLocationYSafe(newY, object.getWorld())) {
                     continue;
                 }
                 for (int x = -radiusInt; x <= radiusInt; x++) {
@@ -2305,7 +2305,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 for (int x = -radiusInt; x <= radiusInt; x++) {
                     for (int y = -radiusInt; y <= radiusInt; y++) {
                         double newY = y + tstartY;
-                        if (newY < 0 || newY > 255) {
+                        if (!Utilities.isLocationYSafe(newY, object.getWorld())) {
                             continue;
                         }
                         for (int z = -radiusInt; z <= radiusInt; z++) {

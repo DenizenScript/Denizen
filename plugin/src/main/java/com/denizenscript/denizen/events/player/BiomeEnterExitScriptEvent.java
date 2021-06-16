@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -117,8 +118,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
             return;
         }
-        if (event.getFrom().getBlockY() < 0 || event.getFrom().getBlockY() > 255
-            || event.getTo().getBlockY() < 0 || event.getTo().getBlockY() > 255) {
+        if (!Utilities.isLocationYSafe(event.getFrom()) || !Utilities.isLocationYSafe(event.getTo())) {
             return;
         }
         from = new LocationTag(event.getFrom());

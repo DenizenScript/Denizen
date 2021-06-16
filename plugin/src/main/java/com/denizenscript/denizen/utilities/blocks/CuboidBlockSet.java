@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities.blocks;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -203,7 +204,7 @@ public class CuboidBlockSet implements BlockSet {
             return;
         }
         int finalY = input.centerLocation.getBlockY() + y - center_y;
-        if (finalY < 0 || finalY > 255) {
+        if (!Utilities.isLocationYSafe(finalY, input.centerLocation.getWorld())) {
             return;
         }
         Block destBlock = input.centerLocation.clone().add(x - center_x, y - center_y, z - center_z).getBlock();

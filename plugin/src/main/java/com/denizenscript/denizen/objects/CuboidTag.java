@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
@@ -524,7 +525,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
                         loc = new LocationTag(loc_1.clone().add(x, y, z));
-                        if (loc.getY() < 0 || loc.getY() > 255) {
+                        if (!Utilities.isLocationYSafe(loc)) {
                             continue;
                         }
                         if (BukkitScriptEvent.tryMaterial(loc.getBlockTypeForTag(attribute), matcher)) {

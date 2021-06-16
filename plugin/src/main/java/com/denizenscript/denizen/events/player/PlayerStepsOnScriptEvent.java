@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -104,7 +105,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
             return;
         }
         location = new LocationTag(event.getTo().clone().subtract(0, 1, 0));
-        if (location.getBlockY() < 0 || location.getBlockY() > 255) {
+        if (!Utilities.isLocationYSafe(location)) {
             return;
         }
         previous_location = new LocationTag(event.getFrom());
