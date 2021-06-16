@@ -57,6 +57,7 @@ public class EntityAttachmentHelper {
                     }
                     if (ticks++ >= 20 * 10) { // Run a forcetele every 10 seconds to guarantee sync
                         visiblePositions.clear();
+                        ticks = 0;
                     }
                     if (syncServer) {
                         Location goal = to.getLocation();

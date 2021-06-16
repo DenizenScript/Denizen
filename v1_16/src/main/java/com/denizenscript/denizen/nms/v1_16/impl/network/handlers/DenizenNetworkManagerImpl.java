@@ -605,7 +605,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                             YAW_PACKTELENT.setByte(newTeleportPacket, newYaw);
                             PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
                             if (NMSHandler.debugPackets) {
-                                Debug.log("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
+                                Debug.log("Attach Move-Tele Packet (" + forceTele + ": "+ moveNeeded + " == " + offX + "," + offY + "," + offZ + "): "
+                                        + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID()
+                                        + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
                             oldManager.sendPacket(newTeleportPacket);
                         }
@@ -718,7 +720,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
                 if (e == null) {
                     return false;
                 }
-                tryProcessMovePacketForAttach(packet, e);
+                if (!e.isPassenger()) {
+                    tryProcessMovePacketForAttach(packet, e);
+                }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUniqueID(), e.getUniqueID());
             }
             else if (packet instanceof PacketPlayOutEntityVelocity) {

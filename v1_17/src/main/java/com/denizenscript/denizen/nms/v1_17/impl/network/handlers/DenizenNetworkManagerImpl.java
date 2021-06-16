@@ -710,7 +710,9 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (e == null) {
                     return false;
                 }
-                tryProcessMovePacketForAttach((ClientboundMoveEntityPacket) packet, e);
+                if (!e.isPassenger()) {
+                    tryProcessMovePacketForAttach((ClientboundMoveEntityPacket) packet, e);
+                }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket) {
