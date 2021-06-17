@@ -235,6 +235,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public boolean contains(Location test) {
+        if (test.getWorld() == null || !test.getWorld().getName().equals(center.getWorld().getName())) {
+            return false;
+        }
         double xbase = test.getX() - center.getX();
         double ybase = test.getY() - center.getY();
         double zbase = test.getZ() - center.getZ();
