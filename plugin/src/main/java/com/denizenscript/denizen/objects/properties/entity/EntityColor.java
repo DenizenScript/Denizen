@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.entity.ColorHelper1_17;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -36,7 +39,8 @@ public class EntityColor implements Property {
                 type == EntityType.ARROW ||
                 type == EntityType.VILLAGER ||
                 type == EntityType.TRADER_LLAMA ||
-                type == EntityType.TROPICAL_FISH;
+                type == EntityType.TROPICAL_FISH ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ColorHelper1_17.colorIsApplicable(type));
     }
 
     public static EntityColor getFrom(ObjectTag entity) {
@@ -119,6 +123,9 @@ public class EntityColor implements Property {
                 return null;
             }
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ColorHelper1_17.colorIsApplicable(type)) {
+            return ColorHelper1_17.getColor(colored.getBukkitEntity());
+        }
         else {
             return null;
         }
@@ -177,6 +184,9 @@ public class EntityColor implements Property {
         else if (type == EntityType.VILLAGER) {
             return listForEnum(Villager.Type.values());
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ColorHelper1_17.colorIsApplicable(type)) {
+            return ColorHelper1_17.getAllowedColors(type);
+        }
         else { // includes Ocelot (deprecated) and arrow (ColorTag)
             return null;
         }
@@ -218,6 +228,8 @@ public class EntityColor implements Property {
     //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
     // For sheep, wolf, and shulker entities, the input is a Dye Color.
     // For Tipped Arrow entities, the input is a ColorTag.
+    // For goats, the input is SCREAMING or NORMAL.
+    // For axolotl, the input is BLUE, CYAN, GOLD, LUCY, or WILD.
     //
     // For all places where a DyeColor is needed, the options are:
     // BLACK, BLUE, BROWN, CYAN, GRAY, GREEN, LIGHT_BLUE, LIGHT_GRAY, LIME, MAGENTA, ORANGE, PINK, PURPLE, RED, WHITE, or YELLOW.
@@ -353,6 +365,9 @@ public class EntityColor implements Property {
             }
             else if (type == EntityType.ARROW) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ColorHelper1_17.colorIsApplicable(type)) {
+                ColorHelper1_17.setColor(colored.getBukkitEntity(), mechanism);
             }
             else { // Should never happen
                 mechanism.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
