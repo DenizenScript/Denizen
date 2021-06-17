@@ -200,7 +200,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(TradeHasXp.class, TradeTag.class);
         PropertyParser.registerProperty(TradeInputs.class, TradeTag.class);
         PropertyParser.registerProperty(TradeMaxUses.class, TradeTag.class);
+        PropertyParser.registerProperty(TradePriceMultiplier.class, TradeTag.class);
         PropertyParser.registerProperty(TradeResult.class, TradeTag.class);
         PropertyParser.registerProperty(TradeUses.class, TradeTag.class);
+        PropertyParser.registerProperty(TradeVillagerXP.class, TradeTag.class);
     }
 }

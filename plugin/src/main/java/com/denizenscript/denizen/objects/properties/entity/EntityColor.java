@@ -243,7 +243,7 @@ public class EntityColor implements Property {
 
         // <--[tag]
         // @attribute <EntityTag.allowed_colors>
-        // @returns ElementTag
+        // @returns ListTag
         // @mechanism EntityTag.color
         // @group properties
         // @description

@@ -44,7 +44,7 @@ public class EntityDarkDuration implements Property {
 
     @Override
     public String getPropertyId() {
-        return "dark_time_remaining";
+        return "dark_duration";
     }
 
     @Override
