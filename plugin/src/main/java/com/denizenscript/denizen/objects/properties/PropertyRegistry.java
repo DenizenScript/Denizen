@@ -56,6 +56,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityCritical.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCustomName.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCustomNameVisible.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            PropertyParser.registerProperty(EntityDarkDuration.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityDirection.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDisabledSlots.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
