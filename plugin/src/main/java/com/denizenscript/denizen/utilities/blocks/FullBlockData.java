@@ -40,6 +40,12 @@ public class FullBlockData {
         this.data = data;
     }
 
+    public FullBlockData(BlockData data, CompoundTag tileEntityData, MapTag flags) {
+        this.data = data;
+        this.tileEntityData = tileEntityData;
+        this.flags = flags;
+    }
+
     public static BlockFace rotateFaceOne(BlockFace face) {
         switch (face) {
             case NORTH:
@@ -115,23 +121,23 @@ public class FullBlockData {
                     ((Orientable) newData).setAxis(Axis.X);
                     break;
             }
-            return new FullBlockData(newData);
+            return new FullBlockData(newData, tileEntityData, flags);
         }
         else if (data instanceof Rotatable) {
             BlockData newData = data.clone();
             ((Rotatable) newData).setRotation(rotateFaceOne(((Rotatable) data).getRotation()));
-            return new FullBlockData(newData);
+            return new FullBlockData(newData, tileEntityData, flags);
         }
         else if (data instanceof Directional) {
             BlockData newData = data.clone();
             ((Directional) newData).setFacing(rotateFaceOne(((Directional) data).getFacing()));
-            return new FullBlockData(newData);
+            return new FullBlockData(newData, tileEntityData, flags);
 
         }
         else if (data instanceof Rail) {
             BlockData newData = data.clone();
             ((Rail) newData).setShape(rotateRailShapeOne(((Rail) data).getShape()));
-            return new FullBlockData(newData);
+            return new FullBlockData(newData, tileEntityData, flags);
         }
         return this;
     }

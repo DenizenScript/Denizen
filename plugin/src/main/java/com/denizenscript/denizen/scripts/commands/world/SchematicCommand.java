@@ -387,18 +387,22 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
+                final int angleRaw = angle.asInt();
+                final CuboidBlockSet schematic = schematics.get(name.asString().toUpperCase());
                 Runnable rotateRunnable = () -> {
-                    int ang = angle.asInt();
+                    int ang = angleRaw;
                     while (ang < 0) {
                         ang = 360 + ang;
                     }
                     while (ang >= 360) {
                         ang -= 360;
                     }
-                    ang = 360 - ang;
-                    while (ang > 0) {
-                        ang -= 90;
-                        schematics.get(name.asString().toUpperCase()).rotateOne();
+                    if (ang != 0) {
+                        ang = 360 - ang;
+                        while (ang > 0) {
+                            ang -= 90;
+                            schematic.rotateOne();
+                        }
                     }
                     Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> scriptEntry.setFinished(true));
                 };
