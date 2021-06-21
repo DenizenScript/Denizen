@@ -21,6 +21,8 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     //
     // @Regex ^on [^\s]+ changes air level$
     //
+    // @Synonyms player loses oxygen,player drowns,player is drowning,oxygen depletion
+    //
     // @Group Entity
     //
     // @Location true

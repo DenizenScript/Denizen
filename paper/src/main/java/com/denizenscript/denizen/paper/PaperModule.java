@@ -2,6 +2,7 @@ package com.denizenscript.denizen.paper;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
@@ -49,6 +50,7 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityExperienceOrb.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFromSpawner.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpawnLocation.class, EntityTag.class);
+        PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
         PropertyParser.registerProperty(WorldViewDistance.class, WorldTag.class);
         PropertyParser.registerProperty(PlayerAffectsMonsterSpawning.class, PlayerTag.class);
 

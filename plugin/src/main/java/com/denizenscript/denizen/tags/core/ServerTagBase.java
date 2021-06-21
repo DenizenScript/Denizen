@@ -560,6 +560,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("commands") || attribute.startsWith("list_commands")) {
             listDeprecateWarn(attribute);
+            CommandScriptHelper.init();
             ListTag list = new ListTag(CommandScriptHelper.knownCommands.keySet());
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;

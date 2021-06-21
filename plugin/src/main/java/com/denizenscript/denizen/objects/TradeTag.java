@@ -72,6 +72,11 @@ public class TradeTag implements ObjectTag, Adjustable {
     }
 
     @Override
+    public TradeTag duplicate() {
+        return new TradeTag(new MerchantRecipe(recipe.getResult(), recipe.getUses(), recipe.getMaxUses(), recipe.hasExperienceReward(), recipe.getVillagerExperience(), recipe.getPriceMultiplier()));
+    }
+
+    @Override
     public String toString() {
         return identify();
     }
