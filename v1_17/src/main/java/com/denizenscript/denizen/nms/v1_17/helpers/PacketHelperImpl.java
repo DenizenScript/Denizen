@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -20,13 +21,16 @@ import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
+import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -66,6 +70,7 @@ import org.bukkit.map.MapPalette;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
@@ -440,6 +445,27 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void setNetworkManagerFor(Player player) {
         DenizenNetworkManagerImpl.setNetworkManager(player);
+    }
+
+    @Override
+    public void showDebugTestMaker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
+        ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_add_marker");
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeBlockPos(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+        int colorInt = color.getColor().getBlue() | (color.getColor().getGreen() << 8) | (color.getColor().getRed() << 16) | (alpha << 24);
+        buf.writeInt(colorInt);
+        buf.writeByteArray(name.getBytes(StandardCharsets.UTF_8));
+        buf.writeInt(time);
+        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(packetKey, buf);
+        send(player, packet);
+    }
+
+    @Override
+    public void clearDebugTestMarker(Player player) {
+        ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_clear");
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(packetKey, buf);
+        send(player, packet);
     }
 
     public static void send(Player player, Packet packet) {

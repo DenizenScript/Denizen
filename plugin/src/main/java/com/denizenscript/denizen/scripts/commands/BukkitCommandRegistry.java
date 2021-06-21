@@ -127,6 +127,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(BlockCrackCommand.class);
         registerCommand(ClickableCommand.class);
         registerCommand(CompassCommand.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            registerCommand(DebugBlockCommand.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
             registerCommand(DisguiseCommand.class);
         }

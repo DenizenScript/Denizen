@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -102,5 +103,13 @@ public interface PacketHelper {
                 }
             }
         }
+    }
+
+    default void showDebugTestMaker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void clearDebugTestMarker(Player player) {
+        throw new UnsupportedOperationException();
     }
 }
