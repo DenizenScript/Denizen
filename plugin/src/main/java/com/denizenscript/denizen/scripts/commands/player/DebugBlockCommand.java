@@ -47,7 +47,7 @@ public class DebugBlockCommand extends AbstractCommand {
     // The underlying color input is a full color value, however the current minecraft client can only render shades between green and gray (ie the red and blue color channels are ignored).
     //
     // @Tags
-    // None.
+    // None
     //
     // @Usage
     // Use to show a debug block where the player is looking.

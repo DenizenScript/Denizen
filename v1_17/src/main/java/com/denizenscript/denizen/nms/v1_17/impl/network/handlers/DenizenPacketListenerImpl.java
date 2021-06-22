@@ -95,7 +95,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleCustomPayload(ServerboundCustomPayloadPacket packet) {
         if (NMSHandler.debugPackets) {
-            Debug.log("Custom packet payload: " + packet.identifier.toString() + " sent from " + player.getName());
+            Debug.log("Custom packet payload: " + packet.identifier.toString() + " sent from " + player.getScoreboardName());
         }
         if (packet.identifier.getNamespace().equals("minecraft") && packet.identifier.getPath().equals("brand")) {
             FriendlyByteBuf newData = new FriendlyByteBuf(packet.data.copy());

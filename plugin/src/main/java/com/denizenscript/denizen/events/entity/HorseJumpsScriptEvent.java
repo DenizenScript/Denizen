@@ -62,19 +62,15 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         String arg1 = path.eventArgLowerAt(0);
         String arg2 = path.eventArgLowerAt(1);
         String tamed = arg2.equals("jumps") ? arg1 : arg2;
-
         if (!tryEntity(entity, tamed)) {
             return false;
         }
-
-        if (path.eventArgLowerAt(2).equals("jumps") && !arg1.equals(CoreUtilities.toLowerCase(color.toString()))) {
+        if (path.eventArgLowerAt(2).equals("jumps") && (color == null || !arg1.equals(CoreUtilities.toLowerCase(color.toString())))) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -107,12 +103,10 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onHorseJumps(HorseJumpEvent event) {
-        if (event.getEntity() instanceof Horse) {
-            entity = new EntityTag(event.getEntity());
-            color = new ElementTag(((Horse) event.getEntity()).getColor().name());
-            this.event = event;
-            fire(event);
-        }
+        entity = new EntityTag(event.getEntity());
+        color = event.getEntity() instanceof Horse ? new ElementTag(((Horse) event.getEntity()).getColor().name()) : null;
+        this.event = event;
+        fire(event);
     }
 
 }

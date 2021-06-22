@@ -186,7 +186,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (NMSHandler.debugPackets) {
-            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getName());
+            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }
         packetsSent++;
         if (processAttachToForPacket(packet)
