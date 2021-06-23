@@ -3,7 +3,7 @@ package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPC;
@@ -13,6 +13,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.ArmorStandTrait;
 import net.citizensnpcs.trait.ClickRedirectTrait;
 import net.citizensnpcs.util.NMS;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -39,8 +40,11 @@ public class SittingTrait extends Trait implements Listener {
         if (!npc.isSpawned() || chairLocation == null) {
             return;
         }
-        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), chairLocation, 1)) {
+        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), chairLocation, 2)) {
             stand();
+            if (Debug.verbose) {
+                Debug.log("NPC " + npc.getId() + " stood up because it moved away from its chair.");
+            }
         }
     }
 
@@ -54,7 +58,7 @@ public class SittingTrait extends Trait implements Listener {
                 chairLocation = chairLocation.clone();
                 chairLocation.setYaw(npc.getStoredLocation().getYaw());
                 chairLocation.setPitch(npc.getStoredLocation().getPitch());
-                sit(chairLocation);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> sit(chairLocation), 1);
             }
         }
     }
@@ -225,9 +229,9 @@ public class SittingTrait extends Trait implements Listener {
         trait.setSmall(true);
         trait.setMarker(true);
         trait.setVisible(false);
-        holder.spawn(location);
         holder.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
         holder.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
+        holder.spawn(location);
         holder.data().set("is-denizen-seat", true);
         if (!holder.isSpawned()) {
             Debug.echoError("NPC sit failed: cannot spawn chair");
