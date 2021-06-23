@@ -148,6 +148,10 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemInventory.class, ItemTag.class);
         PropertyParser.registerProperty(ItemKnowledgeBookRecipes.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLock.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            PropertyParser.registerProperty(ItemLodestoneLocation.class, ItemTag.class);
+            PropertyParser.registerProperty(ItemLodestoneTracked.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemLore.class, ItemTag.class);
         PropertyParser.registerProperty(ItemMap.class, ItemTag.class);
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);

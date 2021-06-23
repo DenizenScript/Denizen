@@ -78,7 +78,9 @@ public class ItemRawNBT implements Property {
                 // Map specific
                 "map", "map_scale_direction", "Decorations",
                 // Stew specific
-                "Effects"
+                "Effects",
+                // Lodestone compass specific
+                "LodestoneDimension", "LodestonePos", "LodestoneTracked"
         };
         defaultNbtKeys = new StringHolder[defaultNbtKeysRaw.length];
         for (int i = 0; i < defaultNbtKeysRaw.length; i++) {
