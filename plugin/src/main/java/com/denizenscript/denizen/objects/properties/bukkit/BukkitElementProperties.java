@@ -6,6 +6,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
@@ -47,8 +48,6 @@ public class BukkitElementProperties implements Property {
 
     ElementTag element;
 
-    public static AsciiMatcher HEX_MATCHER = new AsciiMatcher("abcdefABCDEF0123456789");
-
     public static String replaceEssentialsHexColors(char prefix, String input) {
         int hex = input.indexOf(prefix + "#");
         while (hex != -1 && hex < input.length() + 8) {
@@ -56,7 +55,7 @@ public class BukkitElementProperties implements Property {
             converted.append(ChatColor.COLOR_CHAR).append("x");
             for (int i = 0; i < 6; i++) {
                 char c = input.charAt(hex + 2 + i);
-                if (!HEX_MATCHER.isMatch(c)) {
+                if (!ArgumentHelper.HEX_MATCHER.isMatch(c)) {
                     return input;
                 }
                 converted.append(ChatColor.COLOR_CHAR).append(c);
