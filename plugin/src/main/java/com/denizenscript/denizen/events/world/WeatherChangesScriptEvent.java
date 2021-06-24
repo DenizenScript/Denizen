@@ -24,7 +24,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.world> returns the WorldTag the weather changed in.
-    // <context.weather> returns an ElementTag with the name of the new weather. (rain or clear).
+    // <context.weather> returns an ElementTag with the name of the new weather (rains or clears).
     //
     // -->
 

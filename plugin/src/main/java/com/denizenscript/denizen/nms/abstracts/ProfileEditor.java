@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +25,7 @@ public abstract class ProfileEditor {
     }
 
     public void setPlayerName(Player player, String name) {
+        NetworkInterceptHelper.enable();
         PlayerProfile profile = getFakeProfile(player);
         profile.setName(name);
         updatePlayer(player, false);
@@ -34,6 +36,7 @@ public abstract class ProfileEditor {
     }
 
     public void setPlayerSkin(Player player, String name) {
+        NetworkInterceptHelper.enable();
         PlayerProfile profile = getFakeProfile(player);
         PlayerProfile skinProfile = NMSHandler.getInstance().fillPlayerProfile(new PlayerProfile(name, null));
         if (skinProfile.getTexture() != null) {
@@ -79,6 +82,7 @@ public abstract class ProfileEditor {
     // -->
 
     public void setPlayerSkinBlob(Player player, String blob) {
+        NetworkInterceptHelper.enable();
         PlayerProfile profile = getFakeProfile(player);
         String[] split = blob.split(";");
         profile.setTexture(split[0]);
