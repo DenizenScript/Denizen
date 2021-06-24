@@ -2,6 +2,8 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_17.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -28,5 +30,14 @@ public class WorldHelperImpl implements WorldHelper {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         DifficultyInstance scaler = ((CraftWorld) location.getWorld()).getHandle().getCurrentDifficultyAt(pos);
         return scaler.getEffectiveDifficulty();
+    }
+
+    @Override
+    public Location getNearestBiomeLocation(Location start, BiomeTag biome) {
+        BlockPos result = ((CraftWorld) start.getWorld()).getHandle().findNearestBiome(((BiomeNMSImpl) biome.getBiome()).biomeBase, new BlockPos(start.getBlockX(), start.getBlockY(), start.getBlockZ()), 6400, 8);
+        if (result == null) {
+            return null;
+        }
+        return new Location(start.getWorld(), result.getX(), result.getY(), result.getZ());
     }
 }

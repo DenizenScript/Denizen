@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
-    private final BiomeBase biomeBase;
+    public BiomeBase biomeBase;
 
     public BiomeNMSImpl(Biome biome) {
         super(biome);

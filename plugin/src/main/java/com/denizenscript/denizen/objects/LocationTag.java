@@ -2152,6 +2152,29 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return new ListTag((Collection<LocationTag>) flooder.result);
         });
 
+
+        // <--[tag]
+        // @attribute <LocationTag.find_nearest_biome[<biome>]>
+        // @returns LocationTag
+        // @description
+        // Returns the location of the nearest block of the given biome type (or null).
+        // -->
+        registerTag("find_nearest_biome", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            BiomeTag biome = attribute.contextAsType(1, BiomeTag.class);
+            if (biome == null) {
+                attribute.echoError("Invalid biome input.");
+                return null;
+            }
+            Location result = NMSHandler.getWorldHelper().getNearestBiomeLocation(object, biome);
+            if (result == null) {
+                return null;
+            }
+            return new LocationTag(result);
+        });
+
         // <--[tag]
         // @attribute <LocationTag.find_blocks_flagged[<flag_name>].within[<#>]>
         // @returns ListTag(LocationTag)

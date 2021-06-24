@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
-    private final net.minecraft.world.level.biome.Biome biomeBase;
+    public net.minecraft.world.level.biome.Biome biomeBase;
 
     public BiomeNMSImpl(Biome biome) {
         super(biome);
