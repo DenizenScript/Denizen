@@ -19,6 +19,8 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on [^\s]+ changes food level$
     //
+    // @Synonyms player hunger depletes
+    //
     // @Group Entity
     //
     // @Location true

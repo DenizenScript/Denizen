@@ -2158,6 +2158,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns LocationTag
         // @description
         // Returns the location of the nearest block of the given biome type (or null).
+        // Warning: may be extremely slow to process. Use with caution.
         // -->
         registerTag("find_nearest_biome", (attribute, object) -> {
             if (!attribute.hasContext(1)) {

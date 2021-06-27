@@ -41,7 +41,7 @@ public class AnnounceCommand extends AbstractCommand {
     // You can also use the 'to_console' argument to make it so it only shows in the server console.
     //
     // Announce can also utilize a format script with the 'format' argument. See <@link language Format Script Containers>.
-    //    //
+    //
     // Note that the default announce mode (that shows for all players) relies on the Spigot broadcast system, which requires the permission "bukkit.broadcast.user" to see broadcasts.
     //
     // @Tags
@@ -68,15 +68,7 @@ public class AnnounceCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-        // Users tend to forget quotes sometimes on commands like this, so
-        // let's check if there are more argument than usual.
-        if (scriptEntry.getArguments().size() > 3) {
-            throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
-        }
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matches("to_ops")) {
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);
@@ -103,16 +95,11 @@ public class AnnounceCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
             }
-
         }
-
-        // If text is missing, alert the console.
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Missing text argument!");
         }
-
         scriptEntry.defaultObject("type", AnnounceType.ALL);
-
     }
 
     @Override
@@ -124,7 +111,6 @@ public class AnnounceCommand extends AbstractCommand {
         AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
         ElementTag flag = scriptEntry.getElement("flag");
-
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("Message", text)
@@ -132,9 +118,7 @@ public class AnnounceCommand extends AbstractCommand {
                             + ArgumentHelper.debugObj("Type", type.name())
                             + (flag != null ? ArgumentHelper.debugObj("Flag_Name", flag) : ""));
         }
-
         String message = format != null ? format.getFormattedText(text.asString(), scriptEntry) : text.asString();
-
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
             Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message, ChatColor.WHITE));
@@ -155,7 +139,7 @@ public class AnnounceCommand extends AbstractCommand {
             }
         }
         else if (type == AnnounceType.TO_CONSOLE) {
-            Bukkit.getServer().getConsoleSender().sendMessage(message);
+            Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
         }
     }
 }
