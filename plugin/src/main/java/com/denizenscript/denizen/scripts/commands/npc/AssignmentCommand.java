@@ -115,7 +115,6 @@ public class AssignmentCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ScriptTag script = scriptEntry.getObjectTag("script");
         Action action = (Action) scriptEntry.getObject("action");
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
@@ -131,6 +130,7 @@ public class AssignmentCommand extends AbstractCommand {
             }
             else if (action.equals(Action.REMOVE)) {
                 npc.getCitizen().getOrAddTrait(AssignmentTrait.class).removeAssignment(Utilities.getEntryPlayer(scriptEntry));
+                npc.getCitizen().removeTrait(AssignmentTrait.class);
             }
         }
     }

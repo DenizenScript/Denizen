@@ -376,7 +376,7 @@ public class PacketHelperImpl implements PacketHelper {
         team.setCollisionRule(Team.CollisionRule.NEVER);
         HashMap<UUID, PlayerTeam> map = noCollideTeamMap.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>());
         map.put(noCollide, team);
-        send(player, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false));
+        send(player, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
     }
 
     @Override

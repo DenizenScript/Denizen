@@ -30,7 +30,7 @@ public class SidebarImpl extends Sidebar {
 
     static {
         try {
-            Constructor<ObjectiveCriteria> constructor = ObjectiveCriteria.class.getConstructor(String.class);
+            Constructor<ObjectiveCriteria> constructor = ObjectiveCriteria.class.getDeclaredConstructor(String.class);
             constructor.setAccessible(true);
             dummyCriteria = constructor.newInstance("dummy");
         }
@@ -75,7 +75,7 @@ public class SidebarImpl extends Sidebar {
             team.getPlayers().add(lineId);
             team.setPlayerPrefix(Handler.componentToNMS(FormattedTextHelper.parse(line, ChatColor.WHITE)));
             generatedTeams.add(team);
-            PacketHelperImpl.send(player, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false));
+            PacketHelperImpl.send(player, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
             PacketHelperImpl.send(player, new ClientboundSetScorePacket(ServerScoreboard.Method.CHANGE, obj1.getName(), lineId, this.scores[i]));
         }
         PacketHelperImpl.send(player, new ClientboundSetDisplayObjectivePacket(1, this.obj1));
