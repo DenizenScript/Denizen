@@ -72,6 +72,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(TriggerCommand.class);
         registerCommand(VulnerableCommand.class);
         // player
+        registerCommand(ChatCommand.class);
     }
 
     public void registerCommands() {
