@@ -67,8 +67,6 @@ public class EntityHelperImpl extends EntityHelper {
 
     public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get(ReflectionMappingsInfo.RecipeBook_highlight);
 
-    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.Entity.class, null, Pose.class); // Entity#setPose(Pose)
-
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround);
 
     public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
@@ -94,12 +92,7 @@ public class EntityHelperImpl extends EntityHelper {
             ((Player) player).setSneaking(sneak);
         }
         Pose pose = sneak ? Pose.CROUCHING : Pose.STANDING;
-        try {
-            ENTITY_SETPOSE.invoke(((CraftEntity) player).getHandle(), pose);
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
+        ((CraftEntity) player).getHandle().setPose(pose);
     }
 
     @Override

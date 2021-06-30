@@ -35,13 +35,10 @@ public class SneakingTrait extends Trait implements Listener {
      */
     public void sneak() {
         new NPCTag(npc).action("sneak", null);
-
         if (npc.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
-
         NMSHandler.getEntityHelper().setSneaking(npc.getEntity(), true);
-
         sneaking = true;
     }
 
@@ -51,9 +48,7 @@ public class SneakingTrait extends Trait implements Listener {
     public void stand() {
         // Notated in SittingTrait
         new NPCTag(npc).action("stand", null);
-
         NMSHandler.getEntityHelper().setSneaking(npc.getEntity(), false);
-
         sneaking = false;
     }
 
