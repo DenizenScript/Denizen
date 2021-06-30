@@ -814,4 +814,9 @@ public class EntityHelperImpl extends EntityHelper {
             CraftEventFactory.entityDamage = null;
         }
     }
+
+    @Override
+    public void setLastHurtBy(LivingEntity mob, LivingEntity damager) {
+        ((CraftLivingEntity) mob).getHandle().setLastHurtByMob(((CraftLivingEntity) damager).getHandle());
+    }
 }

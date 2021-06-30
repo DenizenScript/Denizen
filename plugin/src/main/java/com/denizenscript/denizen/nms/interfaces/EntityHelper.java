@@ -358,4 +358,8 @@ public abstract class EntityHelper {
             }
         }
     }
+
+    public void setLastHurtBy(LivingEntity mob, LivingEntity damager) {
+        throw new UnsupportedOperationException();
+    }
 }

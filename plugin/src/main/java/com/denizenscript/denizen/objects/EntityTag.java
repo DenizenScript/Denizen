@@ -3395,6 +3395,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             getLivingEntity().attack(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name last_hurt_by
+        // @input EntityTag
+        // @description
+        // Tells this mob entity that it was last hurt by the specified entity.
+        // Passive mobs will panic and run away when this is set.
+        // -->
+        if (mechanism.matches("last_hurt_by") && mechanism.requireObject(EntityTag.class)) {
+            NMSHandler.getEntityHelper().setLastHurtBy(getLivingEntity(), mechanism.valueAsType(EntityTag.class).getLivingEntity());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }
