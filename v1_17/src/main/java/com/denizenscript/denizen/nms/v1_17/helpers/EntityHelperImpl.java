@@ -27,6 +27,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -373,14 +374,12 @@ public class EntityHelperImpl extends EntityHelper {
         if (entity == null || location == null) {
             return;
         }
-
         net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof Mob)) {
             return;
         }
         final Mob nmsEntity = (Mob) nmsEntityEntity;
         final PathNavigation entityNavigation = nmsEntity.getNavigation();
-
         final Path path;
         final boolean aiDisabled = !entity.hasAI();
         if (aiDisabled) {
@@ -392,8 +391,9 @@ public class EntityHelperImpl extends EntityHelper {
                 Debug.echoError(ex);
             }
         }
-        path = entityNavigation.createPath(location.getX(), location.getY(), location.getZ(), 0);
+        path = entityNavigation.createPath(location.getX(), location.getY(), location.getZ(), 1);
         if (path != null) {
+            nmsEntity.goalSelector.enableControlFlag(Goal.Flag.MOVE);
             entityNavigation.moveTo(path, 1D);
             entityNavigation.setSpeedModifier(2D);
             final double oldSpeed = nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();

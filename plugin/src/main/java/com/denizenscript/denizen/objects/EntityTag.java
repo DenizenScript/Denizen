@@ -3402,6 +3402,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Tells this mob entity that it was last hurt by the specified entity.
         // Passive mobs will panic and run away when this is set.
+        // Angerable mobs will get angry.
         // -->
         if (mechanism.matches("last_hurt_by") && mechanism.requireObject(EntityTag.class)) {
             NMSHandler.getEntityHelper().setLastHurtBy(getLivingEntity(), mechanism.valueAsType(EntityTag.class).getLivingEntity());
