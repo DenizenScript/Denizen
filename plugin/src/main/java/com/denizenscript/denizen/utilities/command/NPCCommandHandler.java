@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
+import org.bukkit.block.data.type.Campfire;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.command.CommandSender;
@@ -361,6 +362,12 @@ public class NPCCommandHandler {
         BlockData data = block.getBlockData();
         if (data instanceof Stairs || data instanceof Bed || (data instanceof Slab && ((Slab) data).getType() == Slab.Type.BOTTOM)) {
             targetLocation.setY(targetLocation.getBlockY() + 0.3);
+        }
+        else if (data instanceof Campfire) {
+            targetLocation.setY(targetLocation.getBlockY() + 0.2);
+        }
+        else if (block.getType().name().endsWith("CARPET")) {
+            targetLocation.setY(targetLocation.getBlockY());
         }
         else if (block.getType().isSolid()) {
             targetLocation.setY(targetLocation.getBlockY() + 0.8);
