@@ -991,7 +991,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             List<LocationPair> pairs = cuboid.pairs;
             ListTag list = new ListTag();
             for (LocationPair pair : pairs) {
-                list.addObject(new CuboidTag(pair.low, pair.high));
+                list.addObject(new CuboidTag(pair.low.clone(), pair.high.clone()));
             }
             return list;
         });
@@ -1016,7 +1016,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     member = cuboid.pairs.size();
                 }
                 LocationPair pair = cuboid.pairs.get(member - 1);
-                return new CuboidTag(pair.low, pair.high);
+                return new CuboidTag(pair.low.clone(), pair.high.clone());
             }
         }, "member", "get_member");
 
@@ -1052,7 +1052,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 attribute.fulfill(1);
                 LocationPair pair = subCuboid.pairs.get(0);
                 CuboidTag cloned = cuboid.clone();
-                cloned.pairs.set(member - 1, new LocationPair(pair.low, pair.high));
+                cloned.pairs.set(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
                 return cloned;
             }
         });
@@ -1096,14 +1096,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             if (attribute.getContext(1).startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
                 for (CuboidTag subCuboid : attribute.contextAsType(1, ListTag.class).filter(CuboidTag.class, attribute.context)) {
                     LocationPair pair = subCuboid.pairs.get(0);
-                    cuboid.pairs.add(member - 1, new LocationPair(pair.low, pair.high));
+                    cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
                     member++;
                 }
             }
             else {
                 CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
                 LocationPair pair = subCuboid.pairs.get(0);
-                cuboid.pairs.add(member - 1, new LocationPair(pair.low, pair.high));
+                cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
             }
             return cuboid;
         });
@@ -1676,7 +1676,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 member = pairs.size();
             }
             LocationPair pair = subCuboid.pairs.get(0);
-            pairs.set(member - 1, new LocationPair(pair.low, pair.high));
+            pairs.set(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
         }
 
         // <--[mechanism]
@@ -1708,7 +1708,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 member = pairs.size();
             }
             LocationPair pair = subCuboid.pairs.get(0);
-            pairs.add(member - 1, new LocationPair(pair.low, pair.high));
+            pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
         }
 
         // <--[mechanism]

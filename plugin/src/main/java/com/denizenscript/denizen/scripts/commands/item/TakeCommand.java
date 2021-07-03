@@ -36,14 +36,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/raw_exact:<item>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/raw_exact:<item>/item:<matcher>] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -66,7 +66,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'bycover:' will take a written book by the specified book title + author pair.
     //
-    // Using 'raw_exact:' will compare all raw details of an item exactly. This is almost always a bad idea to use.
+    // Using 'raw_exact:' (Intentionally undocumented) will compare all raw details of an item exactly. This is almost always a bad idea to use. DO NOT USE.
     //
     // Using 'item:' will take items that match an advanced item matcher, using the system behind <@link language Advanced Script Event Matching>.
     //

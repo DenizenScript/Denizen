@@ -2237,6 +2237,18 @@ public class ServerTagBase {
         return null;
     }
 
+    // <--[ObjectType]
+    // @name server
+    // @prefix None
+    // @base None
+    // @format
+    // N/A
+    //
+    // @description
+    // "server" is an internal pseudo-ObjectType that is used as a mechanism adjust target for some global mechanisms.
+    //
+    // -->
+
     public static void adjustServer(Mechanism mechanism) {
 
         // <--[mechanism]
