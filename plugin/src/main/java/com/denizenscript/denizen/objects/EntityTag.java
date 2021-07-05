@@ -1673,7 +1673,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group attributes
         // @mechanism EntityTag.shooter
         // @description
-        // Returns the entity's shooter, if any.
+        // Returns the entity's shooter, if any. Also works with fish hooks.
         // -->
         registerSpawnedOnlyTag("shooter", (attribute, object) -> {
             EntityTag shooter = object.getShooter();
@@ -2585,6 +2585,93 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return new ElementTag(((FishHook) object.getBukkitEntity()).getState().name());
         });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_lure_time>
+        // @returns DurationTag
+        // @description
+        // Returns the remaining time before this fish hook will lure a fish.
+        // -->
+        registerSpawnedOnlyTag("fish_hook_lure_time", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_lure_time is only valid for fish hooks.");
+                return null;
+            }
+            return new DurationTag((long) NMSHandler.getFishingHelper().getLureTime((FishHook) object.getBukkitEntity()));
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_min_lure_time>
+        // @returns DurationTag
+        // @description
+        // Returns the minimum possible time before this fish hook can lure a fish.
+        // -->
+        registerSpawnedOnlyTag("fish_hook_min_lure_time", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_min_lure_time is only valid for fish hooks.");
+                return null;
+            }
+            return new DurationTag((long) ((FishHook) object.getBukkitEntity()).getMinWaitTime());
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_max_lure_time>
+        // @returns DurationTag
+        // @description
+        // Returns the maximum possible time before this fish hook will lure a fish.
+        // -->
+        registerSpawnedOnlyTag("fish_hook_max_lure_time", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_max_lure_time is only valid for fish hooks.");
+                return null;
+            }
+            return new DurationTag((long) ((FishHook) object.getBukkitEntity()).getMaxWaitTime());
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_hooked_entity>
+        // @returns EntityTag
+        // @description
+        // Returns the entity this fish hook is attached to.
+        // -->
+        registerSpawnedOnlyTag("fish_hook_hooked_entity", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_hooked_entity is only valid for fish hooks.");
+                return null;
+            }
+            Entity entity = ((FishHook) object.getBukkitEntity()).getHookedEntity();
+            return entity != null ? new EntityTag(entity) : null;
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_apply_lure>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether this fish hook should respect the lure enchantment.
+        // Every level of lure enchantment reduces lure time by 5 seconds.
+        // -->
+        registerSpawnedOnlyTag("fish_hook_apply_lure", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_apply_lure is only valid for fish hooks.");
+                return null;
+            }
+            return new ElementTag(((FishHook) object.getBukkitEntity()).getApplyLure());
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_in_open_water>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether this fish hook is in open water. Fish hooks in open water can catch treasure.
+        // See <@link url https://minecraft.fandom.com/wiki/Fishing> for more info.
+        // -->
+        registerSpawnedOnlyTag("fish_hook_in_open_water", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_in_open_water is only valid for fish hooks.");
+                return null;
+            }
+            return new ElementTag(((FishHook) object.getBukkitEntity()).isInOpenWater());
+        });
     }
 
     public EntityTag describe(TagContext context) {
@@ -2687,7 +2774,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @description
         // Sets the entity's shooter.
-        // The entity must be a projectile.
+        // The entity must be a projectile. Also works with fish hooks.
         // @tags
         // <EntityTag.shooter>
         // -->
@@ -3468,6 +3555,82 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             NMSHandler.getFishingHelper().setLureTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_pull
+        // @input None
+        // @description
+        // Pulls the entity this fish hook is attached to towards the caster.
+        // -->
+        if (mechanism.matches("fish_hook_pull")) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_pull is only valid for FishHook entities.");
+                return;
+            }
+            ((FishHook) getBukkitEntity()).pullHookedEntity();
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_apply_lure
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether this fish hook should respect the lure enchantment.
+        // Every level of lure enchantment reduces lure time by 5 seconds.
+        // -->
+        if (mechanism.matches("fish_hook_apply_lure") && mechanism.requireBoolean()) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_apply_lure is only valid for FishHook entities.");
+                return;
+            }
+            ((FishHook) getBukkitEntity()).setApplyLure(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_hooked_entity
+        // @input EntityTag
+        // @description
+        // Sets the entity this fish hook is attached to.
+        // -->
+        if (mechanism.matches("fish_hook_hooked_entity") && mechanism.requireObject(EntityTag.class)) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_hooked_entity is only valid for FishHook entities.");
+                return;
+            }
+            ((FishHook) getBukkitEntity()).setHookedEntity(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_min_lure_time
+        // @input DurationTag
+        // @description
+        // Returns the minimum possible time before this fish hook can lure a fish.
+        // -->
+        if (mechanism.matches("fish_hook_min_lure_time") && mechanism.requireObject(DurationTag.class)) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_min_lure_time is only valid for FishHook entities.");
+                return;
+            }
+            ((FishHook) getBukkitEntity()).setMinWaitTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_max_lure_time
+        // @input DurationTag
+        // @description
+        // Returns the maximum possible time before this fish hook will lure a fish.
+        // -->
+        if (mechanism.matches("fish_hook_max_lure_time") && mechanism.requireObject(DurationTag.class)) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_max_lure_time is only valid for FishHook entities.");
+                return;
+            }
+            ((FishHook) getBukkitEntity()).setMaxWaitTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

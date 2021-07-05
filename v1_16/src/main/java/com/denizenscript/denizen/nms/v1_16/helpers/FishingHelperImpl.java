@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
+import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
@@ -10,6 +12,7 @@ import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class FishingHelperImpl implements FishingHelper {
@@ -86,5 +89,63 @@ public class FishingHelperImpl implements FishingHelper {
 
     private ItemStack catchRandomFish(EntityFishingHook fishHook) {
         return getRandomReward(fishHook, LootTables.aj);
+    }
+
+    public static Field FISHING_HOOK_NIBBLE_SETTER = ReflectionHelper.getFields(EntityFishingHook.class).get("ag");
+    public static Field FISHING_HOOK_LURE_TIME_SETTER = ReflectionHelper.getFields(EntityFishingHook.class).get("waitTime");
+    public static Field FISHING_HOOK_HOOK_TIME_SETTER = ReflectionHelper.getFields(EntityFishingHook.class).get("ai");
+
+    @Override
+    public FishHook getHookFrom(Player player) {
+        EntityFishingHook hook = ((CraftPlayer) player).getHandle().hookedFish;
+        if (hook == null) {
+            return null;
+        }
+        return (FishHook) hook.getBukkitEntity();
+    }
+
+    @Override
+    public void setNibble(FishHook hook, int ticks) {
+        EntityFishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            FISHING_HOOK_NIBBLE_SETTER.setInt(nmsEntity, ticks);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void setHookTime(FishHook hook, int ticks) {
+        EntityFishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            FISHING_HOOK_HOOK_TIME_SETTER.setInt(nmsEntity, ticks);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public int getLureTime(FishHook hook) {
+        EntityFishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            return FISHING_HOOK_LURE_TIME_SETTER.getInt(nmsEntity);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return -1;
+    }
+
+    @Override
+    public void setLureTime(FishHook hook, int ticks) {
+        EntityFishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            FISHING_HOOK_LURE_TIME_SETTER.setInt(nmsEntity, ticks);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 }
