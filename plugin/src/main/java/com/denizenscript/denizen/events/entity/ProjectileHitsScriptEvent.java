@@ -28,6 +28,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Location true
     //
+    // @Cancellable true
+    //
     // @Triggers when a projectile hits a block or a fish hook lands on a block.
     //
     // @Context
@@ -53,6 +55,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Location true
     //
+    // @Cancellable true
+    //
     // @Triggers when a projectile shot by an entity hits a block or a fish hook lands on a block.
     //
     // @Context
@@ -75,6 +79,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // @Group Entity
     //
     // @Location true
+    //
+    // @Cancellable true
     //
     // @Triggers when a projectile hits an entity or a fish hook latches onto an entity.
     //
@@ -99,6 +105,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // @Group Entity
     //
     // @Location true
+    //
+    // @Cancellable true
     //
     // @Triggers when a projectile shot by an entity hits an entity or a fish hook latches onto an entity.
     //
