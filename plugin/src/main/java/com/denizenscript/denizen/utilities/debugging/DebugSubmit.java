@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class DebugSubmit extends Thread {
     public String recording;
-    public String Result = null;
+    public String result = null;
 
     @Override
     public void run() {
@@ -111,7 +111,7 @@ public class DebugSubmit extends Thread {
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
             // Record the response
-            Result = in.readLine();
+            result = in.readLine();
             // Close the connection
             in.close();
         }

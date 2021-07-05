@@ -73,4 +73,8 @@ public class ReflectionMappingsInfo {
     public static String ClientboundLevelChunkPacket_blockEntitiesTags = "h";
 
     public static String ClientboundMerchantOffersPacket_containerId = "a";
+
+    public static String FishingHook_nibble = "aq";
+    public static String FishingHook_timeUntilLured = "ar";
+    public static String FishingHook_timeUntilHooked = "as";
 }

@@ -2571,6 +2571,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return null;
         });
+
+        // <--[tag]
+        // @attribute <EntityTag.fish_hook_state>
+        // @returns ElementTag
+        // @description
+        // Returns the current state of the fish hook, as any of: UNHOOKED, HOOKED_ENTITY, BOBBING (unhooked means the fishing hook is in the air or on ground).
+        // -->
+        registerSpawnedOnlyTag("fish_hook_state", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof FishHook)) {
+                attribute.echoError("EntityTag.fish_hook_state is only valid for fish hooks.");
+                return null;
+            }
+            return new ElementTag(((FishHook) object.getBukkitEntity()).getState().name());
+        });
     }
 
     public EntityTag describe(TagContext context) {
@@ -3406,6 +3420,54 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("last_hurt_by") && mechanism.requireObject(EntityTag.class)) {
             NMSHandler.getEntityHelper().setLastHurtBy(getLivingEntity(), mechanism.valueAsType(EntityTag.class).getLivingEntity());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_nibble_time
+        // @input DurationTag
+        // @description
+        // Sets the time until this fish hook is next nibbled. If this value is set zero, biting will be processed instead.
+        // if this value is set above zero, when it runs out, a nibble (failed bite) will occur.
+        // -->
+        if (mechanism.matches("fish_hook_nibble_time") && mechanism.requireObject(DurationTag.class)) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_nibble_time is only valid for FishHook entities.");
+                return;
+            }
+            NMSHandler.getFishingHelper().setNibble((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_bite_time
+        // @input DurationTag
+        // @description
+        // Sets the time until this fish hook is next bit. If this value and also nibble_time are set zero, luring will happen instead.
+        // if this value is set above zero, when it runs out, a bite will occur (and a player can reel to catch it, or fail and have nibble set).
+        // -->
+        if (mechanism.matches("fish_hook_bite_time") && mechanism.requireObject(DurationTag.class)) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_hook_time is only valid for FishHook entities.");
+                return;
+            }
+            NMSHandler.getFishingHelper().setHookTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fish_hook_lure_time
+        // @input DurationTag
+        // @description
+        // Sets the time until this fish hook is next lured. If this value and also bite_time and nibble_time are set zero, the luring value will be reset to a random amount.
+        // if this value is set above zero, when it runs out, particles will spawn and bite_time will be set to a random amount.
+        // -->
+        if (mechanism.matches("fish_hook_lure_time") && mechanism.requireObject(DurationTag.class)) {
+            if (!(getBukkitEntity() instanceof FishHook)) {
+                mechanism.echoError("fish_hook_lure_time is only valid for FishHook entities.");
+                return;
+            }
+            NMSHandler.getFishingHelper().setLureTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

@@ -1,6 +1,9 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
+import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
+import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -24,6 +27,7 @@ import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class FishingHelperImpl implements FishingHelper {
@@ -100,5 +104,51 @@ public class FishingHelperImpl implements FishingHelper {
 
     private ItemStack catchRandomFish(FishingHook fishHook) {
         return getRandomReward(fishHook, BuiltInLootTables.FISHING_FISH);
+    }
+
+    public static Field FISHING_HOOK_NIBBLE_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_nibble);
+    public static Field FISHING_HOOK_LURE_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilLured);
+    public static Field FISHING_HOOK_HOOK_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilHooked);
+
+    @Override
+    public FishHook getHookFrom(Player player) {
+        FishingHook hook = ((CraftPlayer) player).getHandle().fishing;
+        if (hook == null) {
+            return null;
+        }
+        return (FishHook) hook.getBukkitEntity();
+    }
+
+    @Override
+    public void setNibble(FishHook hook, int ticks) {
+        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            FISHING_HOOK_NIBBLE_SETTER.setInt(nmsEntity, ticks);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void setHookTime(FishHook hook, int ticks) {
+        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            FISHING_HOOK_HOOK_TIME_SETTER.setInt(nmsEntity, ticks);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void setLureTime(FishHook hook, int ticks) {
+        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            FISHING_HOOK_LURE_TIME_SETTER.setInt(nmsEntity, ticks);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 }

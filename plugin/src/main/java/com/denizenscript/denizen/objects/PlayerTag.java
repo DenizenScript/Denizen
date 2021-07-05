@@ -45,6 +45,7 @@ import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
@@ -2363,6 +2364,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NetworkInterceptHelper.enable();
             return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), false));
         });
+
+        // <--[tag]
+        // @attribute <PlayerTag.fish_hook>
+        // @returns EntityTag
+        // @description
+        // Returns the fishing hook a player has cast (if any).
+        // -->
+        registerOnlineOnlyTag("fish_hook", (attribute, object) -> {
+            FishHook hook = NMSHandler.getFishingHelper().getHookFrom(object.getPlayerEntity());
+            if (hook == null) {
+                return null;
+            }
+            return new EntityTag(hook);
+        });
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -3412,7 +3427,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[mechanism]
         // @object PlayerTag
         // @name tab_list_info
-        // @input ElementTag(|ElementTag)
+        // @input ElementTag
         // @description
         // Show the player some text in the header and footer area in their tab list.
         // - adjust <player> tab_list_info:<header>|<footer>
@@ -3440,9 +3455,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[mechanism]
         // @object PlayerTag
         // @name sign_update
-        // @input LocationTag|ListTag
+        // @input ElementTag
         // @description
-        // Shows the player fake lines on a sign.
+        // Shows the player fake lines on a sign, with input in the format of LocationTag|ListTag.
         // -->
         if (mechanism.matches("sign_update")) {
             if (!mechanism.getValue().asString().isEmpty()) {
@@ -3463,7 +3478,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[mechanism]
         // @object PlayerTag
         // @name banner_update
-        // @input LocationTag|ListTag
+        // @input ElementTag
         // @description
         // Shows the player fake patterns on a banner. Input must be in the form: "LOCATION|COLOR/PATTERN|..."
         // As of Minecraft 1.13, the base color is unique material types, and so <@link command showfake> must be used for base color changes.

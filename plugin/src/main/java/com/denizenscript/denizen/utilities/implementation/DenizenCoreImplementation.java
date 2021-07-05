@@ -501,11 +501,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             public void run() {
                 if (!submit.isAlive()) {
                     this.cancel();
-                    if (submit.Result == null) {
+                    if (submit.result == null) {
                         processResult.accept(null);
                     }
                     else {
-                        processResult.accept(submit.Result);
+                        processResult.accept(submit.result);
                     }
                 }
             }
