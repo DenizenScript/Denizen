@@ -25,6 +25,10 @@ public interface FishingHelper {
         throw new UnsupportedOperationException();
     }
 
+    default int getLureTime(FishHook hook) {
+        throw new UnsupportedOperationException();
+    }
+
     default void setLureTime(FishHook hook, int ticks) {
         throw new UnsupportedOperationException();
     }

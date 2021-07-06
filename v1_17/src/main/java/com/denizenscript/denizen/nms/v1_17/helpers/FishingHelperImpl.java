@@ -142,6 +142,18 @@ public class FishingHelperImpl implements FishingHelper {
     }
 
     @Override
+    public int getLureTime(FishHook hook) {
+        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        try {
+            return FISHING_HOOK_LURE_TIME_SETTER.getInt(nmsEntity);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return -1;
+    }
+
+    @Override
     public void setLureTime(FishHook hook, int ticks) {
         FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
         try {
