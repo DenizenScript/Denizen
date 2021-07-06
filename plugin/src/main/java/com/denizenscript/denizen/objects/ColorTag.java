@@ -78,6 +78,7 @@ public class ColorTag implements ObjectTag {
      */
     @Fetchable("co")
     public static ColorTag valueOf(String string, TagContext context) {
+        string = CoreUtilities.toLowerCase(string);
         if (string.startsWith("co@")) {
             string = string.substring("co@".length());
         }
@@ -97,7 +98,7 @@ public class ColorTag implements ObjectTag {
             }
             return new ColorTag(Integer.parseInt(split.get(0)), Integer.parseInt(split.get(1)), Integer.parseInt(split.get(2)));
         }
-        Color col = colorsByName.get(CoreUtilities.toLowerCase(string));
+        Color col = colorsByName.get(string);
         if (col != null) {
             return new ColorTag(col);
         }
