@@ -94,7 +94,8 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
         ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
         ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
-        ScriptEvent.registerScriptEvent(new ProjectileHitsScriptEvent());
+        ScriptEvent.registerScriptEvent(new ProjectileHitsBlockScriptEvent());
+        ScriptEvent.registerScriptEvent(new ProjectileHitsEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
         ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());

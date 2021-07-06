@@ -8,12 +8,11 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
-public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements Listener {
+public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -66,64 +65,13 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // <context.hit_face> returns a LocationTag vector of the hit normal (like '0,1,0' if the projectile hit the top of the block).
     //
     // -->
-
-    // <--[event]
-    // @Events
-    // projectile hits entity
-    // projectile hits <entity>
-    // <projectile> hits entity
-    // <projectile> hits <entity>
-    //
-    // @Regex ^on [^\s]+ hits [^\s]+$
-    //
-    // @Group Entity
-    //
-    // @Location true
-    //
-    // @Cancellable true
-    //
-    // @Triggers when a projectile hits an entity or a fish hook latches onto an entity.
-    //
-    // @Context
-    // <context.projectile> returns the EntityTag of the projectile.
-    // <context.shooter> returns the EntityTag of the shooter, if there is one.
-    // <context.hit_entity> returns the EntityTag of the entity that was hit.
-    //
-    // -->
-
-    // <--[event]
-    // @Events
-    // entity shoots entity
-    // entity shoots <entity>
-    // <entity> shoots entity
-    // <entity> shoots <entity>
-    //
-    // @Switch with:<projectile>
-    //
-    // @Regex ^on [^\s]+ shoots [^\s]+$
-    //
-    // @Group Entity
-    //
-    // @Location true
-    //
-    // @Cancellable true
-    //
-    // @Triggers when a projectile shot by an entity hits an entity or a fish hook latches onto an entity.
-    //
-    // @Context
-    // <context.projectile> returns the EntityTag of the projectile.
-    // <context.shooter> returns the EntityTag of the shooter, if there is one.
-    // <context.hit_entity> returns the EntityTag of the entity that was hit.
-    //
-    // -->
-    public ProjectileHitsScriptEvent() {
+    public ProjectileHitsBlockScriptEvent() {
         instance = this;
     }
 
-    public static ProjectileHitsScriptEvent instance;
+    public static ProjectileHitsBlockScriptEvent instance;
     public EntityTag projectile;
     public EntityTag shooter;
-    public EntityTag hitEntity;
     public LocationTag location;
     private MaterialTag material;
     public ProjectileHitEvent event;
@@ -137,7 +85,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!couldMatchBlock(path.eventArgLowerAt(2)) && !couldMatchEntity(path.eventArgLowerAt(2))) {
+        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;
@@ -164,10 +112,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         if (path.switches.containsKey("with") && !tryEntity(projectile, path.switches.get("with"))) {
             return false;
         }
-        if (material != null && !tryMaterial(material, path.eventArgLowerAt(2))) {
-            return false;
-        }
-        if (hitEntity != null && !tryEntity(hitEntity, path.eventArgLowerAt(2))) {
+        if (!tryMaterial(material, path.eventArgLowerAt(2))) {
             return false;
         }
         if (!runInCheck(path, location)) {
@@ -179,7 +124,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public String getName() {
-        return "ProjectileHits";
+        return "ProjectileHitsBlock";
     }
 
     @Override
@@ -201,9 +146,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("shooter") && shooter != null) {
             return shooter.getDenizenObject();
         }
-        else if (name.equals("hit_entity") && hitEntity != null) {
-            return hitEntity.getDenizenObject();
-        }
         return super.getContext(name);
     }
 
@@ -217,18 +159,12 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
         }
         Block block = event.getHitBlock();
-        if (block != null) {
-            hitEntity = null;
-            material = new MaterialTag(block);
-            location = new LocationTag(block.getLocation());
+        if (block == null) {
+            return;
         }
-        Entity entity = event.getHitEntity();
-        if (entity != null) {
-            material = null;
-            hitEntity = new EntityTag(entity);
-            location = new LocationTag(entity.getLocation());
-        }
+        material = new MaterialTag(block);
         shooter = projectile.getShooter();
+        location = new LocationTag(block.getLocation());
         this.event = event;
         fire(event);
     }

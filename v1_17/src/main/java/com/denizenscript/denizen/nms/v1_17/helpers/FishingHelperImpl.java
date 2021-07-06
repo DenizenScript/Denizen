@@ -145,7 +145,7 @@ public class FishingHelperImpl implements FishingHelper {
     public int getLureTime(FishHook hook) {
         FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
         try {
-            FISHING_HOOK_LURE_TIME_SETTER.getInt(nmsEntity);
+            return FISHING_HOOK_LURE_TIME_SETTER.getInt(nmsEntity);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
