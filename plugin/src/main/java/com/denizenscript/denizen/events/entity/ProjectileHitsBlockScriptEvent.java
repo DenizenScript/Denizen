@@ -23,13 +23,15 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
     //
     // @Regex ^on [^\s]+ hits [^\s]+$
     //
+    // @Synonyms fish hook lands on block, arrow hits block, snowball hits block
+    //
     // @Group Entity
     //
     // @Location true
     //
     // @Cancellable true
     //
-    // @Triggers when a projectile hits a block or a fish hook lands on a block.
+    // @Triggers when a projectile hits a block.
     //
     // @Context
     // <context.projectile> returns the EntityTag of the projectile.
@@ -56,7 +58,7 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
     //
     // @Cancellable true
     //
-    // @Triggers when a projectile shot by an entity hits a block or a fish hook lands on a block.
+    // @Triggers when a projectile shot by an entity hits a block.
     //
     // @Context
     // <context.projectile> returns the EntityTag of the projectile.

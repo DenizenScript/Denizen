@@ -24,13 +24,15 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
     //
     // @Regex ^on [^\s]+ hits [^\s]+$
     //
+    // @Synonyms fish hook latches onto entity, arrow hits entity, snowball hits entity
+    //
     // @Group Entity
     //
     // @Location true
     //
     // @Cancellable true
     //
-    // @Triggers when a projectile hits an entity or a fish hook latches onto an entity.
+    // @Triggers when a projectile hits an entity.
     //
     // @Context
     // <context.projectile> returns the EntityTag of the projectile.
@@ -56,7 +58,7 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
     @Override
     public boolean couldMatch(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("hits") && !cmd.equals("shoots")) {
+        if (!cmd.equals("hits")) {
             return false;
         }
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {

@@ -1672,8 +1672,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns EntityTag
         // @group attributes
         // @mechanism EntityTag.shooter
+        // @synonyms arrow_firer,fishhook_shooter,snowball_thrower
         // @description
-        // Returns the entity's shooter, if any. Also works with fish hooks.
+        // Returns the projectile's shooter, if any.
         // -->
         registerSpawnedOnlyTag("shooter", (attribute, object) -> {
             EntityTag shooter = object.getShooter();
@@ -2772,9 +2773,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @object EntityTag
         // @name shooter
         // @input EntityTag
+        // @synonyms arrow_firer,fishhook_shooter,snowball_thrower
         // @description
-        // Sets the entity's shooter.
-        // The entity must be a projectile. Also works with fish hooks.
+        // Sets the projectile's shooter.
         // @tags
         // <EntityTag.shooter>
         // -->
