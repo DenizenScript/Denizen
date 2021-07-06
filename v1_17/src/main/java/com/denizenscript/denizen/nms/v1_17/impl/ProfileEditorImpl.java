@@ -16,7 +16,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAddPlayerPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -35,7 +35,7 @@ public class ProfileEditorImpl extends ProfileEditor {
     protected void updatePlayer(Player player, final boolean isSkinChanging) {
         final ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         final UUID uuid = player.getUniqueId();
-        ClientboundRemoveEntityPacket destroyPacket = new ClientboundRemoveEntityPacket(entityPlayer.getId());
+        ClientboundRemoveEntitiesPacket destroyPacket = new ClientboundRemoveEntitiesPacket(entityPlayer.getId());
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (!p.getUniqueId().equals(uuid)) {
                 PacketHelperImpl.send(p, destroyPacket);

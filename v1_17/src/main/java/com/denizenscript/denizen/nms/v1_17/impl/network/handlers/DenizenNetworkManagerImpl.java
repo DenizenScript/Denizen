@@ -310,7 +310,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (override.hand != null) {
                     items.set(player.getInventory().selected + 36, CraftItemStack.asNMSCopy(override.hand.getItemStack()));
                 }
-                ClientboundContainerSetContentPacket newPacket = new ClientboundContainerSetContentPacket(window, items);
+                ClientboundContainerSetContentPacket newPacket = new ClientboundContainerSetContentPacket(window, ((ClientboundContainerSetContentPacket) packet).getStateId(), items, ((ClientboundContainerSetContentPacket) packet).getCarriedItem());
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -350,7 +350,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (item == null) {
                     return false;
                 }
-                ClientboundContainerSetSlotPacket newPacket = new ClientboundContainerSetSlotPacket(window, slot, CraftItemStack.asNMSCopy(item));
+                ClientboundContainerSetSlotPacket newPacket = new ClientboundContainerSetSlotPacket(window, ((ClientboundContainerSetSlotPacket) packet).getStateId(), slot, CraftItemStack.asNMSCopy(item));
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -971,8 +971,8 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public void setupCompression(int i) {
-        oldManager.setupCompression(i);
+    public void setupCompression(int i, boolean b) {
+        oldManager.setupCompression(i, b);
     }
 
     @Override

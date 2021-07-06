@@ -39,6 +39,7 @@ import net.minecraft.world.entity.monster.CaveSpider;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
@@ -134,8 +135,9 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly) {
-        int windowId = playerOnly ? 0 : ((CraftPlayer) player).getHandle().containerMenu.containerId;
-        send(player, new ClientboundContainerSetSlotPacket(windowId, slot, CraftItemStack.asNMSCopy(itemStack)));
+        AbstractContainerMenu menu = ((CraftPlayer) player).getHandle().containerMenu;
+        int windowId = playerOnly ? 0 : menu.containerId;
+        send(player, new ClientboundContainerSetSlotPacket(windowId, slot, menu.incrementStateId(), CraftItemStack.asNMSCopy(itemStack)));
     }
 
     @Override

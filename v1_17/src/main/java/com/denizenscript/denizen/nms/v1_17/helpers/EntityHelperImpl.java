@@ -11,7 +11,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -469,7 +469,7 @@ public class EntityHelperImpl extends EntityHelper {
                 entry.removePlayer(entityPlayer);
             }
             if (Denizen.supportsPaper) { // Workaround for Paper issue
-                entityPlayer.connection.send(new ClientboundRemoveEntityPacket(other.getId()));
+                entityPlayer.connection.send(new ClientboundRemoveEntitiesPacket(other.getId()));
             }
         }
     }

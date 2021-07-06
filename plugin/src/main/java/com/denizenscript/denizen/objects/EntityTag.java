@@ -2590,6 +2590,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.fish_hook_lure_time>
         // @returns DurationTag
+        // @mechanism EntityTag.fish_hook_lure_time
         // @description
         // Returns the remaining time before this fish hook will lure a fish.
         // -->
@@ -2604,6 +2605,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.fish_hook_min_lure_time>
         // @returns DurationTag
+        // @mechanism EntityTag.fish_hook_min_lure_time
         // @description
         // Returns the minimum possible time before this fish hook can lure a fish.
         // -->
@@ -2618,6 +2620,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.fish_hook_max_lure_time>
         // @returns DurationTag
+        // @mechanism EntityTag.fish_hook_max_lure_time
         // @description
         // Returns the maximum possible time before this fish hook will lure a fish.
         // -->
@@ -2632,6 +2635,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.fish_hook_hooked_entity>
         // @returns EntityTag
+        // @mechanism EntityTag.fish_hook_hooked_entity
         // @description
         // Returns the entity this fish hook is attached to.
         // -->
@@ -2647,6 +2651,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.fish_hook_apply_lure>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.fish_hook_apply_lure
         // @description
         // Returns whether this fish hook should respect the lure enchantment.
         // Every level of lure enchantment reduces lure time by 5 seconds.
@@ -3549,6 +3554,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Sets the time until this fish hook is next lured. If this value and also bite_time and nibble_time are set zero, the luring value will be reset to a random amount.
         // if this value is set above zero, when it runs out, particles will spawn and bite_time will be set to a random amount.
+        // @tags
+        // <EntityTag.fish_hook_lure_time>
         // -->
         if (mechanism.matches("fish_hook_lure_time") && mechanism.requireObject(DurationTag.class)) {
             if (!(getBukkitEntity() instanceof FishHook)) {
@@ -3580,6 +3587,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Sets whether this fish hook should respect the lure enchantment.
         // Every level of lure enchantment reduces lure time by 5 seconds.
+        // @tags
+        // <EntityTag.fish_hook_apply_lure>
         // -->
         if (mechanism.matches("fish_hook_apply_lure") && mechanism.requireBoolean()) {
             if (!(getBukkitEntity() instanceof FishHook)) {
@@ -3595,6 +3604,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @description
         // Sets the entity this fish hook is attached to.
+        // @tags
+        // <EntityTag.fish_hook_hooked_entity>
         // -->
         if (mechanism.matches("fish_hook_hooked_entity") && mechanism.requireObject(EntityTag.class)) {
             if (!(getBukkitEntity() instanceof FishHook)) {
@@ -3610,6 +3621,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input DurationTag
         // @description
         // Returns the minimum possible time before this fish hook can lure a fish.
+        // @tags
+        // <EntityTag.fish_hook_min_lure_time>
         // -->
         if (mechanism.matches("fish_hook_min_lure_time") && mechanism.requireObject(DurationTag.class)) {
             if (!(getBukkitEntity() instanceof FishHook)) {
@@ -3625,6 +3638,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input DurationTag
         // @description
         // Returns the maximum possible time before this fish hook will lure a fish.
+        // @tags
+        // <EntityTag.fish_hook_max_lure_time>
         // -->
         if (mechanism.matches("fish_hook_max_lure_time") && mechanism.requireObject(DurationTag.class)) {
             if (!(getBukkitEntity() instanceof FishHook)) {

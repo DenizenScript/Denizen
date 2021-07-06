@@ -206,7 +206,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void sendEntityDestroy(Player player, Entity entity) {
-        ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntityPacket(entity.getEntityId()));
+        ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(entity.getEntityId()));
     }
 
     @Override
