@@ -53,7 +53,6 @@ public class ReflectionMappingsInfo {
     public static String ClientboundSectionBlocksUpdatePacket_states = "d";
     public static String ClientboundSectionBlocksUpdatePacket_positions = "c";
 
-    public static String ClientboundMoveEntityPacket_entityId = "a";
     public static String ClientboundMoveEntityPacket_xa = "b";
     public static String ClientboundMoveEntityPacket_ya = "c";
     public static String ClientboundMoveEntityPacket_za = "d";

@@ -57,6 +57,8 @@ public class AttachCommand extends AbstractCommand {
     //
     // Note that attaches involving a player will not be properly visible to that player, but will still be visible to *other* players.
     //
+    // It may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this command functions as expected.
+    //
     // @Tags
     // None
     //

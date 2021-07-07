@@ -135,7 +135,6 @@ public class DenizenNetworkManagerImpl extends Connection {
         oldManager.setListener(packetlistener);
     }
 
-    public static Field ENTITY_ID_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_entityId);
     public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(ClientboundSetEntityMotionPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityMotionPacket_id);
     public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id);
     public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_x);
@@ -153,30 +152,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states);
     public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(ClientboundBlockBreakAckPacket.class).get(ReflectionMappingsInfo.ClientboundBlockBreakAckPacket_state);
     public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityDataPacket_packedItems);
-
-    public static Object duplo(Object a) {
-        try {
-            Class clazz = a.getClass();
-            Object reter = clazz.newInstance();
-            for (Field f : clazz.getDeclaredFields()) {
-                f.setAccessible(true);
-                f.set(reter, f.get(a));
-            }
-            Class subc = clazz;
-            while (subc.getSuperclass() != null) {
-                subc = subc.getSuperclass();
-                for (Field f : subc.getDeclaredFields()) {
-                    f.setAccessible(true);
-                    f.set(reter, f.get(a));
-                }
-            }
-            return reter;
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-            return null;
-        }
-    }
 
     @Override
     public void send(Packet<?> packet) {
@@ -551,8 +526,23 @@ public class DenizenNetworkManagerImpl extends Connection {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundMoveEntityPacket pNew = (ClientboundMoveEntityPacket) duplo(packet);
-                    ENTITY_ID_PACKENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
+                    ClientboundMoveEntityPacket pNew;
+                    int newId = att.attached.getBukkitEntity().getEntityId();
+                    if (packet instanceof ClientboundMoveEntityPacket.Pos) {
+                        pNew = new ClientboundMoveEntityPacket.Pos(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.isOnGround());
+                    }
+                    else if (packet instanceof ClientboundMoveEntityPacket.Rot) {
+                        pNew = new ClientboundMoveEntityPacket.Rot(newId, packet.getyRot(), packet.getxRot(), packet.isOnGround());
+                    }
+                    else if (packet instanceof ClientboundMoveEntityPacket.PosRot) {
+                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.getyRot(), packet.getxRot(), packet.isOnGround());
+                    }
+                    else {
+                        if (Debug.verbose) {
+                            Debug.echoError("Impossible move-entity packet class: " + packet.getClass().getCanonicalName());
+                        }
+                        return;
+                    }
                     if (att.positionalOffset != null && (packet instanceof ClientboundMoveEntityPacket.Pos || packet instanceof ClientboundMoveEntityPacket.PosRot)) {
                         boolean isRotate = packet instanceof ClientboundMoveEntityPacket.PosRot;
                         byte yaw, pitch;
@@ -705,8 +695,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         try {
             if (packet instanceof ClientboundMoveEntityPacket) {
-                int ider = ENTITY_ID_PACKENT.getInt(packet);
-                Entity e = player.getLevel().getEntity(ider);
+                Entity e = ((ClientboundMoveEntityPacket) packet).getEntity(player.getLevel());
                 if (e == null) {
                     return false;
                 }
@@ -750,6 +739,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         try {
             int ider = -1;
+            Entity e = null;
             if (packet instanceof ClientboundAddPlayerPacket) {
                 ider = ((ClientboundAddPlayerPacket) packet).getEntityId();
             }
@@ -766,7 +756,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 ider = ((ClientboundAddExperienceOrbPacket) packet).getId();
             }
             else if (packet instanceof ClientboundMoveEntityPacket) {
-                ider = ENTITY_ID_PACKENT.getInt(packet);
+                e = ((ClientboundMoveEntityPacket) packet).getEntity(player.getLevel());
             }
             else if (packet instanceof ClientboundSetEntityDataPacket) {
                 ider = ((ClientboundSetEntityDataPacket) packet).getId();
@@ -777,8 +767,10 @@ public class DenizenNetworkManagerImpl extends Connection {
             else if (packet instanceof ClientboundTeleportEntityPacket) {
                 ider = ((ClientboundTeleportEntityPacket) packet).getId();
             }
-            if (ider != -1) {
-                Entity e = player.getLevel().getEntity(ider);
+            if (e == null && ider != -1) {
+                e = player.getLevel().getEntity(ider);
+            }
+            if (e != null) {
                 if (isHidden(e)) {
                     return true;
                 }

@@ -233,6 +233,7 @@ public class EntityAttachmentHelper {
     }
 
     public static void registerAttachment(AttachmentData attachment) {
+        NetworkInterceptHelper.enable();
         removeAttachment(attachment.attached.getUUID(), attachment.forPlayer);
         attachment.startTask();
         PlayerAttachMap map = attachedEntityToData.get(attachment.attached.getUUID());
@@ -259,7 +260,6 @@ public class EntityAttachmentHelper {
     }
 
     public static void forceAttachMove(EntityTag attached, EntityTag to, Vector offset, boolean matchRotation) {
-        NetworkInterceptHelper.enable();
         removeAttachment(attached.getUUID(), null);
         if (to == null) {
             return;
