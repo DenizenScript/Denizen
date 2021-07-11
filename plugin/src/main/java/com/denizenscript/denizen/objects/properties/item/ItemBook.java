@@ -308,6 +308,10 @@ public class ItemBook implements Property {
             BookMeta meta = (BookMeta) item.getItemMeta();
             if (mechanism.getValue().asString().startsWith("map@")) {
                 MapTag mapData = mechanism.valueAsType(MapTag.class);
+                if (mapData == null) {
+                    mechanism.echoError("Book input is an invalid map?");
+                    return;
+                }
                 ObjectTag author = mapData.getObject("author");
                 ObjectTag title = mapData.getObject("title");
                 if (author != null && title != null) {

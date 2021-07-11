@@ -1271,12 +1271,60 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         // <--[tag]
-        // @attribute <InventoryTag.exclude[<item>|...]>
+        // @attribute <InventoryTag.exclude_item[<item_matcher>]>
         // @returns InventoryTag
         // @description
-        // Returns a copy of the InventoryTag with items excluded.
+        // Returns a copy of the InventoryTag with all matching items excluded.
         // -->
+        registerTag("exclude_item", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            String matcher = attribute.getContext(1);
+            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
+            if (object.inventory.getType() == InventoryType.CHEST) {
+                dummyInv.setSize(object.inventory.getSize());
+            }
+            dummyInv.setContents(object.getContents());
+            if (object.idHolder instanceof ScriptTag) {
+                dummyInv.idType = "script";
+                dummyInv.idHolder = object.idHolder;
+            }
+            trackTemporaryInventory(dummyInv);
+            int quantity = Integer.MAX_VALUE;
+
+            // <--[tag]
+            // @attribute <InventoryTag.exclude_item[<item_matcher>].quantity[<#>]>
+            // @returns InventoryTag
+            // @description
+            // Returns the InventoryTag with a certain quantity of matching items excluded.
+            // -->
+            if (attribute.startsWith("quantity", 2) && attribute.hasContext(2)) {
+                quantity = attribute.getIntContext(2);
+                attribute.fulfill(1);
+            }
+            for (int slot = 0; slot < dummyInv.inventory.getSize(); slot++) {
+                ItemStack item = dummyInv.inventory.getItem(slot);
+                if (item != null && BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                    quantity -= item.getAmount();
+                    if (quantity >= 0) {
+                        dummyInv.inventory.setItem(slot, null);
+                    }
+                    else {
+                        item = item.clone();
+                        item.setAmount(-quantity);
+                        dummyInv.inventory.setItem(slot, item);
+                    }
+                    if (quantity <= 0) {
+                        break;
+                    }
+                }
+            }
+            return dummyInv;
+        });
+
         registerTag("exclude", (attribute, object) -> {
+            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1291,13 +1339,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 dummyInv.idHolder = object.idHolder;
             }
             trackTemporaryInventory(dummyInv);
-
-            // <--[tag]
-            // @attribute <InventoryTag.exclude[<item>].quantity[<#>]>
-            // @returns InventoryTag
-            // @description
-            // Returns the InventoryTag with a certain quantity of an item excluded.
-            // -->
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
                     Deprecations.qtyTags.warn(attribute.context);
