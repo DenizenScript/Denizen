@@ -88,43 +88,41 @@ public class DropCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesArgumentList(ItemTag.class)) {
-                scriptEntry.addObject("action", new ElementTag(Action.DROP_ITEM.toString()).setPrefix("action"));
-                scriptEntry.addObject("item", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("action")
                     && arg.matches("experience", "exp", "xp")) {
                 scriptEntry.addObject("action", new ElementTag(Action.DROP_EXP.toString()).setPrefix("action"));
-            }
-            else if (!scriptEntry.hasObject("action")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                // Entity arg
-                scriptEntry.addObject("action", new ElementTag(Action.DROP_ENTITY.toString()).setPrefix("action"));
-                scriptEntry.addObject("entity", arg.asType(EntityTag.class).setPrefix("entity"));
-            }
-            else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class).setPrefix("location"));
             }
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrefix("speed")
                     && arg.matchesFloat()) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("delay") && arg.matchesArgumentType(DurationTag.class)
+                    && arg.matchesPrefix("delay", "d")) {
+                scriptEntry.addObject("delay", arg.asType(DurationTag.class));
+            }
             else if (!scriptEntry.hasObject("quantity")
-                    && arg.matchesInteger()) {
+                    && arg.matchesInteger()
+                    && arg.matchesPrefix("quantity", "q", "qty", "a", "amt", "amount")) {
                 if (arg.matchesPrefix("q", "qty")) {
                     Deprecations.qtyTags.warn(scriptEntry);
                 }
                 scriptEntry.addObject("quantity", arg.asElement().setPrefix("quantity"));
             }
-            else if (!scriptEntry.hasObject("delay") && arg.matchesArgumentType(DurationTag.class)
-                    && arg.matchesPrefix("delay", "d")) {
-                scriptEntry.addObject("delay", arg.asType(DurationTag.class));
+            else if (!scriptEntry.hasObject("action")
+                    && arg.matchesArgumentList(ItemTag.class)) {
+                scriptEntry.addObject("action", new ElementTag(Action.DROP_ITEM.toString()).setPrefix("action"));
+                scriptEntry.addObject("item", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
+            }
+            else if (!scriptEntry.hasObject("action")
+                    && arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("action", new ElementTag(Action.DROP_ENTITY.toString()).setPrefix("action"));
+                scriptEntry.addObject("entity", arg.asType(EntityTag.class).setPrefix("entity"));
+            }
+            else if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(LocationTag.class)) {
+                scriptEntry.addObject("location", arg.asType(LocationTag.class).setPrefix("location"));
             }
             else {
                 arg.reportUnhandled();
@@ -137,14 +135,13 @@ public class DropCommand extends AbstractCommand {
             if (Utilities.getEntryPlayer(scriptEntry) != null && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
                 scriptEntry.addObject("location", Utilities.getEntryPlayer(scriptEntry).getLocation().setPrefix("location"));
                 Debug.echoDebug(scriptEntry, "Did not specify a location, assuming Player's location.");
-
             }
             else {
                 throw new InvalidArgumentsException("Must specify a location!");
             }
         }
         if (!scriptEntry.hasObject("quantity")) {
-            scriptEntry.addObject("quantity", new ElementTag("1").setPrefix("quantity"));
+            scriptEntry.addObject("quantity", new ElementTag("1"));
         }
     }
 
@@ -172,7 +169,6 @@ public class DropCommand extends AbstractCommand {
                 ((ExperienceOrb) orb.getBukkitEntity()).setExperience(quantity.asInt());
                 entityList.addObject(orb);
                 break;
-
             case DROP_ITEM:
                 for (ItemTag item : items) {
                     if (item.getMaterial().getMaterial() == Material.AIR) {
@@ -215,6 +211,5 @@ public class DropCommand extends AbstractCommand {
         if (entityList.size() == 1) {
             scriptEntry.addObject("dropped_entity", entityList.getObject(0));
         }
-
     }
 }
