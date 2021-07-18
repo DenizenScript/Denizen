@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
@@ -452,7 +453,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
-    public Biome getBiomeForTag(Attribute attribute) {
+    public BiomeNMS getBiomeForTag(Attribute attribute) {
         NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
@@ -467,7 +468,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 return null;
             }
-            return super.getBlock().getBiome();
+            return NMSHandler.getInstance().getBiomeAt(super.getBlock());
         }
         finally {
             NMSHandler.getChunkHelper().restoreServerThread(getWorld());
@@ -3088,7 +3089,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (attribute.startsWith("formatted", 2)) {
                 Deprecations.locationBiomeFormattedTag.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(CoreUtilities.toLowerCase(object.getBiomeForTag(attribute).name()).replace('_', ' '));
+                return new ElementTag(CoreUtilities.toLowerCase(object.getBiomeForTag(attribute).getName()).replace('_', ' '));
             }
             return new BiomeTag(object.getBiomeForTag(attribute));
         });
@@ -3656,7 +3657,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.biome>
         // -->
         if (mechanism.matches("biome") && mechanism.requireObject(BiomeTag.class)) {
-            getBlock().setBiome(mechanism.valueAsType(BiomeTag.class).bukkitBiome);
+            mechanism.valueAsType(BiomeTag.class).getBiome().setTo(getBlock());
         }
 
         // <--[mechanism]

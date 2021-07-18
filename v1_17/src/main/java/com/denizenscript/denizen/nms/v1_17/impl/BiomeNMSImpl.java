@@ -1,17 +1,19 @@
 package com.denizenscript.denizen.nms.v1_17.impl;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
+import net.minecraft.world.level.chunk.LevelChunk;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
@@ -22,10 +24,12 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     public net.minecraft.world.level.biome.Biome biomeBase;
 
-    public BiomeNMSImpl(Biome biome) {
-        super(biome);
-        World world = Bukkit.getWorlds().get(0); // TODO: Biomes can now be world-unique as of 1.16.2
-        this.biomeBase = CraftBlock.biomeToBiomeBase(((CraftWorld) world).getHandle().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), biome);
+    public ServerLevel world;
+
+    public BiomeNMSImpl(ServerLevel world, String name) {
+        super(world.getWorld(), name);
+        this.world = world;
+        biomeBase = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).get(new ResourceLocation(name));
     }
 
     @Override
@@ -101,5 +105,22 @@ public class BiomeNMSImpl extends BiomeNMS {
             }
         }
         return entityTypes;
+    }
+
+    @Override
+    public void setTo(Block block) {
+        if (((CraftWorld) block.getWorld()).getHandle() != this.world) {
+            NMSHandler.getInstance().getBiomeNMS(block.getWorld(), getName()).setTo(block);
+            return;
+        }
+        // Based on CraftWorld source
+        BlockPos pos = new BlockPos(block.getX(), 0, block.getZ());
+        if (world.hasChunkAt(pos)) {
+            LevelChunk chunk = world.getChunkAt(pos);
+            if (chunk != null) {
+                chunk.getBiomes().setBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2, biomeBase);
+                chunk.markUnsaved();
+            }
+        }
     }
 }

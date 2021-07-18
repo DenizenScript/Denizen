@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -123,8 +124,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         }
         from = new LocationTag(event.getFrom());
         to = new LocationTag(event.getTo());
-        old_biome = new BiomeTag(from.getBlock().getBiome());
-        new_biome = new BiomeTag(to.getBlock().getBiome());
+        old_biome = new BiomeTag(NMSHandler.getInstance().getBiomeAt(from.getBlock()));
+        new_biome = new BiomeTag(NMSHandler.getInstance().getBiomeAt(to.getBlock()));
         if (old_biome.identify().equals(new_biome.identify())) {
             return;
         }

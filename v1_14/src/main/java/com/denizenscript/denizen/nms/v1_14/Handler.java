@@ -24,6 +24,7 @@ import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -210,8 +211,13 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public BiomeNMS getBiomeNMS(Biome biome) {
-        return new BiomeNMSImpl(biome);
+    public BiomeNMS getBiomeNMS(World world, String name) {
+        for (Biome biome : Biome.values()) {
+            if (biome.name().equalsIgnoreCase(name)) {
+                return new BiomeNMSImpl(world, biome);
+            }
+        }
+        return null;
     }
 
     @Override

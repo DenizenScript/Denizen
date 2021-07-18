@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.nms.abstracts;
 
-import org.bukkit.block.Biome;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
@@ -8,10 +10,13 @@ import java.util.List;
 
 public abstract class BiomeNMS {
 
-    private final String name;
+    public String name;
 
-    public BiomeNMS(Biome biome) {
-        this.name = biome.name();
+    public World world;
+
+    public BiomeNMS(World world, String name) {
+        this.world = world;
+        this.name = CoreUtilities.toLowerCase(name);
     }
 
     public DownfallType getDownfallType() {
@@ -62,4 +67,6 @@ public abstract class BiomeNMS {
     protected abstract boolean getDoesRain();
 
     protected abstract boolean getDoesSnow();
+
+    public abstract void setTo(Block block);
 }

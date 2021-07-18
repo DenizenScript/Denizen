@@ -14,7 +14,9 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -163,7 +165,11 @@ public abstract class NMSHandler {
 
     public abstract ProfileEditor getProfileEditor();
 
-    public abstract BiomeNMS getBiomeNMS(Biome biome);
+    public abstract BiomeNMS getBiomeNMS(World world, String name);
+
+    public BiomeNMS getBiomeAt(Block block) {
+        return NMSHandler.getInstance().getBiomeNMS(block.getWorld(), block.getBiome().name());
+    }
 
     public abstract double[] getRecentTps();
 

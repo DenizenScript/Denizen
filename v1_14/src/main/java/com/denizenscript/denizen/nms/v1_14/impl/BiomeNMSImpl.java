@@ -3,7 +3,9 @@ package com.denizenscript.denizen.nms.v1_14.impl;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.server.v1_14_R1.*;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
@@ -15,8 +17,11 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     private final BiomeBase biomeBase;
 
-    public BiomeNMSImpl(Biome biome) {
-        super(biome);
+    public Biome bukkitBiome;
+
+    public BiomeNMSImpl(World world, Biome biome) {
+        super(world, biome.name());
+        bukkitBiome = biome;
         this.biomeBase = CraftBlock.biomeToBiomeBase(biome);
     }
 
@@ -87,5 +92,10 @@ public class BiomeNMSImpl extends BiomeNMS {
             }
         }
         return entityTypes;
+    }
+
+    @Override
+    public void setTo(Block block) {
+        block.setBiome(bukkitBiome);
     }
 }

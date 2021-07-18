@@ -122,7 +122,7 @@ public class MaterialMode implements Property {
         // @tags
         // <MaterialTag.mode>
         // -->
-        if (mechanism.matches("mode") && mechanism.requireEnum(false, Comparator.Mode.values())) {
+        if (mechanism.matches("mode")) {
             if (isComparator() && mechanism.requireEnum(false, Comparator.Mode.values())) {
                 getComparator().setMode(Comparator.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
             }

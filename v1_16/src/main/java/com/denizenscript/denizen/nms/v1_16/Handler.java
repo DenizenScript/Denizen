@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
+import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.Iterables;
@@ -30,6 +31,7 @@ import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -217,8 +219,13 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public BiomeNMS getBiomeNMS(Biome biome) {
-        return new BiomeNMSImpl(biome);
+    public BiomeNMS getBiomeNMS(World world, String name) {
+        for (Biome biome : Biome.values()) {
+            if (biome.name().equalsIgnoreCase(name)) {
+                return new BiomeNMSImpl(world, biome);
+            }
+        }
+        return null;
     }
 
     @Override

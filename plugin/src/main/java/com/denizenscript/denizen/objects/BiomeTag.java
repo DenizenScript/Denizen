@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -16,6 +17,8 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
@@ -29,13 +32,14 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     // @base ElementTag
     // @implements FlaggableObject
     // @format
-    // The identity format for biomes is simply the biome name, as registered in Bukkit, for example: 'desert'.
+    // The identity format for biomes is a world name, then a comma, then the biome key. For example: 'hub,desert', or 'space,minecraft:desert'.
     //
     // @description
-    // A BiomeTag represents a world biome type.
+    // A BiomeTag represents a world biome type. Vanilla biomes are globally available, however some biomes are world-specific when added by datapacks.
     //
-    // A list of all valid Bukkit biomes can found be at
-    // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>
+    // A list of all vanilla biomes can be found at <@link url https://minecraft.fandom.com/wiki/Biome#Biome_IDs>.
+    //
+    // BiomeTags without a specific world will work as though they are in the server's default world.
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the server saves file, under special sub-key "__biomes"
@@ -51,46 +55,38 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         return valueOf(string, null);
     }
 
-    /**
-     * Gets a Biome Object from a string form.
-     *
-     * @param string the string
-     */
     @Fetchable("b")
     public static BiomeTag valueOf(String string, TagContext context) {
-
         if (string.startsWith("b@")) {
             string = string.substring(2);
         }
-
-        for (Biome biome : Biome.values()) {
-            if (biome.name().equalsIgnoreCase(string)) {
-                return new BiomeTag(biome);
-            }
+        string = CoreUtilities.toLowerCase(string);
+        int comma = string.indexOf(',');
+        String worldName = null, biomeName = string;
+        if (comma != -1) {
+            worldName = string.substring(0, comma);
+            biomeName = string.substring(comma + 1);
         }
-
-        return null;
+        World world = Bukkit.getWorlds().get(0);
+        if (worldName != null) {
+            WorldTag worldTag = WorldTag.valueOf(worldName, context);
+            if (worldTag == null || worldTag.getWorld() == null) {
+                return null;
+            }
+            world = worldTag.getWorld();
+        }
+        BiomeNMS biome = NMSHandler.getInstance().getBiomeNMS(world, biomeName);
+        if (biome == null) {
+            return null;
+        }
+        return new BiomeTag(biome);
     }
 
-    /**
-     * Determines whether a string is a valid biome.
-     *
-     * @param arg the string
-     * @return true if matched, otherwise false
-     */
     public static boolean matches(String arg) {
-
         if (arg.startsWith("b@")) {
-            arg = arg.substring(2);
+            return true;
         }
-
-        for (Biome b : Biome.values()) {
-            if (b.name().equalsIgnoreCase(arg)) {
-                return true;
-            }
-        }
-
-        return false;
+        return valueOf(arg, CoreUtilities.noDebugContext) != null;
     }
 
     ///////////////
@@ -98,8 +94,20 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     /////////////
 
     public BiomeTag(Biome biome) {
-        this.bukkitBiome = biome;
-        this.biome = NMSHandler.getInstance().getBiomeNMS(biome);
+        String key = biome.name();
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            if (biome.getKey().getNamespace().equals("minecraft")) {
+                key = biome.getKey().getKey();
+            }
+            else {
+                key = biome.getKey().toString();
+            }
+        }
+        this.biome = NMSHandler.getInstance().getBiomeNMS(Bukkit.getWorlds().get(0), key);
+    }
+
+    public BiomeTag(BiomeNMS biome) {
+        this.biome = biome;
     }
 
     /////////////////////
@@ -107,8 +115,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     /////////////////
 
     private BiomeNMS biome;
-
-    public Biome bukkitBiome;
 
     public BiomeNMS getBiome() {
         return biome;
@@ -133,7 +139,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public String identify() {
-        return "b@" + CoreUtilities.toLowerCase(biome.getName());
+        return "b@" + biome.world.getName() + "," + biome.getName();
     }
 
     @Override

@@ -26,21 +26,27 @@ import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Biome;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryCustom;
@@ -226,8 +232,22 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public BiomeNMS getBiomeNMS(Biome biome) {
-        return new BiomeNMSImpl(biome);
+    public BiomeNMS getBiomeNMS(World world, String name) {
+        BiomeNMSImpl impl = new BiomeNMSImpl(((CraftWorld) world).getHandle(), name);
+        if (impl.biomeBase == null) {
+            return null;
+        }
+        return impl;
+    }
+
+    @Override
+    public BiomeNMS getBiomeAt(Block block) {
+        // Based on CraftWorld source
+        ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
+        Biome biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
+        ResourceLocation key = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
+        String keyText = key.getNamespace().equals("minecraft") ? key.getPath() : key.toString();
+        return new BiomeNMSImpl(level, keyText);
     }
 
     @Override
