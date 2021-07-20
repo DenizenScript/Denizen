@@ -417,9 +417,9 @@ public class NPCCommandHandler {
 
     @Command(
             aliases = {"npc"}, usage = "sleep (--location x,y,z,world) (--anchor anchor_name)",
-            desc = "Makes the NPC sleep.", modifiers = {"sleep"},
+            desc = "Makes the NPC sleep.", modifiers = {"sleep" },
             min = 1, max = 3, permission = "denizen.npc.sleep")
-    @Requirements(selected = true, ownership = true)
+    @Requirements(selected = true, ownership = true, types = { EntityType.VILLAGER, EntityType.PLAYER })
     public void sleeping(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
         if (trait.isSleeping()) {

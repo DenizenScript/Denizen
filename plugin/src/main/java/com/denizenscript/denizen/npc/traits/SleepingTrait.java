@@ -22,12 +22,9 @@ public class SleepingTrait extends Trait {
 
     @Override
     public void run() {
-        if (npc == null || bedLocation == null) {
+        if (npc == null || bedLocation == null || !npc.isSpawned()) {
             return;
         }
-
-        //if (npc.getEntity().getPassenger() == null && sitting) eh.mount(eh);
-
         if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 1)) {
             wakeUp();
         }
@@ -46,13 +43,16 @@ public class SleepingTrait extends Trait {
                 return;
             }
         }
-        else { // Player
+        else if (npc.getEntity() instanceof Player) {
             if (bedLocation.getBlock().getBlockData() instanceof Bed) {
                 ((Player) npc.getEntity()).sleep(bedLocation.clone(), true);
             }
             else {
                 PlayerAnimation.SLEEP.play((Player) npc.getEntity());
             }
+        }
+        else {
+            return;
         }
         sleeping = true;
     }
@@ -79,11 +79,6 @@ public class SleepingTrait extends Trait {
         if (sleeping) {
             return;
         }
-
-        /*
-         * Teleport NPC to the location before
-         * playing sleep animation.
-         */
         //TODO Adjust the .add()
         npc.getEntity().teleport(location.clone().add(0.5, 0, 0.5));
         bedLocation = location.clone();
