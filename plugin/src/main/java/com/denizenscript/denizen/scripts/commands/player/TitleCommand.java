@@ -67,18 +67,15 @@ public class TitleCommand extends AbstractCommand {
             else if (arg.matchesPrefix("subtitle")) {
                 scriptEntry.addObject("subtitle", arg.asElement());
             }
-            else if (arg.matchesPrefix("fade_in")
-                    && arg.matchesArgumentType(DurationTag.class)) {
+            else if (arg.matchesPrefix("fade_in")) {
                 String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 scriptEntry.addObject("fade_in", DurationTag.valueOf(argStr, scriptEntry.context));
             }
-            else if (arg.matchesPrefix("stay")
-                    && arg.matchesArgumentType(DurationTag.class)) {
+            else if (arg.matchesPrefix("stay")) {
                 String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 scriptEntry.addObject("stay", DurationTag.valueOf(argStr, scriptEntry.context));
             }
-            else if (arg.matchesPrefix("fade_out")
-                    && arg.matchesArgumentType(DurationTag.class)) {
+            else if (arg.matchesPrefix("fade_out")) {
                 String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
                 scriptEntry.addObject("fade_out", DurationTag.valueOf(argStr, scriptEntry.context));
             }
