@@ -305,13 +305,13 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public boolean containerHas(PersistentDataContainer container, NamespacedKey key) {
-        return ((CraftPersistentDataContainer) container).getRaw().containsKey(key.toString());
+    public boolean containerHas(PersistentDataContainer container, String key) {
+        return ((CraftPersistentDataContainer) container).getRaw().containsKey(key);
     }
 
     @Override
-    public String containerGetString(PersistentDataContainer container, NamespacedKey key) {
-        net.minecraft.nbt.Tag base = ((CraftPersistentDataContainer) container).getRaw().get(key.toString());
+    public String containerGetString(PersistentDataContainer container, String key) {
+        net.minecraft.nbt.Tag base = ((CraftPersistentDataContainer) container).getRaw().get(key);
         if (base instanceof StringTag) {
             return base.getAsString();
         }

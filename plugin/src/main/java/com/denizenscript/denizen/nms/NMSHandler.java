@@ -183,7 +183,7 @@ public abstract class NMSHandler {
 
     public abstract ArrayList<String> containerListFlags(PersistentDataContainer container, String prefix);
 
-    public abstract boolean containerHas(PersistentDataContainer container, NamespacedKey key);
+    public abstract boolean containerHas(PersistentDataContainer container, String key);
 
-    public abstract String containerGetString(PersistentDataContainer container, NamespacedKey key);
+    public abstract String containerGetString(PersistentDataContainer container, String key);
 }

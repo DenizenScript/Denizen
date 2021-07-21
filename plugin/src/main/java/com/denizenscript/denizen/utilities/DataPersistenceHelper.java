@@ -52,12 +52,12 @@ public class DataPersistenceHelper {
     }
 
     public static boolean hasDenizenKey(PersistentDataHolder holder, String keyName) {
-        return NMSHandler.getInstance().containerHas(holder.getPersistentDataContainer(), new NamespacedKey(Denizen.getInstance(), keyName));
+        return NMSHandler.getInstance().containerHas(holder.getPersistentDataContainer(), "denizen:" + keyName);
     }
 
     public static ObjectTag getDenizenKey(PersistentDataHolder holder, String keyName) {
         try {
-            String str = NMSHandler.getInstance().containerGetString(holder.getPersistentDataContainer(), new NamespacedKey(Denizen.getInstance(), keyName));
+            String str = NMSHandler.getInstance().containerGetString(holder.getPersistentDataContainer(), "denizen:" + keyName);
             if (str == null) {
                 return null;
             }
