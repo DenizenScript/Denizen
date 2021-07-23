@@ -12,15 +12,14 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 
 public class EntityVisible implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
-                (((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ((EntityTag) entity).getBukkitEntityType() == EntityType.ITEM_FRAME));
+                (((EntityTag) entity).getBukkitEntity() instanceof ArmorStand
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ((EntityTag) entity).getBukkitEntity() instanceof ItemFrame));
     }
 
     public static EntityVisible getFrom(ObjectTag entity) {
