@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -48,7 +49,11 @@ public class ItemEnchantments implements Property {
     }
 
     public static String getName(Enchantment enchantment) {
-        return enchantment.getKey().getKey();
+        NamespacedKey key = enchantment.getKey();
+        if (key.getNamespace().equals("minecraft")) {
+            return key.getKey();
+        }
+        return key.toString();
     }
 
     ItemTag item;

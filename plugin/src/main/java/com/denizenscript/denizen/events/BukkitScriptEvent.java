@@ -19,6 +19,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -51,7 +52,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
     // Items can also be used with an "item_flagged" secondary prefix, so for an event that has "with:<item>", you can also do "with:item_flagged:<flag name>".
     // For item matchers that aren't switches, this works similarly, like "on player consumes item_flagged:myflag:" (note that this is not a switch).
-    // You can also use "vanilla_tagged:<vanilla_tag_name>".
+    // You can also use "vanilla_tagged:<vanilla_tag_name>" to check vanilla tags, or "item_enchanted:<enchantment>" to check enchantments.
     // You can also use "raw_exact:<item>" to do an exact raw item data comparison (almost always a bad idea to use).
     //
     // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
@@ -926,6 +927,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
             return true;
+        }
+        if (comparedto.startsWith("item_enchanted:")) {
+            String enchMatcher = comparedto.substring("item_enchanted:".length());
+            if (!item.getItemMeta().hasEnchants()) {
+                return false;
+            }
+            for (Enchantment enchant : item.getItemMeta().getEnchants().keySet()) {
+                if (runGenericCheck(enchMatcher, enchant.getKey().getKey())) {
+                    return true;
+                }
+            }
+            return false;
         }
         if (comparedto.startsWith("raw_exact:")) {
             ItemTag compareItem = ItemTag.valueOf(rawComparedTo.substring("raw_exact:".length()), CoreUtilities.errorButNoDebugContext);

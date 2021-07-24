@@ -35,6 +35,8 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
+    // @Switch enchant:<name> to only process the event if any of the enchantments being added match the given name.
+    //
     // @Triggers when an item is enchanted.
     //
     // @Context
@@ -82,15 +84,24 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean matches(ScriptPath path) {
         String itemTest = path.eventArgLowerAt(0);
-
         if (!itemTest.equals("item") && !tryItem(item, itemTest)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
+        if (path.switches.containsKey("enchant")) {
+            boolean any = false;
+            for (Enchantment enchant : event.getEnchantsToAdd().keySet()) {
+                any = runGenericSwitchCheck(path, "enchant", enchant.getKey().getKey());
+                if (any) {
+                    break;
+                }
+            }
+            if (!any) {
+                return false;
+            }
+        }
         return super.matches(path);
     }
 
