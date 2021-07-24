@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerChangesSignScriptEvent;
+import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
 import com.denizenscript.denizen.nms.v1_17.impl.network.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -33,9 +34,11 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void handlePlayerInput(final ServerboundPlayerInputPacket packet) {
-        if (!DenizenPacketHandler.instance.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet))) {
+        if (!PlayerSteersEntityScriptEvent.instance.enabled) {
             super.handlePlayerInput(packet);
+            return;
         }
+        DenizenPacketHandler.instance.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet), () -> super.handlePlayerInput(packet));
     }
 
     @Override

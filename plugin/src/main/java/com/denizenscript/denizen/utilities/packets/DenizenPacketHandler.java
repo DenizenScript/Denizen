@@ -12,6 +12,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,7 +21,6 @@ import org.bukkit.entity.Player;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 public class DenizenPacketHandler {
@@ -41,28 +41,28 @@ public class DenizenPacketHandler {
         });
     }
 
-    public boolean receivePacket(final Player player, final PacketInSteerVehicle steerVehicle) {
+    public boolean receivePacket(final Player player, final PacketInSteerVehicle steerVehicle, Runnable allow) {
         if (PlayerSteersEntityScriptEvent.instance.enabled) {
-            Future<Boolean> future = Bukkit.getScheduler().callSyncMethod(Denizen.getInstance(),
-                    () -> {
-                        PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
-                        event.player = PlayerTag.mirrorBukkitPlayer(player);
-                        event.entity = player.isInsideVehicle() ? new EntityTag(player.getVehicle()) : null;
-                        event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
-                        event.forward = new ElementTag(steerVehicle.getForwardInput());
-                        event.jump = new ElementTag(steerVehicle.getJumpInput());
-                        event.dismount = new ElementTag(steerVehicle.getDismountInput());
-                        event.cancelled = false;
-                        event.modifyCancellation = (c) -> event.cancelled = c;
-                        event.fire();
-                        return event.cancelled;
-                    }
-            );
-            try {
-                return future.get();
+            Runnable process = () -> {
+                PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
+                event.player = PlayerTag.mirrorBukkitPlayer(player);
+                event.entity = player.isInsideVehicle() ? new EntityTag(player.getVehicle()) : null;
+                event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
+                event.forward = new ElementTag(steerVehicle.getForwardInput());
+                event.jump = new ElementTag(steerVehicle.getJumpInput());
+                event.dismount = new ElementTag(steerVehicle.getDismountInput());
+                event.cancelled = false;
+                event.modifyCancellation = (c) -> event.cancelled = c;
+                event.fire();
+                if (!event.cancelled) {
+                    allow.run();
+                }
+            };
+            if (Bukkit.isPrimaryThread()) {
+                process.run();
             }
-            catch (Exception e) {
-                Debug.echoError(e);
+            else {
+                Bukkit.getScheduler().runTask(Denizen.getInstance(), process);
             }
         }
         return false;

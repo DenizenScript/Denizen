@@ -408,7 +408,7 @@ public class TextTagBase {
                 // @description
                 // Returns a special chat code that makes the following text execute the input command when clicked.
                 // This tag must be followed by an <&end_click> tag.
-                // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+                // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, COPY_TO_CLIPBOARD, or CHANGE_PAGE.
                 // For example: - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
                 // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
                 // -->

@@ -449,7 +449,7 @@ public class BukkitElementProperties implements Property {
             // @group text manipulation
             // @description
             // Adds a click command to the element, which makes the element execute the input command when clicked.
-            // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, or CHANGE_PAGE.
+            // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, COPY_TO_CLIPBOARD, or CHANGE_PAGE.
             // For example: - narrate "You can <element[click here].on_click[https://denizenscript.com].type[OPEN_URL]> to learn about Denizen!"
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // -->

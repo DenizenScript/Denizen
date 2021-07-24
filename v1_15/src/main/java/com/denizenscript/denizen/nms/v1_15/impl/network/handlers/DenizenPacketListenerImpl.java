@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_15.impl.network.handlers;
 
+import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
 import com.denizenscript.denizen.nms.v1_15.impl.network.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_15.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
@@ -22,9 +23,11 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void a(final PacketPlayInSteerVehicle packet) {
-        if (!DenizenPacketHandler.instance.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet))) {
+        if (!PlayerSteersEntityScriptEvent.instance.enabled) {
             super.a(packet);
+            return;
         }
+        DenizenPacketHandler.instance.receivePacket(player.getBukkitEntity(), new PacketInSteerVehicleImpl(packet), () -> super.a(packet));
     }
 
     @Override
