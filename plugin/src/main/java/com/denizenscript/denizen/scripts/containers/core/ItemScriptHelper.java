@@ -231,6 +231,28 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, item, items, exact);
     }
 
+    public void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String baseItemString, String upgradeItemString, String internalId) {
+        boolean baseExact = true;
+        if (baseItemString.startsWith("material:")) {
+            baseExact = false;
+            baseItemString = baseItemString.substring("material:".length());
+        }
+        ItemStack[] baseItems = textToItemArray(container, baseItemString, baseExact);
+        if (baseItems == null) {
+            return;
+        }
+        boolean upgradeExact = true;
+        if (upgradeItemString.startsWith("material:")) {
+            upgradeExact = false;
+            upgradeItemString = upgradeItemString.substring("material:".length());
+        }
+        ItemStack[] upgradeItems = textToItemArray(container, upgradeItemString, upgradeExact);
+        if (upgradeItems == null) {
+            return;
+        }
+        NMSHandler.getItemHelper().registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
+    }
+
     public void rebuildRecipes() {
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
@@ -270,6 +292,9 @@ public class ItemScriptHelper implements Listener {
                                     cookTime = DurationTag.valueOf(subSection.getString("cook_time"), new BukkitTagContext(container)).getTicksAsInt();
                                 }
                                 registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                                break;
+                            case "smithing":
+                                registerSmithingRecipe(container, item, subSection.getString("base"), subSection.getString("upgrade"), internalId);
                                 break;
                         }
                     }

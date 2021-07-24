@@ -63,6 +63,10 @@ public abstract class ItemHelper {
 
     public abstract PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, Color color, boolean icon);
 
+    public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
+        throw new UnsupportedOperationException();
+    }
+
     public void setInventoryItem(Inventory inventory, ItemStack item, int slot) {
         inventory.setItem(slot, item);
     }

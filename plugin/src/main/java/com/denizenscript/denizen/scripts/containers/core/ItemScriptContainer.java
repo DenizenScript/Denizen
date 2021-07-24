@@ -168,6 +168,11 @@ public class ItemScriptContainer extends ScriptContainer {
     //           # | Only some recipes should have this key.
     //          experience: 5
     //          input: ItemTag
+    //      6:
+    //          # Smithing recipes take one base item and one upgrade item.
+    //          type: smithing
+    //          base: ItemTag
+    //          upgrade: ItemTag
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.

@@ -24,6 +24,8 @@ public class PlayerSmithsItemScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Group Player
     //
+    // @Cancellable true
+    //
     // @Triggers when a player upgrades an item on a smithing table.
     //
     // @Context

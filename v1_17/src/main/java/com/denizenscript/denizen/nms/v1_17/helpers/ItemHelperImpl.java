@@ -156,6 +156,15 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
+        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
+        Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
+        UpgradeRecipe recipe = new UpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+    }
+
+    @Override
     public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact) {
         ResourceLocation key = new ResourceLocation("denizen", keyName);
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
