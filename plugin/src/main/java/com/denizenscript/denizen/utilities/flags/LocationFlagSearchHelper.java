@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.flags;
 
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -12,6 +13,12 @@ import java.util.function.Consumer;
 public class LocationFlagSearchHelper {
 
     public static void getFlaggedLocations(Chunk chunk, String flagName, Consumer<Location> handleLocation) {
+        int subKeyIndex = flagName.indexOf('.');
+        String fullPath = null;
+        if (subKeyIndex != -1) {
+            fullPath = flagName;
+            flagName = flagName.substring(0, subKeyIndex);
+        }
         PersistentDataContainer container = chunk.getPersistentDataContainer();
         Location ref = new Location(chunk.getWorld(), 0, 0, 0);
         for (NamespacedKey key : container.getKeys()) {
@@ -21,7 +28,9 @@ public class LocationFlagSearchHelper {
                     ref.setX(Integer.parseInt(split.get(2)));
                     ref.setY(Integer.parseInt(split.get(3)));
                     ref.setZ(Integer.parseInt(split.get(4)));
-                    handleLocation.accept(ref);
+                    if (fullPath == null || new LocationTag(ref).getFlagTracker().hasFlag(fullPath)) {
+                        handleLocation.accept(ref);
+                    }
                 }
             }
         }
