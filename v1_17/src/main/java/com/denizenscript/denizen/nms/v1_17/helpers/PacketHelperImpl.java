@@ -450,7 +450,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showDebugTestMaker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
+    public void showDebugTestMarker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
         ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_add_marker");
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeBlockPos(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()));

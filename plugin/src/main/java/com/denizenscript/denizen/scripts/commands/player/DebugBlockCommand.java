@@ -130,7 +130,7 @@ public class DebugBlockCommand extends AbstractCommand {
             int alphaInt = (int) (alpha.asFloat() * 255);
             for (LocationTag location : locations) {
                 for (PlayerTag player : players) {
-                    NMSHandler.getPacketHelper().showDebugTestMaker(player.getPlayerEntity(), location, color, alphaInt, name == null ? "" : name.asString(), (int) duration.getMillis());
+                    NMSHandler.getPacketHelper().showDebugTestMarker(player.getPlayerEntity(), location, color, alphaInt, name == null ? "" : name.asString(), (int) duration.getMillis());
                 }
             }
         }

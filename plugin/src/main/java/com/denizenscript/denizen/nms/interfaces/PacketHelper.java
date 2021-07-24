@@ -105,7 +105,7 @@ public interface PacketHelper {
         }
     }
 
-    default void showDebugTestMaker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
+    default void showDebugTestMarker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
         throw new UnsupportedOperationException();
     }
 

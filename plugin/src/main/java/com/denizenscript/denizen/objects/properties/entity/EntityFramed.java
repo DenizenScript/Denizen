@@ -11,14 +11,13 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 
 public class EntityFramed implements Property {
 
     // TODO: Possibly merge class with EntityItem?
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
+        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof ItemFrame;
     }
 
     public static EntityFramed getFrom(ObjectTag entity) {

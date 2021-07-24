@@ -155,6 +155,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //   - narrate "You attacked <context.victim.name> with a <context.level> enchantment!"
     //
     //   # Triggered after an enchanted armor is used to defend against an attack.
+    //   # Also fires if an entity is holding a weapon with this enchantment while being hit.
     //   # Has <context.attacker> (EntityTag), <context.victim> (EntityTag), and <context.level>.
     //   # | Some enchantment scripts should have this key.
     //   after hurt:
