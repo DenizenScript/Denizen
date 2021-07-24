@@ -435,14 +435,12 @@ public class ItemHelperImpl extends ItemHelper {
                     return script.script.canEnchant(CraftItemStack.asBukkitCopy(var0));
                 }
                 @Override
-                public void doPostAttack(LivingEntity var0, Entity var1, int level) {
-                    // TODO
-                    super.doPostAttack(var0, var1, level);
+                public void doPostAttack(LivingEntity attacker, Entity victim, int level) {
+                    script.script.doPostAttack(attacker.getBukkitEntity(), victim.getBukkitEntity(), level);
                 }
                 @Override
-                public void doPostHurt(LivingEntity var0, Entity var1, int level) {
-                    // TODO
-                    super.doPostHurt(var0, var1, level);
+                public void doPostHurt(LivingEntity victim, Entity attacker, int level) {
+                    script.script.doPostHurt(victim.getBukkitEntity(), attacker.getBukkitEntity(), level);
                 }
                 @Override
                 public boolean isTreasureOnly() {
