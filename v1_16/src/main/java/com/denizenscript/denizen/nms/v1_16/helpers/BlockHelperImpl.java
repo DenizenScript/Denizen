@@ -171,8 +171,10 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public org.bukkit.block.BlockState generateBlockState(Material mat) {
-        return new CraftBlockState(mat);
+    public org.bukkit.block.BlockState generateBlockState(Block block, Material mat) {
+        CraftBlockState state = new CraftBlockState(block);
+        state.setData(CraftMagicNumbers.getBlock(mat).getBlockData());
+        return state;
     }
 
     public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.server.v1_16_R3.BlockBase.class).get("material");

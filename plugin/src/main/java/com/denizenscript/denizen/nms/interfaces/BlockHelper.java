@@ -31,9 +31,7 @@ public interface BlockHelper {
 
     float getBlockResistance(Material material);
 
-    default BlockState generateBlockState(Material mat) {
-        return null;
-    }
+    BlockState generateBlockState(Block block, Material mat);
 
     List<Location> getBlocksList(PortalCreateEvent event);
 

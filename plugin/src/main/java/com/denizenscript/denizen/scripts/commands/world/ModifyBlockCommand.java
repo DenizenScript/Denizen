@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -397,9 +398,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 event = new BlockBreakEvent(location.getBlock(), source);
             }
             else {
-                BlockState state = NMSHandler.getBlockHelper().generateBlockState(material.getMaterial());
+                Block block = location.getBlock();
+                BlockState state = NMSHandler.getBlockHelper().generateBlockState(block, material.getMaterial());
                 state.setBlockData(material.getModernData());
-                event = new BlockPlaceEvent(location.getBlock(), state, location.getBlock(), new ItemTag(material, 1).getItemStack(), source, true, EquipmentSlot.HAND);
+                event = new BlockPlaceEvent(block, state, block, new ItemTag(material, 1).getItemStack(), source, true, EquipmentSlot.HAND);
             }
             Bukkit.getPluginManager().callEvent(event);
             if (((Cancellable) event).isCancelled()) {
