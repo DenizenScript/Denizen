@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
+import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
@@ -20,9 +22,17 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -30,6 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
@@ -350,5 +361,120 @@ public class ItemHelperImpl extends ItemHelper {
             display.put("Lore", (ListTag) tagList);
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
+    }
+
+    public static Map<NamespacedKey, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_KEY = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byKey", null);
+    public static Map<String, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_NAME = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byName", null);
+
+    @Override
+    public void registerFakeEnchantment(EnchantmentScriptContainer.EnchantmentReference script) {
+        try {
+            EquipmentSlot[] slots = new EquipmentSlot[script.script.slots.size()];
+            for (int i = 0; i < slots.length; i++) {
+                slots[i] = EquipmentSlot.valueOf(script.script.slots.get(i).toUpperCase());
+            }
+            Enchantment nmsEnchant = new Enchantment(Enchantment.Rarity.valueOf(script.script.rarity), EnchantmentCategory.valueOf(script.script.category), slots) {
+                @Override
+                public int getMinLevel() {
+                    return script.script.minLevel;
+                }
+                @Override
+                public int getMaxLevel() {
+                    return script.script.maxLevel;
+                }
+                @Override
+                public int getMinCost(int level) {
+                    return Integer.parseInt(script.script.autoTagForLevel(script.script.minCostTaggle, level));
+                }
+                @Override
+                public int getMaxCost(int level) {
+                    return Integer.parseInt(script.script.autoTagForLevel(script.script.maxCostTaggable, level));
+                }
+                @Override
+                public int getDamageProtection(int level, DamageSource src) {
+                    return script.script.getDamageProtection(level, src.msgId);
+                }
+                @Override
+                public float getDamageBonus(int level, MobType type) {
+                    String typeName = "UNDEFINED";
+                    if (type == MobType.ARTHROPOD) {
+                        typeName = "ARTHROPOD";
+                    }
+                    else if (type == MobType.ILLAGER) {
+                        typeName = "ILLAGER";
+                    }
+                    else if (type == MobType.UNDEAD) {
+                        typeName = "UNDEAD";
+                    }
+                    else if (type == MobType.WATER) {
+                        typeName = "WATER";
+                    }
+                    return script.script.getDamageBonus(level, typeName);
+                }
+                @Override
+                protected boolean checkCompatibility(Enchantment nmsEnchantment) {
+                    ResourceLocation nmsKey = Registry.ENCHANTMENT.getKey(nmsEnchantment);
+                    NamespacedKey bukkitKey = CraftNamespacedKey.fromMinecraft(nmsKey);
+                    org.bukkit.enchantments.Enchantment bukkitEnchant = CraftEnchantment.getByKey(bukkitKey);
+                    return script.script.isCompatible(bukkitEnchant);
+                }
+                @Override
+                protected String getOrCreateDescriptionId() {
+                    return script.script.descriptionId;
+                }
+                @Override
+                public String getDescriptionId() {
+                    return script.script.descriptionId;
+                }
+                @Override
+                public Component getFullname(int level) {
+                    return Handler.componentToNMS(script.script.getFullName(level));
+                }
+                @Override
+                public boolean canEnchant(net.minecraft.world.item.ItemStack var0) {
+                    return script.script.canEnchant(CraftItemStack.asBukkitCopy(var0));
+                }
+                @Override
+                public void doPostAttack(LivingEntity var0, Entity var1, int level) {
+                    // TODO
+                    super.doPostAttack(var0, var1, level);
+                }
+                @Override
+                public void doPostHurt(LivingEntity var0, Entity var1, int level) {
+                    // TODO
+                    super.doPostHurt(var0, var1, level);
+                }
+                @Override
+                public boolean isTreasureOnly() {
+                    return script.script.isTreasureOnly;
+                }
+                @Override
+                public boolean isCurse() {
+                    return script.script.isCurse;
+                }
+                @Override
+                public boolean isTradeable() {
+                    return script.script.isTradable;
+                }
+                @Override
+                public boolean isDiscoverable() {
+                    return script.script.isDiscoverable;
+                }
+            };
+            String enchName = script.script.id.toUpperCase();
+            Registry.register(Registry.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);
+            CraftEnchantment ench = new CraftEnchantment(nmsEnchant) {
+                @Override
+                public String getName() {
+                    return enchName;
+                }
+            };
+            ENCHANTMENTS_BY_KEY.put(ench.getKey(), ench);
+            ENCHANTMENTS_BY_NAME.put(enchName, ench);
+        }
+        catch (Throwable ex) {
+            Debug.echoError("Failed to register enchantment " + script.script.id);
+            Debug.echoError(ex);
+        }
     }
 }

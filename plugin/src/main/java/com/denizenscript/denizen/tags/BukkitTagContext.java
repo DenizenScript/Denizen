@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.tags;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -15,6 +16,12 @@ public class BukkitTagContext extends TagContext {
 
     public BukkitTagContext(BukkitTagContext copyFrom) {
         this(copyFrom.player, copyFrom.npc, copyFrom.entry, copyFrom.debug, copyFrom.script);
+    }
+
+    public BukkitTagContext(EntityTag entity, ScriptTag script) {
+        super(script == null || script.getContainer().shouldDebug(), null, script);
+        this.player = entity != null && entity.isPlayer() ? entity.getDenizenPlayer() : null;
+        this.npc = entity != null && entity.isNPC() ? entity.getDenizenNPC() : null;
     }
 
     public BukkitTagContext(PlayerTag player, NPCTag npc, ScriptTag script) {

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -103,5 +104,9 @@ public abstract class ItemHelper {
         ItemMeta meta = item.getItemMeta();
         meta.setLore(lore);
         item.setItemMeta(meta);
+    }
+
+    public void registerFakeEnchantment(EnchantmentScriptContainer.EnchantmentReference script) {
+        throw new UnsupportedOperationException();
     }
 }
