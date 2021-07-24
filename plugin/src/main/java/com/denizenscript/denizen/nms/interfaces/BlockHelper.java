@@ -35,21 +35,13 @@ public interface BlockHelper {
 
     List<Location> getBlocksList(PortalCreateEvent event);
 
-    default String getPushReaction(Material mat) {
-        throw new UnsupportedOperationException();
-    }
+    String getPushReaction(Material mat);
 
-    default void setPushReaction(Material mat, String reaction) {
-        throw new UnsupportedOperationException();
-    }
+    void setPushReaction(Material mat, String reaction);
 
-    default float getBlockStength(Material mat) {
-        throw new UnsupportedOperationException();
-    }
+    float getBlockStength(Material mat);
 
-    default void setBlockStrength(Material mat, float strength) {
-        throw new UnsupportedOperationException();
-    }
+    void setBlockStrength(Material mat, float strength);
 
     static String getMaterialNameFromBlockData(String text) {
         int openBracket = text.indexOf('[');
@@ -77,9 +69,7 @@ public interface BlockHelper {
         return parseBlockData(Material.getMaterial(material.toUpperCase()), otherData);
     }
 
-    default BlockData parseBlockData(Material material, String otherData) {
-        throw new UnsupportedOperationException();
-    }
+    BlockData parseBlockData(Material material, String otherData);
 
     default void makeBlockStateRaw(BlockState state) {
         throw new UnsupportedOperationException();

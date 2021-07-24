@@ -86,6 +86,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // Optionally, specify a script to be ran after the delayed edits finish. (Doesn't fire if delayed is not set.)
     //
     // Optionally, specify a source player. When set, Bukkit events will fire that identify that player as the source of a change, and potentially cancel the change.
+    // The source argument might cause weird interoperation with other plugins, use with caution.
     //
     // The modifyblock command is ~waitable. Refer to <@link language ~waitable>.
     //
