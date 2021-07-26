@@ -163,6 +163,12 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }
+        if (!Bukkit.isPrimaryThread()) {
+            if (Debug.verbose) {
+                Debug.log("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network inteceptor ignoring packet to avoid crash. Packet class: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
+            }
+            return;
+        }
         packetsSent++;
         if (processAttachToForPacket(packet)
             || processHiddenEntitiesForPacket(packet)
