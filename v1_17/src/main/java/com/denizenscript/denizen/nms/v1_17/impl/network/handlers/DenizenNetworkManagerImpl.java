@@ -165,10 +165,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }
-        if (!Bukkit.isPrimaryThread()) {
+        if (!Bukkit.isPrimaryThread() && !(packet instanceof ClientboundChatPacket)) {
             if (Debug.verbose || !hasShownAsyncWarning) {
                 hasShownAsyncWarning = true;
-                Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Packet class: "
+                Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Further display of this message requires '/denizen debug -v'. Packet class: "
                         + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName() + " identify the sender of the packet from the stack trace:");
                 try {
                     throw new RuntimeException("Trace");
