@@ -158,15 +158,26 @@ public class DenizenNetworkManagerImpl extends Connection {
         send(packet, null);
     }
 
+    private static boolean hasShownAsyncWarning = false;
+
     @Override
     public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }
         if (!Bukkit.isPrimaryThread()) {
-            if (Debug.verbose) {
-                Debug.log("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network inteceptor ignoring packet to avoid crash. Packet class: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
+            if (Debug.verbose || !hasShownAsyncWarning) {
+                hasShownAsyncWarning = true;
+                Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Packet class: "
+                        + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName() + " identify the sender of the packet from the stack trace:");
+                try {
+                    throw new RuntimeException("Trace");
+                }
+                catch (Exception ex) {
+                    Debug.echoError(ex);
+                }
             }
+            oldManager.send(packet, genericfuturelistener);
             return;
         }
         packetsSent++;
