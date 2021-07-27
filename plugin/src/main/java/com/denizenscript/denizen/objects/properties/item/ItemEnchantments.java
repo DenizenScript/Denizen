@@ -188,7 +188,7 @@ public class ItemEnchantments implements Property {
         // Removes the specified enchantments from the item (as a list of EnchantmentTags).
         // Give no value input to remove all enchantments.
         // @tags
-        // <ItemTag.enchantments>
+        // <ItemTag.enchantment_types>
         // <ItemTag.enchantment_map>
         // -->
         if (mechanism.matches("remove_enchantments")) {

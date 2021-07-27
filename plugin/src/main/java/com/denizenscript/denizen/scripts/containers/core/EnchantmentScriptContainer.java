@@ -275,7 +275,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
             return result;
         }
         String tagged = autoTagForLevel(fullNameTaggable, level);
-        result = FormattedTextHelper.parse(tagged, ChatColor.WHITE);
+        result = FormattedTextHelper.parse(tagged, ChatColor.GRAY);
         fullNamePerLevel.put(level, result);
         return result;
     }

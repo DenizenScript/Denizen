@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
@@ -174,6 +175,34 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // -->
         registerTag("key", (attribute, object) -> {
             return new ElementTag(object.enchantment.getKey().toString());
+        });
+
+        // <--[tag]
+        // @attribute <EnchantmentTag.full_name[<level>]>
+        // @returns ElementTag
+        // @description
+        // Returns the full name for this enchantment for a given level, like "Sharpness V".
+        // For vanilla enchantments, uses language translation keys.
+        // -->
+        registerTag("full_name", (attribute, object) -> {
+            return new ElementTag(object.enchantment.getKey().toString());
+        });
+
+        // <--[tag]
+        // @attribute <EnchantmentTag.script>
+        // @returns ScriptTag
+        // @description
+        // Returns the script that created this enchantment type, if any.
+        // -->
+        registerTag("script", (attribute, object) -> {
+            if (!object.enchantment.getKey().getNamespace().equals("denizen")) {
+                return null;
+            }
+            EnchantmentScriptContainer.EnchantmentReference ref = EnchantmentScriptContainer.registeredEnchantmentContainers.get(object.enchantment.getKey().getKey());
+            if (ref == null) {
+                return null;
+            }
+            return new ScriptTag(ref.script);
         });
 
         // <--[tag]

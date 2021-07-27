@@ -35,6 +35,10 @@ public class EnchantmentHelper {
         throw new UnsupportedOperationException();
     }
 
+    public String getFullName(Enchantment enchantment, int level) {
+        throw new UnsupportedOperationException();
+    }
+
     public float getDamageBonus(Enchantment enchantment, int level, String type) {
         throw new UnsupportedOperationException();
     }

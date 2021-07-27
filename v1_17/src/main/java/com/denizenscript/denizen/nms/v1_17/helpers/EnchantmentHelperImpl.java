@@ -3,8 +3,10 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -169,6 +171,11 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
     @Override
     public int getMaxCost(Enchantment enchantment, int level) {
         return ((CraftEnchantment) enchantment).getHandle().getMaxCost(level);
+    }
+
+    @Override
+    public String getFullName(Enchantment enchantment, int level) {
+        return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)), ChatColor.GRAY);
     }
 
     @Override
