@@ -49,11 +49,11 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public int getMinCost(int level) {
-                    return Integer.parseInt(script.script.autoTagForLevel(script.script.minCostTaggle, level));
+                    return script.script.getMinCost(level);
                 }
                 @Override
                 public int getMaxCost(int level) {
-                    return Integer.parseInt(script.script.autoTagForLevel(script.script.maxCostTaggable, level));
+                    return script.script.getMaxCost(level);
                 }
                 @Override
                 public int getDamageProtection(int level, DamageSource src) {
@@ -97,7 +97,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public boolean canEnchant(net.minecraft.world.item.ItemStack var0) {
-                    return script.script.canEnchant(CraftItemStack.asBukkitCopy(var0));
+                    return super.canEnchant(var0) && script.script.canEnchant(CraftItemStack.asBukkitCopy(var0));
                 }
                 @Override
                 public void doPostAttack(LivingEntity attacker, Entity victim, int level) {

@@ -192,7 +192,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         fullNameTaggable = getString("full_name", "");
         canEnchantTaggable = getString("can_enchant", "true");
         isCompatibleTaggable = getString("is_compatible", "true");
-        minCostTaggle = getString("min_cost", "1");
+        minCostTaggable = getString("min_cost", "1");
         maxCostTaggable = getString("max_cost", "1");
         damageBonusTaggable = getString("damage_bonus", "0.0");
         damageProtectionTaggable = getString("damage_protection", "0");
@@ -214,7 +214,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
 
     public int minLevel, maxLevel;
 
-    public String id, rarity, category, descriptionId, fullNameTaggable, canEnchantTaggable, isCompatibleTaggable, minCostTaggle, maxCostTaggable, damageBonusTaggable, damageProtectionTaggable;
+    public String id, rarity, category, descriptionId, fullNameTaggable, canEnchantTaggable, isCompatibleTaggable, minCostTaggable, maxCostTaggable, damageBonusTaggable, damageProtectionTaggable;
 
     public boolean isTreasureOnly, isCurse, isTradable, isDiscoverable;
 
@@ -323,5 +323,27 @@ public class EnchantmentScriptContainer extends ScriptContainer {
 
     public void doPostHurt(Entity victim, Entity attacker, int level) {
         runSubScript("after hurt", attacker, victim, victim, level);
+    }
+
+    public HashMap<Integer, Integer> minCosts = new HashMap<>(), maxCosts = new HashMap<>();
+
+    public int getMinCost(int level) {
+        Integer cost = minCosts.get(level);
+        if (cost != null) {
+            return cost;
+        }
+        cost = Integer.valueOf(autoTagForLevel(minCostTaggable, level));
+        minCosts.put(level, cost);
+        return cost;
+    }
+
+    public int getMaxCost(int level) {
+        Integer cost = maxCosts.get(level);
+        if (cost != null) {
+            return cost;
+        }
+        cost = Integer.valueOf(autoTagForLevel(maxCostTaggable, level));
+        maxCosts.put(level, cost);
+        return cost;
     }
 }

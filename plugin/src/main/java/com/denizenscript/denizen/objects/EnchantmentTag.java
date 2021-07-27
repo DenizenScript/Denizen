@@ -185,7 +185,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For vanilla enchantments, uses language translation keys.
         // -->
         registerTag("full_name", (attribute, object) -> {
-            return new ElementTag(object.enchantment.getKey().toString());
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(NMSHandler.enchantmentHelper.getFullName(object.enchantment, attribute.getIntContext(1)));
         });
 
         // <--[tag]
