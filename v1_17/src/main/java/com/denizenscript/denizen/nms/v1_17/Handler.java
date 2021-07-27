@@ -42,7 +42,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
@@ -80,6 +79,7 @@ public class Handler extends NMSHandler {
         particleHelper = new ParticleHelperImpl();
         playerHelper = new PlayerHelperImpl();
         worldHelper = new WorldHelperImpl();
+        enchantmentHelper = new EnchantmentHelperImpl();
     }
 
     private final ProfileEditor profileEditor = new ProfileEditorImpl();

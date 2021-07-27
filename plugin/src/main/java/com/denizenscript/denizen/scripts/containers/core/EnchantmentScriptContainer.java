@@ -70,6 +70,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //
     //   # The category/type of this enchantment. Can be any of: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_CHEST, ARMOR_HEAD,
     //   # WEAPON, DIGGER, FISHING_ROD, TRIDENT, BREAKABLE, BOW, WEARABLE, CROSSBOW, VANISHABLE
+    //   # This is used internally by the enchanting table to determine which items to offer the enchantment for.
     //   # If unspecified, will use WEAPON.
     //   # | Most enchantment scripts should have this key!
     //   category: weapon
@@ -104,7 +105,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //   # | Most enchantment scripts can exclude this key.
     //   treasure_only: false
     //
-    //   # Whether this enchantment is only considered to be a curse. (TODO: What difference does this make?)
+    //   # Whether this enchantment is only considered to be a curse. Curses are removed at grindstones, and spread from crafting table repairs.
     //   # If unspecified, will be false.
     //   # | Most enchantment scripts can exclude this key.
     //   is_curse: false
@@ -122,12 +123,14 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //
     //   # A tag that returns a boolean indicating whether this enchantment is compatible with another.
     //   # Can make use of "<context.enchantment_key>" for the applicable enchantment's key, like "minecraft:sharpness".
+    //   # This is used internally by the enchanting table and the anvil to determine if this enchantment can be given alongside another.
     //   # If unspecified, will default to always true.
     //   # | Most enchantment scripts can exclude this key.
     //   is_compatible: <context.enchantment_key.advanced_matches[minecraft:lure|minecraft:luck*]>
     //
     //   # A tag that returns a boolean indicating whether this enchantment can enchant a specific item.
     //   # Can make use of "<context.item>" for the applicable ItemTag.
+    //   # This is used internally to decide whether survival players can copy the enchantment between items on an anvil, as well as for commands like "/enchant".
     //   # If unspecified, will default to always true.
     //   # | Most enchantment scripts can exclude this key.
     //   can_enchant: <context.item.advanced_matches[*_sword|*_axe]>
@@ -140,9 +143,10 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //   damage_bonus: 0.0
     //
     //   # A tag that returns an integer number indicating how much this item should protection against damage.
-    //   # Can make use of "<context.level>" for the enchantment level, and "<context.cause>" for the applicable damage cause, using internal cause names.
+    //   # Can make use of "<context.level>" for the enchantment level, and "<context.cause>" for the applicable damage cause, using internal cause names (different from Spigot Damage Causes).
     //   # Internal cause names: inFire, lightningBolt, onFire, lava, hotFloor, inWall, cramming, drown, starve, cactus, fall, flyIntoWall,
     //   # outOfWorld, generic, magic, wither, anvil, fallingBlock, dragonBreath, dryout, sweetBerryBush, freeze, fallingStalactite, stalagmite
+    //   # Also "<context.attacker>" as an EntityTag if the cause has an attacker specified.
     //   # If unspecified, will default to 0.
     //   # | Most enchantment scripts can exclude this key.
     //   damage_protection: 0
@@ -197,10 +201,14 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         if (isNew) {
             ref = new EnchantmentReference();
         }
+        EnchantmentScriptContainer old = ref.script;
         ref.script = this;
         registeredEnchantmentContainers.put(id, ref);
         if (isNew) {
-            NMSHandler.getItemHelper().registerFakeEnchantment(ref);
+            enchantment = NMSHandler.enchantmentHelper.registerFakeEnchantment(ref);
+        }
+        else {
+            enchantment = old.enchantment;
         }
     }
 
@@ -213,6 +221,8 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     public List<String> slots;
 
     public HashMap<Integer, BaseComponent[]> fullNamePerLevel = new HashMap<>();
+
+    public Enchantment enchantment;
 
     public void validateThread() {
         if (!Bukkit.isPrimaryThread()) {
@@ -270,11 +280,14 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         return result;
     }
 
-    public int getDamageProtection(int level, String causeName) {
+    public int getDamageProtection(int level, String causeName, Entity attacker) {
         ContextSource.SimpleMap src = new ContextSource.SimpleMap();
         src.contexts = new HashMap<>();
         src.contexts.put("level", new ElementTag(level));
         src.contexts.put("cause", new ElementTag(causeName));
+        if (attacker != null) {
+            src.contexts.put("attacker", new EntityTag(attacker));
+        }
         return Integer.parseInt(autoTag(damageProtectionTaggable, src));
     }
 

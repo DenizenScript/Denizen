@@ -64,6 +64,7 @@ public class CommonRegistries {
         new ColorTagBase();
         new CuboidTagBase();
         new EllipsoidTagBase();
+        new EnchantmentTagBase();
         new EntityTagBase();
         new InventoryTagBase();
         new ItemTagBase();
@@ -90,6 +91,7 @@ public class CommonRegistries {
         ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor); // co@
         ObjectFetcher.registerWithObjectFetcher(CuboidTag.class, CuboidTag.tagProcessor); // cu@
         ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class, EllipsoidTag.tagProcessor); // ellipsoid@
+        ObjectFetcher.registerWithObjectFetcher(EnchantmentTag.class, EnchantmentTag.tagProcessor); // enchantment@
         ObjectFetcher.registerWithObjectFetcher(EntityTag.class, EntityTag.tagProcessor); // e@
         ObjectFetcher.registerWithObjectFetcher(InventoryTag.class, InventoryTag.tagProcessor); // in@
         ObjectFetcher.registerWithObjectFetcher(ItemTag.class, ItemTag.tagProcessor); // i@
@@ -112,6 +114,7 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(ColorTag.class, "co");
         CoreUtilities.registerTypeAsNoOtherTypeCode(CuboidTag.class, "cu");
         CoreUtilities.registerTypeAsNoOtherTypeCode(EllipsoidTag.class, "ellipsoid");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(EnchantmentTag.class, "enchantment");
         CoreUtilities.typeCheckers.put(EntityTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but for e@, p@, and n@
             @Override
             public boolean canBecome(ObjectTag inp) {

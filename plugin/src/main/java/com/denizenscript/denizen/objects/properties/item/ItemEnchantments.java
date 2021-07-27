@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.objects.EnchantmentTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -11,10 +11,8 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -37,7 +35,7 @@ public class ItemEnchantments implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "is_enchanted", "enchantments", "enchantment_map"
+            "is_enchanted", "enchantments", "enchantment_map", "enchantment_types"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -46,14 +44,6 @@ public class ItemEnchantments implements Property {
 
     private ItemEnchantments(ItemTag _item) {
         item = _item;
-    }
-
-    public static String getName(Enchantment enchantment) {
-        NamespacedKey key = enchantment.getKey();
-        if (key.getNamespace().equals("minecraft")) {
-            return key.getKey();
-        }
-        return key.toString();
     }
 
     ItemTag item;
@@ -83,7 +73,7 @@ public class ItemEnchantments implements Property {
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
-                enchants.add(getName(enchantment.getKey()) + "," + enchantment.getValue());
+                enchants.add(new EnchantmentTag(enchantment.getKey()).getCleanName() + "," + enchantment.getValue());
             }
             return enchants.getObjectAttribute(attribute.fulfill(2));
         }
@@ -102,7 +92,7 @@ public class ItemEnchantments implements Property {
             if (enchantments.size() > 0) {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2))
-                            || getName(enchantment.getKey()).equalsIgnoreCase(attribute.getContext(2))) {
+                            || new EnchantmentTag(enchantment.getKey()).getCleanName().equalsIgnoreCase(attribute.getContext(2))) {
                         return new ElementTag(enchantment.getValue())
                                 .getObjectAttribute(attribute.fulfill(2));
                     }
@@ -113,18 +103,28 @@ public class ItemEnchantments implements Property {
         }
 
         // <--[tag]
-        // @attribute <ItemTag.enchantments>
-        // @returns ListTag
+        // @attribute <ItemTag.enchantment_types>
+        // @returns ListTag(EnchantmentTag)
         // @mechanism ItemTag.enchantments
         // @group properties
         // @description
-        // Returns a list of enchantment names on the item.
+        // Returns a list of the types of enchantments on the item.
         // -->
-        if (attribute.startsWith("enchantments")) {
+        if (attribute.startsWith("enchantment_types")) {
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
-                enchants.add(getName(enchantment.getKey()));
+                enchants.addObject(new EnchantmentTag(enchantment.getKey()));
+            }
+            return enchants.getObjectAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("enchantments")) {
+            Deprecations.itemEnchantmentsLegacy.warn(attribute.context);
+            Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
+            ListTag enchants = new ListTag();
+            for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
+                enchants.add(new EnchantmentTag(enchantment.getKey()).getCleanName());
             }
             return enchants.getObjectAttribute(attribute.fulfill(1));
         }
@@ -148,7 +148,7 @@ public class ItemEnchantments implements Property {
     public MapTag getEnchantmentMap() {
         MapTag enchants = new MapTag();
         for (Map.Entry<Enchantment, Integer> enchantment : getEnchantments()) {
-            enchants.putObject(getName(enchantment.getKey()), new ElementTag(enchantment.getValue()));
+            enchants.putObject(new EnchantmentTag(enchantment.getKey()).getCleanName(), new ElementTag(enchantment.getValue()));
         }
         return enchants;
     }
@@ -185,37 +185,43 @@ public class ItemEnchantments implements Property {
         // @name remove_enchantments
         // @input ListTag
         // @description
-        // Removes the specified enchantments from the item (as a list of enchantment names).
+        // Removes the specified enchantments from the item (as a list of EnchantmentTags).
         // Give no value input to remove all enchantments.
         // @tags
         // <ItemTag.enchantments>
         // <ItemTag.enchantment_map>
         // -->
         if (mechanism.matches("remove_enchantments")) {
-            HashSet<String> names = null;
             if (mechanism.hasValue()) {
-                names = new HashSet<>();
-                for (String ench : mechanism.valueAsType(ListTag.class)) {
-                    names.add(CoreUtilities.toLowerCase(ench));
-                }
-            }
-            if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
-                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                for (Enchantment ench : new ArrayList<>(meta.getStoredEnchants().keySet())) {
-                    if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName())) ||
-                            names.contains(CoreUtilities.toLowerCase(getName(ench)))) {
-                        meta.removeStoredEnchant(ench);
+                List<EnchantmentTag> toRemove = mechanism.valueAsType(ListTag.class).filter(EnchantmentTag.class, mechanism.context);
+                if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
+                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+                    for (EnchantmentTag ench : toRemove) {
+                        meta.removeStoredEnchant(ench.enchantment);
                     }
+                    item.setItemMeta(meta);
+
                 }
-                item.setItemMeta(meta);
+                else {
+                    for (EnchantmentTag ench : toRemove) {
+                        item.getItemStack().removeEnchantment(ench.enchantment);
+                    }
+                    item.resetCache();
+                }
             }
             else {
-                for (Enchantment ench : new ArrayList<>(item.getItemStack().getEnchantments().keySet())) {
-                    if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName())) ||
-                            names.contains(CoreUtilities.toLowerCase(getName(ench)))) {
-                        item.getItemStack().removeEnchantment(ench);
-                        item.resetCache();
+                if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
+                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+                    for (Enchantment ench : meta.getStoredEnchants().keySet()) {
+                        meta.removeStoredEnchant(ench);
                     }
+                    item.setItemMeta(meta);
+                }
+                else {
+                    for (Enchantment ench : item.getItemStack().getEnchantments().keySet()) {
+                        item.getItemStack().removeEnchantment(ench);
+                    }
+                    item.resetCache();
                 }
             }
         }
@@ -225,7 +231,7 @@ public class ItemEnchantments implements Property {
         // @name enchantments
         // @input MapTag
         // @description
-        // Sets the item's enchantments as a map of enchantment name to level.
+        // Sets the item's enchantments as a map of EnchantmentTags or enchantment names to level.
         // @tags
         // <ItemTag.enchantment_map>
         // -->
@@ -233,7 +239,7 @@ public class ItemEnchantments implements Property {
             if (mechanism.getValue().asString().startsWith("map@")) {
                 MapTag map = mechanism.valueAsType(MapTag.class);
                 for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
-                    Enchantment ench = Utilities.getEnchantmentByName(enchantments.getKey().low);
+                    Enchantment ench = EnchantmentTag.valueOf(enchantments.getKey().low, mechanism.context).enchantment;
                     int level = enchantments.getValue().asType(ElementTag.class, mechanism.context).asInt();
                     if (ench != null) {
                         if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
@@ -259,7 +265,7 @@ public class ItemEnchantments implements Property {
                     else {
                         String[] data = enchant.split(",", 2);
                         try {
-                            Enchantment ench = Utilities.getEnchantmentByName(data[0]);
+                            Enchantment ench = EnchantmentTag.valueOf(data[0], mechanism.context).enchantment;
                             if (ench != null) {
                                 if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();

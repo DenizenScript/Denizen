@@ -13,9 +13,7 @@ import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -57,6 +55,9 @@ public abstract class NMSHandler {
             if (NMSHandler.class.isAssignableFrom(clazz)) {
                 // Found and loaded - good to go!
                 instance = (NMSHandler) clazz.newInstance();
+                if (version.isAtMost(NMSVersion.v1_16)) {
+                    enchantmentHelper = new EnchantmentHelper();
+                }
                 return true;
             }
         }
@@ -81,70 +82,71 @@ public abstract class NMSHandler {
         return javaPlugin;
     }
 
-    public AdvancementHelper advancementHelper;
-    public AnimationHelper animationHelper;
-    public BlockHelper blockHelper;
-    public ChunkHelper chunkHelper;
-    public CustomEntityHelper customEntityHelper;
-    public EntityHelper entityHelper;
-    public FishingHelper fishingHelper;
-    public ItemHelper itemHelper;
-    public SoundHelper soundHelper;
-    public PacketHelper packetHelper;
-    public ParticleHelper particleHelper;
-    public PlayerHelper playerHelper;
-    public WorldHelper worldHelper;
+    public static AdvancementHelper advancementHelper;
+    public static AnimationHelper animationHelper;
+    public static BlockHelper blockHelper;
+    public static ChunkHelper chunkHelper;
+    public static CustomEntityHelper customEntityHelper;
+    public static EntityHelper entityHelper;
+    public static FishingHelper fishingHelper;
+    public static ItemHelper itemHelper;
+    public static SoundHelper soundHelper;
+    public static PacketHelper packetHelper;
+    public static ParticleHelper particleHelper;
+    public static PlayerHelper playerHelper;
+    public static WorldHelper worldHelper;
+    public static EnchantmentHelper enchantmentHelper;
 
     public static AdvancementHelper getAdvancementHelper() {
-        return getInstance().advancementHelper;
+        return advancementHelper;
     }
 
     public static AnimationHelper getAnimationHelper() {
-        return getInstance().animationHelper;
+        return animationHelper;
     }
 
     public static BlockHelper getBlockHelper() {
-        return getInstance().blockHelper;
+        return blockHelper;
     }
 
     public static ChunkHelper getChunkHelper() {
-        return getInstance().chunkHelper;
+        return chunkHelper;
     }
 
     public static CustomEntityHelper getCustomEntityHelper() {
-        return getInstance().customEntityHelper;
+        return customEntityHelper;
     }
 
     public static EntityHelper getEntityHelper() {
-        return getInstance().entityHelper;
+        return entityHelper;
     }
 
     public static FishingHelper getFishingHelper() {
-        return getInstance().fishingHelper;
+        return fishingHelper;
     }
 
     public static ItemHelper getItemHelper() {
-        return getInstance().itemHelper;
+        return itemHelper;
     }
 
     public static SoundHelper getSoundHelper() {
-        return getInstance().soundHelper;
+        return soundHelper;
     }
 
     public static PacketHelper getPacketHelper() {
-        return getInstance().packetHelper;
+        return packetHelper;
     }
 
     public static ParticleHelper getParticleHelper() {
-        return getInstance().particleHelper;
+        return particleHelper;
     }
 
     public static PlayerHelper getPlayerHelper() {
-        return getInstance().playerHelper;
+        return playerHelper;
     }
 
     public static WorldHelper getWorldHelper() {
-        return getInstance().worldHelper;
+        return worldHelper;
     }
 
     public boolean isCorrectMappingsCode() {

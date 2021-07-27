@@ -12,6 +12,7 @@ import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
@@ -21,7 +22,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -43,34 +43,17 @@ public class Utilities {
         input = CoreUtilities.toLowerCase(input);
         int colonIndex = input.indexOf(':');
         if (colonIndex != -1) {
-            return new NamespacedKey(input.substring(0, colonIndex), input.substring(colonIndex + 1));
+            return new NamespacedKey(input.substring(0, colonIndex), cleanseNamespaceID(input.substring(colonIndex + 1)));
         }
         else {
-            return NamespacedKey.minecraft(input);
+            return NamespacedKey.minecraft(cleanseNamespaceID(input));
         }
     }
+
+    public static AsciiMatcher namespaceMatcher = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz" + "_" + "0123456789");
 
     public static String cleanseNamespaceID(String input) {
-        StringBuilder output = new StringBuilder(input.length());
-        for (char c : input.toCharArray()) {
-            if (c >= 'A' && c <= 'Z') {
-                output.append((char)(c - ('A' - 'a')));
-            }
-            else if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_') {
-                output.append(c);
-            }
-        }
-        return output.toString();
-    }
-
-    public static Enchantment getEnchantmentByName(String name) {
-        Enchantment ench;
-        NamespacedKey key = parseNamespacedKey(name);
-        ench = Enchantment.getByKey(key);
-        if (ench == null) {
-            ench = Enchantment.getByName(name.toUpperCase());
-        }
-        return ench;
+        return namespaceMatcher.trimToMatches(CoreUtilities.toLowerCase(input));
     }
 
     public static String getRecipeType(Recipe recipe) {

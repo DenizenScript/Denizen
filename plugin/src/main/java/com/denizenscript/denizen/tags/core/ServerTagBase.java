@@ -668,14 +668,21 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.enchantment_types>
-        // @returns ListTag
+        // @attribute <server.enchantments>
+        // @returns ListTag(EnchantmentTag)
         // @description
         // Returns a list of all enchantments known to the server.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>.
-        // Generally, prefer <@link tag server.enchantment_keys>.
         // -->
+        if (attribute.startsWith("enchantments")) {
+            ListTag enchants = new ListTag();
+            for (Enchantment ench : Enchantment.values()) {
+                enchants.addObject(new EnchantmentTag(ench));
+            }
+            event.setReplacedObject(enchants.getObjectAttribute(attribute.fulfill(1)));
+        }
+
         if (attribute.startsWith("enchantment_types") || attribute.startsWith("list_enchantments")) {
+            Deprecations.echantmentTagUpdate.warn(attribute.context);
             if (attribute.matches("list_enchantments")) {
                 Debug.echoError("list_enchantments is deprecated: use enchantment_types");
             }
@@ -687,15 +694,8 @@ public class ServerTagBase {
             event.setReplacedObject(enchants.getObjectAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <server.enchantment_keys>
-        // @returns ListTag
-        // @description
-        // Returns a list of all enchantments known to the server.
-        // Generally used with <@link mechanism ItemTag.enchantments>.
-        // This is specifically their minecraft key names, which generally align with the names you see in-game.
-        // -->
         if (attribute.startsWith("enchantment_keys") || attribute.startsWith("list_enchantment_keys")) {
+            Deprecations.echantmentTagUpdate.warn(attribute.context);
             listDeprecateWarn(attribute);
             ListTag enchants = new ListTag();
             for (Enchantment e : Enchantment.values()) {
@@ -1015,36 +1015,24 @@ public class ServerTagBase {
             event.setReplacedObject(new ElementTag(statistic.getType().name()).getObjectAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <server.enchantment_max_level[<enchantment>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the max level (at an enchantment table) for the given enchantment.
-        // Refer also to <@link tag server.enchantment_types>.
-        // -->
         if (attribute.startsWith("enchantment_max_level") && attribute.hasContext(1)) {
-            Enchantment ench = Utilities.getEnchantmentByName(attribute.getContext(1));
+            Deprecations.echantmentTagUpdate.warn(attribute.context);
+            EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getContext(1), attribute.context);
             if (ench == null) {
                 attribute.echoError("Enchantment '" + attribute.getContext(1) + "' does not exist.");
                 return;
             }
-            event.setReplacedObject(new ElementTag(ench.getMaxLevel()).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(ench.enchantment.getMaxLevel()).getObjectAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <server.enchantment_start_level[<enchantment>]>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the starting level (at an enchantment table) for the given enchantment.
-        // Refer also to <@link tag server.enchantment_types>.
-        // -->
         if (attribute.startsWith("enchantment_start_level") && attribute.hasContext(1)) {
-            Enchantment ench = Utilities.getEnchantmentByName(attribute.getContext(1));
+            Deprecations.echantmentTagUpdate.warn(attribute.context);
+            EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getContext(1), attribute.context);
             if (ench == null) {
                 attribute.echoError("Enchantment '" + attribute.getContext(1) + "' does not exist.");
                 return;
             }
-            event.setReplacedObject(new ElementTag(ench.getStartLevel()).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(ench.enchantment.getStartLevel()).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

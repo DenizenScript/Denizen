@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.objects.EnchantmentTag;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -19,7 +19,6 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # | Most item scripts should exclude this key!
     //   durability: 12
     //
-    //   # Each line must specify a valid Minecraft enchantment name.
+    //   # Each line must specify a valid enchantment name.
     //   # | Some item scripts should have this key!
     //   enchantments:
     //   - enchantment_name:level
@@ -290,31 +289,33 @@ public class ItemScriptContainer extends ScriptContainer {
                     try {
                         // Build enchantment context
                         int level = 1;
-                        String[] split = enchantment.split(":");
-                        if (split.length > 1) {
-                            level = Integer.valueOf(split[1].replace(" ", ""));
-                            enchantment = split[0].replace(" ", "");
-                        }
-                        else {
+                        int colon = enchantment.lastIndexOf(':');
+                        if (colon == -1) {
                             Debug.echoError("Item script '" + getName() + "' has enchantment '" + enchantment + "' without a level.");
                         }
+                        else {
+                            level = Integer.valueOf(enchantment.substring(colon + 1).replace(" ", ""));
+                            enchantment = enchantment.substring(0, colon).replace(" ", "");
+                        }
                         // Add enchantment
-                        Enchantment ench = Utilities.getEnchantmentByName(enchantment);
+                        EnchantmentTag ench = EnchantmentTag.valueOf(enchantment, context);
+                        if (ench == null) {
+                            Debug.echoError("Item script '" + getName() + "' specifies enchantment '" + enchantment + "' which is invalid.");
+                            continue;
+                        }
                         if (stack.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
-                            meta.addStoredEnchant(ench, level, true);
+                            meta.addStoredEnchant(ench.enchantment, level, true);
                             stack.setItemMeta(meta);
                         }
                         else {
-                            stack.getItemStack().addUnsafeEnchantment(ench, level);
+                            stack.getItemStack().addUnsafeEnchantment(ench.enchantment, level);
                             stack.resetCache();
                         }
                     }
                     catch (Exception ex) {
-                        Debug.echoError("While constructing '" + getName() + "', encountered error: '" + enchantment + "' is an invalid enchantment: " + ex.getClass().getName() + ": " + ex.getMessage());
-                        if (Debug.verbose) {
-                            Debug.echoError(ex);
-                        }
+                        Debug.echoError("While constructing item script '" + getName() + "', encountered error while applying enchantment '" + enchantment + "':");
+                        Debug.echoError(ex);
                     }
                 }
             }

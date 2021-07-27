@@ -696,6 +696,86 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftEnderman) entity).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
     }
 
+    public static class FakeDamageSrc extends DamageSource { public DamageSource real; public FakeDamageSrc(DamageSource src) { super("fake"); real = src; } }
+
+    public static DamageSource getSourceFor(net.minecraft.world.entity.Entity nmsSource, EntityDamageEvent.DamageCause cause) {
+        DamageSource src = DamageSource.GENERIC;
+        if (nmsSource != null) {
+            if (nmsSource instanceof net.minecraft.world.entity.player.Player) {
+                src = DamageSource.playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
+            }
+            else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity) {
+                src = DamageSource.mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
+            }
+        }
+        if (cause == null) {
+            return src;
+        }
+        switch (cause) {
+            case CONTACT:
+                return DamageSource.CACTUS;
+            case ENTITY_ATTACK:
+                return DamageSource.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
+            case ENTITY_SWEEP_ATTACK:
+                if (src != DamageSource.GENERIC) {
+                    src.sweep();
+                }
+                return src;
+            case PROJECTILE:
+                return DamageSource.thrown(nmsSource, nmsSource.getBukkitEntity() instanceof Projectile
+                        && ((Projectile) nmsSource.getBukkitEntity()).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) nmsSource.getBukkitEntity()).getShooter()).getHandle() : null);
+            case SUFFOCATION:
+                return DamageSource.IN_WALL;
+            case FALL:
+                return DamageSource.FALL;
+            case FIRE:
+                return DamageSource.IN_FIRE;
+            case FIRE_TICK:
+                return DamageSource.ON_FIRE;
+            case MELTING:
+                return CraftEventFactory.MELTING;
+            case LAVA:
+                return DamageSource.LAVA;
+            case DROWNING:
+                return DamageSource.DROWN;
+            case BLOCK_EXPLOSION:
+                return DamageSource.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null);
+            case ENTITY_EXPLOSION:
+                return DamageSource.explosion(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
+            case VOID:
+                return DamageSource.OUT_OF_WORLD;
+            case LIGHTNING:
+                return DamageSource.LIGHTNING_BOLT;
+            case STARVATION:
+                return DamageSource.STARVE;
+            case POISON:
+                return CraftEventFactory.POISON;
+            case MAGIC:
+                return DamageSource.MAGIC;
+            case WITHER:
+                return DamageSource.WITHER;
+            case FALLING_BLOCK:
+                return DamageSource.FALLING_BLOCK;
+            case THORNS:
+                return DamageSource.thorns(nmsSource);
+            case DRAGON_BREATH:
+                return DamageSource.DRAGON_BREATH;
+            case CUSTOM:
+                return DamageSource.GENERIC;
+            case FLY_INTO_WALL:
+                return DamageSource.FLY_INTO_WALL;
+            case HOT_FLOOR:
+                return DamageSource.HOT_FLOOR;
+            case CRAMMING:
+                return DamageSource.CRAMMING;
+            case DRYOUT:
+                return DamageSource.DRY_OUT;
+            //case SUICIDE:
+            default:
+                return new FakeDamageSrc(src);
+        }
+    }
+
     @Override
     public void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause) {
         if (target == null) {
@@ -705,107 +785,12 @@ public class EntityHelperImpl extends EntityHelper {
         net.minecraft.world.entity.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
         CraftEventFactory.entityDamage = nmsSource;
         try {
-            DamageSource src = DamageSource.GENERIC;
-            if (nmsSource != null) {
-                if (nmsSource instanceof net.minecraft.world.entity.player.Player) {
-                    src = DamageSource.playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
-                }
-                else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity) {
-                    src = DamageSource.mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
-                }
-            }
-            if (cause != null) {
-                switch (cause) {
-                    case CONTACT:
-                        src = DamageSource.CACTUS;
-                        break;
-                    case ENTITY_ATTACK:
-                        src = DamageSource.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
-                        break;
-                    case ENTITY_SWEEP_ATTACK:
-                        if (src != DamageSource.GENERIC) {
-                            src.sweep();
-                        }
-                        break;
-                    case PROJECTILE:
-                        src = DamageSource.thrown(nmsSource, source instanceof Projectile && ((Projectile) source).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) source).getShooter()).getHandle() : null);
-                        break;
-                    case SUFFOCATION:
-                        src = DamageSource.IN_WALL;
-                        break;
-                    case FALL:
-                        src = DamageSource.FALL;
-                        break;
-                    case FIRE:
-                        src = DamageSource.IN_FIRE;
-                        break;
-                    case FIRE_TICK:
-                        src = DamageSource.ON_FIRE;
-                        break;
-                    case MELTING:
-                        src = CraftEventFactory.MELTING;
-                        break;
-                    case LAVA:
-                        src = DamageSource.LAVA;
-                        break;
-                    case DROWNING:
-                        src = DamageSource.DROWN;
-                        break;
-                    case BLOCK_EXPLOSION:
-                        src = DamageSource.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null);
-                        break;
-                    case ENTITY_EXPLOSION:
-                        src = DamageSource.explosion(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
-                        break;
-                    case VOID:
-                        src = DamageSource.OUT_OF_WORLD;
-                        break;
-                    case LIGHTNING:
-                        src = DamageSource.LIGHTNING_BOLT;
-                        break;
-                    case STARVATION:
-                        src = DamageSource.STARVE;
-                        break;
-                    case POISON:
-                        src = CraftEventFactory.POISON;
-                        break;
-                    case MAGIC:
-                        src = DamageSource.MAGIC;
-                        break;
-                    case WITHER:
-                        src = DamageSource.WITHER;
-                        break;
-                    case FALLING_BLOCK:
-                        src = DamageSource.FALLING_BLOCK;
-                        break;
-                    case THORNS:
-                        src = DamageSource.thorns(nmsSource);
-                        break;
-                    case DRAGON_BREATH:
-                        src = DamageSource.DRAGON_BREATH;
-                        break;
-                    case CUSTOM:
-                        src = DamageSource.GENERIC;
-                        break;
-                    case FLY_INTO_WALL:
-                        src = DamageSource.FLY_INTO_WALL;
-                        break;
-                    case HOT_FLOOR:
-                        src = DamageSource.HOT_FLOOR;
-                        break;
-                    case CRAMMING:
-                        src = DamageSource.CRAMMING;
-                        break;
-                    case DRYOUT:
-                        src = DamageSource.DRY_OUT;
-                        break;
-                    //case SUICIDE:
-                    default:
-                        EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
-                        if (ede.isCancelled()) {
-                            return;
-                        }
-                        break;
+            DamageSource src = getSourceFor(nmsSource, cause);
+            if (src instanceof FakeDamageSrc) {
+                src = ((FakeDamageSrc) src).real;
+                EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
+                if (ede.isCancelled()) {
+                    return;
                 }
             }
             nmsTarget.hurt(src, amount);

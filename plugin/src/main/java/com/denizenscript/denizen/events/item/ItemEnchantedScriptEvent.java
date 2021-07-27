@@ -1,16 +1,13 @@
 package com.denizenscript.denizen.events.item;
 
-import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.enchantments.Enchantment;
@@ -130,9 +127,10 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
                 event.getEnchantsToAdd().clear();
                 String itemText = determination.substring("enchants:".length());
                 if (itemText.startsWith("map@")) {
-                    MapTag map = MapTag.valueOf(itemText, getTagContext(path));
+                    TagContext context = getTagContext(path);
+                    MapTag map = MapTag.valueOf(itemText, context);
                     for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
-                        event.getEnchantsToAdd().put(Utilities.getEnchantmentByName(enchantments.getKey().low), enchantments.getValue().asType(ElementTag.class, getTagContext(path)).asInt());
+                        event.getEnchantsToAdd().put(EnchantmentTag.valueOf(enchantments.getKey().low, context).enchantment, enchantments.getValue().asType(ElementTag.class, context).asInt());
                     }
                 }
                 else {

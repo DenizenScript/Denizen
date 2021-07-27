@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -33,7 +32,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
     // <context.location> returns the LocationTag of the enchanting block.
     // <context.item> returns the ItemTag to be enchanted.
     // <context.bonus> returns an ElementTag(Number) of the enchanting bonus available (number of bookshelves).
-    // <context.offers> returns a ListTag of the available enchanting offers, each as a MapTag with keys 'cost', 'enchantment', and 'level'.
+    // <context.offers> returns a ListTag of the available enchanting offers, each as a MapTag with keys 'cost', 'enchantment_type', and 'level'.
     //
     // @Determine
     // "OFFERS:" + ListTag of MapTags to set the offers available. Cannot be a different size list than the size of context.offers.
@@ -87,7 +86,11 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
                 for (int i = 0; i < offers.size(); i++) {
                     MapTag map = MapTag.getMapFor(offers.getObject(i), getTagContext(path));
                     event.getOffers()[i].setCost(new ElementTag(map.getObject("cost").toString()).asInt());
-                    event.getOffers()[i].setEnchantment(Utilities.getEnchantmentByName(map.getObject("enchantment").toString()));
+                    ObjectTag enchantment = map.getObject("enchantment_type");
+                    if (enchantment == null) {
+                        enchantment = map.getObject("enchantment");
+                    }
+                    event.getOffers()[i].setEnchantment(enchantment.asType(EnchantmentTag.class, getTagContext(path)).enchantment);
                     event.getOffers()[i].setEnchantmentLevel(new ElementTag(map.getObject("level").toString()).asInt());
                 }
                 return true;
@@ -116,6 +119,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
                     MapTag map = new MapTag();
                     map.putObject("cost", new ElementTag(offer.getCost()));
                     map.putObject("enchantment", new ElementTag(offer.getEnchantment().getKey().getKey()));
+                    map.putObject("enchantment_type", new EnchantmentTag(offer.getEnchantment()));
                     map.putObject("level", new ElementTag(offer.getEnchantmentLevel()));
                     output.addObject(map);
                 }
