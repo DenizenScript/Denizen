@@ -176,8 +176,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFromWithProperties(EntityTag.class, string, context);
         }
-        // Choose a random entity type if "RANDOM" is used
-        if (string.equalsIgnoreCase("RANDOM")) {
+        string = CoreUtilities.toLowerCase(string);
+        if (string.startsWith("e@")) {
+            if (string.startsWith("e@fake:")) {
+                try {
+                    UUID entityID = UUID.fromString(string.substring("e@fake:".length()));
+                    FakeEntity entity = FakeEntity.idsToEntities.get(entityID);
+                    if (entity != null) {
+                        return entity.entity;
+                    }
+                    return null;
+                }
+                catch (Exception ex) {
+                    // DO NOTHING
+                }
+            }
+            string = string.substring("e@".length());
+        }
+        // Choose a random entity type if "random" is used
+        if (string.equals("random")) {
             EntityType randomType = null;
             // When selecting a random entity type, ignore invalid or inappropriate ones
             while (randomType == null ||
@@ -188,22 +205,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
             return new EntityTag(randomType, "RANDOM");
-        }
-        if (string.startsWith("e@fake:")) {
-            try {
-                UUID entityID = UUID.fromString(string.substring("e@fake:".length()));
-                FakeEntity entity = FakeEntity.idsToEntities.get(entityID);
-                if (entity != null) {
-                    return entity.entity;
-                }
-                return null;
-            }
-            catch (Exception ex) {
-                // DO NOTHING
-            }
-        }
-        if (string.startsWith("e@")) {
-            string = string.substring("e@".length());
         }
         // NPC entity
         if (string.startsWith("n@")) {
@@ -220,14 +221,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                Debug.echoError("NPC '" + string + "' does not exist!");
+                if (context == null || context.debug) {
+                    Debug.echoError("NPC '" + string + "' does not exist!");
+                }
             }
         }
         // Player entity
         else if (string.startsWith("p@")) {
-            LivingEntity returnable = PlayerTag.valueOf(string, context).getPlayerEntity();
-            if (returnable != null) {
-                return new EntityTag(returnable);
+            PlayerTag returnable = PlayerTag.valueOf(string, context);
+            if (returnable != null && returnable.isOnline()) {
+                return new EntityTag(returnable.getPlayerEntity());
             }
             else if (context == null || context.showErrors()) {
                 Debug.echoError("Invalid Player! '" + string + "' could not be found. Has the player logged off?");
@@ -240,7 +243,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 id = UUID.fromString(string.substring(0, slash));
                 Entity entity = getEntityForID(id);
                 if (entity != null) {
-                    return new EntityTag(entity);
+                    EntityTag result = new EntityTag(entity);
+                    if (string.equalsIgnoreCase(result.getEntityScript())
+                        || string.equalsIgnoreCase(result.getBukkitEntityType().name())) {
+                        return result;
+                    }
+                    else if (context == null || context.showErrors()) {
+                        Debug.echoError("Invalid EntityTag! ID '" + id + "' is valid, but '" + string + "' does not match its type data.");
+                    }
                 }
                 string = string.substring(slash + 1);
             }

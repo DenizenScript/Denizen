@@ -135,8 +135,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return null;
         }
         boolean announce = context == null ? defaultAnnounce : context.showErrors();
-        string = string.replace("p@", "").replace("P@", "");
-        if (string.indexOf('-') >= 0) {
+        string = CoreUtilities.toLowerCase(string);
+        if (string.startsWith("p@")) {
+            string = string.substring("p@".length());
+        }
+        if (string.length() == 36 && string.indexOf('-') >= 0) {
             try {
                 UUID uuid = UUID.fromString(string);
                 if (uuid != null) {
@@ -151,36 +154,29 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
         // Match as a player name
-        if (playerNames.containsKey(CoreUtilities.toLowerCase(string))) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
+        if (string.length() <= 16 && playerNames.containsKey(string)) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(string));
             if (announce) {
                 Deprecations.playerByNameWarning.message = playerByNameMessage + " Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
                 Deprecations.playerByNameWarning.warn(context);
             }
             return new PlayerTag(player);
         }
-
         if (announce) {
             Debug.log("Minor: Invalid Player! '" + string + "' could not be found.");
         }
-
         return null;
     }
 
     public static boolean matches(String arg) {
-        // If passed null, of course it doesn't match!
         if (arg == null) {
             return false;
         }
-
-        // If passed a identified object that starts with 'p@', return true
-        // even if the player doesn't technically exist.
-        if (CoreUtilities.toLowerCase(arg).startsWith("p@")) {
+        arg = CoreUtilities.toLowerCase(arg);
+        if (arg.startsWith("p@")) {
             return true;
         }
-
-        arg = arg.replace("p@", "").replace("P@", "");
-        if (arg.indexOf('-') >= 0) {
+        if (arg.length() == 36 && arg.indexOf('-') >= 0) {
             try {
                 UUID uuid = UUID.fromString(arg);
                 if (uuid != null) {
