@@ -241,6 +241,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (slash != -1) {
             try {
                 id = UUID.fromString(string.substring(0, slash));
+                string = string.substring(slash + 1);
                 Entity entity = getEntityForID(id);
                 if (entity != null) {
                     EntityTag result = new EntityTag(entity);
@@ -252,7 +253,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         Debug.echoError("Invalid EntityTag! ID '" + id + "' is valid, but '" + string + "' does not match its type data.");
                     }
                 }
-                string = string.substring(slash + 1);
             }
             catch (Exception ex) {
                 // DO NOTHING

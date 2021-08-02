@@ -185,7 +185,7 @@ public class Denizen extends JavaPlugin {
             if (Depends.citizens == null) {
                 if (Bukkit.getPluginManager().getPlugin("Citizens") != null) {
                     citizensBork = true;
-                    getLogger().warning("Citizens is present but does seem to be activated! You may have an error earlier in your logs, or you may have a broken plugin load order.");
+                    getLogger().warning("Citizens is present but doesn't seem to be activated! You may have an error earlier in your logs, or you may have a broken plugin load order.");
                 }
                 else {
                     getLogger().warning("Citizens does not seem to be available! Denizen will have greatly reduced functionality!");
