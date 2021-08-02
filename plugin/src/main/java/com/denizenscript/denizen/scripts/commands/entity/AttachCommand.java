@@ -60,7 +60,9 @@ public class AttachCommand extends AbstractCommand {
     // It may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this command functions as expected.
     //
     // @Tags
-    // None
+    // <EntityTag.attached_entities[(<player>)]>
+    // <EntityTag.attached_to[(<player>)]>
+    // <EntityTag.attached_offset[(<player>)]>
     //
     // @Usage
     // Use to attach random NPC to the air 3 blocks above a linked NPC.

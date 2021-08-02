@@ -2688,6 +2688,68 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return new ElementTag(((FishHook) object.getBukkitEntity()).isInOpenWater());
         });
+
+        // <--[tag]
+        // @attribute <EntityTag.attached_entities[(<player>)]>
+        // @returns ListTag(EntityTag)
+        // @description
+        // Returns the entities attached to this entity by <@link command attach>.
+        // Optionally, specify a player. If specified, will return entities attached visible to that player. If not specified, returns entities globally attached.
+        // -->
+        registerSpawnedOnlyTag("attached_entities", (attribute, object) -> {
+            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : null;
+            EntityAttachmentHelper.EntityAttachedToMap data = EntityAttachmentHelper.toEntityToData.get(object.getUUID());
+            ListTag result = new ListTag();
+            if (data == null) {
+                return result;
+            }
+            for (EntityAttachmentHelper.PlayerAttachMap map : data.attachedToMap.values()) {
+                if (player == null || map.getAttachment(player.getUUID()) != null) {
+                    result.addObject(map.attached);
+                }
+            }
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.attached_to[(<player>)]>
+        // @returns EntityTag
+        // @description
+        // Returns the entity that this entity was attached to by <@link command attach>.
+        // Optionally, specify a player. If specified, will return entity attachment visible to that player. If not specified, returns any entity global attachment.
+        // -->
+        registerSpawnedOnlyTag("attached_to", (attribute, object) -> {
+            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : null;
+            EntityAttachmentHelper.PlayerAttachMap data = EntityAttachmentHelper.attachedEntityToData.get(object.getUUID());
+            if (data == null) {
+                return null;
+            }
+            EntityAttachmentHelper.AttachmentData attached = data.getAttachment(player == null ? null : player.getUUID());
+            if (attached == null) {
+                return null;
+            }
+            return attached.to;
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.attached_offset[(<player>)]>
+        // @returns LocationTag
+        // @description
+        // Returns the offset of an attachment for this entity to another that was attached by <@link command attach>.
+        // Optionally, specify a player. If specified, will return entity attachment visible to that player. If not specified, returns any entity global attachment.
+        // -->
+        registerSpawnedOnlyTag("attached_offset", (attribute, object) -> {
+            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : null;
+            EntityAttachmentHelper.PlayerAttachMap data = EntityAttachmentHelper.attachedEntityToData.get(object.getUUID());
+            if (data == null) {
+                return null;
+            }
+            EntityAttachmentHelper.AttachmentData attached = data.getAttachment(player == null ? null : player.getUUID());
+            if (attached == null) {
+                return null;
+            }
+            return attached.positionalOffset == null ? null : new LocationTag(attached.positionalOffset);
+        });
     }
 
     public EntityTag describe(TagContext context) {
