@@ -109,6 +109,7 @@ public class InventoryScriptContainer extends ScriptContainer {
         context = (context == null ? CoreUtilities.basicContext : context).clone();
         ScriptTag thisScript = new ScriptTag(this);
         context.script = thisScript;
+        context.debug = context.debug && shouldDebug();
         try {
             InventoryType type = InventoryType.CHEST;
             if (contains("inventory")) {
@@ -257,12 +258,9 @@ public class InventoryScriptContainer extends ScriptContainer {
             Debug.echoError(e);
             inventory = null;
         }
-
         if (inventory != null) {
             InventoryTag.trackTemporaryInventory(inventory);
         }
-
         return inventory;
-
     }
 }

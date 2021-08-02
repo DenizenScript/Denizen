@@ -51,9 +51,7 @@ public class KickCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (arg.matchesPrefix("reason")) {
                 scriptEntry.addObject("reason", arg.asElement());
             }
@@ -62,35 +60,25 @@ public class KickCommand extends AbstractCommand {
                 scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
         }
-
         scriptEntry.defaultObject("reason", new ElementTag("Kicked."));
-
         if (!scriptEntry.hasObject("targets")) {
             throw new InvalidArgumentsException("Must specify target(s).");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag reason = scriptEntry.getElement("reason");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
             Debug.report(scriptEntry, getName(),
                     ArgumentHelper.debugObj("targets", targets) +
                             reason.debug());
-
         }
-
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
                 player.getPlayerEntity().kickPlayer(reason.toString());
             }
         }
-
     }
-
 }

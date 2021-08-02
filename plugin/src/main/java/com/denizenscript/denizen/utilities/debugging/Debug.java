@@ -176,7 +176,9 @@ public class Debug {
     public static void echoError(ScriptQueue sourceQueue, String message, boolean reformat) {
         message = cleanTextForDebugOutput(message);
         if (errorDuplicatePrevention) {
-            finalOutputDebugText("Error within error (??!!!! REPORT THIS, SOMETHING WENT SUPER WRONG!): " + message, sourceQueue, reformat);
+            if (!com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
+                finalOutputDebugText("Error within error (??!!!! REPORT THIS, SOMETHING WENT SUPER WRONG!): " + message, sourceQueue, reformat);
+            }
             return;
         }
         errorDuplicatePrevention = true;
@@ -281,7 +283,9 @@ public class Debug {
             Debug.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
+            depthCorrectError++;
             echoError(source, errorMessage, false);
+            depthCorrectError--;
         }
         throwErrorEvent = wasThrown;
     }

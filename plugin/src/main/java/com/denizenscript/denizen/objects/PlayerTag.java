@@ -648,7 +648,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.chat_history[<#>]>
+        // @attribute <PlayerTag.chat_history[(<#>)]>
         // @returns ElementTag
         // @description
         // Returns the last thing the player said.
@@ -2683,7 +2683,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
             float percent = mechanism.getValue().asFloat();
-            System.out.println(percent + " >> " + (percent >= 0 && percent <= 1));
             if (percent >= 0 && percent <= 1) {
                 PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
                 playerHelper.setAttackCooldown(getPlayerEntity(),
