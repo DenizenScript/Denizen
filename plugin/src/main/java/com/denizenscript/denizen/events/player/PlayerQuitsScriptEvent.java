@@ -86,6 +86,9 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
+        if (!event.getPlayer().isOnline()) { // Workaround: Paper misfires this event extra times after the player is already gone.
+            return;
+        }
         this.event = event;
         fire(event);
 
