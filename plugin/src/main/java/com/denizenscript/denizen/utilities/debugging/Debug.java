@@ -347,12 +347,17 @@ public class Debug {
         catch (Throwable ex) {
             canGetClass = false;
         }
-        finalOutputDebugText(ChatColor.YELLOW + "+> ["
-                + callerName + "] "
-                + ChatColor.WHITE + trimMessage(message), null);
+        finalOutputDebugText(ChatColor.YELLOW + "+> [" + callerName + "] " + ChatColor.WHITE + trimMessage(message), null);
     }
 
-    public static void log(DebugElement element, String string) {
+    public static void log(String caller, String message) {
+        if (!showDebug) {
+            return;
+        }
+        finalOutputDebugText(ChatColor.YELLOW + "+> [" + caller + "] " + ChatColor.WHITE + trimMessage(message), null);
+    }
+
+    public static void log(DebugElement element, String message) {
         if (!showDebug) {
             return;
         }
@@ -364,7 +369,7 @@ public class Debug {
                 break;
 
             case Header:
-                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(" ---------+");
+                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(message).append(" ---------+");
                 break;
 
             default:

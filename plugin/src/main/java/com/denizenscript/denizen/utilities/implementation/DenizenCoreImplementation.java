@@ -66,6 +66,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
+    public void debugMessage(String caller, String message) {
+        Debug.log(caller, message);
+    }
+
+    @Override
     public void debugException(Throwable ex) {
         Debug.echoError(ex);
     }
