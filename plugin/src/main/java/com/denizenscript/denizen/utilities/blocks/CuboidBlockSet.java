@@ -137,8 +137,12 @@ public class CuboidBlockSet implements BlockSet {
         for (Entity ent : cuboid.getWorld().getEntities()) {
             if (cuboid.isInsideCuboid(ent.getLocation())) {
                 if (copyTypes.contains(ent.getType())) {
+                    EntityTag entTag = new EntityTag(ent);
+                    if (entTag.isPlayer() || entTag.isNPC()) {
+                        continue;
+                    }
                     MapTag data = new MapTag();
-                    data.putObject("entity", new EntityTag(ent).describe(null));
+                    data.putObject("entity", entTag.describe(null));
                     data.putObject("rotation", new ElementTag(0));
                     Vector offset = ent.getLocation().toVector().subtract(center.toVector());
                     data.putObject("offset", new LocationTag((String) null, offset.getX(), offset.getY(), offset.getZ(), ent.getLocation().getYaw(), ent.getLocation().getPitch()));

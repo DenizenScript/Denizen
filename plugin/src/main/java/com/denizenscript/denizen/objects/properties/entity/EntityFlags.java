@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -41,14 +42,17 @@ public class EntityFlags implements Property {
 
     @Override
     public String getPropertyString() {
-        DataPersistenceFlagTracker tracker = (DataPersistenceFlagTracker) entity.getFlagTracker();
+        AbstractFlagTracker tracker = entity.getFlagTracker();
+        if (!(tracker instanceof DataPersistenceFlagTracker)) {
+            return null;
+        }
         Collection<String> flagNames = tracker.listAllFlags();
         if (flagNames.isEmpty()) {
             return null;
         }
         MapTag flags = new MapTag();
         for (String name : flagNames) {
-            flags.putObject(name, tracker.getRootMap(name));
+            flags.putObject(name, ((DataPersistenceFlagTracker) tracker).getRootMap(name));
         }
         return flags.toString();
     }
@@ -75,9 +79,12 @@ public class EntityFlags implements Property {
         // -->
         if (mechanism.matches("flag_map") && mechanism.requireObject(MapTag.class)) {
             MapTagFlagTracker flags = new MapTagFlagTracker(mechanism.valueAsType(MapTag.class));
-            DataPersistenceFlagTracker tracker = (DataPersistenceFlagTracker) entity.getFlagTracker();
+            AbstractFlagTracker tracker = entity.getFlagTracker();
+            if (!(tracker instanceof DataPersistenceFlagTracker)) {
+                return;
+            }
             for (String flagName : flags.map.keys()) {
-                tracker.setRootMap(flagName, flags.getRootMap(flagName));
+                ((DataPersistenceFlagTracker) tracker).setRootMap(flagName, flags.getRootMap(flagName));
             }
             entity.reapplyTracker(tracker);
         }
