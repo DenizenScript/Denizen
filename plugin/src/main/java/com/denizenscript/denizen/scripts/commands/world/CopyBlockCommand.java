@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.blocks.FullBlockData;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -107,10 +108,8 @@ public class CopyBlockCommand extends AbstractCommand {
             }
             else if (sourceState instanceof Sign) {
                 int n = 0;
-
                 for (String line : ((Sign) sourceState).getLines()) {
-                    ((Sign) updateState).setLine(n, line);
-                    n++;
+                    AdvancedTextImpl.instance.setSignLine(((Sign) updateState), n++, line);
                 }
             }
             else if (sourceState instanceof Skull) {

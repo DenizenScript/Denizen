@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
@@ -32,7 +33,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
@@ -1248,7 +1248,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         registerTag("sign_contents", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof Sign) {
-                return new ListTag(Arrays.asList(((Sign) object.getBlockStateForTag(attribute)).getLines()));
+                return new ListTag(Arrays.asList(AdvancedTextImpl.instance.getSignLines(((Sign) object.getBlockStateForTag(attribute)))));
             }
             else {
                 return null;
@@ -3701,15 +3701,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @input ListTag
         // @description
         // Sets the contents of a sign block.
-        // Note that this takes an escaped list.
-        // See <@link language Escaping System>.
         // @tags
         // <LocationTag.sign_contents>
         // -->
         if (mechanism.matches("sign_contents") && getBlockState() instanceof Sign) {
             Sign state = (Sign) getBlockState();
             for (int i = 0; i < 4; i++) {
-                state.setLine(i, "");
+                AdvancedTextImpl.instance.setSignLine(state, i, "");
             }
             ListTag list = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(list);
@@ -3718,7 +3716,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
-                    state.setLine(i, EscapeTagBase.unEscape(list.get(i)));
+                    AdvancedTextImpl.instance.setSignLine(state, i, list.get(i));
                 }
             }
             state.update();

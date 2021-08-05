@@ -3,13 +3,19 @@ package com.denizenscript.denizen.paper.utilities;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
@@ -47,5 +53,20 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public String getPlayerListName(Player player) {
         return PaperModule.stringifyComponent(player.playerListName(), ChatColor.WHITE);
+    }
+
+    @Override
+    public String[] getSignLines(Sign sign) {
+        String[] output = new String[4];
+        int i = 0;
+        for (Component component : sign.lines()) {
+            output[i++] = PaperModule.stringifyComponent(component, ChatColor.BLACK);
+        }
+        return output;
+    }
+
+    @Override
+    public void setSignLine(Sign sign, int line, String text) {
+        sign.line(line, PaperModule.parseFormattedText(text, ChatColor.BLACK));
     }
 }

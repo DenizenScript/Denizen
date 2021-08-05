@@ -301,7 +301,7 @@ public class Utilities {
 
     public static void setSignLines(Sign sign, String[] lines) {
         for (int n = 0; n < 4; n++) {
-            sign.setLine(n, lines[n]);
+            AdvancedTextImpl.instance.setSignLine(sign, n, lines[n]);
         }
         sign.update();
     }

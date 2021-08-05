@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -7,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -40,7 +40,7 @@ public class ItemSignContents implements Property {
     };
 
     private ListTag getSignContents() {
-        return new ListTag(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLines()), true);
+        return new ListTag(Arrays.asList(AdvancedTextImpl.instance.getSignLines((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState())), true);
     }
 
     private ItemSignContents(ItemTag _item) {
@@ -101,9 +101,8 @@ public class ItemSignContents implements Property {
         if (mechanism.matches("sign_contents")) {
             BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             Sign sign = (Sign) bsm.getBlockState();
-
             for (int i = 0; i < 4; i++) {
-                sign.setLine(i, "");
+                AdvancedTextImpl.instance.setSignLine(sign, i, "");
             }
             ListTag list = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(list);
@@ -112,10 +111,9 @@ public class ItemSignContents implements Property {
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
-                    sign.setLine(i, EscapeTagBase.unEscape(list.get(i)));
+                    AdvancedTextImpl.instance.setSignLine(sign, i, list.get(i));
                 }
             }
-
             bsm.setBlockState(sign);
             item.setItemMeta(bsm);
         }
