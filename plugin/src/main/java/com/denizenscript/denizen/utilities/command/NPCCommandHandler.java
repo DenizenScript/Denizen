@@ -319,10 +319,6 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.getEntity().getType() != EntityType.PLAYER) {
-            Messaging.sendError(sender, npc.getName() + " needs to be a Player type NPC to sit!");
-            return;
-        }
         SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
         if (args.hasValueFlag("location")) {
             LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
