@@ -16,8 +16,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
@@ -41,6 +43,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class BlockHelperImpl implements BlockHelper {
@@ -236,6 +239,13 @@ public class BlockHelperImpl implements BlockHelper {
         }
     }
 
+    // This is to debork Spigot's class remapper mishandling 'getFluidState' which remaps 'FluidState' to 'material.FluidType' (incorrectly) in the call and thus errors out.
+    // TODO: 1.18: This might be fixed by Spigot and can be switched to raw method calls
+    // Relevant issue: https://hub.spigotmc.org/jira/browse/SPIGOT-6696
+    public static MethodHandle BLOCKSTATEBASE_GETFLUIDSTATE = ReflectionHelper.getMethodHandle(BlockBehaviour.BlockStateBase.class, "getFluid");
+    public static MethodHandle FLUIDSTATE_ISRANDOMLYTICKING = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "f");
+    public static MethodHandle FLUIDSTATE_ANIMATETICK = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "a", Level.class, BlockPos.class, Random.class);
+
     @Override
     public void doRandomTick(Location location) {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
@@ -243,11 +253,20 @@ public class BlockHelperImpl implements BlockHelper {
         net.minecraft.world.level.block.state.BlockState nmsBlock = nmsChunk.getBlockState(pos);
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         if (nmsBlock.isRandomlyTicking()) {
-            nmsBlock.tick(nmsWorld, pos, nmsWorld.random);
+            nmsBlock.randomTick(nmsWorld, pos, nmsWorld.random);
         }
-        FluidState fluid = nmsBlock.getFluidState();
-        if (fluid.isRandomlyTicking()) {
-            fluid.animateTick(nmsWorld, pos, nmsWorld.random);
+        try {
+            // FluidState fluid = nmsBlock.getFluidState();
+            // if (fluid.isRandomlyTicking()) {
+            //     fluid.animateTick(nmsWorld, pos, nmsWorld.random);
+            // }
+            Object fluid = BLOCKSTATEBASE_GETFLUIDSTATE.invoke(nmsBlock);
+            if ((boolean) FLUIDSTATE_ISRANDOMLYTICKING.invoke(fluid)) {
+                FLUIDSTATE_ANIMATETICK.invoke(fluid, nmsWorld, pos, nmsWorld.random);
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
         }
     }
 }
