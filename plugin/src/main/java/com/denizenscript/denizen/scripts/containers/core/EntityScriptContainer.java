@@ -53,7 +53,7 @@ public class EntityScriptContainer extends ScriptContainer {
     //     example_key: example value
     //
     //   # You can set flags on the entity when it spawns.
-    //   # | Some item scripts should have this key!
+    //   # | Some entity scripts should have this key!
     //   flags:
     //     my_flag: my value
     //

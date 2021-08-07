@@ -108,11 +108,19 @@ public class ItemDisplayname implements Property {
         // @input ElementTag
         // @description
         // Changes the item's display name.
+        // Give no input to remove the item's display name.
         // @tags
         // <ItemTag.display>
         // -->
         if (mechanism.matches("display")) {
-            NMSHandler.getItemHelper().setDisplayName(item, mechanism.getValue().asString());
+            if (!mechanism.hasValue()) {
+                ItemMeta meta = item.getItemMeta();
+                meta.setDisplayName(null);
+                item.setItemMeta(meta);
+            }
+            else {
+                NMSHandler.getItemHelper().setDisplayName(item, mechanism.getValue().asString());
+            }
         }
         else if (mechanism.matches("display_name")) {
             Deprecations.itemDisplayNameMechanism.warn(mechanism.context);

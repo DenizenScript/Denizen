@@ -31,7 +31,7 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
     //
     // @Group Player
     //
-    // @Triggers when a player starts to logs in to the server.
+    // @Triggers when a player starts to log in to the server.
     // This is during the EARLY authentication process, and should NOT be confused with <@link event player joins>.
     //
     // @Warning This is a very special-case handler, that delays logins until the events are handled on the main thread.
