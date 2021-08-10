@@ -750,12 +750,12 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         if (id.equals("air")) {
             return "nothing";
         }
-        if (id.equals("ice") || id.equals("dirt")) {
+        if (id.equals("ice") || id.equals("dirt") || id.endsWith("copper")) {
             return id;
         }
         if (getItemStack().getAmount() > 1) {
             if (id.equals("cactus")) {
-                return "cactuses";
+                return "cacti";
             }
             if (id.endsWith(" off")) {
                 id = id.substring(0, id.length() - 4);

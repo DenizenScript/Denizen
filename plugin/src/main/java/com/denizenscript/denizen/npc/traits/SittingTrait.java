@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.objects.ChunkTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -10,6 +12,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.util.Messaging;
 import net.citizensnpcs.trait.ArmorStandTrait;
 import net.citizensnpcs.trait.ClickRedirectTrait;
 import net.citizensnpcs.util.NMS;
@@ -221,6 +224,7 @@ public class SittingTrait extends Trait implements Listener {
         sitStandNPC = holder;
         if (npc != null) {
             holder.addTrait(new ClickRedirectTrait(npc));
+            Messaging.debug("(Denizen) SittingTrait: Spawning chair for", npc.getId(), "as id", holder.getId());
         }
         ArmorStandTrait trait = holder.getOrAddTrait(ArmorStandTrait.class);
         trait.setGravity(false);
@@ -231,10 +235,11 @@ public class SittingTrait extends Trait implements Listener {
         trait.setVisible(false);
         holder.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
         holder.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
-        holder.spawn(location);
+        boolean spawned = holder.spawn(location);
         holder.data().set("is-denizen-seat", true);
         if (!holder.isSpawned()) {
-            Debug.echoError("NPC sit failed: cannot spawn chair");
+            Debug.echoError("NPC " + (npc == null ? "null" : npc.getId()) + " sit failed (" + spawned + "): cannot spawn chair id "
+                    + holder.getId() + " at " + new LocationTag(location).identifySimple() + " ChunkIsLoaded=" + new ChunkTag(location).isLoaded());
             holder.destroy();
             sitStandNPC = null;
             return;
