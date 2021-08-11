@@ -137,7 +137,7 @@ public class PacketHelperImpl implements PacketHelper {
     public void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly) {
         AbstractContainerMenu menu = ((CraftPlayer) player).getHandle().containerMenu;
         int windowId = playerOnly ? 0 : menu.containerId;
-        send(player, new ClientboundContainerSetSlotPacket(windowId, slot, menu.incrementStateId(), CraftItemStack.asNMSCopy(itemStack)));
+        send(player, new ClientboundContainerSetSlotPacket(windowId, menu.incrementStateId(), slot, CraftItemStack.asNMSCopy(itemStack)));
     }
 
     @Override
