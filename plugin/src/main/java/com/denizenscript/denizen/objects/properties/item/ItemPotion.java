@@ -3,14 +3,15 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -62,9 +63,21 @@ public class ItemPotion implements Property {
         return sb.toString();
     }
 
-    public static PotionEffect parseEffect(String str) {
+    public static PotionEffect parseEffect(String str, TagContext context) {
         String[] d2 = str.split(",");
-        PotionEffectType type = PotionEffectType.getByName(d2[0].toUpperCase());
+        PotionEffectType type;
+        try {
+            type = PotionEffectType.getByName(d2[0].toUpperCase());
+        }
+        catch (IllegalArgumentException ex) {
+            if (context.showErrors()) {
+                Debug.echoError("Invalid potion effect type '" + d2[0] + "'");
+            }
+            return null;
+        }
+        if (d2.length < 3) {
+            return null;
+        }
         // NOTE: amplifier and duration are swapped around in the input format
         // as compared to the PotionEffect constructor!
         int duration = new ElementTag(d2[2]).asInt();
@@ -75,7 +88,6 @@ public class ItemPotion implements Property {
             ambient = new ElementTag(d2[3]).asBoolean();
             particles = new ElementTag(d2[4]).asBoolean();
         }
-        Color color = null;
         boolean icon = false;
         if (d2.length > 5) {
             ElementTag check = new ElementTag(d2[5]);
@@ -83,7 +95,7 @@ public class ItemPotion implements Property {
                 icon = check.asBoolean();
             }
         }
-        return NMSHandler.getItemHelper().getPotionEffect(type, duration, amplifier, ambient, particles, color, icon);
+        return NMSHandler.getItemHelper().getPotionEffect(type, duration, amplifier, ambient, particles, icon);
     }
 
     @Override
@@ -364,15 +376,44 @@ public class ItemPotion implements Property {
             ListTag data = mechanism.valueAsType(ListTag.class);
             String[] d1 = data.get(0).split(",");
             PotionMeta meta = (PotionMeta) item.getItemMeta();
-            meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),
-                    CoreUtilities.equalsIgnoreCase(d1[2], "true"),
-                    CoreUtilities.equalsIgnoreCase(d1[1], "true")));
+            PotionType type;
+            try {
+                type = PotionType.valueOf(d1[0].toUpperCase());
+            }
+            catch (IllegalArgumentException ex) {
+                mechanism.echoError("Invalid potion type name '" + d1[0] + "'");
+                return;
+            }
+            boolean upgraded = CoreUtilities.equalsIgnoreCase(d1[1], "true");
+            boolean extended = CoreUtilities.equalsIgnoreCase(d1[2], "true");
+            if (upgraded && !type.isUpgradeable()) {
+                mechanism.echoError("Cannot upgrade potion of type '" + type.name() + "'");
+                upgraded = false;
+            }
+            if (extended && !type.isExtendable()) {
+                mechanism.echoError("Cannot extend potion of type '" + type.name() + "'");
+                upgraded = false;
+            }
+            if (upgraded && extended) {
+                mechanism.echoError("Cannot both upgrade and extend a potion");
+                extended = false;
+            }
+            meta.setBasePotionData(new PotionData(type, extended, upgraded));
             if (d1.length > 3) {
-                meta.setColor(ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context).getColor());
+                ColorTag color = ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context);
+                if (color == null) {
+                    mechanism.echoError("Invalid ColorTag input '" + d1[3] + "'");
+                }
+                meta.setColor(color.getColor());
             }
             meta.clearCustomEffects();
             for (int i = 1; i < data.size(); i++) {
-                meta.addCustomEffect(parseEffect(data.get(i)), false);
+                PotionEffect effect = parseEffect(data.get(i), mechanism.context);
+                if (effect == null) {
+                    mechanism.echoError("Invalid potion effect '" + data.get(i) + "'");
+                    continue;
+                }
+                meta.addCustomEffect(effect, false);
             }
             item.setItemMeta(meta);
         }

@@ -73,7 +73,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (!isDefaultDetermination(determinationObj)) {
             try {
-                event.setEffect(ItemPotion.parseEffect(determinationObj.toString()));
+                event.setEffect(ItemPotion.parseEffect(determinationObj.toString(), getTagContext(path)));
             }
             catch (Exception e) {
                 Debug.echoError(e);

@@ -264,7 +264,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, Color color, boolean icon) {
+    public PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, boolean icon) {
         return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
     }
 
