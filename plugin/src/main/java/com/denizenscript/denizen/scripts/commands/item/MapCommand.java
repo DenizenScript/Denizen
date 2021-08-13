@@ -24,25 +24,30 @@ public class MapCommand extends AbstractCommand {
 
     public MapCommand() {
         setName("map");
-        setSyntax("map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)");
+        setSyntax("map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (x:<#>) (y:<#>)");
         setRequiredArguments(2, 7);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Map
-    // @Syntax map [<#>/new:<world>] [reset:<location> (scale:<value>) (tracking)/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
+    // @Syntax map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (x:<#>) (y:<#>)
     // @Required 2
     // @Maximum 7
     // @Short Modifies a new or existing map by adding images or text.
     // @Group item
     //
     // @Description
-    // This command modifies an existing map, or creates a new one. Using this will override existing
-    // non-Denizen map renderers with Denizen's custom map renderer.
+    // This command modifies an existing map, or creates a new one. Using this will override existing non-Denizen map renderers with Denizen's custom map renderer.
+    //
+    // You must specify at least one of 'reset', 'script', or 'image'. You can specify multiple at once if you prefer.
+    //
+    // When using 'reset', you can specify optionally 'scale' and/or 'tracking'.
+    // When using 'image' you can optionally specify 'resize'.
     //
     // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
     // images and texts on the map and show the default world map at the specified location.
+    // You can also specify 'reset' without a location.
     //
     // The 'scale' argument takes input of one of the values listed here:
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapView.Scale.html>
@@ -190,8 +195,7 @@ public class MapCommand extends AbstractCommand {
                 return;
             }
         }
-        else {
-            Debug.echoError("The map command failed somehow! Report this to a developer!");
+        else { // not possible
             return;
         }
         if (reset.asBoolean()) {
@@ -211,20 +215,18 @@ public class MapCommand extends AbstractCommand {
                 map.setWorld(resetLoc.getWorld());
             }
         }
-        else if (script != null) {
+        if (script != null) {
             DenizenMapManager.removeDenizenRenderers(map);
             ((MapScriptContainer) script.getContainer()).applyTo(map);
         }
-        else {
+        if (image != null) {
             DenizenMapRenderer dmr = DenizenMapManager.getDenizenRenderer(map);
-            if (image != null) {
-                int wide = width != null ? width.asInt() : resize.asBoolean() ? 128 : 0;
-                int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
-                if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
-                    dmr.autoUpdate = true;
-                }
-                dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(), wide, high));
+            int wide = width != null ? width.asInt() : resize.asBoolean() ? 128 : 0;
+            int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
+            if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
+                dmr.autoUpdate = true;
             }
+            dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(), wide, high));
         }
     }
 }

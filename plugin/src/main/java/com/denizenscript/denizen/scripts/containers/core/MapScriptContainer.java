@@ -37,11 +37,7 @@ public class MapScriptContainer extends ScriptContainer {
     //   # | Some map scripts should have this key!
     //   original: true/false
     //
-    //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
-    //   # | Some map scripts should have this key!
-    //   display name: custom name
-    //
-    //   # Whether to constantly update things.
+    //   # Whether to constantly update things. Defaults to true.
     //   # | Some map scripts should have this key!
     //   auto update: true
     //
@@ -52,6 +48,7 @@ public class MapScriptContainer extends ScriptContainer {
     //     # The first object...
     //     1:
     //       # Specify the object type
+    //       # Type can be IMAGE, TEXT, CURSOR, or DOT.
     //       type: image
     //       # Specify an HTTP url or file path within Denizen/images/ for the image. Supports animated .gif!
     //       image: my_image.png
@@ -59,9 +56,10 @@ public class MapScriptContainer extends ScriptContainer {
     //
     //     2:
     //       type: text
-    //       # Specify any text, with tags.
+    //       # Specify any text to display.
     //       text: Hello <player.name>
     //       # Specify a tag to show or hide custom content! Valid for all objects.
+    //       # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
     //       visible: <player.name.contains[bob].not>
     //
     //     3:
@@ -70,8 +68,18 @@ public class MapScriptContainer extends ScriptContainer {
     //       cursor: red_marker
     //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
     //       x: 5
+    //       # If 'world_coordinates' is set to 'true', the 'y' value corresponds to the 'z' value of a location.
     //       y: 5
+    //       # If true: uses world coordinates. If false: uses map local coordinates. (Defaults to false).
     //       world_coordinates: false
+    //
+    //     4:
+    //       type: dot
+    //       # Specify the radius of the dot.
+    //       radius: 1
+    //       # Specify the color of the dot as any valid ColorTag.
+    //       color: red
+    //
     // </code>
     //
     // A list of cursor types is available through <@link tag server.map_cursor_types>.
@@ -80,12 +88,8 @@ public class MapScriptContainer extends ScriptContainer {
 
     public void applyTo(MapView mapView) {
         DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(), getString("auto update", "true").equalsIgnoreCase("true"));
-        boolean debug = true;
         if (contains("original")) {
             renderer.displayOriginal = getString("original").equalsIgnoreCase("true");
-        }
-        if (contains("debug")) {
-            debug = getString("debug").equalsIgnoreCase("true");
         }
         if (contains("objects")) {
             YamlConfiguration objectsSection = getConfigurationSection("objects");
@@ -105,7 +109,7 @@ public class MapScriptContainer extends ScriptContainer {
                 String x = objectSection.getString("x", "0");
                 String y = objectSection.getString("y", "0");
                 String visible = objectSection.getString("visible", "true");
-                boolean worldC = objectSection.contains("world_coordinates") && objectSection.getString("world_coordinates", "false").equalsIgnoreCase("true");
+                MapObject added = null;
                 switch (type) {
                     case "image":
                         if (!objectSection.contains("image")) {
@@ -116,7 +120,7 @@ public class MapScriptContainer extends ScriptContainer {
                         String image = objectSection.getString("image");
                         int width = Integer.parseInt(objectSection.getString("width", "0"));
                         int height = Integer.parseInt(objectSection.getString("height", "0"));
-                        renderer.addObject(new MapImage(x, y, visible, debug, image, width, height));
+                        added = new MapImage(x, y, visible, shouldDebug(), image, width, height);
                         break;
                     case "text":
                         if (!objectSection.contains("text")) {
@@ -125,7 +129,7 @@ public class MapScriptContainer extends ScriptContainer {
                             return;
                         }
                         String text = objectSection.getString("text");
-                        renderer.addObject(new MapText(x, y, visible, debug, text));
+                        added = new MapText(x, y, visible, shouldDebug(), text);
                         break;
                     case "cursor":
                         if (!objectSection.contains("cursor")) {
@@ -139,18 +143,20 @@ public class MapScriptContainer extends ScriptContainer {
                                     + "' is missing a cursor type!");
                             return;
                         }
-                        renderer.addObject(new MapCursor(x, y, visible, debug, objectSection.getString("direction", "0"), cursor));
+                        added = new MapCursor(x, y, visible, shouldDebug(), objectSection.getString("direction", "0"), cursor);
                         break;
                     case "dot":
-                        renderer.addObject(new MapDot(x, y, visible, debug, objectSection.getString("radius", "1"),
-                                objectSection.getString("color", "black")));
+                        added = new MapDot(x, y, visible, shouldDebug(), objectSection.getString("radius", "1"), objectSection.getString("color", "black"));
                         break;
                     default:
                         Debug.echoError("Weird map data!");
                         break;
                 }
-                if (worldC && renderer.mapObjects.size() > 0) {
-                    renderer.mapObjects.get(renderer.mapObjects.size() - 1).worldCoordinates = true;
+                if (added != null) {
+                    renderer.addObject(added);
+                    if (objectSection.contains("world_coordinates") && objectSection.getString("world_coordinates", "false").equalsIgnoreCase("true")) {
+                        added.worldCoordinates = true;
+                    }
                 }
             }
         }
