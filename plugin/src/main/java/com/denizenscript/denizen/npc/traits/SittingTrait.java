@@ -114,7 +114,7 @@ public class SittingTrait extends Trait implements Listener {
         safetyCleanup(location.clone());
         new NPCTag(npc).action("sit", null);
         npc.getEntity().teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        forceEntitySit(npc.getEntity(), location.clone());
+        forceEntitySit(npc.getEntity(), location.clone(), false);
         sitting = true;
     }
 
@@ -210,7 +210,7 @@ public class SittingTrait extends Trait implements Listener {
 
     public NPC sitStandNPC = null;
 
-    public void forceEntitySit(Entity entity, Location location) {
+    public void forceEntitySit(Entity entity, Location location, boolean isRetry) {
         if (sitStandNPC != null) {
             sitStandNPC.destroy();
         }
@@ -236,14 +236,20 @@ public class SittingTrait extends Trait implements Listener {
         holder.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
         holder.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
         boolean spawned = holder.spawn(location);
-        holder.data().set("is-denizen-seat", true);
-        if (!holder.isSpawned()) {
-            Debug.echoError("NPC " + (npc == null ? "null" : npc.getId()) + " sit failed (" + spawned + "): cannot spawn chair id "
-                    + holder.getId() + " at " + new LocationTag(location).identifySimple() + " ChunkIsLoaded=" + new ChunkTag(location).isLoaded());
-            holder.destroy();
-            sitStandNPC = null;
+        if (!spawned || !holder.isSpawned()) {
+            if (isRetry) {
+                Debug.echoError("NPC " + (npc == null ? "null" : npc.getId()) + " sit failed (" + spawned + "," + holder.isSpawned() + "): cannot spawn chair id "
+                        + holder.getId() + " at " + new LocationTag(location).identifySimple() + " ChunkIsLoaded=" + new ChunkTag(location).isLoaded());
+                holder.destroy();
+                sitStandNPC = null;
+            }
+            else {
+                Messaging.debug("(Denizen) SittingTrait: retrying failed sit for", npc.getId());
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> { if (npc.isSpawned()) { forceEntitySit(entity, location, true); } }, 5);
+            }
             return;
         }
+        holder.data().set("is-denizen-seat", true);
         new BukkitRunnable() {
             @Override
             public void cancel() {
