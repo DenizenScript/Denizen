@@ -1677,44 +1677,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new ItemTag(item);
         });
 
-        // <--[tag]
-        // @attribute <PlayerTag.attack_cooldown_duration>
-        // @returns DurationTag
-        // @mechanism PlayerTag.attack_cooldown
-        // @description
-        // Returns the amount of time that passed since the start of the attack cooldown.
-        // -->
-        registerOnlineOnlyTag("attack_cooldown_duration", (attribute, object) -> {
-            return new DurationTag((long) NMSHandler.getPlayerHelper().ticksPassedDuringCooldown(object.getPlayerEntity()));
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.attack_cooldown_max_duration>
-        // @returns DurationTag
-        // @mechanism PlayerTag.attack_cooldown
-        // @description
-        // Returns the maximum amount of time that can pass before the player's main hand has returned
-        // to its original place after the cooldown has ended.
-        // NOTE: This is slightly inaccurate and may not necessarily match with the actual attack
-        // cooldown progress.
-        // -->
-        registerOnlineOnlyTag("attack_cooldown_max_duration", (attribute, object) -> {
-            return new DurationTag((long) NMSHandler.getPlayerHelper().getMaxAttackCooldownTicks(object.getPlayerEntity()));
-        });
-
-        // <--[tag]
-        // @attribute <PlayerTag.attack_cooldown_percent>
-        // @returns ElementTag(Decimal)
-        // @mechanism PlayerTag.attack_cooldown_percent
-        // @description
-        // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
-        // started, while 100 means that the attack cooldown has finished.
-        // NOTE: This may not match exactly with the clientside attack cooldown indicator.
-        // -->
-        registerOnlineOnlyTag("attack_cooldown_percent", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getPlayerHelper().getAttackCooldownPercent(object.getPlayerEntity()) * 100);
-        });
-
         registerOnlineOnlyTag("attack_cooldown", (attribute, object) -> {
             Deprecations.playerAttackCooldownTags.warn(attribute.context);
             if (attribute.startsWith("duration", 2)) {
@@ -2632,83 +2594,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         if (mechanism.matches("health") && mechanism.requireDouble()) {
             setHealth(mechanism.getValue().asDouble());
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name redo_attack_cooldown
-        // @input None
-        // @description
-        // Forces the player to wait for the full attack cooldown duration for the item in their hand.
-        // NOTE: The clientside attack cooldown indicator will not reflect this change!
-        // @tags
-        // <PlayerTag.attack_cooldown_duration>
-        // <PlayerTag.attack_cooldown_max_duration>
-        // <PlayerTag.attack_cooldown_percent>
-        // -->
-        if (mechanism.matches("redo_attack_cooldown")) {
-            NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name reset_attack_cooldown
-        // @input None
-        // @description
-        // Ends the player's attack cooldown.
-        // NOTE: This will do nothing if the player's attack speed attribute is set to 0.
-        // NOTE: The clientside attack cooldown indicator will not reflect this change!
-        // @tags
-        // <PlayerTag.attack_cooldown_duration>
-        // <PlayerTag.attack_cooldown_max_duration>
-        // <PlayerTag.attack_cooldown_percent>
-        // -->
-        if (mechanism.matches("reset_attack_cooldown")) {
-            PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
-            playerHelper.setAttackCooldown(getPlayerEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity())));
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name attack_cooldown_percent
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the progress of the player's attack cooldown. Takes a decimal from 0 to 1.
-        // 0 means the cooldown has just begun, while 1 means the cooldown has been completed.
-        // NOTE: The clientside attack cooldown indicator will not reflect this change!
-        // @tags
-        // <PlayerTag.attack_cooldown_duration>
-        // <PlayerTag.attack_cooldown_max_duration>
-        // <PlayerTag.attack_cooldown_percent>
-        // -->
-        if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
-            float percent = mechanism.getValue().asFloat();
-            if (percent >= 0 && percent <= 1) {
-                PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
-                playerHelper.setAttackCooldown(getPlayerEntity(),
-                        Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity()) * mechanism.getValue().asFloat()));
-            }
-            else {
-                Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
-            }
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name attack_cooldown
-        // @input DurationTag
-        // @description
-        // Sets the player's time since their last attack. If the time is greater than the max duration of their
-        // attack cooldown, then the cooldown is considered finished.
-        // NOTE: The clientside attack cooldown indicator will not reflect this change!
-        // @tags
-        // <PlayerTag.attack_cooldown_duration>
-        // <PlayerTag.attack_cooldown_max_duration>
-        // <PlayerTag.attack_cooldown_percent>
-        // -->
-        if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
-            NMSHandler.getPlayerHelper().setAttackCooldown(getPlayerEntity(),
-                    mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
         }
 
         // <--[mechanism]

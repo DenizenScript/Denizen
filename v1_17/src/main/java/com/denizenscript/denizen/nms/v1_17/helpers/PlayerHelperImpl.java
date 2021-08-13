@@ -43,6 +43,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -359,5 +360,10 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void setBossBarTitle(BossBar bar, String title) {
         ((CraftBossBar) bar).getHandle().name = Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE));
         ((CraftBossBar) bar).getHandle().broadcast(ClientboundBossEventPacket::createUpdateNamePacket);
+    }
+
+    @Override
+    public void doAttack(Player attacker, Entity victim) {
+        ((CraftPlayer) attacker).getHandle().attack(((CraftEntity) victim).getHandle());
     }
 }

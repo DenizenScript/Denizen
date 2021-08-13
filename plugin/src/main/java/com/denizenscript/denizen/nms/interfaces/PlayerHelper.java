@@ -87,4 +87,8 @@ public abstract class PlayerHelper {
     public void setBossBarTitle(BossBar bar, String title) {
         bar.setTitle(title);
     }
+
+    public void doAttack(Player attacker, Entity victim) {
+        throw new UnsupportedOperationException();
+    }
 }

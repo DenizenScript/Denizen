@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
@@ -2750,6 +2751,56 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return attached.positionalOffset == null ? null : new LocationTag(attached.positionalOffset);
         });
+
+        // <--[tag]
+        // @attribute <EntityTag.attack_cooldown_duration>
+        // @returns DurationTag
+        // @mechanism EntityTag.attack_cooldown
+        // @description
+        // Returns the amount of time that passed since the start of the attack cooldown.
+        // -->
+        registerSpawnedOnlyTag("attack_cooldown_duration", (attribute, object) -> {
+            if (!(object.getLivingEntity() instanceof Player)) {
+                attribute.echoError("Only player-type entities can have attack_cooldowns!");
+                return null;
+            }
+            return new DurationTag((long) NMSHandler.getPlayerHelper().ticksPassedDuringCooldown((Player) object.getLivingEntity()));
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.attack_cooldown_max_duration>
+        // @returns DurationTag
+        // @mechanism EntityTag.attack_cooldown
+        // @description
+        // Returns the maximum amount of time that can pass before the player's main hand has returned
+        // to its original place after the cooldown has ended.
+        // NOTE: This is slightly inaccurate and may not necessarily match with the actual attack
+        // cooldown progress.
+        // -->
+        registerSpawnedOnlyTag("attack_cooldown_max_duration", (attribute, object) -> {
+            if (!(object.getLivingEntity() instanceof Player)) {
+                attribute.echoError("Only player-type entities can have attack_cooldowns!");
+                return null;
+            }
+            return new DurationTag((long) NMSHandler.getPlayerHelper().getMaxAttackCooldownTicks((Player) object.getLivingEntity()));
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.attack_cooldown_percent>
+        // @returns ElementTag(Decimal)
+        // @mechanism EntityTag.attack_cooldown_percent
+        // @description
+        // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
+        // started, while 100 means that the attack cooldown has finished.
+        // NOTE: This may not match exactly with the clientside attack cooldown indicator.
+        // -->
+        registerSpawnedOnlyTag("attack_cooldown_percent", (attribute, object) -> {
+            if (!(object.getLivingEntity() instanceof Player)) {
+                attribute.echoError("Only player-type entities can have attack_cooldowns!");
+                return null;
+            }
+            return new ElementTag(NMSHandler.getPlayerHelper().getAttackCooldownPercent((Player) object.getLivingEntity()) * 100);
+        });
     }
 
     public EntityTag describe(TagContext context) {
@@ -3568,10 +3619,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @description
         // Causes this hostile-mob entity to immediately melee-attack the specified target entity once.
-        // Does not work with passive mobs, player entities, non-living entities, etc.
+        // Works for Hostile Mobs, and Players.
+        // Does not work with passive mobs, non-living entities, etc.
         // -->
         if (mechanism.matches("melee_attack") && mechanism.requireObject(EntityTag.class)) {
-            getLivingEntity().attack(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            Entity target = mechanism.valueAsType(EntityTag.class).getBukkitEntity();
+            if (getLivingEntity() instanceof Player && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                NMSHandler.getPlayerHelper().doAttack((Player) getLivingEntity(), target);
+            }
+            else {
+                getLivingEntity().attack(target);
+            }
         }
 
         // <--[mechanism]
@@ -3720,6 +3778,97 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             ((FishHook) getBukkitEntity()).setMaxWaitTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
+        // <--[mechanism]
+        // @object EntityTag
+        // @name redo_attack_cooldown
+        // @input None
+        // @description
+        // Forces the player to wait for the full attack cooldown duration for the item in their hand.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <EntityTag.attack_cooldown_duration>
+        // <EntityTag.attack_cooldown_max_duration>
+        // <EntityTag.attack_cooldown_percent>
+        // -->
+        if (mechanism.matches("redo_attack_cooldown")) {
+            if (!(getLivingEntity() instanceof Player)) {
+                mechanism.echoError("Only player-type entities can have attack_cooldowns!");
+                return;
+            }
+            NMSHandler.getPlayerHelper().setAttackCooldown((Player) getLivingEntity(), 0);
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name reset_attack_cooldown
+        // @input None
+        // @description
+        // Ends the player's attack cooldown.
+        // NOTE: This will do nothing if the player's attack speed attribute is set to 0.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <EntityTag.attack_cooldown_duration>
+        // <EntityTag.attack_cooldown_max_duration>
+        // <EntityTag.attack_cooldown_percent>
+        // -->
+        if (mechanism.matches("reset_attack_cooldown")) {
+            if (!(getLivingEntity() instanceof Player)) {
+                mechanism.echoError("Only player-type entities can have attack_cooldowns!");
+                return;
+            }
+            PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
+            playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity())));
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name attack_cooldown_percent
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the progress of the player's attack cooldown. Takes a decimal from 0 to 1.
+        // 0 means the cooldown has just begun, while 1 means the cooldown has been completed.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <EntityTag.attack_cooldown_duration>
+        // <EntityTag.attack_cooldown_max_duration>
+        // <EntityTag.attack_cooldown_percent>
+        // -->
+        if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
+            if (!(getLivingEntity() instanceof Player)) {
+                mechanism.echoError("Only player-type entities can have attack_cooldowns!");
+                return;
+            }
+            float percent = mechanism.getValue().asFloat();
+            if (percent >= 0 && percent <= 1) {
+                PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
+                playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity()) * mechanism.getValue().asFloat()));
+            }
+            else {
+                com.denizenscript.denizen.utilities.debugging.Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name attack_cooldown
+        // @input DurationTag
+        // @description
+        // Sets the player's time since their last attack. If the time is greater than the max duration of their
+        // attack cooldown, then the cooldown is considered finished.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <EntityTag.attack_cooldown_duration>
+        // <EntityTag.attack_cooldown_max_duration>
+        // <EntityTag.attack_cooldown_percent>
+        // -->
+        if (mechanism.matches("attack_cooldown") && mechanism.requireObject(DurationTag.class)) {
+            if (!(getLivingEntity() instanceof Player)) {
+                mechanism.echoError("Only player-type entities can have attack_cooldowns!");
+                return;
+            }
+            NMSHandler.getPlayerHelper().setAttackCooldown((Player) getLivingEntity(), mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
+        }
+
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
