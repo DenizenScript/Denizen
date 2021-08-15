@@ -75,12 +75,7 @@ public class InteractScriptHelper {
             }
         }
         if (Debug.shouldDebug(interactScript) && showDebug) {
-            Debug.log(DebugElement.Spacer, null);
-        }
-        if (Debug.shouldDebug(interactScript) && showDebug) {
             Debug.log("Interact script is " + interactScript.getName() + ". Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-        }
-        if (Debug.shouldDebug(interactScript) && showDebug) {
             Debug.log(DebugElement.Footer, "");
         }
         return interactScript;

@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -25,6 +26,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ExCommandHandler implements CommandExecutor, TabCompleter {
 
@@ -211,11 +213,28 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                 output.add(prefix + ":");
             }
         }
-        dcmd.addCustomTabCompletions(lowArg, (s) -> {
+        Consumer<String> addOne = (s) -> {
             if (CoreUtilities.toLowerCase(s).startsWith(lowArg)) {
                 output.add(s);
             }
-        });
+        };
+        dcmd.addCustomTabCompletions(lowArg, addOne);
+        if (dcmd instanceof FlagCommand) {
+            if (sender instanceof Player) {
+                for (String flagName : new PlayerTag((Player) sender).getFlagTracker().listAllFlags()) {
+                    if (!flagName.startsWith("__")) {
+                        addOne.accept(flagName);
+                    }
+                }
+            }
+            if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
+                for (String flagName : new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender)).getFlagTracker().listAllFlags()) {
+                    if (!flagName.startsWith("__")) {
+                        addOne.accept(flagName);
+                    }
+                }
+            }
+        }
         return output;
     }
 }

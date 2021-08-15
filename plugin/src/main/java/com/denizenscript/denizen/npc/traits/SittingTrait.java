@@ -106,7 +106,7 @@ public class SittingTrait extends Trait implements Listener {
     private void standInternal() {
         forceUnsit(npc.getEntity());
         safetyCleanup(chairLocation.clone());
-        npc.teleport(chairLocation.clone().add(0, 0.5, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        npc.teleport(chairLocation.clone().add(0, 0.3, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
         sitting = false;
     }
 
