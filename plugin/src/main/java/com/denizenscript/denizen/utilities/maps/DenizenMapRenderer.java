@@ -31,12 +31,10 @@ public class DenizenMapRenderer extends MapRenderer {
     }
 
     public void addObject(MapObject object) {
-        if (active) {
-            mapObjects.add(object);
-        }
-        else {
+        if (!active) {
             throw new IllegalStateException("DenizenMapRenderer is not active");
         }
+        mapObjects.add(object);
     }
 
     public List<MapRenderer> getOldRenderers() {
@@ -57,58 +55,55 @@ public class DenizenMapRenderer extends MapRenderer {
     }
 
     public Map<String, Object> getSaveData() {
-        if (active) {
-            Map<String, Object> data = new HashMap<>();
-            Map<String, Object> objects = new HashMap<>();
-            for (int i = 0; i < mapObjects.size(); i++) {
-                Map<String, Object> objectData = mapObjects.get(i).getSaveData();
-                objects.put(String.valueOf(i), objectData);
-            }
-            data.put("objects", objects);
-            data.put("auto update", autoUpdate);
-            data.put("original", displayOriginal);
-            return data;
+        if (!active) {
+            throw new IllegalStateException("DenizenMapRenderer is not active");
         }
-        throw new IllegalStateException("DenizenMapRenderer is not active");
+        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> objects = new HashMap<>();
+        for (int i = 0; i < mapObjects.size(); i++) {
+            Map<String, Object> objectData = mapObjects.get(i).getSaveData();
+            objects.put(String.valueOf(i), objectData);
+        }
+        data.put("objects", objects);
+        data.put("auto update", autoUpdate);
+        data.put("original", displayOriginal);
+        return data;
     }
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
-        if (Denizen.getInstance().isEnabled()) {
-            if (active) {
-                try {
-                    while (mapCanvas.getCursors().size() > 0) {
-                        mapCanvas.getCursors().removeCursor(mapCanvas.getCursors().getCursor(0));
-                    }
-                    if (displayOriginal) {
-                        for (MapRenderer oldR : oldMapRenderers) {
-                            oldR.render(mapView, mapCanvas, player);
-                        }
-                    }
-                    UUID uuid = player.getUniqueId();
-                    PlayerTag p = PlayerTag.mirrorBukkitPlayer(player);
-                    for (MapObject object : mapObjects) {
-                        if (autoUpdate) {
-                            object.lastMap = mapView;
-                            object.update(p, uuid);
-                        }
-                        if (object.isVisibleTo(p, uuid)) {
-                            object.render(mapView, mapCanvas, p, uuid);
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    Debug.echoError(e);
-                    mapView.removeRenderer(this);
-                }
-            }
-            else {
-                mapView.removeRenderer(this);
-            }
-        }
-        else {
+        if (!Denizen.getInstance().isEnabled()) {
             // Special case for shutdown borko
             return;
+        }
+        if (!active) {
+            mapView.removeRenderer(this);
+            return;
+        }
+        try {
+            while (mapCanvas.getCursors().size() > 0) {
+                mapCanvas.getCursors().removeCursor(mapCanvas.getCursors().getCursor(0));
+            }
+            if (displayOriginal) {
+                for (MapRenderer oldR : oldMapRenderers) {
+                    oldR.render(mapView, mapCanvas, player);
+                }
+            }
+            UUID uuid = player.getUniqueId();
+            PlayerTag p = PlayerTag.mirrorBukkitPlayer(player);
+            for (MapObject object : mapObjects) {
+                if (autoUpdate) {
+                    object.lastMap = mapView;
+                    object.update(p, uuid);
+                }
+                if (object.isVisibleTo(p, uuid)) {
+                    object.render(mapView, mapCanvas, p, uuid);
+                }
+            }
+        }
+        catch (Exception e) {
+            Debug.echoError(e);
+            mapView.removeRenderer(this);
         }
     }
 

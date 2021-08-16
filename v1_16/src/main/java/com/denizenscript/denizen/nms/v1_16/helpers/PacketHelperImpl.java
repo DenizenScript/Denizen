@@ -399,8 +399,12 @@ public class PacketHelperImpl implements PacketHelper {
         if (x > 127 || y > 127) {
             return;
         }
+        int width = Math.min(image.width, 128 - x),
+                height = Math.min(image.height, 128 - y);
+        if (x + width <= 0 || y + height <= 0) {
+            return;
+        }
         try {
-            int width = Math.min(image.width, 128 - x), height = Math.min(image.height, 128 - y);
             byte[] buffer = (byte[]) CANVAS_GET_BUFFER.invoke(canvas);
             for (int x2 = x < 0 ? -x : 0; x2 < width; ++x2) {
                 for (int y2 = y < 0 ? -y : 0; y2 < height; ++y2) {
