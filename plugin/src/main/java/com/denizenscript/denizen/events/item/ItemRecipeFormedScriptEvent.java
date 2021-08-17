@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -104,8 +103,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("item")) {
-            Recipe eRecipe = event.getRecipe();
-            return new ItemTag(eRecipe.getResult());
+            return result;
         }
         else if (name.equals("inventory")) {
             return InventoryTag.mirrorBukkitInventory(event.getInventory());
@@ -139,11 +137,13 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onRecipeFormed(PrepareItemCraftEvent event) {
         this.event = event;
-        Recipe eRecipe = event.getRecipe();
-        if (eRecipe == null || eRecipe.getResult() == null) {
+        if (event.getRecipe() == null) {
             return;
         }
-        result = new ItemTag(eRecipe.getResult());
+        result = new ItemTag(event.getInventory().getResult());
+        if (result.getBukkitMaterial() == Material.AIR) {
+            result = new ItemTag(event.getRecipe().getResult());
+        }
         cancelled = false;
         fire(event);
     }

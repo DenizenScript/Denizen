@@ -19,7 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -159,9 +158,11 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         if (EntityTag.isNPC(humanEntity)) {
             return;
         }
-        Recipe eRecipe = event.getRecipe();
         this.event = event;
-        result = new ItemTag(eRecipe.getResult());
+        result = new ItemTag(event.getInventory().getResult());
+        if (result.getBukkitMaterial() == Material.AIR) {
+            result = new ItemTag(event.getRecipe().getResult());
+        }
         this.player = EntityTag.getPlayerFrom(humanEntity);
         this.cancelled = false;
         fire(event);

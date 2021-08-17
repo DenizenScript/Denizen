@@ -114,8 +114,7 @@ public class CreateCommand extends AbstractCommand {
         ListTag traits = scriptEntry.getObjectTag("traits");
         ElementTag registry = scriptEntry.getElement("registry");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
-                    + (traits != null ? traits.debug() : "") + (registry != null ? registry.debug() : ""));
+            Debug.report(scriptEntry, getName(), name, type, loc, traits, registry);
         }
         NPCTag created;
         if (!type.isGeneric() && type.isCitizensNPC()) {
