@@ -46,7 +46,7 @@ public class MapText extends MapObject {
         if (!playerTexts.containsKey(uuid)) {
             playerTexts.put(uuid, tag(textTag, player));
         }
-        mapCanvas.drawText(getX(player, uuid), getY(player, uuid), MinecraftFont.Font, getText(player));
+        mapCanvas.drawText(getX(player), getY(player), MinecraftFont.Font, getText(player));
     }
 
 }

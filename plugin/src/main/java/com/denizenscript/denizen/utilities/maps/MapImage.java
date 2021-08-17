@@ -114,8 +114,8 @@ public class MapImage extends MapObject {
         else {
             bytes = cachedImageData;
         }
-        int x = getX(player, uuid);
-        int y = getY(player, uuid);
+        int x = getX(player);
+        int y = getY(player);
         NMSHandler.getPacketHelper().setMapData(mapCanvas, bytes, x, y, this);
     }
 

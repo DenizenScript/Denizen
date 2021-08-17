@@ -96,7 +96,7 @@ public class DenizenMapRenderer extends MapRenderer {
                     object.lastMap = mapView;
                     object.update(p, uuid);
                 }
-                if (object.isVisibleTo(p, uuid)) {
+                if (object.isVisibleTo(p)) {
                     object.render(mapView, mapCanvas, p, uuid);
                 }
             }

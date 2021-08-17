@@ -52,7 +52,7 @@ public class MapCommand extends AbstractCommand {
     // The 'scale' argument takes input of one of the values listed here:
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapView.Scale.html>
     //
-    // The 'tracking' argument determines if the map will track it's location on the map it displays.
+    // The 'tracking' argument determines if the map will track its location on the map it displays.
     // This is often the player holding the map's location.
     //
     // Note that all maps have a size of 128x128.

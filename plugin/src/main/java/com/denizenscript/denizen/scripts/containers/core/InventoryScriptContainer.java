@@ -187,34 +187,37 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                     String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[", -1);
                     for (String item : itemsInLine) {
+                        if (item.isEmpty()) {
+                            finalItems[itemsAdded++] = new ItemStack(Material.AIR);
+                            continue;
+                        }
+                        filledSlots[itemsAdded] = true;
                         if (contains("definitions." + item)) {
                             ItemTag def = ItemTag.valueOf(TagManager.tag(getString("definitions." + item), context), context);
                             if (def == null) {
-                                Debug.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'" + "... Ignoring it and assuming \"AIR\"");
+                                Debug.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'" + "... Ignoring it and assuming 'AIR'");
                                 finalItems[itemsAdded] = new ItemStack(Material.AIR);
                             }
                             else {
                                 finalItems[itemsAdded] = def.getItemStack();
                             }
                         }
-                        else if (ItemTag.matches(item)) {
+                        else {
                             try {
-                                finalItems[itemsAdded] = ItemTag.valueOf(item, context).getItemStack();
+                                ItemTag itemTag = ItemTag.valueOf(item, context);
+                                if (itemTag == null) {
+                                    finalItems[itemsAdded] = new ItemStack(Material.AIR);
+                                    Debug.echoError("Inventory script '" + getName() + "' has an invalid slot item: [" + item + "]... ignoring it and assuming 'AIR'");
+                                }
+                                else {
+                                    finalItems[itemsAdded] = itemTag.getItemStack();
+                                }
                             }
                             catch (Exception ex) {
-                                Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
-                                        + item + "]...");
+                                Debug.echoError("Inventory script '" + getName() + "' has an invalid slot item: [" + item + "]...");
                                 Debug.echoError(ex);
                             }
                         }
-                        else {
-                            finalItems[itemsAdded] = new ItemStack(Material.AIR);
-                            if (!item.isEmpty()) {
-                                Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
-                                        + item + "]... Ignoring it and assuming \"AIR\"");
-                            }
-                        }
-                        filledSlots[itemsAdded] = !item.isEmpty();
                         itemsAdded++;
                     }
                 }

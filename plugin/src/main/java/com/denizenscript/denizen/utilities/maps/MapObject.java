@@ -16,8 +16,6 @@ public abstract class MapObject {
     protected String xTag;
     protected String yTag;
     protected String visibilityTag;
-    protected Map<UUID, Integer> currentX = new HashMap<>();
-    protected Map<UUID, Integer> currentY = new HashMap<>();
     protected Map<UUID, Boolean> currentVisibility = new HashMap<>();
     protected boolean debug;
 
@@ -33,42 +31,34 @@ public abstract class MapObject {
     }
 
     public void update(PlayerTag player, UUID uuid) {
-        currentX.put(uuid, getX(player, uuid));
-        currentY.put(uuid, getY(player, uuid));
         currentVisibility.put(uuid, tag(visibilityTag, player).equalsIgnoreCase("true"));
     }
 
-    public int getX(PlayerTag player, UUID uuid) {
-        //if (!currentX.containsKey(uuid)) {
+    public int getX(PlayerTag player) {
         int x = (int) Double.parseDouble(tag(xTag, player));
-        currentX.put(uuid, x);
-        //}
         if (worldCoordinates && lastMap != null) {
-            float f = (float) (x - lastMap.getCenterX()) / (1 << (lastMap.getScale().getValue()));
+            float f = (float) (x - lastMap.getCenterX()) / (2 << (lastMap.getScale().getValue()));
             int bx = ((int) ((f * 2.0F) + 0.5D));
             return (bx < -127 ? -127 : (bx > 127 ? 127 : bx));
         }
         return x;
     }
 
-    public int getY(PlayerTag player, UUID uuid) {
-        //if (!currentY.containsKey(uuid)) {
+    public int getY(PlayerTag player) {
         int y = (int) Double.parseDouble(tag(yTag, player));
-        currentY.put(uuid, y);
-        //}
         if (worldCoordinates && lastMap != null) {
-            float f1 = (float) (y - lastMap.getCenterZ()) / (1 << (lastMap.getScale().getValue()));
+            float f1 = (float) (y - lastMap.getCenterZ()) / (2 << (lastMap.getScale().getValue()));
             int by = ((int) ((f1 * 2.0F) + 0.5D));
             return (by < -127 ? -127 : (by > 127 ? 127 : by));
         }
         return y;
     }
 
-    public boolean isVisibleTo(PlayerTag player, UUID uuid) {
-        if (!currentVisibility.containsKey(uuid)) {
-            currentVisibility.put(uuid, tag(visibilityTag, player).equalsIgnoreCase("true"));
+    public boolean isVisibleTo(PlayerTag player) {
+        if (!currentVisibility.containsKey(player.getUUID())) {
+            currentVisibility.put(player.getUUID(), tag(visibilityTag, player).equalsIgnoreCase("true"));
         }
-        return currentVisibility.get(uuid);
+        return currentVisibility.get(player.getUUID());
     }
 
     public TagContext getTagContext(PlayerTag player) {
