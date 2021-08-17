@@ -319,6 +319,14 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (npc.hasTrait(SneakingTrait.class)) {
+            npc.getOrAddTrait(SneakingTrait.class).stand();
+            npc.removeTrait(SneakingTrait.class);
+        }
+        if (npc.hasTrait(SleepingTrait.class)) {
+            npc.getOrAddTrait(SleepingTrait.class).wakeUp();
+            npc.removeTrait(SleepingTrait.class);
+        }
         SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
         if (args.hasValueFlag("location")) {
             LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
@@ -380,6 +388,11 @@ public class NPCCommandHandler {
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (npc.hasTrait(SittingTrait.class)) {
             SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
+            if (!trait.isSitting()) {
+                npc.removeTrait(SittingTrait.class);
+                Messaging.sendError(sender, npc.getName() + " is already standing!");
+                return;
+            }
             trait.stand();
             npc.removeTrait(SittingTrait.class);
             Messaging.send(sender, npc.getName() + " is now standing.");
@@ -387,7 +400,7 @@ public class NPCCommandHandler {
         else if (npc.hasTrait(SneakingTrait.class)) {
             SneakingTrait trait = npc.getOrAddTrait(SneakingTrait.class);
             if (!trait.isSneaking()) {
-                npc.removeTrait(SittingTrait.class);
+                npc.removeTrait(SneakingTrait.class);
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
                 return;
             }
@@ -417,6 +430,14 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true, types = { EntityType.VILLAGER, EntityType.PLAYER })
     public void sleeping(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (npc.hasTrait(SneakingTrait.class)) {
+            npc.getOrAddTrait(SneakingTrait.class).stand();
+            npc.removeTrait(SneakingTrait.class);
+        }
+        if (npc.hasTrait(SittingTrait.class)) {
+            npc.getOrAddTrait(SittingTrait.class).stand();
+            npc.removeTrait(SittingTrait.class);
+        }
         SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
         if (trait.isSleeping()) {
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
@@ -529,6 +550,14 @@ public class NPCCommandHandler {
             min = 1, max = 1, permission = "denizen.npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (npc.hasTrait(SleepingTrait.class)) {
+            npc.getOrAddTrait(SleepingTrait.class).wakeUp();
+            npc.removeTrait(SleepingTrait.class);
+        }
+        if (npc.hasTrait(SleepingTrait.class)) {
+            npc.getOrAddTrait(SleepingTrait.class).wakeUp();
+            npc.removeTrait(SleepingTrait.class);
+        }
         if (npc.getEntity().getType() != EntityType.PLAYER) {
             Messaging.sendError(sender, npc.getName() + " needs to be a Player type NPC to sneak!");
             return;
