@@ -50,73 +50,84 @@ public class MapImage extends MapObject {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
-        if (actualFile == null) {
-            actualFile = DenizenMapManager.getActualFile(fileTag);
+        try {
             if (actualFile == null) {
-                disabled = true;
+                actualFile = DenizenMapManager.getActualFile(fileTag);
+                if (actualFile == null) {
+                    disabled = true;
+                    return;
+                }
+                imageIcon = new ImageIcon(actualFile);
+                image = imageIcon.getImage();
+                image.getSource().addConsumer(new ImageConsumer() {
+                    @Override
+                    public void setDimensions(int width, int height) {
+                    }
+
+                    @Override
+                    public void setProperties(Hashtable<?, ?> props) {
+                    }
+
+                    @Override
+                    public void setColorModel(ColorModel model) {
+                    }
+
+                    @Override
+                    public void setHints(int hintflags) {
+                    }
+
+                    @Override
+                    public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
+                        // When the internal pixels are updated, the cache is no longer currently.
+                        cachedImageData = null;
+                    }
+
+                    @Override
+                    public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
+                    }
+
+                    @Override
+                    public void imageComplete(int status) {
+                    }
+                });
+                if (width == 0) {
+                    width = image.getWidth(null);
+                }
+                if (height == 0) {
+                    height = image.getHeight(null);
+                }
+                if (width == -1 || height == -1) {
+                    Debug.echoError("Image loading failed (bad width/height) for image " + fileTag);
+                    disabled = true;
+                    return;
+                }
+                disabled = false;
+            }
+            if (disabled) {
                 return;
             }
-            imageIcon = new ImageIcon(actualFile);
-            image = imageIcon.getImage();
-            image.getSource().addConsumer(new ImageConsumer() {
-                @Override
-                public void setDimensions(int width, int height) {
+            // Use custom functions to draw image to allow transparency and reduce lag intensely
+            byte[] bytes;
+            if (cachedImageData == null || image != imageForCache) {
+                bytes = imageToBytes(image, width, height);
+                if (bytes == null) {
+                    Debug.echoError("Image loading failed (bad imageToBytes) for image " + fileTag);
+                    disabled = true;
+                    return;
                 }
-                @Override
-                public void setProperties(Hashtable<?, ?> props) {
-                }
-                @Override
-                public void setColorModel(ColorModel model) {
-                }
-                @Override
-                public void setHints(int hintflags) {
-                }
-                @Override
-                public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
-                    // When the internal pixels are updated, the cache is no longer currently.
-                    cachedImageData = null;
-                }
-                @Override
-                public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
-                }
-                @Override
-                public void imageComplete(int status) {
-                }
-            });
-            if (width == 0) {
-                width = image.getWidth(null);
+                cachedImageData = bytes;
+                imageForCache = image;
             }
-            if (height == 0) {
-                height = image.getHeight(null);
+            else {
+                bytes = cachedImageData;
             }
-            if (width == -1 || height == -1) {
-                Debug.echoError("Image loading failed (bad width/height) for image " + fileTag);
-                disabled = true;
-                return;
-            }
-            disabled = false;
+            int x = getX(player);
+            int y = getY(player);
+            NMSHandler.getPacketHelper().setMapData(mapCanvas, bytes, x, y, this);
         }
-        if (disabled) {
-            return;
+        catch (Throwable ex) {
+            Debug.echoError(ex);
         }
-        // Use custom functions to draw image to allow transparency and reduce lag intensely
-        byte[] bytes;
-        if (cachedImageData == null || image != imageForCache) {
-            bytes = imageToBytes(image, width, height);
-            if (bytes == null) {
-                Debug.echoError("Image loading failed (bad imageToBytes) for image " + fileTag);
-                disabled = true;
-                return;
-            }
-            cachedImageData = bytes;
-            imageForCache = image;
-        }
-        else {
-            bytes = cachedImageData;
-        }
-        int x = getX(player);
-        int y = getY(player);
-        NMSHandler.getPacketHelper().setMapData(mapCanvas, bytes, x, y, this);
     }
 
     private static final Color[] bukkitColors;

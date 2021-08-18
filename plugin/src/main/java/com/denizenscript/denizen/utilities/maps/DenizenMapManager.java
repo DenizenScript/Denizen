@@ -81,9 +81,7 @@ public class DenizenMapManager {
                 MapObject object = null;
                 switch (type) {
                     case "CURSOR":
-                        object = new MapCursor(xTag, yTag, visibilityTag, debug,
-                                objectsData.getString(objectKey + ".direction"),
-                                objectsData.getString(objectKey + ".cursor"));
+                        object = new MapCursor(xTag, yTag, visibilityTag, debug, objectsData.getString(objectKey + ".direction"), objectsData.getString(objectKey + ".cursor"));
                         break;
                     case "IMAGE":
                         String file = objectsData.getString(objectKey + ".image");
@@ -92,8 +90,10 @@ public class DenizenMapManager {
                         object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
                         break;
                     case "TEXT":
-                        object = new MapText(xTag, yTag, visibilityTag, debug,
-                                objectsData.getString(objectKey + ".text"));
+                        object = new MapText(xTag, yTag, visibilityTag, debug, objectsData.getString(objectKey + ".text"), objectsData.getString(objectKey + ".color"));
+                        break;
+                    case "DOT":
+                        object = new MapDot(xTag, yTag, visibilityTag, debug, objectsData.getString(objectKey + ".radius"), objectsData.getString(objectKey + ".color"));
                         break;
                 }
                 if (object != null) {

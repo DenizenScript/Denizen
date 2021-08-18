@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
 
@@ -56,11 +57,14 @@ public class MapCursor extends MapObject {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
-        org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) getX(player),
-                (byte) getY(player), getDirection(player), getType(player).getValue(),
-                isVisibleTo(player));
-        mapCanvas.getCursors().addCursor(cursor);
-        cursors.put(uuid, cursor);
+        try {
+            org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) (getX(player) * 2), (byte) (getY(player) * 2), getDirection(player), getType(player).getValue(), isVisibleTo(player));
+            mapCanvas.getCursors().addCursor(cursor);
+            cursors.put(uuid, cursor);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
 }

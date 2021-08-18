@@ -1,7 +1,12 @@
 package com.denizenscript.denizen.utilities.maps;
 
+import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
@@ -11,12 +16,13 @@ import java.util.UUID;
 
 public class MapText extends MapObject {
 
-    protected String textTag;
+    protected String textTag, colorTag;
     protected Map<UUID, String> playerTexts = new HashMap<>();
 
-    public MapText(String xTag, String yTag, String visibilityTag, boolean debug, String textTag) {
+    public MapText(String xTag, String yTag, String visibilityTag, boolean debug, String textTag, String colorTag) {
         super(xTag, yTag, visibilityTag, debug);
         this.textTag = textTag;
+        this.colorTag = colorTag;
     }
 
     @Override
@@ -38,15 +44,24 @@ public class MapText extends MapObject {
         Map<String, Object> data = super.getSaveData();
         data.put("type", "TEXT");
         data.put("text", textTag);
+        data.put("color", colorTag);
         return data;
     }
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
-        if (!playerTexts.containsKey(uuid)) {
-            playerTexts.put(uuid, tag(textTag, player));
+        try {
+            if (!playerTexts.containsKey(uuid)) {
+                playerTexts.put(uuid, tag(textTag, player));
+            }
+            Color color = ColorTag.valueOf(colorTag == null ? "black" : tag(colorTag, player), getTagContext(player)).getColor();
+            byte b = MapPalette.matchColor(color.getRed(), color.getGreen(), color.getBlue());
+            String text = ((char) 167) + Byte.toString(b) + ((char) 59) + getText(player);
+            mapCanvas.drawText(getX(player), getY(player), MinecraftFont.Font, text);
         }
-        mapCanvas.drawText(getX(player), getY(player), MinecraftFont.Font, getText(player));
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
 }

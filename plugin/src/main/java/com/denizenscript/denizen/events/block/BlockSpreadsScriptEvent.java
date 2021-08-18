@@ -25,7 +25,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
-    // @Triggers when a block spreads based on world conditions, EG, when fire spreads, or when mushrooms spread.
+    // @Triggers when a block spreads based on world conditions, EG, when fire spreads, or when mushrooms spread, or when vines grow.
     //
     // @Context
     // <context.source_location> returns the LocationTag of the block that spread.

@@ -56,8 +56,10 @@ public class MapScriptContainer extends ScriptContainer {
     //
     //     2:
     //       type: text
-    //       # Specify any text to display.
+    //       # Specify any text to display. Color codes not permitted (unless you know how to format CraftMapCanvas byte-ID color codes).
     //       text: Hello <player.name>
+    //       # Specify the color of the text as any valid ColorTag.
+    //       color: red
     //       # Specify a tag to show or hide custom content! Valid for all objects.
     //       # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
     //       visible: <player.name.contains[bob].not>
@@ -129,7 +131,7 @@ public class MapScriptContainer extends ScriptContainer {
                             return;
                         }
                         String text = objectSection.getString("text");
-                        added = new MapText(x, y, visible, shouldDebug(), text);
+                        added = new MapText(x, y, visible, shouldDebug(), text, objectSection.getString("color", "black"));
                         break;
                     case "cursor":
                         if (!objectSection.contains("cursor")) {

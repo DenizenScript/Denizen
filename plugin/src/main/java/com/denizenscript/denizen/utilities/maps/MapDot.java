@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import org.bukkit.Color;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -32,24 +33,29 @@ public class MapDot extends MapObject {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
-        int baseX = getX(player);
-        int baseY = getY(player);
-        int radius = (int) Double.parseDouble(tag(radiusTag, player));
-        Color color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player)).getColor();
-        for (int x = -radius; x < radius; x++) {
-            int finalX = baseX + x;
-            if (finalX >= 128) {
-                continue;
-            }
-            for (int y = -radius; y < radius; y++) {
-                int finalY = baseY + y;
-                if (finalY >= 128) {
+        try {
+            int baseX = getX(player);
+            int baseY = getY(player);
+            int radius = (int) Double.parseDouble(tag(radiusTag, player));
+            Color color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player)).getColor();
+            for (int x = -radius; x < radius; x++) {
+                int finalX = baseX + x;
+                if (finalX >= 128) {
                     continue;
                 }
-                if (((x + 0.5) * (x + 0.5)) + ((y + 0.5) * (y + 0.5)) <= (radius * radius)) {
-                    mapCanvas.setPixel(finalX, finalY, MapPalette.matchColor(color.getRed(), color.getGreen(), color.getBlue()));
+                for (int y = -radius; y < radius; y++) {
+                    int finalY = baseY + y;
+                    if (finalY >= 128) {
+                        continue;
+                    }
+                    if (((x + 0.5) * (x + 0.5)) + ((y + 0.5) * (y + 0.5)) <= (radius * radius)) {
+                        mapCanvas.setPixel(finalX, finalY, MapPalette.matchColor(color.getRed(), color.getGreen(), color.getBlue()));
+                    }
                 }
             }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
         }
     }
 }
