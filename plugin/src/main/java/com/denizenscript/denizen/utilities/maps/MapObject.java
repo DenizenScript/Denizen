@@ -38,8 +38,7 @@ public abstract class MapObject {
         int x = (int) Double.parseDouble(tag(xTag, player));
         if (worldCoordinates && lastMap != null) {
             float f = (float) (x - lastMap.getCenterX()) / (2 << (lastMap.getScale().getValue()));
-            int bx = ((int) ((f * 2.0F) + 0.5D));
-            return (bx < -127 ? -127 : (bx > 127 ? 127 : bx));
+            return ((int) ((f * 2.0F) + 0.5D));
         }
         return x;
     }
@@ -48,8 +47,7 @@ public abstract class MapObject {
         int y = (int) Double.parseDouble(tag(yTag, player));
         if (worldCoordinates && lastMap != null) {
             float f1 = (float) (y - lastMap.getCenterZ()) / (2 << (lastMap.getScale().getValue()));
-            int by = ((int) ((f1 * 2.0F) + 0.5D));
-            return (by < -127 ? -127 : (by > 127 ? 127 : by));
+            return ((int) ((f1 * 2.0F) + 0.5D));
         }
         return y;
     }

@@ -40,12 +40,12 @@ public class MapDot extends MapObject {
             Color color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player)).getColor();
             for (int x = -radius; x < radius; x++) {
                 int finalX = baseX + x;
-                if (finalX >= 128) {
+                if (finalX < 0 || finalX > 127) {
                     continue;
                 }
                 for (int y = -radius; y < radius; y++) {
                     int finalY = baseY + y;
-                    if (finalY >= 128) {
+                    if (finalY < 0 || finalY > 127) {
                         continue;
                     }
                     if (((x + 0.5) * (x + 0.5)) + ((y + 0.5) * (y + 0.5)) <= (radius * radius)) {
