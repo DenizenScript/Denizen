@@ -74,6 +74,8 @@ public class MapScriptContainer extends ScriptContainer {
     //       y: 5
     //       # If true: uses world coordinates. If false: uses map local coordinates. (Defaults to false).
     //       world_coordinates: false
+    //       # If true: when the object goes past the edge, will stay in view at the corner. If false: disappears past the edge (defaults to false).
+    //       show_past_edge: false
     //
     //     4:
     //       type: dot
@@ -159,6 +161,7 @@ public class MapScriptContainer extends ScriptContainer {
                     if (objectSection.contains("world_coordinates") && objectSection.getString("world_coordinates", "false").equalsIgnoreCase("true")) {
                         added.worldCoordinates = true;
                     }
+                    added.showPastEdge = CoreUtilities.equalsIgnoreCase(objectSection.getString("show_past_edge", "false"), "true");
                 }
             }
         }

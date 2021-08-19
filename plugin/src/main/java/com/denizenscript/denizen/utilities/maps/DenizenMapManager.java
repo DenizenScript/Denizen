@@ -77,7 +77,6 @@ public class DenizenMapManager {
                 String yTag = objectsData.getString(objectKey + ".y");
                 String visibilityTag = objectsData.getString(objectKey + ".visibility");
                 boolean debug = objectsData.getString(objectKey + ".debug", "false").equalsIgnoreCase("true");
-                boolean worldC = objectsData.getString(objectKey + ".world_coordinates", "false").equalsIgnoreCase("true");
                 MapObject object = null;
                 switch (type) {
                     case "CURSOR":
@@ -97,7 +96,8 @@ public class DenizenMapManager {
                         break;
                 }
                 if (object != null) {
-                    object.worldCoordinates = worldC;
+                    object.worldCoordinates = objectsData.getString(objectKey + ".world_coordinates", "false").equalsIgnoreCase("true");
+                    object.showPastEdge = objectsData.getString(objectKey + ".show_past_edge", "false").equalsIgnoreCase("true");
                     renderer.addObject(object);
                 }
             }

@@ -18,6 +18,7 @@ public abstract class MapObject {
     protected String visibilityTag;
     protected Map<UUID, Boolean> currentVisibility = new HashMap<>();
     protected boolean debug;
+    public boolean showPastEdge = false;
 
     public MapView lastMap;
 
@@ -38,7 +39,10 @@ public abstract class MapObject {
         int x = (int) Double.parseDouble(tag(xTag, player));
         if (worldCoordinates && lastMap != null) {
             float f = (float) (x - lastMap.getCenterX()) / (2 << (lastMap.getScale().getValue()));
-            return ((int) ((f * 2.0F) + 0.5D));
+            x = ((int) ((f * 2.0F) + 0.5D)) + 64;
+            if (showPastEdge) {
+                x = Math.max(Math.min(x, 127), 0);
+            }
         }
         return x;
     }
@@ -47,7 +51,10 @@ public abstract class MapObject {
         int y = (int) Double.parseDouble(tag(yTag, player));
         if (worldCoordinates && lastMap != null) {
             float f1 = (float) (y - lastMap.getCenterZ()) / (2 << (lastMap.getScale().getValue()));
-            return ((int) ((f1 * 2.0F) + 0.5D));
+            y = ((int) ((f1 * 2.0F) + 0.5D)) + 64;
+            if (showPastEdge) {
+                y = Math.max(Math.min(y, 127), 0);
+            }
         }
         return y;
     }
@@ -75,6 +82,7 @@ public abstract class MapObject {
         data.put("visibility", visibilityTag);
         data.put("debug", debug ? "true" : "false");
         data.put("world_coordinates", worldCoordinates ? "true" : "false");
+        data.put("show_past_edge", showPastEdge ? "true" : "false");
         return data;
     }
 

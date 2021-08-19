@@ -58,12 +58,18 @@ public class MapCursor extends MapObject {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, PlayerTag player, UUID uuid) {
         try {
-            int x = getX(player);
-            int z = getY(player);
-            if (x < 0 || z < 0 || x > 127 || z > 127) {
-                return;
+            int x = (getX(player) - 64) * 2;
+            int z = (getY(player) - 64) * 2;
+            if (x < -127 || z < -127 || x > 127 || z > 127) {
+                if (showPastEdge) {
+                    x = Math.max(Math.min(x, 127), -127);
+                    z = Math.max(Math.min(z, 127), -127);
+                }
+                else {
+                    return;
+                }
             }
-            org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) ((x * 2) - 128), (byte) ((z * 2) - 128), getDirection(player), getType(player).getValue(), isVisibleTo(player));
+            org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) x, (byte) z, getDirection(player), getType(player).getValue(), isVisibleTo(player));
             mapCanvas.getCursors().addCursor(cursor);
             cursors.put(uuid, cursor);
         }
