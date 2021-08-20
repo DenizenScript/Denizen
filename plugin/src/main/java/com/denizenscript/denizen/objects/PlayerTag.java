@@ -25,7 +25,6 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
-import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.tags.core.PlayerTagBase;
 import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -2336,6 +2335,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return new EntityTag(hook);
         });
+
+        // <--[tag]
+        // @attribute <PlayerTag.spawn_forced>
+        // @returns ElementTag(Boolean)
+        // @mechanism PlayerTag.spawn_forced
+        // @description
+        // Returns whether the player's bed spawn location is forced (ie still valid even if a bed is missing).
+        // -->
+        registerTag("spawn_forced", (attribute, object) -> {
+            if (object.isOnline()) {
+                return new ElementTag(NMSHandler.getPlayerHelper().getSpawnForced(object.getPlayerEntity()));
+            }
+            return new ElementTag(object.getNBTEditor().isSpawnForced());
+        });
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -2680,6 +2693,25 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(LocationTag.class)) {
             setBedSpawnLocation(mechanism.valueAsType(LocationTag.class));
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name spawn_forced
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the player's bed spawn location is forced (ie still valid even if a bed is missing).
+        // @tags
+        // <PlayerTag.spawn_forced>
+        // -->
+        if (mechanism.matches("spawn_forced") && mechanism.requireBoolean()) {
+            if (isOnline()) {
+                NMSHandler.getPlayerHelper().setSpawnForced(getPlayerEntity(), mechanism.getValue().asBoolean());
+            }
+            else {
+                ImprovedOfflinePlayer editor = getNBTEditor();
+                editor.setBedSpawnLocation(editor.getBedSpawnLocation(), mechanism.getValue().asBoolean());
+            }
         }
 
         // <--[mechanism]

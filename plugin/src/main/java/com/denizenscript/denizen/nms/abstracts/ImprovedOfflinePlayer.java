@@ -28,7 +28,6 @@ package com.denizenscript.denizen.nms.abstracts;
  * @author one4me
  */
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -54,28 +53,6 @@ public abstract class ImprovedOfflinePlayer {
     protected boolean autosave = true;
     public static Map<UUID, PlayerInventory> offlineInventories = new HashMap<>();
     public static Map<UUID, Inventory> offlineEnderChests = new HashMap<>();
-
-    public String getRawFlagMap() {
-        CompoundTag tag = (CompoundTag) this.compound.getValue().get("BukkitValues");
-        if (tag == null) {
-            return "";
-        }
-        else {
-            return tag.getString("denizen:flag_tracker");
-        }
-    }
-
-    public void setRawFlagMap(String flags) {
-        CompoundTag tag = (CompoundTag) this.compound.getValue().get("BukkitValues");
-        if (tag == null) {
-            tag = NMSHandler.getInstance().createCompoundTag(new HashMap<>());
-        }
-        tag = tag.createBuilder().put("denizen:flag_tracker", new StringTag(flags)).build();
-        this.compound = compound.createBuilder().put("BukkitValues", tag).build();
-        if (this.autosave) {
-            savePlayerData();
-        }
-    }
 
     public ImprovedOfflinePlayer(UUID playeruuid) {
         this.exists = loadPlayerData(playeruuid);
@@ -179,13 +156,13 @@ public abstract class ImprovedOfflinePlayer {
         return this.compound.getBoolean("SpawnForced");
     }
 
-    public void setBedSpawnLocation(Location location, Boolean override) {
+    public void setBedSpawnLocation(Location location, boolean override) {
         this.compound = compound.createBuilder()
                 .putInt("SpawnX", (int) location.getX())
                 .putInt("SpawnY", (int) location.getY())
                 .putInt("SpawnZ", (int) location.getZ())
                 .putString("SpawnWorld", location.getWorld().getName())
-                .putBoolean("SpawnForced", override == null ? false : override).build();
+                .putBoolean("SpawnForced", override).build();
         if (this.autosave) {
             savePlayerData();
         }

@@ -91,4 +91,12 @@ public abstract class PlayerHelper {
     public void doAttack(Player attacker, Entity victim) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean getSpawnForced(Player player) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setSpawnForced(Player player, boolean forced) {
+        throw new UnsupportedOperationException();
+    }
 }

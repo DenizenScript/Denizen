@@ -21,6 +21,8 @@ public class ReflectionMappingsInfo {
     public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
     public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bP";
 
+    public static String ServerPlayer_respawnForced = "cS";
+
     public static String EnderMan_DATA_CREEPY = "bU";
 
     public static String Item_maxStackSize = "c";

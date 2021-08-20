@@ -51,6 +51,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -61,6 +62,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class);
     public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount);
     public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount);
+    public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced);
 
     public static final EntityDataAccessor<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
 
@@ -365,5 +367,21 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void doAttack(Player attacker, Entity victim) {
         ((CraftPlayer) attacker).getHandle().attack(((CraftEntity) victim).getHandle());
+    }
+
+    @Override
+    public boolean getSpawnForced(Player player) {
+        return ((CraftPlayer) player).getHandle().isRespawnForced();
+    }
+
+    @Override
+    public void setSpawnForced(Player player, boolean forced) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        try {
+            PLAYER_RESPAWNFORCED_SETTER.invoke(nmsPlayer, forced);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 }

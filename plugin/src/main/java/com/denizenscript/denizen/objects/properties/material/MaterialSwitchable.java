@@ -58,6 +58,7 @@ public class MaterialSwitchable  implements Property {
         // @attribute <MaterialTag.switched>
         // @returns ElementTag(Boolean)
         // @mechanism MaterialTag.switched
+        // @synonyms MaterialTag.lit, MaterialTag.open, MaterialTag.active
         // @group properties
         // @description
         // Returns whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched.
