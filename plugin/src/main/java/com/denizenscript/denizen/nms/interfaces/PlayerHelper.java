@@ -99,4 +99,8 @@ public abstract class PlayerHelper {
     public void setSpawnForced(Player player, boolean forced) {
         throw new UnsupportedOperationException();
     }
+
+    public long getLastActionTime(Player player) {
+        throw new UnsupportedOperationException();
+    }
 }

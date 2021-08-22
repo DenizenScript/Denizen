@@ -384,4 +384,9 @@ public class PlayerHelperImpl extends PlayerHelper {
             Debug.echoError(ex);
         }
     }
+
+    @Override
+    public long getLastActionTime(Player player) {
+        return ((CraftPlayer) player).getHandle().getLastActionTime();
+    }
 }

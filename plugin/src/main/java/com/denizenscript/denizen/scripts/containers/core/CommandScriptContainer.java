@@ -204,8 +204,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runCommandScript(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
-        ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(
-                new BukkitScriptEntryData(player, npc)));
+        ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(new BukkitScriptEntryData(player, npc)));
         if (context != null) {
             ContextSource.SimpleMap src = new ContextSource.SimpleMap();
             src.contexts = context;

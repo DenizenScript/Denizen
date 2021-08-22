@@ -2127,6 +2127,18 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.idle_timeout>
+        // @returns DurationTag
+        // @mechanism server.idle_timeout
+        // @description
+        // Returns the server's current idle timeout limit (how long a player can sit still before getting kicked).
+        // Internally used with <@link tag PlayerTag.last_action_time>.
+        // -->
+        else if (attribute.startsWith("idle_timeout")) {
+            event.setReplacedObject(new DurationTag(Bukkit.getIdleTimeout() * 60).getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.vanilla_tags>
         // @returns ListTag
         // @description
@@ -2328,6 +2340,21 @@ public class ServerTagBase {
             for (String str : list) {
                 NMSHandler.getItemHelper().removeRecipe(Utilities.parseNamespacedKey(str));
             }
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name idle_timeout
+        // @input DurationTag
+        // @description
+        // Sets the server's current idle timeout limit (how long a player can sit still before getting kicked).
+        // Will be rounded to the nearest number of minutes.
+        // Set to 0 to disable automatic timeout kick.
+        // @tags
+        // <server.idle_timeout>
+        // -->
+        if (mechanism.matches("idle_timeout") && mechanism.requireObject(DurationTag.class)) {
+            Bukkit.setIdleTimeout((int) Math.round(mechanism.valueAsType(DurationTag.class).getSeconds() / 60));
         }
 
         // <--[mechanism]

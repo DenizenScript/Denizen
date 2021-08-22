@@ -2349,6 +2349,19 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return new ElementTag(object.getNBTEditor().isSpawnForced());
         });
+
+        // <--[tag]
+        // @attribute <PlayerTag.last_action_time>
+        // @returns TimeTag
+        // @description
+        // Returns the time of the last direct input from the player. Internally used with <@link tag server.idle_timeout>.
+        // -->
+        registerOnlineOnlyTag("last_action_time", (attribute, object) -> {
+            // The internal time values use monotonic time - this converts to real time.
+            long playerMilliTime = NMSHandler.getPlayerHelper().getLastActionTime(object.getPlayerEntity());
+            long relativeMillis = System.nanoTime() / 1000000L - playerMilliTime;
+            return new TimeTag(System.currentTimeMillis() - relativeMillis);
+        });
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
