@@ -419,7 +419,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @attribute <MaterialTag.is_solid>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the material is a block that is solid (cannot be walked through).
+        // Returns whether the material is a block that is solid (can be built upon).
         // -->
         registerTag("is_solid", (attribute, object) -> {
             return new ElementTag(object.material.isSolid());

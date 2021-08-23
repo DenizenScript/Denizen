@@ -165,7 +165,9 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (NMSHandler.debugPackets) {
             Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }
-        if (!Bukkit.isPrimaryThread() && !(packet instanceof ClientboundChatPacket)) {
+        if (!Bukkit.isPrimaryThread()
+                && !(packet instanceof ClientboundChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
+                && !(packet instanceof ClientboundCommandSuggestionsPacket)) { // Async tab complete is wholly unsupported in Spigot (and will cause an exception), however Paper explicitly adds async support (for unclear reasons), so let it through too
             if (Debug.verbose || !hasShownAsyncWarning) {
                 hasShownAsyncWarning = true;
                 Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Further display of this message requires '/denizen debug -v'. Packet class: "

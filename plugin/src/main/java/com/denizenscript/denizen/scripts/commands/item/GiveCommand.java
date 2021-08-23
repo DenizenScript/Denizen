@@ -40,11 +40,19 @@ public class GiveCommand extends AbstractCommand {
     //
     // @Description
     // Gives the linked player or inventory items, xp, or money.
+    //
     // Optionally specify a slot to put the items into. If the slot is already filled, the next available slot will be used.
-    // If the player's inventory is full, the items will be dropped on the ground at the inventory's location.
+    // If the inventory is full, the items will be dropped on the ground at the inventory's location.
+    // For player inventories, only the storage contents are valid - to equip armor or an offhand item, use <@link command equip>.
+    //
     // Specifying "unlimit_stack_size" will allow an item to stack up to 64. This is useful for stacking items
     // with a max stack size that is less than 64 (for example, most weapon and armor items have a stack size of 1).
-    // If an economy is registered, specifying money instead of a item will give money to the player's economy.
+    //
+    // When giving an item, you can specify any valid inventory as a target. If unspecified, the linked player's inventory will be used.
+    //
+    // If an economy is registered, specifying money instead of a item will give money to the linked player's economy.
+    //
+    // If 'xp' is specified, this will give experience points to the linked player.
     //
     // @Tags
     // <PlayerTag.money>
@@ -127,14 +135,21 @@ public class GiveCommand extends AbstractCommand {
                 .defaultObject("quantity", new ElementTag(1))
                 .defaultObject("slot", new ElementTag(1));
         Type type = (Type) scriptEntry.getObject("type");
-        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null) {
-            scriptEntry.addObject("inventory", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getInventory() : null);
+        if (type == Type.ITEM) {
+            if (!scriptEntry.hasObject("items")) {
+                throw new InvalidArgumentsException("Must specify item/items!");
+            }
+            if (!scriptEntry.hasObject("inventory")) {
+                if (!Utilities.entryHasPlayer(scriptEntry)) {
+                    throw new InvalidArgumentsException("Must specify an inventory to give to!");
+                }
+                scriptEntry.addObject("inventory", Utilities.getEntryPlayer(scriptEntry).getInventory());
+            }
         }
-        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
-            throw new InvalidArgumentsException("Must specify an inventory to give to!");
-        }
-        if (type == Type.ITEM && scriptEntry.getObject("items") == null) {
-            throw new InvalidArgumentsException("Must specify item/items!");
+        else {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                throw new InvalidArgumentsException("Must link a player to give money or XP!");
+            }
         }
     }
 
@@ -151,13 +166,7 @@ public class GiveCommand extends AbstractCommand {
             items = (List<ItemTag>) items_object;
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("Type", type.name())
-                            + (inventory != null ? inventory.debug() : "")
-                            + quantity.debug()
-                            + unlimit_stack_size.debug()
-                            + (items != null ? ArgumentHelper.debugObj("Items", items) : "")
-                            + slot.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name()), inventory, quantity, unlimit_stack_size, (items != null ? ArgumentHelper.debugObj("Items", items) : ""), slot);
         }
         switch (type) {
             case MONEY:
