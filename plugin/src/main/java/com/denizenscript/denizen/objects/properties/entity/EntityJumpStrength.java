@@ -60,6 +60,7 @@ public class EntityJumpStrength implements Property {
         // @returns ElementTag(Number)
         // @mechanism EntityTag.jump_strength
         // @group properties
+        // @synonyms EntityTag.horse_jump_height
         // @description
         // Returns the power of a horse's jump.
         // Also applies to horse-like mobs, such as donkeys and mules.
@@ -79,6 +80,7 @@ public class EntityJumpStrength implements Property {
         // @object EntityTag
         // @name jump_strength
         // @input ElementTag(Number)
+        // @synonyms EntityTag.horse_jump_height
         // @description
         // Sets the power of the horse's jump.
         // Also applies to horse-like mobs, such as donkeys and mules.

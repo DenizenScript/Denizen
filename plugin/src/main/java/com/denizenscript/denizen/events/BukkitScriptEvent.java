@@ -223,8 +223,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (specialEntityMatchables.contains(text)) {
             return false;
         }
-        if (text.startsWith("entity_flagged:") || text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
+        if (text.startsWith("entity_flagged:")) {
             return true;
+        }
+        if (text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
+            return false;
         }
         if (EntityTag.matches(text)) {
             EntityTag entity = EntityTag.valueOf(text, CoreUtilities.noDebugContext);

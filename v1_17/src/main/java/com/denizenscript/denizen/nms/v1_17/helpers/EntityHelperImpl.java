@@ -519,7 +519,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public float getBaseYaw(Entity entity) {
         net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((net.minecraft.world.entity.LivingEntity) handle).yHeadRot;
+        return ((net.minecraft.world.entity.LivingEntity) handle).yBodyRot;
     }
 
     @Override
@@ -535,9 +535,9 @@ public class EntityHelperImpl extends EntityHelper {
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.yBodyRot = yaw;
+                livingHandle.yBodyRotO = yaw;
                 if (!(handle instanceof net.minecraft.world.entity.player.Player)) {
-                    livingHandle.yBodyRotO = yaw;
+                    livingHandle.setYBodyRot(yaw);
                 }
                 livingHandle.setYHeadRot(yaw);
             }

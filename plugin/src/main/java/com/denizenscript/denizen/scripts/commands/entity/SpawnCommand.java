@@ -35,6 +35,8 @@ public class SpawnCommand extends AbstractCommand {
     // @Short Spawns a list of entities at a certain location.
     // @Group entity
     //
+    // @Synonyms summon
+    //
     // @Description
     // Spawn an entity or list of entities at the specified location.
     //

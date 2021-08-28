@@ -1683,7 +1683,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns EntityTag
         // @group attributes
         // @mechanism EntityTag.shooter
-        // @synonyms arrow_firer,fishhook_shooter,snowball_thrower
+        // @synonyms EntityTag.arrow_firer,EntityTag.fishhook_shooter,EntityTag.snowball_thrower
         // @description
         // Returns the projectile's shooter, if any.
         // -->
@@ -2901,7 +2901,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @object EntityTag
         // @name shooter
         // @input EntityTag
-        // @synonyms arrow_firer,fishhook_shooter,snowball_thrower
+        // @synonyms EntityTag.arrow_firer,EntityTag.fishhook_shooter,EntityTag.snowball_thrower
         // @description
         // Sets the projectile's shooter.
         // @tags
