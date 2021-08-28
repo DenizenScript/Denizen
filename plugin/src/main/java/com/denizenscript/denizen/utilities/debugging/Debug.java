@@ -164,16 +164,16 @@ public class Debug {
     }
 
     public static void echoError(String message) {
-        echoError(null, message);
+        echoError(null, null, message, true);
     }
 
     public static void echoError(ScriptQueue sourceQueue, String message) {
-        echoError(sourceQueue, message, true);
+        echoError(sourceQueue, null, message, true);
     }
 
     public static boolean errorDuplicatePrevention = false;
 
-    public static void echoError(ScriptQueue sourceQueue, String message, boolean reformat) {
+    public static void echoError(ScriptQueue sourceQueue, String addedContext, String message, boolean reformat) {
         message = cleanTextForDebugOutput(message);
         if (errorDuplicatePrevention) {
             if (!com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
@@ -225,11 +225,14 @@ public class Debug {
             }
             BukkitScriptEntryData data = Utilities.getEntryData(sourceEntry);
             if (data.hasPlayer()) {
-                fullMessage.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().debuggable()).append(ChatColor.RED).append("'");
+                fullMessage.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().getName()).append(ChatColor.RED).append("'");
             }
             if (data.hasNPC()) {
                 fullMessage.append(" with NPC '").append(ChatColor.AQUA).append(data.getNPC().debuggable()).append(ChatColor.RED).append("'");
             }
+        }
+        if (addedContext != null) {
+            fullMessage.append("\n     ").append(addedContext);
         }
         fullMessage.append("!\n").append(ChatColor.GRAY).append("     Error Message: ").append(ChatColor.WHITE).append(message);
         if (sourceScript != null && !sourceScript.getContainer().shouldDebug()) {
@@ -284,7 +287,7 @@ public class Debug {
         }
         else {
             depthCorrectError++;
-            echoError(source, errorMessage, false);
+            echoError(source, null, errorMessage, false);
             depthCorrectError--;
         }
         throwErrorEvent = wasThrown;
@@ -473,6 +476,7 @@ public class Debug {
                 .replace("<GR>", ChatColor.GREEN.toString())
                 .replace("<A>", ChatColor.AQUA.toString())
                 .replace("<R>", ChatColor.DARK_RED.toString())
+                .replace("<LR>", ChatColor.RED.toString())
                 .replace("<W>", ChatColor.WHITE.toString());
     }
 

@@ -127,6 +127,7 @@ public class ItemAttributeModifiers implements Property {
         // Valid slots: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // The default ID will be randomly generated, the default name will be the attribute name, the default slot is any.
+        // Example of valid input: [generic_max_health=<list[<map[operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
         // @tags
         // <ItemTag.attribute_modifiers>
         // -->

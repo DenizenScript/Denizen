@@ -76,13 +76,13 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void debugError(String error) {
-        Debug.echoError(error);
+    public void debugError(String addedContext, String error) {
+        Debug.echoError(null, addedContext, error, true);
     }
 
     @Override
-    public void debugError(ScriptQueue scriptQueue, String s) {
-        Debug.echoError(scriptQueue, s);
+    public void debugError(ScriptQueue scriptQueue, String addedContext, String s) {
+        Debug.echoError(scriptQueue, addedContext, s, true);
     }
 
     @Override
