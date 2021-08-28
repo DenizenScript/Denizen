@@ -145,6 +145,8 @@ public class PlayerHelperImpl extends PlayerHelper {
             nmsEntity.setUUID(customUUID);
         }
         EntityTag entity = new EntityTag(nmsEntity.getBukkitEntity());
+        entity.isFake = true;
+        entity.isFakeValid = true;
         for (Mechanism mechanism : mechanisms) {
             entity.safeAdjustDuplicate(mechanism);
         }

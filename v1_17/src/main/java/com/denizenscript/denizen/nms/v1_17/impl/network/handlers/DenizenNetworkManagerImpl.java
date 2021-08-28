@@ -162,13 +162,10 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     @Override
     public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
-        if (NMSHandler.debugPackets) {
-            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
-        }
-        if (!Bukkit.isPrimaryThread()
-                && !(packet instanceof ClientboundChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
-                && !(packet instanceof ClientboundCommandSuggestionsPacket)) { // Async tab complete is wholly unsupported in Spigot (and will cause an exception), however Paper explicitly adds async support (for unclear reasons), so let it through too
-            if (Debug.verbose || !hasShownAsyncWarning) {
+        if (!Bukkit.isPrimaryThread()) {
+            if ((Debug.verbose || !hasShownAsyncWarning)
+                    && !(packet instanceof ClientboundChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
+                    && !(packet instanceof ClientboundCommandSuggestionsPacket)) { // Async tab complete is wholly unsupported in Spigot (and will cause an exception), however Paper explicitly adds async support (for unclear reasons), so let it through too
                 hasShownAsyncWarning = true;
                 Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Further display of this message requires '/denizen debug -v'. Packet class: "
                         + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName() + " identify the sender of the packet from the stack trace:");
@@ -181,6 +178,34 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             oldManager.send(packet, genericfuturelistener);
             return;
+        }
+        if (NMSHandler.debugPackets) {
+            if (packet instanceof ClientboundSetEntityDataPacket) {
+                StringBuilder output = new StringBuilder(128);
+                output.append("Packet: ClientboundSetEntityDataPacket sent to " + player.getScoreboardName() + " for entity ID: ").append(((ClientboundSetEntityDataPacket) packet).getId()).append(": ");
+                List<SynchedEntityData.DataItem<?>> list = ((ClientboundSetEntityDataPacket) packet).getUnpackedData();
+                if (list == null) {
+                    output.append("None");
+                }
+                else {
+                    for (SynchedEntityData.DataItem<?> data : list) {
+                        output.append('[').append(data.getAccessor().getId()).append(": ").append(data.getValue()).append("], ");
+                    }
+                }
+                Debug.log(output.toString());
+            }
+            else if (packet instanceof ClientboundSetEntityMotionPacket) {
+                ClientboundSetEntityMotionPacket velPacket = ((ClientboundSetEntityMotionPacket) packet);
+                Debug.log("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
+            }
+            else if (packet instanceof ClientboundAddEntityPacket) {
+                ClientboundAddEntityPacket addEntityPacket = ((ClientboundAddEntityPacket) packet);
+                Debug.log("Packet: ClientboundAddEntityPacket sent to " + player.getScoreboardName() + " for entity ID: " + addEntityPacket.getId() + ": " + "uuid: " + addEntityPacket.getUUID()
+                        + ", type: " + addEntityPacket.getType() + ", at: " + addEntityPacket.getX() + "," + addEntityPacket.getY() + "," + addEntityPacket.getZ() + ", data: " + addEntityPacket.getData());
+            }
+            else {
+                Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
+            }
         }
         packetsSent++;
         if (processAttachToForPacket(packet)
