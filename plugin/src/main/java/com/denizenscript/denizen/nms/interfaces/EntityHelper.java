@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -360,6 +361,10 @@ public abstract class EntityHelper {
     }
 
     public void setLastHurtBy(LivingEntity mob, LivingEntity damager) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setFallingBlockType(FallingBlock entity, BlockData block) {
         throw new UnsupportedOperationException();
     }
 }

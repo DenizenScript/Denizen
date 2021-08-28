@@ -769,15 +769,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             }
                         }
                         else {
-                            // <--[mechanism]
-                            // @object EntityTag
-                            // @name fallingblock_type
-                            // @input MaterialTag
-                            // @description
-                            // Sets the block type of a falling_block entity (only valid while spawning).
-                            // @tags
-                            // <EntityTag.fallingblock_material>
-                            // -->
                             for (Mechanism mech : mechanisms) {
                                 if (mech.getName().equals("fallingblock_type")) {
                                     material = mech.valueAsType(MaterialTag.class);
@@ -3867,6 +3858,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             NMSHandler.getPlayerHelper().setAttackCooldown((Player) getLivingEntity(), mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
+        }
+
+        Debug.log("Attempt mech: " + mechanism.getName());
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fallingblock_type
+        // @input MaterialTag
+        // @description
+        // Sets the block type of a falling_block entity (only valid while spawning).
+        // @tags
+        // <EntityTag.fallingblock_material>
+        // -->
+        if (mechanism.matches("fallingblock_type") && mechanism.requireObject(MaterialTag.class)) {
+            if (!(getBukkitEntity() instanceof FallingBlock)) {
+                mechanism.echoError("'fallingblock_type' is only valid for Falling Block entities.");
+                return;
+            }
+            NMSHandler.getEntityHelper().setFallingBlockType((FallingBlock) getBukkitEntity(), mechanism.valueAsType(MaterialTag.class).getModernData());
+            Debug.log("Type set: " + ((FallingBlock) getBukkitEntity()).getBlockData());
         }
 
 
