@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -47,7 +47,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   type: inventory
     //
     //   # Must be a valid inventory type.
-    //   # Valid inventory types: BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, PLAYER, WORKBENCH
+    //   # Valid inventory types: BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, WORKBENCH
     //   # | All inventory scripts MUST have this key!
     //   inventory: inventory type
     //
@@ -117,35 +117,39 @@ public class InventoryScriptContainer extends ScriptContainer {
                     type = InventoryType.valueOf(getString("inventory").toUpperCase());
                 }
                 catch (IllegalArgumentException ex) {
-                    Debug.echoError("Invalid inventory type specified. Assuming \"CHEST\" (" + ex.getMessage() + ")");
+                    Debug.echoError(this, "Invalid inventory type specified. Assuming \"CHEST\" (" + ex.getMessage() + ")");
                 }
             }
             else {
-                Debug.echoError("Inventory script '" + getName() + "' does not specify an inventory type. Assuming \"CHEST\".");
+                Debug.echoError(this, "Inventory script '" + getName() + "' does not specify an inventory type. Assuming \"CHEST\".");
+            }
+            if (type == InventoryType.PLAYER) {
+                Debug.echoError(this, "Inventory type 'player' is not valid for inventory scripts - defaulting to 'CHEST'.");
+                type = InventoryType.CHEST;
             }
             int size = 0;
             if (contains("size")) {
                 if (type != InventoryType.CHEST) {
-                    Debug.echoError("You can only set the size of chest inventories!");
+                    Debug.echoError(this, "You can only set the size of chest inventories!");
                 }
                 else {
                     String sizeText = TagManager.tag(getString("size"), context);
                     if (!ArgumentHelper.matchesInteger(sizeText)) {
-                        Debug.echoError("Inventory script '" + getName() + "' has invalid (not-a-number) size value.");
+                        Debug.echoError(this, "Invalid (not-a-number) size value.");
                     }
                     else {
                         size = Integer.parseInt(sizeText);
                     }
                     if (size == 0) {
-                        Debug.echoError("Inventory size can't be 0. Assuming default of inventory type...");
+                        Debug.echoError(this, "Inventory size can't be 0. Assuming default of inventory type...");
                     }
                     if (size % 9 != 0) {
                         size = (int) Math.ceil(size / 9.0) * 9;
-                        Debug.echoError("Inventory size must be a multiple of 9! Rounding up to " + size + "...");
+                        Debug.echoError(this, "Inventory size must be a multiple of 9! Rounding up to " + size + "...");
                     }
                     if (size < 0) {
                         size = size * -1;
-                        Debug.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
+                        Debug.echoError(this, "Inventory size must be a positive number! Inverting to " + size + "...");
                     }
                 }
             }
@@ -181,8 +185,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         continue;
                     }
                     if (!items.startsWith("[") || !items.endsWith("]")) {
-                        Debug.echoError("Inventory script \"" + getName() + "\" has an invalid slots line: ["
-                                + items + "]... Ignoring it");
+                        Debug.echoError(this, "Invalid slots line: [" + items + "]... Ignoring it");
                         continue;
                     }
                     String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[", -1);
@@ -195,7 +198,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         if (contains("definitions." + item)) {
                             ItemTag def = ItemTag.valueOf(TagManager.tag(getString("definitions." + item), context), context);
                             if (def == null) {
-                                Debug.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'" + "... Ignoring it and assuming 'AIR'");
+                                Debug.echoError(this, "Invalid definition '" + item + "'... Ignoring it and assuming 'AIR'");
                                 finalItems[itemsAdded] = new ItemStack(Material.AIR);
                             }
                             else {
@@ -207,14 +210,14 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 ItemTag itemTag = ItemTag.valueOf(item, context);
                                 if (itemTag == null) {
                                     finalItems[itemsAdded] = new ItemStack(Material.AIR);
-                                    Debug.echoError("Inventory script '" + getName() + "' has an invalid slot item: [" + item + "]... ignoring it and assuming 'AIR'");
+                                    Debug.echoError(this, "Invalid slot item: [" + item + "]... ignoring it and assuming 'AIR'");
                                 }
                                 else {
                                     finalItems[itemsAdded] = itemTag.getItemStack();
                                 }
                             }
                             catch (Exception ex) {
-                                Debug.echoError("Inventory script '" + getName() + "' has an invalid slot item: [" + item + "]...");
+                                Debug.echoError(this, "Invalid slot item: [" + item + "]...");
                                 Debug.echoError(ex);
                             }
                         }
@@ -257,7 +260,7 @@ public class InventoryScriptContainer extends ScriptContainer {
             }
         }
         catch (Exception e) {
-            Debug.echoError("Woah! An exception has been called with this inventory script!");
+            Debug.echoError(this, "Woah! An exception has been called while building this inventory script!");
             Debug.echoError(e);
             inventory = null;
         }

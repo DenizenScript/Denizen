@@ -99,6 +99,16 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        oldManager.channelRegistered(ctx);
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        oldManager.channelUnregistered(ctx);
+    }
+
+    @Override
     public void channelActive(ChannelHandlerContext channelhandlercontext) throws Exception {
         oldManager.channelActive(channelhandlercontext);
     }
@@ -111,6 +121,21 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public void channelInactive(ChannelHandlerContext channelhandlercontext) {
         oldManager.channelInactive(channelhandlercontext);
+    }
+
+    @Override
+    public boolean isSharable() {
+        return oldManager.isSharable();
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        oldManager.handlerAdded(ctx);
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        oldManager.handlerRemoved(ctx);
     }
 
     @Override
@@ -977,8 +1002,23 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
+    public PacketFlow getReceiving() {
+        return oldManager.getReceiving();
+    }
+
+    @Override
+    public PacketFlow getSending() {
+        return oldManager.getSending();
+    }
+
+    @Override
     public void setEncryptionKey(Cipher cipher, Cipher cipher1) {
         oldManager.setEncryptionKey(cipher, cipher1);
+    }
+
+    @Override
+    public boolean isEncrypted() {
+        return oldManager.isEncrypted();
     }
 
     @Override
@@ -1019,6 +1059,11 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public float getAverageReceivedPackets() {
         return oldManager.getAverageReceivedPackets();
+    }
+
+    @Override
+    public float getAverageSentPackets() {
+        return oldManager.getAverageSentPackets();
     }
 
     @Override
@@ -1066,5 +1111,30 @@ public class DenizenNetworkManagerImpl extends Connection {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+    }
+
+    @Override
+    public boolean acceptInboundMessage(Object msg) throws Exception {
+        return oldManager.acceptInboundMessage(msg);
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        oldManager.channelRead(ctx, msg);
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        oldManager.channelReadComplete(ctx);
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        oldManager.userEventTriggered(ctx, evt);
+    }
+
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        oldManager.channelWritabilityChanged(ctx);
     }
 }

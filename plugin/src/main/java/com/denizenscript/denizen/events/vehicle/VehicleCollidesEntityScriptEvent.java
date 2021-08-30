@@ -63,7 +63,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
         if (!couldMatchEntity(path.eventArgLowerAt(3))) {
             return false;
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+        if (!exactMatchesVehicle(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

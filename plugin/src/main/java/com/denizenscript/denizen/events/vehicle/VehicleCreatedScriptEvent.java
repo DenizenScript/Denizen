@@ -43,7 +43,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
         if (!path.eventArgLowerAt(1).equals("created")) {
             return false;
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+        if (!exactMatchesVehicle(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

@@ -2,6 +2,8 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -109,6 +111,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void send(Packet<?> packet) {
         oldListener.send(packet);
+    }
+
+    @Override
+    public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        oldListener.send(packet, genericfuturelistener);
     }
 
     public void handlePacketIn(Packet<ServerGamePacketListener> packet) {

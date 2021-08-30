@@ -64,7 +64,7 @@ public class ExecuteCommand extends AbstractCommand {
     // - execute as_server "save-all"
     //
     // @Usage
-    // Use to make the linked (non-op) player execute a command that normally only ops can use.
+    // Use to make the linked (non-op) player execute a command that normally only ops can use. Generally avoid ever doing this.
     // - execute as_op "staffsay hi"
     // -->
 

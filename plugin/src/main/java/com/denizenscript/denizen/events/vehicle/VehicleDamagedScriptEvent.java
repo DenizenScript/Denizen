@@ -63,7 +63,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         if (path.eventArgLowerAt(3).equals("by")) {
             return false;
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(0)) && !couldMatchVehicle(path.eventArgLowerAt(2))) {
+        if (!exactMatchesVehicle(path.eventArgLowerAt(0)) && !exactMatchesVehicle(path.eventArgLowerAt(2))) {
             return false;
         }
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {

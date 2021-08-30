@@ -47,7 +47,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
         if (!path.eventArgLowerAt(1).equals("moves")) {
             return false;
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+        if (!exactMatchesVehicle(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

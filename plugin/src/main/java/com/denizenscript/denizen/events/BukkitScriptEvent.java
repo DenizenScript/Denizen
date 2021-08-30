@@ -308,7 +308,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (mat == null || !mat.getMaterial().isBlock()) {
                 return false;
             }
-            return true;
+            if (mat.getMaterial().isBlock() && (requirement == null || requirement.apply(mat.getMaterial()))) {
+                return true;
+            }
+            return false;
         }
         if (isAdvancedMatchable(text)) {
             MatchHelper matcher = createMatcher(text);

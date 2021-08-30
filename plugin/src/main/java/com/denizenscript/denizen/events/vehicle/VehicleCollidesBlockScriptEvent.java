@@ -48,7 +48,7 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
         if (!path.eventLower.contains("collides with")) {
             return false;
         }
-        if (!couldMatchVehicle(path.eventArgLowerAt(0))) {
+        if (!exactMatchesVehicle(path.eventArgLowerAt(0))) {
             return false;
         }
         if (!couldMatchBlock(path.eventArgLowerAt(3))) {

@@ -3860,7 +3860,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getPlayerHelper().setAttackCooldown((Player) getLivingEntity(), mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
         }
 
-        Debug.log("Attempt mech: " + mechanism.getName());
         // <--[mechanism]
         // @object EntityTag
         // @name fallingblock_type
@@ -3876,7 +3875,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             NMSHandler.getEntityHelper().setFallingBlockType((FallingBlock) getBukkitEntity(), mechanism.valueAsType(MaterialTag.class).getModernData());
-            Debug.log("Type set: " + ((FallingBlock) getBukkitEntity()).getBlockData());
         }
 
 
