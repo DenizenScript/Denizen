@@ -105,7 +105,7 @@ public abstract class ItemHelper {
         item.setItemMeta(meta);
     }
 
-    public boolean renderEntireMap(int mapId) {
+    public boolean renderEntireMap(int mapId, int xMin, int zMin, int xMax, int zMax) {
         throw new UnsupportedOperationException();
     }
 }

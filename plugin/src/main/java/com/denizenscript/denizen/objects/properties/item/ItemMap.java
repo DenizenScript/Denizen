@@ -7,8 +7,11 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.MapMeta;
+
+import java.util.List;
 
 public class ItemMap implements Property {
 
@@ -138,16 +141,43 @@ public class ItemMap implements Property {
         // <--[mechanism]
         // @object ItemTag
         // @name full_render
-        // @input ElementTag(Number)
+        // @input ElementTag
         // @description
-        // Fully renders a map item's view of the world.
+        // Fully renders all or part of a map item's view of the world.
         // Be warned that this can run very slowly on large maps.
+        // Input can be nothing to render the full map, or a comma separated set of integers to render part of the map, in format x1,z1,x2,z2.
+        // Input numbers are pixel indices within the map image - so, any integer from 0 to 128.
+        // The input for a full map render would be 0,0,128,128.
+        //
+        // Example usage to render sections slowly (to reduce server impact):
+        // <code>
+        // - repeat 16 as:x:
+        //     - adjust <item[map[map=4]]> full_render:<[value].sub[1].mul[8]>,0,<[value].mul[8]>,128
+        //     - wait 2t
+        // </code>
         // @tags
         // <ItemTag.map>
         // <ItemTag.map_scale>
         // -->
         if (mechanism.matches("full_render")) {
-            boolean worked = NMSHandler.getItemHelper().renderEntireMap(getMapId());
+            int xMin = 0, zMin = 0, xMax = 128, zMax = 128;
+            if (mechanism.hasValue()) {
+                List<String> input = CoreUtilities.split(mechanism.getValue().asString(), ',');
+                if (input.size() != 4) {
+                    mechanism.echoError("Invalid input to 'full_render' - must be a set of 4 comma separated integers.");
+                    return;
+                }
+                try {
+                    xMin = Math.max(Integer.parseInt(input.get(0)), 0);
+                    zMin = Math.max(Integer.parseInt(input.get(1)), 0);
+                    xMax = Math.min(Integer.parseInt(input.get(2)), 128);
+                    zMax = Math.min(Integer.parseInt(input.get(3)), 128);
+                }
+                catch (NumberFormatException ex) {
+                    mechanism.echoError("Invalid input to 'full_render' - found comma separated list of 4 values, but not all values are integers: " + ex.getMessage());
+                }
+            }
+            boolean worked = NMSHandler.getItemHelper().renderEntireMap(getMapId(), xMin, zMin, xMax, zMax);
             if (!worked) {
                 mechanism.echoError("Cannot render map: ID doesn't exist. Has the map never been displayed?");
             }

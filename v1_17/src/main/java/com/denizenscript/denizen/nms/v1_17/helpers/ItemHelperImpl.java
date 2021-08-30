@@ -403,14 +403,14 @@ public class ItemHelperImpl extends ItemHelper {
      * Some variables manually renamed for readability.
      * Also contains reflection fixes for Spigot's FluidState bug.
      */
-    public static void renderFullMap(MapItemSavedData worldmap) {
+    public static void renderFullMap(MapItemSavedData worldmap, int xMin, int zMin, int xMax, int zMax) {
         Level world = ((CraftWorld) worldmap.mapView.getWorld()).getHandle();
         int scale = 1 << worldmap.scale;
         int mapX = worldmap.x;
         int mapZ = worldmap.z;
-        for (int x = 0; x < 128; x++) {
+        for (int x = xMin; x < xMax; x++) {
             double d0 = 0.0D;
-            for (int z = 0; z < 128; z++) {
+            for (int z = zMin; z < zMax; z++) {
                 int k2 = (mapX / scale + x - 64) * scale;
                 int l2 = (mapZ / scale + z - 64) * scale;
                 Multiset<MaterialColor> multiset = LinkedHashMultiset.create();
@@ -496,12 +496,12 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public boolean renderEntireMap(int mapId) {
+    public boolean renderEntireMap(int mapId, int xMin, int zMin, int xMax, int zMax) {
         MapItemSavedData worldmap = ((CraftServer) Bukkit.getServer()).getServer().getLevel(net.minecraft.world.level.Level.OVERWORLD).getMapData("map_" + mapId);
         if (worldmap == null) {
             return false;
         }
-        renderFullMap(worldmap);
+        renderFullMap(worldmap, xMin, zMin, xMax, zMax);
         return true;
     }
 }
