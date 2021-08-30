@@ -20,6 +20,8 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     //
     // @Triggers when a player accepts, denies, successfully loads, or fails to download a resource pack.
     //
+    // @Switch status:<status> to only process the event when a specific status is returned. Same status names as returned by 'context.status'.
+    //
     // @Context
     // <context.status> returns an ElementTag of the status. Can be: SUCCESSFULLY_LOADED, DECLINED, FAILED_DOWNLOAD, ACCEPTED.
     //
@@ -39,6 +41,14 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("resource pack status");
+    }
+
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (!runGenericSwitchCheck(path, "status", status.asString())) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     public boolean enabled;
