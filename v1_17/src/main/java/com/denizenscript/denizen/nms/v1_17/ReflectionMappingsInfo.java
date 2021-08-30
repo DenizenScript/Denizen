@@ -9,7 +9,7 @@ public class ReflectionMappingsInfo {
 
     public static String BlockBehaviour_explosionResistance = "aI";
 
-    public static String RecipeBook_highlight = "b";
+    public static String RecipeBook_known = "a";
 
     public static String Entity_onGround = "z";
     public static String Entity_DATA_SHARED_FLAGS_ID = "Z";
