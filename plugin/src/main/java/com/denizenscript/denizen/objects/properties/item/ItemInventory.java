@@ -12,6 +12,8 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -44,7 +46,15 @@ public class ItemInventory implements Property {
     };
 
     private InventoryTag getItemInventory() {
-        return InventoryTag.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getInventory());
+        InventoryHolder holder = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState());
+        Inventory inv;
+        if (holder instanceof Chest) {
+            inv = ((Chest) holder).getBlockInventory();
+        }
+        else {
+            inv = holder.getInventory();
+        }
+        return InventoryTag.mirrorBukkitInventory(inv);
     }
 
     private ItemInventory(ItemTag _item) {
