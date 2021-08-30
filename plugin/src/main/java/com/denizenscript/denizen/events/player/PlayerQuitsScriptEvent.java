@@ -87,6 +87,8 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
             return;
         }
         if (!event.getPlayer().isOnline()) { // Workaround: Paper misfires this event extra times after the player is already gone.
+            event.setQuitMessage(null); // Block the message too since it's obviously not valid for the message to show a second time.
+            // Also note that Paper literally has a commit that just removes a warning that would have helped catch issues like this because I guess they just like having errors https://i.alexgoodwin.media/i/misc/a8f5c3.png
             return;
         }
         this.event = event;
