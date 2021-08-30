@@ -27,24 +27,18 @@ public class WalkCommandCitizensEvents implements Listener {
 
     @EventHandler
     public void finish(NavigationCompleteEvent e) {
-
         if (WalkCommand.held.isEmpty()) {
             return;
         }
-
         checkHeld(e);
-
     }
 
     @EventHandler
     public void cancel(NavigationCancelEvent e) {
-
         if (WalkCommand.held.isEmpty()) {
             return;
         }
-
         checkHeld(e);
-
     }
 
     public void checkHeld(NavigationEvent e) {

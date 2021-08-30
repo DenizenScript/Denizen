@@ -182,8 +182,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("player", "entity", "npc", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
-
     public boolean couldMatchEntity(String text) {
         if (exactMatchEntity(text)) {
             return true;
@@ -1032,6 +1030,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         return false;
     }
+
+    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
 
     public static boolean tryEntity(EntityTag entity, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || entity == null) {
