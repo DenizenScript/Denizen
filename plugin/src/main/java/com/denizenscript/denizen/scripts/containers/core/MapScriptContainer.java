@@ -72,6 +72,8 @@ public class MapScriptContainer extends ScriptContainer {
     //       type: cursor
     //       # Specify a cursor type
     //       cursor: red_marker
+    //       # Optionally, specify a cursor direction. '180' seems to display as up-right usually.
+    //       direction: 180
     //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
     //       x: 5
     //       # If 'world_coordinates' is set to 'true', the 'y' value corresponds to the 'z' value of a location.

@@ -8,6 +8,9 @@ import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultiset;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
@@ -16,6 +19,8 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ListTag;
@@ -23,13 +28,21 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
@@ -350,5 +363,145 @@ public class ItemHelperImpl extends ItemHelper {
             display.put("Lore", (ListTag) tagList);
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
+    }
+
+    /**
+     * Copied from MapItem.getCorrectStateForFluidBlock, and rewritten as reflection due to Spigot bug - refer to bottom of BlockHelperImpl for detail.
+     */
+    public static BlockState getCorrectStateForFluidBlock(Level world, BlockState iblockdata, BlockPos blockposition) {
+        try {
+            // FluidState fluid = iblockdata.getFluidState();
+            Object fluid = BlockHelperImpl.BLOCKSTATEBASE_GETFLUIDSTATE.invoke(iblockdata);
+            //return !fluid.isEmpty() && !iblockdata.isFaceSturdy(world, blockposition, Direction.UP) ? fluid.createLegacyBlock() : iblockdata;
+            boolean isEmpty = (boolean) BlockHelperImpl.FLUIDSTATE_ISEMPTY.invoke(fluid);
+            if (!isEmpty && !iblockdata.isFaceSturdy(world, blockposition, Direction.UP)) {
+                return (BlockState) BlockHelperImpl.FLUIDSTATE_CREATELEGACYBLOCK.invoke(fluid);
+            }
+            else {
+                return iblockdata;
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return iblockdata;
+        }
+    }
+
+    public static boolean blockStateFluidIsEmpty(BlockState iblockdata) {
+        try {
+            Object fluid = BlockHelperImpl.BLOCKSTATEBASE_GETFLUIDSTATE.invoke(iblockdata);
+            return (boolean) BlockHelperImpl.FLUIDSTATE_ISEMPTY.invoke(fluid);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return false;
+        }
+    }
+
+    /**
+     * Copied from MapItem.update, redesigned slightly to render totally rather than just relative to a player.
+     * Some variables manually renamed for readability.
+     * Also contains reflection fixes for Spigot's FluidState bug.
+     */
+    public static void renderFullMap(MapItemSavedData worldmap) {
+        Level world = ((CraftWorld) worldmap.mapView.getWorld()).getHandle();
+        int scale = 1 << worldmap.scale;
+        int mapX = worldmap.x;
+        int mapZ = worldmap.z;
+        for (int x = 0; x < 128; x++) {
+            double d0 = 0.0D;
+            for (int z = 0; z < 128; z++) {
+                int k2 = (mapX / scale + x - 64) * scale;
+                int l2 = (mapZ / scale + z - 64) * scale;
+                Multiset<MaterialColor> multiset = LinkedHashMultiset.create();
+                LevelChunk chunk = world.getChunkAt(new BlockPos(k2, 0, l2));
+                if (!chunk.isEmpty()) {
+                    ChunkPos chunkcoordintpair = chunk.getPos();
+                    int i3 = k2 & 15;
+                    int j3 = l2 & 15;
+                    int k3 = 0;
+                    double d1 = 0.0D;
+                    if (world.dimensionType().hasCeiling()) {
+                        int l3 = k2 + l2 * 231871;
+                        l3 = l3 * l3 * 31287121 + l3 * 11;
+                        if ((l3 >> 20 & 1) == 0) {
+                            multiset.add(Blocks.DIRT.defaultBlockState().getMapColor(world, BlockPos.ZERO), 10);
+                        }
+                        else {
+                            multiset.add(Blocks.STONE.defaultBlockState().getMapColor(world, BlockPos.ZERO), 100);
+                        }
+
+                        d1 = 100.0D;
+                    }
+                    else {
+                        BlockPos.MutableBlockPos blockposition_mutableblockposition = new BlockPos.MutableBlockPos();
+                        BlockPos.MutableBlockPos blockposition_mutableblockposition1 = new BlockPos.MutableBlockPos();
+                        for (int i4 = 0; i4 < scale; ++i4) {
+                            for (int j4 = 0; j4 < scale; ++j4) {
+                                int k4 = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, i4 + i3, j4 + j3) + 1;
+                                BlockState iblockdata;
+                                if (k4 <= world.getMinBuildHeight() + 1) {
+                                    iblockdata = Blocks.BEDROCK.defaultBlockState();
+                                }
+                                else {
+                                    do {
+                                        --k4;
+                                        blockposition_mutableblockposition.set(chunkcoordintpair.getMinBlockX() + i4 + i3, k4, chunkcoordintpair.getMinBlockZ() + j4 + j3);
+                                        iblockdata = chunk.getBlockState(blockposition_mutableblockposition);
+                                    } while (iblockdata.getMapColor(world, blockposition_mutableblockposition) == MaterialColor.NONE && k4 > world.getMinBuildHeight());
+                                    if (k4 > world.getMinBuildHeight() && !blockStateFluidIsEmpty(iblockdata)) {
+                                        int l4 = k4 - 1;
+                                        blockposition_mutableblockposition1.set(blockposition_mutableblockposition);
+
+                                        BlockState iblockdata1;
+                                        do {
+                                            blockposition_mutableblockposition1.t(l4--);
+                                            iblockdata1 = chunk.getBlockState(blockposition_mutableblockposition1);
+                                            k3++;
+                                        } while (l4 > world.getMinBuildHeight() && !blockStateFluidIsEmpty(iblockdata1));
+                                        iblockdata = getCorrectStateForFluidBlock(world, iblockdata, blockposition_mutableblockposition);
+                                    }
+                                }
+                                worldmap.checkBanners(world, chunkcoordintpair.getMinBlockX() + i4 + i3, chunkcoordintpair.getMinBlockZ() + j4 + j3);
+                                d1 += (double) k4 / (double) (scale * scale);
+                                multiset.add(iblockdata.getMapColor(world, blockposition_mutableblockposition));
+                            }
+                        }
+                    }
+                    k3 /= scale * scale;
+                    double d2 = (d1 - d0) * 4.0D / (double) (scale + 4) + ((double) (x + z & 1) - 0.5D) * 0.4D;
+                    byte b0 = 1;
+                    if (d2 > 0.6D) {
+                        b0 = 2;
+                    }
+                    if (d2 < -0.6D) {
+                        b0 = 0;
+                    }
+                    MaterialColor materialmapcolor = Iterables.getFirst(Multisets.copyHighestCountFirst(multiset), MaterialColor.NONE);
+                    if (materialmapcolor == MaterialColor.WATER) {
+                        d2 = (double) k3 * 0.1D + (double) (x + z & 1) * 0.2D;
+                        b0 = 1;
+                        if (d2 < 0.5D) {
+                            b0 = 2;
+                        }
+                        if (d2 > 0.9D) {
+                            b0 = 0;
+                        }
+                    }
+                    d0 = d1;
+                    worldmap.updateColor(x, z, (byte) (materialmapcolor.id * 4 + b0));
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean renderEntireMap(int mapId) {
+        MapItemSavedData worldmap = ((CraftServer) Bukkit.getServer()).getServer().getLevel(net.minecraft.world.level.Level.OVERWORLD).getMapData("map_" + mapId);
+        if (worldmap == null) {
+            return false;
+        }
+        renderFullMap(worldmap);
+        return true;
     }
 }

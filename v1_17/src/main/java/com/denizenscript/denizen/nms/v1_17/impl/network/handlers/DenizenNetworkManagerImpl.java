@@ -220,13 +220,17 @@ public class DenizenNetworkManagerImpl extends Connection {
                 Debug.log(output.toString());
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket) {
-                ClientboundSetEntityMotionPacket velPacket = ((ClientboundSetEntityMotionPacket) packet);
+                ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
                 Debug.log("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
             }
             else if (packet instanceof ClientboundAddEntityPacket) {
-                ClientboundAddEntityPacket addEntityPacket = ((ClientboundAddEntityPacket) packet);
+                ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;
                 Debug.log("Packet: ClientboundAddEntityPacket sent to " + player.getScoreboardName() + " for entity ID: " + addEntityPacket.getId() + ": " + "uuid: " + addEntityPacket.getUUID()
                         + ", type: " + addEntityPacket.getType() + ", at: " + addEntityPacket.getX() + "," + addEntityPacket.getY() + "," + addEntityPacket.getZ() + ", data: " + addEntityPacket.getData());
+            }
+            else if (packet instanceof ClientboundMapItemDataPacket) {
+                ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
+                Debug.log("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
             }
             else {
                 Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());

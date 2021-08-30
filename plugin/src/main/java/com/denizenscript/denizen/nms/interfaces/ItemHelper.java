@@ -104,4 +104,8 @@ public abstract class ItemHelper {
         meta.setLore(lore);
         item.setItemMeta(meta);
     }
+
+    public boolean renderEntireMap(int mapId) {
+        throw new UnsupportedOperationException();
+    }
 }
