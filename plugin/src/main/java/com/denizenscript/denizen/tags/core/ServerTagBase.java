@@ -310,6 +310,21 @@ public class ServerTagBase {
             return;
         }
 
+        // <--[tag]
+        // @attribute <server.scoreboards>
+        // @returns ListTag
+        // @description
+        // Returns a list of scoreboard IDs currently registered on the server.
+        // -->
+        if (attribute.startsWith("scoreboards") && attribute.hasContext(1)) {
+            ListTag result = new ListTag();
+            for (String board : ScoreboardHelper.scoreboardMap.keySet()) {
+                result.addObject(new ElementTag(board));
+            }
+            event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
         if (attribute.startsWith("scoreboard")) {
             Scoreboard board;
             String name = "main";

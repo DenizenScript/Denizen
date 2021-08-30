@@ -114,9 +114,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
@@ -158,7 +156,6 @@ public class ScoreboardCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         scriptEntry.defaultObject("action", new ElementTag("add"));
         scriptEntry.defaultObject("id", new ElementTag("main"));
     }
@@ -175,12 +172,8 @@ public class ScoreboardCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-
         List<PlayerTag> viewers = (List<PlayerTag>) scriptEntry.getObject("viewers");
-        ListTag lines = scriptEntry.hasObject("lines") ?
-                ListTag.valueOf(scriptEntry.getElement("lines").asString(), scriptEntry.getContext()) :
-                new ListTag();
-
+        ListTag lines = scriptEntry.hasObject("lines") ? ListTag.valueOf(scriptEntry.getElement("lines").asString(), scriptEntry.getContext()) : new ListTag();
         ElementTag action = scriptEntry.getElement("action");
         ElementTag id = scriptEntry.getElement("id");
         ElementTag objective = scriptEntry.getElement("objective");
@@ -198,21 +191,9 @@ public class ScoreboardCommand extends AbstractCommand {
             displaySlot = new ElementTag("sidebar");
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action.debug() +
-                    id.debug() +
-                    (viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "") +
-                    (objective != null ? objective.debug() : "") +
-                    (!lines.isEmpty() ? lines.debug() : "") +
-                    (!act.equals(Action.ADD) ? "" :
-                            (score == null ? "" : score.debug())
-                            + (objective == null ? "" : (
-                                    displaySlot.debug()
-                                    + criteria.debug()
-                                    + (displayName == null ? "" : displayName.debug())
-                                    ))));
+            Debug.report(scriptEntry, getName(), action, id, viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "", objective, lines, score, objective, displaySlot, criteria, displayName);
         }
         Scoreboard board = null;
-
         // Get the main scoreboard by default
         if (id.asString().equalsIgnoreCase("main")) {
             board = ScoreboardHelper.getMain();
@@ -230,22 +211,17 @@ public class ScoreboardCommand extends AbstractCommand {
                 board = ScoreboardHelper.createScoreboard(id.asString());
             }
         }
-
         // Don't progress if we ended up with a null board
         if (board == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Scoreboard " + id.asString() + " does not exist!");
             return;
         }
-
         Objective obj;
-
         if (act.equals(Action.ADD)) {
-
             if (objective != null) {
                 // Try getting the objective from the board
                 obj = board.getObjective(objective.asString());
                 boolean existedAlready = obj != null;
-
                 // Create the objective if it does not already exist
                 if (obj == null) {
                     obj = board.registerNewObjective(objective.asString(), criteria.asString());
@@ -256,7 +232,6 @@ public class ScoreboardCommand extends AbstractCommand {
                     obj.unregister();
                     obj = board.registerNewObjective(objective.asString(), criteria.asString());
                 }
-
                 // Change the objective's display slot
                 if ((!existedAlready || hadDisplaySlot) && !displaySlot.asString().equalsIgnoreCase("none")) {
                     obj.setDisplaySlot(DisplaySlot.valueOf(displaySlot.asString().toUpperCase()));
@@ -267,7 +242,6 @@ public class ScoreboardCommand extends AbstractCommand {
                 else if (!existedAlready) {
                     obj.setDisplayName(objective.asString());
                 }
-
                 if (!lines.isEmpty()) {
                     // If we've gotten this far, but the score is null,
                     // use a score of 0
@@ -299,7 +273,6 @@ public class ScoreboardCommand extends AbstractCommand {
             if (objective != null) {
                 // Try getting the objective from the board
                 obj = board.getObjective(objective.asString());
-
                 if (obj != null) {
                     // Remove the entire objective if no lines have been specified
                     if (lines.isEmpty()) {
@@ -338,7 +311,6 @@ public class ScoreboardCommand extends AbstractCommand {
                 ScoreboardHelper.deleteScoreboard(id.asString());
             }
         }
-
         if (viewers != null) {
             for (PlayerTag viewer : viewers) {
                 // Add viewers for this scoreboard
@@ -348,7 +320,6 @@ public class ScoreboardCommand extends AbstractCommand {
                     if (!id.asString().equalsIgnoreCase("main")) {
                         ScoreboardHelper.viewerMap.put(viewer.getName(), id.asString());
                     }
-
                     // Make this player view the scoreboard if he/she
                     // is already online
                     if (viewer.isOnline()) {
