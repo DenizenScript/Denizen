@@ -527,7 +527,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public Entity getBukkitEntity() {
         if (uuid != null && (entity == null || !entity.isValid())) {
-            isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
+            if (!isFake) {
+                Entity backup = Bukkit.getEntity(uuid);
+                if (backup != null) {
+                    entity = backup;
+                }
+            }
         }
         return entity;
     }
@@ -671,6 +676,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public LocationTag getEyeLocation() {
         Entity entity = getBukkitEntity();
+        if (entity == null) {
+            return null;
+        }
         if (isPlayer()) {
             return new LocationTag(getPlayer().getEyeLocation());
         }
@@ -695,23 +703,27 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public Vector getVelocity() {
-        if (!isGeneric()) {
-            return entity.getVelocity();
+        Entity entity = getBukkitEntity();
+        if (entity == null) {
+            return null;
         }
-        return null;
+        return entity.getVelocity();
     }
 
     public void setVelocity(Vector vector) {
-        if (!isGeneric()) {
-            entity.setVelocity(vector);
+        Entity entity = getBukkitEntity();
+        if (entity == null) {
+            return;
         }
+        entity.setVelocity(vector);
     }
 
     public World getWorld() {
-        if (!isGeneric()) {
-            return entity.getWorld();
+        Entity entity = getBukkitEntity();
+        if (entity == null) {
+            return null;
         }
-        return null;
+        return entity.getWorld();
     }
 
     public void spawnAt(Location location) {
@@ -879,7 +891,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
         NMSHandler.getChunkHelper().changeChunkServerThread(entity.getWorld());
         try {
-            isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
             return isValid() || rememberedEntities.containsKey(entity.getUniqueId());
         }
         finally {
@@ -892,7 +903,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean isValid() {
-        isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
+        Entity entity = getBukkitEntity();
         return entity != null && (entity.isValid() || (isFake && isFakeValid));
     }
 
@@ -909,8 +920,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getEntityHelper().look(entity, location.getYaw(), location.getPitch());
         }
         else {
-            isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
-            entity.teleport(location);
+            getBukkitEntity().teleport(location);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
                 NMSHandler.getEntityHelper().teleport(entity, location);
             }
@@ -1125,38 +1135,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return "null";
     }
 
-    public String identifySimpleType() {
-        if (isCitizensNPC()) {
-            return "npc";
-        }
-        else if (isPlayer()) {
-            return "player";
-        }
-        else {
-            return entity_type.getLowercaseName();
-        }
-    }
-
     @Override
     public String toString() {
         return identify();
     }
 
-    public boolean uniqueTestInternal() {
-        return isPlayer() || isCitizensNPC() || isSpawned() || isLivingEntity() || (entity != null && rememberedEntities.containsKey(entity.getUniqueId())) || isFake;  // || isSaved()
-    }
-
     @Override
     public boolean isUnique() {
-        boolean result = uniqueTestInternal();
-        if (result || uuid == null) {
-            return result;
-        }
-        Entity backup = Bukkit.getEntity(uuid);
-        if (backup != null) {
-            entity = backup;
-        }
-        return uniqueTestInternal();
+        return entity != null || uuid != null || isFake;
     }
 
     public static void registerTags() {

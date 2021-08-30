@@ -87,11 +87,10 @@ public class RemoveCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         WorldTag world = scriptEntry.getObjectTag("world");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (world == null ? "" : world.debug())
-                    + ArgumentHelper.debugList("entities", entities));
+            Debug.report(scriptEntry, getName(), world, ArgumentHelper.debugList("entities", entities));
         }
         for (EntityTag entity : entities) {
-            if (!entity.isGeneric()) {
+            if (entity.isUnique()) {
                 if (entity.isFake) {
                     FakeEntity fakeEnt = FakeEntity.idsToEntities.get(entity.getUUID());
                     if (fakeEnt != null) {
@@ -101,15 +100,14 @@ public class RemoveCommand extends AbstractCommand {
                 else if (entity.isCitizensNPC()) {
                     entity.getDenizenNPC().getCitizen().destroy();
                 }
-                else {
+                else if (entity.isSpawned()) {
                     entity.remove();
+                }
+                else {
+                    Debug.echoError("Tried to remove already-removed entity.");
                 }
             }
             else {
-                if (entity.getUUID() != null) {
-                    Debug.echoError("Tried to remove already-removed entity.");
-                    return;
-                }
                 int removed = 0;
                 for (Entity worldEntity : world.getEntities()) {
                     if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
