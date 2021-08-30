@@ -98,14 +98,12 @@ public class TeleportCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("location", location) +
-                    ArgumentHelper.debugObj("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("location", location), ArgumentHelper.debugObj("entities", entities.toString()));
         }
         for (EntityTag entity : entities) {
             if (entity.isFake && entity.getWorld().equals(location.getWorld())) {

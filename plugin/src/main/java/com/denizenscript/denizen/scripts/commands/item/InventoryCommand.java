@@ -170,7 +170,6 @@ public class InventoryCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         boolean isAdjust = false, isFlag = false;
@@ -242,7 +241,6 @@ public class InventoryCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
@@ -256,15 +254,7 @@ public class InventoryCommand extends AbstractCommand {
         DataAction flagAction = (DataAction) scriptEntry.getObject("flag_action");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("actions", actions.toString())
-                            + (destination.debug())
-                            + (origin != null ? origin.debug() : "")
-                            + (mechanism != null ? mechanism.debug() : "")
-                            + (mechanismValue != null ? mechanismValue.debug() : "")
-                            + (flagAction != null ? flagAction.debug() : "")
-                            + (duration != null ? duration.debug() : "")
-                            + slot.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("actions", actions.toString()), destination, origin, mechanism, mechanismValue, flagAction, duration, slot);
         }
         int slotId = SlotHelper.nameToIndexFor(slot.asString(), destination.getInventory().getHolder());
         if (slotId < 0) {

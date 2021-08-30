@@ -91,7 +91,6 @@ public class LeashCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");

@@ -71,7 +71,6 @@ public class DespawnCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");

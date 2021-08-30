@@ -164,7 +164,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         EntityTag originEntity = scriptEntry.getObjectTag("origin_entity");

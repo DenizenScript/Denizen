@@ -101,7 +101,6 @@ public class MountCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
@@ -109,9 +108,7 @@ public class MountCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", true) : "") +
-                    ArgumentHelper.debugObj("location", location) +
-                    ArgumentHelper.debugObj("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", true) : ""), location, ArgumentHelper.debugList("entities", entities));
         }
         if (!cancel) {
             for (EntityTag entity : entities) {

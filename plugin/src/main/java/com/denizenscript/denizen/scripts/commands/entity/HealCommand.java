@@ -101,20 +101,15 @@ public class HealCommand extends AbstractCommand {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         if (entities == null) {
             return;
         }
         ElementTag amountelement = scriptEntry.getElement("amount");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), amountelement.debug() + ArgumentHelper.debugObj("entities", entities));
-
+            Debug.report(scriptEntry, getName(), amountelement, ArgumentHelper.debugObj("entities", entities));
         }
         if (amountelement.asDouble() == -1) {
             for (EntityTag entity : entities) {

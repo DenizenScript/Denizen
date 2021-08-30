@@ -110,7 +110,6 @@ public class NarrateCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
         if (scriptEntry.getResidingQueue().procedural) {

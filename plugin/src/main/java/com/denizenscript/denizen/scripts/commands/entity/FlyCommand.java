@@ -115,7 +115,6 @@ public class FlyCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag origin = scriptEntry.getObjectTag("origin");

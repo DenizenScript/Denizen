@@ -137,7 +137,6 @@ public class AttachCommand extends AbstractCommand {
         scriptEntry.defaultObject("pitch_offset", new ElementTag(0f));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag offset = scriptEntry.getObjectTag("offset");
@@ -152,15 +151,8 @@ public class AttachCommand extends AbstractCommand {
         ElementTag pitch_offset = scriptEntry.getElement("pitch_offset");
         boolean shouldCancel = cancel.asBoolean();
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities)
-                    + (shouldCancel ? cancel.debug() : target.debug())
-                    + relative.debug()
-                    + (offset == null ? "" : offset.debug())
-                    + yaw_offset.debug()
-                    + pitch_offset.debug()
-                    + sync_server.debug()
-                    + no_rotate.debug()
-                    + (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities), (shouldCancel ? cancel.debug() : target.debug()), relative, offset,
+                    yaw_offset, pitch_offset, sync_server, no_rotate, (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
         }
         BiConsumer<EntityTag, UUID> procPlayer = (entity, player) -> {
             if (shouldCancel) {

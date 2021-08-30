@@ -116,7 +116,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         final List<EntityTag> entities = new ArrayList<>((List<EntityTag>) scriptEntry.getObject("entities"));
@@ -127,12 +126,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         boolean cancel = scriptEntry.hasObject("cancel");
         final boolean infinite = scriptEntry.hasObject("infinite");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
-                    ArgumentHelper.debugObj("entities", entities.toString()) +
-                    (infinite ? ArgumentHelper.debugObj("duration", "infinite") : duration.debug()) +
-                    frequency.debug() +
-                    yaw.debug() +
-                    pitch.debug());
+            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", true) : ""), ArgumentHelper.debugList("entities", entities),
+                    (infinite ? ArgumentHelper.debugObj("duration", "infinite") : duration.debug()), frequency, yaw, pitch);
         }
         for (EntityTag entity : entities) {
             if (cancel) {

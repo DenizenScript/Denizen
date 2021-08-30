@@ -16,7 +16,6 @@ import java.util.ArrayList;
  */
 public class SpawnEntityHelper {
 
-    @SuppressWarnings("unchecked")
     public static <T extends Entity> Entity spawn(Location location, EntityType bukkitEntityType, final ArrayList<Mechanism> mechanisms, final String scriptName) {
         Consumer<? extends Entity> consumer = (Consumer<Entity>) bukkitEntity -> {
             if (scriptName != null) {

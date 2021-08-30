@@ -130,7 +130,6 @@ public class FireworkCommand extends AbstractCommand {
         scriptEntry.defaultObject("primary", Collections.singletonList(new ColorTag(Color.YELLOW)));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         final LocationTag location = scriptEntry.hasObject("location") ?
@@ -143,13 +142,10 @@ public class FireworkCommand extends AbstractCommand {
         List<ColorTag> primary = (List<ColorTag>) scriptEntry.getObject("primary");
         List<ColorTag> fade = (List<ColorTag>) scriptEntry.getObject("fade");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), location.debug() +
-                    type.debug() +
-                    power.debug() +
-                    (flicker ? ArgumentHelper.debugObj("flicker", flicker) : "") +
-                    (trail ? ArgumentHelper.debugObj("trail", trail) : "") +
-                    ArgumentHelper.debugObj("primary colors", primary.toString()) +
-                    (fade != null ? ArgumentHelper.debugObj("fade colors", fade.toString()) : ""));
+            Debug.report(scriptEntry, getName(), location, type, power, (flicker ? ArgumentHelper.debugObj("flicker", true) : ""),
+                    (trail ? ArgumentHelper.debugObj("trail", true) : ""),
+                    ArgumentHelper.debugList("primary colors", primary),
+                    (fade != null ? ArgumentHelper.debugList("fade colors", fade) : ""));
         }
         Firework firework = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();

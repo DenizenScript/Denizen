@@ -169,7 +169,6 @@ public class ScoreboardCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<PlayerTag> viewers = (List<PlayerTag>) scriptEntry.getObject("viewers");

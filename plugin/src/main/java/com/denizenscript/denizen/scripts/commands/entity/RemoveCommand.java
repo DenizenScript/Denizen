@@ -81,7 +81,6 @@ public class RemoveCommand extends AbstractCommand {
 
     public static boolean alwaysWarnOnMassRemove = false;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");

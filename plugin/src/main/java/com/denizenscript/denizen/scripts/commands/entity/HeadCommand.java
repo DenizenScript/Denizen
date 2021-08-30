@@ -61,7 +61,6 @@ public class HeadCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
         Deprecations.headCommand.warn(scriptEntry);
@@ -69,9 +68,7 @@ public class HeadCommand extends AbstractCommand {
         ElementTag skin = scriptEntry.getElement("skin");
         MaterialTag material = scriptEntry.getObjectTag("material");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("entities", entities.toString()) +
-                            (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()), skin, material);
         }
         ItemStack item = null;
         if (skin != null) {

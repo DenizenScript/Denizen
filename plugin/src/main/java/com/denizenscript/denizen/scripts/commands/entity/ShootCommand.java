@@ -183,7 +183,6 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         EntityTag originEntity = scriptEntry.getObjectTag("origin_entity");

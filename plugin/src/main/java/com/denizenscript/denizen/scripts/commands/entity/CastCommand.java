@@ -138,7 +138,6 @@ public class CastCommand extends AbstractCommand {
         scriptEntry.defaultObject("show_icon", new ElementTag(true));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
@@ -150,14 +149,8 @@ public class CastCommand extends AbstractCommand {
         ElementTag ambient = scriptEntry.getElement("ambient");
         ElementTag showIcon = scriptEntry.getElement("show_icon");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("Target(s)", entities.toString())
-                            + ArgumentHelper.debugObj("Effect", effect.getName())
-                            + ArgumentHelper.debugObj("Amplifier", amplifier)
-                            + duration.debug()
-                            + ambient.debug()
-                            + showParticles.debug()
-                            + showIcon.debug());
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Target(s)", entities.toString()), ArgumentHelper.debugObj("Effect", effect.getName()),
+                            ArgumentHelper.debugObj("Amplifier", amplifier), duration, ambient, showParticles, showIcon);
         }
         boolean amb = ambient.asBoolean();
         boolean showP = showParticles.asBoolean();

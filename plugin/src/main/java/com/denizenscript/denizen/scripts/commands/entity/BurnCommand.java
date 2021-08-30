@@ -70,14 +70,12 @@ public class BurnCommand extends AbstractCommand {
         scriptEntry.defaultObject("duration", new DurationTag(5));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), duration.debug() +
-                    ArgumentHelper.debugObj("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), duration, ArgumentHelper.debugObj("entities", entities.toString()));
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {

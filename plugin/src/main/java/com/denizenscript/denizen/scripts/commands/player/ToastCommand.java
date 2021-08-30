@@ -102,7 +102,6 @@ public class ToastCommand extends AbstractCommand {
         scriptEntry.defaultObject("frame", new ElementTag("TASK"));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag text = scriptEntry.getElement("text");

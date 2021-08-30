@@ -112,7 +112,6 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         scriptEntry.defaultObject("tempo", new ElementTag(1)).defaultObject("volume", new ElementTag(10));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         boolean cancel = scriptEntry.hasObject("cancel");

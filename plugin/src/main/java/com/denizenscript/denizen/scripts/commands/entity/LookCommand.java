@@ -98,7 +98,6 @@ public class LookCommand extends AbstractCommand {
 
     public static HashMap<UUID, BukkitTask> lookTasks = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) {
         final LocationTag loc = scriptEntry.getObjectTag("location");
