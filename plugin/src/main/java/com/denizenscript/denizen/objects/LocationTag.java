@@ -3592,6 +3592,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return new LocationTag(loc);
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.is_in[<matcher>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the location is in an area, using the same logic as an event "in" switch.
+        // Invalid input may produce odd error messages, as this is passed through the event system as a fake event.
+        // -->
+        registerTag("is_in", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            return new ElementTag(BukkitScriptEvent.inCheckInternal(attribute.context, "is_in tag", object, attribute.getContext(1), "is_in tag", "is_in tag"));
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();

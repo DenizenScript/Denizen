@@ -12,6 +12,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -622,12 +623,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         if (inputText.startsWith("!")) {
-            return !inCheckInternal(path, location, inputText.substring(1));
+            return !inCheckInternal(getTagContext(path), getName(), location, inputText.substring(1), path.event, path.container.getName());
         }
-        return inCheckInternal(path, location, inputText);
+        return inCheckInternal(getTagContext(path), getName(), location, inputText, path.event, path.container.getName());
     }
 
-    public boolean inCheckInternal(ScriptPath path, Location location, String inputText) {
+    public static boolean inCheckInternal(TagContext context, String name, Location location, String inputText, String evtLine, String containerName) {
         String lower = CoreUtilities.toLowerCase(inputText);
         if (lower.contains(":")) {
             if (lower.startsWith("world_flagged:")) {
@@ -684,25 +685,31 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return CoreUtilities.equalsIgnoreCase(location.getWorld().getName(), lower);
         }
         else if (CuboidTag.matches(inputText)) {
-            CuboidTag cuboid = CuboidTag.valueOf(inputText, getTagContext(path));
+            CuboidTag cuboid = CuboidTag.valueOf(inputText, context);
             if (cuboid == null || !cuboid.isUnique()) {
-                Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid cuboid): '" + path.event + "' for " + path.container.getName());
+                if (context.showErrors()) {
+                    Debug.echoError("Invalid event 'in:<area>' switch [" + name + "] (invalid cuboid): '" + evtLine + "' for " + containerName);
+                }
                 return false;
             }
             return cuboid.isInsideCuboid(location);
         }
         else if (EllipsoidTag.matches(inputText)) {
-            EllipsoidTag ellipsoid = EllipsoidTag.valueOf(inputText, getTagContext(path));
+            EllipsoidTag ellipsoid = EllipsoidTag.valueOf(inputText, context);
             if (ellipsoid == null || !ellipsoid.isUnique()) {
-                Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid ellipsoid): '" + path.event + "' for " + path.container.getName());
+                if (context.showErrors()) {
+                    Debug.echoError("Invalid event 'in:<area>' switch [" + name + "] (invalid ellipsoid): '" + evtLine + "' for " + containerName);
+                }
                 return false;
             }
             return ellipsoid.contains(location);
         }
         else if (PolygonTag.matches(inputText)) {
-            PolygonTag polygon = PolygonTag.valueOf(inputText, getTagContext(path));
+            PolygonTag polygon = PolygonTag.valueOf(inputText, context);
             if (polygon == null || !polygon.isUnique()) {
-                Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] (invalid polygon): '" + path.event + "' for " + path.container.getName());
+                if (context.showErrors()) {
+                    Debug.echoError("Invalid event 'in:<area>' switch [" + name + "] (invalid polygon): '" + evtLine + "' for " + containerName);
+                }
                 return false;
             }
             return polygon.doesContainLocation(location);
@@ -730,7 +737,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         else {
-            Debug.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???') (did you make a typo, or forget to make a notable by that name?): '" + path.event + "' for " + path.container.getName());
+            Debug.echoError("Invalid event 'in:<area>' switch [" + name + "] ('in:???') (did you make a typo, or forget to make a notable by that name?): '" + evtLine + "' for " + containerName);
             return false;
         }
     }
