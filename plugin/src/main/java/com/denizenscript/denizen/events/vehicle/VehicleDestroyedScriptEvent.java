@@ -64,6 +64,9 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
             if (!exactMatchesVehicle(path.eventArgLowerAt(0))) {
                 return false;
             }
+            if (path.eventArgLowerAt(2).equals("by")) {
+                return false;
+            }
         }
         else {
             return false;

@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -30,10 +29,11 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when a block explodes (like a bed in the nether. For TNT, refer to the "entity explodes" event instead).
+    // @Triggers when a block explodes (like a bed in the nether. For TNT, refer to the "entity explodes" event instead). For a block being destroyed by an explosion, refer to the "block destroyed by explosion" event instead.
     //
     // @Context
-    // <context.blocks> returns a ListTag of blocks that the entity blew up.
+    // <context.block> returns the location of the exploding block.
+    // <context.blocks> returns a ListTag of blocks that blew up.
     // <context.strength> returns an ElementTag(Decimal) of the strength of the explosion.
     //
     // @Determine
@@ -63,20 +63,10 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-        String target = path.eventArgLowerAt(0);
-        if (!target.equals("block")) {
-            boolean matched = false;
-            for (Block block : blocks) {
-                if (tryMaterial(new MaterialTag(block.getType()), target)) {
-                    matched = true;
-                    break;
-                }
-            }
-            if (!matched) {
-                return false;
-            }
+        if (!tryMaterial(event.getBlock().getType(), path.eventArgAt(0))) {
+            return false;
         }
-        if (blocks.size() > 0 && !runInCheck(path, blocks.get(0).getLocation())) {
+        if (!runInCheck(path, event.getBlock().getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -112,6 +102,9 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
+        if (name.equals("block")) {
+            return new LocationTag(event.getBlock().getLocation());
+        }
         if (name.equals("blocks")) {
             ListTag blocks = new ListTag();
             for (Block block : this.blocks) {
