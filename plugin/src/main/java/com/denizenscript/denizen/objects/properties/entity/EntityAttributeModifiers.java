@@ -166,6 +166,46 @@ public class EntityAttributeModifiers implements Property {
         return "attribute_modifiers";
     }
 
+
+    // <--[language]
+    // @name Attribute Modifiers
+    // @group Properties
+    // @description
+    // In minecraft, the "attributes" system defined certain core numerical values on entities, such as max health or attack damage.
+    // The value of an "attribute" is determined by its "base value" modified mathematically by each of its "attribute modififers".
+    // "Attribute modifiers" can be added either directly to the entity, or onto items - when on an item, an entity can equip it into the correct slot to automatically apply the modifier.
+    //
+    // These can be read via such tags as <@link tag EntityTag.attribute_modifiers>, <@link tag ItemTag.attribute_modifiers>,
+    // <@link tag EntityTag.has_attribute>, <@link tag EntityTag.attribute_value>, <@link tag EntityTag.attribute_base_value>, <@link tag EntityTag.attribute_default_value>, ...
+    //
+    // These can be modified by such mechanisms as <@link mechanism EntityTag.attribute_base_values>, <@link mechanism EntityTag.attribute_modifiers>, <@link mechanism EntityTag.add_attribute_modifiers>,
+    // <@link mechanism EntityTag.remove_attribute_modifiers>, <@link mechanism ItemTag.attribute_modifiers>, <@link mechanism ItemTag.add_attribute_modifiers>, <@link mechanism ItemTag.remove_attribute_modifiers>, ...
+    //
+    // The input format of each of the 'add' and set mechanisms is slightly complicated:  a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
+    // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and optional keys 'name', 'slot', and 'id'.
+    //
+    // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
+    // Valid slots: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
+    // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+    // The default ID will be randomly generated, the default name will be the attribute name, the default slot is any.
+    //
+    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
+    //
+    // For more clean/proper input, instead do something like:
+    // <code>
+    // - definemap attributes:
+    //     generic_max_health:
+    //         1:
+    //             operation: ADD_NUMBER
+    //             amount: 20
+    //             slot: head
+    // - inventory adjust slot:head add_attribute_modifiers:<[attributes]>
+    // </code>
+    //
+    // When pre-defining a custom item, instead of any of this, simply use an item script: <@link language item script containers>. That page shows an example of valid attribute modifiers on an item script.
+    //
+    // -->
+
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
 
@@ -182,6 +222,7 @@ public class EntityAttributeModifiers implements Property {
         // Returns a map of all attribute modifiers on the entity, with key as the attribute name and value as a list of modifiers,
         // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
+        // See also <@link language attribute modifiers>.
         // -->
         if (attribute.startsWith("attribute_modifiers")) {
             return getAttributeModifiers().getObjectAttribute(attribute.fulfill(1));
@@ -225,13 +266,7 @@ public class EntityAttributeModifiers implements Property {
         // @description
         // Sets the attribute modifiers of an entity.
         // This is a SET operation, meaning pre-existing modifiers are removed.
-        // Specify a MapTag where the keys are attribute names, and values are a ListTag of modifiers (or a numbered-index MapTag),
-        // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and optional keys 'name', 'slot', and 'id'.
-        // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
-        // Valid slots: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
-        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
-        // The default ID will be randomly generated, the default name will be the attribute name, the default slot is any.
-        // Example of valid input: [generic_max_health=<list[<map[operation=ADD_NUMBER;amount=20]>]>]
+        // For input format details, refer to <@link language attribute modifiers>.
         // @tags
         // <EntityTag.has_attribute>
         // <EntityTag.attribute_modifiers>
@@ -267,7 +302,7 @@ public class EntityAttributeModifiers implements Property {
         // @input MapTag
         // @description
         // Adds attribute modifiers to an entity without altering existing modifiers.
-        // All input is the same as <@link mechanism EntityTag.attribute_modifiers>.
+        // For input format details, refer to <@link language attribute modifiers>.
         // @tags
         // <EntityTag.has_attribute>
         // <EntityTag.attribute_modifiers>
@@ -300,6 +335,7 @@ public class EntityAttributeModifiers implements Property {
         // @input ListTag
         // @description
         // Removes attribute modifiers from an entity. Specify a list of attribute names or modifier UUIDs as input.
+        // See also <@link language attribute modifiers>.
         // @tags
         // <EntityTag.has_attribute>
         // <EntityTag.attribute_modifiers>

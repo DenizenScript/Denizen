@@ -89,6 +89,7 @@ public class ItemAttributeModifiers implements Property {
         // Returns a map of all attribute modifiers on the item, with key as the attribute name and value as a list of modifiers,
         // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
+        // See also <@link language attribute modifiers>.
         // -->
         if (attribute.startsWith("attribute_modifiers")) {
             return getAttributeModifiers().getObjectAttribute(attribute.fulfill(1));
@@ -121,13 +122,7 @@ public class ItemAttributeModifiers implements Property {
         // @description
         // Sets the attribute modifiers of an item.
         // This is a SET operation, meaning pre-existing modifiers are removed.
-        // Specify a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
-        // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and optional keys 'name', 'slot', and 'id'.
-        // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
-        // Valid slots: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
-        // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
-        // The default ID will be randomly generated, the default name will be the attribute name, the default slot is any.
-        // Example of valid input: [generic_max_health=<list[<map[operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
+        // For input format details, refer to <@link language attribute modifiers>.
         // @tags
         // <ItemTag.attribute_modifiers>
         // -->
@@ -149,7 +144,7 @@ public class ItemAttributeModifiers implements Property {
         // @input MapTag
         // @description
         // Adds attribute modifiers to an item without altering existing modifiers.
-        // All input is the same as <@link mechanism ItemTag.attribute_modifiers>.
+        // For input format details, refer to <@link language attribute modifiers>.
         // @tags
         // <ItemTag.attribute_modifiers>
         // -->
@@ -169,6 +164,7 @@ public class ItemAttributeModifiers implements Property {
         // @input ListTag
         // @description
         // Removes attribute modifiers from an item. Specify a list of attribute names or modifier UUIDs as input.
+        // See also <@link language attribute modifiers>.
         // @tags
         // <ItemTag.attribute_modifiers>
         // -->

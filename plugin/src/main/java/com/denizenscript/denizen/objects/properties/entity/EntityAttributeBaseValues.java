@@ -82,6 +82,7 @@ public class EntityAttributeBaseValues implements Property {
         // @description
         // Returns whether the entity has the named attribute.
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // See also <@link language attribute modifiers>.
         // -->
         if (attribute.startsWith("has_attribute") && attribute.hasContext(1)) {
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(
@@ -98,6 +99,7 @@ public class EntityAttributeBaseValues implements Property {
         // Returns the final calculated value of the named attribute for the entity.
         // See also <@link tag EntityTag.has_attribute>.
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // See also <@link language attribute modifiers>.
         // -->
         if (attribute.startsWith("attribute_value") && attribute.hasContext(1)) {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
@@ -118,6 +120,7 @@ public class EntityAttributeBaseValues implements Property {
         // Returns the base value of the named attribute for the entity.
         // See also <@link tag EntityTag.has_attribute>.
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // See also <@link language attribute modifiers>.
         // -->
         if (attribute.startsWith("attribute_base_value") && attribute.hasContext(1)) {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
@@ -138,6 +141,7 @@ public class EntityAttributeBaseValues implements Property {
         // Returns the default value of the named attribute for the entity.
         // See also <@link tag EntityTag.has_attribute>.
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // See also <@link language attribute modifiers>.
         // -->
         if (attribute.startsWith("attribute_default_value") && attribute.hasContext(1)) {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
@@ -163,6 +167,7 @@ public class EntityAttributeBaseValues implements Property {
         // Sets the base value of an entity's attributes.
         // Specify a MapTag where the keys are attribute names, and values are the new base values.
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+        // See also <@link language attribute modifiers>.
         // @tags
         // <EntityTag.has_attribute>
         // <EntityTag.attribute_default_value>
