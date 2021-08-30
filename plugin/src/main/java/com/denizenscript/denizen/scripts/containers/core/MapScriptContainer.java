@@ -41,6 +41,10 @@ public class MapScriptContainer extends ScriptContainer {
     //   # | Some map scripts should have this key!
     //   auto update: true
     //
+    //   # Whether this map script renders uniquely per-player. Defaults to true.
+    //   # | Some map scripts should have this key!
+    //   contextual: true
+    //
     //   # Lists all contained objects.
     //   # | Most map scripts should have this key!
     //   objects:
@@ -91,7 +95,8 @@ public class MapScriptContainer extends ScriptContainer {
     // -->
 
     public void applyTo(MapView mapView) {
-        DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(), getString("auto update", "true").equalsIgnoreCase("true"));
+        boolean contextual = getString("contextual", "true").equalsIgnoreCase("true");
+        DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(), getString("auto update", "true").equalsIgnoreCase("true"), contextual);
         if (contains("original")) {
             renderer.displayOriginal = getString("original").equalsIgnoreCase("true");
         }

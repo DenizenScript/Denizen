@@ -2671,6 +2671,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Number)
         // @description
         // Forces a player to receive the entirety of the specified map ID instantly.
+        // This is mainly used as a way to correct bugs in map rendering.
         // -->
         if (mechanism.matches("send_map") && mechanism.requireInteger()) {
             MapView map = Bukkit.getServer().getMap((short) mechanism.getValue().asInt());

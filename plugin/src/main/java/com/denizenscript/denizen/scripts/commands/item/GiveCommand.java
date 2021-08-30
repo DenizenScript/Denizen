@@ -25,21 +25,21 @@ public class GiveCommand extends AbstractCommand {
 
     public GiveCommand() {
         setName("give");
-        setSyntax("give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)");
+        setSyntax("give [xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)");
         setRequiredArguments(1, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Give
-    // @Syntax give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
+    // @Syntax give [xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
     // @Required 1
     // @Maximum 5
     // @Short Gives the player an item, xp, or money.
     // @Group item
     //
     // @Description
-    // Gives the linked player or inventory items, xp, or money.
+    // Gives the linked player or inventory items, xp.
     //
     // Optionally specify a slot to put the items into. If the slot is already filled, the next available slot will be used.
     // If the inventory is full, the items will be dropped on the ground at the inventory's location.
@@ -50,16 +50,12 @@ public class GiveCommand extends AbstractCommand {
     //
     // When giving an item, you can specify any valid inventory as a target. If unspecified, the linked player's inventory will be used.
     //
-    // If an economy is registered, specifying money instead of a item will give money to the linked player's economy.
-    //
     // If 'xp' is specified, this will give experience points to the linked player.
+    //
+    // To give money to a player, use <@link command money>.
     //
     // @Tags
     // <PlayerTag.money>
-    //
-    // @Usage
-    // Use to give money to the player.
-    // - give money quantity:10
     //
     // @Usage
     // Use to give XP to the player.
@@ -102,6 +98,7 @@ public class GiveCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
+                Deprecations.giveTakeMoney.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MONEY);
             }
             else if (!scriptEntry.hasObject("type")

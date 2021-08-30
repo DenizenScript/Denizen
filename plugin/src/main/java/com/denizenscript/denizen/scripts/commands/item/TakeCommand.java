@@ -36,14 +36,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [money/xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -72,8 +72,6 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'xp' will take experience from the player.
     //
-    // If an economy is registered, using 'money' instead of an item will take money from the player's economy balance.
-    //
     // Flagged, Slot, ByDisplay, and Raw_Exact, all take a list as input to take multiple different item types at once.
     //
     // If no quantity is specified, exactly 1 item will be taken.
@@ -82,15 +80,12 @@ public class TakeCommand extends AbstractCommand {
     //
     // Optionally using 'from:' to specify a specific inventory to take from. If not specified, the linked player's inventory will be used.
     //
-    // The options 'iteminhand', 'cursoritem', 'money', and 'xp' require a linked player and will ignore the 'from:' inventory.
+    // The options 'iteminhand', 'cursoritem', and 'xp' require a linked player and will ignore the 'from:' inventory.
+    //
+    // To give money to a player, use <@link command money>.
     //
     // @Tags
     // <PlayerTag.item_in_hand>
-    // <PlayerTag.money>
-    //
-    // @Usage
-    // Use to take money from the player
-    // - take money quantity:10
     //
     // @Usage
     // Use to take an arrow from the player's enderchest
@@ -140,6 +135,7 @@ public class TakeCommand extends AbstractCommand {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
+                Deprecations.giveTakeMoney.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MONEY);
             }
             else if (!scriptEntry.hasObject("type")

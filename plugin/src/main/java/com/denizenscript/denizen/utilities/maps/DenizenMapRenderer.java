@@ -20,8 +20,8 @@ public class DenizenMapRenderer extends MapRenderer {
 
     private boolean active;
 
-    public DenizenMapRenderer(List<MapRenderer> oldMapRenderers, boolean autoUpdate) {
-        super(true);
+    public DenizenMapRenderer(List<MapRenderer> oldMapRenderers, boolean autoUpdate, boolean contextual) {
+        super(contextual);
         this.oldMapRenderers = oldMapRenderers;
         if (oldMapRenderers.size() == 1 && oldMapRenderers.get(0) instanceof DenizenMapRenderer) {
             this.oldMapRenderers = ((DenizenMapRenderer) oldMapRenderers.get(0)).oldMapRenderers;
@@ -65,6 +65,7 @@ public class DenizenMapRenderer extends MapRenderer {
             objects.put(String.valueOf(i), objectData);
         }
         data.put("objects", objects);
+        data.put("contextual", isContextual());
         data.put("auto update", autoUpdate);
         data.put("original", displayOriginal);
         return data;

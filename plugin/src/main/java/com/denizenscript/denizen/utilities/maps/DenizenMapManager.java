@@ -66,8 +66,8 @@ public class DenizenMapManager {
                     mapView.removeRenderer(oldRenderer);
                 }
             }
-            DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers,
-                    mapsSection.getBoolean(key + ".auto update", false));
+            boolean contextual = mapsSection.getBoolean(key + ".contextual", true);
+            DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers, mapsSection.getBoolean(key + ".auto update", false), contextual);
             renderer.displayOriginal = mapsSection.getBoolean(key + ".original", true);
             List<String> objects = new ArrayList<>(objectsData.getKeys(false));
             objects.sort(new NaturalOrderComparator());
@@ -155,7 +155,7 @@ public class DenizenMapManager {
         int mapId = map.getId();
         DenizenMapRenderer dmr;
         if (!mapRenderers.containsKey(mapId)) {
-            dmr = new DenizenMapRenderer(map.getRenderers(), false);
+            dmr = new DenizenMapRenderer(map.getRenderers(), false, true);
             setMap(map, dmr);
         }
         else {
