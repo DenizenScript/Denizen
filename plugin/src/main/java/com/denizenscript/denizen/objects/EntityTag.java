@@ -526,6 +526,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public Entity getBukkitEntity() {
+        if (uuid != null && (entity == null || !entity.isValid())) {
+            isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
+        }
         return entity;
     }
 
@@ -658,6 +661,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public LocationTag getLocation() {
+        Entity entity = getBukkitEntity();
         if (entity != null) {
             return new LocationTag(entity.getLocation());
         }
@@ -666,6 +670,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public LocationTag getEyeLocation() {
+        Entity entity = getBukkitEntity();
         if (isPlayer()) {
             return new LocationTag(getPlayer().getEyeLocation());
         }
@@ -673,7 +678,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new LocationTag(getLivingEntity().getEyeLocation());
         }
         else if (!isGeneric()) {
-            return new LocationTag(getBukkitEntity().getLocation());
+            return new LocationTag(entity.getLocation());
         }
 
         return null;
@@ -721,7 +726,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
             }
         }
-        else if (entity != null && isUnique()) {
+        else if (isUnique() && entity != null) {
             teleport(location);
         }
         else {
@@ -866,7 +871,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean isSpawnedOrValidForTag() {
-        return entity != null && (isValidForTag() || rememberedEntities.containsKey(entity.getUniqueId()));
+        if (isFake) {
+            return true;
+        }
+        if (entity == null) {
+            return false;
+        }
+        NMSHandler.getChunkHelper().changeChunkServerThread(entity.getWorld());
+        try {
+            isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
+            return isValid() || rememberedEntities.containsKey(entity.getUniqueId());
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(entity.getWorld());
+        }
     }
 
     public boolean isSpawned() {
@@ -874,20 +892,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean isValid() {
+        isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
         return entity != null && (entity.isValid() || (isFake && isFakeValid));
-    }
-
-    public boolean isValidForTag() {
-        if (isFake) {
-            return true;
-        }
-        NMSHandler.getChunkHelper().changeChunkServerThread(entity.getWorld());
-        try {
-            return entity.isValid();
-        }
-        finally {
-            NMSHandler.getChunkHelper().restoreServerThread(entity.getWorld());
-        }
     }
 
     public void remove() {
@@ -903,6 +909,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getEntityHelper().look(entity, location.getYaw(), location.getPitch());
         }
         else {
+            isUnique(); // Trigger the isUnique() code to reset the entity if it needs to be.
             entity.teleport(location);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
                 NMSHandler.getEntityHelper().teleport(entity, location);
@@ -1135,10 +1142,21 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return identify();
     }
 
+    public boolean uniqueTestInternal() {
+        return isPlayer() || isCitizensNPC() || isSpawned() || isLivingEntity() || (entity != null && rememberedEntities.containsKey(entity.getUniqueId())) || isFake;  // || isSaved()
+    }
+
     @Override
     public boolean isUnique() {
-        return isPlayer() || isCitizensNPC() || isSpawned() || isLivingEntity()
-                || (entity != null && rememberedEntities.containsKey(entity.getUniqueId())) || isFake;  // || isSaved()
+        boolean result = uniqueTestInternal();
+        if (result || uuid == null) {
+            return result;
+        }
+        Entity backup = Bukkit.getEntity(uuid);
+        if (backup != null) {
+            entity = backup;
+        }
+        return uniqueTestInternal();
     }
 
     public static void registerTags() {
@@ -1191,8 +1209,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the entity's temporary server entity ID.
         // -->
-        registerTag("eid", (attribute, object) -> {
-            return new ElementTag(object.entity.getEntityId());
+        registerSpawnedOnlyTag("eid", (attribute, object) -> {
+            return new ElementTag(object.getBukkitEntity().getEntityId());
         });
 
         // <--[tag]
@@ -1243,7 +1261,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return new ScriptTag(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"));
             }
             else {
-                return new ElementTag(object.entity.getType().name());
+                return new ElementTag(object.getBukkitEntity().getType().name());
             }
         });
 
@@ -1319,8 +1337,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the villager entity is trading.
         // -->
         registerSpawnedOnlyTag("is_trading", (attribute, object) -> {
-            if (object.entity instanceof Merchant) {
-                return new ElementTag(((Merchant) object.entity).isTrading());
+            if (object.getBukkitEntity() instanceof Merchant) {
+                return new ElementTag(((Merchant) object.getBukkitEntity()).isTrading());
             }
             return null;
         });
@@ -1332,9 +1350,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the player who is trading with the villager entity, or null if it is not trading.
         // -->
         registerSpawnedOnlyTag("trading_with", (attribute, object) -> {
-            if (object.entity instanceof Merchant
-                    && ((Merchant) object.entity).getTrader() != null) {
-                return new EntityTag(((Merchant) object.entity).getTrader()).getDenizenObject();
+            if (object.getBukkitEntity() instanceof Merchant && ((Merchant) object.getBukkitEntity()).getTrader() != null) {
+                return new EntityTag(((Merchant) object.getBukkitEntity()).getTrader()).getDenizenObject();
             }
             return null;
         });
@@ -1499,9 +1516,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("standing_on", 2)) {
                 Deprecations.entityStandingOn.warn(attribute.context);
                 attribute.fulfill(1);
-                return new LocationTag(object.entity.getLocation().clone().add(0, -0.5f, 0));
+                return new LocationTag(object.getBukkitEntity().getLocation().clone().add(0, -0.5f, 0));
             }
-            return new LocationTag(object.entity.getLocation());
+            return new LocationTag(object.getBukkitEntity().getLocation());
         });
 
         // <--[tag]
@@ -1527,7 +1544,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity's body yaw (separate from head yaw).
         // -->
         registerSpawnedOnlyTag("body_yaw", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getEntityHelper().getBaseYaw(object.entity));
+            return new ElementTag(NMSHandler.getEntityHelper().getBaseYaw(object.getBukkitEntity()));
         });
 
         // <--[tag]
@@ -1540,7 +1557,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Note: Does not accurately calculate player clientside movement velocity.
         // -->
         registerSpawnedOnlyTag("velocity", (attribute, object) -> {
-            return new LocationTag(object.entity.getVelocity().toLocation(object.entity.getWorld()));
+            return new LocationTag(object.getBukkitEntity().getVelocity().toLocation(object.getBukkitEntity().getWorld()));
         });
 
         // <--[tag]
@@ -1551,7 +1568,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the world the entity is in. Works with offline players.
         // -->
         registerSpawnedOnlyTag("world", (attribute, object) -> {
-            return new WorldTag(object.entity.getWorld());
+            return new WorldTag(object.getBukkitEntity().getWorld());
         });
 
         /////////////////////
@@ -1582,10 +1599,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the material of a fallingblock-type entity.
         // -->
         registerSpawnedOnlyTag("fallingblock_material", (attribute, object) -> {
-            if (!(object.entity instanceof FallingBlock)) {
+            if (!(object.getBukkitEntity() instanceof FallingBlock)) {
                 return null;
             }
-            return new MaterialTag(((FallingBlock) object.entity).getBlockData());
+            return new MaterialTag(((FallingBlock) object.getBukkitEntity()).getBlockData());
         });
 
         // <--[tag]
@@ -1597,7 +1614,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns how far the entity has fallen.
         // -->
         registerSpawnedOnlyTag("fall_distance", (attribute, object) -> {
-            return new ElementTag(object.entity.getFallDistance());
+            return new ElementTag(object.getBukkitEntity().getFallDistance());
         });
 
         // <--[tag]
@@ -1609,7 +1626,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the duration for which the entity will remain on fire
         // -->
         registerSpawnedOnlyTag("fire_time", (attribute, object) -> {
-            return new DurationTag(object.entity.getFireTicks() / 20);
+            return new DurationTag(object.getBukkitEntity().getFireTicks() / 20);
         });
 
         // <--[tag]
@@ -1620,7 +1637,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity is currently ablaze or not.
         // -->
         registerSpawnedOnlyTag("on_fire", (attribute, object) -> {
-            return new ElementTag(object.entity.getFireTicks() > 0);
+            return new ElementTag(object.getBukkitEntity().getFireTicks() > 0);
         });
 
         // <--[tag]
@@ -1648,7 +1665,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag("passengers", (attribute, object) -> {
             ArrayList<EntityTag> passengers = new ArrayList<>();
-            for (Entity ent : object.entity.getPassengers()) {
+            for (Entity ent : object.getBukkitEntity().getPassengers()) {
                 passengers.add(new EntityTag(ent));
             }
             return new ListTag(passengers);
@@ -1663,8 +1680,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity's passenger, if any.
         // -->
         registerSpawnedOnlyTag("passenger", (attribute, object) -> {
-            if (!object.entity.isEmpty()) {
-                return new EntityTag(object.entity.getPassenger()).getDenizenObject();
+            if (!object.getBukkitEntity().isEmpty()) {
+                return new EntityTag(object.getBukkitEntity().getPassenger()).getDenizenObject();
             }
             return null;
         }, "get_passenger");
@@ -1728,8 +1745,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is in a vehicle, returns the vehicle as a EntityTag.
         // -->
         registerSpawnedOnlyTag("vehicle", (attribute, object) -> {
-            if (object.entity.isInsideVehicle()) {
-                return new EntityTag(object.entity.getVehicle()).getDenizenObject();
+            if (object.getBukkitEntity().isInsideVehicle()) {
+                return new EntityTag(object.getBukkitEntity().getVehicle()).getDenizenObject();
             }
             return null;
         }, "get_vehicle");
@@ -1773,7 +1790,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity has a passenger.
         // -->
         registerSpawnedOnlyTag("has_passenger", (attribute, object) -> {
-            return new ElementTag(!object.entity.isEmpty());
+            return new ElementTag(!object.getBukkitEntity().isEmpty());
         });
 
         // <--[tag]
@@ -1784,7 +1801,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity does not have a passenger.
         // -->
         registerSpawnedOnlyTag("is_empty", (attribute, object) -> {
-            return new ElementTag(object.entity.isEmpty());
+            return new ElementTag(object.getBukkitEntity().isEmpty());
         }, "empty");
 
         // <--[tag]
@@ -1795,7 +1812,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity is inside a vehicle.
         // -->
         registerSpawnedOnlyTag("is_inside_vehicle", (attribute, object) -> {
-            return new ElementTag(object.entity.isInsideVehicle());
+            return new ElementTag(object.getBukkitEntity().isInsideVehicle());
         }, "inside_vehicle");
 
         // <--[tag]
@@ -1831,7 +1848,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity is supported by a block.
         // -->
         registerSpawnedOnlyTag("is_on_ground", (attribute, object) -> {
-            return new ElementTag(object.entity.isOnGround());
+            return new ElementTag(object.getBukkitEntity().isOnGround());
         }, "on_ground");
 
         // <--[tag]
@@ -1909,10 +1926,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // -->
             if (attribute.startsWith("cause", 2)) {
                 attribute.fulfill(1);
-                if (object.entity.getLastDamageCause() == null) {
+                if (object.getBukkitEntity().getLastDamageCause() == null) {
                     return null;
                 }
-                return new ElementTag(object.entity.getLastDamageCause().getCause().name());
+                return new ElementTag(object.getBukkitEntity().getLastDamageCause().getCause().name());
             }
             // <--[tag]
             // @attribute <EntityTag.last_damage.duration>
@@ -2107,7 +2124,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns how long the entity has lived.
         // -->
         registerSpawnedOnlyTag("time_lived", (attribute, object) -> {
-            return new DurationTag(object.entity.getTicksLived() / 20);
+            return new DurationTag(object.getBukkitEntity().getTicksLived() / 20);
         });
 
         // <--[tag]
@@ -2210,7 +2227,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Not to be confused with the idea of being alive - see <@link tag EntityTag.is_spawned>.
         // -->
         registerTag("is_living", (attribute, object) -> {
-            if (object.entity == null && object.entity_type != null) {
+            if (object.getBukkitEntity() == null && object.entity_type != null) {
                 return new ElementTag(object.entity_type.getBukkitEntityType().isAlive());
             }
             return new ElementTag(object.isLivingEntity());
@@ -2224,7 +2241,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity type is a hostile monster.
         // -->
         registerTag("is_monster", (attribute, object) -> {
-            if (object.entity == null && object.entity_type != null) {
+            if (object.getBukkitEntity() == null && object.entity_type != null) {
                 return new ElementTag(Monster.class.isAssignableFrom(object.entity_type.getBukkitEntityType().getEntityClass()));
             }
             return new ElementTag(object.getBukkitEntity() instanceof Monster);
@@ -2238,7 +2255,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity type is a mob (Not a player or NPC).
         // -->
         registerTag("is_mob", (attribute, object) -> {
-            if (object.entity == null && object.entity_type != null) {
+            if (object.getBukkitEntity() == null && object.entity_type != null) {
                 EntityType type = object.entity_type.getBukkitEntityType();
                 return new ElementTag(Mob.class.isAssignableFrom(type.getEntityClass()));
             }
@@ -2276,7 +2293,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity type is a projectile.
         // -->
         registerTag("is_projectile", (attribute, object) -> {
-            if (object.entity == null && object.entity_type != null) {
+            if (object.getBukkitEntity() == null && object.entity_type != null) {
                 return new ElementTag(Projectile.class.isAssignableFrom(object.entity_type.getBukkitEntityType().getEntityClass()));
             }
             return new ElementTag(object.isProjectile());
