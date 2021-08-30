@@ -25,6 +25,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCookEvent;
+import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.event.inventory.BrewingStandFuelEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.*;
@@ -498,5 +500,33 @@ public class ItemScriptHelper implements Listener {
             }
         }
         event.setCancelled(true);
+    }
+
+    public boolean isAllowedToCraftWith(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) {
+            return true;
+        }
+        ItemScriptContainer container = getItemScriptContainer(item);
+        if (container == null) {
+            return true;
+        }
+        return container.allowInMaterialRecipes;
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onBrewingStandBrews(BrewEvent event) {
+        for (ItemStack item : event.getContents()) {
+            if (!isAllowedToCraftWith(item)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onBrewingStandFuel(BrewingStandFuelEvent event) {
+        if (!isAllowedToCraftWith(event.getFuel())) {
+            event.setCancelled(true);
+        }
     }
 }
