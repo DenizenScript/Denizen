@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.List;
@@ -24,16 +25,16 @@ public class ScoreboardCommand extends AbstractCommand {
 
     public ScoreboardCommand() {
         setName("scoreboard");
-        setSyntax("scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)");
-        setRequiredArguments(1, 9);
+        setSyntax("scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>) (rendertype:<type>)");
+        setRequiredArguments(1, 10);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Scoreboard
-    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>)
+    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/player/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none) (displayname:<name>) (rendertype:<type>)
     // @Required 1
-    // @Maximum 9
+    // @Maximum 10
     // @Short Add or removes viewers, objectives and scores from scoreboards.
     // @Group server
     //
@@ -61,6 +62,8 @@ public class ScoreboardCommand extends AbstractCommand {
     // If the object already exists, and you don't specify the display slot, it will use the existing setting.
     //
     // When setting an objective, you can also optionally set the display name by using the "displayname:" argument.
+    //
+    // "Rendertype" can be "INTEGER" or "HEARTS". Defaults to integer.
     //
     // You can set scores manually, or you can use different Minecraft criteria that set and update the scores automatically.
     // A list of these criteria can be found here: <@link url https://minecraft.gamepedia.com/Scoreboard#Objectives>
@@ -145,8 +148,13 @@ public class ScoreboardCommand extends AbstractCommand {
                 scriptEntry.addObject("displayslot", arg.asElement());
             }
             else if (!scriptEntry.hasObject("displayslot")
-                    && (arg.matchesPrefix("displayname"))) {
+                    && arg.matchesPrefix("displayname")) {
                 scriptEntry.addObject("displayname", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("rendertype")
+                    && arg.matchesPrefix("rendertype")
+                    && arg.matchesEnum(RenderType.values())) {
+                scriptEntry.addObject("rendertype", arg.asElement());
             }
             else if (!scriptEntry.hasObject("viewers")
                     && arg.matchesArgumentList(PlayerTag.class)) {
@@ -180,6 +188,7 @@ public class ScoreboardCommand extends AbstractCommand {
         ElementTag score = scriptEntry.getElement("score");
         ElementTag displaySlot = scriptEntry.getElement("displayslot");
         ElementTag displayName = scriptEntry.getElement("displayname");
+        ElementTag renderType = scriptEntry.getElement("rendertype");
         Action act = Action.valueOf(action.asString().toUpperCase());
         boolean hadCriteria = criteria != null;
         boolean hadDisplaySlot = displaySlot != null;
@@ -190,7 +199,7 @@ public class ScoreboardCommand extends AbstractCommand {
             displaySlot = new ElementTag("sidebar");
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action, id, viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "", objective, lines, score, objective, displaySlot, criteria, displayName);
+            Debug.report(scriptEntry, getName(), action, id, viewers != null ? ArgumentHelper.debugObj("viewers", viewers.toString()) : "", objective, lines, score, objective, displaySlot, criteria, displayName, renderType);
         }
         Scoreboard board = null;
         // Get the main scoreboard by default
@@ -234,6 +243,9 @@ public class ScoreboardCommand extends AbstractCommand {
                 // Change the objective's display slot
                 if ((!existedAlready || hadDisplaySlot) && !displaySlot.asString().equalsIgnoreCase("none")) {
                     obj.setDisplaySlot(DisplaySlot.valueOf(displaySlot.asString().toUpperCase()));
+                }
+                if (renderType != null) {
+                    obj.setRenderType(RenderType.valueOf(renderType.asString().toUpperCase()));
                 }
                 if (displayName != null) {
                     obj.setDisplayName(displayName.asString());
