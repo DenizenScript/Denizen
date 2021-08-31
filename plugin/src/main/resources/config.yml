@@ -36,6 +36,10 @@ Debug:
   Show loading info: false
   # Whether to show deprecation warnings that are scheduled as future warnings.
   Show future warnings: false
+  # Enable this to show a warning in logs when packets are sent asynchronously.
+  # Async packets are largely unsupported with a few exceptions, but some plugins send them regardless.
+  # This setting helps you catch those plugins if enabled.
+  Warn on async packets: false
 
 Scripts:
   World:

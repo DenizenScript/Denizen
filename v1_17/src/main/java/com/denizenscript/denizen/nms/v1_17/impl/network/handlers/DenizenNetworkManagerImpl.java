@@ -14,6 +14,7 @@ import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
@@ -183,16 +184,13 @@ public class DenizenNetworkManagerImpl extends Connection {
         send(packet, null);
     }
 
-    private static boolean hasShownAsyncWarning = false;
-
     @Override
     public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (!Bukkit.isPrimaryThread()) {
-            if ((Debug.verbose || !hasShownAsyncWarning)
+            if (Settings.cache_warnOnAsyncPackets
                     && !(packet instanceof ClientboundChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
                     && !(packet instanceof ClientboundCommandSuggestionsPacket)) { // Async tab complete is wholly unsupported in Spigot (and will cause an exception), however Paper explicitly adds async support (for unclear reasons), so let it through too
-                hasShownAsyncWarning = true;
-                Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Further display of this message requires '/denizen debug -v'. Packet class: "
+                Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Packet class: "
                         + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName() + " identify the sender of the packet from the stack trace:");
                 try {
                     throw new RuntimeException("Trace");

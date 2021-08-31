@@ -48,6 +48,7 @@ public class Settings {
         cache_debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
         cache_debugPrefix = config.getString("Debug.Prefix", "");
         FutureWarning.futureWarningsEnabled = config.getBoolean("Debug.Show future warnings", false);
+        cache_warnOnAsyncPackets = config.getBoolean("Debug.Warn on async packets", false);
         cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "instant");
         cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
@@ -117,7 +118,7 @@ public class Settings {
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
             cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe, cache_createWorldSymbols,
-            cache_commandScriptAutoInit, cache_packetInterceptAutoInit;
+            cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets;
 
     public static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
