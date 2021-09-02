@@ -227,6 +227,7 @@ public class MapCommand extends AbstractCommand {
                 dmr.autoUpdate = true;
             }
             dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(), wide, high));
+            dmr.hasChanged = true;
         }
     }
 }

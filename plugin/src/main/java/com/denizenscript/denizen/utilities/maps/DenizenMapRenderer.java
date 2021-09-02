@@ -13,12 +13,16 @@ import java.util.*;
 public class DenizenMapRenderer extends MapRenderer {
 
     public List<MapObject> mapObjects = new ArrayList<>();
+
     private List<MapRenderer> oldMapRenderers;
+
     public boolean autoUpdate;
 
     public boolean displayOriginal = true;
 
     private boolean active;
+
+    public boolean hasChanged = true;
 
     public DenizenMapRenderer(List<MapRenderer> oldMapRenderers, boolean autoUpdate, boolean contextual) {
         super(contextual);
@@ -81,6 +85,9 @@ public class DenizenMapRenderer extends MapRenderer {
             mapView.removeRenderer(this);
             return;
         }
+        if (!autoUpdate && !hasChanged) {
+            return;
+        }
         try {
             while (mapCanvas.getCursors().size() > 0) {
                 mapCanvas.getCursors().removeCursor(mapCanvas.getCursors().getCursor(0));
@@ -101,6 +108,7 @@ public class DenizenMapRenderer extends MapRenderer {
                     object.render(mapView, mapCanvas, p, uuid);
                 }
             }
+            hasChanged = false;
         }
         catch (Exception e) {
             Debug.echoError(e);

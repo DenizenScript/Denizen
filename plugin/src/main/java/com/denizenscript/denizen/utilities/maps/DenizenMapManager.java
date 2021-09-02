@@ -149,13 +149,14 @@ public class DenizenMapManager {
         }
         map.addRenderer(denizenMapRenderer);
         mapRenderers.put(map.getId(), denizenMapRenderer);
+        denizenMapRenderer.hasChanged = true;
     }
 
     public static DenizenMapRenderer getDenizenRenderer(MapView map) {
         int mapId = map.getId();
         DenizenMapRenderer dmr;
         if (!mapRenderers.containsKey(mapId)) {
-            dmr = new DenizenMapRenderer(map.getRenderers(), false, true);
+            dmr = new DenizenMapRenderer(map.getRenderers(), false, false);
             setMap(map, dmr);
         }
         else {

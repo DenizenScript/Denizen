@@ -78,7 +78,7 @@ public class MapImage extends MapObject {
 
                     @Override
                     public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
-                        // When the internal pixels are updated, the cache is no longer currently.
+                        // When the internal pixels are updated, the cache is no longer current.
                         cachedImageData = null;
                     }
 

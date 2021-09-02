@@ -57,6 +57,8 @@ public class MapScriptContainer extends ScriptContainer {
     //       # Specify an HTTP url or file path within Denizen/images/ for the image. Supports animated .gif!
     //       image: my_image.png
     //       # Optionally add width/height numbers.
+    //       width: 128
+    //       height: 128
     //
     //     2:
     //       type: text

@@ -429,19 +429,26 @@ public class PacketHelperImpl implements PacketHelper {
             return;
         }
         try {
+            boolean anyChanged = false;
             byte[] buffer = (byte[]) CANVAS_GET_BUFFER.invoke(canvas);
             for (int x2 = x < 0 ? -x : 0; x2 < width; ++x2) {
                 for (int y2 = y < 0 ? -y : 0; y2 < height; ++y2) {
                     byte p = bytes[y2 * image.width + x2];
                     if (p != MapPalette.TRANSPARENT) {
-                        buffer[(y2 + y) * 128 + (x2 + x)] = p;
+                        int index = (y2 + y) * 128 + (x2 + x);
+                        if (buffer[index] != p) {
+                            buffer[index] = p;
+                            anyChanged = true;
+                        }
                     }
                 }
             }
-            // Flag the whole image as dirty
-            MapItemSavedData map = (MapItemSavedData) MAPVIEW_WORLDMAP.get(canvas.getMapView());
-            map.setColorsDirty(Math.max(x, 0), Math.max(y, 0));
-            map.setColorsDirty(width + x - 1, height + y - 1);
+            if (anyChanged) {
+                // Flag the whole image as dirty
+                MapItemSavedData map = (MapItemSavedData) MAPVIEW_WORLDMAP.get(canvas.getMapView());
+                map.setColorsDirty(Math.max(x, 0), Math.max(y, 0));
+                map.setColorsDirty(width + x - 1, height + y - 1);
+            }
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
