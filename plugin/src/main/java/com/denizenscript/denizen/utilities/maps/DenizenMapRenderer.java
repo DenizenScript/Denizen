@@ -85,7 +85,7 @@ public class DenizenMapRenderer extends MapRenderer {
             mapView.removeRenderer(this);
             return;
         }
-        if (!autoUpdate && !hasChanged) {
+        if (!autoUpdate && !hasChanged && !isContextual()) {
             return;
         }
         try {

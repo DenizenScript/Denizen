@@ -133,7 +133,7 @@ public class MapScriptContainer extends ScriptContainer {
                         String image = objectSection.getString("image");
                         int width = Integer.parseInt(objectSection.getString("width", "0"));
                         int height = Integer.parseInt(objectSection.getString("height", "0"));
-                        added = new MapImage(x, y, visible, shouldDebug(), image, width, height);
+                        added = new MapImage(renderer, x, y, visible, shouldDebug(), image, width, height);
                         break;
                     case "text":
                         if (!objectSection.contains("text")) {

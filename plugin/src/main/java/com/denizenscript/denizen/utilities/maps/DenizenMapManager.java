@@ -86,7 +86,7 @@ public class DenizenMapManager {
                         String file = objectsData.getString(objectKey + ".image");
                         int width = objectsData.getInt(objectKey + ".width", 0);
                         int height = objectsData.getInt(objectKey + ".height", 0);
-                        object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
+                        object = new MapImage(renderer, xTag, yTag, visibilityTag, debug, file, width, height);
                         break;
                     case "TEXT":
                         object = new MapText(xTag, yTag, visibilityTag, debug, objectsData.getString(objectKey + ".text"), objectsData.getString(objectKey + ".color"));

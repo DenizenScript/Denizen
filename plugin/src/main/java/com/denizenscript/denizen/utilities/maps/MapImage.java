@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ImageConsumer;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
@@ -28,14 +29,16 @@ public class MapImage extends MapObject {
     public String fileTag;
     public String actualFile = null;
     public boolean disabled = false;
+    public DenizenMapRenderer renderer;
 
-    public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag, int width, int height) {
+    public MapImage(DenizenMapRenderer renderer, String xTag, String yTag, String visibilityTag, boolean debug, String fileTag, int width, int height) {
         super(xTag, yTag, visibilityTag, debug);
         this.fileTag = fileTag;
         if (width > 0 || height > 0) {
             this.width = width > 0 ? width : 0;
             this.height = height > 0 ? height : 0;
         }
+        this.renderer = renderer;
     }
 
     @Override
@@ -80,6 +83,7 @@ public class MapImage extends MapObject {
                     public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
                         // When the internal pixels are updated, the cache is no longer current.
                         cachedImageData = null;
+                        renderer.hasChanged = true;
                     }
 
                     @Override
@@ -159,9 +163,15 @@ public class MapImage extends MapObject {
         return result;
     }
 
+    public static HashMap<Color, Byte> colorCache = new HashMap<>(1024);
+
     public static byte matchColor(Color color) {
         if (color.getAlpha() < 128) {
             return 0;
+        }
+        Byte result = colorCache.get(color);
+        if (result != null) {
+            return result;
         }
         int index = 0;
         double best = -1;
@@ -172,7 +182,11 @@ public class MapImage extends MapObject {
                 index = i;
             }
         }
-        return (byte) (index < 128 ? index : -129 + (index - 127));
+        byte gotten = (byte) (index < 128 ? index : -129 + (index - 127));
+        if (colorCache.size() < 1024 * 16) {
+            colorCache.put(color, gotten);
+        }
+        return gotten;
     }
 
     public static double getDistance(Color c1, Color c2) {

@@ -226,7 +226,7 @@ public class MapCommand extends AbstractCommand {
             if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
                 dmr.autoUpdate = true;
             }
-            dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(), wide, high));
+            dmr.addObject(new MapImage(dmr, x.asString(), y.asString(), "true", false, image.asString(), wide, high));
             dmr.hasChanged = true;
         }
     }
