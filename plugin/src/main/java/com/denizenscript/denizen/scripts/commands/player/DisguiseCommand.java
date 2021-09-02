@@ -366,7 +366,7 @@ public class DisguiseCommand extends AbstractCommand {
                 disguise.isActive = true;
                 ArrayList<PlayerTag> playerSet = players == null ? new ArrayList<>() : new ArrayList<>(players);
                 for (Player player : entity.getWorld().getPlayers()) {
-                    if (!playerSet.contains(new PlayerTag(player)) && !player.getUniqueId().equals(entity.getUUID())) {
+                    if (!EntityTag.isNPC(player) && !playerSet.contains(new PlayerTag(player)) && !player.getUniqueId().equals(entity.getUUID())) {
                         playerSet.add(new PlayerTag(player));
                     }
                 }
