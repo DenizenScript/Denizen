@@ -326,11 +326,13 @@ public class DisguiseCommand extends AbstractCommand {
             if (isGlobal) {
                 for (Map.Entry<UUID, TrackedDisguise> entry : playerMap.entrySet()) {
                     if (entry.getKey() == null) {
+                        if (entry.getValue().toOthers != null) {
+                            FakeEntity.idsToEntities.remove(entry.getValue().toOthers.overrideUUID);
+                        }
                         for (Player player : entity.getWorld().getPlayers()) {
-                            if (entry.getValue().toOthers != null) {
-                                FakeEntity.idsToEntities.remove(entry.getValue().toOthers.overrideUUID);
+                            if (!EntityTag.isNPC(player)) {
+                                entry.getValue().removeFor(new PlayerTag(player));
                             }
-                            entry.getValue().removeFor(new PlayerTag(player));
                         }
                     }
                     else {
