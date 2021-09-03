@@ -169,6 +169,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return valueOf(string, null);
     }
 
+    public static boolean allowDespawnedNpcs = false;
+
     @Fetchable("e")
     public static EntityTag valueOf(String string, TagContext context) {
         if (string == null) {
@@ -215,7 +217,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     return new EntityTag(npc);
                 }
                 else {
-                    if (context != null && context.showErrors()) {
+                    if (!allowDespawnedNpcs && context != null && context.showErrors()) {
                         Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
                     }
                     return new EntityTag(npc);

@@ -25,6 +25,8 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // @Regex ^on player [^\s]+ takes damage$
     //
+    // @Synonyms item durability changes
+    //
     // @Group Player
     //
     // @Location true

@@ -76,7 +76,9 @@ public class SpawnCommand extends AbstractCommand {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
+                EntityTag.allowDespawnedNpcs = true;
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
+                EntityTag.allowDespawnedNpcs = false;
             }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
