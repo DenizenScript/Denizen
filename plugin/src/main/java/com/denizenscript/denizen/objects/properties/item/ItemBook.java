@@ -236,7 +236,6 @@ public class ItemBook implements Property {
         // @input ListTag
         // @description
         // Changes the plain-text pages of a book item.
-        // See <@link language Escaping System>.
         // @tags
         // <ItemTag.book_pages>
         // -->
@@ -245,7 +244,7 @@ public class ItemBook implements Property {
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();
             for (String str : data) {
-                newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(str), ChatColor.BLACK));
+                newPages.add(FormattedTextHelper.parse(str, ChatColor.BLACK));
             }
             meta.spigot().setPages(newPages);
             item.setItemMeta(meta);
