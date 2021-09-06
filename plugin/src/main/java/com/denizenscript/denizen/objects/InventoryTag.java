@@ -862,7 +862,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
-            if (item == null) {
+            if (item == null || item.getType().isAir()) {
                 continue;
             }
             int amount = item.getAmount();
@@ -919,7 +919,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         List<ItemStack> leftovers = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
-            if (item == null) {
+            if (item == null || item.getType().isAir()) {
                 continue;
             }
             int amount = item.getAmount();
