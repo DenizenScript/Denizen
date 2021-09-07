@@ -135,9 +135,22 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
-                    && ((arg.matchesArgumentType(ScriptTag.class) && arg.asType(ScriptTag.class).getContainer() instanceof TaskScriptContainer)
-                    || arg.matchesPrefix("script"))) {
-                scriptEntry.addObject("script", arg.asType(ScriptTag.class));
+                    || arg.matchesPrefix("script")) {
+                String script = arg.asElement().asString();
+                int dot = script.indexOf('.');
+                String subPath = null;
+                if (dot != -1) {
+                    subPath = script.substring(dot + 1);
+                    script = script.substring(0, dot);
+                }
+                ScriptTag scriptTag = ScriptTag.valueOf(script, scriptEntry.getContext());
+                if (scriptTag == null || !(scriptTag.getContainer() instanceof TaskScriptContainer)) {
+                    throw new InvalidArgumentsException("Invalid script specified - must name a task script container.");
+                }
+                scriptEntry.addObject("script", scriptTag);
+                if (subPath != null) {
+                    scriptEntry.addObject("path", new ElementTag(subPath));
+                }
             }
             else if (!scriptEntry.hasObject("shooter")
                     && arg.matchesArgumentType(EntityTag.class)
@@ -208,6 +221,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
         final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final ScriptTag script = scriptEntry.getObjectTag("script");
+        final ElementTag subPath = scriptEntry.getElement("path");
         final ListTag definitions = scriptEntry.getObjectTag("definitions");
         EntityTag shooter = scriptEntry.getObjectTag("shooter");
         ElementTag height = scriptEntry.getElement("height");
@@ -216,18 +230,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         ElementTag spread = scriptEntry.getElement("spread");
         LocationTag lead = scriptEntry.getObjectTag("lead");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("origin", originEntity != null ? originEntity : originLocation) +
-                    ArgumentHelper.debugObj("entities", entities.toString()) +
-                    destination.debug() +
-                    height.debug() +
-                    (gravity != null ? gravity.debug() : "") +
-                    (speed != null ? speed.debug() : "") +
-                    (script != null ? script.debug() : "") +
-                    (shooter != null ? shooter.debug() : "") +
-                    (spread != null ? spread.debug() : "") +
-                    (lead != null ? lead.debug() : "") +
-                    (no_rotate ? ArgumentHelper.debugObj("no_rotate", "true") : "") +
-                    (definitions != null ? definitions.debug() : ""));
+            Debug.report(scriptEntry, getName(), originEntity, originLocation, ArgumentHelper.debugList("entities", entities),
+                    destination, height, gravity, speed, script, subPath, shooter, spread, lead, (no_rotate ? ArgumentHelper.debugObj("no_rotate", "true") : ""), definitions);
         }
         final ListTag entityList = new ListTag();
         if (!no_rotate) {
@@ -349,7 +353,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                             queue.addDefinition("last_entity", lastEntity);
                             queue.addDefinition("hit_entities", hitEntities);
                         };
-                        ScriptUtilities.createAndStartQueue(script.getContainer(), null, scriptEntry.entryData, null, configure, null, null, definitions, scriptEntry);
+                        ScriptUtilities.createAndStartQueue(script.getContainer(), subPath == null ? null : subPath.asString(), scriptEntry.entryData, null, configure, null, null, definitions, scriptEntry);
                     }
                     scriptEntry.setFinished(true);
                 }
