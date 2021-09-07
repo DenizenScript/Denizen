@@ -21,6 +21,7 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -770,6 +771,63 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             return map;
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.dragon_portal_location>
+        // @returns LocationTag
+        // @description
+        // Returns the location of the ender dragon exit portal, if any (only for end worlds).
+        // -->
+        registerTag("dragon_portal_location", (attribute, object) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return null;
+            }
+            if (battle.getEndPortalLocation() == null) {
+                return null;
+            }
+            return new LocationTag(battle.getEndPortalLocation());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.ender_dragon>
+        // @returns EntityTag
+        // @description
+        // Returns the ender dragon entity currently fighting in this world, if any (only for end worlds).
+        // -->
+        registerTag("ender_dragon", (attribute, object) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return null;
+            }
+            if (battle.getEnderDragon() == null) {
+                return null;
+            }
+            return new EntityTag(battle.getEnderDragon());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.gateway_locations>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns a list of possible gateway portal locations, if any (only for end worlds).
+        // Not all of these will necessarily generate.
+        // In current implementation, this is a list of exactly 20 locations in a circle around the world origin (with radius of 96 blocks).
+        // -->
+        registerTag("gateway_locations", (attribute, object) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return null;
+            }
+            ListTag list = new ListTag();
+            for (int i = 0; i < 20; i++) {
+                // This math based on EndDragonFight#spawnNewGateway
+                int x = (int) Math.floor(96.0D * Math.cos(2.0D * (-Math.PI + (Math.PI / 20.0) * i)));
+                int z = (int) Math.floor(96.0D * Math.sin(2.0D * (-Math.PI + (Math.PI / 20.0) * i)));
+                list.addObject(new LocationTag(object.getWorld(), x, 75, z));
+            }
+            return list;
         });
 
         // <--[tag]
