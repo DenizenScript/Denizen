@@ -473,6 +473,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
     }
 
+    @Override
+    public boolean isTruthy() {
+        return isSpawnedOrValidForTag();
+    }
+
     public Entity entity = null;
     public long cleanRateProtect = -60000;
     public DenizenEntityType entity_type = null;

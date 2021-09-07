@@ -230,6 +230,11 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
+    public boolean isTruthy() {
+        return !getMaterial().isAir();
+    }
+
+    @Override
     public AbstractFlagTracker getFlagTracker() {
         return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__materials." + material.name().replace(".", "&dot"));
     }

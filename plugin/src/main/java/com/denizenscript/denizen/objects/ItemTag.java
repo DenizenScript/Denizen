@@ -524,6 +524,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         NotableManager.remove(this);
     }
 
+    @Override
+    public boolean isTruthy() {
+        return !getBukkitMaterial().isAir();
+    }
+
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
