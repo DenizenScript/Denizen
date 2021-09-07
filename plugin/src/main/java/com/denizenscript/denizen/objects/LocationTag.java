@@ -3606,6 +3606,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return new ElementTag(BukkitScriptEvent.inCheckInternal(attribute.context, "is_in tag", object, attribute.getContext(1), "is_in tag", "is_in tag"));
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.campfire_items>
+        // @returns ListTag(ItemTag)
+        // @mechanism LocationTag.campfire_items
+        // @description
+        // Returns a list of items currently in this campfire.
+        // This list has air items in empty slots, and is always sized exactly the same as the number of spaces a campfire has.
+        // (A standard campfire has exactly 4 slots).
+        // -->
+        registerTag("campfire_items", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Campfire)) {
+                return null;
+            }
+            Campfire fire = (Campfire) state;
+            ListTag output = new ListTag();
+            for (int i = 0; i < fire.getSize(); i++) {
+                output.addObject(new ItemTag(fire.getItem(i)));
+            }
+            return output;
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -4275,6 +4297,34 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("vanilla_tick")) {
             NMSHandler.getBlockHelper().doRandomTick(this);
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name campfire_items
+        // @input ListTag(ItemTag)
+        // @description
+        // Sets the items in this campfire, as a list of items, where the index in the list directly corresponds to index in the campfire slots.
+        // @tags
+        // <LocationTag.campfire_items>
+        // -->
+        if (mechanism.matches("campfire_items") && mechanism.requireObject(ListTag.class)) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Campfire)) {
+                Debug.echoError("'campfire_items' mechanism can only be called on campfire blocks.");
+            }
+            else {
+                Campfire fire = (Campfire) state;
+                List<ItemTag> list = mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context);
+                for (int i = 0; i < list.size(); i++) {
+                    if (i >= fire.getSize()) {
+                        Debug.echoError("Cannot add item for index " + (i + 1) + " as the campfire can only hold " + fire.getSize() + " items.");
+                        break;
+                    }
+                    fire.setItem(i, list.get(i).getItemStack());
+                }
+                fire.update();
+            }
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
