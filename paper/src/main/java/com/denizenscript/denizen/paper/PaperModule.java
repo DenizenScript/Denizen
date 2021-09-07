@@ -39,6 +39,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(new PlayerJumpsScriptEventPaperImpl());
         ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerStopsSpectatingScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerTradesWithMerchantScriptEvent());
         ScriptEvent.registerScriptEvent(new PreEntitySpawnScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileCollideScriptEvent());
         ScriptEvent.registerScriptEvent(new ServerListPingScriptEventPaperImpl());
