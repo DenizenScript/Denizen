@@ -1,9 +1,12 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.LivingEntity;
@@ -27,6 +30,11 @@ public class SleepingTrait extends Trait {
         }
         if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 1)) {
             wakeUp();
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
+                if (npc.hasTrait(SleepingTrait.class) && !npc.getOrAddTrait(SleepingTrait.class).isSleeping()) {
+                    npc.removeTrait(SleepingTrait.class);
+                }
+            });
         }
     }
 
@@ -64,8 +72,14 @@ public class SleepingTrait extends Trait {
         if (sleeping) {
             return;
         }
-        if (bedLocation == null) {
-            bedLocation = npc.getEntity().getLocation().clone();
+        if (!npc.isSpawned()) {
+            Debug.echoError("NPC " + npc.getId() + " cannot sleep: not spawned.");
+            return;
+        }
+        bedLocation = npc.getEntity().getLocation().clone();
+        if (!bedLocation.isWorldLoaded()) {
+            Debug.echoError("NPC " + npc.getId() + " cannot sleep: invalid bed location.");
+            return;
         }
         internalSleepNow();
     }
@@ -77,6 +91,14 @@ public class SleepingTrait extends Trait {
      */
     public void toSleep(Location location) {
         if (sleeping) {
+            return;
+        }
+        if (!npc.isSpawned()) {
+            Debug.echoError("NPC " + npc.getId() + " cannot sleep: not spawned.");
+            return;
+        }
+        if (!location.isWorldLoaded()) {
+            Debug.echoError("NPC " + npc.getId() + " cannot sleep: invalid bed location.");
             return;
         }
         //TODO Adjust the .add()

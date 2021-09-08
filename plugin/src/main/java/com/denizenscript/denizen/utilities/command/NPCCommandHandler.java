@@ -442,6 +442,7 @@ public class NPCCommandHandler {
         if (trait.isSleeping()) {
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
             trait.wakeUp();
+            npc.removeTrait(SleepingTrait.class);
             return;
         }
         if (args.hasValueFlag("location")) {
@@ -466,6 +467,9 @@ public class NPCCommandHandler {
         }
         else {
             trait.toSleep();
+        }
+        if (!trait.isSleeping()) {
+            npc.removeTrait(SleepingTrait.class);
         }
         Messaging.send(sender, npc.getName() + " is now sleeping.");
     }
