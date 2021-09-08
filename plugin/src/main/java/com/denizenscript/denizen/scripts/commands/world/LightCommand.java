@@ -33,12 +33,14 @@ public class LightCommand extends AbstractCommand {
     // @Short Creates a light source at the location with a specified brightness.
     // @Group world
     //
+    // @Warning May cause lag spikes, use carefully.
+    // @Warning Incompatible with Paper in 1.17+. Use Spigot, or use vanilla Light blocks.
+    //
     // @Description
     // This command can create and reset a light source at a specified location, regardless of the type
     // of block. It will be shown to all players near the location until it is reset.
     // The brightness must be between 0 and 15, inclusive.
     // Optionally, specify the amount of time the light should exist before being removed.
-    // WARNING: May cause lag spikes, use carefully.
     //
     // Note that lights do not persist across server restarts, but will still be visible in the world
     // after a restart until there is a block change near the location (to reset the light).

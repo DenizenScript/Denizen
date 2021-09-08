@@ -20,10 +20,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.tags.core.NPCTagBase;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
-import com.denizenscript.denizen.utilities.command.DenizenCommandHandler;
-import com.denizenscript.denizen.utilities.command.ExCommandHandler;
-import com.denizenscript.denizen.utilities.command.ExSustainedCommandHandler;
-import com.denizenscript.denizen.utilities.command.NPCCommandHandler;
+import com.denizenscript.denizen.utilities.command.*;
 import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
@@ -363,6 +360,7 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
+            new CommandEvents();
             if (Settings.cache_packetInterceptAutoInit) {
                 NetworkInterceptHelper.enable();
             }

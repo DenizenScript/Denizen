@@ -177,7 +177,7 @@ public class Debug {
         message = cleanTextForDebugOutput(message);
         if (errorDuplicatePrevention) {
             if (!com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
-                finalOutputDebugText("Error within error (??!!!! REPORT THIS, SOMETHING WENT SUPER WRONG!): " + message, sourceQueue, reformat);
+                finalOutputDebugText("Error within error (??!!!! SOMETHING WENT SUPER WRONG!): " + message, sourceQueue, reformat);
             }
             return;
         }
