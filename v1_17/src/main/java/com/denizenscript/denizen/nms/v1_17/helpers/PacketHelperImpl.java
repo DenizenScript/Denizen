@@ -481,6 +481,15 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, packet);
     }
 
+    @Override
+    public void sendBrand(Player player, String brand) {
+        ResourceLocation packetKey = new ResourceLocation("minecraft", "brand");
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeUtf(brand);
+        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(packetKey, buf);
+        send(player, packet);
+    }
+
     public static void send(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
     }

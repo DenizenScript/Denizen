@@ -3665,6 +3665,21 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Depends.bungeeSendPlayer(getPlayerEntity(), mechanism.getValue().asString());
         }
 
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name send_server_brand
+        // @input ElementTag
+        // @description
+        // Sends the player a fake server brand, that will be displayed in the F3 Debug screen.
+        // -->
+        if (mechanism.matches("send_server_brand") && mechanism.hasValue()) {
+            if (!isOnline()) {
+                Debug.echoError("Cannot use send_server_brand on offline player.");
+                return;
+            }
+            NMSHandler.getPacketHelper().sendBrand(getPlayerEntity(), mechanism.getValue().asString());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to EntityTag mechanism handler if not already handled.

@@ -112,4 +112,8 @@ public interface PacketHelper {
     default void clearDebugTestMarker(Player player) {
         throw new UnsupportedOperationException();
     }
+
+    default void sendBrand(Player player, String brand) {
+        throw new UnsupportedOperationException();
+    }
 }

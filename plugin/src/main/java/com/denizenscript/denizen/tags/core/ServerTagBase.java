@@ -2047,40 +2047,22 @@ public class ServerTagBase {
             event.setReplacedObject(new ElementTag(Bukkit.getServer().getViewDistance()).getObjectAttribute(attribute.fulfill(1)));
             return;
         }
-
-        // <--[tag]
-        // @attribute <server.entity_is_spawned[<entity>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether an entity is spawned and valid.
-        // -->
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasContext(1)) {
+            Deprecations.isValidTag.warn(attribute.context);
             EntityTag ent = EntityTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag((ent != null && ent.isUnique() && ent.isSpawnedOrValidForTag()) ? "true" : "false")
                     .getObjectAttribute(attribute.fulfill(1)));
         }
-
-        // <--[tag]
-        // @attribute <server.player_is_valid[<player_name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether a player exists under the specified name.
-        // -->
         else if (attribute.startsWith("player_is_valid")
                 && attribute.hasContext(1)) {
+            Deprecations.isValidTag.warn(attribute.context);
             event.setReplacedObject(new ElementTag(PlayerTag.playerNameIsValid(attribute.getContext(1)))
                     .getObjectAttribute(attribute.fulfill(1)));
         }
-
-        // <--[tag]
-        // @attribute <server.npc_is_valid[<npc>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether an NPC exists and is usable.
-        // -->
         else if (attribute.startsWith("npc_is_valid")
                 && attribute.hasContext(1)) {
+            Deprecations.isValidTag.warn(attribute.context);
             NPCTag npc = NPCTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag((npc != null && npc.isValid()))
                     .getObjectAttribute(attribute.fulfill(1)));
