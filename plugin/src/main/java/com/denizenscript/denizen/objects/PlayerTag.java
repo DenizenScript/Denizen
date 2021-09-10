@@ -734,24 +734,24 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         /////////////////
 
         // <--[tag]
-        // @attribute <PlayerTag.target[(<entity>|...)]>
+        // @attribute <PlayerTag.target[(<matcher>)]>
         // @returns EntityTag
         // @description
         // Returns the entity that the player is looking at, within a maximum range of 50 blocks,
         // or null if the player is not looking at an entity.
-        // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
+        // Optionally, specify an entity type matcher to only count matches as possible targets.
         // -->
         registerOnlineOnlyTag("target", (attribute, object) -> {
             double range = 50;
-            ListTag filterList = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
+            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
 
             // <--[tag]
-            // @attribute <PlayerTag.target[(<entity>|...)].within[(<#.#>)]>
+            // @attribute <PlayerTag.target[(<matcher>)].within[(<#.#>)]>
             // @returns EntityTag
             // @description
             // Returns the living entity that the player is looking at within the specified range limit,
             // or null if the player is not looking at an entity.
-            // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
+            // Optionally, specify an entity type matcher to only count matches as possible targets.
             // -->
             if (attribute.startsWith("within", 2) && attribute.hasContext(2)) {
                 range = attribute.getDoubleContext(2);
@@ -762,25 +762,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (e.getUniqueId().equals(object.getUUID())) {
                     return false;
                 }
-                if (filterList != null) {
-                    EntityTag ent = new EntityTag(e);
-                    for (String val : filterList) {
-                        if (CoreUtilities.equalsIgnoreCase(val, "npc") && ent.isCitizensNPC()) {
-                            return true;
-                        }
-                        if (CoreUtilities.equalsIgnoreCase(val, e.getType().name())) {
-                            return true;
-                        }
-                        String script = ent.getEntityScript();
-                        if (script != null && CoreUtilities.equalsIgnoreCase(val, script)) {
-                            return true;
-                        }
-                        EntityTag match = EntityTag.valueOf(val, CoreUtilities.noDebugContext);
-                        if (match.isUnique() && e.getUniqueId().equals(match.getUUID())) {
-                            return true;
-                        }
-                    }
-                    return false;
+                if (matcher != null) {
+                    return BukkitScriptEvent.tryEntity(new EntityTag(e), matcher);
                 }
                 return true;
             });
