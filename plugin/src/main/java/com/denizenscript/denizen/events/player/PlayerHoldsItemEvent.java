@@ -18,22 +18,24 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.HashSet;
 import java.util.UUID;
 
-public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listener {
+public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player raises shield
-    // player lowers shield
-    // player toggles shield
-    // player (raises/lowers/toggles) <shield-item>
+    // player raises <item>
+    // player lowers <item>
+    // player toggles <item>
+    // player (raises/lowers/toggles) <item>
     //
-    // @Regex ^on player (toggles|raises|lowers) shield$
+    // @Regex ^on player (toggles|raises|lowers) [^\s]+$
+    //
+    // @Synonyms player raises shield, player raises spyglass
     //
     // @Group Player
     //
     // @Location true
     //
-    // @Triggers when a player starts or stops holding up a shield.
+    // @Triggers when a player starts or stops holding up an item, such as a shield, spyglass, or crossbow.
     //
     // @Context
     // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now holding a shield and "false" otherwise.
@@ -42,11 +44,11 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
     //
     // -->
 
-    public PlayerHoldsShieldEvent() {
+    public PlayerHoldsItemEvent() {
         instance = this;
     }
 
-    public static PlayerHoldsShieldEvent instance;
+    public static PlayerHoldsItemEvent instance;
     public PlayerTag player;
     public boolean state;
 
@@ -59,7 +61,7 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
         if (!(middleWord.equals("raises") || middleWord.equals("lowers") || middleWord.equals("toggles"))) {
             return false;
         }
-        if (!path.eventArgLowerAt(2).equals("shield") && !couldMatchItem(path.eventArgLowerAt(2))) {
+        if (!path.eventArgLowerAt(2).equals("item") && !couldMatchItem(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;
@@ -77,8 +79,8 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
         if (!runInCheck(path, player.getLocation())) {
             return false;
         }
-        String shieldItem = path.eventArgLowerAt(2);
-        if (!shieldItem.equals("shield") && !tryItem(player.getHeldItem(), shieldItem)) {
+        String item = path.eventArgLowerAt(2);
+        if (!item.equals("item") && !tryItem(player.getHeldItem(), item)) {
             return false;
         }
         return super.matches(path);
@@ -86,7 +88,7 @@ public class PlayerHoldsShieldEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public String getName() {
-        return "PlayerHoldsShield";
+        return "PlayerHoldsItem";
     }
 
     public boolean enabled = false;

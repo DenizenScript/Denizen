@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.events.player.PlayerHoldsShieldEvent;
+import com.denizenscript.denizen.events.player.PlayerHoldsItemEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -67,29 +69,39 @@ public class DenizenPacketHandler {
         return false;
     }
 
-    public static boolean isHoldingShield(Player player) {
-        return player.getEquipment().getItemInMainHand().getType() == Material.SHIELD
-            || player.getEquipment().getItemInOffHand().getType() == Material.SHIELD;
+    public static HashSet<Material> raisableItems = new HashSet<>();
+
+    static {
+        raisableItems.add(Material.SHIELD);
+        raisableItems.add(Material.CROSSBOW);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            raisableItems.add(Material.valueOf("SPYGLASS"));
+        }
+    }
+
+    public static boolean isHoldingRaisable(Player player) {
+        return raisableItems.contains(player.getEquipment().getItemInMainHand().getType())
+            || raisableItems.contains(player.getEquipment().getItemInOffHand().getType());
     }
 
     public void receivePlacePacket(final Player player) {
-        if (!PlayerHoldsShieldEvent.instance.enabled) {
+        if (!PlayerHoldsItemEvent.instance.enabled) {
             return;
         }
-        if (isHoldingShield(player)) {
+        if (isHoldingRaisable(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                PlayerHoldsShieldEvent.signalDidRaise(player);
+                PlayerHoldsItemEvent.signalDidRaise(player);
             });
         }
     }
 
     public void receiveDigPacket(final Player player) {
-        if (!PlayerHoldsShieldEvent.instance.enabled) {
+        if (!PlayerHoldsItemEvent.instance.enabled) {
             return;
         }
-        if (isHoldingShield(player)) {
+        if (isHoldingRaisable(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                PlayerHoldsShieldEvent.signalDidLower(player);
+                PlayerHoldsItemEvent.signalDidLower(player);
             });
         }
     }
