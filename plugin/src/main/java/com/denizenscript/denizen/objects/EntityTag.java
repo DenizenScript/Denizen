@@ -2758,7 +2758,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the amount of time that passed since the start of the attack cooldown.
         // -->
         registerSpawnedOnlyTag("attack_cooldown_duration", (attribute, object) -> {
-            if (!(object.getLivingEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
@@ -2776,7 +2776,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // cooldown progress.
         // -->
         registerSpawnedOnlyTag("attack_cooldown_max_duration", (attribute, object) -> {
-            if (!(object.getLivingEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
@@ -2793,11 +2793,27 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // NOTE: This may not match exactly with the clientside attack cooldown indicator.
         // -->
         registerSpawnedOnlyTag("attack_cooldown_percent", (attribute, object) -> {
-            if (!(object.getLivingEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
             return new ElementTag(NMSHandler.getPlayerHelper().getAttackCooldownPercent((Player) object.getLivingEntity()) * 100);
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.is_hand_raised>
+        // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.attack_cooldown_percent
+        // @description
+        // Returns whether the player's hand is currently raised. Valid for players for player-type NPCs.
+        // A player's hand is raised when they are blocking with a shield, aiming a crossbow, looking through a spyglass, etc.
+        // -->
+        registerSpawnedOnlyTag("is_hand_raised", (attribute, object) -> {
+            if (!(object.getBukkitEntity() instanceof HumanEntity)) {
+                attribute.echoError("Only player-type entities can have is_hand_raised!");
+                return null;
+            }
+            return new ElementTag(((HumanEntity) object.getLivingEntity()).isHandRaised());
         });
     }
 
