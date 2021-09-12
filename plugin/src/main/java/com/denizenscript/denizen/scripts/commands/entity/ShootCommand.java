@@ -135,7 +135,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("speed", arg.asElement());
             }
             else if (!scriptEntry.hasObject("script")
-                    || arg.matchesPrefix("script")) {
+                    && arg.matchesPrefix("script")) {
                 String script = arg.asElement().asString();
                 int dot = script.indexOf('.');
                 String subPath = null;
