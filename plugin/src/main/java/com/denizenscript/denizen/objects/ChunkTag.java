@@ -125,7 +125,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     Chunk cachedChunk;
 
     public Chunk getChunkForTag(Attribute attribute) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.getChunkHelper().changeChunkServerThread(getBukkitWorld());
         try {
             if (!isLoaded()) {
                 if (!attribute.hasAlternative()) {
@@ -136,13 +136,13 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             return getChunk();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.getChunkHelper().restoreServerThread(getBukkitWorld());
         }
     }
 
     public Chunk getChunk() {
         if (cachedChunk == null) {
-            cachedChunk = world.getWorld().getChunkAt(chunkX, chunkZ);
+            cachedChunk = getBukkitWorld().getChunkAt(chunkX, chunkZ);
         }
         return cachedChunk;
     }
@@ -171,13 +171,13 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
      * @param location The location of the chunk.
      */
     public ChunkTag(Location location) {
-        world = new WorldTag(location.getWorld());
+        world = location instanceof LocationTag ? new WorldTag(((LocationTag) location).getWorldName()) : new WorldTag(location.getWorld());
         chunkX = location.getBlockX() >> 4;
         chunkZ = location.getBlockZ() >> 4;
     }
 
     public LocationTag getCenter() {
-        return new LocationTag(getWorld(), getX() * 16 + 8, 128, getZ() * 16 + 8);
+        return new LocationTag(getWorldName(), getX() * 16 + 8, 128, getZ() * 16 + 8, 0, 0);
     }
 
     public int getX() {
@@ -188,7 +188,11 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         return chunkZ;
     }
 
-    public World getWorld() {
+    public String getWorldName() {
+        return world.getName();
+    }
+
+    public World getBukkitWorld() {
         return world.getWorld();
     }
 
@@ -217,7 +221,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public String identify() {
-        return "ch@" + getX() + ',' + getZ() + ',' + getWorld().getName();
+        return "ch@" + getX() + ',' + getZ() + ',' + getWorldName();
     }
 
     @Override
@@ -231,16 +235,19 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public boolean isLoaded() {
-        return world.getWorld().isChunkLoaded(chunkX, chunkZ);
+        if (getBukkitWorld() == null) {
+            return false;
+        }
+        return getBukkitWorld().isChunkLoaded(chunkX, chunkZ);
     }
 
     public boolean isLoadedSafe() {
         try {
-            NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+            NMSHandler.getChunkHelper().changeChunkServerThread(getBukkitWorld());
             return isLoaded();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.getChunkHelper().restoreServerThread(getBukkitWorld());
         }
     }
 
@@ -336,7 +343,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns true if the chunk has already been generated.
         // -->
         registerTag("is_generated", (attribute, object) -> {
-            return new ElementTag(object.getWorld().isChunkGenerated(object.chunkX, object.chunkZ));
+            return new ElementTag(object.getBukkitWorld().isChunkGenerated(object.chunkX, object.chunkZ));
         });
 
         // <--[tag]
@@ -398,8 +405,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a cuboid of this chunk.
         // -->
         registerTag("cuboid", (attribute, object) -> {
-            return new CuboidTag(new Location(object.getWorld(), object.getX() * 16, 0, object.getZ() * 16),
-                    new Location(object.getWorld(), object.getX() * 16 + 15, 255, object.getZ() * 16 + 15));
+            return new CuboidTag(new LocationTag(object.getWorldName(), object.getX() * 16, 0, object.getZ() * 16, 0, 0),
+                    new LocationTag(object.getWorldName(), object.getX() * 16 + 15, 255, object.getZ() * 16 + 15, 0, 0));
         });
 
         // <--[tag]
@@ -415,13 +422,13 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 return null;
             }
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
                 for (BlockState block : chunk.getTileEntities()) {
                     tiles.addObject(new LocationTag(block.getLocation()));
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                NMSHandler.getChunkHelper().restoreServerThread(object.getBukkitWorld());
             }
             return tiles;
         });
@@ -441,7 +448,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             ListTag typeFilter = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
                 for (Entity entity : chunk.getEntities()) {
                     EntityTag current = new EntityTag(entity);
                     if (typeFilter != null) {
@@ -458,7 +465,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                NMSHandler.getChunkHelper().restoreServerThread(object.getBukkitWorld());
             }
             return entities;
         });
@@ -477,7 +484,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 return null;
             }
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
                 for (Entity ent : chunk.getEntities()) {
                     if (ent instanceof LivingEntity) {
                         entities.addObject(new EntityTag(ent).getDenizenObject());
@@ -485,7 +492,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                NMSHandler.getChunkHelper().restoreServerThread(object.getBukkitWorld());
             }
             return entities;
         });
@@ -694,7 +701,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // <ChunkTag.is_loaded>
         // -->
         if (mechanism.matches("unload")) {
-            getWorld().unloadChunk(getX(), getZ(), true);
+            getBukkitWorld().unloadChunk(getX(), getZ(), true);
         }
 
         // <--[mechanism]
@@ -707,7 +714,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload_without_saving")) {
-            getWorld().unloadChunk(getX(), getZ(), false);
+            getBukkitWorld().unloadChunk(getX(), getZ(), false);
         }
 
         // <--[mechanism]
@@ -734,7 +741,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Unfortunately due to md_5's attitude on this problem, this mechanism will not work for the time being.
         // -->
         if (mechanism.matches("regenerate")) {
-            getWorld().regenerateChunk(getX(), getZ());
+            getBukkitWorld().regenerateChunk(getX(), getZ());
         }
 
         // <--[mechanism]
@@ -747,7 +754,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         if (mechanism.matches("refresh_chunk")) {
             final int chunkX = getX();
             final int chunkZ = getZ();
-            getWorld().refreshChunk(chunkX, chunkZ);
+            getBukkitWorld().refreshChunk(chunkX, chunkZ);
         }
 
         // <--[mechanism]
