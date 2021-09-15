@@ -31,7 +31,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     @Persist("")
     private boolean invisible = true;
 
-    private static PotionEffect invis = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
+    private static PotionEffect invis = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false);
 
     public InvisibleTrait() {
         super("invisible");
