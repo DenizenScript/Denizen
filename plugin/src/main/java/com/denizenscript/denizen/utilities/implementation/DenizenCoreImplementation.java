@@ -19,7 +19,6 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -333,56 +332,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             input = StringUtils.replace(input, esc + "[m", repc + "r");
         }
         return input;
-    }
-
-    @Override
-    public boolean matchesType(String comparable, String comparedto) {
-
-        // Part of Deprecations.oldMatchesOperator
-
-        boolean outcome = false;
-
-        if (comparedto.equalsIgnoreCase("location")) {
-            outcome = LocationTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("material")) {
-            outcome = MaterialTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("materiallist")) {
-            outcome = ListTag.valueOf(comparable, CoreUtilities.basicContext).containsObjectsFrom(MaterialTag.class);
-        }
-        else if (comparedto.equalsIgnoreCase("entity")) {
-            outcome = EntityTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("spawnedentity")) {
-            outcome = (EntityTag.matches(comparable) && EntityTag.valueOf(comparable, CoreUtilities.basicContext).isSpawned());
-        }
-        else if (comparedto.equalsIgnoreCase("npc")) {
-            outcome = NPCTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("player")) {
-            outcome = PlayerTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("offlineplayer")) {
-            outcome = (PlayerTag.valueOf(comparable, CoreUtilities.basicContext) != null && !PlayerTag.valueOf(comparable, CoreUtilities.basicContext).isOnline());
-        }
-        else if (comparedto.equalsIgnoreCase("onlineplayer")) {
-            outcome = (PlayerTag.valueOf(comparable, CoreUtilities.basicContext) != null && PlayerTag.valueOf(comparable, CoreUtilities.basicContext).isOnline());
-        }
-        else if (comparedto.equalsIgnoreCase("item")) {
-            outcome = ItemTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("cuboid")) {
-            outcome = CuboidTag.matches(comparable);
-        }
-        else if (comparedto.equalsIgnoreCase("trade")) {
-            outcome = TradeTag.matches(comparable);
-        }
-        else {
-            Debug.echoError("Invalid 'matches' type '" + comparedto + "'!");
-        }
-
-        return outcome;
     }
 
     @Override
