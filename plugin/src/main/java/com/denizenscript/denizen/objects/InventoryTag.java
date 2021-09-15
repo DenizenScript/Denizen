@@ -974,6 +974,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 }
             }
         }
+        if (Depends.citizens != null && idHolder instanceof NPCTag) {
+            ((NPCTag) idHolder).getInventoryTrait().setContents(inventory.getContents());
+        }
         return leftovers;
     }
 
