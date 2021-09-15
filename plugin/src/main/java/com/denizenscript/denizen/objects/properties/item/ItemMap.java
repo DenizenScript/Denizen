@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,6 +11,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 
 import java.util.List;
 
@@ -32,11 +34,11 @@ public class ItemMap implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "map", "map_scale"
+            "map", "map_scale", "map_locked"
     };
 
     public static final String[] handledMechs = new String[] {
-            "map", "full_render"
+            "map", "full_render", "map_locked"
     };
 
     private ItemMap(ItemTag _item) {
@@ -80,10 +82,29 @@ public class ItemMap implements Property {
                 return null;
             }
             MapMeta map = (MapMeta) item.getItemMeta();
-            if (map.getMapView() == null || map.getMapView().getScale() == null) {
+            if (!map.hasMapView()) {
                 return null;
             }
             return new ElementTag(map.getMapView().getScale().getValue()).getObjectAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ItemTag.map_locked>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @mechanism ItemTag.map_locked
+        // @description
+        // Returns whether maps with the same ID as this map are locked.
+        // -->
+        if (attribute.startsWith("map_locked")) {
+            if (!hasMapId()) {
+                return null;
+            }
+            MapMeta map = (MapMeta) item.getItemMeta();
+            if (!map.hasMapView()) {
+                return null;
+            }
+            return new ElementTag(map.getMapView().isLocked()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -181,6 +202,26 @@ public class ItemMap implements Property {
             if (!worked) {
                 mechanism.echoError("Cannot render map: ID doesn't exist. Has the map never been displayed?");
             }
+        }
+
+        // <--[mechanism]
+        // @object ItemTag
+        // @name map_locked
+        // @input ElementTag(Boolean)
+        // @description
+        // Changes whether the map is currently locked.
+        // Note that this applies globally to all map items with the same ID.
+        // @tags
+        // <ItemTag.map>
+        // <ItemTag.map_locked>
+        // -->
+        if (mechanism.matches("map_locked") && mechanism.requireBoolean()) {
+            MapMeta meta = ((MapMeta) item.getItemMeta());
+            if (!meta.hasMapView()) {
+                Debug.echoError("Map is yet loaded/rendered.");
+                return;
+            }
+            meta.getMapView().setLocked(mechanism.getValue().asBoolean());
         }
     }
 }
