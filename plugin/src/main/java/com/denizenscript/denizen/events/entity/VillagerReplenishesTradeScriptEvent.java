@@ -81,7 +81,7 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
             case "entity":
                 return entity;
             case "trade":
-                return new TradeTag(event.getRecipe());
+                return new TradeTag(event.getRecipe()).duplicate();
             case "bonus":
                 return new ElementTag(event.getBonus());
         }

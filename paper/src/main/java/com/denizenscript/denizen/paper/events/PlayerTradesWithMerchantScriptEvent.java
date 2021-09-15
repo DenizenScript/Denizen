@@ -81,7 +81,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
             return new EntityTag(event.getVillager());
         }
         else if (name.equals("trade")) {
-            return new TradeTag(event.getTrade());
+            return new TradeTag(event.getTrade()).duplicate();
         }
         return super.getContext(name);
     }

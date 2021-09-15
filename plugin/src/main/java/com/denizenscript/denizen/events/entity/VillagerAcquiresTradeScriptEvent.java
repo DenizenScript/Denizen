@@ -74,7 +74,7 @@ public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implemen
             return entity;
         }
         else if (name.equals("trade")) {
-            return new TradeTag(event.getRecipe());
+            return new TradeTag(event.getRecipe()).duplicate();
         }
         return super.getContext(name);
     }

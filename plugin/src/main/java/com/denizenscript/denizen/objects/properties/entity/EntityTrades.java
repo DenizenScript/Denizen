@@ -37,7 +37,7 @@ public class EntityTrades implements Property {
     public ListTag getTradeRecipes() {
         ArrayList<TradeTag> recipes = new ArrayList<>();
         for (MerchantRecipe recipe : ((Merchant) entity.getBukkitEntity()).getRecipes()) {
-            recipes.add(new TradeTag(recipe));
+            recipes.add(new TradeTag(recipe).duplicate());
         }
         return new ListTag(recipes);
     }

@@ -37,7 +37,7 @@ public class InventoryTrades implements Property {
     public ListTag getTradeRecipes() {
         ArrayList<TradeTag> recipes = new ArrayList<>();
         for (MerchantRecipe recipe : ((MerchantInventory) inventory.getInventory()).getMerchant().getRecipes()) {
-            recipes.add(new TradeTag(recipe));
+            recipes.add(new TradeTag(recipe).duplicate());
         }
         return new ListTag(recipes);
     }

@@ -1500,7 +1500,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerOnlineOnlyTag("selected_trade", (attribute, object) -> {
             Inventory playerInventory = object.getPlayerEntity().getOpenInventory().getTopInventory();
             if (playerInventory instanceof MerchantInventory && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
-                return new TradeTag(((MerchantInventory) playerInventory).getSelectedRecipe());
+                return new TradeTag(((MerchantInventory) playerInventory).getSelectedRecipe()).duplicate();
             }
             return null;
         });
