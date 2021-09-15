@@ -73,6 +73,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // "<area>" or similar refers to any area-defining tag type, including WorldTag, CuboidTag, EllipsoidTag, and PolygonTag.
     // You can specify the name of any world, the name of any noted area, "world_flagged:<flag_name>", "chunk_flagged:<flag_name>", "area_flagged:<flag_name>" (all work similar to 'item_flagged'),
+    // "biome:<name> to match based on the location's biome,
     // "cuboid" for any noted cuboid, "ellipsoid" for any noted ellipsoid, or "polygon" for any noted polygon.
     //
     // You will also often see match inputs like "<cause>" or "<reason>" or similar,
@@ -105,7 +106,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (text.equals("area") || text.equals("cuboid") || text.equals("polygon") || text.equals("ellipsoid")) {
             return true;
         }
-        if (text.startsWith("area_flagged:")) {
+        if (text.startsWith("area_flagged:") || text.startsWith("biome:")) {
             return true;
         }
         if (NotableManager.getSavedObject(text) instanceof AreaContainmentObject) {
@@ -653,6 +654,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     }
                 }
                 return false;
+            }
+            else if (lower.startsWith("biome:")) {
+                String biome = inputText.substring("biome:".length());
+                return runGenericCheck(biome, new LocationTag(location).getBiome().name);
             }
         }
         if (lower.equals("cuboid")) {

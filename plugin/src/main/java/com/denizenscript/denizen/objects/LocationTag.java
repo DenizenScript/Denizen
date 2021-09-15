@@ -453,6 +453,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
+    public BiomeNMS getBiome() {
+        return NMSHandler.getInstance().getBiomeAt(super.getBlock());
+    }
+
     public BiomeNMS getBiomeForTag(Attribute attribute) {
         NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
         try {
@@ -468,7 +472,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 return null;
             }
-            return NMSHandler.getInstance().getBiomeAt(super.getBlock());
+            return getBiome();
         }
         finally {
             NMSHandler.getChunkHelper().restoreServerThread(getWorld());
