@@ -93,7 +93,7 @@ public class EntityDisabledSlots implements Property {
         // @group properties
         // @description
         // If the entity is an armor stand, returns its raw disabled slots value.
-        // See <@link url https://minecraft.gamepedia.com/Armor_Stand/ED>
+        // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
         // -->
         if (attribute.startsWith("disabled_slots.raw")) {
             return new ElementTag(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS))
@@ -124,7 +124,7 @@ public class EntityDisabledSlots implements Property {
         // @input ElementTag(Number)
         // @description
         // Sets the raw disabled slots value of an armor stand.
-        // See <@link url https://minecraft.gamepedia.com/Armor_Stand/ED>
+        // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
         // @tags
         // <EntityTag.disabled_slots>
         // <EntityTag.disabled_slots.raw>

@@ -4,8 +4,8 @@ public class ReflectionMappingsInfo {
 
     // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.17
 
-    public static String AdvancementList_roots = "a";
-    public static String AdvancementList_tasks = "b";
+    public static String AdvancementList_roots = "c";
+    public static String AdvancementList_tasks = "d";
 
     public static String BlockBehaviour_explosionResistance = "aI";
 
