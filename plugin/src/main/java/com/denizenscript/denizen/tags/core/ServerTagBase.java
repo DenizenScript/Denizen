@@ -316,7 +316,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of scoreboard IDs currently registered on the server.
         // -->
-        if (attribute.startsWith("scoreboards") && attribute.hasContext(1)) {
+        if (attribute.startsWith("scoreboards")) {
             ListTag result = new ListTag();
             for (String board : ScoreboardHelper.scoreboardMap.keySet()) {
                 result.addObject(new ElementTag(board));

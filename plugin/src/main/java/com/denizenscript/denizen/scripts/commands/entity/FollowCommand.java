@@ -139,15 +139,8 @@ public class FollowCommand extends AbstractCommand {
         ListTag entities = scriptEntry.getObjectTag("entities");
         EntityTag target = scriptEntry.getObjectTag("target");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    (Utilities.getEntryPlayer(scriptEntry) != null ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
-                            + (!stop.asBoolean() ? ArgumentHelper.debugObj("Action", "FOLLOW") : ArgumentHelper.debugObj("Action", "STOP"))
-                            + (lead != null ? lead.debug() : "")
-                            + (noTeleport != null ? noTeleport.debug() : "")
-                            + (maxRange != null ? maxRange.debug() : "")
-                            + allowWander.debug()
-                            + entities.debug()
-                            + target.debug());
+            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry), (!stop.asBoolean() ? ArgumentHelper.debugObj("Action", "FOLLOW") : ArgumentHelper.debugObj("Action", "STOP")),
+                            lead, noTeleport, maxRange, allowWander, entities, target);
         }
         for (EntityTag entity : entities.filter(EntityTag.class, scriptEntry)) {
             if (entity.isCitizensNPC()) {
