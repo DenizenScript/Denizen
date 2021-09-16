@@ -63,13 +63,10 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj)) {
-            String determination = determinationObj.toString();
-            if (exactMatchesEnum(determination, Villager.Profession.values())) {
-                Villager.Profession newProfession = Villager.Profession.valueOf(determination.toUpperCase());
-                event.setProfession(newProfession);
-                return true;
-            }
+        if (exactMatchesEnum(determinationObj.toString(), Villager.Profession.values())) {
+            Villager.Profession newProfession = Villager.Profession.valueOf(determinationObj.toString().toUpperCase());
+            event.setProfession(newProfession);
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

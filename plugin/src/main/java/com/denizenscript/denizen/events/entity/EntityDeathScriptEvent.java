@@ -125,21 +125,27 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             if (lower.endsWith("_or_xp")) {
                 event.setDroppedExp(0);
             }
+            return true;
         }
         else if (lower.equals("no_xp")) {
             event.setDroppedExp(0);
+            return true;
         }
         else if (lower.equals("keep_inv") && event instanceof PlayerDeathEvent) {
             ((PlayerDeathEvent) event).setKeepInventory(true);
+            return true;
         }
         else if (lower.equals("keep_level") && event instanceof PlayerDeathEvent) {
             ((PlayerDeathEvent) event).setKeepLevel(true);
+            return true;
         }
         else if (lower.equals("no_message") && event instanceof PlayerDeathEvent) {
             ((PlayerDeathEvent) event).setDeathMessage(null);
+            return true;
         }
         else if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setDroppedExp(((ElementTag) determinationObj).asInt());
+            return true;
         }
         else if (Argument.valueOf(lower).matchesArgumentList(ItemTag.class)) {
             List<ItemStack> drops = event.getDrops();
@@ -149,14 +155,15 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                     drops.add(item.getItemStack());
                 }
             }
+            return true;
         }
-        else if (event instanceof PlayerDeathEvent && !isDefaultDetermination(determinationObj)) {
+        else if (event instanceof PlayerDeathEvent) {
             ((PlayerDeathEvent) event).setDeathMessage(determination);
+            return true;
         }
         else {
             return super.applyDetermination(path, determinationObj);
         }
-        return true;
     }
 
     @Override

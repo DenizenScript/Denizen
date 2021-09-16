@@ -90,9 +90,8 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ItemTag.matches(determination)) {
-            item = ItemTag.valueOf(determination, path.container);
+        if (determinationObj.canBeType(ItemTag.class)) {
+            item = determinationObj.asType(ItemTag.class, getTagContext(path));
             event.setItem(item.getItemStack());
             return true;
         }
@@ -102,14 +101,10 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "origin":
-                return origin;
-            case "destination":
-                return destination;
-            case "initiator":
-                return InventoryTag.mirrorBukkitInventory(event.getInitiator());
-            case "item":
-                return item;
+            case "origin": return origin;
+            case "destination": return destination;
+            case "initiator": return InventoryTag.mirrorBukkitInventory(event.getInitiator());
+            case "item": return item;
         }
         return super.getContext(name);
     }

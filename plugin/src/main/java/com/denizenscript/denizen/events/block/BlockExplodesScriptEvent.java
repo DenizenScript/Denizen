@@ -102,18 +102,16 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("block")) {
-            return new LocationTag(event.getBlock().getLocation());
-        }
-        if (name.equals("blocks")) {
-            ListTag blocks = new ListTag();
-            for (Block block : this.blocks) {
-                blocks.addObject(new LocationTag(block.getLocation()));
+        switch (name) {
+            case "block": return new LocationTag(event.getBlock().getLocation());
+            case "blocks": {
+                ListTag blocks = new ListTag();
+                for (Block block : this.blocks) {
+                    blocks.addObject(new LocationTag(block.getLocation()));
+                }
+                return blocks;
             }
-            return blocks;
-        }
-        else if (name.equals("strength")) {
-            return new ElementTag(event.getYield());
+            case "strength": return new ElementTag(event.getYield());
         }
         return super.getContext(name);
     }

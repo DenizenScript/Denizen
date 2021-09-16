@@ -73,11 +73,9 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("new_material")) {
-            return new MaterialTag(event.getChangedType());
+        switch (name) {
+            case "location": return location;
+            case "new_material": return new MaterialTag(event.getChangedType());
         }
         return super.getContext(name);
     }

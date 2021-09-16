@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -89,31 +88,24 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesDouble(determination)) {
-            Deprecations.blockDispensesItemDetermination.warn();
-            event.setVelocity(event.getVelocity().multiply(Double.parseDouble(determination)));
-            return true;
-        }
-        else if (LocationTag.matches(determination)) {
-            LocationTag vel = LocationTag.valueOf(determination, getTagContext(path));
-            if (vel == null) {
-                Debug.echoError("[" + getName() + "] Invalid velocity '" + determination + "'!");
-            }
-            else {
+        if (determinationObj.canBeType(LocationTag.class)) {
+            LocationTag vel = determinationObj.asType(LocationTag.class, getTagContext(path));
+            if (vel != null) {
                 event.setVelocity(vel.toVector());
+                return true;
             }
-            return true;
         }
-        else if (ItemTag.matches(determination)) {
-            ItemTag it = ItemTag.valueOf(determination, path.container);
-            if (it == null) {
-                Debug.echoError("[" + getName() + "] Invalid item '" + determination + "'!");
-            }
-            else {
+        if (determinationObj.canBeType(ItemTag.class)) {
+            ItemTag it = determinationObj.asType(ItemTag.class, getTagContext(path));
+            if (it != null) {
                 item = it;
                 event.setItem(item.getItemStack());
+                return true;
             }
+        }
+        if (ArgumentHelper.matchesDouble(determinationObj.toString())) {
+            Deprecations.blockDispensesItemDetermination.warn();
+            event.setVelocity(event.getVelocity().multiply(Double.parseDouble(determinationObj.toString())));
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -122,12 +114,9 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location":
-                return location;
-            case "item":
-                return item;
-            case "velocity":
-                return new LocationTag(event.getVelocity());
+            case "location": return location;
+            case "item": return item;
+            case "velocity": return new LocationTag(event.getVelocity());
         }
         return super.getContext(name);
     }

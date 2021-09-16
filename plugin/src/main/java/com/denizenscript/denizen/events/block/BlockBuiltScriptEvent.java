@@ -60,11 +60,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         String mat2 = path.eventArgLowerAt(4);
         if (mat2.length() > 0 && !tryMaterial(old_material, mat2)) {
             return false;
@@ -87,8 +85,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.equals("buildable")) {
                 cancelled = false;
+                return true;
             }
-            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }
@@ -102,12 +100,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location":
-                return location;
-            case "new_material":
-                return new_material;
-            case "old_material":
-                return old_material;
+            case "location": return location;
+            case "new_material": return new_material;
+            case "old_material": return old_material;
         }
         return super.getContext(name);
     }

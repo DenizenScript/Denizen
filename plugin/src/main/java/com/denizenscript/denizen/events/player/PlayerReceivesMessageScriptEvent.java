@@ -83,7 +83,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && !isDefaultDetermination(determinationObj)) {
+        if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("message:")) {

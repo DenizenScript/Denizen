@@ -71,14 +71,12 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj)) {
-            try {
-                event.setEffect(ItemPotion.parseEffect(determinationObj.toString(), getTagContext(path)));
-            }
-            catch (Exception e) {
-                Debug.echoError(e);
-            }
+        try {
+            event.setEffect(ItemPotion.parseEffect(determinationObj.toString(), getTagContext(path)));
             return true;
+        }
+        catch (Exception e) {
+            Debug.echoError(e);
         }
         return super.applyDetermination(path, determinationObj);
     }

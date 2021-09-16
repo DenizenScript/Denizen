@@ -80,9 +80,8 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ItemTag.matches(determination)) {
-            result_item = ItemTag.valueOf(determination, path.container);
+        if (determinationObj.canBeType(ItemTag.class)) {
+            result_item = determinationObj.asType(ItemTag.class, getTagContext(path));
             event.setResult(result_item.getItemStack());
             return true;
         }
@@ -92,12 +91,9 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location":
-                return location;
-            case "source_item":
-                return source_item;
-            case "result_item":
-                return result_item;
+            case "location": return location;
+            case "source_item": return source_item;
+            case "result_item": return result_item;
         }
         return super.getContext(name);
     }

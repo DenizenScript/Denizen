@@ -97,7 +97,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj) && determinationObj instanceof ElementTag) {
+        if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();
             String determinationLower = CoreUtilities.toLowerCase(determination);
             if (determinationLower.startsWith("caught:")) {

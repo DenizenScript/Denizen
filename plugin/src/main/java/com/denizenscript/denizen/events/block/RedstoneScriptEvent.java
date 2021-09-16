@@ -76,12 +76,9 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location":
-                return location;
-            case "old_current":
-                return new ElementTag(event.getOldCurrent());
-            case "new_current":
-                return new ElementTag(event.getNewCurrent());
+            case "location": return location;
+            case "old_current": return new ElementTag(event.getOldCurrent());
+            case "new_current": return new ElementTag(event.getNewCurrent());
         }
         return super.getContext(name);
     }

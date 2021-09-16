@@ -86,7 +86,7 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && !isDefaultDetermination(determinationObj)) {
+        if (determinationObj instanceof ElementTag) {
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());
             if (lower.equals("keep_item")) {
                 event.setConsumeItem(false);

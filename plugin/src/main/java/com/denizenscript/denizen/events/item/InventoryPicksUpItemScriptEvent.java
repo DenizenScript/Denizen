@@ -83,12 +83,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "item":
-                return item;
-            case "inventory":
-                return inventory;
-            case "entity":
-                return new EntityTag(event.getItem());
+            case "item": return item;
+            case "inventory": return inventory;
+            case "entity": return new EntityTag(event.getItem());
         }
         return super.getContext(name);
     }

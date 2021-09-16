@@ -188,8 +188,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj) && ItemTag.matches(determinationObj.toString())) {
-            event.setCurrentItem(ItemTag.valueOf(determinationObj.toString(), path.context).getItemStack());
+        if (determinationObj.canBeType(ItemTag.class)) {
+            event.setCurrentItem(determinationObj.asType(ItemTag.class, getTagContext(path)).getItemStack());
             return true;
         }
         return super.applyDetermination(path, determinationObj);

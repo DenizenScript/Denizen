@@ -92,12 +92,9 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj)) {
-            String determination = determinationObj.toString();
-            if (LocationTag.matches(determination)) {
-                event.getAcceleration().copy((LocationTag.valueOf(determination, getTagContext(path))).toVector());
-                return true;
-            }
+        if (determinationObj.canBeType(LocationTag.class)) {
+            event.getAcceleration().copy(determinationObj.asType(LocationTag.class, getTagContext(path)).toVector());
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

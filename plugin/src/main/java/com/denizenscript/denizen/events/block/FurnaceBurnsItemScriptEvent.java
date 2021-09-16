@@ -79,19 +79,17 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
             event.setBurnTime(((ElementTag) determinationObj).asInt());
             return true;
         }
-        else if (DurationTag.matches(determinationObj.toString())) {
-            event.setBurnTime(DurationTag.valueOf(determinationObj.toString(), getTagContext(path)).getTicksAsInt());
+        else if (determinationObj.canBeType(DurationTag.class)) {
+            event.setBurnTime(determinationObj.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
         }
         return super.applyDetermination(path, determinationObj);
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("item")) {
-            return item;
+        switch (name) {
+            case "location": return location;
+            case "item": return item;
         }
         return super.getContext(name);
     }

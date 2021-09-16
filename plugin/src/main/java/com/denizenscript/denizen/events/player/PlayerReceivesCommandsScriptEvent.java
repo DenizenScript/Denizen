@@ -52,7 +52,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
+        if (determination.length() > 0) {
             event.getCommands().clear();
             event.getCommands().addAll(ListTag.getListFor(determinationObj, getTagContext(path)));
             return true;

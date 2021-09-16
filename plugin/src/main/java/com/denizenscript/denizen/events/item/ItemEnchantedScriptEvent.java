@@ -151,24 +151,19 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "entity":
-                return entity;
-            case "location":
-                return location;
-            case "inventory":
-                return inventory;
-            case "item":
-                return item;
-            case "button":
-                return button;
-            case "cost":
-                return new ElementTag(cost);
-            case "enchants":
+            case "entity": return entity.getDenizenObject();
+            case "location": return location;
+            case "inventory": return inventory;
+            case "item": return item;
+            case "button": return button;
+            case "cost": return new ElementTag(cost);
+            case "enchants": {
                 MapTag map = new MapTag();
                 for (Map.Entry<Enchantment, Integer> enchant : event.getEnchantsToAdd().entrySet()) {
                     map.putObject(enchant.getKey().getKey().getKey(), new ElementTag(enchant.getValue()));
                 }
                 return map;
+            }
         }
         return super.getContext(name);
     }

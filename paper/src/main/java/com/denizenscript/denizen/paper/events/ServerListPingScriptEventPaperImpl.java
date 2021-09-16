@@ -21,30 +21,28 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj)) {
-            String determination = determinationObj.toString();
-            String lower = CoreUtilities.toLowerCase(determination);
-            if (lower.startsWith("protocol_version:") && ArgumentHelper.matchesInteger(determination.substring("protocol_version:".length()))) {
-                ((PaperServerListPingEvent) event).setProtocolVersion(Integer.parseInt(determination.substring("protocol_version:".length())));
-                return true;
+        String determination = determinationObj.toString();
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (lower.startsWith("protocol_version:") && ArgumentHelper.matchesInteger(determination.substring("protocol_version:".length()))) {
+            ((PaperServerListPingEvent) event).setProtocolVersion(Integer.parseInt(determination.substring("protocol_version:".length())));
+            return true;
+        }
+        else if (lower.startsWith("version_name:")) {
+            ((PaperServerListPingEvent) event).setVersion(determination.substring("version_name:".length()));
+            return true;
+        }
+        else if (lower.startsWith("exclude_players:")) {
+            HashSet<UUID> exclusions = new HashSet<>();
+            for (PlayerTag player : ListTag.valueOf(determination.substring("exclude_players:".length()), getTagContext(path)).filter(PlayerTag.class, getTagContext(path))) {
+                exclusions.add(player.getUUID());
             }
-            else if (lower.startsWith("version_name:")) {
-                ((PaperServerListPingEvent) event).setVersion(determination.substring("version_name:".length()));
-                return true;
-            }
-            else if (lower.startsWith("exclude_players:")) {
-                HashSet<UUID> exclusions = new HashSet<>();
-                for (PlayerTag player : ListTag.valueOf(determination.substring("exclude_players:".length()), getTagContext(path)).filter(PlayerTag.class, getTagContext(path))) {
-                    exclusions.add(player.getUUID());
+            Iterator<Player> players = ((PaperServerListPingEvent) event).iterator();
+            while (players.hasNext()) {
+                if (exclusions.contains(players.next().getUniqueId())) {
+                    players.remove();
                 }
-                Iterator<Player> players = ((PaperServerListPingEvent) event).iterator();
-                while (players.hasNext()) {
-                    if (exclusions.contains(players.next().getUniqueId())) {
-                        players.remove();
-                    }
-                }
-                return true;
             }
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

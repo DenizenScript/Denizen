@@ -79,22 +79,18 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location":
-                return location;
-            case "material":
-                return material;
-            case "sticky":
-                return new ElementTag(event.isSticky());
-            case "relative":
-                return new LocationTag(event.getBlock().getRelative(event.getDirection().getOppositeFace()).getLocation());
-            case "blocks":
+            case "location": return location;
+            case "material": return material;
+            case "sticky": return new ElementTag(event.isSticky());
+            case "relative": return new LocationTag(event.getBlock().getRelative(event.getDirection().getOppositeFace()).getLocation());
+            case "blocks": {
                 ListTag blocks = new ListTag();
                 for (Block block : event.getBlocks()) {
                     blocks.addObject(new LocationTag(block.getLocation()));
                 }
                 return blocks;
-            case "retract_location":
-                return new LocationTag(event.getBlock().getRelative(event.getDirection().getOppositeFace(), 2).getLocation());
+            }
+            case "retract_location": return new LocationTag(event.getBlock().getRelative(event.getDirection().getOppositeFace(), 2).getLocation());
         }
         return super.getContext(name);
     }

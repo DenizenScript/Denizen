@@ -92,30 +92,24 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (!isDefaultDetermination(determinationObj)) {
-            if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-                event.setNewLevel(((ElementTag) determinationObj).asInt());
-            }
+        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
+            event.setNewLevel(((ElementTag) determinationObj).asInt());
         }
         return super.applyDetermination(path, determinationObj);
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("cause")) {
-            return new ElementTag(event.getReason().name());
-        }
-        else if (name.equals("old_level")) {
-            return new ElementTag(event.getOldLevel());
-        }
-        else if (name.equals("new_level")) {
-            return new ElementTag(event.getNewLevel());
-        }
-        else if (name.equals("entity") && event.getEntity() != null) {
-            return new EntityTag(event.getEntity());
+        switch (name) {
+            case "location": return location;
+            case "cause": return new ElementTag(event.getReason().name());
+            case "old_level": return new ElementTag(event.getOldLevel());
+            case "new_level": return new ElementTag(event.getNewLevel());
+            case "entity":
+                if (event.getEntity() != null) {
+                    return new EntityTag(event.getEntity()).getDenizenObject();
+                }
+                break;
         }
         return super.getContext(name);
     }

@@ -72,11 +72,9 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("entity")) {
-            return new EntityTag(event.getEntity());
+        switch (name) {
+            case "location": return location;
+            case "entity": return new EntityTag(event.getEntity());
         }
         return super.getContext(name);
     }

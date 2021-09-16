@@ -95,11 +95,9 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
+        switch (name) {
+            case "location": return location;
+            case "material": return material;
         }
         return super.getContext(name);
     }

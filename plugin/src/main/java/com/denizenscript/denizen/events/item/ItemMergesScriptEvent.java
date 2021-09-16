@@ -59,15 +59,12 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean matches(ScriptPath path) {
         String item_test = path.eventArgLowerAt(0);
-
         if (!tryItem(item, item_test)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -79,14 +76,10 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location":
-                return location;
-            case "item":
-                return item;
-            case "entity":
-                return entity;
-            case "target":
-                return new EntityTag(event.getTarget());
+            case "location": return location;
+            case "item": return item;
+            case "entity": return entity;
+            case "target": return new EntityTag(event.getTarget());
         }
         return super.getContext(name);
     }

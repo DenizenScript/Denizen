@@ -86,7 +86,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        if (determination.length() > 0 && !isDefaultDetermination(determinationObj)) {
+        if (determination.length() > 0) {
             ListTag new_text = ListTag.valueOf(determination, getTagContext(path));
             for (int i = 0; i < 4 && i < new_text.size(); i++) {
                 event.setLine(i, new_text.get(i));

@@ -84,9 +84,8 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ItemTag.matches(determination)) {
-            ItemTag result = ItemTag.valueOf(determination, path.container);
+        if (determinationObj.canBeType(ItemTag.class)) {
+            ItemTag result = determinationObj.asType(ItemTag.class, getTagContext(path));
             event.getInventory().setResult(result.getItemStack());
             return true;
         }
@@ -102,26 +101,26 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return result;
-        }
-        else if (name.equals("inventory")) {
-            return InventoryTag.mirrorBukkitInventory(event.getInventory());
-        }
-        else if (name.equals("recipe")) {
-            ListTag recipe = new ListTag();
-            for (ItemStack itemStack : event.getInventory().getMatrix()) {
-                if (itemStack != null && itemStack.getType() != Material.AIR) {
-                    recipe.addObject(new ItemTag(itemStack));
+        switch (name) {
+            case "item": return result;
+            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getInventory());
+            case "recipe": {
+                ListTag recipe = new ListTag();
+                for (ItemStack itemStack : event.getInventory().getMatrix()) {
+                    if (itemStack != null && itemStack.getType() != Material.AIR) {
+                        recipe.addObject(new ItemTag(itemStack));
+                    }
+                    else {
+                        recipe.addObject(new ItemTag(Material.AIR));
+                    }
                 }
-                else {
-                    recipe.addObject(new ItemTag(Material.AIR));
-                }
+                return recipe;
             }
-            return recipe;
-        }
-        else if (name.equals("recipe_id") && event.getRecipe() instanceof Keyed) {
-            return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
+            case "recipe_id":
+                if (event.getRecipe() instanceof Keyed) {
+                    return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
+                }
+                break;
         }
         return super.getContext(name);
     }

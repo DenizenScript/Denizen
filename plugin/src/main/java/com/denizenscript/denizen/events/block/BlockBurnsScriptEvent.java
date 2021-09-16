@@ -53,16 +53,13 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         if (!tryMaterial(material, path.eventArgLowerAt(0))) {
             return false;
         }
         return super.matches(path);
-
     }
 
     @Override
@@ -72,11 +69,9 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
+        switch (name) {
+            case "location": return location;
+            case "material": return material;
         }
         return super.getContext(name);
     }

@@ -61,11 +61,9 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("inventory")) {
-            return InventoryTag.mirrorBukkitInventory(event.getContents());
+        switch (name) {
+            case "location": return location;
+            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getContents());
         }
         return super.getContext(name);
     }

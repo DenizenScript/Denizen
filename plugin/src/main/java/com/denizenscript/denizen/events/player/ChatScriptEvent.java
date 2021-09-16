@@ -165,7 +165,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 }
                 return true;
             }
-            else if (!isDefaultDetermination(determinationObj)) {
+            else {
                 if (pcEvent != null) {
                     pcEvent.setMessage(determination);
                 }
