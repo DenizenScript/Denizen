@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import io.papermc.paper.event.player.PlayerPurchaseEvent;
 import io.papermc.paper.event.player.PlayerTradeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,8 +33,12 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     // @Triggers when a player trades with a merchant (villager).
     //
     // @Context
-    // <context.merchant> returns the villager that was traded with.
+    // <context.merchant> returns the villager that was traded with, if any (may be null for example with 'opentrades' command usage).
     // <context.trade> returns a TradeTag of the trade that was done.
+    //
+    // @Determine
+    // TradeTag to change the trade that should be processed.
+    //
     //
     // @Player Always.
     //
@@ -44,7 +49,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     }
 
     public static PlayerTradesWithMerchantScriptEvent instance;
-    public PlayerTradeEvent event;
+    public PlayerPurchaseEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -66,6 +71,15 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        if (determinationObj.canBeType(TradeTag.class)) {
+            event.setTrade(determinationObj.asType(TradeTag.class, getTagContext(path)).getRecipe());
+            return true;
+        }
+        return super.applyDetermination(path, determinationObj);
+    }
+
+    @Override
     public String getName() {
         return "PlayerTradesWithMerchant";
     }
@@ -77,8 +91,8 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("merchant")) {
-            return new EntityTag(event.getVillager());
+        if (name.equals("merchant") && event instanceof PlayerTradeEvent) {
+            return new EntityTag(((PlayerTradeEvent) event).getVillager());
         }
         else if (name.equals("trade")) {
             return new TradeTag(event.getTrade()).duplicate();
@@ -87,7 +101,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     }
 
     @EventHandler
-    public void playerTradeEvent(PlayerTradeEvent event) {
+    public void playerTradeEvent(PlayerPurchaseEvent event) {
         this.event = event;
         fire(event);
     }
