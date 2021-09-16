@@ -5,11 +5,11 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.util.Anchor;
 
@@ -52,7 +52,7 @@ public class AnchorCommand extends AbstractCommand {
     // - anchor add <npc.location> id:<[location_name]>
     // -->
 
-    private enum Action {ADD, REMOVE, ASSUME, WALKTO, WALKNEAR}
+    private enum Action { ADD, REMOVE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -96,70 +96,32 @@ public class AnchorCommand extends AbstractCommand {
         ElementTag range = scriptEntry.getElement("range");
         ElementTag id = scriptEntry.getElement("id");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    npc.debug() + action.name() + id.debug()
-                            + (location != null ? location.debug() : "")
-                            + (range != null ? range.debug() : ""));
+            Debug.report(scriptEntry, getName(), npc, ArgumentHelper.debugObj("action", action.name()), id, location, range);
         }
-
-        if (!npc.getCitizen().hasTrait(Anchors.class)) {
-            npc.getCitizen().addTrait(Anchors.class);
-        }
-
+        Anchors anchors = npc.getCitizen().getOrAddTrait(Anchors.class);
         switch (action) {
-            case ADD:
+            case ADD: {
                 if (location == null) {
                     Debug.echoError("Must specify a location!");
                     return;
                 }
-                npc.getCitizen().getOrAddTrait(Anchors.class).addAnchor(id.asString(), location);
-                return;
-            case ASSUME: {
-                Deprecations.anchorWalk.warn(scriptEntry);
-                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
-                if (n == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
+                Anchor existing = anchors.getAnchor(id.asString());
+                if (existing != null) {
+                    anchors.removeAnchor(existing);
                 }
-                else {
-                    npc.getEntity().teleport(n.getLocation());
-                }
+                anchors.addAnchor(id.asString(), location);
+                break;
             }
-            return;
-            case WALKNEAR: {
-                Deprecations.anchorWalk.warn(scriptEntry);
-                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
-                if (n == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
-                }
-                else if (range == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a range!");
-                }
-                else {
-                    npc.getNavigator().setTarget(Utilities.getWalkableLocationNear(n.getLocation(), range.asInt()));
-                }
-            }
-            return;
-            case WALKTO: {
-                Deprecations.anchorWalk.warn(scriptEntry);
-                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
-                if (n == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
-                }
-                else {
-                    npc.getNavigator().setTarget(n.getLocation());
-                }
-            }
-            return;
             case REMOVE: {
-                Anchor n = npc.getCitizen().getOrAddTrait(Anchors.class).getAnchor(id.asString());
+                Anchor n = anchors.getAnchor(id.asString());
                 if (n == null) {
                     Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 }
                 else {
-                    npc.getCitizen().getOrAddTrait(Anchors.class).removeAnchor(n);
+                    anchors.removeAnchor(n);
                 }
+                break;
             }
         }
     }
