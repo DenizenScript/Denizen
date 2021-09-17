@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class NetworkInterceptHelper implements Listener {
 
@@ -28,5 +29,13 @@ public class NetworkInterceptHelper implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         NMSHandler.getPacketHelper().setNetworkManagerFor(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        if (!event.getPlayer().isOnline()) { // Workaround: Paper misfires this event extra times after the player is already gone.
+            event.setQuitMessage(null); // Block the message too since it's obviously not valid for the message to show a second time.
+            // Also note that Paper literally has a commit that just removes a warning that would have helped catch issues like this because I guess they just like having errors https://i.alexgoodwin.media/i/misc/a8f5c3.png
+        }
     }
 }
