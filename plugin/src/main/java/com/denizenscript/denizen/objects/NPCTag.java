@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.Deprecations;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
@@ -45,10 +44,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject, FlaggableObject {
 
@@ -693,11 +689,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            NPC npc = ReflectionHelper.getFieldValue(HologramTrait.class, "nameNPC", hologram);
-            if (npc == null) {
+            Entity entity = hologram.getNameEntity();
+            if (entity == null) {
                 return null;
             }
-            return new NPCTag(npc);
+            return new EntityTag(entity).getDenizenObject();
         });
 
         // <--[tag]
@@ -712,13 +708,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            List<NPC> npcs = ReflectionHelper.getFieldValue(HologramTrait.class, "hologramNPCs", hologram);
-            if (npcs == null || npcs.isEmpty()) {
+            Collection<ArmorStand> stands = hologram.getHologramEntities();
+            if (stands == null || stands.isEmpty()) {
                 return null;
             }
             ListTag output = new ListTag();
-            for (NPC npc : npcs) {
-                output.addObject(new NPCTag(npc));
+            for (ArmorStand stand : stands) {
+                output.addObject(new EntityTag(stand).getDenizenObject());
             }
             return output;
         });

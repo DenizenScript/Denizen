@@ -71,9 +71,7 @@ public class WorldBorderCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-
             if (!scriptEntry.hasObject("center")
                     && arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("center")) {
@@ -130,29 +128,21 @@ public class WorldBorderCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("world") && !scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must specify a world or players!");
         }
-
         if (!scriptEntry.hasObject("center") && !scriptEntry.hasObject("size")
                 && !scriptEntry.hasObject("damage") && !scriptEntry.hasObject("damagebuffer")
                 && !scriptEntry.hasObject("warningdistance") && !scriptEntry.hasObject("warningtime")
                 && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Must specify at least one option!");
         }
-
-        // fill in default arguments if necessary
-
         scriptEntry.defaultObject("duration", new DurationTag(0));
         scriptEntry.defaultObject("reset", new ElementTag("false"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         WorldTag world = scriptEntry.getObjectTag("world");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         LocationTag center = scriptEntry.getObjectTag("center");
@@ -164,23 +154,11 @@ public class WorldBorderCommand extends AbstractCommand {
         ElementTag warningdistance = scriptEntry.getElement("warningdistance");
         DurationTag warningtime = scriptEntry.getObjectTag("warningtime");
         ElementTag reset = scriptEntry.getObjectTag("reset");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), (world != null ? world.debug() : "")
-                    + (players != null ? ArgumentHelper.debugList("Player(s)", players) : "")
-                    + (center != null ? center.debug() : "")
-                    + (size != null ? size.debug() : "")
-                    + (currSize != null ? currSize.debug() : "")
-                    + (damage != null ? damage.debug() : "")
-                    + (damagebuffer != null ? damagebuffer.debug() : "")
-                    + (warningdistance != null ? warningdistance.debug() : "")
-                    + (warningtime != null ? warningtime.debug() : "")
-                    + duration.debug() + reset.debug());
+            Debug.report(scriptEntry, getName(), world, (players != null ? ArgumentHelper.debugList("Player(s)", players) : ""),
+                    center, size, currSize, damage, damagebuffer, warningdistance, warningtime, duration, reset);
 
         }
-
-        // Handle client-side world borders
         if (players != null) {
             if (reset.asBoolean()) {
                 for (PlayerTag player : players) {
@@ -188,7 +166,6 @@ public class WorldBorderCommand extends AbstractCommand {
                 }
                 return;
             }
-
             WorldBorder wb;
             for (PlayerTag player : players) {
                 wb = player.getWorld().getWorldBorder();
@@ -203,37 +180,29 @@ public class WorldBorderCommand extends AbstractCommand {
             }
             return;
         }
-
         WorldBorder worldborder = world.getWorld().getWorldBorder();
-
         if (reset.asBoolean()) {
             worldborder.reset();
             return;
         }
-
         if (center != null) {
             worldborder.setCenter(center);
         }
-
         if (size != null) {
             if (currSize != null) {
                 worldborder.setSize(currSize.asDouble());
             }
             worldborder.setSize(size.asDouble(), duration.getSecondsAsInt());
         }
-
         if (damage != null) {
             worldborder.setDamageAmount(damage.asDouble());
         }
-
         if (damagebuffer != null) {
             worldborder.setDamageBuffer(damagebuffer.asDouble());
         }
-
         if (warningdistance != null) {
             worldborder.setWarningDistance(warningdistance.asInt());
         }
-
         if (warningtime != null) {
             worldborder.setWarningTime(warningtime.getSecondsAsInt());
         }

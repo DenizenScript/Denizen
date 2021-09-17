@@ -122,14 +122,12 @@ public class PacketHelperImpl implements PacketHelper {
         wb.setCenter(center.getX(), center.getZ());
         wb.setWarningBlocks(warningDistance);
         wb.setWarningTime(warningTime);
-
         if (time > 0) {
             wb.lerpSizeBetween(currSize, size, time);
         }
         else {
             wb.setSize(size);
         }
-
         send(player, new ClientboundInitializeBorderPacket(wb));
     }
 
