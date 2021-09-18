@@ -19,15 +19,15 @@ public class ResourcePackCommand extends AbstractCommand {
 
     public ResourcePackCommand() {
         setName("resourcepack");
-        setSyntax("resourcepack [url:<url>] (hash:<hash>) (forced) (prompt:<text>) (target:<player>|...)");
-        setRequiredArguments(1, 5);
+        setSyntax("resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (target:<player>|...)");
+        setRequiredArguments(2, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name ResourcePack
-    // @Syntax resourcepack [url:<url>] (hash:<hash>) (forced) (prompt:<text>) (target:<player>|...)
-    // @Required 1
+    // @Syntax resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (target:<player>|...)
+    // @Required 2
     // @Maximum 5
     // @Short Prompts a player to download a server resource pack.
     // @group player
@@ -39,8 +39,9 @@ public class ResourcePackCommand extends AbstractCommand {
     // Once a player says "yes" once, all future packs will be automatically downloaded. If the player selects "no" once, all future packs will automatically be rejected.
     // Players can change the automatic setting from their server list in the main menu.
     //
-    // Optionally, use "hash:" to specify a 40-character (20 byte) hexadecimal SHA-1 hash value (without '0x') for the resource pack to prevent redownloading cached data.
-    // Specifying a hash is strongly recommended.
+    // Use "hash:" to specify a 40-character (20 byte) hexadecimal SHA-1 hash value (without '0x') for the resource pack to prevent redownloading cached data.
+    // Specifying a hash is required, though you can get away with copy/pasting a fake value if you don't care for the consequences.
+    // There are a variety of tools to generate the real hash, such as the `sha1sum` command on Linux, or using the 7-Zip GUI's Checksum option on Windows.
     //
     // Specify "forced" to tell the vanilla client they must accept the pack or quit the server. Hacked clients may still bypass this requirement.
     //
@@ -90,6 +91,9 @@ public class ResourcePackCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("url")) {
             throw new InvalidArgumentsException("Must specify a URL!");
         }
+        if (!scriptEntry.hasObject("hash")) {
+            throw new InvalidArgumentsException("Must specify a hash!");
+        }
         if (!scriptEntry.hasObject("targets")) {
             if (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
                 scriptEntry.addObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
@@ -110,7 +114,7 @@ public class ResourcePackCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("Targets", targets), url, hash, prompt, forced);
         }
-        if (hash != null && hash.asString().length() != 40) {
+        if (hash.asString().length() != 40) {
             Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
             return;
         }
@@ -119,7 +123,7 @@ public class ResourcePackCommand extends AbstractCommand {
                 Debug.echoDebug(scriptEntry, "Player is offline, can't send resource pack to them. Skipping.");
                 continue;
             }
-            AdvancedTextImpl.instance.sendResourcePack(player.getPlayerEntity(), url.asString(), hash == null ? null : hash.asString(), forced != null && forced.asBoolean(), prompt == null ? null : prompt.asString());
+            AdvancedTextImpl.instance.sendResourcePack(player.getPlayerEntity(), url.asString(), hash.asString(), forced != null && forced.asBoolean(), prompt == null ? null : prompt.asString());
         }
     }
 }

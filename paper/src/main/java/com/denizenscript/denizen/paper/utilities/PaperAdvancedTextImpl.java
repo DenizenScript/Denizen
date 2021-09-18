@@ -69,6 +69,11 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
     @Override
     public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
-        player.setResourcePack(url, hash == null ? null : CoreUtilities.toLowerCase(hash), forced, prompt == null ? null : PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
+        if (prompt == null && !forced) {
+            super.sendResourcePack(player, url, hash, false, null);
+        }
+        else {
+            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
+        }
     }
 }
