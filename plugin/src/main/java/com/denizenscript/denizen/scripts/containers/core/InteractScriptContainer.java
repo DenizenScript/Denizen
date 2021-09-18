@@ -23,7 +23,7 @@ public class InteractScriptContainer extends ScriptContainer {
     // Interact scripts must be referenced from an assignment script container to be of any use.
     // See <@link language assignment script containers>.
     //
-    // The only required key on a task script container is the 'steps:' key.
+    // The only required key on an interact script container is the 'steps:' key.
     //
     // Within the steps key is a list of steps,
     // where the first step is '1', 'default', or any step that contains a '*' symbol.

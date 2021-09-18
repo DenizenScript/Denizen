@@ -302,6 +302,9 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     public void runSubScript(String pathName, Entity attacker, Entity victim, Entity primary, int level) {
         validateThread();
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(new EntityTag(primary)), pathName);
+        if (entries == null || entries.isEmpty()) {
+            return;
+        }
         InstantQueue queue = new InstantQueue(getName());
         queue.addEntries(entries);
         ContextSource.SimpleMap src = new ContextSource.SimpleMap();
