@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -9,9 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AdvancedTextImpl {
 
@@ -51,5 +47,18 @@ public class AdvancedTextImpl {
 
     public void setSignLine(Sign sign, int line, String text) {
         sign.setLine(line, text);
+    }
+
+    public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
+        if (hash != null) {
+            byte[] hashData = new byte[20];
+            for (int i = 0; i < 20; i++) {
+                hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
+            }
+            player.setResourcePack(url, hashData);
+        }
+        else {
+            player.setResourcePack(url);
+        }
     }
 }

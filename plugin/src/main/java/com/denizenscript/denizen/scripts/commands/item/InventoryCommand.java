@@ -93,6 +93,8 @@ public class InventoryCommand extends AbstractCommand {
     // The "flag" option sets a flag on items, similar to <@link command flag>.
     // See also <@link language flag system>.
     //
+    // The "update" option will refresh the client's view of an inventory to match the server's view, which is useful to workaround some sync bugs.
+    //
     // Note that to add items to an inventory, you should usually use <@link command give>,
     // and to remove items from an inventory, you should usually use <@link command take>.
     //

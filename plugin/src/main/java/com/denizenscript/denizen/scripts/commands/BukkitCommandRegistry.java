@@ -147,6 +147,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(OpenTradesCommand.class);
         registerCommand(OxygenCommand.class);
         registerCommand(PermissionCommand.class);
+        registerCommand(ResourcePackCommand.class);
         registerCommand(ShowFakeCommand.class);
         registerCommand(SidebarCommand.class);
         registerCommand(StatisticCommand.class);

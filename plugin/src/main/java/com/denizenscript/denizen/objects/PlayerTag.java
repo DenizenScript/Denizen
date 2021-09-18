@@ -2609,12 +2609,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @object PlayerTag
         // @name resource_pack
         // @input ElementTag(|ElementTag)
+        // @deprecated Use the "resourcepack" command instead of this old mechanism.
         // @description
-        // Sets the current resource pack by specifying a valid URL to a resource pack.
-        // Optionally, specify a 40-character (20 byte) hexadecimal SHA-1 hash value (without '0x') for the resource pack to prevent redownloading cached data.
-        // With a hash, the input is formatted like "https://example.com/pack.zip|0102030405060708090a0b0c0d0e0f1112131415"
+        // Deprecated, use <@link command resourcepack>.
         // -->
         if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
+            Deprecations.playerResourcePackMech.warn(mechanism.context);
             String pack = mechanism.getValue().asString();
             int pipe = pack.indexOf('|');
             if (pipe > 0) {
