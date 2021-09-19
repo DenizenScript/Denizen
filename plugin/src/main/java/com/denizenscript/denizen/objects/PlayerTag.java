@@ -3373,7 +3373,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (LocationTag.matches(split[0]) && split.length > 1) {
                     ListTag lines = ListTag.valueOf(split[1], mechanism.context);
-                    getPlayerEntity().sendSignChange(LocationTag.valueOf(split[0], mechanism.context), lines.toArray(new String[4]));
+                    LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
+                    AdvancedTextImpl.instance.sendSignUpdate(getPlayerEntity(), location, lines.toArray(new String[4]));
                 }
                 else {
                     Debug.echoError("Must specify a valid location and at least one sign line!");

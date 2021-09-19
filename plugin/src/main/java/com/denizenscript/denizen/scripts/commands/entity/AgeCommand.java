@@ -54,7 +54,7 @@ public class AgeCommand extends AbstractCommand {
     //
     // @Usage
     // Use to mature some animals so that they are old enough to breed.
-    // - age <player.location.find.entities.within[20]> adult
+    // - age <player.location.find_entities.within[20]> adult
     // -->
 
     private enum AgeType {ADULT, BABY}

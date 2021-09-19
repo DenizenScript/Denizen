@@ -51,7 +51,7 @@ public class RemoveCommand extends AbstractCommand {
     //
     // @Usage
     // Use to remove all nearby entities around the player, excluding the player itself.
-    // - remove <player.location.find.entities.within[10].exclude[<player>]>
+    // - remove <player.location.find_entities.within[10].exclude[<player>]>
     //
     // @Usage
     // Use to remove all dropped items in the world called cookies.

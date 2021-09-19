@@ -7,12 +7,16 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
@@ -75,5 +79,14 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
         else {
             player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
         }
+    }
+
+    @Override
+    public void sendSignUpdate(Player player, Location loc, String[] text) {
+        List<Component> components = new ArrayList<>();
+        for (String line : text) {
+            components.add(PaperModule.parseFormattedText(line, ChatColor.BLACK));
+        }
+        player.sendSignChange(loc, components);
     }
 }

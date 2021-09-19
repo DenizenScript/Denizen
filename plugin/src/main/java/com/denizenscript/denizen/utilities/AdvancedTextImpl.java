@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -55,5 +56,9 @@ public class AdvancedTextImpl {
             hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
         }
         player.setResourcePack(url, hashData);
+    }
+
+    public void sendSignUpdate(Player player, Location loc, String[] text) {
+        player.sendSignChange(loc, text);
     }
 }

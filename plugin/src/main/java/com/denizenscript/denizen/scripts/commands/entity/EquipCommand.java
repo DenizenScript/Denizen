@@ -63,7 +63,7 @@ public class EquipCommand extends AbstractCommand {
     //
     // @Usage
     // Use to equip a saddle on all nearby pigs.
-    // - equip <player.location.find.entities[pig].within[10]> saddle:saddle
+    // - equip <player.location.find_entities[pig].within[10]> saddle:saddle
     // -->
 
     @Override
