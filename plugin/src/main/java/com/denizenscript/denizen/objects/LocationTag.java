@@ -1267,12 +1267,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the type of entity spawned by a mob spawner.
         // -->
         registerTag("spawner_type", (attribute, object) -> {
-            if (object.getBlockStateForTag(attribute) instanceof CreatureSpawner) {
-                return new EntityTag(DenizenEntityType.getByName(((CreatureSpawner) object.getBlockStateForTag(attribute)).getSpawnedType().name()));
-            }
-            else {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
                 return null;
             }
+            return new EntityTag(DenizenEntityType.getByName(((CreatureSpawner) object.getBlockStateForTag(attribute)).getSpawnedType().name()));
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_display_entity>
+        // @mechanism LocationTag.spawner_display_entity
+        // @returns EntityTag
+        // @description
+        // Returns the full "display entity" for the spawner. This can contain more data than just a type.
+        // -->
+        registerTag("spawner_display_entity", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return NMSHandler.getEntityHelper().getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute))).describe(attribute.context);
         });
 
         // <--[tag]

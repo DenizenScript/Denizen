@@ -2,12 +2,14 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -365,6 +367,10 @@ public abstract class EntityHelper {
     }
 
     public void setFallingBlockType(FallingBlock entity, BlockData block) {
+        throw new UnsupportedOperationException();
+    }
+
+    public EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner) {
         throw new UnsupportedOperationException();
     }
 }

@@ -81,7 +81,7 @@ public class BlockHelperImpl implements BlockHelper {
         return blocks;
     }
 
-    public <T extends BlockEntity> T getTE(CraftBlockEntityState<T> cbs) {
+    public static <T extends BlockEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
             return (T) craftBlockEntityState_tileEntity.get(cbs);
         }
