@@ -47,7 +47,7 @@ public class AdvancedTextImpl {
     }
 
     public void setSignLine(Sign sign, int line, String text) {
-        sign.setLine(line, text);
+        sign.setLine(line, text == null ? "" : text);
     }
 
     public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {

@@ -68,7 +68,7 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
     @Override
     public void setSignLine(Sign sign, int line, String text) {
-        sign.line(line, PaperModule.parseFormattedText(text, ChatColor.BLACK));
+        sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 
     @Override
