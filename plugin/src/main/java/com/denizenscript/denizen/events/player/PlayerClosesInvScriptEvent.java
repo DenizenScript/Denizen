@@ -73,7 +73,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public String getName() {
-        return "PlayerClosesInv";
+        return "PlayerClosesInventory";
     }
 
     @Override

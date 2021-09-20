@@ -70,7 +70,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public String getName() {
-        return "PlayerOpensInv";
+        return "PlayerOpensInventory";
     }
 
     @Override
