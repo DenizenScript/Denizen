@@ -120,6 +120,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid area label: '" + text + "'");
         return false;
     }
 
@@ -129,6 +130,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
+        addPossibleCouldMatchFailReason("Does not match required enumeration: '" + text + "'");
         return false;
     }
 
@@ -144,6 +146,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Does not match required enumeration: '" + text + "'");
         return false;
     }
 
@@ -180,6 +183,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid inventory label: '" + text + "'");
         return false;
     }
 
@@ -200,6 +204,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid entity label: '" + text + "'");
         return false;
     }
 
@@ -213,6 +218,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (EntityTag.matches(text)) {
             return true;
         }
+        addPossibleCouldMatchFailReason("Not a valid entity label: '" + text + "'");
         return false;
     }
 
@@ -232,13 +238,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (EntityTag.matches(text)) {
             EntityTag entity = EntityTag.valueOf(text, CoreUtilities.noDebugContext);
             if (entity == null) {
+                addPossibleCouldMatchFailReason("Broken entity/vehicle reference: '" + text + "'");
                 return false;
             }
             if (!Vehicle.class.isAssignableFrom(entity.getEntityType().getBukkitEntityType().getEntityClass())) {
+                addPossibleCouldMatchFailReason("Entity type is not a vehicle: '" + text + "'");
                 return false;
             }
             return true;
         }
+        addPossibleCouldMatchFailReason("Not a valid inventory vehicle: '" + text + "'");
         return false;
     }
 
@@ -259,6 +268,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid vehicle label: '" + text + "'");
         return false;
     }
 
@@ -289,6 +299,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid block or item label: '" + text + "'");
         return false;
     }
 
@@ -311,6 +322,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (mat.getMaterial().isBlock() && (requirement == null || requirement.apply(mat.getMaterial()))) {
                 return true;
             }
+            addPossibleCouldMatchFailReason("Material is an item not a block: '" + text + "'");
             return false;
         }
         if (isAdvancedMatchable(text)) {
@@ -321,6 +333,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid block label: '" + text + "'");
         return false;
     }
 
@@ -334,6 +347,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (MaterialTag.matches(text)) {
             MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
             if (mat == null || !mat.getMaterial().isItem()) {
+                addPossibleCouldMatchFailReason("Material is not an item: '" + text + "'");
                 return false;
             }
             return true;
@@ -354,6 +368,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
+        addPossibleCouldMatchFailReason("Not a valid item label: '" + text + "'");
         return false;
     }
 

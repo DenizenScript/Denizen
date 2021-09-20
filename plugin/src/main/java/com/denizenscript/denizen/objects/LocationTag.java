@@ -1275,7 +1275,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.spawner_display_entity>
-        // @mechanism LocationTag.spawner_display_entity
         // @returns EntityTag
         // @description
         // Returns the full "display entity" for the spawner. This can contain more data than just a type.

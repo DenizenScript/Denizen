@@ -68,6 +68,10 @@ public class GiveCommand extends AbstractCommand {
     // @Usage
     // Use to give an item and place it in a specific slot if possible.
     // - give WATCH slot:5
+    //
+    // @Usage
+    // Use to give an item to some other defined player.
+    // - give diamond player:<[target]>
     // -->
 
     enum Type {ITEM, MONEY, EXP}
