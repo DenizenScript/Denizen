@@ -30,6 +30,8 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.api.util.DataKey;
+import net.citizensnpcs.api.util.MemoryDataKey;
 import net.citizensnpcs.npc.ai.NPCHolder;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.*;
@@ -1197,6 +1199,39 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         registerTag("registry_name", (attribute, object) -> {
             return new ElementTag(object.getCitizen().getOwningRegistry().getName());
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.citizens_data[<key>]>
+        // @returns ElementTag
+        // @description
+        // Returns the value of a Citizens NPC metadata key.
+        // -->
+        registerTag("citizens_data", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            Object val = object.getCitizen().data().get(attribute.getContext(1));
+            if (val == null) {
+                return null;
+            }
+            return new ElementTag(val.toString());
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.citizens_data_keys>
+        // @returns ListTag
+        // @description
+        // Returns a list of Citizens NPC metadata keys.
+        // -->
+        registerTag("citizens_data_keys", (attribute, object) -> {
+            DataKey holder = new MemoryDataKey();
+            object.getCitizen().data().saveTo(holder);
+            ListTag result = new ListTag();
+            for (DataKey key : holder.getSubKeys()) {
+                result.addObject(new ElementTag(key.name(), true));
+            }
+            return result;
         });
 
         registerTag("navigator", (attribute, object) -> {
