@@ -146,7 +146,7 @@ public class HealthTrait extends Trait implements Listener {
                 Bukkit.getScheduler().cancelTask(void_watcher_task);
                 return;
             }
-            if (npc.getEntity().getLocation().getY() < -1000) {
+            if (npc.getStoredLocation().getY() < -1000) {
                 npc.despawn(DespawnReason.DEATH);
                 if (respawn) {
                     Location res = getRespawnLocation();
@@ -270,7 +270,7 @@ public class HealthTrait extends Trait implements Listener {
         loc = getRespawnLocation();// TODO: debug option?
 
         if (loc == null) {
-            loc = npc.getEntity().getLocation();
+            loc = npc.getStoredLocation();
         }
 
         if (animatedeath) {

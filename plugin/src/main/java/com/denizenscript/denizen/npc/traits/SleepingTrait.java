@@ -76,7 +76,7 @@ public class SleepingTrait extends Trait {
             Debug.echoError("NPC " + npc.getId() + " cannot sleep: not spawned.");
             return;
         }
-        bedLocation = npc.getEntity().getLocation().clone();
+        bedLocation = npc.getStoredLocation().clone();
         if (!bedLocation.isWorldLoaded()) {
             Debug.echoError("NPC " + npc.getId() + " cannot sleep: invalid bed location.");
             return;

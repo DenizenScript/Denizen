@@ -166,7 +166,7 @@ public class PushableTrait extends Trait implements Listener {
             } // End push action
             if (!pushed && returnable) {
                 pushed = true;
-                returnLocation = npc.getEntity().getLocation().clone();
+                returnLocation = npc.getStoredLocation().clone();
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
                         Denizen.getInstance(), () -> {
                             if (npc.isSpawned()) {

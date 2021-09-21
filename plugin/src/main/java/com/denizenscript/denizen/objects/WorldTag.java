@@ -279,7 +279,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             ListTag npcs = new ListTag();
             World thisWorld = object.getWorld();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.isSpawned() && npc.getEntity().getLocation().getWorld().equals(thisWorld)) {
+                if (npc.isSpawned() && npc.getStoredLocation().getWorld().equals(thisWorld)) {
                     npcs.addObject(new NPCTag(npc));
                 }
             }

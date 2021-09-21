@@ -29,7 +29,7 @@ public class MirrorNameTrait extends Trait {
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
             if (npc.isSpawned()) {
-                Location loc = npc.getEntity().getLocation();
+                Location loc = npc.getStoredLocation().clone();
                 npc.despawn(DespawnReason.PENDING_RESPAWN);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
                     npc.spawn(loc);

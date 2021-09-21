@@ -100,7 +100,7 @@ public class SittingTrait extends Trait implements Listener {
             return;
         }
         new NPCTag(npc).action("sit", null);
-        sit(npc.getEntity().getLocation());
+        sit(npc.getStoredLocation());
     }
 
     private void standInternal() {

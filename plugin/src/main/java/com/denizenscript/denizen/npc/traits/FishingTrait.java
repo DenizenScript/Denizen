@@ -43,7 +43,7 @@ public class FishingTrait extends Trait {
         reelCount++;
         castCount++;
         if (fish != null) {
-            if (fish.getLocation().distance(npc.getEntity().getLocation()) < 3) {
+            if (fish.getLocation().distance(npc.getStoredLocation()) < 3) {
                 try {
                     fish.remove();
                 }
@@ -138,8 +138,8 @@ public class FishingTrait extends Trait {
 
     public void startFishing() {
         fishing = true;
-        Location search = npc.getEntity().getLocation().clone();
-        Vector direction = npc.getEntity().getLocation().getDirection().clone();
+        Location search = npc.getStoredLocation().clone();
+        Vector direction = npc.getStoredLocation().getDirection().clone();
         if (direction.getY() > -0.1) {
             direction.setY(-0.1);
         }
@@ -169,7 +169,7 @@ public class FishingTrait extends Trait {
         }
         double v = 34;
         double g = 20;
-        Location from = npc.getEntity().getLocation();
+        Location from = npc.getStoredLocation();
         from = from.add(0, 0.33, 0);
         Location to = fishingLocation;
         Vector test = to.clone().subtract(from).toVector();
@@ -237,7 +237,7 @@ public class FishingTrait extends Trait {
             ItemStack result = NMSHandler.getFishingHelper().getResult(fishHook, catchType);
             if (result != null) {
                 fish = location.getWorld().dropItem(location, result);
-                Location npcLocation = npc.getEntity().getLocation();
+                Location npcLocation = npc.getStoredLocation();
                 double d5 = npcLocation.getX() - location.getX();
                 double d6 = npcLocation.getY() - location.getY();
                 double d7 = npcLocation.getZ() - location.getZ();
