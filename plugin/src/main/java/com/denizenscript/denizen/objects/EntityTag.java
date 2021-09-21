@@ -598,6 +598,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean isPlayer() {
+        if (entity == null) {
+            return entity_type.getBukkitEntityType() == EntityType.PLAYER && npc == null;
+        }
         return entity instanceof Player && !isNPC();
     }
 
@@ -2271,7 +2274,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity is a player.
         // Works with offline players.
         // -->
-        registerSpawnedOnlyTag("is_player", (attribute, object) -> {
+        registerTag("is_player", (attribute, object) -> {
             return new ElementTag(object.isPlayer());
         });
 
