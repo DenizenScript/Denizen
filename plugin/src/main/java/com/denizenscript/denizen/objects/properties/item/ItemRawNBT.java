@@ -80,7 +80,9 @@ public class ItemRawNBT implements Property {
                 // Stew specific
                 "Effects",
                 // Lodestone compass specific
-                "LodestoneDimension", "LodestonePos", "LodestoneTracked"
+                "LodestoneDimension", "LodestonePos", "LodestoneTracked",
+                // Bundle specific
+                "Items"
         };
         defaultNbtKeys = new StringHolder[defaultNbtKeysRaw.length];
         for (int i = 0; i < defaultNbtKeysRaw.length; i++) {
@@ -116,6 +118,8 @@ public class ItemRawNBT implements Property {
     // @description
     // The item Raw_NBT property encodes and decodes raw NBT data.
     // For the sake of inter-compatibility, a special standard format is used to preserve data types.
+    // This system exists in Denizen primarily for the sake of compatibility with external plugins.
+    // It should not be used in any scripts that don't rely on data from external plugins.
     //
     // NBT Tags are encoded as follows:
     // CompoundTag: (a fully formed MapTag)

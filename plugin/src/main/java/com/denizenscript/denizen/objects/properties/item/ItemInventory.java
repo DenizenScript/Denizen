@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.objects.InventoryTag;
@@ -11,21 +13,34 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BundleMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class ItemInventory implements Property {
 
     public static boolean describes(ObjectTag item) {
-        return item instanceof ItemTag
-                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof InventoryHolder;
+        if (!(item instanceof ItemTag)) {
+            return false;
+        }
+        ItemMeta meta = ((ItemTag) item).getItemMeta();
+        if (meta instanceof BlockStateMeta
+                && ((BlockStateMeta) meta).getBlockState() instanceof InventoryHolder) {
+            return true;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && meta instanceof BundleMeta) {
+            return true;
+        }
+        return false;
     }
 
     public static ItemInventory getFrom(ObjectTag _item) {
@@ -90,17 +105,29 @@ public class ItemInventory implements Property {
     }
 
     public ListTag getInventoryContents() {
-        InventoryTag inventory = getItemInventory();
-        if (inventory == null) {
-            return null;
+        if (item.getItemMeta() instanceof BlockStateMeta) {
+            InventoryTag inventory = getItemInventory();
+            if (inventory == null) {
+                return null;
+            }
+            return InventoryContents.getFrom(inventory).getContents(false);
         }
-        return InventoryContents.getFrom(inventory).getContents(false);
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            ListTag result = new ListTag();
+            for (ItemStack item : ((BundleMeta) item.getItemMeta()).getItems()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    result.addObject(new ItemTag(item));
+                }
+            }
+            return result;
+        }
+        return null;
     }
 
     @Override
     public String getPropertyString() {
-        ListTag inv = getInventoryContents();
-        return inv != null ? inv.identify() : null;
+        ListTag items = getInventoryContents();
+        return items != null ? items.identify() : null;
     }
 
     @Override
@@ -131,20 +158,26 @@ public class ItemInventory implements Property {
             if (inventoryPair == null || inventoryPair.getValue().getInventory() == null) {
                 return;
             }
-            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
-            InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
             ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
-            if (items.size() > invHolder.getInventory().getSize()) {
-                mechanism.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
-                return;
-            }
             ItemStack[] itemArray = new ItemStack[items.size()];
             for (int i = 0; i < itemArray.length; i++) {
                 itemArray[i] = ((ItemTag) items.objectForms.get(i)).getItemStack().clone();
             }
-            invHolder.getInventory().setContents(itemArray);
-            bsm.setBlockState((BlockState) invHolder);
-            item.setItemMeta(bsm);
+            if (item.getItemMeta() instanceof BlockStateMeta) {
+                BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
+                InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
+                if (items.size() > invHolder.getInventory().getSize()) {
+                    mechanism.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
+                    return;
+                }
+                invHolder.getInventory().setContents(itemArray);
+                bsm.setBlockState((BlockState) invHolder);
+                item.setItemMeta(bsm);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                BundleMeta bundle = (BundleMeta) item.getItemMeta();
+                bundle.setItems(Arrays.asList(itemArray));
+            }
         }
     }
 }
