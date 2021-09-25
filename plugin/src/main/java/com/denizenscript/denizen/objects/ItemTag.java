@@ -657,6 +657,18 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         });
 
         // <--[tag]
+        // @attribute <ItemTag.meta_type>
+        // @returns ElementTag
+        // @group conversion
+        // @description
+        // Returns the name of the Bukkit item meta type that applies to this item.
+        // This is for debugging purposes.
+        // -->
+        registerTag("meta_type", (attribute, object) -> {
+            return new ElementTag(object.getItemMeta().getClass().getName());
+        });
+
+        // <--[tag]
         // @attribute <ItemTag.bukkit_serial>
         // @returns ElementTag
         // @group conversion
