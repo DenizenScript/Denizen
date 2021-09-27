@@ -3,10 +3,17 @@ package com.denizenscript.denizen.events.server;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import org.bukkit.event.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class InternalEventScriptEvent extends BukkitScriptEvent implements Listener {
@@ -26,6 +33,10 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     // @Cancellable true
     //
     // @Triggers when the specified internal Bukkit event fires. Useful for testing/debugging, or for interoperation with external plugins that have their own Bukkit events.
+    //
+    // @Context
+    // <context.fields> returns a ListTag of all field names applicable to the event.
+    // <context.field_(name)> returns the value of the event class field of the specified name, auto-converted to the relevant object type where possible. Use with caution.
     //
     // -->
 
@@ -58,6 +69,46 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     public String getName() {
         return "InternalBukkitEvent";
     }
+    @Override
+    public ObjectTag getContext(String name) {
+        if (name.equals("fields")) {
+            ListTag result = new ListTag();
+            Class c = currentEvent.getClass();
+            while (c != null && c != Object.class) {
+                for (Map.Entry<String, Field> field : ReflectionHelper.getFields(c).entrySet()) {
+                    if (!Modifier.isStatic(field.getValue().getModifiers())) {
+                        result.addObject(new ElementTag(field.getKey(), true));
+                    }
+                }
+                c = c.getSuperclass();
+            }
+            return result;
+        }
+        if (name.startsWith("field_")) {
+            String fName = CoreUtilities.toLowerCase(name.substring("field_".length()));
+            Class c = currentEvent.getClass();
+            while (c != null && c != Object.class) {
+                ReflectionHelper.CheckingFieldMap fields = ReflectionHelper.getFields(c);
+                for (Map.Entry<String, Field> field : fields.entrySet()) {
+                    if (!Modifier.isStatic(field.getValue().getModifiers()) && CoreUtilities.toLowerCase(field.getKey()).equals(fName)) {
+                        Object val = null;
+                        try {
+                            val = field.getValue().get(currentEvent);
+                        }
+                        catch (Throwable ex) {
+                            Debug.echoError(ex);
+                        }
+                        if (val != null) {
+                            return CoreUtilities.objectToTagForm(val, CoreUtilities.errorButNoDebugContext, false, false, false);
+                        }
+                    }
+                }
+                c = c.getSuperclass();
+            }
+        }
+        return super.getContext(name);
+    }
+
 
     @Override
     public void destroy() {

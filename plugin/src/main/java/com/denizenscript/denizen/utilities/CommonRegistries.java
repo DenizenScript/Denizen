@@ -8,6 +8,17 @@ import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.plugin.Plugin;
 
 public class CommonRegistries {
 
@@ -219,6 +230,57 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(PolygonTag.class, "polygon");
         CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");
         CoreUtilities.registerTypeAsNoOtherTypeCode(WorldTag.class, "w");
+        CoreUtilities.objectConversions.add((obj) -> {
+            if (obj instanceof Biome) {
+                return new BiomeTag((Biome) obj);
+            }
+            if (obj instanceof Chunk) {
+                return new ChunkTag((Chunk) obj);
+            }
+            if (obj instanceof Color) {
+                return new ColorTag((Color) obj);
+            }
+            if (obj instanceof Enchantment) {
+                return new EnchantmentTag((Enchantment) obj);
+            }
+            if (obj instanceof Entity) {
+                return new EntityTag((Entity) obj).getDenizenObject();
+            }
+            if (obj instanceof Inventory) {
+                return InventoryTag.mirrorBukkitInventory((Inventory) obj);
+            }
+            if (obj instanceof ItemStack) {
+                return new ItemTag((ItemStack) obj);
+            }
+            if (obj instanceof Location) {
+                return new LocationTag((Location) obj);
+            }
+            if (obj instanceof Material) {
+                return new MaterialTag((Material) obj);
+            }
+            if (obj instanceof BlockData) {
+                return new MaterialTag((BlockData) obj);
+            }
+            if (obj instanceof Block) {
+                return new LocationTag(((Block) obj).getLocation());
+            }
+            if (Depends.citizens != null && obj instanceof NPC) {
+                return new NPCTag((NPC) obj);
+            }
+            if (obj instanceof OfflinePlayer) {
+                return new PlayerTag((OfflinePlayer) obj);
+            }
+            if (obj instanceof Plugin) {
+                return new PluginTag((Plugin) obj);
+            }
+            if (obj instanceof MerchantRecipe) {
+                return new TradeTag((MerchantRecipe) obj);
+            }
+            if (obj instanceof World) {
+                return new WorldTag((World) obj);
+            }
+            return null;
+        });
         Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
     }
 }
