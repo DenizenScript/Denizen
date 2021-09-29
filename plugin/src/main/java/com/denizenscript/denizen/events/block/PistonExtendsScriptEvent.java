@@ -34,7 +34,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // <context.length> returns an ElementTag of the number of blocks that will be moved by the piston.
     // <context.blocks> returns a ListTag of all block locations about to be moved.
     // <context.sticky> returns an ElementTag of whether the piston is sticky.
-    // <context.relative> returns a LocationTag of the block in front of the piston.
+    // <context.direction> returns a vector location of the direction that blocks will move.
     //
     // -->
 
@@ -81,7 +81,8 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
             case "location": return location;
             case "material": return material;
             case "sticky": return new ElementTag(event.isSticky());
-            case "relative": return new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation());
+            case "direction": return new LocationTag(event.getDirection().getDirection());
+            case "relative": return new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation()); // Silently deprecated
             case "blocks": {
                 ListTag blocks = new ListTag();
                 for (Block block : event.getBlocks()) {

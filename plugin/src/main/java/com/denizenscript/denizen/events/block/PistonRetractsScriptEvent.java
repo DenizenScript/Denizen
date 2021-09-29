@@ -34,7 +34,7 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     // <context.blocks> returns a ListTag of all block locations about to be moved.
     // <context.material> returns the MaterialTag of the piston.
     // <context.sticky> returns an ElementTag of whether the piston is sticky.
-    // <context.relative> returns a LocationTag of the block in front of the piston.
+    // <context.direction> returns a vector location of the direction that blocks will move.
     //
     // -->
 
@@ -82,7 +82,8 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
             case "location": return location;
             case "material": return material;
             case "sticky": return new ElementTag(event.isSticky());
-            case "relative": return new LocationTag(event.getBlock().getRelative(event.getDirection().getOppositeFace()).getLocation());
+            case "direction": return new LocationTag(event.getDirection().getDirection());
+            case "relative": return new LocationTag(event.getBlock().getRelative(event.getDirection().getOppositeFace()).getLocation()); // Silently deprecated
             case "blocks": {
                 ListTag blocks = new ListTag();
                 for (Block block : event.getBlocks()) {
