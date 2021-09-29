@@ -111,7 +111,7 @@ public class CuboidBlockSet implements BlockSet {
 
     public CuboidTag getCuboid(Location loc) {
         Location low = loc.clone().subtract(center_x, center_y, center_z);
-        Location high = low.clone().add(x_width, y_length, z_height);
+        Location high = low.clone().add(x_width - 1, y_length - 1, z_height - 1); // Note: -1 because CuboidTag implicitly includes an extra block by design.
         return new CuboidTag(low, high);
     }
 

@@ -56,6 +56,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     // One 'cuboid' consists of two points: the low point and a high point.
     // a CuboidTag can contain as many cuboids within itself as needed (this allows forming more complex shapes from a single CuboidTag).
     //
+    // Note that the coordinates used are inclusive, meaning that a CuboidTag always includes the blocks identified as the low and high corner points.
+    // This means for example that a cuboid from "5,5,5" to "5,5,5" will contain one full block, and have a size of "1,1,1".
+    //
     // This object type can be noted.
     //
     // This object type is flaggable when it is noted.
