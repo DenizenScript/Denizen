@@ -177,6 +177,7 @@ public class ItemInventory implements Property {
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
                 BundleMeta bundle = (BundleMeta) item.getItemMeta();
                 bundle.setItems(Arrays.asList(itemArray));
+                item.setItemMeta(bundle);
             }
         }
     }
