@@ -591,6 +591,18 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             return new ListTag(tags);
         });
+
+        // <--[tag]
+        // @attribute <MaterialTag.produced_instrument>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the instrument that would be used by a note block placed above a block of this material.
+        // See list at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Instrument.html>.
+        // For the current instrument of a note block material refer to <@link tag MaterialTag.instrument>.
+        // -->
+        registerTag("produced_instrument", (attribute, object) -> {
+            return new ElementTag(NMSHandler.getBlockHelper().getInstrumentFor(object.getMaterial()).name());
+        });
     }
 
     public static ObjectTagProcessor<MaterialTag> tagProcessor = new ObjectTagProcessor<>();

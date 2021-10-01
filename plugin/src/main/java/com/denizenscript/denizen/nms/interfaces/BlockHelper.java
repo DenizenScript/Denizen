@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -76,6 +77,10 @@ public interface BlockHelper {
     }
 
     default void doRandomTick(Location location) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Instrument getInstrumentFor(Material mat) {
         throw new UnsupportedOperationException();
     }
 }

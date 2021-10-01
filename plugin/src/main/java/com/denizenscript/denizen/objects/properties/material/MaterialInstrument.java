@@ -46,6 +46,7 @@ public class MaterialInstrument implements Property {
         // @description
         // Returns the name of the instrument played from this note block,
         // see list at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Instrument.html>.
+        // For the instrument that a material *would* produce if below a noteblock <@link tag MaterialTag.produced_instrument>.
         // -->
         PropertyParser.<MaterialInstrument>registerTag("instrument", (attribute, material) -> {
             return new ElementTag(material.getNoteBlock().getInstrument().name());
