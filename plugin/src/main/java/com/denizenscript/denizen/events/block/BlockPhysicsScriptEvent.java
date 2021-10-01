@@ -3,11 +3,16 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
+
+import java.lang.reflect.Field;
 
 public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -71,11 +76,20 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         return "BlockPhysics";
     }
 
+    public static Field PHYSICS_EVENT_DATA = ReflectionHelper.getFields(BlockPhysicsEvent.class).getFirstOfType(BlockData.class);
+
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;
-            case "new_material": return new MaterialTag(event.getChangedType());
+            case "new_material":
+                try {
+                    BlockData data = (BlockData) PHYSICS_EVENT_DATA.get(event);
+                    return new MaterialTag(data);
+                }
+                catch (Throwable ex) {
+                    Debug.echoError(ex);
+                }
         }
         return super.getContext(name);
     }
