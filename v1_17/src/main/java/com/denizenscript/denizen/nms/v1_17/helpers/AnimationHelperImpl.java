@@ -33,6 +33,16 @@ public class AnimationHelperImpl extends AnimationHelper {
                 ((CraftPolarBear) entity).getHandle().setStanding(false);
             }
         });
+        register("HORSE_START_STANDING", entity -> {
+            if (entity instanceof Horse) {
+                ((CraftHorse) entity).getHandle().setStanding(true);
+            }
+        });
+        register("HORSE_STOP_STANDING", entity -> {
+            if (entity instanceof Horse) {
+                ((CraftHorse) entity).getHandle().setStanding(false);
+            }
+        });
         register("HORSE_BUCK", entity -> {
             if (entity instanceof Horse) {
                 ((CraftHorse) entity).getHandle().makeMad();
