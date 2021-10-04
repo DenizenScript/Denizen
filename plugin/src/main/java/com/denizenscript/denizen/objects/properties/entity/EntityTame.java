@@ -92,7 +92,11 @@ public class EntityTame implements Property {
         // -->
         if (attribute.startsWith("owner") || attribute.startsWith("get_owner")) {
             if (((Tameable) entity.getBukkitEntity()).isTamed()) {
-                return new PlayerTag((OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner())
+                OfflinePlayer tamer = (OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner();
+                if (tamer == null) {
+                    return null;
+                }
+                return new PlayerTag(tamer)
                         .getObjectAttribute(attribute.fulfill(1));
             }
             else {
