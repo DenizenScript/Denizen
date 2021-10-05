@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.notable.NotableManager;
@@ -17,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.TrapDoor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -160,9 +163,11 @@ public class SwitchCommand extends AbstractCommand {
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
     public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, boolean physics) {
         Block block = interactLocation.getBlock();
-        MaterialTag materialTag = new MaterialTag(block.getBlockData());
+        BlockData data1 = block.getBlockData();
+        MaterialTag materialTag = new MaterialTag(data1);
         MaterialSwitchable switchable = MaterialSwitchable.getFrom(materialTag);
         if (switchable == null) {
+            Debug.echoError("Cannot switch block of type '" + materialTag.getMaterial().name() + "'");
             return;
         }
         boolean currentState = switchable.getState();
@@ -174,19 +179,22 @@ public class SwitchCommand extends AbstractCommand {
             else {
                 ModifyBlockCommand.setBlock(block.getLocation(), materialTag, false, null);
             }
-            if (switchable.material.getModernData() instanceof Bisected) {
+            if (data1 instanceof Bisected && !(data1 instanceof TrapDoor)) { // TrapDoor implements Bisected, but is not actually bisected???
                 Location other = interactLocation.clone();
-                if (((Bisected) switchable.material.getModernData()).getHalf() == Bisected.Half.TOP) {
+                if (((Bisected) data1).getHalf() == Bisected.Half.TOP) {
                     other = other.add(0, -1, 0);
                 }
                 else {
                     other = other.add(0, 1, 0);
                 }
-                MaterialSwitchable switchable2 = MaterialSwitchable.getFrom(new MaterialTag(other.getBlock().getBlockData()));
-                switchable2.setState(!currentState);
-                other.getBlock().setBlockData(switchable2.material.getModernData());
-                if (physics) {
-                    AdjustBlockCommand.applyPhysicsAt(other);
+                BlockData data2 = other.getBlock().getBlockData();
+                if (data2.getMaterial() == data1.getMaterial()) {
+                    MaterialSwitchable switchable2 = MaterialSwitchable.getFrom(new MaterialTag(data2));
+                    switchable2.setState(!currentState);
+                    other.getBlock().setBlockData(switchable2.material.getModernData());
+                    if (physics) {
+                        AdjustBlockCommand.applyPhysicsAt(other);
+                    }
                 }
             }
             if (physics) {
