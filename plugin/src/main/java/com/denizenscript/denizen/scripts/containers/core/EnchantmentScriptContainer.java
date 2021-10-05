@@ -254,6 +254,9 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     }
 
     public boolean canEnchant(ItemStack item) {
+        if (!Bukkit.isPrimaryThread()) {
+            return false;
+        }
         ContextSource.SimpleMap src = new ContextSource.SimpleMap();
         src.contexts = new HashMap<>();
         src.contexts.put("item", new ItemTag(item));
@@ -262,6 +265,9 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     }
 
     public boolean isCompatible(Enchantment enchantment) {
+        if (!Bukkit.isPrimaryThread()) {
+            return false; // NMS calls this method off-thread for level gen (mob equipment can have random enchants). Just say no to this for now.
+        }
         ContextSource.SimpleMap src = new ContextSource.SimpleMap();
         src.contexts = new HashMap<>();
         src.contexts.put("enchantment_key", new ElementTag(enchantment.getKey().toString()));

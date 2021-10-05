@@ -95,6 +95,9 @@ public class AnnounceCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
             }
+            else {
+                arg.reportUnhandled();
+            }
         }
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Missing text argument!");
