@@ -1287,10 +1287,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is a horse or pig, returns the saddle as a ItemTag, or air if none.
         // -->
         registerSpawnedOnlyTag("saddle", (attribute, object) -> {
-            if (object.getLivingEntity().getType() == EntityType.HORSE) {
-                return new ItemTag(((Horse) object.getLivingEntity()).getInventory().getSaddle());
+            if (object.getLivingEntity() instanceof AbstractHorse) {
+                return new ItemTag(((AbstractHorse) object.getLivingEntity()).getInventory().getSaddle());
             }
-            else if (object.getLivingEntity().getType() == EntityType.PIG) {
+            else if (object.getLivingEntity() instanceof Pig) {
                 return new ItemTag(((Pig) object.getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR);
             }
             return null;
@@ -1304,7 +1304,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is a horse, returns the item equipped as the horses armor, or air if none.
         // -->
         registerSpawnedOnlyTag("horse_armor", (attribute, object) -> {
-            if (object.getBukkitEntityType() == EntityType.HORSE) {
+            if (object.getLivingEntity() instanceof Horse) {
                 return new ItemTag(((Horse) object.getLivingEntity()).getInventory().getArmor());
             }
             return null;
@@ -1318,10 +1318,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is a pig or horse, returns whether it has a saddle equipped.
         // -->
         registerSpawnedOnlyTag("has_saddle", (attribute, object) -> {
-            if (object.getBukkitEntityType() == EntityType.HORSE) {
-                return new ElementTag(((Horse) object.getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE);
+            if (object.getLivingEntity() instanceof AbstractHorse) {
+                return new ElementTag(((AbstractHorse) object.getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE);
             }
-            else if (object.getBukkitEntityType() == EntityType.PIG) {
+            else if (object.getLivingEntity() instanceof Pig) {
                 return new ElementTag(((Pig) object.getLivingEntity()).hasSaddle());
             }
             return null;
