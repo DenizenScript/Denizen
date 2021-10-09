@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.entity.FakeOfflinePlayer;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
@@ -7,13 +8,17 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.RenderType;
@@ -79,6 +84,7 @@ public class ScoreboardCommand extends AbstractCommand {
     // @Tags
     // <server.scoreboard[(<board>)].exists>
     // <server.scoreboard[(<board>)].team[<team>].members>
+    // <PlayerTag.scoreboard_id>
     //
     // @Usage
     // Add a score for the defined player to the default scoreboard under the objective "cookies" and let him see it
@@ -168,13 +174,25 @@ public class ScoreboardCommand extends AbstractCommand {
         scriptEntry.defaultObject("id", new ElementTag("main"));
     }
 
-    public static OfflinePlayer getOfflinePlayer(String name) {
-        if (PlayerTag.playerNameIsValid(name)) {
-            return Bukkit.getOfflinePlayer(name);
+    public static String checkLine(ObjectTag obj) {
+        if (obj instanceof PlayerTag) {
+            return ((PlayerTag) obj).getName();
         }
-        else {
-            return new FakeOfflinePlayer(name);
+        else if (obj instanceof EntityTag && ((EntityTag) obj).isSpawned()) {
+            Entity ent = ((EntityTag) obj).getBukkitEntity();
+            if (ent instanceof Player) {
+                return ent.getName();
+            }
+            return ent.getUniqueId().toString();
         }
+        String raw = obj.toString();
+        if (raw.startsWith("p@")) {
+            PlayerTag player = PlayerTag.valueOf(raw, CoreUtilities.noDebugContext);
+            if (player != null) {
+                return player.getName();
+            }
+        }
+        return raw;
     }
 
     @Override
@@ -260,17 +278,8 @@ public class ScoreboardCommand extends AbstractCommand {
                         score = new ElementTag(0);
                     }
 
-                    // Set all the score lines in the scoreboard, creating fake players
-                    // for those lines that are not meant to track players
-                    //
-                    // Read https://forums.bukkit.org/threads/help-with-multi-line-scoreboards.181149/
-                    // for clarifications
-                    for (String line : lines) {
-                        line = line.replaceAll("[pP]@", "");
-                        if (line.length() > 48) {
-                            line = line.substring(0, 48);
-                        }
-                        ScoreboardHelper.addScore(obj, getOfflinePlayer(line), score.asInt());
+                    for (ObjectTag line : lines.objectForms) {
+                        ScoreboardHelper.addScore(obj, checkLine(line), score.asInt());
                     }
                 }
             }
@@ -292,9 +301,8 @@ public class ScoreboardCommand extends AbstractCommand {
                         obj.unregister();
                     }
                     else {
-                        for (String line : lines) {
-                            line = line.replaceAll("[pP]@", "");
-                            ScoreboardHelper.removeScore(obj, getOfflinePlayer(line));
+                        for (ObjectTag line : lines.objectForms) {
+                            ScoreboardHelper.removeScore(obj, checkLine(line));
                         }
                     }
                 }
@@ -309,9 +317,8 @@ public class ScoreboardCommand extends AbstractCommand {
                 Debug.echoDebug(scriptEntry, "Removing lines " + lines.identify() +
                         " from all objectives in scoreboard " + id.asString());
 
-                for (String line : lines) {
-                    line = line.replaceAll("[pP]@", "");
-                    ScoreboardHelper.removePlayer(id.asString(), getOfflinePlayer(line));
+                for (ObjectTag line : lines.objectForms) {
+                    ScoreboardHelper.removePlayer(id.asString(), checkLine(line));
                 }
             }
             // Only remove all objectives from scoreboard if viewers
@@ -329,7 +336,7 @@ public class ScoreboardCommand extends AbstractCommand {
                     // If this isn't the main scoreboard, add this viewer
                     // to the map of viewers saved by Denizen
                     if (!id.asString().equalsIgnoreCase("main")) {
-                        ScoreboardHelper.viewerMap.put(viewer.getName(), id.asString());
+                        ScoreboardHelper.viewerMap.put(viewer.getUUID(), id.asString());
                     }
                     // Make this player view the scoreboard if he/she
                     // is already online
@@ -340,7 +347,7 @@ public class ScoreboardCommand extends AbstractCommand {
                 // Remove viewers for this scoreboard
                 else if (act.equals(Action.REMOVE)) {
                     // Take this player out of the map of viewers
-                    ScoreboardHelper.viewerMap.remove(viewer.getName());
+                    ScoreboardHelper.viewerMap.remove(viewer.getUUID());
 
                     // Make the player view a blank scoreboard if he/she
                     // is online (in lieu of a scoreboard-removing method

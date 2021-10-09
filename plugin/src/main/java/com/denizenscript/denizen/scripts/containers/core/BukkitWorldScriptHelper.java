@@ -72,8 +72,9 @@ public class BukkitWorldScriptHelper implements Listener {
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        if (ScoreboardHelper.viewerMap.containsKey(event.getPlayer().getName())) {
-            Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(event.getPlayer().getName()));
+        String board = ScoreboardHelper.viewerMap.get(event.getPlayer().getUniqueId());
+        if (board != null) {
+            Scoreboard score = ScoreboardHelper.getScoreboard(board);
             if (score != null) {
                 event.getPlayer().setScoreboard(score);
             }

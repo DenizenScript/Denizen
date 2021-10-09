@@ -25,7 +25,7 @@ public class ScoreboardHelper {
     // A map with scoreboard IDs as keys and scoreboards as values
     public static Map<String, Scoreboard> scoreboardMap = new HashMap<>();
     // A map with viewer names as keys and scoreboard IDs as values
-    public static Map<String, String> viewerMap = new HashMap<>();
+    public static Map<UUID, String> viewerMap = new HashMap<>();
 
     /*
      * Called on server startup or /denizen reload saves
@@ -40,9 +40,9 @@ public class ScoreboardHelper {
         Scoreboard emptyBoard = createScoreboard();
 
         // Clear every viewer's set scoreboard
-        for (Map.Entry<String, String> entry : viewerMap.entrySet()) {
-            OfflinePlayer player = ScoreboardCommand.getOfflinePlayer(entry.getKey());
-            if (player.isOnline()) {
+        for (Map.Entry<UUID, String> entry : viewerMap.entrySet()) {
+            OfflinePlayer player = Bukkit.getPlayer(entry.getKey());
+            if (player != null && player.isOnline()) {
                 player.getPlayer().setScoreboard(emptyBoard);
             }
         }
@@ -74,7 +74,7 @@ public class ScoreboardHelper {
             for (String viewer : viewerList) {
                 if (PlayerTag.matches(viewer)) {
                     PlayerTag player = PlayerTag.valueOf(viewer, CoreUtilities.basicContext);
-                    viewerMap.put(player.getName(), id);
+                    viewerMap.put(player.getUUID(), id);
 
                     if (player.isOnline()) {
                         player.getPlayerEntity().setScoreboard(board);
@@ -121,7 +121,7 @@ public class ScoreboardHelper {
                     // Iterate through scores and add them to this objective
                     for (String scoreName : scoreSection.getKeys(false)) {
                         int scoreInt = scoreSection.getInt(scoreName);
-                        addScore(o, ScoreboardCommand.getOfflinePlayer(scoreName), scoreInt);
+                        addScore(o, scoreName, scoreInt);
                     }
                 }
             }
@@ -146,9 +146,9 @@ public class ScoreboardHelper {
 
                 // Find all of the viewers that are viewing this scoreboard
                 // and put them on a list
-                for (Map.Entry<String, String> viewerEntry : viewerMap.entrySet()) {
+                for (Map.Entry<UUID, String> viewerEntry : viewerMap.entrySet()) {
                     if (id.equalsIgnoreCase(viewerEntry.getValue())) {
-                        viewerList.add(viewerEntry.getKey());
+                        viewerList.add(viewerEntry.getKey().toString());
                     }
                 }
 
@@ -210,21 +210,20 @@ public class ScoreboardHelper {
     /////////////////
 
     /**
-     * Add a score to an Objective for an OfflinePlayer.
+     * Add a score to an Objective for a name.
      *
      * @param o      the Objective to add the score to
-     * @param player the OfflinePlayer to set the score for
      * @param score  the score
      */
-    public static void addScore(Objective o, OfflinePlayer player, int score) {
+    public static void addScore(Objective o, String playerName, int score) {
         Score sc;
-        if (player.getName().length() <= 16) {
-            sc = o.getScore(player.getName());
+        if (playerName.length() <= 16) {
+            sc = o.getScore(playerName);
         }
         else {
-            Map.Entry<Team, String> teamData = createTeam(o.getScoreboard(), player.getName());
+            Map.Entry<Team, String> teamData = createTeam(o.getScoreboard(), playerName);
             sc = o.getScore(teamData.getValue());
-            teamData.getKey().addPlayer(ScoreboardCommand.getOfflinePlayer(teamData.getValue()));
+            teamData.getKey().addEntry(teamData.getValue());
         }
 
         // If the score is 0, it won't normally be displayed at first,
@@ -239,12 +238,11 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Remove a score from an Objective for an OfflinePlayer.
+     * Remove a score from an Objective for a name.
      *
      * @param o      the Objective to remove the score from
-     * @param player the OfflinePlayer to remove the score for
      */
-    public static void removeScore(Objective o, OfflinePlayer player) {
+    public static void removeScore(Objective o, String playerName) {
 
         // There is no method to remove a single score from an
         // objective, as confirmed here:
@@ -257,7 +255,7 @@ public class ScoreboardHelper {
         // Go through every score for this (real or fake) player
         // and put it in scoreMap if it doesn't belong to the
         // objective we want to remove the score from
-        String name = createTeam(board, player.getName()).getValue();
+        String name = createTeam(board, playerName).getValue();
         // TODO: Properly remove when teams are involved
         for (Score sc : board.getScores(name)) {
             if (!sc.getObjective().equals(o)) {
@@ -266,13 +264,12 @@ public class ScoreboardHelper {
         }
 
         // Remove all the scores for this (real or fake) player
-        board.resetScores(player.getName());
+        board.resetScores(playerName);
 
         // Go through scoreMap and add back all the scores we saved
         // for this (real or fake) player
         for (Map.Entry<String, Integer> entry : scoreMap.entrySet()) {
-            board.getObjective(entry.getKey())
-                    .getScore(player.getName()).setScore(entry.getValue());
+            board.getObjective(entry.getKey()).getScore(playerName).setScore(entry.getValue());
         }
     }
 
@@ -301,8 +298,7 @@ public class ScoreboardHelper {
     /////////////////
 
     /**
-     * Clears all the objectives from a Scoreboard, making
-     * it empty.
+     * Clears all the objectives from a Scoreboard, making it empty.
      *
      * @param board the Scoreboard to clear
      */
@@ -313,8 +309,7 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Creates an anonymous new Scoreboard that isn't
-     * saved anywhere.
+     * Creates an anonymous new Scoreboard that isn't saved anywhere.
      *
      * @return the new Scoreboard
      */
@@ -323,8 +318,7 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Creates a new Scoreboard with a certain id and
-     * stories it in the scoreboards map.
+     * Creates a new Scoreboard with a certain id and stories it in the scoreboards map.
      *
      * @param id the id of the new Scoreboard
      * @return the new Scoreboard
@@ -336,9 +330,7 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Deletes a Scoreboard, clearing it and removing it from
-     * the scoreboards map, unless it is the server's main
-     * scoreboard, in which case it is just cleared.
+     * Deletes a Scoreboard, clearing it and removing it from the scoreboards map, unless it is the server's main scoreboard, in which case it is just cleared.
      *
      * @param id the id of the Scoreboard
      */
@@ -353,9 +345,7 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Returns the server's main scoreboard, that isn't stored
-     * in the scoreboards map because Bukkit already saves it
-     * by itself.
+     * Returns the server's main scoreboard, that isn't stored in the scoreboards map because Bukkit already saves it by itself.
      *
      * @return the main Scoreboard
      */
@@ -374,8 +364,7 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Returns true if the scoreboards map contains a certain
-     * scoreboard id.
+     * Returns true if the scoreboards map contains a certain scoreboard id.
      *
      * @param id the id of the Scoreboard
      * @return true or false
@@ -384,14 +373,7 @@ public class ScoreboardHelper {
         return scoreboardMap.containsKey(id.toUpperCase());
     }
 
-    /**
-     * Removes all the scores of an OfflinePlayer from a
-     * Scoreboard.
-     *
-     * @param id     the id of the Scoreboard
-     * @param player the OfflinePlayer
-     */
-    public static void removePlayer(String id, OfflinePlayer player) {
-        scoreboardMap.get(id.toUpperCase()).resetScores(player.getName());
+    public static void removePlayer(String id, String name) {
+        scoreboardMap.get(id.toUpperCase()).resetScores(name);
     }
 }

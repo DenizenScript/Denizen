@@ -7,6 +7,7 @@ import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -2344,6 +2345,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             long playerMilliTime = NMSHandler.getPlayerHelper().getLastActionTime(object.getPlayerEntity());
             long relativeMillis = System.nanoTime() / 1000000L - playerMilliTime;
             return new TimeTag(System.currentTimeMillis() - relativeMillis);
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.scoreboard_id>
+        // @returns ElementTag
+        // @description
+        // Returns the ID of the scoreboard from <@link command scoreboard> that a player is currently viewing, if any.
+        // -->
+        registerOnlineOnlyTag("scoreboard_id", (attribute, object) -> {
+            String id = ScoreboardHelper.viewerMap.get(object.getUUID());
+            if (id == null) {
+                return null;
+            }
+            return new ElementTag(id);
         });
     }
 
