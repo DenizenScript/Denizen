@@ -47,7 +47,6 @@ public class VulnerableCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry.getProcessedArgs()) {
             if (!scriptEntry.hasObject("action") && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("action", arg.asElement());
@@ -56,7 +55,6 @@ public class VulnerableCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         scriptEntry.defaultObject("action", new ElementTag("toggle"));
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
@@ -66,14 +64,11 @@ public class VulnerableCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag action = scriptEntry.getElement("action");
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry).debug() + action.debug());
+            Debug.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry), action);
         }
-
         NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
         Toggle toggle = Toggle.valueOf(action.asString().toUpperCase());
-
         npc.setProtected(!(toggle == Toggle.TOGGLE ? npc.isProtected() : action.asBoolean()));
     }
 }

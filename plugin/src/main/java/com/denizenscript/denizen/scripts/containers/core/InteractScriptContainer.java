@@ -270,7 +270,7 @@ public class InteractScriptContainer extends ScriptContainer {
         String keyBase = "steps." + step + "." + triggerName + " trigger";
         if (contains(keyBase)) {
             // Trigger exists in Player's current step, get ids.
-            Map<String, String> idMap = new HashMap<>();
+            Map<String, String> idMap = new LinkedHashMap<>();
             // Iterate through IDs to build the idMap
             try {
                 for (StringHolder id : getConfigurationSection(keyBase).getKeys(false)) {
