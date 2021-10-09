@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
+import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
@@ -43,6 +44,7 @@ import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FishHook;
@@ -2353,12 +2355,28 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the ID of the scoreboard from <@link command scoreboard> that a player is currently viewing, if any.
         // -->
-        registerOnlineOnlyTag("scoreboard_id", (attribute, object) -> {
+        registerTag("scoreboard_id", (attribute, object) -> {
             String id = ScoreboardHelper.viewerMap.get(object.getUUID());
             if (id == null) {
                 return null;
             }
             return new ElementTag(id);
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.bossbar_ids>
+        // @returns ListTag
+        // @description
+        // Returns a list of all bossbars from <@link command bossbar> that this player can see.
+        // -->
+        registerOnlineOnlyTag("bossbar_ids", (attribute, object) -> {
+            ListTag result = new ListTag();
+            for (Map.Entry<String, BossBar> bar : BossBarCommand.bossBarMap.entrySet()) {
+                if (bar.getValue().getPlayers().contains(object.getPlayerEntity())) {
+                    result.addObject(new ElementTag(bar.getKey(), true));
+                }
+            }
+            return result;
         });
     }
 

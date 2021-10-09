@@ -42,6 +42,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -2072,11 +2073,28 @@ public class ServerTagBase {
         // @attribute <server.current_bossbars>
         // @returns ListTag
         // @description
-        // Returns a list of all currently active boss bar IDs.
+        // Returns a list of all currently active boss bar IDs from <@link command bossbar>.
         // -->
         else if (attribute.startsWith("current_bossbars")) {
             ListTag dl = new ListTag(BossBarCommand.bossBarMap.keySet());
             event.setReplacedObject(dl.getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.bossbar_viewers[<bossbar_id>]>
+        // @returns ListTag(PlayerTag)
+        // @description
+        // Returns a list of players that should be able to see the given bossbar ID from <@link command bossbar>.
+        // -->
+        else if (attribute.startsWith("bossbar_viewers") && attribute.hasContext(1)) {
+            BossBar bar = BossBarCommand.bossBarMap.get(CoreUtilities.toLowerCase(attribute.getContext(1)));
+            if (bar != null) {
+                ListTag list = new ListTag();
+                for (Player player : bar.getPlayers()) {
+                    list.addObject(new PlayerTag(player));
+                }
+                event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
+            }
         }
 
         // <--[tag]

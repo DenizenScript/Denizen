@@ -51,6 +51,8 @@ public class BossBarCommand extends AbstractCommand {
     //
     // @Tags
     // <server.current_bossbars>
+    // <server.bossbar_viewers[<bossbar_id>]>
+    // <PlayerTag.bossbar_ids>
     //
     // @Usage
     // Shows a message to all online players.
@@ -157,13 +159,7 @@ public class BossBarCommand extends AbstractCommand {
         ElementTag style = scriptEntry.getElement("style");
         ListTag options = scriptEntry.getObjectTag("options");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), id.debug() + action.debug()
-                    + (players != null ? players.debug() : "")
-                    + (title != null ? title.debug() : "")
-                    + (progress != null ? progress.debug() : "")
-                    + (color != null ? color.debug() : "")
-                    + (style != null ? style.debug() : "")
-                    + (options != null ? options.debug() : ""));
+            Debug.report(scriptEntry, getName(), id, action, players, title, progress, color, style, options);
         }
         String idString = CoreUtilities.toLowerCase(id.asString());
         switch (Action.valueOf(action.asString().toUpperCase())) {
