@@ -2235,13 +2235,14 @@ public class ServerTagBase {
         // @returns ListTag(ItemTag)
         // @description
         // Returns a list of items from a loot table, given a map of input data.
-        // Required input: id: the loot table ID, location: the location where it's being generated.
-        // Optional inputs: killer: a player (or player-type NPC) that is looting, entity: a dead entity being looted from,
-        // loot_bonus: the loot bonus level (defaults to -1), luck: the luck potion level (defaults to 0).
+        // Required input: id: the loot table ID, location: the location where it's being generated (LocationTag).
+        // Optional inputs: killer: an online player (or player-type NPC) that is looting, entity: a dead entity being looted from (a valid EntityTag instance that is or was spawned in the world),
+        // loot_bonus: the loot bonus level (defaults to -1) as an integer number, luck: the luck potion level (defaults to 0) as a decimal number.
         //
         // Some inputs will be strictly required for some loot tables, and ignored for others.
         //
         // A list of valid loot tables can be found here: <@link url https://minecraft.fandom.com/wiki/Loot_table#List_of_loot_tables>
+        // Note that the tree view represented on the wiki should be split by slashes for the input - for example, "cow" is under "entities" in the tree so "entities/cow" is how you input that.
         // CAUTION: Invalid loot table IDs will generate an empty list rather than an error.
         //
         // For example: <server.generate_loot_table[id=chests/spawn_bonus_chest;killer=<player>;location=<player.location>]>
