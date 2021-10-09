@@ -20,14 +20,14 @@ public class AnnounceCommand extends AbstractCommand {
 
     public AnnounceCommand() {
         setName("announce");
-        setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)");
+        setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>/to_permission:<node>) (format:<name>)");
         setRequiredArguments(1, 3);
         isProcedural = true;
     }
 
     // <--[command]
     // @Name Announce
-    // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
+    // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>/to_permission:<node>) (format:<name>)
     // @Required 1
     // @Maximum 3
     // @Short Announces a message for everyone online to read.
@@ -37,7 +37,8 @@ public class AnnounceCommand extends AbstractCommand {
     // Announce sends a raw message to players.
     // Simply using announce with text will send the message to all online players using the Spigot broadcast system.
     // Specifying the 'to_ops' argument will narrow down the players in which the message is sent to ops only.
-    // Alternatively, using the 'to_flagged' argument will send the message to only players that have the specified flag.
+    // Alternatively, using the 'to_permission' argument will send the message to only players that have the specified permission node.
+    // Or, using the 'to_flagged' argument will send the message to only players that have the specified flag.
     // You can also use the 'to_console' argument to make it so it only shows in the server console.
     //
     // Announce can also utilize a format script with the 'format' argument. See <@link language Format Script Containers>.
@@ -64,7 +65,7 @@ public class AnnounceCommand extends AbstractCommand {
     // - announce to_console 'Warning- <player.name> broke a mob spawner at location <player.location>'
     // -->
 
-    enum AnnounceType {ALL, TO_OPS, TO_FLAGGED, TO_CONSOLE}
+    enum AnnounceType {ALL, TO_OPS, TO_FLAGGED, TO_CONSOLE, TO_PERMISSION}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -80,6 +81,11 @@ public class AnnounceCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("to_flagged")) {
                 scriptEntry.addObject("type", AnnounceType.TO_FLAGGED);
+                scriptEntry.addObject("flag", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("type")
+                    && arg.matchesPrefix("to_permission")) {
+                scriptEntry.addObject("type", AnnounceType.TO_PERMISSION);
                 scriptEntry.addObject("flag", arg.asElement());
             }
             else if (!scriptEntry.hasObject("format")
@@ -123,26 +129,33 @@ public class AnnounceCommand extends AbstractCommand {
         }
         String message = format != null ? format.getFormattedText(text.asString(), scriptEntry) : text.asString();
         // Use Bukkit to broadcast the message to everybody in the server.
-        if (type == AnnounceType.ALL) {
-            Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message, ChatColor.WHITE));
-        }
-        else if (type == AnnounceType.TO_OPS) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.isOp()) {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+        switch (type) {
+            case ALL:
+                Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                break;
+            case TO_OPS:
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.isOp()) {
+                        player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                    }
                 }
-            }
-        }
-        else if (type == AnnounceType.TO_FLAGGED) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                PlayerTag plTag = new PlayerTag(player);
-                if (plTag.getFlagTracker().hasFlag(flag.asString())) {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                break;
+            case TO_PERMISSION:
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.hasPermission(flag.asString())) {
+                        player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                    }
                 }
-            }
-        }
-        else if (type == AnnounceType.TO_CONSOLE) {
-            Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+            case TO_FLAGGED:
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (new PlayerTag(player).getFlagTracker().hasFlag(flag.asString())) {
+                        player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                    }
+                }
+                break;
+            case TO_CONSOLE:
+                Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                break;
         }
     }
 }
