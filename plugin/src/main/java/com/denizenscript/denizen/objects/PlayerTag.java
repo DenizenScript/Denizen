@@ -2368,6 +2368,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ListTag
         // @description
         // Returns a list of all bossbars from <@link command bossbar> that this player can see.
+        // Does not list bossbars created by any other source.
         // -->
         registerOnlineOnlyTag("bossbar_ids", (attribute, object) -> {
             ListTag result = new ListTag();

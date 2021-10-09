@@ -9,7 +9,7 @@ import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.events.core.TickScriptEvent;
@@ -46,12 +46,15 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.loot.LootContext;
+import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapCursor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -2225,6 +2228,67 @@ public class ServerTagBase {
                     event.setReplacedObject(new ListTag().getObjectAttribute(attribute.fulfill(1)));
                 }
             }
+        }
+
+        // <--[tag]
+        // @attribute <server.generate_loot_table[<map>]>
+        // @returns ListTag(ItemTag)
+        // @description
+        // Returns a list of items from a loot table, given a map of input data.
+        // Required input: id: the loot table ID, location: the location where it's being generated.
+        // Optional inputs: killer: a player (or player-type NPC) that is looting, entity: a dead entity being looted from,
+        // loot_bonus: the loot bonus level (defaults to -1), luck: the luck potion level (defaults to 0).
+        //
+        // Some inputs will be strictly required for some loot tables, and ignored for others.
+        //
+        // A list of valid loot tables can be found here: <@link url https://minecraft.fandom.com/wiki/Loot_table#List_of_loot_tables>
+        // CAUTION: Invalid loot table IDs will generate an empty list rather than an error.
+        //
+        // For example: <server.generate_loot_table[id=chests/spawn_bonus_chest;killer=<player>;location=<player.location>]>
+        // -->
+        else if (attribute.startsWith("generate_loot_table") && attribute.hasContext(1)) {
+            MapTag map = attribute.contextAsType(1, MapTag.class);
+            ObjectTag idObj = map.getObject("id");
+            ObjectTag locationObj = map.getObject("location");
+            if (idObj == null || locationObj == null) {
+                return;
+            }
+            NamespacedKey key = NamespacedKey.fromString(CoreUtilities.toLowerCase(idObj.toString()));
+            if (key == null) {
+                return;
+            }
+            LootTable table = Bukkit.getLootTable(key);
+            LootContext.Builder context = new LootContext.Builder(locationObj.asType(LocationTag.class, attribute.context));
+            ObjectTag killer = map.getObject("killer");
+            ObjectTag luck = map.getObject("luck");
+            ObjectTag bonus = map.getObject("loot_bonus");
+            if (killer != null) {
+                context = context.killer((HumanEntity) killer.asType(EntityTag.class, attribute.context).getLivingEntity());
+            }
+            if (luck != null) {
+                context = context.luck(luck.asType(ElementTag.class, attribute.context).asFloat());
+            }
+            if (bonus != null) {
+                context = context.lootingModifier(bonus.asType(ElementTag.class, attribute.context).asInt());
+            }
+            Collection<ItemStack> items;
+            try {
+                items = table.populateLoot(CoreUtilities.getRandom(), context.build());
+            }
+            catch (Throwable ex) {
+                attribute.echoError("Loot table failed to generate: " + ex.getMessage());
+                if (Debug.verbose) {
+                    attribute.echoError(ex);
+                }
+                return;
+            }
+            ListTag result = new ListTag();
+            for (ItemStack item : items) {
+                if (item != null && item.getType() != Material.AIR) {
+                    result.addObject(new ItemTag(item));
+                }
+            }
+            event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
         }
     }
 
