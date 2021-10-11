@@ -47,8 +47,10 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     //
     // @Description
     // This command drops an item at the specified location which cannot be picked up by players.
+    //
     // It accepts a duration which determines how long the item will stay for until disappearing.
     // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
+    // Use "duration:infinite" to indicate that the item should never remove itself.
     //
     // @Tags
     // <EntityTag.item>
@@ -161,7 +163,8 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         dropped.setVelocity(new Vector(0, 0, 0));
         dropped.setGravity(false);
         dropped.setPickupDelay(32767);
-        NMSHandler.getEntityHelper().setTicksLived(dropped, -duration.getTicksAsInt());
+        int ticks = duration.getTicksAsInt();
+        NMSHandler.getEntityHelper().setTicksLived(dropped, ticks <= 0 ? -32768 : -ticks);
         if (!dropped.isValid()) {
             Debug.echoDebug(scriptEntry, "Item failed to spawned (likely blocked by some plugin).");
             return;
@@ -169,12 +172,14 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         final UUID itemUUID = dropped.getUniqueId();
         protectedEntities.add(itemUUID);
         scriptEntry.addObject("dropped", new EntityTag(dropped));
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
-                () -> {
-                    protectedEntities.remove(itemUUID);
-                    if (dropped.isValid() && !dropped.isDead()) {
-                        dropped.remove();
-                    }
-                }, duration.getTicks());
+        if (ticks > 0) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
+                    () -> {
+                        protectedEntities.remove(itemUUID);
+                        if (dropped.isValid() && !dropped.isDead()) {
+                            dropped.remove();
+                        }
+                    }, ticks);
+        }
     }
 }
