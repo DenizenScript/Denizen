@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.*;
@@ -21,6 +22,7 @@ import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -40,7 +42,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
+        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
         setRequiredArguments(2, 13);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
@@ -56,7 +58,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material>|...)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)
+    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)
     // @Group world
     // @Required 2
     // @Maximum 13
@@ -197,9 +199,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 scriptEntry.addObject("flags", new ElementTag("true"));
             }
             else if (!scriptEntry.hasObject("mask")
-                    && arg.matchesPrefix("mask")
-                    && arg.matchesArgumentList(MaterialTag.class)) {
-                scriptEntry.addObject("mask", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
+                    && arg.matchesPrefix("mask")) {
+                scriptEntry.addObject("mask", arg.asElement());
             }
             else if (!scriptEntry.hasObject("fake_to")
                     && arg.matchesPrefix("fake_to")
@@ -247,13 +248,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag copyEntities = scriptEntry.getElement("entities");
         ElementTag flags = scriptEntry.getElement("flags");
         LocationTag location = scriptEntry.getObjectTag("location");
-        List<MaterialTag> mask = (List<MaterialTag>) scriptEntry.getObject("mask");
+        ElementTag mask = scriptEntry.getElement("mask");
         List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
         DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, fakeDuration, flags,
-                    (mask != null ? ArgumentHelper.debugList("mask", mask) : ""), (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : ""));
+            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, flags, mask, fakeDuration, (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : ""));
         }
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
@@ -471,9 +471,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                     input.fakeDuration = fakeDuration;
                     if (mask != null) {
+                        String maskText = mask.asString();
                         input.mask = new HashSet<>();
-                        for (MaterialTag material : mask) {
-                            input.mask.add(material.getMaterial());
+                        for (Material material : Material.values()) {
+                            if (BukkitScriptEvent.tryMaterial(material, maskText)) {
+                                input.mask.add(material);
+                            }
                         }
                     }
                     set = schematics.get(name.asString().toUpperCase());
