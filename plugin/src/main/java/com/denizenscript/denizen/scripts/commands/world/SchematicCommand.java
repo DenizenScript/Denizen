@@ -473,9 +473,16 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     if (mask != null) {
                         String maskText = mask.asString();
                         input.mask = new HashSet<>();
-                        for (Material material : Material.values()) {
-                            if (BukkitScriptEvent.tryMaterial(material, maskText)) {
-                                input.mask.add(material);
+                        if (maskText.startsWith("li@")) { // Back-compat: input used to be a list of materials
+                            for (MaterialTag material : ListTag.valueOf(maskText, scriptEntry.getContext()).filter(MaterialTag.class, scriptEntry)) {
+                                input.mask.add(material.getMaterial());
+                            }
+                        }
+                        else {
+                            for (Material material : Material.values()) {
+                                if (BukkitScriptEvent.tryMaterial(material, maskText)) {
+                                    input.mask.add(material);
+                                }
                             }
                         }
                     }
