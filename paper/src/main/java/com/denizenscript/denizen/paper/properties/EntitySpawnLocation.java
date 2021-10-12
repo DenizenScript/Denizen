@@ -14,6 +14,9 @@ public class EntitySpawnLocation implements Property {
         return entity instanceof EntityTag;
     }
 
+    public static final String[] handledMechs = new String[] {
+    }; // None
+
     public static EntitySpawnLocation getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;

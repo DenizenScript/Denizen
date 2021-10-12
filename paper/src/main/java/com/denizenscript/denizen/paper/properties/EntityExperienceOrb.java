@@ -12,10 +12,14 @@ import org.bukkit.entity.ExperienceOrb;
 import java.util.UUID;
 
 public class EntityExperienceOrb implements Property {
+
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
                 && ((EntityTag) entity).getBukkitEntity() instanceof ExperienceOrb;
     }
+
+    public static final String[] handledMechs = new String[] {
+    }; // None
 
     public static EntityExperienceOrb getFrom(ObjectTag entity) {
         if (!describes(entity)) {

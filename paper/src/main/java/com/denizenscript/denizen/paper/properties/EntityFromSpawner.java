@@ -8,9 +8,13 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class EntityFromSpawner implements Property {
+
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag;
     }
+
+    public static final String[] handledMechs = new String[] {
+    }; // None
 
     public static EntityFromSpawner getFrom(ObjectTag entity) {
         if (!describes(entity)) {
