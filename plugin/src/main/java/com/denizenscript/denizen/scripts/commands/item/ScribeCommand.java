@@ -80,7 +80,7 @@ public class ScribeCommand extends AbstractCommand {
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 
-        book = bookScript.writeBookTo(book, scriptEntry.entryData.getTagContext());
+        book = bookScript.writeBookTo(book, scriptEntry.getContext());
 
         // Post-write action? Can be NONE.
         switch (action) {

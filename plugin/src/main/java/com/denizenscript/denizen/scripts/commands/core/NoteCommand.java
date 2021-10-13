@@ -114,7 +114,7 @@ public class NoteCommand extends AbstractCommand {
                 Debug.echoError(scriptEntry.getResidingQueue(), "'" + object + "' is an invalid " + object_class.getSimpleName() + ".");
                 return;
             }
-            arg = ObjectFetcher.getObjectFrom(object_class, object, scriptEntry.entryData.getTagContext());
+            arg = ObjectFetcher.getObjectFrom(object_class, object, scriptEntry.getContext());
             if (arg instanceof Notable) {
                 ((Notable) arg).makeUnique(id.asString());
             }

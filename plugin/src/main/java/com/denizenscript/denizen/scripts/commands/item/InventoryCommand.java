@@ -412,7 +412,7 @@ public class InventoryCommand extends AbstractCommand {
                     break;
                 case ADJUST:
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
-                    toAdjust.safeAdjust(new Mechanism(mechanism.asString(), mechanismValue, scriptEntry.entryData.getTagContext()));
+                    toAdjust.safeAdjust(new Mechanism(mechanism.asString(), mechanismValue, scriptEntry.getContext()));
                     NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
                     break;
                 case FLAG:
