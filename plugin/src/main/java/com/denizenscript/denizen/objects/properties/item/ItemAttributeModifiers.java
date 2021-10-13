@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -131,7 +132,9 @@ public class ItemAttributeModifiers implements Property {
             MapTag map = mechanism.valueAsType(MapTag.class);
             for (Map.Entry<StringHolder, ObjectTag> mapEntry : map.map.entrySet()) {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
-                EntityAttributeModifiers.addAttributeModifiers((mod) -> metaMap.put(attr, mod), attr, mapEntry.getValue());
+                for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
+                    metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
+                }
             }
             ItemMeta meta = item.getItemMeta();
             meta.setAttributeModifiers(metaMap);
@@ -153,7 +156,9 @@ public class ItemAttributeModifiers implements Property {
             MapTag input = mechanism.valueAsType(MapTag.class);
             for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                EntityAttributeModifiers.addAttributeModifiers((mod) -> meta.addAttributeModifier(attr, mod), attr, subValue.getValue());
+                for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
+                    meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
+                }
             }
             item.setItemMeta(meta);
         }

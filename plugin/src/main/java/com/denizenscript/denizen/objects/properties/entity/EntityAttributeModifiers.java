@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class EntityAttributeModifiers implements Property {
 
@@ -236,26 +235,6 @@ public class EntityAttributeModifiers implements Property {
         return null;
     }
 
-    public static void addAttributeModifiers(Consumer<AttributeModifier> addModifier, org.bukkit.attribute.Attribute attr, ObjectTag subValue) {
-        if (subValue instanceof MapTag) {
-            MapTag attrMap = (MapTag) subValue;
-            List<StringHolder> keys = new ArrayList<>(attrMap.map.keySet());
-            keys.sort((k, k2) -> {
-                int a = Integer.parseInt(k.str);
-                int b = Integer.parseInt(k2.str);
-                return Integer.compare(a, b);
-            });
-            for (StringHolder index : keys) {
-                addModifier.accept(modiferForMap(attr, (MapTag) attrMap.map.get(index)));
-            }
-        }
-        else {
-            for (ObjectTag listValue : (((ListTag) subValue).objectForms)) {
-                addModifier.accept(modiferForMap(attr, (MapTag) listValue));
-            }
-        }
-    }
-
     @Override
     public void adjust(Mechanism mechanism) {
 
@@ -288,7 +267,9 @@ public class EntityAttributeModifiers implements Property {
                     for (AttributeModifier modifier : instance.getModifiers()) {
                         instance.removeModifier(modifier);
                     }
-                    addAttributeModifiers(instance::addModifier, attr, subValue.getValue());
+                    for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
+                        instance.addModifier(modiferForMap(attr, (MapTag) listValue));
+                    }
                 }
             }
             catch (Throwable ex) {
@@ -321,7 +302,9 @@ public class EntityAttributeModifiers implements Property {
                         mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
                         continue;
                     }
-                    addAttributeModifiers(instance::addModifier, attr, subValue.getValue());
+                    for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
+                        instance.addModifier(modiferForMap(attr, (MapTag) listValue));
+                    }
                 }
             }
             catch (Throwable ex) {
