@@ -7,6 +7,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     // @Location true
     //
     // @Warning This event may fire very rapidly.
+    //
+    // @Switch adjacent:<material> to only process the event if the block or an immediately adjacent block (up/down/n/e/s/w) matches the material matcher specified. This can be useful to prevent blocks from breaking.
     //
     // @Cancellable true
     //
@@ -67,6 +70,20 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         }
         if (!tryMaterial(material, path.eventArgLowerAt(0))) {
             return false;
+        }
+        String adjacent = path.switches.get("adjacent");
+        if (adjacent != null) {
+            if (!tryMaterial(material, adjacent)) {
+                Block block = location.getBlock();
+                if (!tryMaterial(block.getRelative(0, 1, 0).getType(), adjacent)
+                        && !tryMaterial(block.getRelative(0, -1, 0).getType(), adjacent)
+                        && !tryMaterial(block.getRelative(1, 0, 0).getType(), adjacent)
+                        && !tryMaterial(block.getRelative(-1, 0, 0).getType(), adjacent)
+                        && !tryMaterial(block.getRelative(0, 0, 1).getType(), adjacent)
+                        && !tryMaterial(block.getRelative(0, 0, -1).getType(), adjacent)) {
+                    return false;
+                }
+            }
         }
         return super.matches(path);
     }
