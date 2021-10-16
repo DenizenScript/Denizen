@@ -56,7 +56,7 @@ public class ResourcePackCommand extends AbstractCommand {
     //
     // @Usage
     // Use to send a resource pack with a pre-known hash.
-    // - resourcpack url:https://example.com/pack.zip hash:0102030405060708090a0b0c0d0e0f1112131415
+    // - resourcepack url:https://example.com/pack.zip hash:0102030405060708090a0b0c0d0e0f1112131415
     //
     // -->
 

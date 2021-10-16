@@ -630,6 +630,10 @@ public class DenizenNetworkManagerImpl extends Connection {
                             yaw = EntityAttachmentHelper.compressAngle(e.getYRot());
                             pitch = EntityAttachmentHelper.compressAngle(e.getXRot());
                         }
+                        if (att.noPitch) {
+                            Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
+                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
+                        }
                         byte newYaw = yaw;
                         if (isRotate) {
                             newYaw = EntityAttachmentHelper.adaptedCompressedAngle(newYaw, att.positionalOffset.getYaw());
@@ -734,6 +738,10 @@ public class DenizenNetworkManagerImpl extends Connection {
                         else {
                             yaw = packet.getyRot();
                             pitch = packet.getxRot();
+                        }
+                        if (att.noPitch) {
+                            Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
+                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
                         }
                         byte newYaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
                         pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());

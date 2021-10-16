@@ -28,7 +28,7 @@ public class EntityAttachmentHelper {
 
         public boolean syncServer;
 
-        public boolean noRotate;
+        public boolean noRotate, noPitch;
 
         public BukkitTask checkTask;
 
@@ -68,6 +68,9 @@ public class EntityAttachmentHelper {
                             Location attachLoc = attached.getLocation();
                             goal.setYaw(attachLoc.getYaw());
                             goal.setPitch(attachLoc.getPitch());
+                        }
+                        else if (noPitch) {
+                            goal.setPitch(attached.getLocation().getPitch());
                         }
                         attached.teleport(goal);
                     }
