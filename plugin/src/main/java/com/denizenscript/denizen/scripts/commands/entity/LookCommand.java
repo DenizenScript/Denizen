@@ -24,22 +24,24 @@ public class LookCommand extends AbstractCommand {
 
     public LookCommand() {
         setName("look");
-        setSyntax("look (<entity>|...) [<location>/cancel] (duration:<duration>)");
-        setRequiredArguments(1, 3);
+        setSyntax("look (<entity>|...) [<location>/cancel/yaw:<yaw> pitch:<pitch>] (duration:<duration>)");
+        setRequiredArguments(1, 4);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Look
-    // @Syntax look (<entity>|...) [<location>/cancel] (duration:<duration>)
+    // @Syntax look (<entity>|...) [<location>/cancel/yaw:<yaw> pitch:<pitch>] (duration:<duration>)
     // @Required 1
-    // @Maximum 3
+    // @Maximum 4
     // @Short Causes the NPC or other entity to look at a target location.
     // @Synonyms Turn,Face
     // @Group entity
     //
     // @Description
     // Makes the entity look towards the location.
+    //
+    // You can specify either a target location, or a yaw and pitch.
     //
     // Can be used on players.
     //
@@ -72,6 +74,16 @@ public class LookCommand extends AbstractCommand {
                     && arg.matches("cancel")) {
                 scriptEntry.addObject("cancel", new ElementTag("true"));
             }
+            else if (!scriptEntry.hasObject("yaw")
+                    && arg.matchesPrefix("yaw")
+                    && arg.matchesFloat()) {
+                scriptEntry.addObject("yaw", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("pitch")
+                    && arg.matchesPrefix("pitch")
+                    && arg.matchesFloat()) {
+                scriptEntry.addObject("pitch", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)
                     && arg.matchesPrefix("duration", "d")) {
@@ -88,7 +100,7 @@ public class LookCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("entities")) {
             scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, false));
         }
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel") && !scriptEntry.hasObject("yaw")) {
             throw new InvalidArgumentsException("Must specify a location or 'cancel'!");
         }
         if (!scriptEntry.hasObject("entities")) {
@@ -103,10 +115,11 @@ public class LookCommand extends AbstractCommand {
         final LocationTag loc = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final DurationTag duration = scriptEntry.getObjectTag("duration");
+        ElementTag yaw = scriptEntry.getElement("yaw");
+        ElementTag pitch = scriptEntry.getElement("pitch");
         ElementTag cancel = scriptEntry.getElement("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel != null ? cancel.debug() : loc.debug()) +
-                    ArgumentHelper.debugObj("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), cancel, loc, duration, yaw, pitch, ArgumentHelper.debugObj("entities", entities.toString()));
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
@@ -119,9 +132,16 @@ public class LookCommand extends AbstractCommand {
         if (cancel != null && cancel.asBoolean()) {
             return;
         }
+        final float yawRaw = yaw == null ? 0 : yaw.asFloat();
+        final float pitchRaw = pitch == null ? 0 : pitch.asFloat();
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
-                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                if (loc != null) {
+                    NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                }
+                else {
+                    NMSHandler.getEntityHelper().rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
+                }
             }
         }
         if (duration != null && duration.getTicks() > 2) {
@@ -136,7 +156,12 @@ public class LookCommand extends AbstractCommand {
                             return;
                         }
                         if (entity.isSpawned()) {
-                            NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                            if (loc != null) {
+                                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                            }
+                            else {
+                                NMSHandler.getEntityHelper().rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
+                            }
                         }
                     }
                 };
