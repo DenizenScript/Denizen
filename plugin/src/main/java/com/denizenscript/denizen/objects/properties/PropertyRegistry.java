@@ -54,6 +54,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
             PropertyParser.registerProperty(EntityCannotEnterHive.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
         PropertyParser.registerProperty(EntityColor.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCritical.class, EntityTag.class);
