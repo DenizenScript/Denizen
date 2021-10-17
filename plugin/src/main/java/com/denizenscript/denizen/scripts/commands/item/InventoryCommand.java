@@ -268,6 +268,10 @@ public class InventoryCommand extends AbstractCommand {
             }
             return;
         }
+        InventoryTag.trackTemporaryInventory(destination);
+        if (origin != null) {
+            InventoryTag.trackTemporaryInventory(origin);
+        }
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {
                 // Make the attached player open the destination inventory
