@@ -1,10 +1,7 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -18,18 +15,14 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject, FlaggableObject {
 
@@ -161,16 +154,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     public AbstractFlagTracker flagTracker = null;
 
-    public ListTag getBlocks(Attribute attribute) {
-        return getBlocks(null, attribute);
-    }
-
-    public ListTag getBlocks(String matcher, Attribute attribute) {
-        List<LocationTag> initial = new CuboidTag(new Location(center.getWorld(),
-                center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ()),
-                new Location(center.getWorld(),
-                        center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ()))
-                .getBlocks_internal(matcher, attribute);
+    @Override
+    public ListTag getBlocks(Predicate<Location> test) {
+        List<LocationTag> initial = getCuboidBoundary().getBlocks_internal(test);
         ListTag list = new ListTag();
         for (LocationTag loc : initial) {
             if (contains(loc)) {
@@ -181,11 +167,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public List<LocationTag> getBlockLocationsUnfiltered(boolean doMax) {
-        List<LocationTag> initial = new CuboidTag(new Location(center.getWorld(),
-                center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ()),
-                new Location(center.getWorld(),
-                        center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ()))
-                .getBlockLocationsUnfiltered(doMax);
+        List<LocationTag> initial = getCuboidBoundary().getBlockLocationsUnfiltered(doMax);
         List<LocationTag> locations = new ArrayList<>();
         for (LocationTag loc : initial) {
             if (contains(loc)) {
@@ -195,6 +177,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         return locations;
     }
 
+    @Override
     public ListTag getShell() {
         ListTag output = new ListTag();
         double yScale = size.getY();
@@ -406,9 +389,27 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         return "unknown reason - something went wrong";
     }
 
+    @Override
+    public CuboidTag getCuboidBoundary() {
+        return new CuboidTag(center.clone().subtract(size.toVector()), center.clone().add(size.toVector()));
+    }
+
+    @Override
+    public WorldTag getWorld() {
+        return new WorldTag(center.getWorldName());
+    }
+
+    @Override
+    public EllipsoidTag withWorld(WorldTag world) {
+        LocationTag loc = center.clone();
+        loc.setWorld(world.getWorld());
+        return new EllipsoidTag(loc, size.clone());
+    }
+
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
+        AreaContainmentObject.registerTags(tagProcessor);
 
         // <--[tag]
         // @attribute <EllipsoidTag.random>
@@ -431,72 +432,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
             LocationTag out = object.center.clone();
             out.add(result);
             return out;
-        });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.blocks[(<matcher>)]>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Returns each block location within the EllipsoidTag.
-        // Optionally, specify a material matcher to only return locations with that block type.
-        // -->
-        registerTag("blocks", (attribute, object) -> {
-            if (attribute.hasContext(1)) {
-                return new ListTag(object.getBlocks(attribute.getContext(1), attribute));
-            }
-            else {
-                return new ListTag(object.getBlocks(attribute));
-            }
-        }, "get_blocks");
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.blocks_flagged[<flag_name>]>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Gets a list of all block locations with a specified flag within the ellipsoid.
-        // Searches the internal flag lists, rather than through all possible blocks.
-        // -->
-        registerTag("blocks_flagged", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("EllipsoidTag.blocks_flagged[...] must have an input value.");
-                return null;
-            }
-            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
-            ListTag blocks = new ListTag();
-            double minPossibleX = object.center.getX() - object.size.getX();
-            double minPossibleZ = object.center.getZ() - object.size.getZ();
-            double maxPossibleX = object.center.getX() + object.size.getX();
-            double maxPossibleZ = object.center.getZ() + object.size.getZ();
-            int minChunkX = (int) Math.floor(minPossibleX / 16);
-            int minChunkZ = (int) Math.floor(minPossibleZ / 16);
-            int maxChunkX = (int) Math.ceil(maxPossibleX / 16);
-            int maxChunkZ = (int) Math.ceil(maxPossibleZ / 16);
-            ChunkTag testChunk = new ChunkTag(object.center);
-            for (int x = minChunkX; x <= maxChunkX; x++) {
-                testChunk.chunkX = x;
-                for (int z = minChunkZ; z <= maxChunkZ; z++) {
-                    testChunk.chunkZ = z;
-                    testChunk.cachedChunk = null;
-                    if (object.intersects(testChunk) && testChunk.isLoadedSafe()) {
-                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunkForTag(attribute), flagName, (loc) -> {
-                            if (object.doesContainLocation(loc)) {
-                                blocks.addObject(new LocationTag(loc));
-                            }
-                        });
-                    }
-                }
-            }
-            return blocks;
-        });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.shell>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Returns a 3D outline (shell) of this ellipsoid, as a list of block locations.
-        // -->
-        registerTag("shell", (attribute, object) -> {
-            return object.getShell();
         });
 
         // <--[tag]
@@ -531,20 +466,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 return null;
             }
             return new EllipsoidTag(object.center.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
-        });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.contains[<location>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns a boolean indicating whether the specified location is inside this ellipsoid.
-        // -->
-        registerTag("contains", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("ellipsoid.contains[...] tag must have an input.");
-                return null;
-            }
-            return new ElementTag(object.contains(attribute.contextAsType(1, LocationTag.class)));
         });
 
         // <--[tag]
@@ -623,77 +544,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 return null;
             }
             return new EllipsoidTag(object.center.clone(), attribute.contextAsType(1, LocationTag.class));
-        });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.with_world[<world>]>
-        // @returns EllipsoidTag
-        // @description
-        // Returns a copy of this ellipsoid, set to the specified world.
-        // -->
-        registerTag("with_world", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("ellipsoid.with_world[...] tag must have an input.");
-                return null;
-            }
-            LocationTag loc = object.center.clone();
-            loc.setWorld(attribute.contextAsType(1, WorldTag.class).getWorld());
-            return new EllipsoidTag(loc, object.size.clone());
-        });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.players>
-        // @returns ListTag(PlayerTag)
-        // @description
-        // Gets a list of all players currently within the EllipsoidTag.
-        // -->
-        registerTag("players", (attribute, object) -> {
-            ArrayList<PlayerTag> players = new ArrayList<>();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (object.contains(player.getLocation())) {
-                    players.add(PlayerTag.mirrorBukkitPlayer(player));
-                }
-            }
-            return new ListTag(players);
-        });
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.npcs>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Gets a list of all NPCs currently within the EllipsoidTag.
-        // -->
-        if (Depends.citizens != null) {
-            registerTag("npcs", (attribute, object) -> {
-                ArrayList<NPCTag> npcs = new ArrayList<>();
-                for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    NPCTag dnpc = new NPCTag(npc);
-                    if (object.contains(dnpc.getLocation())) {
-                        npcs.add(dnpc);
-                    }
-                }
-                return new ListTag(npcs);
-            });
-        }
-
-        // <--[tag]
-        // @attribute <EllipsoidTag.entities[(<matcher>)]>
-        // @returns ListTag(EntityTag)
-        // @description
-        // Gets a list of all entities currently within the EllipsoidTag, with an optional search parameter for the entity.
-        // -->
-        registerTag("entities", (attribute, object) -> {
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
-            ListTag entities = new ListTag();
-            for (Entity ent : new WorldTag(object.center.getWorld()).getEntitiesForTag()) {
-                EntityTag current = new EntityTag(ent);
-                if (object.contains(ent.getLocation())) {
-                    if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
-                        entities.addObject(new EntityTag(ent).getDenizenObject());
-                    }
-                }
-            }
-            return entities;
         });
 
         // <--[tag]

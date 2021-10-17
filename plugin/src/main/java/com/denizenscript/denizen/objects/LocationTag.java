@@ -52,9 +52,7 @@ import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.BlockIterator;
-import org.bukkit.util.NumberConversions;
-import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.*;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -2259,7 +2257,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double radius = attribute.getDoubleContext(2);
             attribute.fulfill(1);
             ListTag found = new ListTag();
-            for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {
+            BoundingBox box = BoundingBox.of(object, radius, radius, radius);
+            for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundary(box)) {
                 if (Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
                     EntityTag current = new EntityTag(entity);
                     if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
@@ -2505,7 +2504,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             else if (attribute.startsWith("living_entities", 2)) {
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
-                for (Entity entity : new WorldTag(object.getWorld()).getEntitiesForTag()) {
+                BoundingBox box = BoundingBox.of(object, radius, radius, radius);
+                for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundary(box)) {
                     if (entity instanceof LivingEntity
                             && Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
                         found.addObject(new EntityTag(entity).getDenizenObject());

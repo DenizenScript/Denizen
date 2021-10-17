@@ -25,8 +25,10 @@ import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
@@ -136,6 +138,20 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
         try {
             return getWorld().getEntities();
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
+    public Collection<Entity> getPossibleEntitiesForBoundary(BoundingBox box) {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            // Bork-prevention: getNearbyEntities loops over chunks, so for large boxes just get the direct entity list, as that's probably better than a loop over unloaded chunks
+            if (box.getWidthX() > 512 || box.getWidthZ() > 512) {
+                return getWorld().getEntities();
+            }
+            return getWorld().getNearbyEntities(box);
         }
         finally {
             NMSHandler.getChunkHelper().restoreServerThread(getWorld());

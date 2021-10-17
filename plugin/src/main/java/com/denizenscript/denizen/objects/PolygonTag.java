@@ -1,11 +1,8 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -19,17 +16,13 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
@@ -274,6 +267,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return toOutput;
     }
 
+    @Override
     public ListTag getShell() {
         int max = Settings.blockTagsMaxBlocks();
         ListTag addTo = new ListTag();
@@ -330,7 +324,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return addTo;
     }
 
-    public ListTag getBlocks(String matcher, Attribute attribute) {
+    @Override
+    public ListTag getBlocks(Predicate<Location> test) {
         int max = Settings.blockTagsMaxBlocks();
         ListTag addTo = new ListTag();
         List<LocationTag> flatShell = generateFlatBlockShell(yMin);
@@ -338,7 +333,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             for (LocationTag loc : flatShell) {
                 LocationTag newLoc = loc.clone();
                 newLoc.setY(y);
-                if (matcher == null || BukkitScriptEvent.tryMaterial(newLoc.getBlockTypeForTag(attribute), matcher)) {
+                if (test == null || test.test(newLoc)) {
                     addTo.addObject(newLoc);
                 }
             }
@@ -516,36 +511,29 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return "unknown reason - something went wrong";
     }
 
+    @Override
+    public CuboidTag getCuboidBoundary() {
+        LocationTag min = new LocationTag(Math.floor(boxMin.x), Math.floor(yMin), Math.floor(boxMin.z), world.getName());
+        LocationTag max = new LocationTag(Math.ceil(boxMax.x), Math.ceil(yMax), Math.ceil(boxMax.z), world.getName());
+        return new CuboidTag(min, max);
+    }
+
+    @Override
+    public WorldTag getWorld() {
+        return world;
+    }
+
+    @Override
+    public PolygonTag withWorld(WorldTag world) {
+        PolygonTag toReturn = clone();
+        toReturn.world = world;
+        return toReturn;
+    }
+
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-
-        // <--[tag]
-        // @attribute <PolygonTag.contains[<location>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the specified location is within the boundaries of the polygon.
-        // -->
-        registerTag("contains", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("PolygonTag.contains[...] tag must have an input.");
-                return null;
-            }
-            LocationTag toCheck = attribute.contextAsType(1, LocationTag.class);
-            return new ElementTag(polygon.doesContainLocation(toCheck));
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.bounding_box>
-        // @returns CuboidTag
-        // @description
-        // Returns a cuboid approximately representing the maximal bounding box of the polygon (anything this cuboid does not contain, is also not contained by the polygon, but not vice versa).
-        // -->
-        registerTag("bounding_box", (attribute, polygon) -> {
-            LocationTag min = new LocationTag(Math.floor(polygon.boxMin.x), Math.floor(polygon.yMin), Math.floor(polygon.boxMin.z), polygon.world.getName());
-            LocationTag max = new LocationTag(Math.ceil(polygon.boxMax.x), Math.ceil(polygon.yMax), Math.ceil(polygon.boxMax.z), polygon.world.getName());
-            return new CuboidTag(min, max);
-        });
+        AreaContainmentObject.registerTags(tagProcessor);
 
         // <--[tag]
         // @attribute <PolygonTag.max_y>
@@ -565,88 +553,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // -->
         registerTag("min_y", (attribute, polygon) -> {
             return new ElementTag(polygon.yMin);
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.world>
-        // @returns WorldTag
-        // @description
-        // Returns the polygon's world.
-        // -->
-        registerTag("world", (attribute, polygon) -> {
-            return polygon.world;
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.players>
-        // @returns ListTag(PlayerTag)
-        // @description
-        // Gets a list of all players currently within the PolygonTag.
-        // -->
-        registerTag("players", (attribute, polygon) -> {
-            ArrayList<PlayerTag> players = new ArrayList<>();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (polygon.doesContainLocation(player.getLocation())) {
-                    players.add(PlayerTag.mirrorBukkitPlayer(player));
-                }
-            }
-            return new ListTag(players);
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.npcs>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Gets a list of all NPCs currently within the PolygonTag.
-        // -->
-        if (Depends.citizens != null) {
-            registerTag("npcs", (attribute, polygon) -> {
-                ArrayList<NPCTag> npcs = new ArrayList<>();
-                for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    NPCTag dnpc = new NPCTag(npc);
-                    if (polygon.doesContainLocation(dnpc.getLocation())) {
-                        npcs.add(dnpc);
-                    }
-                }
-                return new ListTag(npcs);
-            });
-        }
-
-        // <--[tag]
-        // @attribute <PolygonTag.entities[(<matcher>)]>
-        // @returns ListTag(EntityTag)
-        // @description
-        // Gets a list of all entities currently within the PolygonTag, with an optional search parameter for the entity.
-        // -->
-        registerTag("entities", (attribute, polygon) -> {
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
-            ListTag entities = new ListTag();
-            for (Entity ent : polygon.world.getEntitiesForTag()) {
-                EntityTag current = new EntityTag(ent);
-                if (polygon.doesContainLocation(ent.getLocation())) {
-                    if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
-                        entities.addObject(new EntityTag(ent).getDenizenObject());
-                    }
-                }
-            }
-            return entities;
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.living_entities>
-        // @returns ListTag(EntityTag)
-        // @description
-        // Gets a list of all living entities currently within the PolygonTag.
-        // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
-        // -->
-        registerTag("living_entities", (attribute, polygon) -> {
-            ArrayList<EntityTag> entities = new ArrayList<>();
-            for (Entity ent : polygon.world.getWorld().getLivingEntities()) {
-                if (polygon.doesContainLocation(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
-                    entities.add(new EntityTag(ent));
-                }
-            }
-            return new ListTag(entities);
         });
 
         // <--[tag]
@@ -756,25 +662,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         });
 
         // <--[tag]
-        // @attribute <PolygonTag.with_world[<world>]>
-        // @returns PolygonTag
-        // @description
-        // Returns a copy of the polygon, with the specified world.
-        // -->
-        registerTag("with_world", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("PolygonTag.with_world[...] tag must have an input.");
-                return null;
-            }
-            PolygonTag toReturn = polygon.clone();
-            toReturn.world = attribute.contextAsType(1, WorldTag.class);
-            if (toReturn.world == null) {
-                return null;
-            }
-            return toReturn;
-        });
-
-        // <--[tag]
         // @attribute <PolygonTag.include_y[<#.#>]>
         // @returns PolygonTag
         // @description
@@ -817,63 +704,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // -->
         registerTag("outline", (attribute, polygon) -> {
             return polygon.getOutline();
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.shell>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Returns a list of locations along the 3D shell of this polygon (roughly a block-width of separation between each).
-        // -->
-        registerTag("shell", (attribute, polygon) -> {
-            return polygon.getShell();
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.blocks[(<matcher>)]>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Returns a list of block locations within the polygon.
-        // Optionally, specify a list of materials to only return locations with that block type.
-        // -->
-        registerTag("blocks", (attribute, polygon) -> {
-            return polygon.getBlocks(attribute.hasContext(1) ? attribute.getContext(1) : null, attribute);
-        });
-
-        // <--[tag]
-        // @attribute <PolygonTag.blocks_flagged[<flag_name>]>
-        // @returns ListTag(LocationTag)
-        // @description
-        // Gets a list of all block locations with a specified flag within the polygon.
-        // Searches the internal flag lists, rather than through all possible blocks.
-        // -->
-        registerTag("blocks_flagged", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
-                attribute.echoError("PolygonTag.blocks_flagged[...] must have an input value.");
-                return null;
-            }
-            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
-            ListTag blocks = new ListTag();
-            int chunkMinX = ((int) Math.floor(polygon.boxMin.x)) >> 4;
-            int chunkMinZ = ((int) Math.floor(polygon.boxMin.z)) >> 4;
-            int chunkMaxX = ((int) Math.ceil(polygon.boxMax.x)) >> 4;
-            int chunkMaxZ = ((int) Math.ceil(polygon.boxMax.z)) >> 4;
-            ChunkTag testChunk = new ChunkTag(polygon.world, chunkMinX, chunkMinZ);
-            for (int x = chunkMinX; x <= chunkMaxX; x++) {
-                testChunk.chunkX = x;
-                for (int z = chunkMinZ; z <= chunkMaxZ; z++) {
-                    testChunk.chunkZ = z;
-                    testChunk.cachedChunk = null;
-                    if (testChunk.isLoadedSafe()) {
-                        LocationFlagSearchHelper.getFlaggedLocations(testChunk.getChunkForTag(attribute), flagName, (loc) -> {
-                            if (polygon.doesContainLocation(loc)) {
-                                blocks.addObject(new LocationTag(loc));
-                            }
-                        });
-                    }
-                }
-            }
-            return blocks;
         });
     }
 
