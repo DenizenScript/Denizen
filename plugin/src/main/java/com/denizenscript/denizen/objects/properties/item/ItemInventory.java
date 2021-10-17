@@ -23,7 +23,9 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ItemInventory implements Property {
@@ -147,10 +149,31 @@ public class ItemInventory implements Property {
         // @tags
         // <ItemTag.inventory_contents>
         // -->
-        if ((mechanism.matches("inventory_contents") || mechanism.matches("inventory")) && mechanism.hasValue()) {
-            if (mechanism.matches("inventory")) {
-                Deprecations.itemInventoryTag.warn(mechanism.context);
+        if (mechanism.matches("inventory_contents") && mechanism.hasValue()) {
+            List<ItemStack> items = new ArrayList<>();
+            for (ItemTag item : mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context)) {
+                items.add(item.getItemStack());
             }
+            if (item.getItemMeta() instanceof BlockStateMeta) {
+                BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
+                InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
+                if (items.size() > invHolder.getInventory().getSize()) {
+                    mechanism.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
+                    return;
+                }
+                invHolder.getInventory().setContents(items.toArray(new ItemStack[0]));
+                bsm.setBlockState((BlockState) invHolder);
+                item.setItemMeta(bsm);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                BundleMeta bundle = (BundleMeta) item.getItemMeta();
+                bundle.setItems(items);
+                item.setItemMeta(bundle);
+            }
+        }
+
+        if (mechanism.matches("inventory") && mechanism.hasValue()) {
+            Deprecations.itemInventoryTag.warn(mechanism.context);
             Argument argument = new Argument("");
             argument.unsetValue();
             argument.object = mechanism.getValue();
@@ -167,7 +190,7 @@ public class ItemInventory implements Property {
                 BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
                 InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
                 if (items.size() > invHolder.getInventory().getSize()) {
-                    mechanism.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
+                    mechanism.echoError("Invalid inventory mechanism input size; expected " + invHolder.getInventory().getSize() + " or less.");
                     return;
                 }
                 invHolder.getInventory().setContents(itemArray);
