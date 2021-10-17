@@ -549,4 +549,14 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         }
         return false;
     }
+
+    @Override
+    public String getTextColor() {
+        return ChatColor.WHITE.toString();
+    }
+
+    @Override
+    public String getEmphasisColor() {
+        return ChatColor.AQUA.toString();
+    }
 }
