@@ -178,10 +178,13 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag("contains", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
-                attribute.echoError("AreaObject.contains[...] tag must have an input.");
                 return null;
             }
-            return new ElementTag(area.doesContainLocation(attribute.contextAsType(1, LocationTag.class)));
+            LocationTag loc = attribute.contextAsType(1, LocationTag.class);
+            if (loc == null) {
+                return null;
+            }
+            return new ElementTag(area.doesContainLocation(loc));
         }, "contains_location");
 
         // <--[tag]
@@ -237,7 +240,6 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag("blocks_flagged", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
-                attribute.echoError("AreaObject.blocks_flagged[...] must have an input value.");
                 return null;
             }
             return area.getBlocksFlagged(CoreUtilities.toLowerCase(attribute.getContext(1)), attribute);
@@ -261,10 +263,12 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag("is_within", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
-                attribute.echoError("The tag AreaObject.is_within[...] must have a value.");
                 return null;
             }
             CuboidTag cub2 = attribute.contextAsType(1, CuboidTag.class);
+            if (cub2 == null) {
+                return null;
+            }
             CuboidTag cuboid = area instanceof CuboidTag ? (CuboidTag) area : area.getCuboidBoundary();
             if (cub2 != null) {
                 boolean contains = true;
@@ -302,7 +306,6 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag("with_world", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
-                attribute.echoError("AreaObject.with_world[...] tag must have an input.");
                 return null;
             }
             WorldTag world = attribute.contextAsType(1, WorldTag.class);

@@ -121,6 +121,7 @@ public class ItemFirework implements Property {
         // Each item in the list is formatted as: TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE
         // For example: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
         // Optionally add a list entry that's just a single number to set the power.
+        // Types: ball, ball_large, star, burst, or creeper
         // @tags
         // <ItemTag.firework>
         // -->

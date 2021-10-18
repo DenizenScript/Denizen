@@ -345,11 +345,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     }
 
     public void addPair(LocationTag point_1, LocationTag point_2) {
-        if (point_1.getWorld() != point_2.getWorld()) {
+        if (!point_1.getWorldName().equals(point_2.getWorldName())) {
             Debug.echoError("Tried to make cross-world cuboid!");
             return;
         }
-        if (pairs.size() > 0 && point_1.getWorld() != getWorld()) {
+        if (pairs.size() > 0 && !point_1.getWorldName().equals(getWorld().getName())) {
             Debug.echoError("Tried to make cross-world cuboid set!");
             return;
         }
