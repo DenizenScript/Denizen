@@ -14,12 +14,9 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.notable.Notable;
-import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -27,7 +24,6 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -42,7 +38,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Map;
 
-public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject {
+public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     // <--[ObjectType]
     // @name ItemTag
@@ -99,11 +95,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         ItemTag stack = null;
         if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFromWithProperties(ItemTag.class, string, context);
-        }
-        Notable noted = NotableManager.getSavedObject(string);
-        if (noted instanceof ItemTag) {
-            Deprecations.notableItems.warn();
-            return (ItemTag) noted;
         }
         if (string.startsWith("i@")) {
             string = string.substring("i@".length());
@@ -456,11 +447,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         if (item == null || item.getType() == Material.AIR) {
             return "i@air";
         }
-        // If saved item, return that
-        if (isUnique()) {
-            Deprecations.notableItems.warn();
-            return "i@" + NotableManager.getSavedId(this) + PropertyParser.getPropertiesString(this);
-        }
         return "i@" + getMaterial().identifyNoPropertiesNoIdentifier().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
@@ -469,22 +455,11 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
         if (item == null) {
             return "null";
         }
-
         if (item.getType() != Material.AIR) {
-
-            // If saved item, return that
-            if (isUnique()) {
-                Deprecations.notableItems.warn();
-                return "i@" + NotableManager.getSavedId(this);
-            }
-
-            // If not a saved item, but is a custom item, return the script id
-            else if (isItemscript()) {
+            if (isItemscript()) {
                 return "i@" + getScriptName();
             }
         }
-
-        // Else, return the material name
         return "i@" + identifyMaterial().replace("m@", "");
     }
 
@@ -499,29 +474,7 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
 
     @Override
     public boolean isUnique() {
-        if (NotableManager.isSaved(this)) {
-            Deprecations.notableItems.warn();
-            return true;
-        }
         return false;
-    }
-
-    @Override
-    @Note("Items")
-    public String getSaveObject() {
-        return identify();
-    }
-
-    @Override
-    public void makeUnique(String id) {
-        Deprecations.notableItems.warn();
-        NotableManager.saveAs(this, id);
-    }
-
-    @Override
-    public void forget() {
-        Deprecations.notableItems.warn();
-        NotableManager.remove(this);
     }
 
     @Override
@@ -726,15 +679,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
             return list;
         });
 
-        registerTag("notable_name", (attribute, object) -> {
-            Deprecations.notableItems.warn();
-            String noteName = NotableManager.getSavedId(object);
-            if (noteName == null) {
-                return null;
-            }
-            return new ElementTag(noteName);
-        });
-
         // <--[tag]
         // @attribute <ItemTag.formatted>
         // @returns ElementTag
@@ -825,11 +769,6 @@ public class ItemTag implements ObjectTag, Notable, Adjustable, FlaggableObject 
     }
 
     public void applyProperty(Mechanism mechanism) {
-        if (NotableManager.isExactSavedObject(this)) {
-            Deprecations.notableItems.warn();
-            Debug.echoError("Cannot apply properties to noted objects.");
-            return;
-        }
         adjust(mechanism);
     }
 
