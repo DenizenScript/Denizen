@@ -3,7 +3,6 @@ package com.denizenscript.denizen.utilities.maps;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;

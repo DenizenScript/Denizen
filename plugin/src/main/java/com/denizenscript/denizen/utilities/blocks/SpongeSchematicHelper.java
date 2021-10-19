@@ -116,8 +116,7 @@ public class SpongeSchematicHelper {
                 int cbsIndex = z + y * cbs.z_height + x * cbs.z_height * cbs.y_length;
                 BlockVector pt = new BlockVector(x, y, z);
                 if (tileEntitiesMap.containsKey(pt)) {
-                    CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
-                    block.tileEntityData = otag;
+                    block.tileEntityData = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
                 }
                 cbs.blocks[cbsIndex] = block;
                 index++;

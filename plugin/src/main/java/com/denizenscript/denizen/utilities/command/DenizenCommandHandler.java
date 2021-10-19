@@ -21,10 +21,7 @@ import java.util.Set;
 
 public class DenizenCommandHandler {
 
-    private final Denizen denizen;
-
-    public DenizenCommandHandler(Denizen denizen) {
-        this.denizen = denizen;
+    public DenizenCommandHandler() {
     }
 
     // <--[language]
@@ -275,10 +272,10 @@ public class DenizenCommandHandler {
             min = 1, max = 3, permission = "denizen.basic", flags = "a")
     public void reload(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('a')) {
-            denizen.reloadConfig();
+            Denizen.getInstance().reloadConfig();
             DenizenCore.reloadScripts();
             NoteManager.reload();
-            denizen.reloadSaves();
+            Denizen.getInstance().reloadSaves();
             Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
@@ -287,7 +284,7 @@ public class DenizenCommandHandler {
         }
         if (args.length() > 2) {
             if (args.getString(1).equalsIgnoreCase("saves")) {
-                denizen.reloadSaves();
+                Denizen.getInstance().reloadSaves();
                 Messaging.send(sender, "Denizen save data reloaded from disk to memory.");
                 return;
             }
@@ -297,7 +294,7 @@ public class DenizenCommandHandler {
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("config")) {
-                denizen.reloadConfig();
+                Denizen.getInstance().reloadConfig();
                 Messaging.send(sender, "Denizen config file reloaded from disk to memory.");
                 return;
             }

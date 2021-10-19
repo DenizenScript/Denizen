@@ -13,7 +13,6 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizencore.DenizenImplementation;
-import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectFetcher;

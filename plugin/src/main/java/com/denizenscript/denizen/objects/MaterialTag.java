@@ -521,8 +521,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns an item of the material.
         // -->
         registerTag("item", (attribute, object) -> {
-            ItemTag item = new ItemTag(object, 1);
-            return item;
+            return new ItemTag(object, 1);
         });
 
         // <--[tag]

@@ -181,17 +181,19 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
     @Override
     public float getDamageBonus(Enchantment enchantment, int level, String type) {
         MobType mobType = MobType.UNDEFINED;
-        if (type.equals("illager")) {
-            mobType = MobType.ILLAGER;
-        }
-        else if (type.equals("undead")) {
-            mobType = MobType.UNDEAD;
-        }
-        else if (type.equals("water")) {
-            mobType = MobType.WATER;
-        }
-        else if (type.equals("arthropod")) {
-            mobType = MobType.ARTHROPOD;
+        switch (type) {
+            case "illager":
+                mobType = MobType.ILLAGER;
+                break;
+            case "undead":
+                mobType = MobType.UNDEAD;
+                break;
+            case "water":
+                mobType = MobType.WATER;
+                break;
+            case "arthropod":
+                mobType = MobType.ARTHROPOD;
+                break;
         }
         return ((CraftEnchantment) enchantment).getHandle().getDamageBonus(level, mobType);
     }

@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.entity;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.utilities.Utilities;

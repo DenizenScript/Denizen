@@ -13,7 +13,6 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;

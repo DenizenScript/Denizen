@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.npc.traits;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;

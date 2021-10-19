@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenAliasHelpTopic;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommand;

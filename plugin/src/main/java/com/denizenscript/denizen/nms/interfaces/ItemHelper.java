@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;

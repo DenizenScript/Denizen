@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.npc;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;

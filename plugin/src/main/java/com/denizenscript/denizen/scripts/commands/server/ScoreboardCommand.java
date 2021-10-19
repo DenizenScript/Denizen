@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.entity.FakeOfflinePlayer;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -15,8 +14,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;

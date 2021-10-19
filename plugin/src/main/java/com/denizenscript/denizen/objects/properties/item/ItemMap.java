@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.MapMeta;
-import org.bukkit.map.MapView;
 
 import java.util.List;
 

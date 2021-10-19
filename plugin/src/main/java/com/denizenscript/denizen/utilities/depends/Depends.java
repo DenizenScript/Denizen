@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.utilities.depends;
+
 import com.denizenscript.denizen.Denizen;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;

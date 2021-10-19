@@ -27,16 +27,14 @@ import java.util.*;
 
 public class DenizenNPCHelper implements Listener {
 
-    private Denizen plugin;
     private ActionHandler actionHandler;
 
-    public DenizenNPCHelper(Denizen denizen) {
-        plugin = denizen;
+    public DenizenNPCHelper() {
         if (Depends.citizens != null) {
-            plugin.getServer().getPluginManager().registerEvents(this, plugin);
+            Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
             INVENTORY_TRAIT_VIEW = ReflectionHelper.getFields(net.citizensnpcs.api.trait.trait.Inventory.class).get("view");
         }
-        actionHandler = new ActionHandler(plugin);
+        actionHandler = new ActionHandler();
     }
 
     /**

@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -21,10 +20,7 @@ import java.util.Map;
 
 public class ActionHandler {
 
-    final Denizen denizen;
-
-    public ActionHandler(Denizen denizen) {
-        this.denizen = denizen;
+    public ActionHandler() {
     }
 
     public String doAction(String actionName, NPCTag npc, PlayerTag player, AssignmentScriptContainer assignment, Map<String, ObjectTag> context) {

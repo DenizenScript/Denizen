@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.server;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommandSender;
 import com.denizenscript.denizen.utilities.Utilities;

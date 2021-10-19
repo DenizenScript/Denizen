@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.utilities.debugging;
+
 import com.denizenscript.denizen.Denizen;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

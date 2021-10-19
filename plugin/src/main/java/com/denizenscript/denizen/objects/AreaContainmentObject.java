@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -74,7 +73,7 @@ public interface AreaContainmentObject extends ObjectTag {
         return blocks;
     }
 
-    public static void registerTags(ObjectTagProcessor<? extends AreaContainmentObject> processor) {
+    static void registerTags(ObjectTagProcessor<? extends AreaContainmentObject> processor) {
 
         // <--[tag]
         // @attribute <AreaObject.bounding_box>

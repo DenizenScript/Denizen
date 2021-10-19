@@ -205,7 +205,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (NMSHandler.debugPackets) {
             if (packet instanceof ClientboundSetEntityDataPacket) {
                 StringBuilder output = new StringBuilder(128);
-                output.append("Packet: ClientboundSetEntityDataPacket sent to " + player.getScoreboardName() + " for entity ID: ").append(((ClientboundSetEntityDataPacket) packet).getId()).append(": ");
+                output.append("Packet: ClientboundSetEntityDataPacket sent to ").append(player.getScoreboardName()).append(" for entity ID: ").append(((ClientboundSetEntityDataPacket) packet).getId()).append(": ");
                 List<SynchedEntityData.DataItem<?>> list = ((ClientboundSetEntityDataPacket) packet).getUnpackedData();
                 if (list == null) {
                     output.append("None");

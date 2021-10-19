@@ -53,14 +53,12 @@ public class ItemPotion implements Property {
     ItemTag item;
 
     public static String stringifyEffect(PotionEffect effect) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(effect.getType().getName()).append(",")
-                .append(effect.getAmplifier()).append(",")
-                .append(effect.getDuration()).append(",")
-                .append(effect.isAmbient()).append(",")
-                .append(effect.hasParticles()).append(",")
-                .append(effect.hasIcon());
-        return sb.toString();
+        return effect.getType().getName() + "," +
+                effect.getAmplifier() + "," +
+                effect.getDuration() + "," +
+                effect.isAmbient() + "," +
+                effect.hasParticles() + "," +
+                effect.hasIcon();
     }
 
     public static PotionEffect parseEffect(String str, TagContext context) {

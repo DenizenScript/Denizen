@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.utilities.entity;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;

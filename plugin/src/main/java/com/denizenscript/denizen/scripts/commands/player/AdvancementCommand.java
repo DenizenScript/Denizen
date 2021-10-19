@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.player;
+
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;

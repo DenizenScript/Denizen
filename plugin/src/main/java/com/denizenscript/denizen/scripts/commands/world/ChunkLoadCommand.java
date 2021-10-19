@@ -1,4 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
+
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -28,10 +29,9 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         setName("chunkload");
         setSyntax("chunkload ({add}/remove/removeall) [<chunk>|...] (duration:<value>)");
         setRequiredArguments(1, 3);
-        Denizen denizen = Denizen.getInstance();
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         if (Depends.citizens != null) {
-            denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
+            Bukkit.getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), Denizen.getInstance());
         }
         isProcedural = false;
     }

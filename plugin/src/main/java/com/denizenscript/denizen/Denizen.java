@@ -42,7 +42,6 @@ import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
-import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -214,7 +213,7 @@ public class Denizen extends JavaPlugin {
         try {
             // If Citizens is enabled, Create the NPC Helper
             if (Depends.citizens != null) {
-                npcHelper = new DenizenNPCHelper(this);
+                npcHelper = new DenizenNPCHelper();
             }
             // Create our CommandManager to handle '/denizen' commands
             commandManager = new CommandManager();
@@ -386,7 +385,7 @@ public class Denizen extends JavaPlugin {
                     Depends.setupCitizens();
                     if (Depends.citizens != null) {
                         getLogger().warning("Citizens was activated late - this means a plugin load order error occurred. You may have plugins with invalid 'plugin.yml' files (eg that use the 'loadbefore' directive, or that have circular dependencies).");
-                        npcHelper = new DenizenNPCHelper(this);
+                        npcHelper = new DenizenNPCHelper();
                         Depends.citizens.registerCommandClass(NPCCommandHandler.class);
                         TraitRegistry.registerMainTraits();
                         triggerRegistry.registerCoreMembers();
