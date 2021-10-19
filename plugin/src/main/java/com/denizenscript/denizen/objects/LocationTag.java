@@ -124,12 +124,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Note("Locations")
     public String getSaveObject() {
-        return (getX())
-                + "," + getY()
-                + "," + (getZ())
-                + "," + getPitch()
-                + "," + getYaw()
-                + "," + getWorldName();
+        return getX() + "," + getY() + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorldName();
     }
 
     public static String getSaved(LocationTag location) {

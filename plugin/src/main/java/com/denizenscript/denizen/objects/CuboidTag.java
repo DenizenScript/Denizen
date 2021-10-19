@@ -18,9 +18,8 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -621,7 +620,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     @Override
     @Note("Cuboids")
     public Object getSaveObject() {
-        ConfigurationSection section = new YamlConfiguration();
+        YamlConfiguration section = new YamlConfiguration();
         section.set("object", identifyFull());
         section.set("flags", flagTracker.toString());
         return section;

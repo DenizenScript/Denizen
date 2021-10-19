@@ -114,7 +114,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         if (isAdvancedMatchable(text)) {
             MatchHelper matcher = createMatcher(text);
-            for (Notable obj : NotableManager.notableObjects.values()) {
+            for (Notable obj : NotableManager.nameToObject.values()) {
                 if (obj instanceof AreaContainmentObject && matcher.doesMatch(((AreaContainmentObject) obj).getNoteName())) {
                     return true;
                 }

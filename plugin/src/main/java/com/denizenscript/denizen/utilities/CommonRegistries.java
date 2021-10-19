@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.core.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -97,6 +98,19 @@ public class CommonRegistries {
     }
 
     public static void registerMainObjects() {
+        registerObjectTypes();
+        registerNotables();
+        registerObjectCheckers();
+        registerConversions();
+        // Final debug
+        StringBuilder debug = new StringBuilder(256);
+        for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
+            debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
+        }
+        Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
+    }
+
+    private static void registerObjectTypes() {
         ObjectFetcher.registerWithObjectFetcher(BiomeTag.class, BiomeTag.tagProcessor); // b@
         ObjectFetcher.registerWithObjectFetcher(ChunkTag.class, ChunkTag.tagProcessor); // ch@
         ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor); // co@
@@ -116,10 +130,18 @@ public class CommonRegistries {
         ObjectFetcher.registerWithObjectFetcher(PolygonTag.class, PolygonTag.tagProcessor); // polygon@
         ObjectFetcher.registerWithObjectFetcher(TradeTag.class, TradeTag.tagProcessor); // trade@
         ObjectFetcher.registerWithObjectFetcher(WorldTag.class, WorldTag.tagProcessor); // w@
-        StringBuilder debug = new StringBuilder(256);
-        for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
-            debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
-        }
+    }
+
+    private static void registerNotables() {
+        NotableManager.registerWithNotableManager(CuboidTag.class);
+        NotableManager.registerWithNotableManager(EllipsoidTag.class);
+        NotableManager.registerWithNotableManager(InventoryTag.class);
+        NotableManager.registerWithNotableManager(ItemTag.class);
+        NotableManager.registerWithNotableManager(LocationTag.class);
+        NotableManager.registerWithNotableManager(PolygonTag.class);
+    }
+
+    private static void registerObjectCheckers() {
         CoreUtilities.registerTypeAsNoOtherTypeCode(BiomeTag.class, "b");
         CoreUtilities.registerTypeAsNoOtherTypeCode(ChunkTag.class, "ch");
         CoreUtilities.registerTypeAsNoOtherTypeCode(ColorTag.class, "co");
@@ -230,6 +252,9 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(PolygonTag.class, "polygon");
         CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");
         CoreUtilities.registerTypeAsNoOtherTypeCode(WorldTag.class, "w");
+    }
+
+    private static void registerConversions() {
         CoreUtilities.objectConversions.add((obj) -> {
             if (obj instanceof Biome) {
                 return new BiomeTag((Biome) obj);
@@ -281,6 +306,5 @@ public class CommonRegistries {
             }
             return null;
         });
-        Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
     }
 }

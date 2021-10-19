@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.objects.notable;
 
-import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
@@ -11,51 +11,36 @@ import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NotableManager {
 
-    public NotableManager() {
-        registerWithNotableManager(CuboidTag.class);
-        registerWithNotableManager(EllipsoidTag.class);
-        registerWithNotableManager(InventoryTag.class);
-        registerWithNotableManager(ItemTag.class);
-        registerWithNotableManager(LocationTag.class);
-        registerWithNotableManager(PolygonTag.class);
-    }
-
-    public static HashMap<String, Notable> notableObjects = new HashMap<>();
-    public static HashMap<Notable, String> reverseObjects = new HashMap<>();
+    public static HashMap<String, Notable> nameToObject = new HashMap<>();
+    public static HashMap<Notable, String> objectToName = new HashMap<>();
     public static HashMap<Class, HashSet<Notable>> notesByType = new HashMap<>();
 
     public static boolean isSaved(Notable object) {
-        return reverseObjects.containsKey(object);
+        return objectToName.containsKey(object);
     }
 
     public static boolean isExactSavedObject(Notable object) {
-        String id = reverseObjects.get(object);
+        String id = objectToName.get(object);
         if (id == null) {
             return false;
         }
-        return notableObjects.get(id) == object;
+        return nameToObject.get(id) == object;
     }
 
     public static Notable getSavedObject(String id) {
-        return notableObjects.get(CoreUtilities.toLowerCase(id));
+        return nameToObject.get(CoreUtilities.toLowerCase(id));
     }
 
     public static String getSavedId(Notable object) {
-        return reverseObjects.get(object);
+        return objectToName.get(object);
     }
 
     public static void saveAs(Notable object, String id) {
@@ -63,31 +48,31 @@ public class NotableManager {
             return;
         }
         id = CoreUtilities.toLowerCase(id);
-        Notable noted = notableObjects.get(id);
+        Notable noted = nameToObject.get(id);
         if (noted != null) {
             noted.forget();
         }
-        notableObjects.put(id, object);
-        reverseObjects.put(object, id);
+        nameToObject.put(id, object);
+        objectToName.put(object, id);
         notesByType.get(object.getClass()).add(object);
     }
 
     public static Notable remove(String id) {
         id = CoreUtilities.toLowerCase(id);
-        Notable obj = notableObjects.get(id);
+        Notable obj = nameToObject.get(id);
         if (obj == null) {
             return null;
         }
-        notableObjects.remove(id);
-        reverseObjects.remove(obj);
+        nameToObject.remove(id);
+        objectToName.remove(obj);
         notesByType.get(obj.getClass()).remove(obj);
         return obj;
     }
 
     public static void remove(Notable obj) {
-        String id = reverseObjects.get(obj);
-        notableObjects.remove(id);
-        reverseObjects.remove(obj);
+        String id = objectToName.get(obj);
+        nameToObject.remove(id);
+        objectToName.remove(obj);
         notesByType.get(obj.getClass()).remove(obj);
     }
 
@@ -95,108 +80,100 @@ public class NotableManager {
         return (Set<T>) notesByType.get(type);
     }
 
-    /**
-     * Called on '/denizen reload notables'.
-     */
-    private static void _recallNotables() {
-        notableObjects.clear();
+    private static void loadFromConfig() {
+        nameToObject.clear();
         for (Set set : notesByType.values()) {
             set.clear();
         }
-        reverseObjects.clear();
-        // Find each type of notable
-        for (String key : Denizen.getInstance().notableManager.getNotables().getKeys(false)) {
-            Class<? extends ObjectTag> clazz = reverse_objects.get(key);
-            ConfigurationSection section = Denizen.getInstance().notableManager.getNotables().getConfigurationSection(key);
+        objectToName.clear();
+        for (StringHolder key : getSaveConfig().getKeys(false)) {
+            Class<? extends ObjectTag> clazz = namesToTypes.get(key.str);
+            YamlConfiguration section = getSaveConfig().getConfigurationSection(key.str);
             if (section == null) {
                 continue;
             }
-            for (String notableRaw : section.getKeys(false)) {
-                String notable = EscapeTagBase.unEscape(notableRaw.replace("DOT", "."));
+            for (StringHolder noteNameHolder : section.getKeys(false)) {
+                String noteName = noteNameHolder.str;
+                String note = EscapeTagBase.unEscape(noteName.replace("DOT", "."));
                 String objText;
                 String flagText = null;
-                if (section.isConfigurationSection(notableRaw)) {
-                    objText = section.getConfigurationSection(notableRaw).getString("object");
-                    flagText = section.getConfigurationSection(notableRaw).getString("flags");
+                Object rawPart = section.get(noteName);
+                if (rawPart instanceof YamlConfiguration || rawPart instanceof Map) {
+                    objText = section.getConfigurationSection(noteName).getString("object");
+                    flagText = section.getConfigurationSection(noteName).getString("flags");
                 }
                 else {
-                    objText = section.getString(notableRaw);
+                    objText = section.getString(noteName);
                 }
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, objText, CoreUtilities.errorButNoDebugContext);
                 if (obj != null) {
-                    obj.makeUnique(notable);
+                    obj.makeUnique(note);
                     if (flagText != null && obj instanceof FlaggableObject) {
-                        ((FlaggableObject) getSavedObject(notable)).reapplyTracker(new SavableMapFlagTracker(flagText));
+                        ((FlaggableObject) getSavedObject(note)).reapplyTracker(new SavableMapFlagTracker(flagText));
                     }
                 }
                 else {
-                    Debug.echoError("Notable '" + notable + "' failed to load!");
+                    Debug.echoError("Note '" + note + "' failed to load!");
                 }
             }
         }
     }
 
-    /**
-     * Called on by '/denizen save'.
-     */
-    private static void _saveNotables() {
-        FileConfiguration notables = Denizen.getInstance().notableManager.getNotables();
-        for (String key : notables.getKeys(false)) {
-            notables.set(key, null);
+    private static void saveToConfig() {
+        YamlConfiguration saveConfig = getSaveConfig();
+        for (StringHolder key : saveConfig.getKeys(false)) {
+            saveConfig.set(key.str, null);
         }
-        for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
+        for (Map.Entry<String, Notable> note : nameToObject.entrySet()) {
             try {
-                notables.set(getClassId(getClass(notable.getValue())) + "." + EscapeTagBase.escape(CoreUtilities.toLowerCase(notable.getKey())), notable.getValue().getSaveObject());
+                saveConfig.set(typesToNames.get(getClass(note.getValue())) + "." + EscapeTagBase.escape(CoreUtilities.toLowerCase(note.getKey())), note.getValue().getSaveObject());
             }
             catch (Exception e) {
-                Debug.echoError("Notable '" + notable.getKey() + "' failed to save!");
+                Debug.echoError("Notable '" + note.getKey() + "' failed to save!");
                 Debug.echoError(e);
             }
         }
     }
 
-    private static <T extends Notable> Class<T> getClass(Notable notable) {
-        for (Class clazz : objects.keySet()) {
-            if (clazz.isInstance(notable)) {
+    private static <T extends Notable> Class<T> getClass(Notable note) {
+        for (Class clazz : typesToNames.keySet()) {
+            if (clazz.isInstance(note)) {
                 return clazz;
             }
         }
         return null;
     }
 
-    private FileConfiguration notablesSave = null;
-    private File notablesFile = null;
+    private static YamlConfiguration saveConfig = null;
+    private static String saveFilePath = null;
 
-    /**
-     * Reloads, retrieves and saves notable information from/to 'notables.yml'.
-     */
-    public void reloadNotables() {
-        if (notablesFile == null) {
-            notablesFile = new File(Denizen.getInstance().getDataFolder(), "notables.yml");
+    public static void reload() {
+        if (saveFilePath == null) {
+            saveFilePath = new File(DenizenCore.getImplementation().getDataFolder(), "notables.yml").getPath();
         }
-        notablesSave = YamlConfiguration.loadConfiguration(notablesFile);
-        // Reload notables from notables.yml
-        _recallNotables();
+        saveConfig = YamlConfiguration.load(CoreUtilities.journallingLoadFile(saveFilePath));
+        loadFromConfig();
     }
 
-    public FileConfiguration getNotables() {
-        if (notablesSave == null) {
-            reloadNotables();
+    public static YamlConfiguration getSaveConfig() {
+        if (saveConfig == null) {
+            reload();
         }
-        return notablesSave;
+        return saveConfig;
     }
 
-    public void saveNotables() {
-        if (notablesSave == null || notablesFile == null) {
+    public static void save() {
+        if (saveConfig == null || saveFilePath == null) {
             return;
         }
-        try {
-            // Save notables to notables.yml
-            _saveNotables();
-            notablesSave.save(notablesFile);
+        saveToConfig();
+        if (nameToObject.isEmpty()) {
+            if (new File(saveFilePath).exists()) {
+                new File(saveFilePath).delete();
+            }
         }
-        catch (IOException ex) {
-            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + notablesFile, ex);
+        else {
+            CoreUtilities.journallingFileSave(saveFilePath, saveConfig.saveToString(false));
         }
     }
 
@@ -204,25 +181,17 @@ public class NotableManager {
     // Note Annotation Handler
     ///////////////////
 
-    private static Map<Class, String> objects = new HashMap<>();
-    private static Map<String, Class> reverse_objects = new HashMap<>();
+    public static Map<Class, String> typesToNames = new HashMap<>();
+    public static Map<String, Class> namesToTypes = new HashMap<>();
 
     public static void registerWithNotableManager(Class notable) {
         for (Method method : notable.getMethods()) {
             if (method.isAnnotationPresent(Note.class)) {
                 String note = method.getAnnotation(Note.class).value();
-                objects.put(notable, note);
-                reverse_objects.put(note, notable);
+                typesToNames.put(notable, note);
+                namesToTypes.put(note, notable);
                 notesByType.put(notable, new HashSet<>());
             }
         }
-    }
-
-    public static String getClassId(Class notable) {
-        return objects.get(notable);
-    }
-
-    public static Map<String, Class> getReverseClassIdMap() {
-        return reverse_objects;
     }
 }

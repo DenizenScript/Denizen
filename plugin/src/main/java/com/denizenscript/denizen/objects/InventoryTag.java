@@ -33,14 +33,13 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -143,7 +142,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     public Object getSaveObject() {
         isSaving = true;
         try {
-            ConfigurationSection section = new YamlConfiguration();
+            YamlConfiguration section = new YamlConfiguration();
             section.set("object", "in@" + idType + PropertyParser.getPropertiesString(this));
             section.set("flags", flagTracker.toString());
             return section;

@@ -98,7 +98,6 @@ public class Denizen extends JavaPlugin {
     }
 
     public TagManager tagManager;
-    public NotableManager notableManager;
     public OldEventManager eventManager;
 
     public BukkitWorldScriptHelper worldScriptHelper;
@@ -173,7 +172,6 @@ public class Denizen extends JavaPlugin {
         }
         commandRegistry = new BukkitCommandRegistry();
         triggerRegistry = new TriggerRegistry();
-        notableManager = new NotableManager();
         tagManager = new TagManager();
         boolean citizensBork = false;
         try {
@@ -420,8 +418,8 @@ public class Denizen extends JavaPlugin {
             }
             try {
                 exCommand.processTagList();
-                // Reload notables from notables.yml into memory
-                notableManager.reloadNotables();
+                // Reload notes from file
+                NotableManager.reload();
                 // Process script files (events, etc).
                 DenizenCore.postLoadScripts();
                 Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -498,7 +496,7 @@ public class Denizen extends JavaPlugin {
         }
         hasDisabled = true;
         ServerStopScriptEvent.instance.fire();
-        notableManager.saveNotables();
+        NotableManager.save();
         ScoreboardHelper._saveScoreboards();
         InventoryScriptHelper._savePlayerInventories();
         commandRegistry.disableCoreMembers();
@@ -557,8 +555,8 @@ public class Denizen extends JavaPlugin {
     }
 
     public void saveSaves(boolean canSleep) {
-        // Save notables
-        notableManager.saveNotables();
+        // Save notes
+        NotableManager.save();
         // Save scoreboards to scoreboards.yml
         ScoreboardHelper._saveScoreboards();
         // Save maps to maps.yml

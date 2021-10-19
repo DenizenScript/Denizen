@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.command.manager.Command;
 import com.denizenscript.denizen.utilities.command.manager.CommandContext;
 import com.denizenscript.denizen.utilities.command.manager.Paginator;
@@ -275,7 +276,7 @@ public class DenizenCommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
             DenizenCore.reloadScripts();
-            denizen.notableManager.reloadNotables();
+            NotableManager.reload();
             denizen.reloadSaves();
             Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
@@ -290,7 +291,7 @@ public class DenizenCommandHandler {
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("notes")) {
-                denizen.notableManager.reloadNotables();
+                NotableManager.reload();
                 Messaging.send(sender, "Denizen note data reloaded from disk to memory.");
                 return;
             }

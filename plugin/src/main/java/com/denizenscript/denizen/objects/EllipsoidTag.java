@@ -15,9 +15,8 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -279,7 +278,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     @Note("Ellipsoids")
     public Object getSaveObject() {
-        ConfigurationSection section = new YamlConfiguration();
+        YamlConfiguration section = new YamlConfiguration();
         section.set("object", identifyFull());
         section.set("flags", flagTracker.toString());
         return section;

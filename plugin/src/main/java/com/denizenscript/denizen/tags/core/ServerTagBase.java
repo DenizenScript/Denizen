@@ -996,7 +996,7 @@ public class ServerTagBase {
             ListTag allNotables = new ListTag();
             if (attribute.hasContext(1)) {
                 String type = CoreUtilities.toLowerCase(attribute.getContext(1));
-                for (Map.Entry<String, Class> typeClass : NotableManager.getReverseClassIdMap().entrySet()) {
+                for (Map.Entry<String, Class> typeClass : NotableManager.namesToTypes.entrySet()) {
                     if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
                         for (Object notable : NotableManager.getAllType(typeClass.getValue())) {
                             allNotables.addObject((ObjectTag) notable);
@@ -1006,7 +1006,7 @@ public class ServerTagBase {
                 }
             }
             else {
-                for (Notable notable : NotableManager.notableObjects.values()) {
+                for (Notable notable : NotableManager.nameToObject.values()) {
                     allNotables.addObject((ObjectTag) notable);
                 }
             }

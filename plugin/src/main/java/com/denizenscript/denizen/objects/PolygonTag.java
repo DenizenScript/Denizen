@@ -16,9 +16,8 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -410,7 +409,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     @Override
     @Note("Polygons")
     public Object getSaveObject() {
-        ConfigurationSection section = new YamlConfiguration();
+        YamlConfiguration section = new YamlConfiguration();
         section.set("object", identifyFull());
         section.set("flags", flagTracker.toString());
         return section;

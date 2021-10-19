@@ -51,7 +51,7 @@ public class EntityCharged implements Property {
         // @mechanism EntityTag.charged
         // @group properties
         // @description
-        // If the entity is wither_skull, returns whether the skull is charged.
+        // If the entity is wither_skull, returns whether the skull is charged. Charged skulls are blue.
         // -->
         PropertyParser.<EntityCharged>registerTag("charged", (attribute, object) -> {
             return new ElementTag(((WitherSkull) object.entity.getBukkitEntity()).isCharged());
@@ -66,7 +66,7 @@ public class EntityCharged implements Property {
         // @name charged
         // @input ElementTag(Boolean)
         // @description
-        // If the entity is wither_skull, changes whether the skull is charged.
+        // If the entity is wither_skull, changes whether the skull is charged. Charged skulls are blue.
         // @tags
         // <EntityTag.charged>
         // -->
