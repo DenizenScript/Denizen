@@ -1,27 +1,26 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.notable.NotableManager;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 public class NoteCommand extends AbstractCommand {
 
     public NoteCommand() {
         setName("note");
-        setSyntax("note [<Notable ObjectTag>/remove] [as:<name>]");
+        setSyntax("note [<object>/remove] [as:<name>]");
         setRequiredArguments(2, 2);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Note
-    // @Syntax note [<Notable ObjectTag>/remove] [as:<name>]
+    // @Syntax note [<object>/remove] [as:<name>]
     // @Required 2
     // @Maximum 2
     // @Short Adds or removes a named note of an object to the server.
@@ -40,6 +39,8 @@ public class NoteCommand extends AbstractCommand {
     // @Tags
     // <server.notes[<type>]>
     // <CuboidTag.note_name>
+    // <EllipsoidTag.note_name>
+    // <PolygonTag.note_name>
     // <InventoryTag.note_name>
     // <LocationTag.note_name>
     //
@@ -59,14 +60,19 @@ public class NoteCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry.getProcessedArgs()) {
-            if (arg.matchesPrefix("as", "i", "id")) {
+            if (arg.matchesPrefix("as", "i", "id")
+                    && !scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-            else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0])) {
-                scriptEntry.addObject("object", arg.getValue());
-            }
-            else if (arg.matches("remove")) {
+            else if (arg.matches("remove")
+                    && !scriptEntry.hasObject("object")
+                    && !scriptEntry.hasObject("remove")) {
                 scriptEntry.addObject("remove", new ElementTag(true));
+            }
+            else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0])
+                    && !scriptEntry.hasObject("object")
+                    && !scriptEntry.hasObject("remove")) {
+                scriptEntry.addObject("object", arg.object);
             }
             else {
                 arg.reportUnhandled();
@@ -76,7 +82,7 @@ public class NoteCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an id");
         }
         if (!scriptEntry.hasObject("object") && !scriptEntry.hasObject("remove")) {
-            throw new InvalidArgumentsException("Must specify a fetchable-object to note.");
+            throw new InvalidArgumentsException("Must specify an object to note.");
         }
         if (!scriptEntry.hasObject("remove")) {
             scriptEntry.addObject("remove", new ElementTag(false));
@@ -85,43 +91,41 @@ public class NoteCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        String object = (String) scriptEntry.getObject("object");
+        ObjectTag object = scriptEntry.getObjectTag("object");
         ElementTag id = scriptEntry.getElement("id");
         ElementTag remove = scriptEntry.getElement("remove");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("object", object), id, remove);
+            Debug.report(scriptEntry, getName(), object, id, remove);
         }
         if (remove.asBoolean()) {
-            Notable note = NotableManager.getSavedObject(id.asString());
+            Notable note = NoteManager.getSavedObject(id.asString());
             if (note != null) {
                 note.forget();
-                Debug.echoDebug(scriptEntry, "notable '" + id.asString() + "' removed");
+                Debug.echoDebug(scriptEntry, "Note '" + id.asString() + "' removed");
             }
             else {
                 Debug.echoDebug(scriptEntry, id.asString() + " is not saved");
             }
             return;
         }
-        String object_type = CoreUtilities.toLowerCase(object.split("@")[0]);
-        Class object_class = ObjectFetcher.getObjectClass(object_type);
-        if (object_class == null) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid object type! Could not fetch '" + object_type + "'!");
-            return;
-        }
-        ObjectTag arg;
-        try {
-            if (!ObjectFetcher.checkMatch(object_class, object)) {
-                Debug.echoError(scriptEntry.getResidingQueue(), "'" + object + "' is an invalid " + object_class.getSimpleName() + ".");
+        if (object instanceof ElementTag) {
+            String stringified = object.toString();
+            object = ObjectFetcher.pickObjectFor(stringified, scriptEntry.context);
+            if (object == null) {
+                Debug.echoError("Failed to read the object '" + stringified + "' into a real object value.");
                 return;
             }
-            arg = ObjectFetcher.getObjectFrom(object_class, object, scriptEntry.getContext());
-            if (arg instanceof Notable) {
-                ((Notable) arg).makeUnique(id.asString());
-            }
         }
-        catch (Exception e) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
-            Debug.echoError(scriptEntry.getResidingQueue(), e);
+        if (!(object instanceof Notable)) {
+            Debug.echoError("Object '" + object + "' has type '" + object.getObjectType() + "' which is not a notable object type.");
+            return;
+        }
+        try {
+            ((Notable) object).makeUnique(id.asString());
+        }
+        catch (Throwable ex) {
+            Debug.echoError("Something went wrong converting that object!");
+            Debug.echoError(ex);
         }
     }
 }
