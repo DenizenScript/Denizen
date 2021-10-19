@@ -5,6 +5,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -118,7 +119,7 @@ public class CooldownCommand extends AbstractCommand {
     }
 
     public static DurationTag getCooldownDuration(PlayerTag player, String scriptName) {
-        TimeTag expires = Denizen.getInstance().serverFlagMap.getFlagExpirationTime("__interact_cooldown." + scriptName);
+        TimeTag expires = DenizenCore.serverFlagMap.getFlagExpirationTime("__interact_cooldown." + scriptName);
         if (expires != null) {
             return new DurationTag((expires.millis() - TimeTag.now().millis()) / 1000.0);
         }
@@ -143,7 +144,7 @@ public class CooldownCommand extends AbstractCommand {
     public static void setCooldown(PlayerTag player, DurationTag duration, String scriptName, boolean global) {
         TimeTag cooldownTime = new TimeTag(TimeTag.now().millis() + duration.getMillis());
         if (global) {
-            Denizen.getInstance().serverFlagMap.setFlag("__interact_cooldown." + scriptName, cooldownTime, cooldownTime);
+            DenizenCore.serverFlagMap.setFlag("__interact_cooldown." + scriptName, cooldownTime, cooldownTime);
         }
         else {
             player.getFlagTracker().setFlag("__interact_cooldown." + scriptName, cooldownTime, cooldownTime);

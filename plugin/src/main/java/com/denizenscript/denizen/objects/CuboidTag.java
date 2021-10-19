@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -12,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -85,7 +85,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     public static List<CuboidTag> getNotableCuboidsContaining(Location location) {
         List<CuboidTag> cuboids = new ArrayList<>();
-        for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+        for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
             if (cuboid.isInsideCuboid(location)) {
                 cuboids.add(cuboid);
             }
@@ -110,7 +110,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
             string = string.substring("cu@".length());
         }
-        Notable noted = NotableManager.getSavedObject(string);
+        Notable noted = NoteManager.getSavedObject(string);
         if (noted instanceof CuboidTag) {
             return (CuboidTag) noted;
         }
@@ -631,12 +631,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         CuboidTag toNote = clone();
         toNote.noteName = id;
         toNote.flagTracker = new SavableMapFlagTracker();
-        NotableManager.saveAs(toNote, id);
+        NoteManager.saveAs(toNote, id);
     }
 
     @Override
     public void forget() {
-        NotableManager.remove(this);
+        NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
     }
@@ -1322,7 +1322,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Gets the name of a noted CuboidTag. If the cuboid isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, cuboid) -> {
-            String noteName = NotableManager.getSavedId(cuboid);
+            String noteName = NoteManager.getSavedId(cuboid);
             if (noteName == null) {
                 return null;
             }
@@ -1382,7 +1382,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     }
 
     public void applyProperty(Mechanism mechanism) {
-        if (NotableManager.isExactSavedObject(this)) {
+        if (NoteManager.isExactSavedObject(this)) {
             Debug.echoError("Cannot apply properties to noted objects.");
             return;
         }

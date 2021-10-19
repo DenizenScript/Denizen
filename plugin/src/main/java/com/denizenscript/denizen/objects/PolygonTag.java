@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -11,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -126,7 +126,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         if (string.contains("@")) {
             return null;
         }
-        Notable saved = NotableManager.getSavedObject(string);
+        Notable saved = NoteManager.getSavedObject(string);
         if (saved instanceof PolygonTag) {
             return (PolygonTag) saved;
         }
@@ -212,7 +212,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     public static List<PolygonTag> getNotedPolygonsContaining(Location location) {
         List<PolygonTag> polygons = new ArrayList<>();
-        for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+        for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
             if (polygon.doesContainLocation(location)) {
                 polygons.add(polygon);
             }
@@ -420,12 +420,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         PolygonTag toNote = clone();
         toNote.noteName = id;
         toNote.flagTracker = new SavableMapFlagTracker();
-        NotableManager.saveAs(toNote, id);
+        NoteManager.saveAs(toNote, id);
     }
 
     @Override
     public void forget() {
-        NotableManager.remove(this);
+        NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
     }
@@ -561,7 +561,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Gets the name of a noted PolygonTag. If the polygon isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, polygon) -> {
-            String noteName = NotableManager.getSavedId(polygon);
+            String noteName = NoteManager.getSavedId(polygon);
             if (noteName == null) {
                 return null;
             }
@@ -718,7 +718,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     }
 
     public void applyProperty(Mechanism mechanism) {
-        if (NotableManager.isExactSavedObject(this)) {
+        if (NoteManager.isExactSavedObject(this)) {
             Debug.echoError("Cannot apply properties to noted objects.");
             return;
         }

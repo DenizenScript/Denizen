@@ -2,11 +2,11 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
@@ -86,7 +86,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        notable = NotableManager.getSavedId(new LocationTag(event.getTo()).getBlockLocation());
+        notable = NoteManager.getSavedId(new LocationTag(event.getTo()).getBlockLocation());
         if (notable == null) {
             return;
         }

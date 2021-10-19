@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -8,6 +7,7 @@ import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
@@ -49,7 +49,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     public static List<EllipsoidTag> getNotableEllipsoidsContaining(Location location) {
         List<EllipsoidTag> ellipsoids = new ArrayList<>();
-        for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+        for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
             if (ellipsoid.contains(location)) {
                 ellipsoids.add(ellipsoid);
             }
@@ -80,7 +80,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (string.contains("@")) {
             return null;
         }
-        Notable noted = NotableManager.getSavedObject(string);
+        Notable noted = NoteManager.getSavedObject(string);
         if (noted instanceof EllipsoidTag) {
             return (EllipsoidTag) noted;
         }
@@ -289,12 +289,12 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         EllipsoidTag toNote = clone();
         toNote.noteName = id;
         toNote.flagTracker = new SavableMapFlagTracker();
-        NotableManager.saveAs(toNote, id);
+        NoteManager.saveAs(toNote, id);
     }
 
     @Override
     public void forget() {
-        NotableManager.remove(this);
+        NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
     }
@@ -581,7 +581,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Gets the name of a noted EllipsoidTag. If the ellipsoid isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, ellipsoid) -> {
-            String noteName = NotableManager.getSavedId(ellipsoid);
+            String noteName = NoteManager.getSavedId(ellipsoid);
             if (noteName == null) {
                 return null;
             }

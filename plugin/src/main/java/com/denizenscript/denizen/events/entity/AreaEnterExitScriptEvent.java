@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -10,6 +9,7 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
@@ -297,17 +297,17 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         }
         HashSet<String> inAreas = entitiesInArea.get(entity.getUUID());
         if (doTrackAll || matchers != null || flagTracked != null) {
-            for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+            for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
                 if (anyMatch(cuboid.noteName, cuboid)) {
                     processSingle(cuboid, entity, inAreas, pos, eventCause);
                 }
             }
-            for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+            for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
                 if (anyMatch(ellipsoid.noteName, ellipsoid)) {
                     processSingle(ellipsoid, entity, inAreas, pos, eventCause);
                 }
             }
-            for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+            for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
                 if (anyMatch(polygon.noteName, polygon)) {
                     processSingle(polygon, entity, inAreas, pos, eventCause);
                 }
@@ -315,7 +315,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         }
         else {
             for (String name : exactTracked) {
-                Notable obj = NotableManager.getSavedObject(name);
+                Notable obj = NoteManager.getSavedObject(name);
                 if (!(obj instanceof AreaContainmentObject)) {
                     Debug.echoError("Invalid area enter/exit event area '" + name + "'");
                     continue;

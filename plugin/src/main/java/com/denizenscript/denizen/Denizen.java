@@ -4,12 +4,10 @@ import com.denizenscript.denizen.events.ScriptEventRegistry;
 import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
-import com.denizenscript.denizen.events.server.ServerStopScriptEvent;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.PropertyRegistry;
 import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
 import com.denizenscript.denizen.scripts.commands.player.ClickableCommand;
@@ -88,16 +86,9 @@ public class Denizen extends JavaPlugin {
 
     public CommandManager commandManager;
 
-    public BukkitCommandRegistry commandRegistry;
     public TriggerRegistry triggerRegistry;
     public DenizenNPCHelper npcHelper;
 
-    @Deprecated
-    public BukkitCommandRegistry getCommandRegistry() {
-        return commandRegistry;
-    }
-
-    public TagManager tagManager;
     public OldEventManager eventManager;
 
     public BukkitWorldScriptHelper worldScriptHelper;
@@ -106,13 +97,7 @@ public class Denizen extends JavaPlugin {
 
     public ExCommandHandler exCommand;
 
-    public final static long startTime = System.currentTimeMillis();
-
     public DenizenCoreImplementation coreImplementation = new DenizenCoreImplementation();
-
-    public SavableMapFlagTracker serverFlagMap;
-
-    public long lastReloadTime;
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -170,9 +155,8 @@ public class Denizen extends JavaPlugin {
                     + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
             getLogger().warning("-------------------------------------");
         }
-        commandRegistry = new BukkitCommandRegistry();
+        BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
         triggerRegistry = new TriggerRegistry();
-        tagManager = new TagManager();
         boolean citizensBork = false;
         try {
             // Activate dependencies
@@ -338,7 +322,7 @@ public class Denizen extends JavaPlugin {
         }
         try {
             AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
-            tagManager.registerCoreTags();
+            TagManager.registerCoreTags();
             CommonRegistries.registerMainTagHandlers();
             eventManager = new OldEventManager();
             // Register all the modern script events
@@ -418,8 +402,6 @@ public class Denizen extends JavaPlugin {
             }
             try {
                 exCommand.processTagList();
-                // Reload notes from file
-                NotableManager.reload();
                 // Process script files (events, etc).
                 DenizenCore.postLoadScripts();
                 Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -495,13 +477,10 @@ public class Denizen extends JavaPlugin {
             return;
         }
         hasDisabled = true;
-        ServerStopScriptEvent.instance.fire();
-        NotableManager.save();
+        DenizenCore.shutdown();
         ScoreboardHelper._saveScoreboards();
         InventoryScriptHelper._savePlayerInventories();
-        commandRegistry.disableCoreMembers();
         triggerRegistry.disableCoreMembers();
-        DenizenCore.logInterceptor.standardOutput();
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
@@ -533,8 +512,7 @@ public class Denizen extends JavaPlugin {
         ScoreboardHelper._recallScoreboards();
         // Load maps from maps.yml
         DenizenMapManager.reloadMaps();
-        // Reload server flags
-        serverFlagMap = SavableMapFlagTracker.loadFlagFile(new File(getDataFolder(), "server_flags").getPath());
+        DenizenCore.reloadSaves();
         if (worldFlags == null) {
             worldFlags = new WorldFlagHandler();
         }
@@ -555,14 +533,11 @@ public class Denizen extends JavaPlugin {
     }
 
     public void saveSaves(boolean canSleep) {
-        // Save notes
-        NotableManager.save();
         // Save scoreboards to scoreboards.yml
         ScoreboardHelper._saveScoreboards();
         // Save maps to maps.yml
         DenizenMapManager.saveMaps();
         // Save server flags
-        serverFlagMap.saveToFile(new File(getDataFolder(), "server_flags").getPath());
         try {
             scoreboardsConfig.save(scoreboardsConfigFile);
         }

@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
@@ -29,6 +28,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -119,7 +119,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     /////////////////
 
     public void makeUnique(String id) {
-        NotableManager.saveAs(this, id);
+        NoteManager.saveAs(this, id);
     }
 
     @Note("Locations")
@@ -128,12 +128,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public static String getSaved(LocationTag location) {
-        return NotableManager.getSavedId(location);
+        return NoteManager.getSavedId(location);
     }
 
     @Override
     public void forget() {
-        NotableManager.remove(this);
+        NoteManager.remove(this);
     }
 
     //////////////////
@@ -161,7 +161,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (string.startsWith("l@")) {
             string = string.substring(2);
         }
-        Notable noted = NotableManager.getSavedObject(string);
+        Notable noted = NoteManager.getSavedObject(string);
         if (noted instanceof LocationTag) {
             return (LocationTag) noted;
         }
@@ -2784,7 +2784,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Gets the name of a noted LocationTag. If the location isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, object) -> {
-            String noteName = NotableManager.getSavedId((object));
+            String noteName = NoteManager.getSavedId((object));
             if (noteName == null) {
                 return null;
             }

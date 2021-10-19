@@ -2,13 +2,13 @@ package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -485,7 +485,7 @@ public class ServerTagBase {
         // See <@link tag FlaggableObject.has_flag>
         // -->
         if (attribute.startsWith("has_flag")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doHasFlagTag(attribute)
+            event.setReplacedObject(DenizenCore.serverFlagMap.doHasFlagTag(attribute)
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -496,7 +496,7 @@ public class ServerTagBase {
         // See <@link tag FlaggableObject.flag_expiration>
         // -->
         if (attribute.startsWith("flag_expiration")) {
-            TimeTag exp = Denizen.getInstance().serverFlagMap.doFlagExpirationTag(attribute);
+            TimeTag exp = DenizenCore.serverFlagMap.doFlagExpirationTag(attribute);
             if (exp != null) {
                 event.setReplacedObject(exp
                         .getObjectAttribute(attribute.fulfill(1)));
@@ -510,7 +510,7 @@ public class ServerTagBase {
         // See <@link tag FlaggableObject.flag>
         // -->
         if (attribute.startsWith("flag")) {
-            ObjectTag flag = Denizen.getInstance().serverFlagMap.doFlagTag(attribute);
+            ObjectTag flag = DenizenCore.serverFlagMap.doFlagTag(attribute);
             if (flag != null) {
                 event.setReplacedObject(flag
                         .getObjectAttribute(attribute.fulfill(1)));
@@ -524,7 +524,7 @@ public class ServerTagBase {
         // See <@link tag FlaggableObject.list_flags>
         // -->
         if (attribute.startsWith("list_flags")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doListFlagsTag(attribute)
+            event.setReplacedObject(DenizenCore.serverFlagMap.doListFlagsTag(attribute)
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -535,7 +535,7 @@ public class ServerTagBase {
         // See <@link tag FlaggableObject.flag_map>
         // -->
         if (attribute.startsWith("flag_map")) {
-            event.setReplacedObject(Denizen.getInstance().serverFlagMap.doFlagMapTag(attribute)
+            event.setReplacedObject(DenizenCore.serverFlagMap.doFlagMapTag(attribute)
                     .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -996,9 +996,9 @@ public class ServerTagBase {
             ListTag allNotables = new ListTag();
             if (attribute.hasContext(1)) {
                 String type = CoreUtilities.toLowerCase(attribute.getContext(1));
-                for (Map.Entry<String, Class> typeClass : NotableManager.namesToTypes.entrySet()) {
+                for (Map.Entry<String, Class> typeClass : NoteManager.namesToTypes.entrySet()) {
                     if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
-                        for (Object notable : NotableManager.getAllType(typeClass.getValue())) {
+                        for (Object notable : NoteManager.getAllType(typeClass.getValue())) {
                             allNotables.addObject((ObjectTag) notable);
                         }
                         break;
@@ -1006,7 +1006,7 @@ public class ServerTagBase {
                 }
             }
             else {
-                for (Notable notable : NotableManager.nameToObject.values()) {
+                for (Notable notable : NoteManager.nameToObject.values()) {
                     allNotables.addObject((ObjectTag) notable);
                 }
             }
@@ -1061,12 +1061,12 @@ public class ServerTagBase {
         // Returns the time the server started.
         // -->
         if (attribute.startsWith("started_time")) {
-            event.setReplacedObject(new TimeTag(Denizen.startTime)
+            event.setReplacedObject(new TimeTag(DenizenCore.startTime)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
         if (attribute.startsWith("start_time")) {
             Deprecations.timeTagRewrite.warn(attribute.context);
-            event.setReplacedObject(new DurationTag(Denizen.startTime / 50)
+            event.setReplacedObject(new DurationTag(DenizenCore.startTime / 50)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
 
@@ -2141,7 +2141,7 @@ public class ServerTagBase {
         // Returns the time that Denizen scripts were last reloaded.
         // -->
         else if (attribute.startsWith("last_reload")) {
-            event.setReplacedObject(new TimeTag(Denizen.getInstance().lastReloadTime).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new TimeTag(DenizenCore.lastReloadTime).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -2478,6 +2478,7 @@ public class ServerTagBase {
         // Immediately saves the Denizen saves files.
         // -->
         if (mechanism.matches("save")) {
+            DenizenCore.saveAll();
             Denizen.getInstance().saveSaves(true);
         }
 

@@ -17,7 +17,6 @@ import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -25,6 +24,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -183,13 +183,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             toNote.idHolder = new ElementTag(CoreUtilities.toLowerCase(getInventoryType().name()));
         }
         toNote.flagTracker = new SavableMapFlagTracker();
-        NotableManager.saveAs(toNote, id);
+        NoteManager.saveAs(toNote, id);
         toNote.noteName = id;
     }
 
     @Override
     public void forget() {
-        NotableManager.remove(this);
+        NoteManager.remove(this);
         InventoryScriptHelper.notedInventories.remove(inventory);
         flagTracker = null;
         noteName = null;
@@ -407,7 +407,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             trackTemporaryInventory(result);
             return result;
         }
-        Notable noted = NotableManager.getSavedObject(string);
+        Notable noted = NoteManager.getSavedObject(string);
         if (noted instanceof InventoryTag) {
             return (InventoryTag) noted;
         }
@@ -438,7 +438,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         if (ScriptRegistry.containsScript(tid, InventoryScriptContainer.class)) {
             return true;
         }
-        if (NotableManager.getSavedObject(tid) instanceof InventoryTag) {
+        if (NoteManager.getSavedObject(tid) instanceof InventoryTag) {
             return true;
         }
         for (String idType : idTypes) {
@@ -1110,7 +1110,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     @Override
     public String identify() {
         if (isUnique()) {
-            return "in@" + NotableManager.getSavedId(this);
+            return "in@" + NoteManager.getSavedId(this);
         }
         else {
             trackTemporaryInventory(this);
@@ -1924,7 +1924,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Gets the name of a noted InventoryTag. If the inventory isn't noted, this is null.
         // -->
         registerTag("note_name", (attribute, object) -> {
-            String noteName = NotableManager.getSavedId(object);
+            String noteName = NoteManager.getSavedId(object);
             if (noteName == null) {
                 return null;
             }

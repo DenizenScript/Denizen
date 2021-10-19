@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -11,6 +10,7 @@ import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -163,7 +163,7 @@ public class InventoryCommand extends AbstractCommand {
                 addOne.accept("dest:" + s);
                 addOne.accept("destination:" + s);
             };
-            for (InventoryTag inventory : (HashSet<InventoryTag>) ((HashSet) NotableManager.notesByType.get(InventoryTag.class))) {
+            for (InventoryTag inventory : (HashSet<InventoryTag>) ((HashSet) NoteManager.notesByType.get(InventoryTag.class))) {
                 addAll.accept(inventory.noteName);
             }
             for (String script : InventoryScriptHelper.inventoryScripts.keySet()) {

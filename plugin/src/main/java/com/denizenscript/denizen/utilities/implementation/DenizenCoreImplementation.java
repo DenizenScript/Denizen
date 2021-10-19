@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities.implementation;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.objects.*;
@@ -20,6 +19,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -142,7 +142,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void onScriptReload() {
         Depends.setupEconomy();
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
-        Denizen.getInstance().lastReloadTime = System.currentTimeMillis();
     }
 
     @Override
@@ -263,11 +262,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public String scriptQueueSpeed() {
         return Settings.scriptQueueSpeed();
-    }
-
-    @Override
-    public AbstractFlagTracker getServerFlags() {
-        return Denizen.getInstance().serverFlagMap;
     }
 
     @Override
@@ -476,7 +470,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             return Utilities.getEntryNPC(entry);
         }
         if (!word.contains("@")) {
-            Notable noted = NotableManager.getSavedObject(word);
+            Notable noted = NoteManager.getSavedObject(word);
             if (noted instanceof LocationTag) {
                 return (LocationTag) noted;
             }

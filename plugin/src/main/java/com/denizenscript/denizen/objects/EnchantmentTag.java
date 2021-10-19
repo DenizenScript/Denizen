@@ -143,7 +143,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__enchantments." + getCleanName().replace(".", "&dot"));
+        return new RedirectionFlagTracker(DenizenCore.serverFlagMap, "__enchantments." + getCleanName().replace(".", "&dot"));
     }
 
     @Override

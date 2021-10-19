@@ -82,7 +82,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         //core
         registerCommand(CooldownCommand.class);
-        registerCommand(NoteCommand.class);
         registerCommand(ResetCommand.class);
         registerCommand(ZapCommand.class);
         // entity

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -13,6 +12,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Sound;
@@ -77,8 +77,8 @@ public class AnimateChestCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (Notable note : NotableManager.notesByType.get(LocationTag.class)) {
-            addOne.accept(NotableManager.getSavedId(note));
+        for (Notable note : NoteManager.notesByType.get(LocationTag.class)) {
+            addOne.accept(NoteManager.getSavedId(note));
         }
     }
 

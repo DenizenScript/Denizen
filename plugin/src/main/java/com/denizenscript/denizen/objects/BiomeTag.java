@@ -162,7 +162,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__biomes." + biome.getName().replace(".", "&dot"));
+        return new RedirectionFlagTracker(DenizenCore.serverFlagMap, "__biomes." + biome.getName().replace(".", "&dot"));
     }
 
     @Override

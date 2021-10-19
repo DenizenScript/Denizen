@@ -150,7 +150,7 @@ public class PluginTag implements ObjectTag, FlaggableObject {
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__plugins." + plugin.getName().replace(".", "&dot"));
+        return new RedirectionFlagTracker(DenizenCore.serverFlagMap, "__plugins." + plugin.getName().replace(".", "&dot"));
     }
 
     @Override

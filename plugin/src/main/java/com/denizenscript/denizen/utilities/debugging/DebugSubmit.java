@@ -97,7 +97,7 @@ public class DebugSubmit extends Thread {
             uc.getOutputStream().write(("pastetype=log"
                     + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
                     + "&pastecontents=" + URLEncoder.encode(("Java Version: " + System.getProperty("java.version")
-                    + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - Denizen.startTime) / 50).formatted(false)
+                    + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - DenizenCore.startTime) / 50).formatted(false)
                     + "\nServer Version: " + Bukkit.getServer().getName() + " version " + Bukkit.getServer().getVersion()
                     + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + Denizen.getInstance().coreImplementation.getImplementationVersion()
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
@@ -105,7 +105,7 @@ public class DebugSubmit extends Thread {
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                     + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
-                    + "\nLast reload: " + new DurationTag((System.currentTimeMillis() - Denizen.getInstance().lastReloadTime) / 1000.0).formatted(false) + " ago"
+                    + "\nLast reload: " + new DurationTag((System.currentTimeMillis() - DenizenCore.lastReloadTime) / 1000.0).formatted(false) + " ago"
                     + "\n\n").replace(ChatColor.COLOR_CHAR, (char) 0x01)) + recording)
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server

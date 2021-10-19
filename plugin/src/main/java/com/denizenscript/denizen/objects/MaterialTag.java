@@ -236,7 +236,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        return new RedirectionFlagTracker(DenizenCore.getImplementation().getServerFlags(), "__materials." + material.name().replace(".", "&dot"));
+        return new RedirectionFlagTracker(DenizenCore.serverFlagMap, "__materials." + material.name().replace(".", "&dot"));
     }
 
     @Override

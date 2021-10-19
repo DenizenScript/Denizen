@@ -2,7 +2,6 @@ package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.utilities.command.manager.Command;
 import com.denizenscript.denizen.utilities.command.manager.CommandContext;
 import com.denizenscript.denizen.utilities.command.manager.Paginator;
@@ -11,6 +10,7 @@ import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -262,6 +262,7 @@ public class DenizenCommandHandler {
             desc = "Saves the current state of Denizen/saves.yml.", modifiers = {"save"},
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
+        DenizenCore.saveAll();
         Denizen.getInstance().saveSaves(true);
         Messaging.send(sender, "Denizen save data saved to disk from memory.");
     }
@@ -276,7 +277,7 @@ public class DenizenCommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
             DenizenCore.reloadScripts();
-            NotableManager.reload();
+            NoteManager.reload();
             denizen.reloadSaves();
             Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
@@ -291,7 +292,7 @@ public class DenizenCommandHandler {
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("notes")) {
-                NotableManager.reload();
+                NoteManager.reload();
                 Messaging.send(sender, "Denizen note data reloaded from disk to memory.");
                 return;
             }

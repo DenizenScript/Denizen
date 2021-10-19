@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.tags.core.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -133,12 +133,12 @@ public class CommonRegistries {
     }
 
     private static void registerNotables() {
-        NotableManager.registerWithNotableManager(CuboidTag.class);
-        NotableManager.registerWithNotableManager(EllipsoidTag.class);
-        NotableManager.registerWithNotableManager(InventoryTag.class);
-        NotableManager.registerWithNotableManager(ItemTag.class);
-        NotableManager.registerWithNotableManager(LocationTag.class);
-        NotableManager.registerWithNotableManager(PolygonTag.class);
+        NoteManager.registerObjectTypeAsNotable(CuboidTag.class);
+        NoteManager.registerObjectTypeAsNotable(EllipsoidTag.class);
+        NoteManager.registerObjectTypeAsNotable(InventoryTag.class);
+        NoteManager.registerObjectTypeAsNotable(ItemTag.class);
+        NoteManager.registerObjectTypeAsNotable(LocationTag.class);
+        NoteManager.registerObjectTypeAsNotable(PolygonTag.class);
     }
 
     private static void registerObjectCheckers() {

@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -54,7 +55,7 @@ public class LegacySavesUpdater {
             Debug.log("==== Update global data ====");
             YamlConfiguration globalSection = saveSection.getConfigurationSection("Global");
             if (globalSection.contains("Flags")) {
-                applyFlags("Server", Denizen.getInstance().serverFlagMap, globalSection.getConfigurationSection("Flags"));
+                applyFlags("Server", DenizenCore.serverFlagMap, globalSection.getConfigurationSection("Flags"));
             }
             if (globalSection.contains("Scripts")) {
                 YamlConfiguration scriptsSection = globalSection.getConfigurationSection("Scripts");
@@ -63,7 +64,7 @@ public class LegacySavesUpdater {
                     if (scriptSection.contains("Cooldown Time")) {
                         long time = Long.parseLong(scriptSection.getString("Cooldown Time"));
                         TimeTag cooldown = new TimeTag(time);
-                        Denizen.getInstance().serverFlagMap.setFlag("__interact_cooldown." + script.low, cooldown, cooldown);
+                        DenizenCore.serverFlagMap.setFlag("__interact_cooldown." + script.low, cooldown, cooldown);
                     }
                 }
             }

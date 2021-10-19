@@ -200,7 +200,6 @@ public class ScriptEventRegistry {
         }
         ScriptEvent.registerScriptEvent(new ServerPrestartScriptEvent());
         ScriptEvent.registerScriptEvent(new ServerStartScriptEvent());
-        ScriptEvent.registerScriptEvent(new ServerStopScriptEvent());
         ScriptEvent.registerScriptEvent(new TabCompleteScriptEvent());
 
         // Vehicle

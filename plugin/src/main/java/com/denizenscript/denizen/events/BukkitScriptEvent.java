@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.objects.notable.NotableManager;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
@@ -12,6 +11,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -109,12 +109,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (text.startsWith("area_flagged:") || text.startsWith("biome:")) {
             return true;
         }
-        if (NotableManager.getSavedObject(text) instanceof AreaContainmentObject) {
+        if (NoteManager.getSavedObject(text) instanceof AreaContainmentObject) {
             return true;
         }
         if (isAdvancedMatchable(text)) {
             MatchHelper matcher = createMatcher(text);
-            for (Notable obj : NotableManager.nameToObject.values()) {
+            for (Notable obj : NoteManager.nameToObject.values()) {
                 if (obj instanceof AreaContainmentObject && matcher.doesMatch(((AreaContainmentObject) obj).getNoteName())) {
                     return true;
                 }
@@ -653,17 +653,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             else if (lower.startsWith("area_flagged:")) {
                 String flagName = inputText.substring("area_flagged:".length());
-                for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+                for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
                     if (cuboid.isInsideCuboid(location) && cuboid.flagTracker.hasFlag(flagName)) {
                         return true;
                     }
                 }
-                for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+                for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
                     if (ellipsoid.contains(location) && ellipsoid.flagTracker.hasFlag(flagName)) {
                         return true;
                     }
                 }
-                for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+                for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
                     if (polygon.doesContainLocation(location) && polygon.flagTracker.hasFlag(flagName)) {
                         return true;
                     }
@@ -676,7 +676,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         if (lower.equals("cuboid")) {
-            for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+            for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
                 if (cuboid.isInsideCuboid(location)) {
                     return true;
                 }
@@ -684,7 +684,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         else if (lower.equals("ellipsoid")) {
-            for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+            for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
                 if (ellipsoid.contains(location)) {
                     return true;
                 }
@@ -692,7 +692,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         else if (lower.equals("polygon")) {
-            for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+            for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
                 if (polygon.doesContainLocation(location)) {
                     return true;
                 }
@@ -734,17 +734,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         else if (isAdvancedMatchable(lower)) {
             MatchHelper matcher = createMatcher(lower);
-            for (CuboidTag cuboid : NotableManager.getAllType(CuboidTag.class)) {
+            for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
                 if (cuboid.isInsideCuboid(location) && matcher.doesMatch(cuboid.noteName)) {
                     return true;
                 }
             }
-            for (EllipsoidTag ellipsoid : NotableManager.getAllType(EllipsoidTag.class)) {
+            for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
                 if (ellipsoid.contains(location) && matcher.doesMatch(ellipsoid.noteName)) {
                     return true;
                 }
             }
-            for (PolygonTag polygon : NotableManager.getAllType(PolygonTag.class)) {
+            for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
                 if (polygon.doesContainLocation(location) && matcher.doesMatch(polygon.noteName)) {
                     return true;
                 }
@@ -923,7 +923,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (inv.getIdHolder() instanceof ScriptTag && matcher.doesMatch(((ScriptTag) inv.getIdHolder()).getName())) {
             return true;
         }
-        String notedId = NotableManager.getSavedId(inv);
+        String notedId = NoteManager.getSavedId(inv);
         if (notedId != null && matcher.doesMatch(notedId)) {
             return true;
         }
@@ -936,7 +936,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         if (comparedto.equals("notable") || comparedto.equals("note")) {
-            return NotableManager.isSaved(inv);
+            return NoteManager.isSaved(inv);
         }
         if (comparedto.startsWith("inventory_flagged:")) {
             return inv.flagTracker != null && inv.flagTracker.hasFlag(comparedto.substring("inventory_flagged:".length()));
