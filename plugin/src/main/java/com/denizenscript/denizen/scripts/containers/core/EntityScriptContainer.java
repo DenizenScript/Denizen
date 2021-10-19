@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 
@@ -57,18 +58,22 @@ public class EntityScriptContainer extends ScriptContainer {
     //   flags:
     //     my_flag: my value
     //
-    //   # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
+    //   # Specify any mechanisms to apply the entity when it spawns.
+    //   # | Some entity scripts should have this key!
+    //   mechanisms:
     //
-    //   # Whether the entity has the default AI
-    //   # | Do not copy this line, it is only an example.
-    //   has_ai: true/false
+    //     # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
     //
-    //   # What age the entity is
-    //   # | Do not copy this line, it is only an example.
-    //   age: baby/adult/<#>
+    //     # Whether the entity has the default AI
+    //     # | Do not copy this line, it is only an example.
+    //     has_ai: true/false
+    //
+    //     # What age the entity is
+    //     # | Do not copy this line, it is only an example.
+    //     age: baby/adult/<#>
     // </code>
     //
-    // MORE OPTIONS ARE LISTED HERE: <@link url https://meta.denizenscript.com/Docs/Mechanisms/entitytag.>
+    // MORE MECHANISM OPTIONS ARE LISTED HERE: <@link url https://meta.denizenscript.com/Docs/Mechanisms/entitytag.>
     //
     // -->
 
@@ -82,7 +87,7 @@ public class EntityScriptContainer extends ScriptContainer {
         return getEntityFrom(null, null);
     }
 
-    public static HashSet<String> nonMechanismKeys = new HashSet<>(Arrays.asList("entity_type", "type", "debug", "custom", "data", "flags"));
+    public static HashSet<String> nonMechanismKeys = new HashSet<>(Arrays.asList("entity_type", "type", "debug", "custom", "data", "flags", "mechanisms"));
 
     public EntityTag getEntityFrom(PlayerTag player, NPCTag npc) {
         EntityTag entity;
@@ -103,12 +108,25 @@ public class EntityScriptContainer extends ScriptContainer {
                 }
                 entity.safeAdjust(new Mechanism("flag_map", tracker.map, context));
             }
+            if (contains("mechanisms")) {
+                YamlConfiguration mechSection = getConfigurationSection("mechanisms");
+                Set<StringHolder> strings = mechSection.getKeys(false);
+                for (StringHolder string : strings) {
+                    ObjectTag obj = CoreUtilities.objectToTagForm(mechSection.get(string.low), context, true, true);
+                    entity.safeAdjust(new Mechanism(string.low, obj, context));
+                }
+            }
+            boolean any = false;
             Set<StringHolder> strings = getContents().getKeys(false);
             for (StringHolder string : strings) {
                 if (!nonMechanismKeys.contains(string.low)) {
+                    any = true;
                     ObjectTag obj = CoreUtilities.objectToTagForm(getContents().get(string.low), context, true, true);
                     entity.safeAdjust(new Mechanism(string.low, obj, context));
                 }
+            }
+            if (any) {
+                Deprecations.entityMechanismsFormat.warn(this);
             }
             if (entity == null || entity.isUnique()) {
                 return null;

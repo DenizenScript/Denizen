@@ -9,7 +9,7 @@ IMPORTANT: Support is on Discord @ https://discord.gg/Q6pZGSR
 You should only post on GitHub if you've been directed here from the Discord.
 
 Please fill in the asterisks sections below.
-Use https://one.denizenscript.com/haste to pastebin any scripts.
+Use https://paste.denizenscript.com/ to pastebin any scripts.
  -->
 The output of `/version` on my server is: **paste here**
 The output of `/version denizen` on my server is: **paste here**
