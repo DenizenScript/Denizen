@@ -82,12 +82,7 @@ public class TextTagBase {
         // @description
         // Returns an empty element.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "empty");
+        TagManager.registerTagHandler(ElementTag.class, "empty", (attribute) -> new ElementTag(""));
 
         // <--[tag]
         // @attribute <&at>
@@ -95,12 +90,7 @@ public class TextTagBase {
         // @description
         // Returns a at symbol: @
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("@").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&at");
+        TagManager.registerTagHandler(ElementTag.class, "&at", (attribute) -> new ElementTag("@"));
 
         // <--[tag]
         // @attribute <&pc>
@@ -108,12 +98,7 @@ public class TextTagBase {
         // @description
         // Returns a percent symbol: %
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("%").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&pc");
+        TagManager.registerTagHandler(ElementTag.class, "&pc", (attribute) -> new ElementTag("%"));
 
         // <--[tag]
         // @attribute <&nl>
@@ -121,12 +106,7 @@ public class TextTagBase {
         // @description
         // Returns a newline symbol.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("\n").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&nl");
+        TagManager.registerTagHandler(ElementTag.class, "&nl", (attribute) -> new ElementTag("\n"));
 
         // <--[tag]
         // @attribute <&ss>
@@ -134,12 +114,7 @@ public class TextTagBase {
         // @description
         // Returns an internal coloring symbol: §
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("§").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&ss");
+        TagManager.registerTagHandler(ElementTag.class, "&ss", (attribute) -> new ElementTag("§"));
 
         // <--[tag]
         // @attribute <&sq>
@@ -147,12 +122,7 @@ public class TextTagBase {
         // @description
         // Returns a single-quote symbol: '
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("'").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&sq");
+        TagManager.registerTagHandler(ElementTag.class, "&sq", (attribute) -> new ElementTag("'"));
 
         // <--[tag]
         // @attribute <&sp>
@@ -160,12 +130,7 @@ public class TextTagBase {
         // @description
         // Returns a space symbol.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(String.valueOf(' ')).getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&sp");
+        TagManager.registerTagHandler(ElementTag.class, "&sp", (attribute) -> new ElementTag(String.valueOf(' ')));
 
         // <--[tag]
         // @attribute <&nbsp>
@@ -173,12 +138,7 @@ public class TextTagBase {
         // @description
         // Returns a non-breaking space symbol.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(CoreUtilities.NBSP).getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&nbsp");
+        TagManager.registerTagHandler(ElementTag.class, "&nbsp", (attribute) -> new ElementTag(CoreUtilities.NBSP));
 
         // <--[tag]
         // @attribute <&dq>
@@ -186,12 +146,7 @@ public class TextTagBase {
         // @description
         // Returns a double-quote symbol: "
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("\"").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&dq");
+        TagManager.registerTagHandler(ElementTag.class, "&dq", (attribute) -> new ElementTag("\""));
 
         // <--[tag]
         // @attribute <&co>
@@ -199,12 +154,7 @@ public class TextTagBase {
         // @description
         // Returns a colon symbol: :
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(":").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&co");
+        TagManager.registerTagHandler(ElementTag.class, "&co", (attribute) -> new ElementTag(":"));
 
         // <--[tag]
         // @attribute <&rb>
@@ -212,12 +162,7 @@ public class TextTagBase {
         // @description
         // Returns a right-bracket symbol: ]
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("]").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&rb");
+        TagManager.registerTagHandler(ElementTag.class, "&rb", (attribute) -> new ElementTag("]"));
 
         // <--[tag]
         // @attribute <&lb>
@@ -225,12 +170,7 @@ public class TextTagBase {
         // @description
         // Returns a left-bracket symbol: [
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("[").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&lb");
+        TagManager.registerTagHandler(ElementTag.class, "&lb", (attribute) -> new ElementTag("["));
 
         // <--[tag]
         // @attribute <&rc>
@@ -238,12 +178,7 @@ public class TextTagBase {
         // @description
         // Returns a right-brace symbol: }
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("}").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&rc");
+        TagManager.registerTagHandler(ElementTag.class, "&rc", (attribute) -> new ElementTag("}"));
 
         // <--[tag]
         // @attribute <&lc>
@@ -251,12 +186,7 @@ public class TextTagBase {
         // @description
         // Returns a left-brace symbol: {
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("{").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&lc");
+        TagManager.registerTagHandler(ElementTag.class, "&lc", (attribute) -> new ElementTag("{"));
 
         // <--[tag]
         // @attribute <&ns>
@@ -264,12 +194,7 @@ public class TextTagBase {
         // @description
         // Returns a number sign / hash / pound symbol: #
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("#").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&ns");
+        TagManager.registerTagHandler(ElementTag.class, "&ns", (attribute) -> new ElementTag("#"));
 
         // <--[tag]
         // @attribute <&lt>
@@ -277,12 +202,7 @@ public class TextTagBase {
         // @description
         // Returns a less than symbol: <
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("<").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&lt");
+        TagManager.registerTagHandler(ElementTag.class, "&lt", (attribute) -> new ElementTag("<"));
 
         // <--[tag]
         // @attribute <&gt>
@@ -290,12 +210,7 @@ public class TextTagBase {
         // @description
         // Returns a greater than symbol: >
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag(">").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&gt");
+        TagManager.registerTagHandler(ElementTag.class, "&gt", (attribute) -> new ElementTag(">"));
 
         // <--[tag]
         // @attribute <&bs>
@@ -303,12 +218,7 @@ public class TextTagBase {
         // @description
         // Returns a backslash symbol: \
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("\\").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&bs");
+        TagManager.registerTagHandler(ElementTag.class, "&bs", (attribute) -> new ElementTag("\\"));
 
         // <--[tag]
         // @attribute <&chr[<character>]>
@@ -316,13 +226,7 @@ public class TextTagBase {
         // @description
         // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                String chr = String.valueOf((char) Integer.parseInt(event.getAttributes().getContext(1), 16));
-                event.setReplaced(new ElementTag(chr).getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "&chr");
+        TagManager.registerTagHandler(ElementTag.class, "n", (attribute) -> new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16))));
 
         // <--[tag]
         // @attribute <n>
@@ -330,12 +234,7 @@ public class TextTagBase {
         // @description
         // Returns a newline symbol.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("\n").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "n");
+        TagManager.registerTagHandler(ElementTag.class, "n", (attribute) -> new ElementTag("\n"));
 
         // <--[tag]
         // @attribute <p>
@@ -343,12 +242,7 @@ public class TextTagBase {
         // @description
         // Returns a paragraph, for use in books.
         // -->
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                event.setReplaced(new ElementTag("\n " + ChatColor.RESET + " \n").getAttribute(event.getAttributes().fulfill(1)));
-            }
-        }, "p");
+        TagManager.registerTagHandler(ElementTag.class, "p", (attribute) -> new ElementTag("\n " + ChatColor.RESET + " \n"));
 
         // <--[tag]
         // @attribute <&hover[<hover_text>]>
@@ -955,14 +849,8 @@ public class TextTagBase {
         for (ChatColor color : ChatColor.values()) {
             final String nameVal = CoreUtilities.toLowerCase(color.name());
             final String retVal = color.toString();
-            TagRunnable.RootForm form = new TagRunnable.RootForm() {
-                @Override
-                public void run(ReplaceableTagEvent event) {
-                    event.setReplacedObject(new ElementTag(retVal).getObjectAttribute(event.getAttributes().fulfill(1)));
-                }
-            };
-            TagManager.registerTagHandler(form, "&" + color.getChar());
-            TagManager.registerTagHandler(form, nameVal);
+            TagManager.registerTagHandler(ElementTag.class, nameVal, (attribute) -> new ElementTag(retVal));
+            TagManager.registerTagHandler(ElementTag.class, "&" + color.getChar(), (attribute) -> new ElementTag(retVal));
         }
     }
 }

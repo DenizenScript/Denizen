@@ -73,7 +73,7 @@ public interface AreaContainmentObject extends ObjectTag {
         return blocks;
     }
 
-    static void registerTags(ObjectTagProcessor<? extends AreaContainmentObject> processor) {
+    static <T extends AreaContainmentObject> void registerTags(Class<T> type,  ObjectTagProcessor<T> processor) {
 
         // <--[tag]
         // @attribute <AreaObject.bounding_box>
@@ -82,7 +82,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns a cuboid approximately representing the maximal bounding box of the area (anything this cuboid does not contain, is also not contained by the area, but not vice versa).
         // For single-member CuboidTags, this tag returns a copy of the cuboid.
         // -->
-        processor.registerTag("bounding_box", (attribute, area) -> {
+        processor.registerTag(CuboidTag.class, "bounding_box", (attribute, area) -> {
             return area.getCuboidBoundary();
         });
 
@@ -93,7 +93,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns the area's world.
         // -->
-        processor.registerTag("world", (attribute, area) -> {
+        processor.registerTag(WorldTag.class, "world", (attribute, area) -> {
             return area.getWorld();
         });
 
@@ -103,7 +103,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all players currently within the area.
         // -->
-        processor.registerTag("players", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "players", (attribute, area) -> {
             ListTag result = new ListTag();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (area.doesContainLocation(player.getLocation())) {
@@ -120,7 +120,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Gets a list of all NPCs currently within the area.
         // -->
         if (Depends.citizens != null) {
-            processor.registerTag("npcs", (attribute, area) -> {
+            processor.registerTag(ListTag.class, "npcs", (attribute, area) -> {
                 ListTag result = new ListTag();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     NPCTag dnpc = new NPCTag(npc);
@@ -138,7 +138,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all entities currently within the area, with an optional search parameter for the entity.
         // -->
-        processor.registerTag("entities", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "entities", (attribute, area) -> {
             String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
             ListTag entities = new ListTag();
             for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithinForTag()) {
@@ -159,7 +159,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Gets a list of all living entities currently within the area.
         // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
-        processor.registerTag("living_entities", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "living_entities", (attribute, area) -> {
             ListTag result = new ListTag();
             for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithinForTag()) {
                 if (ent instanceof LivingEntity && area.doesContainLocation(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
@@ -175,7 +175,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a boolean indicating whether the specified location is inside this area.
         // -->
-        processor.registerTag("contains", (attribute, area) -> {
+        processor.registerTag(ElementTag.class, "contains", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -193,7 +193,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each block location within the area.
         // Optionally, specify a material match to only return locations with that block type.
         // -->
-        processor.registerTag("blocks", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "blocks", (attribute, area) -> {
             if (attribute.hasContext(1)) {
                 NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
                 try {
@@ -215,7 +215,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each LocationTag within the area that is safe for players or similar entities to spawn in.
         // Optionally, specify a material matcher to only return locations with that block type.
         // -->
-        processor.registerTag("spawnable_blocks", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "spawnable_blocks", (attribute, area) -> {
                 NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
                 try {
                     if (attribute.hasContext(1)) {
@@ -237,7 +237,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Gets a list of all block locations with a specified flag within the area.
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
-        processor.registerTag("blocks_flagged", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "blocks_flagged", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -251,7 +251,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each block location on the 3D outer shell of the area.
         // This tag is useful for displaying particles or blocks to mark the boundary of the area.
         // -->
-        processor.registerTag("shell", (attribute, area) -> {
+        processor.registerTag(ListTag.class, "shell", (attribute, area) -> {
             return area.getShell();
         });
         // <--[tag]
@@ -260,7 +260,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns whether this area is fully inside another cuboid.
         // -->
-        processor.registerTag("is_within", (attribute, area) -> {
+        processor.registerTag(ElementTag.class, "is_within", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -303,7 +303,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a copy of the area, with the specified world.
         // -->
-        processor.registerTag("with_world", (attribute, area) -> {
+        processor.registerTag(type, "with_world", (attribute, area) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -311,7 +311,7 @@ public interface AreaContainmentObject extends ObjectTag {
             if (world == null) {
                 return null;
             }
-            return area.withWorld(world);
+            return (T) area.withWorld(world);
         });
     }
 

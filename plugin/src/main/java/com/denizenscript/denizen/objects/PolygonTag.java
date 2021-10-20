@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
@@ -532,7 +531,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        AreaContainmentObject.registerTags(tagProcessor);
+        AreaContainmentObject.registerTags(PolygonTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <PolygonTag.max_y>
@@ -540,7 +539,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns the maximum Y level for this polygon.
         // -->
-        registerTag("max_y", (attribute, polygon) -> {
+        tagProcessor.registerTag(ElementTag.class, "max_y", (attribute, polygon) -> {
             return new ElementTag(polygon.yMax);
         });
 
@@ -550,7 +549,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns the minimum Y level for this polygon.
         // -->
-        registerTag("min_y", (attribute, polygon) -> {
+        tagProcessor.registerTag(ElementTag.class, "min_y", (attribute, polygon) -> {
             return new ElementTag(polygon.yMin);
         });
 
@@ -560,7 +559,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Gets the name of a noted PolygonTag. If the polygon isn't noted, this is null.
         // -->
-        registerTag("note_name", (attribute, polygon) -> {
+        tagProcessor.registerTag(ElementTag.class, "note_name", (attribute, polygon) -> {
             String noteName = NoteManager.getSavedId(polygon);
             if (noteName == null) {
                 return null;
@@ -574,7 +573,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a list of the polygon's corners, as locations with Y coordinate set to the y-min value.
         // -->
-        registerTag("corners", (attribute, polygon) -> {
+        tagProcessor.registerTag(ListTag.class, "corners", (attribute, polygon) -> {
             ListTag list = new ListTag();
             for (Corner corner : polygon.corners) {
                 list.addObject(new LocationTag(corner.x, polygon.yMin, corner.z, polygon.world.getName()));
@@ -588,7 +587,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with all coordinates shifted by the given location-vector.
         // -->
-        registerTag("shift", (attribute, polygon) -> {
+        tagProcessor.registerTag(PolygonTag.class, "shift", (attribute, polygon) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("PolygonTag.shift[...] tag must have an input.");
                 return null;
@@ -615,7 +614,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with the specified corner added to the end of the corner list.
         // -->
-        registerTag("with_corner", (attribute, polygon) -> {
+        tagProcessor.registerTag(PolygonTag.class, "with_corner", (attribute, polygon) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("PolygonTag.with_corner[...] tag must have an input.");
                 return null;
@@ -634,7 +633,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with the specified minimum-Y value.
         // -->
-        registerTag("with_y_min", (attribute, polygon) -> {
+        tagProcessor.registerTag(PolygonTag.class, "with_y_min", (attribute, polygon) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("PolygonTag.with_y_min[...] tag must have an input.");
                 return null;
@@ -650,7 +649,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with the specified maximum-Y value.
         // -->
-        registerTag("with_y_max", (attribute, polygon) -> {
+        tagProcessor.registerTag(PolygonTag.class, "with_y_max", (attribute, polygon) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("PolygonTag.with_y_max[...] tag must have an input.");
                 return null;
@@ -666,7 +665,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with the specified Y value included as part of the Y range (expanding the Y-min or Y-max as needed).
         // -->
-        registerTag("include_y", (attribute, polygon) -> {
+        tagProcessor.registerTag(PolygonTag.class, "include_y", (attribute, polygon) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("PolygonTag.include_y[...] tag must have an input.");
                 return null;
@@ -684,7 +683,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a list of locations along the 2D outline of this polygon, at the specified Y level (roughly a block-width of separation between each).
         // -->
-        registerTag("outline_2d", (attribute, polygon) -> {
+        tagProcessor.registerTag(ListTag.class, "outline_2d", (attribute, polygon) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("PolygonTag.outline_2d[...] tag must have an input.");
                 return null;
@@ -701,16 +700,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a list of locations along the 3D outline of this polygon (roughly a block-width of separation between each).
         // -->
-        registerTag("outline", (attribute, polygon) -> {
+        tagProcessor.registerTag(ListTag.class, "outline", (attribute, polygon) -> {
             return polygon.getOutline();
         });
     }
 
     public static ObjectTagProcessor<PolygonTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<PolygonTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

@@ -14,7 +14,7 @@ public class ColorTagBase {
         // Returns a color object constructed from the input value.
         // Refer to <@link objecttype ColorTag>.
         // -->
-        TagManager.registerTagHandler("color", (attribute) -> {
+        TagManager.registerTagHandler(ColorTag.class, "color", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Color tag base must have input.");
                 return null;

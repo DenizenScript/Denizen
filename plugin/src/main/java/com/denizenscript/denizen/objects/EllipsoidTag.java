@@ -408,7 +408,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        AreaContainmentObject.registerTags(tagProcessor);
+        AreaContainmentObject.registerTags(EllipsoidTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <EllipsoidTag.random>
@@ -417,7 +417,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Returns a random decimal location within the ellipsoid.
         // Note that distribution of results will not be completely even.
         // -->
-        registerTag("random", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "random", (attribute, object) -> {
             // This is an awkward hack to try to weight towards the center a bit (to counteract the weight-away-from-center that would otherwise happen).
             double y = (Math.sqrt(CoreUtilities.getRandom().nextDouble()) * 2 - 1) * object.size.getY();
             Vector result = new Vector();
@@ -439,7 +439,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns the location of the ellipsoid.
         // -->
-        registerTag("location", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "location", (attribute, object) -> {
             return object.center;
         });
 
@@ -449,7 +449,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns the size of the ellipsoid.
         // -->
-        registerTag("size", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "size", (attribute, object) -> {
             return object.size;
         });
 
@@ -459,7 +459,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns a copy of this ellipsoid, shifted by the input location.
         // -->
-        registerTag("add", (attribute, object) -> {
+        tagProcessor.registerTag(EllipsoidTag.class, "add", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("ellipsoid.add[...] tag must have an input.");
                 return null;
@@ -473,7 +473,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns a copy of this ellipsoid, with the size value adapted to include the specified world location.
         // -->
-        registerTag("include", (attribute, object) -> {
+        tagProcessor.registerTag(EllipsoidTag.class, "include", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("ellipsoid.include[...] tag must have an input.");
                 return null;
@@ -523,7 +523,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns a copy of this ellipsoid, set to the specified location.
         // -->
-        registerTag("with_location", (attribute, object) -> {
+        tagProcessor.registerTag(EllipsoidTag.class, "with_location", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("ellipsoid.with_location[...] tag must have an input.");
                 return null;
@@ -537,7 +537,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns a copy of this ellipsoid, set to the specified size.
         // -->
-        registerTag("with_size", (attribute, object) -> {
+        tagProcessor.registerTag(EllipsoidTag.class, "with_size", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("ellipsoid.with_size[...] tag must have an input.");
                 return null;
@@ -551,7 +551,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns a list of all chunks that this ellipsoid touches at all (note that no valid ellipsoid tag can ever totally contain a chunk, due to vertical limits and roundness).
         // -->
-        registerTag("chunks", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "chunks", (attribute, object) -> {
             ListTag chunks = new ListTag();
             double minPossibleX = object.center.getX() - object.size.getX();
             double minPossibleZ = object.center.getZ() - object.size.getZ();
@@ -580,7 +580,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Gets the name of a noted EllipsoidTag. If the ellipsoid isn't noted, this is null.
         // -->
-        registerTag("note_name", (attribute, ellipsoid) -> {
+        tagProcessor.registerTag(ElementTag.class, "note_name", (attribute, ellipsoid) -> {
             String noteName = NoteManager.getSavedId(ellipsoid);
             if (noteName == null) {
                 return null;
@@ -590,10 +590,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public static ObjectTagProcessor<EllipsoidTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<EllipsoidTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

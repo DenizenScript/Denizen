@@ -14,7 +14,7 @@ public class TradeTagBase {
         // Returns a trade object constructed from the input value.
         // Refer to <@link objecttype TradeTag>.
         // -->
-        TagManager.registerTagHandler("trade", (attribute) -> {
+        TagManager.registerTagHandler(TradeTag.class, "trade", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Trade tag base must have input.");
                 return null;

@@ -361,7 +361,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element with all color encoding stripped.
         // -->
-        PropertyParser.<BukkitElementProperties>registerTag("strip_color", (attribute, object) -> {
+        PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "strip_color", (attribute, object) -> {
             return new ElementTag(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)[0].toPlainText());
         });
 

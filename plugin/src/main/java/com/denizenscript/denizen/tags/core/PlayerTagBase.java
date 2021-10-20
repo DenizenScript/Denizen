@@ -26,7 +26,7 @@ public class PlayerTagBase implements Listener {
         // If no input value is specified, returns the linked player.
         // -->
         Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
-        TagManager.registerTagHandler("player", (attribute) -> {
+        TagManager.registerTagHandler(PlayerTag.class, "player", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 PlayerTag player = ((BukkitTagContext) attribute.context).player;
                 if (player != null) {

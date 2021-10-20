@@ -14,7 +14,7 @@ public class EnchantmentTagBase {
         // Returns an enchantment object constructed from the input value.
         // Refer to <@link objecttype EnchantmentTag>.
         // -->
-        TagManager.registerTagHandler("enchantment", (attribute) -> {
+        TagManager.registerTagHandler(EnchantmentTag.class, "enchantment", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Enchantment tag base must have input.");
                 return null;

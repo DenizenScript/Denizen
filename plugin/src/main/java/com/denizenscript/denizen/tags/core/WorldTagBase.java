@@ -14,7 +14,7 @@ public class WorldTagBase {
         // Returns a world object constructed from the input value.
         // Refer to <@link objecttype WorldTag>.
         // -->
-        TagManager.registerTagHandler("world", (attribute) -> {
+        TagManager.registerTagHandler(WorldTag.class, "world", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("World tag base must have input.");
                 return null;

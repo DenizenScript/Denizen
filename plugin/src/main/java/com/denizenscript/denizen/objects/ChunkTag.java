@@ -288,7 +288,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // -->
-        registerTag("add", (attribute, object) -> {
+        tagProcessor.registerTag(ChunkTag.class, "add", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                 return null;
@@ -315,7 +315,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // -->
-        registerTag("sub", (attribute, object) -> {
+        tagProcessor.registerTag(ChunkTag.class, "sub", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                 return null;
@@ -342,7 +342,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns true if the chunk has already been generated.
         // -->
-        registerTag("is_generated", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_generated", (attribute, object) -> {
             return new ElementTag(object.getBukkitWorld().isChunkGenerated(object.chunkX, object.chunkZ));
         });
 
@@ -352,7 +352,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns true if the chunk is currently loaded into memory.
         // -->
-        registerTag("is_loaded", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_loaded", (attribute, object) -> {
             return new ElementTag(object.isLoadedSafe());
         });
 
@@ -363,7 +363,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns whether the chunk is forced to stay loaded at all times.
         // This is related to the <@link command chunkload> command.
         // -->
-        registerTag("force_loaded", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "force_loaded", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             return new ElementTag(chunk != null && chunk.isForceLoaded());
         });
@@ -374,7 +374,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the x coordinate of the chunk.
         // -->
-        registerTag("x", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "x", (attribute, object) -> {
             return new ElementTag(object.chunkX);
         });
 
@@ -384,7 +384,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the z coordinate of the chunk.
         // -->
-        registerTag("z", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "z", (attribute, object) -> {
             return new ElementTag(object.chunkZ);
         });
 
@@ -394,7 +394,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the world associated with the chunk.
         // -->
-        registerTag("world", (attribute, object) -> {
+        tagProcessor.registerTag(WorldTag.class, "world", (attribute, object) -> {
             return object.world;
         });
 
@@ -404,7 +404,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a cuboid of this chunk.
         // -->
-        registerTag("cuboid", (attribute, object) -> {
+        tagProcessor.registerTag(CuboidTag.class, "cuboid", (attribute, object) -> {
             return new CuboidTag(new LocationTag(object.getWorldName(), object.getX() * 16, 0, object.getZ() * 16, 0, 0),
                     new LocationTag(object.getWorldName(), object.getX() * 16 + 15, 255, object.getZ() * 16 + 15, 0, 0));
         });
@@ -415,7 +415,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of tile entity locations in the chunk.
         // -->
-        registerTag("tile_entities", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "tile_entities", (attribute, object) -> {
             ListTag tiles = new ListTag();
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
@@ -440,7 +440,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a list of entities in the chunk.
         // Optionally specify entity types to filter down to.
         // -->
-        registerTag("entities", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "entities", (attribute, object) -> {
             ListTag entities = new ListTag();
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
@@ -477,7 +477,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a list of living entities in the chunk.
         // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
         // -->
-        registerTag("living_entities", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "living_entities", (attribute, object) -> {
             ListTag entities = new ListTag();
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
@@ -503,7 +503,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of players in the chunk.
         // -->
-        registerTag("players", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "players", (attribute, object) -> {
             ListTag entities = new ListTag();
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
@@ -523,7 +523,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of the height of each block in the chunk.
         // -->
-        registerTag("height_map", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "height_map", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
                 return null;
@@ -542,7 +542,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the average height of the blocks in the chunk.
         // -->
-        registerTag("average_height", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "average_height", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
                 return null;
@@ -563,7 +563,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // If no number is supplied, is_flat will return true if all the blocks are less than 2 blocks apart in height.
         // Specifying a number will modify the number criteria for determining if it is flat.
         // -->
-        registerTag("is_flat", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_flat", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
                 return null;
@@ -589,7 +589,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of the highest non-air surface blocks in the chunk.
         // -->
-        registerTag("surface_blocks", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "surface_blocks", (attribute, object) -> {
             ListTag surface_blocks = new ListTag();
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
@@ -611,7 +611,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Gets a list of all block locations with a specified flag within the CuboidTag.
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
-        registerTag("blocks_flagged", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "blocks_flagged", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("ChunkTag.blocks_flagged[...] must have an input value.");
                 return null;
@@ -634,7 +634,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
-        registerTag("spawn_slimes", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "spawn_slimes", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
                 return null;
@@ -650,7 +650,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the total time the chunk has been inhabited for.
         // This is a primary deciding factor in the "local difficulty" setting.
         // -->
-        registerTag("inhabited_time", (attribute, object) -> {
+        tagProcessor.registerTag(DurationTag.class, "inhabited_time", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
                 return null;
@@ -660,10 +660,6 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public static ObjectTagProcessor<ChunkTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<ChunkTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

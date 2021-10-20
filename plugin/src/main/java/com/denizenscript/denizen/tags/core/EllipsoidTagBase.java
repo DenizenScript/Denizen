@@ -14,7 +14,7 @@ public class EllipsoidTagBase {
         // Returns an ellipsoid object constructed from the input value.
         // Refer to <@link objecttype EllipsoidTag>.
         // -->
-        TagManager.registerTagHandler("ellipsoid", (attribute) -> {
+        TagManager.registerTagHandler(EllipsoidTag.class, "ellipsoid", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Ellipsoid tag base must have input.");
                 return null;

@@ -1131,7 +1131,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        PropertyParser.registerPropertyTagHandlers(tagProcessor);
+        PropertyParser.registerPropertyTagHandlers(InventoryTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <InventoryTag.empty_slots>
@@ -1139,7 +1139,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the number of empty slots in an inventory.
         // -->
-        registerTag("empty_slots", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "empty_slots", (attribute, object) -> {
             InventoryTag dummyInv;
             if (object.inventory.getType() == InventoryType.PLAYER) {
                 ItemStack[] contents = object.getStorageContents();
@@ -1162,7 +1162,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns whether the inventory can fit an item.
         // -->
-        registerTag("can_fit", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "can_fit", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1234,7 +1234,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns a copy of the InventoryTag with items added.
         // -->
-        registerTag("include", (attribute, object) -> {
+        tagProcessor.registerTag(InventoryTag.class, "include", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1278,7 +1278,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns a copy of the InventoryTag with all matching items excluded.
         // -->
-        registerTag("exclude_item", (attribute, object) -> {
+        tagProcessor.registerTag(InventoryTag.class, "exclude_item", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1325,7 +1325,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return dummyInv;
         });
 
-        registerTag("exclude", (attribute, object) -> {
+        tagProcessor.registerTag(InventoryTag.class, "exclude", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasContext(1)) {
                 return null;
@@ -1363,7 +1363,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns whether the inventory is empty.
         // -->
-        registerTag("is_empty", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_empty", (attribute, object) -> {
             boolean empty = true;
             for (ItemStack item : object.getStorageContents()) {
                 if (item != null && item.getType() != Material.AIR) {
@@ -1380,7 +1380,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns whether the inventory is completely full.
         // -->
-        registerTag("is_full", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_full", (attribute, object) -> {
             boolean full = true;
 
             for (ItemStack item : object.getStorageContents()) {
@@ -1401,7 +1401,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns whether the inventory contains any item that matches the specified item matcher.
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
-        registerTag("contains_item", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "contains_item", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1433,7 +1433,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(found_items >= qty);
         });
 
-        registerTag("contains", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "contains", (attribute, object) -> {
             // <--[tag]
             // @attribute <InventoryTag.contains.display[(strict:)<element>]>
             // @returns ElementTag(Boolean)
@@ -1763,7 +1763,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(false);
         });
 
-        registerTag("contains_any", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "contains_any", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasContext(1)) {
                 return null;
@@ -1799,7 +1799,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns the location of the first empty slot.
         // Returns -1 if the inventory is full.
         // -->
-        registerTag("first_empty", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "first_empty", (attribute, object) -> {
             int val = object.firstEmpty(0);
             return new ElementTag(val >= 0 ? (val + 1) : -1);
         });
@@ -1812,7 +1812,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns -1 if there's no match.
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
-        registerTag("find_item", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "find_item", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1828,7 +1828,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(-1);
         });
 
-        registerTag("find", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "find", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("material", 2)) {
                 ListTag list = attribute.contextAsType(2, ListTag.class);
@@ -1885,7 +1885,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(slot);
         });
 
-        registerTag("find_imperfect", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "find_imperfect", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
                 return null;
@@ -1913,7 +1913,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns Denizen's type ID for this inventory (player, location, etc.).
         // -->
-        registerTag("id_type", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "id_type", (attribute, object) -> {
             return new ElementTag(object.idType);
         });
 
@@ -1923,7 +1923,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Gets the name of a noted InventoryTag. If the inventory isn't noted, this is null.
         // -->
-        registerTag("note_name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "note_name", (attribute, object) -> {
             String noteName = NoteManager.getSavedId(object);
             if (noteName == null) {
                 return null;
@@ -1937,7 +1937,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the location of this inventory's holder.
         // -->
-        registerTag("location", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "location", (attribute, object) -> {
             return object.getLocation();
         });
 
@@ -1949,7 +1949,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // or the combined quantity of all itemstacks if one is not.
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
-        registerTag("quantity_item", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "quantity_item", (attribute, object) -> {
             String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
             int found_items = 0;
             for (ItemStack item : object.getContents()) {
@@ -1962,7 +1962,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(found_items);
         });
 
-        registerTag("quantity", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "quantity", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("scriptname", 2)) {
                 if (!attribute.hasContext(2)) {
@@ -2003,7 +2003,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the number of itemstacks that match an item if one is specified, or the number of all itemstacks if one is not.
         // -->
-        registerTag("stacks", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "stacks", (attribute, object) -> {
             if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
                 return new ElementTag(object.count(attribute.contextAsType(1, ItemTag.class).getItemStack(), true));
             }
@@ -2019,7 +2019,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // If one slot is specified, returns the ItemTag in the specified slot.
         // If more than what slot is specified, returns a ListTag(ItemTag) of the item in each given slot.
         // -->
-        registerTag("slot", (attribute, object) -> {
+        tagProcessor.registerTag(ObjectTag.class, "slot", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -2062,7 +2062,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
-        registerTag("inventory_type", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "inventory_type", (attribute, object) -> {
             return new ElementTag(object.inventory instanceof HorseInventory ? "HORSE" : object.getInventory().getType().name());
         });
 
@@ -2075,7 +2075,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Output keys for horses are saddle, armor.
         // Air items will be left out of the map.
         // -->
-        registerTag("equipment_map", (attribute, object) -> {
+        tagProcessor.registerTag(MapTag.class, "equipment_map", (attribute, object) -> {
             return object.getEquipmentMap();
         });
 
@@ -2087,7 +2087,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // For players, the order is boots|leggings|chestplate|helmet.
         // For horses, the order is saddle|armor.
         // -->
-        registerTag("equipment", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "equipment", (attribute, object) -> {
             return object.getEquipment();
         });
 
@@ -2098,7 +2098,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the items currently in a crafting inventory's matrix.
         // -->
-        registerTag("matrix", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "matrix", (attribute, object) -> {
             if (!(object.inventory instanceof CraftingInventory)) {
                 return null;
             }
@@ -2121,7 +2121,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns the recipe ID for the recipe currently formed in a crafting inventory.
         // Returns a list in the Namespace:Key format, for example "minecraft:stick".
         // -->
-        registerTag("recipe", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "recipe", (attribute, object) -> {
             Recipe recipe;
             if ((object.inventory instanceof CraftingInventory)) {
                 recipe = ((CraftingInventory) object.inventory).getRecipe();
@@ -2141,7 +2141,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the quantity of items that would be received if this crafting inventory were fully crafted (eg via a shift click).
         // -->
-        registerTag("craftable_quantity", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "craftable_quantity", (attribute, object) -> {
             Recipe recipe;
             if ((object.inventory instanceof CraftingInventory)) {
                 recipe = ((CraftingInventory) object.inventory).getRecipe();
@@ -2162,7 +2162,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the item currently in the result section of a crafting inventory or furnace inventory.
         // -->
-        registerTag("result", (attribute, object) -> {
+        tagProcessor.registerTag(ItemTag.class, "result", (attribute, object) -> {
             ItemStack result;
             if ((object.inventory instanceof CraftingInventory)) {
                 result = ((CraftingInventory) object.inventory).getResult();
@@ -2186,7 +2186,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the current repair cost on an anvil.
         // -->
-        registerTag("anvil_repair_cost", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "anvil_repair_cost", (attribute, object) -> {
             if (!(object.inventory instanceof AnvilInventory)) {
                 return null;
             }
@@ -2200,7 +2200,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the maximum repair cost on an anvil.
         // -->
-        registerTag("anvil_max_repair_cost", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "anvil_max_repair_cost", (attribute, object) -> {
             if (!(object.inventory instanceof AnvilInventory)) {
                 return null;
             }
@@ -2213,7 +2213,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the current entered renaming text on an anvil.
         // -->
-        registerTag("anvil_rename_text", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "anvil_rename_text", (attribute, object) -> {
             if (!(object.inventory instanceof AnvilInventory)) {
                 return null;
             }
@@ -2227,7 +2227,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the item currently in the fuel section of a furnace or brewing stand inventory.
         // -->
-        registerTag("fuel", (attribute, object) -> {
+        tagProcessor.registerTag(ItemTag.class, "fuel", (attribute, object) -> {
             if (object.getInventory() instanceof FurnaceInventory) {
                 return new ItemTag(((FurnaceInventory) object.getInventory()).getFuel());
             }
@@ -2244,7 +2244,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the item currently in the smelting slot of a furnace inventory, or the ingredient slot of a brewing stand inventory.
         // -->
-        registerTag("input", (attribute, object) -> {
+        tagProcessor.registerTag(ItemTag.class, "input", (attribute, object) -> {
             if (object.getInventory() instanceof FurnaceInventory) {
                 return new ItemTag(((FurnaceInventory) object.getInventory()).getSmelting());
             }
@@ -2262,7 +2262,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns whether the inventory matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
-        registerTag("advanced_matches", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -2271,10 +2271,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     }
 
     public static ObjectTagProcessor<InventoryTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<InventoryTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

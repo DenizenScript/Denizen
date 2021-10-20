@@ -181,7 +181,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
         // -->
-        registerTag("downfall_type", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
             return new ElementTag(CoreUtilities.toLowerCase(object.biome.getDownfallType().name()));
         });
 
@@ -191,7 +191,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns this biome's name.
         // -->
-        registerTag("name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(CoreUtilities.toLowerCase(object.biome.getName()));
         });
 
@@ -202,7 +202,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the humidity of this biome.
         // -->
-        registerTag("humidity", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "humidity", (attribute, object) -> {
             return new ElementTag(object.biome.getHumidity());
         });
         // <--[tag]
@@ -212,7 +212,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the temperature of this biome.
         // -->
-        registerTag("temperature", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "temperature", (attribute, object) -> {
             return new ElementTag(object.biome.getTemperature());
         });
         // <--[tag]
@@ -224,7 +224,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // (By default, will be "ALL").
         //
         // -->
-        registerTag("spawnable_entities", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "spawnable_entities", (attribute, object) -> {
             List<EntityType> entityTypes;
             if (attribute.startsWith("ambient", 2)) {
                 Deprecations.biomeSpawnableTag.warn(attribute.context);
@@ -276,10 +276,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public static ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<BiomeTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

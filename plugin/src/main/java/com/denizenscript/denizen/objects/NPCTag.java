@@ -38,10 +38,7 @@ import net.citizensnpcs.trait.*;
 import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -304,12 +301,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return npc.isSpawned();
     }
 
-    public String getOwner() {
-        Owner trait = getCitizen().getOrAddTrait(Owner.class);
-        if (trait.getOwnerId() == null) {
-            return trait.getOwner();
-        }
-        return trait.getOwnerId().toString();
+    public UUID getOwner() {
+        return getCitizen().getOrAddTrait(Owner.class).getOwnerId();
     }
 
     public AssignmentTrait getAssignmentTrait() {
@@ -426,12 +419,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // Defined in EntityTag
-        registerTag("is_npc", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_npc", (attribute, object) -> {
             return new ElementTag(true);
         });
 
         // Defined in EntityTag
-        registerTag("location", (attribute, object) -> {
+        tagProcessor.registerTag(ObjectTag.class, "location", (attribute, object) -> {
             if (attribute.startsWith("previous_location", 2)) {
                 attribute.fulfill(1);
                 Deprecations.npcPreviousLocationTag.warn(attribute.context);
@@ -449,12 +442,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's previous navigated location.
         // -->
-        registerTag("previous_location", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "previous_location", (attribute, object) -> {
             return NPCTagBase.previousLocations.get(object.getId());
         });
 
         // Defined in EntityTag
-        registerTag("eye_location", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "eye_location", (attribute, object) -> {
             return object.getEyeLocation();
         });
 
@@ -464,7 +457,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has a nickname.
         // -->
-        registerTag("has_nickname", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_nickname", (attribute, object) -> {
             NPC citizen = object.getCitizen();
             return new ElementTag(citizen.hasTrait(NicknameTrait.class) && citizen.getOrAddTrait(NicknameTrait.class).hasNickname());
         });
@@ -475,7 +468,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC is sitting. Relates to <@link command sit>.
         // -->
-        registerTag("is_sitting", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_sitting", (attribute, object) -> {
             NPC citizen = object.getCitizen();
             return new ElementTag(citizen.hasTrait(SittingTrait.class) && citizen.getOrAddTrait(SittingTrait.class).isSitting());
         });
@@ -486,7 +479,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC is sleeping. Relates to <@link command sleep>.
         // -->
-        registerTag("is_sleeping", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
             NPC citizen = object.getCitizen();
             return new ElementTag(citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping());
         });
@@ -497,13 +490,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's display name, as set by the Nickname trait (or the default NPC name).
         // -->
-        registerTag("nickname", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "nickname", (attribute, object) -> {
             return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
                     .getNickname() : object.getName());
         });
 
         // Documented in EntityTag
-        registerTag("name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             if (attribute.startsWith("nickname", 2)) {
                 Deprecations.npcNicknameTag.warn(attribute.context);
                 attribute.fulfill(1);
@@ -519,7 +512,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns a list of all of the NPC's traits.
         // -->
-        registerTag("traits", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
             List<String> list = new ArrayList<>();
             for (Trait trait : object.getCitizen().getTraits()) {
                 list.add(trait.getName());
@@ -533,7 +526,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trait.
         // -->
-        registerTag("has_trait", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_trait", (attribute, object) -> {
             if (attribute.hasContext(1)) {
                 Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getContext(1));
                 if (trait != null) {
@@ -549,7 +542,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is pushable.
         // -->
-        registerTag("pushable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "pushable", (attribute, object) -> {
             return new ElementTag(object.getPushableTrait().isPushable());
         }, "is_pushable");
 
@@ -559,7 +552,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trigger.
         // -->
-        registerTag("has_trigger", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_trigger", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -576,7 +569,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has anchors assigned.
         // -->
-        registerTag("has_anchors", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_anchors", (attribute, object) -> {
             return (new ElementTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors().size() > 0));
         });
 
@@ -586,7 +579,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
-        registerTag("list_anchors", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "list_anchors", (attribute, object) -> {
             ListTag list = new ListTag();
             for (Anchor anchor : object.getCitizen().getOrAddTrait(Anchors.class).getAnchors()) {
                 list.add(anchor.getName());
@@ -600,7 +593,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the location associated with the specified anchor, or null if it doesn't exist.
         // -->
-        registerTag("anchor", (attribute, object) -> {
+        tagProcessor.registerTag(ObjectTag.class, "anchor", (attribute, object) -> {
             Anchors trait = object.getCitizen().getOrAddTrait(Anchors.class);
             if (attribute.hasContext(1)) {
                 Anchor anchor = trait.getAnchor(attribute.getContext(1));
@@ -633,7 +626,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the specified constant from the NPC.
         // -->
-        registerTag("constant", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "constant", (attribute, object) -> {
             if (attribute.hasContext(1)) {
                 if (object.getCitizen().hasTrait(ConstantsTrait.class)
                         && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
@@ -653,7 +646,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
-        registerTag("has_pose", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_pose", (attribute, object) -> {
             if (attribute.hasContext(1)) {
                 return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(attribute.getContext(1)));
             }
@@ -669,7 +662,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the pose as a LocationTag with x, y, and z set to 0, and the world set to the first
         // possible available world Bukkit knows about.
         // -->
-        registerTag("pose", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "pose", (attribute, object) -> {
             if (attribute.hasContext(1)) {
                 Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(attribute.getContext(1));
                 return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
@@ -686,7 +679,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the NPCTag of a hologram attached to this NPC as its nameplate (if any).
         // Note that this can regenerate at any time.
         // -->
-        registerTag("name_hologram_npc", (attribute, object) -> {
+        tagProcessor.registerTag(ObjectTag.class, "name_hologram_npc", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
                 return null;
             }
@@ -705,7 +698,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the list of hologram NPCs attached to an NPC (if any).
         // Note that these can regenerate at any time.
         // -->
-        registerTag("hologram_npcs", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "hologram_npcs", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
                 return null;
             }
@@ -728,7 +721,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the list of hologram lines attached to an NPC.
         // -->
-        registerTag("hologram_lines", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "hologram_lines", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
                 return null;
             }
@@ -743,7 +736,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the direction of an NPC's hologram as "BOTTOM_UP" or "TOP_DOWN".
         // -->
-        registerTag("hologram_direction", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "hologram_direction", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
                 return null;
             }
@@ -758,7 +751,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the line height for an NPC's hologram. Can be -1, indicating a default value should be used.
         // -->
-        registerTag("hologram_line_height", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "hologram_line_height", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
                 return null;
             }
@@ -772,7 +765,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is currently sneaking. Only works for player-type NPCs.
         // -->
-        registerTag("is_sneaking", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
             if (!object.isSpawned() && object.getEntity() instanceof Player) {
                 return null;
             }
@@ -786,7 +779,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is currently engaged.
         // See <@link command engage>
         // -->
-        registerTag("engaged", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "engaged", (attribute, object) -> {
             return new ElementTag(object.isEngaged());
         }, "is_engaged");
 
@@ -797,7 +790,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
         // -->
-        registerTag("invulnerable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "invulnerable", (attribute, object) -> {
             return new ElementTag(object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
         }, "vulnerable");
 
@@ -807,7 +800,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's ID number.
         // -->
-        registerTag("id", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "id", (attribute, object) -> {
             return new ElementTag(object.getId());
         });
 
@@ -816,20 +809,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @returns PlayerTag
         // @mechanism NPCTag.owner
         // @description
-        // Returns the owner of the NPC as a PlayerTag if it's a player, otherwise as just the name.
+        // Returns the owner of the NPC as a PlayerTag, if any.
         // -->
-        registerTag("owner", (attribute, object) -> {
-            String owner = object.getOwner();
-            PlayerTag player = null;
-            if (!owner.equalsIgnoreCase("server")) {
-                player = PlayerTag.valueOfInternal(owner, false);
+        tagProcessor.registerTag(ObjectTag.class, "owner", (attribute, object) -> {
+            UUID owner = object.getOwner();
+            if (owner == null) {
+                return null;
             }
-            if (player != null) {
-                return player;
+            OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
+            if (player.hasPlayedBefore()) {
+                return new PlayerTag(player);
             }
-            else {
-                return new ElementTag(owner);
-            }
+            return null;
         });
 
         // <--[tag]
@@ -839,7 +830,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a custom skin.
         // -->
-        registerTag("has_skin", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_skin", (attribute, object) -> {
             return new ElementTag(object.getCitizen().hasTrait(SkinTrait.class) && object.getCitizen().getOrAddTrait(SkinTrait.class).getSkinName() != null);
         });
 
@@ -852,7 +843,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // In the format: "texture;signature" (two values separated by a semicolon).
         // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
-        registerTag("skin_blob", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "skin_blob", (attribute, object) -> {
             if (object.getCitizen().hasTrait(SkinTrait.class)) {
                 SkinTrait skin = object.getCitizen().getOrAddTrait(SkinTrait.class);
                 String tex = skin.getTexture();
@@ -873,7 +864,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // In the format: "UUID|Texture" (two values separated by pipes).
         // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
-        registerTag("skull_skin", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "skull_skin", (attribute, object) -> {
             if (!object.getCitizen().hasTrait(SkinTrait.class)) {
                 return null;
             }
@@ -888,7 +879,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's custom skin, if any.
         // -->
-        registerTag("skin", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "skin", (attribute, object) -> {
             if (object.getCitizen().hasTrait(SkinTrait.class)) {
                 return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).getSkinName());
             }
@@ -902,7 +893,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is set to automatically update skins from name.
         // -->
-        registerTag("auto_update_skin", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "auto_update_skin", (attribute, object) -> {
             if (object.getCitizen().hasTrait(SkinTrait.class)) {
                 return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).shouldUpdateSkins());
             }
@@ -915,7 +906,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the InventoryTag of the NPC.
         // -->
-        registerTag("inventory", (attribute, object) -> {
+        tagProcessor.registerTag(InventoryTag.class, "inventory", (attribute, object) -> {
             return object.getDenizenInventory();
         });
 
@@ -925,7 +916,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is spawned.
         // -->
-        registerTag("is_spawned", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_spawned", (attribute, object) -> {
             return new ElementTag(object.isSpawned());
         });
 
@@ -935,7 +926,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is protected.
         // -->
-        registerTag("is_protected", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_protected", (attribute, object) -> {
             return new ElementTag(object.getCitizen().isProtected());
         });
 
@@ -946,7 +937,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has lookclose enabled.
         // -->
-        registerTag("lookclose", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "lookclose", (attribute, object) -> {
             NPC citizen = object.getCitizen();
             if (citizen.hasTrait(LookClose.class)) {
                 // There is no method to check if the NPC has LookClose enabled...
@@ -965,7 +956,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has controllable enabled.
         // -->
-        registerTag("controllable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "controllable", (attribute, object) -> {
             if (object.getCitizen().hasTrait(Controllable.class)) {
                 return new ElementTag(object.getCitizen().getOrAddTrait(Controllable.class).isEnabled());
             }
@@ -979,7 +970,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is targetable.
         // -->
-        registerTag("targetable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "targetable", (attribute, object) -> {
             boolean targetable = object.getCitizen().data().get(NPC.TARGETABLE_METADATA, object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
             return new ElementTag(targetable);
         });
@@ -991,11 +982,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC teleports when it is stuck.
         // -->
-        registerTag("teleport_on_stuck", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "teleport_on_stuck", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE);
         });
 
-        registerTag("has_script", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_script", (attribute, object) -> {
             Deprecations.hasScriptTags.warn(attribute.context);
             NPC citizen = object.getCitizen();
             return new ElementTag(citizen.hasTrait(AssignmentTrait.class) && citizen.getOrAddTrait(AssignmentTrait.class).hasAssignment());
@@ -1007,7 +998,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's assigned script.
         // -->
-        registerTag("script", (attribute, object) -> {
+        tagProcessor.registerTag(ScriptTag.class, "script", (attribute, object) -> {
             NPC citizen = object.getCitizen();
             if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getOrAddTrait(AssignmentTrait.class).hasAssignment()) {
                 return null;
@@ -1024,7 +1015,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to its destination (in block-lengths).
         // -->
-        registerTag("distance_margin", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "distance_margin", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getDefaultParameters().distanceMargin());
         });
 
@@ -1035,7 +1026,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current pathfinding distance margin. That is, how close it needs to get to individual points along its path.
         // -->
-        registerTag("path_distance_margin", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "path_distance_margin", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getDefaultParameters().pathDistanceMargin());
         });
 
@@ -1045,7 +1036,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is currently navigating.
         // -->
-        registerTag("is_navigating", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_navigating", (attribute, object) -> {
             return new ElementTag(object.getNavigator().isNavigating());
         });
 
@@ -1056,7 +1047,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the current speed of the NPC.
         // -->
-        registerTag("speed", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "speed", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().speed());
         });
 
@@ -1067,7 +1058,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current maximum pathfinding range.
         // -->
-        registerTag("range", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "range", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().range());
         });
 
@@ -1078,7 +1069,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current navigator attack range limit.
         // -->
-        registerTag("attack_range", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "attack_range", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().attackRange());
         });
 
@@ -1089,7 +1080,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the NPC's current navigator attack strategy.
         // Not related to Sentinel combat.
         // -->
-        registerTag("attack_strategy", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "attack_strategy", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString());
         });
 
@@ -1099,7 +1090,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's current movement speed modifier (a multiplier applied over their base speed).
         // -->
-        registerTag("speed_modifier", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "speed_modifier", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().speedModifier());
         });
 
@@ -1109,7 +1100,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the NPC's base navigation speed.
         // -->
-        registerTag("base_speed", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "base_speed", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().baseSpeed());
         });
 
@@ -1119,7 +1110,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC will avoid water.
         // -->
-        registerTag("avoid_water", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "avoid_water", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getLocalParameters().avoidWater());
         });
 
@@ -1129,7 +1120,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the location the NPC is currently navigating towards (if any).
         // -->
-        registerTag("target_location", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "target_location", (attribute, object) -> {
             if (object.getNavigator().getTargetAsLocation() == null) {
                 return null;
             }
@@ -1143,7 +1134,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the location the NPC will currently look at while moving, if any.
         // -->
-        registerTag("navigator_look_at", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "navigator_look_at", (attribute, object) -> {
             if (object.getNavigator().getLocalParameters().lookAtFunction() == null) {
                 return null;
             }
@@ -1161,7 +1152,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is currently targeting an entity for the Citizens internal punching pathfinder.
         // Not compatible with Sentinel.
         // -->
-        registerTag("is_fighting", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_fighting", (attribute, object) -> {
             return new ElementTag(object.getNavigator().getEntityTarget() != null && object.getNavigator().getEntityTarget().isAggressive());
         });
 
@@ -1171,7 +1162,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the entity type of the NPC's current navigation target (if any).
         // -->
-        registerTag("target_type", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "target_type", (attribute, object) -> {
             if (object.getNavigator().getTargetType() == null) {
                 return null;
             }
@@ -1184,7 +1175,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the entity being targeted by the NPC's current navigation (if any).
         // -->
-        registerTag("target_entity", (attribute, object) -> {
+        tagProcessor.registerTag(EntityTag.class, "target_entity", (attribute, object) -> {
             if (object.getNavigator().getEntityTarget() == null || object.getNavigator().getEntityTarget().getTarget() == null) {
                 return null;
             }
@@ -1197,7 +1188,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the name of the registry this NPC came from.
         // -->
-        registerTag("registry_name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "registry_name", (attribute, object) -> {
             return new ElementTag(object.getCitizen().getOwningRegistry().getName());
         });
 
@@ -1207,7 +1198,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the value of a Citizens NPC metadata key.
         // -->
-        registerTag("citizens_data", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "citizens_data", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -1224,7 +1215,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns a list of Citizens NPC metadata keys.
         // -->
-        registerTag("citizens_data_keys", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "citizens_data_keys", (attribute, object) -> {
             DataKey holder = new MemoryDataKey();
             object.getCitizen().data().saveTo(holder);
             ListTag result = new ListTag();
@@ -1234,17 +1225,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             return result;
         });
 
-        registerTag("navigator", (attribute, object) -> {
+        tagProcessor.registerTag(NPCTag.class, "navigator", (attribute, object) -> {
             Deprecations.oldNPCNavigator.warn(attribute.context);
             return object;
         });
     }
 
     public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<NPCTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

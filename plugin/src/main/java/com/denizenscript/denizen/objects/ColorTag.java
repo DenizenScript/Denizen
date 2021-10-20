@@ -203,7 +203,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a hex code formatting of this color, like '#ff00ff'.
         // -->
-        registerTag("hex", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "hex", (attribute, object) -> {
             return new ElementTag("#" + CoreUtilities.hexEncode(new byte[] { (byte) object.color.getRed(), (byte) object.color.getGreen(), (byte) object.color.getBlue() }));
         });
 
@@ -213,7 +213,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the red value of this color (0 to 255).
         // -->
-        registerTag("red", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "red", (attribute, object) -> {
             return new ElementTag(object.color.getRed());
         });
 
@@ -223,7 +223,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the green value of this color (0 to 255).
         // -->
-        registerTag("green", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "green", (attribute, object) -> {
             return new ElementTag(object.color.getGreen());
         });
 
@@ -233,7 +233,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the blue value of this color (0 to 255).
         // -->
-        registerTag("blue", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "blue", (attribute, object) -> {
             return new ElementTag(object.color.getBlue());
         });
 
@@ -244,7 +244,7 @@ public class ColorTag implements ObjectTag {
         // Returns the RGB value of this color.
         // EG, 255,0,255
         // -->
-        registerTag("rgb", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "rgb", (attribute, object) -> {
             Color color = object.color;
             return new ElementTag(color.getRed() + "," + color.getGreen() + "," + color.getBlue());
         });
@@ -255,7 +255,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the hue value of this color (0 to 255).
         // -->
-        registerTag("hue", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "hue", (attribute, object) -> {
             return new ElementTag(object.toHSB()[0]);
         });
 
@@ -265,7 +265,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the saturation value of this color (0 to 255).
         // -->
-        registerTag("saturation", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "saturation", (attribute, object) -> {
             return new ElementTag(object.toHSB()[1]);
         });
 
@@ -275,7 +275,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the brightness value of this color (0 to 255).
         // -->
-        registerTag("brightness", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "brightness", (attribute, object) -> {
             return new ElementTag(object.toHSB()[2]);
         });
 
@@ -286,7 +286,7 @@ public class ColorTag implements ObjectTag {
         // Returns the HSV value of this color.
         // EG, 100,100,255
         // -->
-        registerTag("hsv", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "hsv", (attribute, object) -> {
             int[] HSV = object.toHSB();
             return new ElementTag(HSV[0] + "," + HSV[1] + "," + HSV[2]);
         });
@@ -297,7 +297,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different red value (0 to 255).
         // -->
-        registerTag("with_red", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "with_red", (attribute, object) -> {
             return new ColorTag(object.color.setRed(attribute.getIntContext(1)));
         });
 
@@ -307,7 +307,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different green value (0 to 255).
         // -->
-        registerTag("with_green", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "with_green", (attribute, object) -> {
             return new ColorTag(object.color.setGreen(attribute.getIntContext(1)));
         });
 
@@ -317,7 +317,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different blue value (0 to 255).
         // -->
-        registerTag("with_blue", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "with_blue", (attribute, object) -> {
             return new ColorTag(object.color.setBlue(attribute.getIntContext(1)));
         });
 
@@ -327,7 +327,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different hue value (0 to 255).
         // -->
-        registerTag("with_hue", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "with_hue", (attribute, object) -> {
             int[] HSB = object.toHSB();
             HSB[0] = attribute.getIntContext(1);
             return fromHSB(HSB);
@@ -339,7 +339,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different saturation value (0 to 255).
         // -->
-        registerTag("with_saturation", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "with_saturation", (attribute, object) -> {
             int[] HSB = object.toHSB();
             HSB[1] = attribute.getIntContext(1);
             return fromHSB(HSB);
@@ -351,7 +351,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different brightness value (0 to 255).
         // -->
-        registerTag("with_brightness", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "with_brightness", (attribute, object) -> {
             int[] HSB = object.toHSB();
             HSB[2] = attribute.getIntContext(1);
             return fromHSB(HSB);
@@ -363,7 +363,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the name of this color (or red,green,blue if none).
         // -->
-        registerTag("name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(object.identify().substring(3));
         });
 
@@ -373,7 +373,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the color that results if you mix this color with another.
         // -->
-        registerTag("mix", (attribute, object) -> {
+        tagProcessor.registerTag(ColorTag.class, "mix", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 Debug.echoError("The tag ListTag.insert[...] must have a value.");
                 return null;
@@ -394,7 +394,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the color as a particle offset, for use with <@link command playeffect>.
         // -->
-        registerTag("to_particle_offset", (attribute, object) -> {
+        tagProcessor.registerTag(LocationTag.class, "to_particle_offset", (attribute, object) -> {
             Color valid = object.color;
             if (valid.asRGB() == 0) {
                 valid = Color.fromRGB(1, 0, 0);
@@ -404,10 +404,6 @@ public class ColorTag implements ObjectTag {
     }
 
     public static ObjectTagProcessor<ColorTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<ColorTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

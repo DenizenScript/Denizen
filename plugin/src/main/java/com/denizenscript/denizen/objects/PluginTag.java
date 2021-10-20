@@ -168,7 +168,7 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         // @description
         // Gets the name of this plugin.
         // -->
-        registerTag("name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(object.plugin.getName());
         });
 
@@ -178,7 +178,7 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         // @description
         // Gets the version for the plugin specified.
         // -->
-        registerTag("version", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "version", (attribute, object) -> {
             return new ElementTag(object.plugin.getDescription().getVersion());
         });
 
@@ -188,7 +188,7 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         // @description
         // Gets the description for the plugin specified.
         // -->
-        registerTag("description", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "description", (attribute, object) -> {
             return new ElementTag(object.plugin.getDescription().getDescription());
         });
 
@@ -198,16 +198,12 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         // @description
         // Gets the list of authors for the plugin specified.
         // -->
-        registerTag("authors", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "authors", (attribute, object) -> {
             return new ListTag(object.plugin.getDescription().getAuthors());
         });
     }
 
     public static ObjectTagProcessor<PluginTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<PluginTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

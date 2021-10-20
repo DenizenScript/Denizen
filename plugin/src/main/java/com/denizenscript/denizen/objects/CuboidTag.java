@@ -740,7 +740,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        AreaContainmentObject.registerTags(tagProcessor);
+        AreaContainmentObject.registerTags(CuboidTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <CuboidTag.random>
@@ -749,7 +749,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a random block location within the cuboid.
         // (Note: random selection will not be fairly weighted for multi-member cuboids).
         // -->
-        registerTag("random", (attribute, cuboid) -> {
+        tagProcessor.registerTag(LocationTag.class, "random", (attribute, cuboid) -> {
             LocationPair pair = cuboid.pairs.get(CoreUtilities.getRandom().nextInt(cuboid.pairs.size()));
             Vector range = pair.high.toVector().subtract(pair.low.toVector()).add(new Vector(1, 1, 1));
             range.setX(CoreUtilities.getRandom().nextInt(range.getBlockX()));
@@ -766,7 +766,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the number of cuboids defined in the CuboidTag.
         // -->
-        registerTag("members_size", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ElementTag.class, "members_size", (attribute, cuboid) -> {
             return new ElementTag(cuboid.pairs.size());
         });
 
@@ -776,7 +776,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns each block location on the outline of the CuboidTag.
         // -->
-        registerTag("outline", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ListTag.class, "outline", (attribute, cuboid) -> {
             return cuboid.getOutline();
         }, "get_outline");
 
@@ -786,7 +786,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a list of block locations along the 2D outline of this CuboidTag, at the specified Y level.
         // -->
-        registerTag("outline_2d", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ListTag.class, "outline_2d", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("CuboidTag.outline_2d[...] tag must have an input.");
                 return null;
@@ -801,7 +801,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns whether this cuboid and another intersect.
         // -->
-        registerTag("intersects", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ElementTag.class, "intersects", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.intersects[...] must have a value.");
                 return null;
@@ -837,7 +837,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a list of all sub-cuboids in this CuboidTag (for cuboids that contain multiple sub-cuboids).
         // -->
-        registerTag("list_members", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ListTag.class, "list_members", (attribute, cuboid) -> {
             List<LocationPair> pairs = cuboid.pairs;
             ListTag list = new ListTag();
             for (LocationPair pair : pairs) {
@@ -852,7 +852,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a cuboid representing the one component of this cuboid (for cuboids that contain multiple sub-cuboids).
         // -->
-        registerTag("get", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "get", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.get[...] must have a value.");
                 return null;
@@ -877,7 +877,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a modified copy of this cuboid, with the specific sub-cuboid index changed to hold the input cuboid.
         // -->
-        registerTag("set", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "set", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.set[...] must have a value.");
                 return null;
@@ -914,7 +914,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid(s) added at the end.
         // -->
-        registerTag("add_member", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "add_member", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.add_member[...] must have a value.");
                 return null;
@@ -965,7 +965,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a modified copy of this cuboid, with member at the input index removed.
         // -->
-        registerTag("remove_member", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "remove_member", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.remove_member[...] must have a value.");
                 return null;
@@ -988,7 +988,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the location of the exact center of the cuboid.
         // -->
-        registerTag("center", (attribute, cuboid) -> {
+        tagProcessor.registerTag(LocationTag.class, "center", (attribute, cuboid) -> {
             LocationPair pair;
             if (!attribute.hasContext(1)) {
                 pair = cuboid.pairs.get(0);
@@ -1017,7 +1017,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns the volume of the cuboid.
         // Effectively equivalent to: (size.x * size.y * size.z).
         // -->
-        registerTag("volume", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ElementTag.class, "volume", (attribute, cuboid) -> {
             LocationPair pair = cuboid.pairs.get(0);
             Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
             return new ElementTag(base.getX() * base.getY() * base.getZ());
@@ -1030,7 +1030,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns the size of the cuboid.
         // Effectively equivalent to: (max - min) + (1,1,1)
         // -->
-        registerTag("size", (attribute, cuboid) -> {
+        tagProcessor.registerTag(LocationTag.class, "size", (attribute, cuboid) -> {
             LocationPair pair;
             if (!attribute.hasContext(1)) {
                 pair = cuboid.pairs.get(0);
@@ -1055,7 +1055,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the highest-numbered (maximum) corner location.
         // -->
-        registerTag("max", (attribute, cuboid) -> {
+        tagProcessor.registerTag(LocationTag.class, "max", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 return cuboid.pairs.get(0).high;
             }
@@ -1077,7 +1077,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the lowest-numbered (minimum) corner location.
         // -->
-        registerTag("min", (attribute, cuboid) -> {
+        tagProcessor.registerTag(LocationTag.class, "min", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 return cuboid.pairs.get(0).low;
             }
@@ -1100,7 +1100,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a copy of this cuboid, with the first member shifted by the given vector LocationTag.
         // For example, a cuboid from 5,5,5 to 10,10,10, shifted 100,0,100, would return a cuboid from 105,5,105 to 110,10,110.
         // -->
-        registerTag("shift", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "shift", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.shift[...] must have a value.");
                 return null;
@@ -1118,7 +1118,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Expands the first member of the CuboidTag to contain the given location (or entire cuboid), and returns the expanded cuboid.
         // -->
-        registerTag("include", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "include", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.include[...] must have a value.");
                 return null;
@@ -1140,7 +1140,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Expands the first member of the CuboidTag to contain the given X value, and returns the expanded cuboid.
         // -->
-        registerTag("include_x", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "include_x", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.include_x[...] must have a value.");
@@ -1162,7 +1162,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Expands the first member of the CuboidTag to contain the given Y value, and returns the expanded cuboid.
         // -->
-        registerTag("include_y", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "include_y", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.include_y[...] must have a value.");
@@ -1184,7 +1184,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Expands the first member of the CuboidTag to contain the given Z value, and returns the expanded cuboid.
         // -->
-        registerTag("include_z", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "include_z", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.include_z[...] must have a value.");
@@ -1209,7 +1209,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // and the output min will contain the old max values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids max value.
         // -->
-        registerTag("with_min", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "with_min", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.with_min[...] must have a value.");
                 return null;
@@ -1227,7 +1227,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // and the output max will contain the old min values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids min value.
         // -->
-        registerTag("with_max", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "with_max", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.with_max[...] must have a value.");
                 return null;
@@ -1245,7 +1245,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Supplying a negative input will therefore contract the cuboid.
         // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
         // -->
-        registerTag("expand", (attribute, cuboid) -> {
+        tagProcessor.registerTag(CuboidTag.class, "expand", (attribute, cuboid) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("The tag CuboidTag.expand[...] must have a value.");
                 return null;
@@ -1268,7 +1268,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Gets a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
         // -->
-        registerTag("chunks", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ListTag.class, "chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
             for (LocationPair pair : cuboid.pairs) {
                 int minY = pair.low.getBlockY();
@@ -1301,7 +1301,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Gets a list of all chunks partially or entirely within the CuboidTag.
         // -->
-        registerTag("partial_chunks", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ListTag.class, "partial_chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
             for (LocationPair pair : cuboid.pairs) {
                 ChunkTag minChunk = new ChunkTag(pair.low);
@@ -1321,7 +1321,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Gets the name of a noted CuboidTag. If the cuboid isn't noted, this is null.
         // -->
-        registerTag("note_name", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ElementTag.class, "note_name", (attribute, cuboid) -> {
             String noteName = NoteManager.getSavedId(cuboid);
             if (noteName == null) {
                 return null;
@@ -1329,7 +1329,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             return new ElementTag(noteName);
         }, "notable_name");
 
-        registerTag("full", (attribute, cuboid) -> {
+        tagProcessor.registerTag(ElementTag.class, "full", (attribute, cuboid) -> {
             Deprecations.cuboidFullTag.warn(attribute.context);
             return new ElementTag(cuboid.identifyFull());
         });
@@ -1371,10 +1371,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     }
 
     public static ObjectTagProcessor<CuboidTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<CuboidTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

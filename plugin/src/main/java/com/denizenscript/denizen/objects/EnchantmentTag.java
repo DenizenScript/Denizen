@@ -163,7 +163,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For Denizen custom enchantments, returns the 'id' specified in the script.
         // For any other enchantments, returns the full key.
         // -->
-        registerTag("name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(object.getCleanName());
         });
 
@@ -173,7 +173,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the full key for this enchantment, like "minecraft:sharpness".
         // -->
-        registerTag("key", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "key", (attribute, object) -> {
             return new ElementTag(object.enchantment.getKey().toString());
         });
 
@@ -184,7 +184,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns the full name for this enchantment for a given level, like "Sharpness V".
         // For vanilla enchantments, uses language translation keys.
         // -->
-        registerTag("full_name", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "full_name", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -197,7 +197,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the script that created this enchantment type, if any.
         // -->
-        registerTag("script", (attribute, object) -> {
+        tagProcessor.registerTag(ScriptTag.class, "script", (attribute, object) -> {
             if (!object.enchantment.getKey().getNamespace().equals("denizen")) {
                 return null;
             }
@@ -214,7 +214,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the minimum level of this enchantment. Usually '1'.
         // -->
-        registerTag("min_level", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "min_level", (attribute, object) -> {
             return new ElementTag(object.enchantment.getStartLevel());
         });
 
@@ -224,7 +224,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the minimum level of this enchantment. Usually between 1 and 5.
         // -->
-        registerTag("max_level", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "max_level", (attribute, object) -> {
             return new ElementTag(object.enchantment.getMaxLevel());
         });
 
@@ -234,7 +234,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only for spawning as treasure.
         // -->
-        registerTag("treasure_only", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "treasure_only", (attribute, object) -> {
             return new ElementTag(object.enchantment.isTreasure());
         });
 
@@ -244,7 +244,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only considered to be tradable. Villagers won't trade this enchantment if set to false.
         // -->
-        registerTag("is_tradable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_tradable", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.isTradable(object.enchantment));
         });
 
@@ -255,7 +255,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns whether this enchantment is only considered to be discoverable.
         // If true, this will spawn from vanilla sources like the enchanting table. If false, it can only be given directly by script.
         // -->
-        registerTag("is_discoverable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_discoverable", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.isDiscoverable(object.enchantment));
         });
 
@@ -265,7 +265,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only considered to be a curse. Curses are removed at grindstones, and spread from crafting table repairs.
         // -->
-        registerTag("is_curse", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_curse", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.isCurse(object.enchantment));
         });
 
@@ -276,7 +276,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns the category of this enchantment. Can be any of: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_CHEST, ARMOR_HEAD,
         // WEAPON, DIGGER, FISHING_ROD, TRIDENT, BREAKABLE, BOW, WEARABLE, CROSSBOW, VANISHABLE
         // -->
-        registerTag("category", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "category", (attribute, object) -> {
             return new ElementTag(object.enchantment.getItemTarget().name());
         });
 
@@ -286,7 +286,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the rarity of this enchantment. Can be any of: COMMON, UNCOMMON, RARE, VERY_RARE
         // -->
-        registerTag("rarity", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "rarity", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.getRarity(object.enchantment));
         });
 
@@ -296,7 +296,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment can enchant the given ItemTag (based on material mainly).
         // -->
-        registerTag("can_enchant", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "can_enchant", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -309,7 +309,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is compatible with another given enchantment.
         // -->
-        registerTag("is_compatible", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_compatible", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -322,7 +322,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the minimum cost for this enchantment for the given level.
         // -->
-        registerTag("min_cost", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "min_cost", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -335,7 +335,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the maximum cost for this enchantment for the given level.
         // -->
-        registerTag("max_cost", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "max_cost", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -350,7 +350,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // The input is a MapTag with a level value and a monster type specified, where the type can be any of: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
         // For example, <[my_enchantment].damage_bonus[level=3;type=undead]>
         // -->
-        registerTag("damage_bonus", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "damage_bonus", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -377,7 +377,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For entity damage causes, optionally specify the entity attacker.
         // For example, <[my_enchantment].damage_protection[level=3;type=undead]>
         // -->
-        registerTag("damage_protection", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "damage_protection", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -406,10 +406,6 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     }
 
     public static ObjectTagProcessor<EnchantmentTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<EnchantmentTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

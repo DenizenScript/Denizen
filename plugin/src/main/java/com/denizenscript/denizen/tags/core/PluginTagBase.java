@@ -14,7 +14,7 @@ public class PluginTagBase {
         // Returns a plugin object constructed from the input value.
         // Refer to <@link objecttype PluginTag>.
         // -->
-        TagManager.registerTagHandler("plugin", (attribute) -> {
+        TagManager.registerTagHandler(PluginTag.class, "plugin", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Plugin tag base must have input.");
                 return null;

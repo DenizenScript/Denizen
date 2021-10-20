@@ -485,7 +485,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        PropertyParser.registerPropertyTagHandlers(tagProcessor);
+        PropertyParser.registerPropertyTagHandlers(ItemTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <ItemTag.repairable>
@@ -498,7 +498,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // <@link tag ItemTag.max_durability>, and <@link tag ItemTag.durability>.
         // Note that due to odd design choices in Spigot, this is effectively true for all items, even though the durability value of most items is locked at zero.
         // -->
-        registerTag("repairable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "repairable", (attribute, object) -> {
             return new ElementTag(ItemDurability.describes(object));
         });
 
@@ -512,7 +512,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // <@link mechanism ItemTag.book>,
         // <@link tag ItemTag.book_author>, <@link tag ItemTag.book_title>, and <@link tag ItemTag.book_pages>.
         // -->
-        registerTag("is_book", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_book", (attribute, object) -> {
             return new ElementTag(ItemBook.describes(object));
         });
 
@@ -525,11 +525,11 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If this returns true, it will enable access to:
         // <@link mechanism ItemTag.color>, and <@link tag ItemTag.color>.
         // -->
-        registerTag("is_colorable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_colorable", (attribute, object) -> {
             return new ElementTag(ItemColor.describes(object));
         });
 
-        registerTag("is_dyeable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_dyeable", (attribute, object) -> {
             return new ElementTag(ItemColor.describes(object));
         });
 
@@ -542,7 +542,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If this returns true, it will enable access to:
         // <@link mechanism ItemTag.firework>, and <@link tag ItemTag.firework>.
         // -->
-        registerTag("is_firework", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_firework", (attribute, object) -> {
             return new ElementTag(ItemFirework.describes(object));
         });
 
@@ -555,7 +555,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If this returns true, it will enable access to:
         // <@link mechanism ItemTag.inventory_contents>, and <@link tag ItemTag.inventory_contents>.
         // -->
-        registerTag("has_inventory", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_inventory", (attribute, object) -> {
             return new ElementTag(ItemInventory.describes(object));
         });
 
@@ -568,7 +568,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If this returns true, it will enable access to:
         // <@link mechanism ItemTag.lock>, and <@link tag ItemTag.lock>.
         // -->
-        registerTag("is_lockable", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "is_lockable", (attribute, object) -> {
             return new ElementTag(ItemLock.describes(object));
         });
 
@@ -581,7 +581,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the MaterialTag that is the basis of the item.
         // EG, a stone with lore and a display name, etc. will return only "m@stone".
         // -->
-        registerTag("material", (attribute, object) -> {
+        tagProcessor.registerTag(ObjectTag.class, "material", (attribute, object) -> {
             if (attribute.getAttribute(2).equals("formatted")) {
                 return object;
             }
@@ -605,7 +605,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // EG, via /tellraw.
         // Generally, prefer tags like <@link tag ElementTag.on_hover.type> with type 'show_item'.
         // -->
-        registerTag("json", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "json", (attribute, object) -> {
             return new ElementTag(NMSHandler.getItemHelper().getJsonString(object.item));
         });
 
@@ -617,7 +617,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the name of the Bukkit item meta type that applies to this item.
         // This is for debugging purposes.
         // -->
-        registerTag("meta_type", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "meta_type", (attribute, object) -> {
             return new ElementTag(object.getItemMeta().getClass().getName());
         });
 
@@ -628,7 +628,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a YAML text section representing the Bukkit serialization of the item, under subkey "item".
         // -->
-        registerTag("bukkit_serial", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "bukkit_serial", (attribute, object) -> {
             YamlConfiguration config = new YamlConfiguration();
             config.set("item", object.getItemStack());
             return new ElementTag(config.saveToString());
@@ -641,7 +641,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a simple reusable item identification for this item, with minimal extra data.
         // -->
-        registerTag("simple", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "simple", (attribute, object) -> {
             return new ElementTag(object.identifySimple());
         });
 
@@ -655,7 +655,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING)
         // to limit to just recipes of that type.
         // -->
-        registerTag("recipe_ids", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
             String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
             ItemScriptContainer container = object.isItemscript() ? ItemScriptHelper.getItemScriptContainer(object.getItemStack()) : null;
             ListTag list = new ListTag();
@@ -687,7 +687,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the formatted material name of the item to be used in a sentence.
         // Correctly uses singular and plural forms of item names, among other things.
         // -->
-        registerTag("formatted", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "formatted", (attribute, object) -> {
             return new ElementTag(object.formattedName());
         });
 
@@ -698,7 +698,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns whether the item matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
-        registerTag("advanced_matches", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
@@ -758,10 +758,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public static ObjectTagProcessor<ItemTag> tagProcessor = new ObjectTagProcessor<>();
-
-    public static void registerTag(String name, TagRunnable.ObjectInterface<ItemTag> runnable, String... variants) {
-        tagProcessor.registerTag(name, runnable, variants);
-    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

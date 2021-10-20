@@ -39,7 +39,7 @@ public class NPCTagBase implements Listener {
         // -->
         if (Depends.citizens != null) {
             Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
-            TagManager.registerTagHandler("npc", (attribute) -> {
+            TagManager.registerTagHandler(NPCTag.class, "npc", (attribute) -> {
                 if (!attribute.hasContext(1)) {
                     NPCTag npc = ((BukkitTagContext) attribute.context).npc;
                     if (npc != null) {

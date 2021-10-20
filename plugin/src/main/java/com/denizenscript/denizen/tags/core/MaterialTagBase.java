@@ -14,7 +14,7 @@ public class MaterialTagBase {
         // Returns a material object constructed from the input value.
         // Refer to <@link objecttype MaterialTag>.
         // -->
-        TagManager.registerTagHandler("material", (attribute) -> {
+        TagManager.registerTagHandler(MaterialTag.class, "material", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Material tag base must have input.");
                 return null;

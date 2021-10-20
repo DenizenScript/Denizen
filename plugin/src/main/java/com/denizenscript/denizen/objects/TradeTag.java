@@ -124,7 +124,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     }
 
     public static void registerTags() {
-        PropertyParser.registerPropertyTagHandlers(tagProcessor);
+        PropertyParser.registerPropertyTagHandlers(TradeTag.class, tagProcessor);
     }
 
     public static ObjectTagProcessor<TradeTag> tagProcessor = new ObjectTagProcessor<>();
