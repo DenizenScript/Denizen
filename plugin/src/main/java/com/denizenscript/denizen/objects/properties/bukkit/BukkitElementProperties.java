@@ -68,6 +68,18 @@ public class BukkitElementProperties implements Property {
     public static void registerTags() {
 
         // <--[tag]
+        // @attribute <ElementTag.as_biome>
+        // @returns BiomeTag
+        // @group conversion
+        // @description
+        // Returns the element as a BiomeTag. Note: the value must be a valid biome.
+        // -->
+        PropertyParser.<BukkitElementProperties, BiomeTag>registerTag(BiomeTag.class, "as_biome", (attribute, object) -> {
+            return ElementTag.handleNull(object.asString(), BiomeTag.valueOf(object.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry())), "BiomeTag", attribute.hasAlternative());
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.as_chunk>
         // @returns ChunkTag
         // @group conversion
@@ -102,6 +114,30 @@ public class BukkitElementProperties implements Property {
             return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry())), "CuboidTag", attribute.hasAlternative());
         }, "ascuboid");
+
+        // <--[tag]
+        // @attribute <ElementTag.as_ellipsoid>
+        // @returns EllipsoidTag
+        // @group conversion
+        // @description
+        // Returns the element as an EllipsoidTag. Note: the value must be a valid ellipsoid.
+        // -->
+        PropertyParser.<BukkitElementProperties, EllipsoidTag>registerTag(EllipsoidTag.class, "as_ellipsoid", (attribute, object) -> {
+            return ElementTag.handleNull(object.asString(), EllipsoidTag.valueOf(object.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry())), "EllipsoidTag", attribute.hasAlternative());
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.as_enchantment>
+        // @returns EnchantmentTag
+        // @group conversion
+        // @description
+        // Returns the element as an EnchantmentTag. Note: the value must be a valid enchantment.
+        // -->
+        PropertyParser.<BukkitElementProperties, EnchantmentTag>registerTag(EnchantmentTag.class, "as_enchantment", (attribute, object) -> {
+            return ElementTag.handleNull(object.asString(), EnchantmentTag.valueOf(object.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry())), "EnchantmentTag", attribute.hasAlternative());
+        });
 
         // <--[tag]
         // @attribute <ElementTag.as_entity>
@@ -188,18 +224,6 @@ public class BukkitElementProperties implements Property {
         }, "asplayer");
 
         // <--[tag]
-        // @attribute <ElementTag.as_world>
-        // @returns WorldTag
-        // @group conversion
-        // @description
-        // Returns the element as a world.
-        // -->
-        PropertyParser.<BukkitElementProperties>registerTag("as_world", (attribute, object) -> {
-            return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(),
-                    new BukkitTagContext(attribute.getScriptEntry())), "WorldTag", attribute.hasAlternative());
-        }, "asworld");
-
-        // <--[tag]
         // @attribute <ElementTag.as_plugin>
         // @returns PluginTag
         // @group conversion
@@ -210,6 +234,42 @@ public class BukkitElementProperties implements Property {
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(),
                     new BukkitTagContext(attribute.getScriptEntry())), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
+
+        // <--[tag]
+        // @attribute <ElementTag.as_polygon>
+        // @returns PolygonTag
+        // @group conversion
+        // @description
+        // Returns the element as a PolygonTag. Note: the value must be a valid polygon.
+        // -->
+        PropertyParser.<BukkitElementProperties, PolygonTag>registerTag(PolygonTag.class, "as_polygon", (attribute, object) -> {
+            return ElementTag.handleNull(object.asString(), PolygonTag.valueOf(object.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry())), "PolygonTag", attribute.hasAlternative());
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.as_trade>
+        // @returns TradeTag
+        // @group conversion
+        // @description
+        // Returns the element as a TradeTag. Note: the value must be a valid trade.
+        // -->
+        PropertyParser.<BukkitElementProperties, TradeTag>registerTag(TradeTag.class, "as_trade", (attribute, object) -> {
+            return ElementTag.handleNull(object.asString(), TradeTag.valueOf(object.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry())), "TradeTag", attribute.hasAlternative());
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.as_world>
+        // @returns WorldTag
+        // @group conversion
+        // @description
+        // Returns the element as a world. Note: the value must be a valid world.
+        // -->
+        PropertyParser.<BukkitElementProperties, WorldTag>registerTag(WorldTag.class, "as_world", (attribute, object) -> {
+            return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry())), "WorldTag", attribute.hasAlternative());
+        }, "asworld");
 
         // <--[tag]
         // @attribute <ElementTag.format[<script>]>

@@ -2380,9 +2380,10 @@ public class ServerTagBase {
         // @name reset_event_stats
         // @input None
         // @description
-        // Resets the statistics on events for the queue.stats tag.
+        // Resets the statistics on events used for <@link tag util.event_stats>
         // @tags
-        // <queue.stats>
+        // <util.event_stats>
+        // <util.event_stats_data>
         // -->
         if (mechanism.matches("reset_event_stats")) {
             for (ScriptEvent se : ScriptEvent.events) {
