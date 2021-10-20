@@ -400,7 +400,6 @@ public class Denizen extends JavaPlugin {
                 Debug.echoError(ex);
             }
             try {
-                exCommand.processTagList();
                 // Process script files (events, etc).
                 DenizenCore.postLoadScripts();
                 Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");

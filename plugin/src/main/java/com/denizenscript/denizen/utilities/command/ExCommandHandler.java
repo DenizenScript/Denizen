@@ -24,6 +24,7 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
@@ -117,21 +118,6 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public HashSet<String> allTagsEver = new HashSet<>();
-
-    public void processTagList() {
-        allTagsEver.clear();
-        for (ObjectFetcher.ObjectType<? extends ObjectTag> type : ObjectFetcher.objectsByClass.values()) {
-            if (type.tagProcessor == null) {
-                continue;
-            }
-            allTagsEver.addAll(type.tagProcessor.registeredObjectTags.keySet());
-        }
-        for (PropertyParser.ClassPropertiesInfo properties : PropertyParser.propertiesByClass.values()) {
-            allTagsEver.addAll(properties.propertiesByTag.keySet());
-        }
-    }
-
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String cmdName, String[] rawArgs) {
         if ((!cmdName.equalsIgnoreCase("ex") && !cmdName.equalsIgnoreCase("exs")) || !sender.hasPermission("denizen.ex")) {
@@ -159,38 +145,112 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         }
         if (!isNewArg) {
             String lastArg = rawArgs[rawArgs.length - 1];
-            int tagStartIndex = lastArg.lastIndexOf('<');
-            if (tagStartIndex > lastArg.lastIndexOf('>')) {
-                String actualTag = lastArg.substring(tagStartIndex + 1);
-                String beforeTag = lastArg.substring(0, tagStartIndex + 1);
-                if (!actualTag.contains("[") && !actualTag.contains(".")) {
-                    String tagText = CoreUtilities.toLowerCase(actualTag);
-                    ArrayList<String> output = new ArrayList<>();
-                    for (String tagBase : TagManager.properTagBases) {
-                        if (tagBase.startsWith(tagText)) {
-                            output.add(beforeTag + tagBase);
+            int argStart = 0;
+            for (int i = 0; i < lastArg.length(); i++) {
+                if (lastArg.charAt(i) == '"' || lastArg.charAt(i) == '\'') {
+                    char quote = lastArg.charAt(i++);
+                    while (i < lastArg.length() && lastArg.charAt(i) != quote) {
+                        i++;
+                    }
+                }
+                else if (lastArg.charAt(i) == ' ') {
+                    argStart = i + 1;
+                }
+            }
+            String arg = lastArg.substring(argStart);
+            if (CoreUtilities.contains(arg, '<')) {
+                int tagBits = 0;
+                int relevantTagStart = -1;
+                for (int i = arg.length() - 1; i >= 0; i--) {
+                    if (arg.charAt(i) == '>') {
+                        tagBits++;
+                    }
+                    else if (arg.charAt(i) == '<') {
+                        if (tagBits == 0) {
+                            relevantTagStart = i + 1;
+                            break;
+                        }
+                        tagBits--;
+                    }
+                }
+                if (relevantTagStart != -1) {
+                    String fullTag = CoreUtilities.toLowerCase(arg.substring(relevantTagStart));
+                    int components = 0;
+                    int subTags = 0;
+                    int squareBrackets = 0;
+                    int lastDot = 0;
+                    int bracketStart = -1;
+                    Collection<Class<? extends ObjectTag>> typesApplicable = null;
+                    for (int i = 0; i < fullTag.length(); i++) {
+                        char c = fullTag.charAt(i);
+                        if (c == '<') {
+                            subTags++;
+                        }
+                        else if (c == '>') {
+                            subTags--;
+                        }
+                        else if (c == '[' && subTags == 0) {
+                            squareBrackets++;
+                            bracketStart = i;
+                        }
+                        else if (c == ']' && subTags == 0) {
+                            squareBrackets--;
+                        }
+                        else if (c == '.' && subTags == 0 && squareBrackets == 0) {
+                            Class<? extends ObjectTag> type = null;
+                            String part = fullTag.substring(lastDot, bracketStart == -1 ? i : bracketStart);
+                            if (components == 0) {
+                                type = TagManager.baseReturnTypes.get(part);
+                            }
+                            else if (typesApplicable != null) {
+                                for (Class<? extends ObjectTag> possibleType : typesApplicable) {
+                                    ObjectFetcher.ObjectType<? extends ObjectTag> typeData = ObjectFetcher.objectsByClass.get(possibleType);
+                                    if (typeData != null && typeData.tagProcessor != null) {
+                                        type = typeData.tagProcessor.tagReturnTypes.get(part);
+                                        if (type != null) {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if (type != null) {
+                                typesApplicable = ObjectFetcher.getAllApplicableSubTypesFor(type);
+                            }
+                            else {
+                                typesApplicable = ObjectFetcher.objectsByClass.keySet();
+                            }
+                            components++;
+                            lastDot = i + 1;
+                            bracketStart = -1;
                         }
                     }
-                    return output;
-                }
-                int lastDot = actualTag.lastIndexOf('.');
-                if (lastDot <= 0) {
-                    return new ArrayList<>();
-                }
-                beforeTag += actualTag.substring(0, lastDot + 1);
-                String lastPart = CoreUtilities.toLowerCase(actualTag.substring(lastDot + 1));
-                if (lastPart.contains("[") || lastPart.isEmpty()) {
-                    return new ArrayList<>();
-                }
-                ArrayList<String> output = new ArrayList<>();
-                for (String singleTag : allTagsEver) {
-                    if (singleTag.startsWith(lastPart)) {
-                        output.add(beforeTag + singleTag);
+                    String beforeDot = arg.substring(0, relevantTagStart) + fullTag.substring(0, lastDot);
+                    if (components == 0 && !CoreUtilities.contains(fullTag, '[')) {
+                        ArrayList<String> output = new ArrayList<>();
+                        for (String tagBase : TagManager.properTagBases) {
+                            if (tagBase.startsWith(fullTag)) {
+                                output.add(beforeDot + tagBase);
+                            }
+                        }
+                        return output;
+                    }
+                    String subComponent = fullTag.substring(lastDot);
+                    if (lastDot > 0 && !CoreUtilities.contains(subComponent, '[')) {
+                        ArrayList<String> output = new ArrayList<>();
+                        for (Class<? extends ObjectTag> possibleType : typesApplicable) {
+                            ObjectFetcher.ObjectType<? extends ObjectTag> typeData = ObjectFetcher.objectsByClass.get(possibleType);
+                            if (typeData != null && typeData.tagProcessor != null) {
+                                for (String tag : typeData.tagProcessor.tagReturnTypes.keySet()) {
+                                    if (tag.startsWith(subComponent)) {
+                                        output.add(beforeDot + tag);
+                                    }
+                                }
+                            }
+                        }
+                        return output;
                     }
                 }
-                return output;
             }
-
         }
         AbstractCommand dcmd = DenizenCore.getCommandRegistry().get(args[0]);
         for (int i = args.length - 2; i >= 0; i--) {

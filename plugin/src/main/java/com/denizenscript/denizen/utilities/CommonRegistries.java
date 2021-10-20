@@ -21,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+
 public class CommonRegistries {
 
     // <--[language]
@@ -102,6 +104,7 @@ public class CommonRegistries {
         registerNotables();
         registerObjectCheckers();
         registerConversions();
+        registerSubtypeSets();
         // Final debug
         StringBuilder debug = new StringBuilder(256);
         for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
@@ -306,5 +309,16 @@ public class CommonRegistries {
             }
             return null;
         });
+    }
+
+    private static void registerSubtypeSets() {
+        ArrayList<Class<? extends ObjectTag>> entitySubTypes = new ArrayList<>();
+        entitySubTypes.add(EntityTag.class);
+        entitySubTypes.add(PlayerTag.class);
+        if (Depends.citizens != null) {
+            entitySubTypes.add(NPCTag.class);
+        }
+        ObjectFetcher.customSubtypeList.put(EntityTag.class, entitySubTypes);
+        ObjectFetcher.customSubtypeList.put(EntityFormObject.class, entitySubTypes);
     }
 }
