@@ -66,7 +66,7 @@ public class InventoryTrades implements Property {
         // @description
         // Return the list of recipes from a merchant inventory.
         // -->
-        PropertyParser.<InventoryTrades>registerTag("trades", (attribute, inventory) -> {
+        PropertyParser.<InventoryTrades, ListTag>registerTag(ListTag.class, "trades", (attribute, inventory) -> {
             return inventory.getTradeRecipes();
         });
     }

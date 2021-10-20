@@ -52,7 +52,7 @@ public class WorldViewDistance implements Property {
         // @description
         // Returns the view distance of this world. Chunks are tracked inside this radius.
         // -->
-        PropertyParser.<WorldViewDistance>registerTag("view_distance", (attribute, world) -> {
+        PropertyParser.<WorldViewDistance, ElementTag>registerTag(ElementTag.class, "view_distance", (attribute, world) -> {
             return new ElementTag(world.world.getWorld().getViewDistance());
         });
 
@@ -66,7 +66,7 @@ public class WorldViewDistance implements Property {
         // Returns the non-ticking view distance of this world. Chunks will not be tracked between the world's view distance and its non-ticking view distance.
         // This allows your world to have a higher visual view distance without impacting performance.
         // -->
-        PropertyParser.<WorldViewDistance>registerTag("no_tick_view_distance", (attribute, world) -> {
+        PropertyParser.<WorldViewDistance, ElementTag>registerTag(ElementTag.class, "no_tick_view_distance", (attribute, world) -> {
             return new ElementTag(world.world.getWorld().getNoTickViewDistance());
         });
     }

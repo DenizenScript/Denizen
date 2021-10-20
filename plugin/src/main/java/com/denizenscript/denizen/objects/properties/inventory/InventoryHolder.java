@@ -67,10 +67,10 @@ public class InventoryHolder implements Property {
         // @description
         // Returns the script that this inventory came from (if any).
         // -->
-        PropertyParser.<InventoryHolder>registerTag("script", (attribute, object) -> {
+        PropertyParser.<InventoryHolder, ScriptTag>registerTag(ScriptTag.class, "script", (attribute, object) -> {
             ObjectTag holder = object.inventory.getIdHolder();
             if (holder instanceof ScriptTag) {
-                return holder;
+                return (ScriptTag) holder;
             }
             return null;
         });

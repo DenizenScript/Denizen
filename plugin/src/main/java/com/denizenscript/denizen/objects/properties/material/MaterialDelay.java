@@ -45,7 +45,7 @@ public class MaterialDelay implements Property {
         // @description
         // Returns the current delay of a redstone repeater material.
         // -->
-        PropertyParser.<MaterialDelay>registerTag("delay", (attribute, material) -> {
+        PropertyParser.<MaterialDelay, ElementTag>registerTag(ElementTag.class, "delay", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         });
 
@@ -57,7 +57,7 @@ public class MaterialDelay implements Property {
         // @description
         // Returns the maximum delay allowed for the redstone repeater material.
         // -->
-        PropertyParser.<MaterialDelay>registerTag("max_delay", (attribute, material) -> {
+        PropertyParser.<MaterialDelay, ElementTag>registerTag(ElementTag.class, "max_delay", (attribute, material) -> {
             return new ElementTag(material.getMax());
         });
 
@@ -69,7 +69,7 @@ public class MaterialDelay implements Property {
         // @description
         // Returns the minimum delay allowed for the redstone repeater material.
         // -->
-        PropertyParser.<MaterialDelay>registerTag("min_delay", (attribute, material) -> {
+        PropertyParser.<MaterialDelay, ElementTag>registerTag(ElementTag.class, "min_delay", (attribute, material) -> {
             return new ElementTag(material.getMin());
         });
 

@@ -55,7 +55,7 @@ public class EntityExperienceOrb implements Property {
         // If the entity is an experience orb, returns its spawn reason.
         // Valid spawn reasons can be found at <@link url https://papermc.io/javadocs/paper/org/bukkit/entity/ExperienceOrb.SpawnReason.html>
         // -->
-        PropertyParser.<EntityExperienceOrb>registerTag("xp_spawn_reason", (attribute, entity) -> {
+        PropertyParser.<EntityExperienceOrb, ElementTag>registerTag(ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
             return new ElementTag(((ExperienceOrb) entity.entity.getBukkitEntity()).getSpawnReason().name());
         });
 
@@ -68,7 +68,7 @@ public class EntityExperienceOrb implements Property {
         // If the entity is an experience orb, returns the entity that triggered it spawning (if any).
         // For example, if a player killed an entity this would return the player.
         // -->
-        PropertyParser.<EntityExperienceOrb>registerTag("xp_trigger", (attribute, entity) -> {
+        PropertyParser.<EntityExperienceOrb, EntityTag>registerTag(EntityTag.class, "xp_trigger", (attribute, entity) -> {
             UUID uuid = ((ExperienceOrb) entity.entity.getBukkitEntity()).getTriggerEntityId();
             if (uuid == null) {
                 return null;
@@ -89,7 +89,7 @@ public class EntityExperienceOrb implements Property {
         // If the entity is an experience orb, returns the entity that it was created from (if any).
         // For example, if the xp orb was spawned from breeding this would return the baby.
         // -->
-        PropertyParser.<EntityExperienceOrb>registerTag("xp_source", (attribute, entity) -> {
+        PropertyParser.<EntityExperienceOrb, EntityTag>registerTag(EntityTag.class, "xp_source", (attribute, entity) -> {
             UUID uuid = ((ExperienceOrb) entity.entity.getBukkitEntity()).getSourceEntityId();
             if (uuid == null) {
                 return null;

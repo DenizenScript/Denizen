@@ -39,7 +39,7 @@ public class MaterialCampfire implements Property {
 
     public static void registerTags() {
 
-        PropertyParser.<MaterialCampfire>registerTag("signal_fire", (attribute, material) -> {
+        PropertyParser.<MaterialCampfire, ElementTag>registerTag(ElementTag.class, "signal_fire", (attribute, material) -> {
             Deprecations.materialCampfire.warn(attribute.context);
             return new ElementTag(material.getCampfire().isSignalFire());
         });

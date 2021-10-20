@@ -52,7 +52,7 @@ public class TradeResult implements Property {
         // @description
         // Returns what the trade will give the player.
         // -->
-        PropertyParser.<TradeResult>registerTag("result", (attribute, recipe) -> {
+        PropertyParser.<TradeResult, ItemTag>registerTag(ItemTag.class, "result", (attribute, recipe) -> {
             return new ItemTag(recipe.recipe.getRecipe().getResult());
         });
     }

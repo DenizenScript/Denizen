@@ -50,7 +50,7 @@ public class EntitySpawnLocation implements Property {
         // @description
         // Returns the initial spawn location of this entity.
         // -->
-        PropertyParser.<EntitySpawnLocation>registerTag("spawn_location", (attribute, entity) -> {
+        PropertyParser.<EntitySpawnLocation, LocationTag>registerTag(LocationTag.class, "spawn_location", (attribute, entity) -> {
             Location loc = entity.entity.getBukkitEntity().getOrigin();
             return loc != null ? new LocationTag(loc) : null;
         });

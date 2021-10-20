@@ -58,7 +58,7 @@ public class EntityPatrolTarget implements Property {
         // @description
         // If the entity is raider mob (like a pillager), returns whether the entity is allowed to join active raids.
         // -->
-        PropertyParser.<EntityPatrolTarget>registerTag("patrol_target", (attribute, object) -> {
+        PropertyParser.<EntityPatrolTarget, LocationTag>registerTag(LocationTag.class, "patrol_target", (attribute, object) -> {
             Block target = ((Raider) object.entity.getBukkitEntity()).getPatrolTarget();
             if (target == null) {
                 return null;

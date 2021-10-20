@@ -45,7 +45,7 @@ public class MaterialPersistent implements Property {
         // @description
         // Returns whether this block will decay from being too far away from a tree.
         // -->
-        PropertyParser.<MaterialPersistent>registerTag("persistent", (attribute, material) -> {
+        PropertyParser.<MaterialPersistent, ElementTag>registerTag(ElementTag.class, "persistent", (attribute, material) -> {
             return new ElementTag(material.getLeaves().isPersistent());
         });
     }

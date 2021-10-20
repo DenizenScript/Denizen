@@ -53,7 +53,7 @@ public class EntityCanTick implements Property {
         // @description
         // If the entity is an armor stand, returns whether the armor stand can tick.
         // -->
-        PropertyParser.<EntityCanTick>registerTag("can_tick", (attribute, entity) -> {
+        PropertyParser.<EntityCanTick, ElementTag>registerTag(ElementTag.class, "can_tick", (attribute, entity) -> {
             return new ElementTag(((ArmorStand) entity.entity.getBukkitEntity()).canTick());
         });
     }

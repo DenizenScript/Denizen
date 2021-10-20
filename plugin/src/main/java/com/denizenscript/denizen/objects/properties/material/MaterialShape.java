@@ -46,7 +46,7 @@ public class MaterialShape implements Property {
         // Returns the shape of a block.
         // For stairs, output is the corner shape as INNER_LEFT, INNER_RIGHT, OUTER_LEFT, OUTER_RIGHT, or STRAIGHT.
         // -->
-        PropertyParser.<MaterialShape>registerTag("shape", (attribute, material) -> {
+        PropertyParser.<MaterialShape, ElementTag>registerTag(ElementTag.class, "shape", (attribute, material) -> {
             return new ElementTag(material.getStairs().getShape().name());
         });
     }

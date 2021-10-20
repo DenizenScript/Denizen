@@ -45,7 +45,7 @@ public class MaterialWaterlogged implements Property {
         // @description
         // Returns whether this block is waterlogged or not.
         // -->
-        PropertyParser.<MaterialWaterlogged>registerTag("waterlogged", (attribute, material) -> {
+        PropertyParser.<MaterialWaterlogged, ElementTag>registerTag(ElementTag.class, "waterlogged", (attribute, material) -> {
             return new ElementTag(material.isWaterlogged());
         });
     }

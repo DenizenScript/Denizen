@@ -45,7 +45,7 @@ public class MaterialUnstable implements Property {
         // @description
         // Returns whether this TNT block is unstable (explodes when punched).
         // -->
-        PropertyParser.<MaterialUnstable>registerTag("unstable", (attribute, material) -> {
+        PropertyParser.<MaterialUnstable, ElementTag>registerTag(ElementTag.class, "unstable", (attribute, material) -> {
             return new ElementTag(material.isUnstable());
         });
     }

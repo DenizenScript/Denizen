@@ -5,6 +5,7 @@ import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -46,7 +47,7 @@ public class BukkitScriptProperties implements Property {
         // cooldown present on the script will also be taken into account. Not specifying a player will result in
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
-        PropertyParser.<BukkitScriptProperties>registerTag("cooled_down", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties, ElementTag>registerTag(ElementTag.class, "cooled_down", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
@@ -63,7 +64,7 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the time left for the player to cooldown for the script.
         // -->
-        PropertyParser.<BukkitScriptProperties>registerTag("cooldown", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties, DurationTag>registerTag(DurationTag.class, "cooldown", (attribute, script) -> {
             PlayerTag player = (attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.script.getName());
@@ -76,7 +77,7 @@ public class BukkitScriptProperties implements Property {
         // Returns the name of a script step that the player is currently on.
         // Must be an INTERACT script.
         // -->
-        PropertyParser.<BukkitScriptProperties>registerTag("step", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties, ElementTag>registerTag(ElementTag.class, "step", (attribute, script) -> {
             PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer();
             if (player != null && player.isValid()) {
                 return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.script.getContainer().getName()));
@@ -92,7 +93,7 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the name of the default step of an interact script.
         // -->
-        PropertyParser.<BukkitScriptProperties>registerTag("default_step", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties, ElementTag>registerTag(ElementTag.class, "default_step", (attribute, script) -> {
             String step = ((InteractScriptContainer) script.script.getContainer()).getDefaultStepName();
             return new ElementTag(step);
         });

@@ -53,7 +53,7 @@ public class EntityAware implements Property {
         // Unaware entities will not perform any actions on their own, such as pathfinding or attacking.
         // Similar to <@link tag EntityTag.has_ai>, except allows the entity to be moved by gravity, being pushed or attacked, etc.
         // -->
-        PropertyParser.<EntityAware>registerTag("is_aware", (attribute, entity) -> {
+        PropertyParser.<EntityAware, ElementTag>registerTag(ElementTag.class, "is_aware", (attribute, entity) -> {
             return new ElementTag(((Mob) entity.entity.getBukkitEntity()).isAware());
         });
     }

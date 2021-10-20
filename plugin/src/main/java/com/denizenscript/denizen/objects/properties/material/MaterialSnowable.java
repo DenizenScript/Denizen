@@ -45,7 +45,7 @@ public class MaterialSnowable implements Property {
         // @description
         // Returns whether this material is covered in snow or not.
         // -->
-        PropertyParser.<MaterialSnowable>registerTag("snowy", (attribute, material) -> {
+        PropertyParser.<MaterialSnowable, ElementTag>registerTag(ElementTag.class, "snowy", (attribute, material) -> {
             return new ElementTag(material.isSnowy());
         });
     }

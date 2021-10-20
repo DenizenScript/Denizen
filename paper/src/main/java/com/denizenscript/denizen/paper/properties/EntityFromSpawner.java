@@ -49,7 +49,7 @@ public class EntityFromSpawner implements Property {
         // @description
         // Returns whether the entity was spawned from a spawner.
         // -->
-        PropertyParser.<EntityFromSpawner>registerTag("from_spawner", (attribute, entity) -> {
+        PropertyParser.<EntityFromSpawner, ElementTag>registerTag(ElementTag.class, "from_spawner", (attribute, entity) -> {
             return new ElementTag(entity.entity.getBukkitEntity().fromMobSpawner());
         });
     }

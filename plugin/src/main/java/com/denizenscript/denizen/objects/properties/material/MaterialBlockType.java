@@ -60,7 +60,7 @@ public class MaterialBlockType implements Property {
         // For piston_heads, output is NORMAL or STICKY.
         // For campfires, output is NORMAL or SIGNAL.
         // -->
-        PropertyParser.<MaterialBlockType>registerTag("type", (attribute, material) -> {
+        PropertyParser.<MaterialBlockType, ElementTag>registerTag(ElementTag.class, "type", (attribute, material) -> {
             return new ElementTag(material.getSlab().getType().name());
         }, "slab_type");
     }

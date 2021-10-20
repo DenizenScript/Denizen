@@ -51,7 +51,7 @@ public class PlayerAffectsMonsterSpawning implements Property {
         // @description
         // Returns whether the player affects monster spawning. When false, no monsters will spawn naturally because of this player.
         // -->
-        PropertyParser.<PlayerAffectsMonsterSpawning>registerTag("affects_monster_spawning", (attribute, player) -> {
+        PropertyParser.<PlayerAffectsMonsterSpawning, ElementTag>registerTag(ElementTag.class, "affects_monster_spawning", (attribute, player) -> {
             return new ElementTag(player.player.getPlayerEntity().getAffectsSpawning());
         });
     }

@@ -39,7 +39,7 @@ public class MaterialLightable implements Property {
 
     public static void registerTags() {
 
-        PropertyParser.<MaterialLightable>registerTag("lit", (attribute, material) -> {
+        PropertyParser.<MaterialLightable, ElementTag>registerTag(ElementTag.class, "lit", (attribute, material) -> {
             Deprecations.materialLit.warn(attribute.context);
             return new ElementTag(material.getLightable().isLit());
         });

@@ -39,7 +39,7 @@ public class MaterialDrags implements Property {
 
     public static void registerTags() {
 
-        PropertyParser.<MaterialDrags>registerTag("drags", (attribute, material) -> {
+        PropertyParser.<MaterialDrags, ElementTag>registerTag(ElementTag.class, "drags", (attribute, material) -> {
             Deprecations.materialDrags.warn(attribute.context);
             return new ElementTag(material.isDrag());
         });

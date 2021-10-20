@@ -53,7 +53,7 @@ public class EntityPatrolLeader implements Property {
         // @description
         // If the entity is raider mob (like a pillager), returns whether the entity is a patrol leader.
         // -->
-        PropertyParser.<EntityPatrolLeader>registerTag("is_patrol_leader", (attribute, object) -> {
+        PropertyParser.<EntityPatrolLeader, ElementTag>registerTag(ElementTag.class, "is_patrol_leader", (attribute, object) -> {
             return new ElementTag(((Raider) object.entity.getBukkitEntity()).isPatrolLeader());
         });
     }

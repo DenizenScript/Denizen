@@ -52,7 +52,7 @@ public class MaterialLevel implements Property {
         // @description
         // Returns the maximum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
         // -->
-        PropertyParser.<MaterialLevel>registerTag("maximum_level", (attribute, material) -> {
+        PropertyParser.<MaterialLevel, ElementTag>registerTag(ElementTag.class, "maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
         });
 
@@ -64,7 +64,7 @@ public class MaterialLevel implements Property {
         // Returns the minimum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
         // This will return 0 for all valid materials aside from snow.
         // -->
-        PropertyParser.<MaterialLevel>registerTag("minimum_level", (attribute, material) -> {
+        PropertyParser.<MaterialLevel, ElementTag>registerTag(ElementTag.class, "minimum_level", (attribute, material) -> {
             return new ElementTag(material.getMin());
         });
 
@@ -76,7 +76,7 @@ public class MaterialLevel implements Property {
         // @description
         // Returns the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
         // -->
-        PropertyParser.<MaterialLevel>registerTag("level", (attribute, material) -> {
+        PropertyParser.<MaterialLevel, ElementTag>registerTag(ElementTag.class, "level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         });
     }

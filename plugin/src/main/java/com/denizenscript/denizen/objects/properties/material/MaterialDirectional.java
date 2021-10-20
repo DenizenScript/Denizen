@@ -60,7 +60,7 @@ public class MaterialDirectional implements Property {
         // Returns a list of directions that are valid for a directional material.
         // See also <@link tag MaterialTag.direction>
         // -->
-        PropertyParser.<MaterialDirectional>registerTag("valid_directions", (attribute, material) -> {
+        PropertyParser.<MaterialDirectional, ListTag>registerTag(ListTag.class, "valid_directions", (attribute, material) -> {
             ListTag toReturn = new ListTag();
             if (material.isOrientable()) {
                 for (Axis axis : material.getOrientable().getAxes()) {
@@ -92,7 +92,7 @@ public class MaterialDirectional implements Property {
         // Returns the current facing direction for a directional material (like a door or a bed).
         // Output is a direction name like "NORTH", or an axis like "X", or a rail direction like "ASCENDING_NORTH".
         // -->
-        PropertyParser.<MaterialDirectional>registerTag("direction", (attribute, material) -> {
+        PropertyParser.<MaterialDirectional, ElementTag>registerTag(ElementTag.class, "direction", (attribute, material) -> {
             return new ElementTag(material.getDirectionName());
         });
     }

@@ -53,7 +53,7 @@ public class MaterialSwitchFace implements Property {
         // Returns the current attach direction for a switch or other attachable material.
         // Output is "CEILING", "FLOOR", or "WALL".
         // -->
-        PropertyParser.<MaterialSwitchFace>registerTag("switch_face", (attribute, material) -> {
+        PropertyParser.<MaterialSwitchFace, ElementTag>registerTag(ElementTag.class, "switch_face", (attribute, material) -> {
             if (material.isSwitch()) {
                 return new ElementTag(material.getSwitch().getFace().name());
             }
