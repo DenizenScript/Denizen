@@ -226,7 +226,7 @@ public class TextTagBase {
         // @description
         // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
         // -->
-        TagManager.registerTagHandler(ElementTag.class, "n", (attribute) -> new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16))));
+        TagManager.registerTagHandler(ElementTag.class, "&chr", (attribute) -> new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16))));
 
         // <--[tag]
         // @attribute <n>
