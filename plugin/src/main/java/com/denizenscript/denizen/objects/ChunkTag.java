@@ -364,6 +364,9 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // This is related to the <@link command chunkload> command.
         // -->
         tagProcessor.registerTag(ElementTag.class, "force_loaded", (attribute, object) -> {
+            if (!object.isLoadedSafe()) {
+                return new ElementTag(false);
+            }
             Chunk chunk = object.getChunkForTag(attribute);
             return new ElementTag(chunk != null && chunk.isForceLoaded());
         });
