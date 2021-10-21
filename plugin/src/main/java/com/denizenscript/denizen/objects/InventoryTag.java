@@ -1828,6 +1828,31 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return new ElementTag(-1);
         });
 
+        // <--[tag]
+        // @attribute <InventoryTag.find_all_items[<matcher>]>
+        // @returns ListTag
+        // @description
+        // Returns a list of the location of all slots that contains an item that matches the given item matcher.
+        // Returns an empty list if there's no match.
+        // Uses the system behind <@link language Advanced Script Event Matching>.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "find_all_items", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            ListTag result = new ListTag();
+            String matcher = attribute.getContext(1);
+            for (int i = 0; i < object.inventory.getSize(); i++) {
+                ItemStack item = object.inventory.getItem(i);
+                if (item != null) {
+                    if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                        result.addObject(new ElementTag(i + 1));
+                    }
+                }
+            }
+            return result;
+        });
+
         tagProcessor.registerTag(ElementTag.class, "find", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("material", 2)) {
