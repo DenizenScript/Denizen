@@ -2337,7 +2337,9 @@ public class ServerTagBase {
         // @input ElementTag
         // @description
         // Deletes the given file from the server.
-        // Require config setting 'Commands.Delete.Allow file deletion'.
+        // File path starts in the Denizen folder.
+        // Require config file setting "Commands.Delete.Allow file deletion".
+        // For example: - adjust server delete_file:schematics/house.schem
         // @tags
         // <server.has_file[<file>]>
         // -->
@@ -2381,6 +2383,7 @@ public class ServerTagBase {
         // @input None
         // @description
         // Resets the statistics on events used for <@link tag util.event_stats>
+        // For example: - adjust server reset_event_stats
         // @tags
         // <util.event_stats>
         // <util.event_stats_data>
@@ -2399,6 +2402,7 @@ public class ServerTagBase {
         // @input None
         // @description
         // Resets the server's recipe list to the default vanilla recipe list + item script recipes.
+        // For example: - adjust server reset_recipes
         // @tags
         // <server.recipe_ids[(<type>)]>
         // -->
@@ -2413,6 +2417,7 @@ public class ServerTagBase {
         // @input ListTag
         // @description
         // Removes a recipe or list of recipes from the server, in Namespace:Key format.
+        // For example: - adjust server remove_recipes:<item[torch].recipe_ids>
         // @tags
         // <server.recipe_ids[(<type>)]>
         // -->
@@ -2431,6 +2436,7 @@ public class ServerTagBase {
         // Sets the server's current idle timeout limit (how long a player can sit still before getting kicked).
         // Will be rounded to the nearest number of minutes.
         // Set to 0 to disable automatic timeout kick.
+        // For example: - adjust server remove_recipes:5m
         // @tags
         // <server.idle_timeout>
         // -->
@@ -2446,6 +2452,7 @@ public class ServerTagBase {
         // Suggests to the internal systems that it's a good time to clean the memory.
         // Does NOT force a memory cleaning.
         // This should generally not be used unless you have a very good specific reason to use it.
+        // For example: - adjust server cleanmem
         // @tags
         // <server.ram_free>
         // -->
@@ -2459,8 +2466,9 @@ public class ServerTagBase {
         // @input None
         // @description
         // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire), then starts it again.
-        // Requires setting "Commands.Restart.Allow server restart"!
+        // Requires config file setting "Commands.Restart.Allow server restart"!
         // Note that if your server is not configured to restart, this mechanism will simply stop the server without starting it again!
+        // For example: - adjust server restart
         // -->
         if (mechanism.matches("restart")) {
             if (!Settings.allowServerRestart()) {
@@ -2477,6 +2485,7 @@ public class ServerTagBase {
         // @input None
         // @description
         // Immediately saves the Denizen saves files.
+        // For example: - adjust server save
         // -->
         if (mechanism.matches("save")) {
             DenizenCore.saveAll();
@@ -2489,6 +2498,7 @@ public class ServerTagBase {
         // @input None
         // @description
         // Immediately saves the Citizens saves files.
+        // For example: - adjust server save_citizens
         // -->
         if (Depends.citizens != null && mechanism.matches("save_citizens")) {
             Depends.citizens.storeNPCs(new CommandContext(new String[0]));
@@ -2501,7 +2511,8 @@ public class ServerTagBase {
         // @description
         // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire).
         // The server will remain shutdown until externally started again.
-        // Requires setting "Commands.Restart.Allow server stop"!
+        // Requires config file setting "Commands.Restart.Allow server stop"!
+        // For example: - adjust server shutdown
         // -->
         if (mechanism.matches("shutdown")) {
             if (!Settings.allowServerStop()) {

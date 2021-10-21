@@ -144,10 +144,9 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         BukkitRunnable task = new BukkitRunnable() {
             int ticks = 0;
             int maxTicks = duration.getTicksAsInt();
-            Collection<EntityTag> unusedEntities = new LinkedList<>();
+            ArrayList<EntityTag> unusedEntities = new ArrayList<>();
             @Override
             public void run() {
-
                 if (entities.isEmpty()) {
                     scriptEntry.setFinished(true);
                     this.cancel();

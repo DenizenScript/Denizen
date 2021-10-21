@@ -19,14 +19,14 @@ public class ResourcePackCommand extends AbstractCommand {
 
     public ResourcePackCommand() {
         setName("resourcepack");
-        setSyntax("resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (target:<player>|...)");
+        setSyntax("resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (targets:<player>|...)");
         setRequiredArguments(2, 5);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name ResourcePack
-    // @Syntax resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (target:<player>|...)
+    // @Syntax resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (targets:<player>|...)
     // @Required 2
     // @Maximum 5
     // @Short Prompts a player to download a server resource pack.

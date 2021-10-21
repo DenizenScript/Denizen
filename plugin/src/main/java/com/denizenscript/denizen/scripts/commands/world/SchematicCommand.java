@@ -103,6 +103,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     //
     // The schematic command is ~waitable as an alternative to 'delayed' argument. Refer to <@link language ~waitable>.
     //
+    // To delete a schematic file, use <@link mechanism server.delete_file>.
+    //
     // @Tags
     // <schematic[<name>].height>
     // <schematic[<name>].length>
