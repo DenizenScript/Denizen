@@ -61,6 +61,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Determine
     // ElementTag(Decimal) to set the amount of damage the entity receives.
+    // "CLEAR_MODIFIERS" to zero out all damage modifiers other than "BASE", effectively making damage == final_damage.
     //
     // @Player when the damager or damaged entity is a player. Cannot be both.
     //
@@ -143,9 +144,19 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
-            event.setDamage(((ElementTag) determinationObj).asDouble());
-            return true;
+        if (determinationObj instanceof ElementTag) {
+            if (CoreUtilities.equalsIgnoreCase(determinationObj.toString(), "clear_modifiers")) {
+                for (EntityDamageEvent.DamageModifier modifier : EntityDamageEvent.DamageModifier.values()) {
+                    if (modifier != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(modifier)) {
+                        event.setDamage(modifier, 0);
+                    }
+                }
+                return true;
+            }
+            else if (((ElementTag) determinationObj).isDouble()) {
+                event.setDamage(((ElementTag) determinationObj).asDouble());
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }
