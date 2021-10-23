@@ -1156,6 +1156,35 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return entity != null || uuid != null || isFake;
     }
 
+    public LocationTag doLocationTag(Attribute attribute) {
+        if (attribute.startsWith("cursor_on", 2)) {
+            Deprecations.entityLocationCursorOnTag.warn(attribute.context);
+            int range = attribute.getIntContext(2);
+            if (range < 1) {
+                range = 50;
+            }
+            Set<Material> set = new HashSet<>();
+            set.add(Material.AIR);
+
+            if (attribute.startsWith("ignore", 3) && attribute.hasContext(3)) {
+                List<MaterialTag> ignoreList = attribute.contextAsType(3, ListTag.class).filter(MaterialTag.class, attribute.context);
+                for (MaterialTag material : ignoreList) {
+                    set.add(material.getMaterial());
+                }
+                attribute.fulfill(1);
+            }
+            attribute.fulfill(1);
+            return new LocationTag(getTargetBlockSafe(set, range));
+        }
+
+        if (attribute.startsWith("standing_on", 2)) {
+            Deprecations.entityStandingOn.warn(attribute.context);
+            attribute.fulfill(1);
+            return new LocationTag(getBukkitEntity().getLocation().clone().add(0, -0.5f, 0));
+        }
+        return new LocationTag(getBukkitEntity().getLocation());
+    }
+
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
@@ -1490,32 +1519,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "location", (attribute, object) -> {
-            if (attribute.startsWith("cursor_on", 2)) {
-                Deprecations.entityLocationCursorOnTag.warn(attribute.context);
-                int range = attribute.getIntContext(2);
-                if (range < 1) {
-                    range = 50;
-                }
-                Set<Material> set = new HashSet<>();
-                set.add(Material.AIR);
-
-                if (attribute.startsWith("ignore", 3) && attribute.hasContext(3)) {
-                    List<MaterialTag> ignoreList = attribute.contextAsType(3, ListTag.class).filter(MaterialTag.class, attribute.context);
-                    for (MaterialTag material : ignoreList) {
-                        set.add(material.getMaterial());
-                    }
-                    attribute.fulfill(1);
-                }
-                attribute.fulfill(1);
-                return new LocationTag(object.getTargetBlockSafe(set, range));
-            }
-
-            if (attribute.startsWith("standing_on", 2)) {
-                Deprecations.entityStandingOn.warn(attribute.context);
-                attribute.fulfill(1);
-                return new LocationTag(object.getBukkitEntity().getLocation().clone().add(0, -0.5f, 0));
-            }
-            return new LocationTag(object.getBukkitEntity().getLocation());
+            return object.doLocationTag(attribute);
         });
 
         // <--[tag]

@@ -804,7 +804,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         tagProcessor.registerTag(ObjectTag.class, "location", (attribute, object) -> {
             if (object.isOnline() && !object.getPlayerEntity().isDead()) {
-                return new EntityTag(object.getPlayerEntity()).getObjectAttribute(attribute);
+                return new EntityTag(object.getPlayerEntity()).doLocationTag(attribute);
             }
             return object.getLocation();
         });
