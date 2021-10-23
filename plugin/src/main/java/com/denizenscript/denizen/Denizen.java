@@ -321,14 +321,14 @@ public class Denizen extends JavaPlugin {
         }
         try {
             AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
-            TagManager.registerCoreTags();
-            CommonRegistries.registerMainTagHandlers();
             eventManager = new OldEventManager();
             // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();
             // Register Core ObjectTags with the ObjectFetcher
             ObjectFetcher.registerCoreObjects();
             CommonRegistries.registerMainObjects();
+            TagManager.registerCoreTags();
+            CommonRegistries.registerMainTagHandlers();
         }
         catch (Exception e) {
             Debug.echoError(e);

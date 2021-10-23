@@ -37,9 +37,12 @@ public class BukkitTagContext extends TagContext {
     }
 
     public BukkitTagContext(ScriptEntry entry) {
-        super(entry == null || entry.shouldDebug(), entry, entry != null ? entry.getScript() : null);
-        player = entry != null ? ((BukkitScriptEntryData) entry.entryData).getPlayer() : null;
-        npc = entry != null ? ((BukkitScriptEntryData) entry.entryData).getNPC() : null;
+        super(entry);
+        if (entry != null) {
+            BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
+            player = data.getPlayer();
+            npc = data.getNPC();
+        }
     }
 
     public BukkitTagContext(ScriptContainer container) {

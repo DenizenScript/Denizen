@@ -219,7 +219,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
                 else {
                     if (!allowDespawnedNpcs && context != null && context.showErrors()) {
-                        Debug.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
+                        Debug.echoDebug(context, "NPC '" + string + "' is not spawned, errors may follow!");
                     }
                     return new EntityTag(npc);
                 }

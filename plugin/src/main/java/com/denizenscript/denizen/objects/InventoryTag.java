@@ -2278,7 +2278,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             return null;
         });
-        tagProcessor.registerFutureTagDeprecation("smelting", "input");
+        tagProcessor.registerFutureTagDeprecation("input", "smelting");
 
         // <--[tag]
         // @attribute <InventoryTag.advanced_matches[<matcher>]>
