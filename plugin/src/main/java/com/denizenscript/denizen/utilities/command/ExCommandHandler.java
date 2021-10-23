@@ -11,12 +11,12 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
@@ -25,7 +25,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -200,14 +199,18 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                             Class<? extends ObjectTag> type = null;
                             String part = fullTag.substring(lastDot, bracketStart == -1 ? i : bracketStart);
                             if (components == 0) {
-                                type = TagManager.baseReturnTypes.get(part);
+                                TagManager.TagBaseData baseType = TagManager.baseTags.get(part);
+                                if (baseType != null) {
+                                    type = baseType.returnType;
+                                }
                             }
                             else if (typesApplicable != null) {
                                 for (Class<? extends ObjectTag> possibleType : typesApplicable) {
                                     ObjectFetcher.ObjectType<? extends ObjectTag> typeData = ObjectFetcher.objectsByClass.get(possibleType);
                                     if (typeData != null && typeData.tagProcessor != null) {
-                                        type = typeData.tagProcessor.tagReturnTypes.get(part);
-                                        if (type != null) {
+                                        ObjectTagProcessor.TagData data = typeData.tagProcessor.registeredObjectTags.get(part);
+                                        if (data != null && data.returnType != null) {
+                                            type = data.returnType;
                                             break;
                                         }
                                     }
@@ -227,7 +230,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                     String beforeDot = arg.substring(0, relevantTagStart) + fullTag.substring(0, lastDot);
                     if (components == 0 && !CoreUtilities.contains(fullTag, '[')) {
                         ArrayList<String> output = new ArrayList<>();
-                        for (String tagBase : TagManager.properTagBases) {
+                        for (String tagBase : TagManager.baseTags.keySet()) {
                             if (tagBase.startsWith(fullTag)) {
                                 output.add(beforeDot + tagBase);
                             }
@@ -240,7 +243,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                         for (Class<? extends ObjectTag> possibleType : typesApplicable) {
                             ObjectFetcher.ObjectType<? extends ObjectTag> typeData = ObjectFetcher.objectsByClass.get(possibleType);
                             if (typeData != null && typeData.tagProcessor != null) {
-                                for (String tag : typeData.tagProcessor.tagReturnTypes.keySet()) {
+                                for (String tag : typeData.tagProcessor.registeredObjectTags.keySet()) {
                                     if (tag.startsWith(subComponent)) {
                                         output.add(beforeDot + tag);
                                     }

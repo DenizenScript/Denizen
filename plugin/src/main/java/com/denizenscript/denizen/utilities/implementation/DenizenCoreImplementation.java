@@ -26,6 +26,7 @@ import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class DenizenCoreImplementation implements DenizenImplementation {
@@ -551,5 +553,34 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public String getEmphasisColor() {
         return ChatColor.AQUA.toString();
+    }
+
+    public static ClassLoader loader = DenizenCoreImplementation.class.getClassLoader();
+    public static Class pluginClassLoaderClass;
+    public static boolean isPluginLoader;
+    public static Map<String, Class<?>> classMap;
+
+    static {
+        try {
+            pluginClassLoaderClass = Class.forName("org.bukkit.plugin.java.PluginClassLoader");
+            isPluginLoader = pluginClassLoaderClass.isAssignableFrom(loader.getClass());
+            if (isPluginLoader) {
+                classMap = ReflectionHelper.getFieldValue(pluginClassLoaderClass, "classes", loader);
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void saveClassToLoader(Class<?> clazz) {
+        if (!isPluginLoader) {
+            return;
+        }
+        if (classMap.containsKey(clazz.getName())) {
+            Debug.echoError("Class " + clazz.getName() + " already defined?");
+        }
+        classMap.put(clazz.getName(), clazz);
     }
 }
