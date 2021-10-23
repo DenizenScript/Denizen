@@ -24,11 +24,13 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when a block falls.
+    // @Triggers when a block begins to fall. Generic form "block falls" (with a material) also fires when the block lands.
     //
     // @Context
     // <context.location> returns the location of the block.
     // <context.entity> returns the entity of the block that fell.
+    // <context.old_material> returns the material that was at the location (eg 'sand' when falling, or 'air' when landing).
+    // <context.new_material> returns the material that will be at the location (eg 'air' when falling, or 'sand' when landing).
     //
     // -->
 
@@ -58,7 +60,6 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         if (!runInCheck(path, location)) {
             return false;
         }
-
         if (!tryMaterial(material, path.eventArgLowerAt(0))) {
             return false;
         }
@@ -75,6 +76,8 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         switch (name) {
             case "location": return location;
             case "entity": return new EntityTag(event.getEntity());
+            case "old_material": return material;
+            case "new_material": return new MaterialTag(event.getBlockData());
         }
         return super.getContext(name);
     }
