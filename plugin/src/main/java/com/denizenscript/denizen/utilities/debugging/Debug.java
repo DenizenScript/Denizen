@@ -264,7 +264,7 @@ public class Debug {
         if (source == null) {
             source = CommandExecutor.currentQueue;
         }
-        String errorMessage = getFullExceptionMessage(ex);
+        String errorMessage = getFullExceptionMessage(ex, true);
         if (throwErrorEvent) {
             throwErrorEvent = false;
             Throwable thrown = ex;
@@ -293,10 +293,12 @@ public class Debug {
         throwErrorEvent = wasThrown;
     }
 
-    public static String getFullExceptionMessage(Throwable ex) {
+    public static String getFullExceptionMessage(Throwable ex, boolean includeBounding) {
         StringBuilder errorMessage = new StringBuilder();
-        errorMessage.append("Internal exception was thrown!\n");
-        String prefix = ChatColor.GRAY + "[Error Continued] " + ChatColor.WHITE;
+        if (includeBounding) {
+            errorMessage.append("Internal exception was thrown!\n");
+        }
+        String prefix = includeBounding ? ChatColor.GRAY + "[Error Continued] " + ChatColor.WHITE : "";
         boolean first = true;
         while (ex != null) {
             errorMessage.append(prefix);
@@ -305,7 +307,7 @@ public class Debug {
             }
             errorMessage.append(ex.toString()).append("\n");
             for (StackTraceElement ste : ex.getStackTrace()) {
-                errorMessage.append(prefix).append(ste.toString()).append("\n");
+                errorMessage.append(prefix).append("  ").append(ste.toString()).append("\n");
             }
             if (ex.getCause() == ex) {
                 break;

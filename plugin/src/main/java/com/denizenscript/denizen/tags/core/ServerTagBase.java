@@ -2291,6 +2291,20 @@ public class ServerTagBase {
             }
             event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
         }
+
+        // <--[tag]
+        // @attribute <server.stack_trace>
+        // @returns ElementTag
+        // @description
+        // Generates and shows a stack trace for the current context.
+        // This tag is strictly for internal debugging reasons.
+        // WARNING: Different Java versions generate different stack trace formats and details.
+        // WARNING: Java internally limits stack trace generation in a variety of ways. This tag cannot be relied on to output anything.
+        // -->
+        else if (attribute.startsWith("stack_trace")) {
+            String trace = com.denizenscript.denizen.utilities.debugging.Debug.getFullExceptionMessage(new RuntimeException("TRACE"), false);
+            event.setReplacedObject(new ElementTag(trace).getObjectAttribute(attribute.fulfill(1)));
+        }
     }
 
     public static void listDeprecateWarn(Attribute attribute) {
