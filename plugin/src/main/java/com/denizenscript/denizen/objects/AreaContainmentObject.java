@@ -220,7 +220,7 @@ public interface AreaContainmentObject extends ObjectTag {
                 try {
                     if (attribute.hasContext(1)) {
                         String matcher = attribute.getContext(1);
-                        Predicate<Location> predicate = (l) -> isSpawnable(l) && BukkitScriptEvent.tryMaterial(l.getBlock().getType(), matcher);
+                        Predicate<Location> predicate = (l) -> isSpawnable(l) && BukkitScriptEvent.tryMaterial(l.getBlock().getRelative(0, -1, 0).getType(), matcher);
                         return area.getBlocks(predicate);
                     }
                     return area.getBlocks(AreaContainmentObject::isSpawnable);

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -84,6 +85,9 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onBlockFalls(EntityChangeBlockEvent event) {
+        if (event.getEntityType() != EntityType.FALLING_BLOCK) {
+            return;
+        }
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getBlock());
         this.event = event;
