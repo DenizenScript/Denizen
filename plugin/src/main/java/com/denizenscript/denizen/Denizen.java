@@ -44,6 +44,7 @@ import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.core.TimeTag;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
@@ -401,6 +402,7 @@ public class Denizen extends JavaPlugin {
             }
             try {
                 // Process script files (events, etc).
+                NoteManager.reload();
                 DenizenCore.postLoadScripts();
                 Debug.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
                 // Fire the 'on Server Start' world event
