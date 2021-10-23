@@ -35,7 +35,7 @@ public class PaperItemTagProperties implements Property {
 
     @Override
     public String getPropertyId() {
-        return null;
+        return "PaperItemTagProperties";
     }
 
     public static void registerTags() {

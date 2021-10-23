@@ -7,24 +7,24 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class PlayerAffectsMonsterSpawning implements Property {
+public class PaperPlayerProperties implements Property {
     public static boolean describes(ObjectTag player) {
         return player instanceof PlayerTag
                 && ((PlayerTag) player).isOnline();
     }
 
-    public static PlayerAffectsMonsterSpawning getFrom(ObjectTag player) {
+    public static PaperPlayerProperties getFrom(ObjectTag player) {
         if (!describes(player)) {
             return null;
         }
-        return new PlayerAffectsMonsterSpawning((PlayerTag) player);
+        return new PaperPlayerProperties((PlayerTag) player);
     }
 
     public static final String[] handledMechs = new String[] {
             "affects_monster_spawning"
     };
 
-    private PlayerAffectsMonsterSpawning(PlayerTag player) {
+    private PaperPlayerProperties(PlayerTag player) {
         this.player = player;
     }
 
@@ -37,7 +37,7 @@ public class PlayerAffectsMonsterSpawning implements Property {
 
     @Override
     public String getPropertyId() {
-        return null;
+        return "PaperPlayerProperties";
     }
 
     public static void registerTags() {
@@ -51,7 +51,7 @@ public class PlayerAffectsMonsterSpawning implements Property {
         // @description
         // Returns whether the player affects monster spawning. When false, no monsters will spawn naturally because of this player.
         // -->
-        PropertyParser.<PlayerAffectsMonsterSpawning, ElementTag>registerTag(ElementTag.class, "affects_monster_spawning", (attribute, player) -> {
+        PropertyParser.<PaperPlayerProperties, ElementTag>registerTag(ElementTag.class, "affects_monster_spawning", (attribute, player) -> {
             return new ElementTag(player.player.getPlayerEntity().getAffectsSpawning());
         });
     }

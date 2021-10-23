@@ -48,12 +48,10 @@ public class PaperModule {
 
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityExperienceOrb.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityFromSpawner.class, EntityTag.class);
-        PropertyParser.registerProperty(EntitySpawnLocation.class, EntityTag.class);
+        PropertyParser.registerProperty(PaperEntityProperties.class, EntityTag.class);
         PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
-        PropertyParser.registerProperty(WorldViewDistance.class, WorldTag.class);
-        PropertyParser.registerProperty(PlayerAffectsMonsterSpawning.class, PlayerTag.class);
+        PropertyParser.registerProperty(PaperWorldProperties.class, WorldTag.class);
+        PropertyParser.registerProperty(PaperPlayerProperties.class, PlayerTag.class);
 
         // Paper Tags
         new PaperTagBase();

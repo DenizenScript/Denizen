@@ -8,24 +8,24 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class WorldViewDistance implements Property {
+public class PaperWorldProperties implements Property {
 
     public static boolean describes(ObjectTag world) {
         return world instanceof WorldTag;
     }
 
-    public static WorldViewDistance getFrom(ObjectTag world) {
+    public static PaperWorldProperties getFrom(ObjectTag world) {
         if (!describes(world)) {
             return null;
         }
-        return new WorldViewDistance((WorldTag) world);
+        return new PaperWorldProperties((WorldTag) world);
     }
 
     public static final String[] handledMechs = new String[] {
             "view_distance", "no_tick_view_distance"
     };
 
-    private WorldViewDistance(WorldTag world) {
+    private PaperWorldProperties(WorldTag world) {
         this.world = world;
     }
 
@@ -38,7 +38,7 @@ public class WorldViewDistance implements Property {
 
     @Override
     public String getPropertyId() {
-        return null;
+        return "PaperWorldProperties";
     }
 
     public static void registerTags() {
@@ -52,7 +52,7 @@ public class WorldViewDistance implements Property {
         // @description
         // Returns the view distance of this world. Chunks are tracked inside this radius.
         // -->
-        PropertyParser.<WorldViewDistance, ElementTag>registerTag(ElementTag.class, "view_distance", (attribute, world) -> {
+        PropertyParser.<PaperWorldProperties, ElementTag>registerTag(ElementTag.class, "view_distance", (attribute, world) -> {
             return new ElementTag(world.world.getWorld().getViewDistance());
         });
 
@@ -66,7 +66,7 @@ public class WorldViewDistance implements Property {
         // Returns the non-ticking view distance of this world. Chunks will not be tracked between the world's view distance and its non-ticking view distance.
         // This allows your world to have a higher visual view distance without impacting performance.
         // -->
-        PropertyParser.<WorldViewDistance, ElementTag>registerTag(ElementTag.class, "no_tick_view_distance", (attribute, world) -> {
+        PropertyParser.<PaperWorldProperties, ElementTag>registerTag(ElementTag.class, "no_tick_view_distance", (attribute, world) -> {
             return new ElementTag(world.world.getWorld().getNoTickViewDistance());
         });
     }
