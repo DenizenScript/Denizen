@@ -50,7 +50,7 @@ public class Utilities {
         }
     }
 
-    public static AsciiMatcher namespaceMatcher = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz" + ".-_/" + "0123456789");
+    public static AsciiMatcher namespaceMatcher = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + ".-_/" + AsciiMatcher.DIGITS);
 
     public static String cleanseNamespaceID(String input) {
         return namespaceMatcher.trimToMatches(CoreUtilities.toLowerCase(input));

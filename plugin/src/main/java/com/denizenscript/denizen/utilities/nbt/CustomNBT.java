@@ -125,7 +125,7 @@ public class CustomNBT {
         }
     }
 
-    public static final AsciiMatcher uppercaseMatcher = new AsciiMatcher("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    public static final AsciiMatcher uppercaseMatcher = new AsciiMatcher(AsciiMatcher.LETTERS_UPPER);
 
     public static final HashMap<String, String> attributeNameUpdates = new HashMap<>();
 

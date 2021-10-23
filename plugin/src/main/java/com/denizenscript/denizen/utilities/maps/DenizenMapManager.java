@@ -201,7 +201,7 @@ public class DenizenMapManager {
 
     public static HashSet<String> failedUrls = new HashSet<>();
 
-    public static AsciiMatcher allowedExtensionText = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz" + "0123456789");
+    public static AsciiMatcher allowedExtensionText = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.DIGITS);
 
     private static String downloadImage(URL url) {
         try {

@@ -167,7 +167,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     // </code>
     //
     // -->
-    public static AsciiMatcher descriptionCharsAllowed = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz" + "_");
+    public static AsciiMatcher descriptionCharsAllowed = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + "_");
 
     public static HashMap<String, EnchantmentReference> registeredEnchantmentContainers = new HashMap<>();
 

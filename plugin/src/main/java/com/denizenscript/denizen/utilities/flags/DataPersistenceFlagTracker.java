@@ -29,7 +29,7 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
 
     public String keyPrefix = "flag_";
 
-    public static AsciiMatcher allowedKeyText = new AsciiMatcher("abcdefghijklmnopqrstuvwxyz_/.-0123456789");
+    public static AsciiMatcher allowedKeyText = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.DIGITS + "_/.-");
 
     public static String cleanKeyName(String input) {
         return allowedKeyText.trimToMatches(CoreUtilities.toLowerCase(input));
