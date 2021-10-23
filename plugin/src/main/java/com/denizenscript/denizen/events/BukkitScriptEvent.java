@@ -46,14 +46,15 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // "<block>" usually indicates that a MaterialTag will be matched against.
     // This means you can specify any valid block material name, like "stone" or "air".
-    // You can also use "vanilla_tagged:<vanilla_tag_name>".
+    // You can also use "vanilla_tagged:<vanilla_tag_name>" or "material_flagged:<flag_name>".
     // You can also use "block" or "material" as catch-alls.
     //
     // "<item>" or similar expects of course an ItemTag.
     // You can use any valid item material type like "stick", or the name of an item script, or "item" as a catch-all, or "potion" for any potion item.
     // Items can also be used with an "item_flagged" secondary prefix, so for an event that has "with:<item>", you can also do "with:item_flagged:<flag name>".
     // For item matchers that aren't switches, this works similarly, like "on player consumes item_flagged:myflag:" (note that this is not a switch).
-    // You can also use "vanilla_tagged:<vanilla_tag_name>" to check vanilla tags, or "item_enchanted:<enchantment>" to check enchantments.
+    // You can also use "vanilla_tagged:<vanilla_tag_name>" to check vanilla tags, or "material_flagged:<flag_name>" to check material flags (not item flags),
+    // or "item_enchanted:<enchantment>" to check enchantments.
     // You can also use "raw_exact:<item>" to do an exact raw item data comparison (almost always a bad idea to use).
     //
     // "<entity>", "<projectile>", "<vehicle>", etc. are examples of where an EntityTag will be expected.
@@ -951,43 +952,48 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         String rawComparedTo = comparedto;
         comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.startsWith("item_flagged:")) {
-            for (String flag : CoreUtilities.split(rawComparedTo.substring("item_flagged:".length()), '|')) {
-                if (!item.getFlagTracker().hasFlag(flag)) {
+        if (comparedto.contains(":")) {
+            if (comparedto.startsWith("item_flagged:")) {
+                for (String flag : CoreUtilities.split(rawComparedTo.substring("item_flagged:".length()), '|')) {
+                    if (!item.getFlagTracker().hasFlag(flag)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else if (comparedto.startsWith("item_enchanted:")) {
+                String enchMatcher = comparedto.substring("item_enchanted:".length());
+                if (!item.getItemMeta().hasEnchants()) {
                     return false;
                 }
-            }
-            return true;
-        }
-        if (comparedto.startsWith("item_enchanted:")) {
-            String enchMatcher = comparedto.substring("item_enchanted:".length());
-            if (!item.getItemMeta().hasEnchants()) {
+                for (Enchantment enchant : item.getItemMeta().getEnchants().keySet()) {
+                    if (runGenericCheck(enchMatcher, enchant.getKey().getKey())) {
+                        return true;
+                    }
+                }
                 return false;
             }
-            for (Enchantment enchant : item.getItemMeta().getEnchants().keySet()) {
-                if (runGenericCheck(enchMatcher, enchant.getKey().getKey())) {
-                    return true;
-                }
+            else if (comparedto.startsWith("raw_exact:")) {
+                ItemTag compareItem = ItemTag.valueOf(rawComparedTo.substring("raw_exact:".length()), CoreUtilities.errorButNoDebugContext);
+                return compareItem != null && compareItem.matchesRawExact(item);
             }
-            return false;
-        }
-        if (comparedto.startsWith("raw_exact:")) {
-            ItemTag compareItem = ItemTag.valueOf(rawComparedTo.substring("raw_exact:".length()), CoreUtilities.errorButNoDebugContext);
-            return compareItem != null && compareItem.matchesRawExact(item);
-        }
-        if (comparedto.startsWith("vanilla_tagged:")) {
-            String tagCheck = comparedto.substring("vanilla_tagged:".length());
-            HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(item.getItemStack().getType());
-            if (tags == null) {
+            else if (comparedto.startsWith("vanilla_tagged:")) {
+                String tagCheck = comparedto.substring("vanilla_tagged:".length());
+                HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(item.getItemStack().getType());
+                if (tags == null) {
+                    return false;
+                }
+                MatchHelper matcher = createMatcher(tagCheck);
+                for (String tag : tags) {
+                    if (matcher.doesMatch(tag)) {
+                        return true;
+                    }
+                }
                 return false;
             }
-            MatchHelper matcher = createMatcher(tagCheck);
-            for (String tag : tags) {
-                if (matcher.doesMatch(tag)) {
-                    return true;
-                }
+            else if (comparedto.startsWith("material_flagged:")) {
+                return item.getMaterial().getFlagTracker().hasFlag(comparedto.substring("material_flagged:".length()));
             }
-            return false;
         }
         if (comparedto.equals("item")) {
             return true;
@@ -1021,19 +1027,24 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("block") || comparedto.equals("material")) {
             return true;
         }
-        if (comparedto.startsWith("vanilla_tagged:")) {
-            String tagCheck = comparedto.substring("vanilla_tagged:".length());
-            HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(mat);
-            if (tags == null) {
+        if (comparedto.contains(":")) {
+            if (comparedto.startsWith("vanilla_tagged:")) {
+                String tagCheck = comparedto.substring("vanilla_tagged:".length());
+                HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(mat);
+                if (tags == null) {
+                    return false;
+                }
+                MatchHelper matcher = createMatcher(tagCheck);
+                for (String tag : tags) {
+                    if (matcher.doesMatch(tag)) {
+                        return true;
+                    }
+                }
                 return false;
             }
-            MatchHelper matcher = createMatcher(tagCheck);
-            for (String tag : tags) {
-                if (matcher.doesMatch(tag)) {
-                    return true;
-                }
+            else if (comparedto.startsWith("material_flagged:")) {
+                return new MaterialTag(mat).getFlagTracker().hasFlag(comparedto.substring("material_flagged:".length()));
             }
-            return false;
         }
         MaterialTag quickOf = MaterialTag.quickOfNamed(comparedto);
         if (quickOf != null) {
