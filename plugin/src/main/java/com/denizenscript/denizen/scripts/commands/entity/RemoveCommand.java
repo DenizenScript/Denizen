@@ -60,7 +60,7 @@ public class RemoveCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));

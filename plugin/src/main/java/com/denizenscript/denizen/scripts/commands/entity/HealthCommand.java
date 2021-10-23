@@ -71,7 +71,7 @@ public class HealthCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {

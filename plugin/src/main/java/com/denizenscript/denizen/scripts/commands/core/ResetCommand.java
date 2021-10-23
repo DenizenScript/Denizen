@@ -49,7 +49,7 @@ public class ResetCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matches("cooldown")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.PLAYER_COOLDOWN);

@@ -71,7 +71,7 @@ public class WorldBorderCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("center")
                     && arg.matchesArgumentType(LocationTag.class)
                     && arg.matchesPrefix("center")) {

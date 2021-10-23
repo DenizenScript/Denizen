@@ -69,7 +69,7 @@ public class AnnounceCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("type")
                     && arg.matches("to_ops")) {
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);

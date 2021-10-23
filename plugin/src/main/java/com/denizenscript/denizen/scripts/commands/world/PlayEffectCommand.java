@@ -106,7 +106,7 @@ public class PlayEffectCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         ParticleHelper particleHelper = NMSHandler.getParticleHelper();
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(LocationTag.class)
                     && (arg.matchesPrefix("at") || !arg.hasPrefix())) {

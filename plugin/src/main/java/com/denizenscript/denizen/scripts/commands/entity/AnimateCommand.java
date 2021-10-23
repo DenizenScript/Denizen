@@ -87,7 +87,7 @@ public class AnimateCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         AnimationHelper animationHelper = NMSHandler.getAnimationHelper();
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("for")
                     && arg.matchesPrefix("for")
                     && arg.matchesArgumentList(PlayerTag.class)) {

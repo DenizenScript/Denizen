@@ -87,7 +87,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("script")
                     && !scriptEntry.hasObject("step")
                     && arg.hasPrefix()

@@ -72,7 +72,7 @@ public class AttachCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("to")
                     && !scriptEntry.hasObject("cancel")
                     && arg.matchesPrefix("to")

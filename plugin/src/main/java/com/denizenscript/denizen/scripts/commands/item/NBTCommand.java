@@ -23,7 +23,7 @@ public class NBTCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
 
             if (!scriptEntry.hasObject("key")
                     && arg.getRawValue().split(":", 2).length == 2) {

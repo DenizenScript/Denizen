@@ -120,7 +120,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matchesArgumentType(CuboidTag.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")

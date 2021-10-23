@@ -90,7 +90,7 @@ public class BossBarCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("title")
                     && arg.matchesPrefix("title", "t")) {
                 scriptEntry.addObject("title", arg.asElement());

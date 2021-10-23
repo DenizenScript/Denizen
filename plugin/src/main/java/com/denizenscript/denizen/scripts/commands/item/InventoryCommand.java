@@ -175,7 +175,7 @@ public class InventoryCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         boolean isAdjust = false, isFlag = false;
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                     && (arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class, MapTag.class)

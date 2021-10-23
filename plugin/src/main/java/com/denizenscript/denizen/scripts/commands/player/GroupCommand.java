@@ -64,7 +64,7 @@ public class GroupCommand extends AbstractCommand {
         if (Depends.permissions == null) {
             throw new InvalidArgumentsException("Permissions not linked - is Vault improperly installed, or is there no permissions plugin?");
         }
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());

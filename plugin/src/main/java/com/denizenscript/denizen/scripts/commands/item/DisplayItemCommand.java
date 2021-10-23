@@ -87,7 +87,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matchesArgumentType(DurationTag.class)
                     && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));

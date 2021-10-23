@@ -65,7 +65,7 @@ public class ToastCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")
                     && arg.matchesArgumentList(PlayerTag.class)) {

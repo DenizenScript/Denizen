@@ -104,7 +104,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("lookat")
                     && arg.matchesPrefix("lookat")
                     && arg.matchesArgumentType(LocationTag.class)) {

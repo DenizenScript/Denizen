@@ -47,7 +47,7 @@ public class StandCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         //stand should have no additional arguments
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             arg.reportUnhandled();
         }
         if (!Utilities.entryHasNPC(scriptEntry)) {

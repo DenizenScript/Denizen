@@ -75,7 +75,7 @@ public class FakeItemCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot")) {
                 scriptEntry.addObject("slot", arg.asElement());

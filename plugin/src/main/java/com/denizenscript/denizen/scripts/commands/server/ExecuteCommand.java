@@ -76,7 +76,7 @@ public class ExecuteCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matches("asplayer", "as_player")
                     && !scriptEntry.hasObject("type")) {
                 if (!Utilities.entryHasPlayer(scriptEntry)) {

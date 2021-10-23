@@ -94,7 +94,7 @@ public class SwitchCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("no_physics") &&
                     arg.matches("no_physics")) {
                 scriptEntry.addObject("no_physics", new ElementTag(true));

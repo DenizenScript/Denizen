@@ -85,7 +85,7 @@ public class CastCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("remove")
                     && arg.matches("remove", "cancel")) {
                 scriptEntry.addObject("remove", new ElementTag(true));

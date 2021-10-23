@@ -63,7 +63,7 @@ public class SneakCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matches("fake")
                     && !scriptEntry.hasObject("fake")
                     && !scriptEntry.hasObject("stopfake")) {

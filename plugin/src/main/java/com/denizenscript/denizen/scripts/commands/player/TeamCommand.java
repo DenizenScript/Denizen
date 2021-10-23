@@ -70,7 +70,7 @@ public class TeamCommand extends AbstractCommand {
         String name = null;
         String prefix = null;
         String suffix = null;
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matchesPrefix("id")
                     && !scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());

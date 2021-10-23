@@ -86,7 +86,7 @@ public class ExperienceCommand extends AbstractCommand {
         Type type = Type.SET;
         boolean level = false;
         boolean silent = false;
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matchesInteger()) {
                 amount = arg.asElement().asInt();
             }

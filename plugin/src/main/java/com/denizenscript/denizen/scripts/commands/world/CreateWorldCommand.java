@@ -96,7 +96,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("generator")
                     && arg.matchesPrefix("generator", "g")) {
                 scriptEntry.addObject("generator", arg.asElement());

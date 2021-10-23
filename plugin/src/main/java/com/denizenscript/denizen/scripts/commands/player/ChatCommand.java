@@ -71,7 +71,7 @@ public class ChatCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         boolean specified_targets = false;
         boolean specified_talker = false;
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matchesPrefix("target", "targets", "t")) {
                 if (arg.matchesArgumentList(EntityTag.class)) {
                     scriptEntry.addObject("targets", arg.asType(ListTag.class));

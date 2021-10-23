@@ -53,7 +53,7 @@ public class OxygenCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("type", "t")
                     && arg.matchesEnum(Type.values())) {

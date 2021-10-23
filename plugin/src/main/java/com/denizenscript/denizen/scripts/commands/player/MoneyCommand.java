@@ -73,7 +73,7 @@ public class MoneyCommand extends AbstractCommand {
             Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
             return;
         }
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());

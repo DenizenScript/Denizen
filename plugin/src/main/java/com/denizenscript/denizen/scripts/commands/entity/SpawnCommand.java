@@ -72,7 +72,7 @@ public class SpawnCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
                 EntityTag.allowDespawnedNpcs = true;

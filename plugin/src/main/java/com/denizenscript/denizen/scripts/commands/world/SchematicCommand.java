@@ -161,7 +161,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", new ElementTag(arg.getRawValue().toUpperCase()));

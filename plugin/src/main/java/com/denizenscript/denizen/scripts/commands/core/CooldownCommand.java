@@ -76,7 +76,7 @@ public class CooldownCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
             if (arg.matchesPrefix("script", "s")
                     && arg.matchesArgumentType(ScriptTag.class)) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));

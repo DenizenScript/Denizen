@@ -83,7 +83,7 @@ public class TriggerCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
 
             if (!scriptEntry.hasObject("cooldown")
                     && arg.matchesPrefix("cooldown", "c")

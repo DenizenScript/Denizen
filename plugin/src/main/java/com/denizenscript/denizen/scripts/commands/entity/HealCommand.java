@@ -58,7 +58,7 @@ public class HealCommand extends AbstractCommand {
 
         boolean specified_targets = false;
 
-        for (Argument arg : scriptEntry.getProcessedArgs()) {
+        for (Argument arg : scriptEntry) {
 
             if (!scriptEntry.hasObject("amount")
                     && arg.matchesFloat()) {
