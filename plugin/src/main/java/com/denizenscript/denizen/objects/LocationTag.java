@@ -1038,6 +1038,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns the location above this location based on pitch and yaw. Optionally specify a number of blocks to go up.
         // This is equivalent to <@link tag LocationTag.forward> with a +90 degree rotation to the pitch.
+        // To just get the location above this location, use <@link tag LocationTag.above> instead.
         // -->
         tagProcessor.registerTag(LocationTag.class, "up", (attribute, object) -> {
             Location loc = object.clone();
@@ -1052,6 +1053,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns the location below this location based on pitch and yaw. Optionally specify a number of blocks to go down.
         // This is equivalent to <@link tag LocationTag.forward> with a -90 degree rotation to the pitch.
+        // To just get the location above this location, use <@link tag LocationTag.below> instead.
         // -->
         tagProcessor.registerTag(LocationTag.class, "down", (attribute, object) -> {
             Location loc = object.clone();
@@ -1066,6 +1068,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns the location relative to this location. Input is a vector location of the form left,up,forward.
         // For example, input -1,1,1 will return a location 1 block to the right, 1 block up, and 1 block forward.
+        // To just get the location relative to this without rotation math, use <@link tag LocationTag.add> instead.
         // -->
         tagProcessor.registerTag(LocationTag.class, "relative", (attribute, object) -> {
             if (!attribute.hasContext(1)) {

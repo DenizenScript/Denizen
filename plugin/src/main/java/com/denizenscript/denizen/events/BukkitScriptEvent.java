@@ -73,7 +73,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // "<area>" or similar refers to any area-defining tag type, including WorldTag, CuboidTag, EllipsoidTag, and PolygonTag.
     // You can specify the name of any world, the name of any noted area, "world_flagged:<flag_name>", "chunk_flagged:<flag_name>", "area_flagged:<flag_name>" (all work similar to 'item_flagged'),
-    // "biome:<name> to match based on the location's biome,
+    // "biome:<name>" to match based on the location's biome,
     // "cuboid" for any noted cuboid, "ellipsoid" for any noted ellipsoid, or "polygon" for any noted polygon.
     //
     // You will also often see match inputs like "<cause>" or "<reason>" or similar,

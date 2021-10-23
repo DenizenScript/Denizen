@@ -499,7 +499,7 @@ public class TextTagBase {
                 else if (colorName.length() == 7 && colorName.startsWith("#")) {
                     colorOut = FormattedTextHelper.stringifyRGBSpigot(colorName.substring(1));
                 }
-                else if (colorName.startsWith("co@")) {
+                else if (colorName.startsWith("co@") || colorName.lastIndexOf(',') > colorName.indexOf(',')) {
                     ColorTag color = ColorTag.valueOf(colorName, attribute.context);
                     String hex = Integer.toHexString(color.getColor().asRGB());
                     colorOut = FormattedTextHelper.stringifyRGBSpigot(hex);

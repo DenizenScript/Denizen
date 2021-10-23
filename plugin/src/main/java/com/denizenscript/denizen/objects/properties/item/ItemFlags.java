@@ -57,6 +57,7 @@ public class ItemFlags implements Property {
         // @group properties
         // @description
         // Returns a copy of the item with the specified flag data action applied to it.
+        // For example: <[item].with_flag[myflagname]>, or <[item].with_flag[myflag:myvalue]>, or <[item].with_flag[mycounter:+:<[amount]>]>
         // -->
         if (attribute.startsWith("with_flag")) {
             ItemTag item = new ItemTag(this.item.getItemStack().clone());
@@ -71,6 +72,7 @@ public class ItemFlags implements Property {
             // @group properties
             // @description
             // Returns a copy of the item with the specified flag data action (and the specified expiration duration) applied to it.
+            // For example: <[item].with_flag[myflagname].duration[5m]>
             // -->
             if (attribute.startsWith("duration", 2)) {
                 provider.expiration = new TimeTag(TimeTag.now().millis() + attribute.getContextObject(2).asType(DurationTag.class, attribute.context).getMillis());
