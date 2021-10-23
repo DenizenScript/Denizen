@@ -48,13 +48,26 @@ public class PaperEntityProperties implements Property {
     public static void registerTags() {
 
         // <--[tag]
+        // @attribute <EntityTag.spawn_reason>
+        // @returns ElementTag
+        // @group properties
+        // @Plugin Paper
+        // @description
+        // Returns the entity's spawn reason.
+        // Valid spawn reasons can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
+        // -->
+        PropertyParser.<PaperEntityProperties, ElementTag>registerTag(ElementTag.class, "spawn_reason", (attribute, entity) -> {
+            return new ElementTag(entity.entity.getBukkitEntity().getEntitySpawnReason().name());
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.xp_spawn_reason>
         // @returns ElementTag
         // @group properties
         // @Plugin Paper
         // @description
         // If the entity is an experience orb, returns its spawn reason.
-        // Valid spawn reasons can be found at <@link url https://papermc.io/javadocs/paper/org/bukkit/entity/ExperienceOrb.SpawnReason.html>
+        // Valid spawn reasons can be found at <@link url https://papermc.io/javadocs/paper/1.17/org/bukkit/entity/ExperienceOrb.SpawnReason.html>
         // -->
         PropertyParser.<PaperEntityProperties, ElementTag>registerTag(ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
             if (!(entity.entity.getBukkitEntity() instanceof ExperienceOrb)) {
