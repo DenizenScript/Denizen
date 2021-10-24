@@ -71,8 +71,7 @@ public class ItemRawNBT implements Property {
                 "SkullOwner",
                 // Firework specific
                 "Explosion", "Fireworks",
-                // Armor stand specific
-                // "EntityTag", // Temporarily sent through as raw due to lack of API coverage
+                //"EntityTag", // Special handling
                 // Bucket specific
                 //"BucketVariantTag", // Temporarily sent through as raw due to lack of property coverage
                 // Map specific
@@ -99,6 +98,20 @@ public class ItemRawNBT implements Property {
             MapTag entityMap = (MapTag) result.getObject("EntityTag");
             if (entityMap != null) {
                 entityMap.putObject("Invisible", null);
+                if (entityMap.map.isEmpty()) {
+                    result.putObject("EntityTag", null);
+                }
+            }
+        }
+        if (item.getBukkitMaterial() == Material.ARMOR_STAND) {
+            MapTag entityMap = (MapTag) result.getObject("EntityTag");
+            if (entityMap != null) {
+                entityMap.putObject("Pose", null);
+                entityMap.putObject("Small", null);
+                entityMap.putObject("NoBasePlate", null);
+                entityMap.putObject("Marker", null);
+                entityMap.putObject("Invisible", null);
+                entityMap.putObject("ShowArms", null);
                 if (entityMap.map.isEmpty()) {
                     result.putObject("EntityTag", null);
                 }

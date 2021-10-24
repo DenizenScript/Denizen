@@ -5,14 +5,18 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
 
 import java.util.Iterator;
+import java.util.Map;
 
 public class EntityArmorPose implements Property {
 
@@ -30,10 +34,6 @@ public class EntityArmorPose implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "armor_pose_list", "armor_pose"
-    };
-
     public static final String[] handledMechs = new String[] {
             "armor_pose"
     };
@@ -46,7 +46,7 @@ public class EntityArmorPose implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPoseList().identify();
+        return getPoseMap().identify();
     }
 
     @Override
@@ -64,39 +64,41 @@ public class EntityArmorPose implements Property {
         return list;
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
+    public MapTag getPoseMap() {
+        ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
+        MapTag map = new MapTag();
+        for (PosePart posePart : PosePart.values()) {
+            map.putObject(CoreUtilities.toLowerCase(posePart.name()), fromEulerAngle(posePart.getAngle(armorStand)));
         }
+        return map;
+    }
+
+    public static void registerTags() {
 
         // <--[tag]
-        // @attribute <EntityTag.armor_pose_list>
-        // @returns ListTag
+        // @attribute <EntityTag.armor_pose_map>
+        // @returns MapTag
         // @mechanism EntityTag.armor_pose
         // @group attributes
         // @description
-        // Returns a list of all poses and angles for the armor stand in the
-        // format: PART|ANGLE|...
-        // For example, head|4.5,3,4.5|body|5.4,3.2,1
+        // Returns a map of all poses and angles for the armor stand.
+        // For example, head=4.5,3,4.5;body=5.4,3.2,1
         // Angles are in radians!
         // -->
-        if (attribute.startsWith("armor_pose_list")) {
-            return getPoseList().getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityArmorPose, MapTag>registerTag(MapTag.class, "armor_pose_map", (attribute, entity) -> {
+            return entity.getPoseMap();
+        });
 
-        // <--[tag]
-        // @attribute <EntityTag.armor_pose[<part>]>
-        // @returns LocationTag
-        // @mechanism EntityTag.armor_pose
-        // @group attributes
-        // @description
-        // Returns the current angle pose for the specified part.
-        // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
-        // Angles are in radians!
-        // -->
-        else if (attribute.startsWith("armor_pose") && attribute.hasContext(1)) {
+        PropertyParser.<EntityArmorPose, ListTag>registerTag(ListTag.class, "armor_pose_list", (attribute, entity) -> {
+            Deprecations.entityArmorPose.warn(attribute.context);
+            return entity.getPoseList();
+        });
+
+        PropertyParser.<EntityArmorPose, LocationTag>registerTag(LocationTag.class, "armor_pose", (attribute, entity) -> {
+            Deprecations.entityArmorPose.warn(attribute.context);
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
             String name = attribute.getContext(1);
             PosePart posePart = PosePart.fromName(name);
             if (posePart == null) {
@@ -104,12 +106,9 @@ public class EntityArmorPose implements Property {
                 return null;
             }
             else {
-                return fromEulerAngle(posePart.getAngle((ArmorStand) entity.getBukkitEntity()))
-                        .getObjectAttribute(attribute.fulfill(1));
+                return fromEulerAngle(posePart.getAngle((ArmorStand) entity.entity.getBukkitEntity()));
             }
-        }
-
-        return null;
+        });
     }
 
     @Override
@@ -118,31 +117,43 @@ public class EntityArmorPose implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name armor_pose
-        // @input ListTag
+        // @input MapTag
         // @description
-        // Sets the angle for various parts of the armor stand in the
-        // format: PART|ANGLE|...
-        // For example, head|4.5,3,4.5|body|5.4,3.2,1
+        // Sets the angle for various parts of the armor stand.
+        // For example, head=4.5,3,4.5;body=5.4,3.2,1
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
         // Angles are in radians!
         // Here's a website to help you figure out the correct values: <@link url https://bgielinor.github.io/Minecraft-ArmorStand/>.
         // @tags
-        // <EntityTag.armor_pose_list>
-        // <EntityTag.armor_pose[<part>]>
+        // <EntityTag.armor_pose_map>
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            Iterator<String> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                String name = iterator.next();
-                String angle = iterator.next();
-                PosePart posePart = PosePart.fromName(name);
-                if (posePart == null) {
-                    mechanism.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
+            if (mechanism.getValue().asString().contains("=")) {
+                MapTag map = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+                    PosePart posePart = PosePart.fromName(entry.getKey().str);
+                    if (posePart == null) {
+                        mechanism.echoError("Invalid pose part specified: " + entry.getKey().str);
+                    }
+                    else {
+                        posePart.setAngle(armorStand, toEulerAngle(entry.getValue().asType(LocationTag.class, mechanism.context)));
+                    }
                 }
-                else {
-                    posePart.setAngle(armorStand, toEulerAngle(LocationTag.valueOf(angle, mechanism.context)));
+            }
+            else {
+                ListTag list = mechanism.valueAsType(ListTag.class);
+                Iterator<String> iterator = list.iterator();
+                while (iterator.hasNext()) {
+                    String name = iterator.next();
+                    String angle = iterator.next();
+                    PosePart posePart = PosePart.fromName(name);
+                    if (posePart == null) {
+                        mechanism.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
+                    }
+                    else {
+                        posePart.setAngle(armorStand, toEulerAngle(LocationTag.valueOf(angle, mechanism.context)));
+                    }
                 }
             }
         }
