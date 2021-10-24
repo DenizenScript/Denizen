@@ -64,14 +64,17 @@ public class ItemInventory implements Property {
 
     private InventoryTag getItemInventory() {
         InventoryHolder holder = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState());
-        Inventory inv;
+        Inventory inv = getInventoryFor(holder);
+        return InventoryTag.mirrorBukkitInventory(inv);
+    }
+
+    public static Inventory getInventoryFor(InventoryHolder holder) {
         if (holder instanceof Chest) {
-            inv = ((Chest) holder).getBlockInventory();
+            return ((Chest) holder).getBlockInventory();
         }
         else {
-            inv = holder.getInventory();
+            return holder.getInventory();
         }
-        return InventoryTag.mirrorBukkitInventory(inv);
     }
 
     private ItemInventory(ItemTag _item) {
@@ -157,11 +160,11 @@ public class ItemInventory implements Property {
             if (item.getItemMeta() instanceof BlockStateMeta) {
                 BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
                 InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
-                if (items.size() > invHolder.getInventory().getSize()) {
-                    mechanism.echoError("Invalid inventory_contents input size; expected " + invHolder.getInventory().getSize() + " or less.");
+                if (items.size() > getInventoryFor(invHolder).getSize()) {
+                    mechanism.echoError("Invalid inventory_contents input size; expected " + getInventoryFor(invHolder).getSize() + " or less.");
                     return;
                 }
-                invHolder.getInventory().setContents(items.toArray(new ItemStack[0]));
+                getInventoryFor(invHolder).setContents(items.toArray(new ItemStack[0]));
                 bsm.setBlockState((BlockState) invHolder);
                 item.setItemMeta(bsm);
             }
@@ -189,11 +192,11 @@ public class ItemInventory implements Property {
             if (item.getItemMeta() instanceof BlockStateMeta) {
                 BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
                 InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
-                if (items.size() > invHolder.getInventory().getSize()) {
-                    mechanism.echoError("Invalid inventory mechanism input size; expected " + invHolder.getInventory().getSize() + " or less.");
+                if (items.size() > getInventoryFor(invHolder).getSize()) {
+                    mechanism.echoError("Invalid inventory mechanism input size; expected " + getInventoryFor(invHolder).getSize() + " or less.");
                     return;
                 }
-                invHolder.getInventory().setContents(itemArray);
+                getInventoryFor(invHolder).setContents(itemArray);
                 bsm.setBlockState((BlockState) invHolder);
                 item.setItemMeta(bsm);
             }
