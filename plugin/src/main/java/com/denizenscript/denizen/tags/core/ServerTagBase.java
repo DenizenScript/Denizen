@@ -2450,7 +2450,7 @@ public class ServerTagBase {
         // Sets the server's current idle timeout limit (how long a player can sit still before getting kicked).
         // Will be rounded to the nearest number of minutes.
         // Set to 0 to disable automatic timeout kick.
-        // For example: - adjust server remove_recipes:5m
+        // For example: - adjust server idle_timeout:5m
         // @tags
         // <server.idle_timeout>
         // -->
