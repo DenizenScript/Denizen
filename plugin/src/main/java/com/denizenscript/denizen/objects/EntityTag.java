@@ -738,6 +738,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void spawnAt(Location location) {
+        if (!location.isWorldLoaded()) {
+            Debug.echoError("Cannot teleport or spawn entity at location '" + new LocationTag(location) + "' because it is missing a worl.");
+            return;
+        }
         // If the entity is already spawned, teleport it.
         if (isCitizensNPC()) {
             if (getDenizenNPC().getCitizen().isSpawned()) {

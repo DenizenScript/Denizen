@@ -188,6 +188,26 @@ public class EntityAttributeModifiers implements Property {
     // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
     // The default ID will be randomly generated, the default name will be the attribute name, the default slot is any.
     //
+    // Operation names are based on the Bukkit enum.
+    // ADD_NUMBER corresponds to Mojang "ADDITION" - adds on top of the base value.
+    // ADD_SCALAR corresponds to Mojang "MULTIPLY_BASE" - adds to the total, multiplied by the base value.
+    // MULTIPLY_SCALAR_1 corresponds to Mojang "MULTIPLY_TOTAL", multiplies the final value (after both "add_number" and "add_scaler") by the amount given plus one.
+    //
+    // They are combined like (pseudo-code):
+    // <code>
+    // - define x <[base_value]>
+    // - foreach <all_modifiers[ADD_NUMBER]>:
+    //     - define x:+:<[value]>
+    // - define y <[x]>
+    // - foreach <all_modifiers[ADD_SCALAR]>:
+    //     - define y:+:<[x].mul[<[value]>]>
+    // - foreach <all_modifiers[MULTIPLY_SCALAR_1]>:
+    //     - define y:*:<[value].add[1]>
+    // - determine <[y]>
+    // </code>
+    //
+    // See also <@link url https://minecraft.fandom.com/wiki/Attribute#Modifiers>
+    //
     // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
     //
     // For more clean/proper input, instead do something like:
