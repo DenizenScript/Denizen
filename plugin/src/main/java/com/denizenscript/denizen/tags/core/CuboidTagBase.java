@@ -14,7 +14,7 @@ public class CuboidTagBase {
         // Returns a cuboid object constructed from the input value.
         // Refer to <@link objecttype CuboidTag>.
         // -->
-        TagManager.registerTagHandler(CuboidTag.class, "cuboid", (attribute) -> {
+        TagManager.registerTagHandler(CuboidTag.class, "cuboid", (attribute) -> { // non-static due to notes
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Cuboid tag base must have input.");
                 return null;

@@ -14,7 +14,7 @@ public class BiomeTagBase {
         // Returns a biome object constructed from the input value.
         // Refer to <@link objecttype BiomeTag>.
         // -->
-        TagManager.registerTagHandler(BiomeTag.class, "biome", (attribute) -> {
+        TagManager.registerStaticTagBaseHandler(BiomeTag.class, "biome", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Biome tag base must have input.");
                 return null;

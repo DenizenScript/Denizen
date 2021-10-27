@@ -14,7 +14,7 @@ public class LocationTagBase {
         // Returns a location object constructed from the input value.
         // Refer to <@link objecttype LocationTag>.
         // -->
-        TagManager.registerTagHandler(LocationTag.class, "location", (attribute) -> {
+        TagManager.registerTagHandler(LocationTag.class, "location", (attribute) -> { // non-static due to notes
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Location tag base must have input.");
                 return null;

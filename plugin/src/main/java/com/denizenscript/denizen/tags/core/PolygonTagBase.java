@@ -14,7 +14,7 @@ public class PolygonTagBase {
         // Returns a polygon object constructed from the input value.
         // Refer to <@link objecttype PolygonTag>.
         // -->
-        TagManager.registerTagHandler(PolygonTag.class, "polygon", (attribute) -> {
+        TagManager.registerTagHandler(PolygonTag.class, "polygon", (attribute) -> { // non-static due to notes
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Polygon tag base must have input.");
                 return null;

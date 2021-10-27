@@ -14,7 +14,7 @@ public class ChunkTagBase {
         // Returns a chunk object constructed from the input value.
         // Refer to <@link objecttype ChunkTag>.
         // -->
-        TagManager.registerTagHandler(ChunkTag.class, "chunk", (attribute) -> {
+        TagManager.registerStaticTagBaseHandler(ChunkTag.class, "chunk", (attribute) -> {
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Chunk tag base must have input.");
                 return null;

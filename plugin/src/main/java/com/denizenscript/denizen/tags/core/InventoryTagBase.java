@@ -14,7 +14,7 @@ public class InventoryTagBase {
         // Returns an inventory object constructed from the input value.
         // Refer to <@link objecttype InventoryTag>.
         // -->
-        TagManager.registerTagHandler(InventoryTag.class, "inventory", (attribute) -> {
+        TagManager.registerTagHandler(InventoryTag.class, "inventory", (attribute) -> { // non-static due to notes
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Inventory tag base must have input.");
                 return null;

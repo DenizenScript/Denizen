@@ -46,7 +46,7 @@ public class CustomColorTagBase {
         // If the color name is unrecognized, returns the value of color named 'default'.
         // Default color names are 'base', 'emphasis', 'warning', 'error'.
         // -->
-        TagManager.registerTagHandler(ElementTag.class, "&", attribute -> {
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&", attribute -> {
             if (!attribute.hasContext(1)) {
                 return null;
             }
