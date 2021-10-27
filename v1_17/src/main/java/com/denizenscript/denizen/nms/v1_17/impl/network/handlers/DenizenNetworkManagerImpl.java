@@ -230,6 +230,11 @@ public class DenizenNetworkManagerImpl extends Connection {
                 ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
                 Debug.log("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
             }
+            else if (packet instanceof ClientboundLevelChunkPacket) {
+                ClientboundLevelChunkPacket chunkPacket = (ClientboundLevelChunkPacket) packet;
+                Debug.log("Packet: ClientboundLevelChunkPacket sent to " + player.getScoreboardName() + " for chunk: " + chunkPacket.getX() + ", " + chunkPacket.getZ()
+                        + ", blockEnts: " + chunkPacket.getBlockEntitiesTags().size() + ", bufferLen: " + chunkPacket.getReadBuffer().array().length);
+            }
             else {
                 Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
             }

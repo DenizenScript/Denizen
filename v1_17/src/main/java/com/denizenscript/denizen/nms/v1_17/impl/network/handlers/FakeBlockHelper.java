@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -59,9 +60,39 @@ public class FakeBlockHelper {
         return -1;
     }
 
+    public static Field PAPER_CHUNK_EXTRAPACKETS;
+    public static Field PAPER_CHUNK_READY;
+    public static boolean tryPaperPatch = true;
+
+    public static void copyPacketPaperPatch(ClientboundLevelChunkPacket newPacket, ClientboundLevelChunkPacket oldPacket) {
+        if (!Denizen.supportsPaper || !tryPaperPatch) {
+            return;
+        }
+        try {
+            if (PAPER_CHUNK_EXTRAPACKETS == null) {
+                PAPER_CHUNK_EXTRAPACKETS = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("extraPackets");
+                PAPER_CHUNK_READY = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("ready");
+            }
+        }
+        catch (Throwable ex) {
+            tryPaperPatch = false;
+            Debug.echoError("Paper packet patch failed:");
+            Debug.echoError(ex);
+            return;
+        }
+        try {
+            PAPER_CHUNK_EXTRAPACKETS.set(newPacket, PAPER_CHUNK_EXTRAPACKETS.get(oldPacket));
+            PAPER_CHUNK_READY.setBoolean(newPacket, PAPER_CHUNK_READY.getBoolean(oldPacket));
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
     public static ClientboundLevelChunkPacket handleMapChunkPacket(ClientboundLevelChunkPacket originalPacket, List<FakeBlock> blocks) {
         try {
             ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
+            copyPacketPaperPatch(packet, originalPacket);
             // TODO: properly update HeightMap?
             BitSet bitmask = packet.getAvailableSections();
             FriendlyByteBuf serial = originalPacket.getReadBuffer();
