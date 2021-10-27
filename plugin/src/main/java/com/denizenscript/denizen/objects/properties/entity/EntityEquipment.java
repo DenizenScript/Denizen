@@ -154,11 +154,11 @@ public class EntityEquipment implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name equipment
-        // @input ListTag(ItemTag)
+        // @input MapTag
         // @description
         // Sets the entity's worn equipment.
-        // Input list is boots|leggings|chestplate|helmet
-        // Also accepts a MapTag as input.
+        // Input keys are boots, leggings, chestplate, and helmet.
+        // Also accepts as ListTag as input, in order boots|leggings|chestplate|helmet
         // @tags
         // <EntityTag.equipment>
         // <EntityTag.equipment_map>

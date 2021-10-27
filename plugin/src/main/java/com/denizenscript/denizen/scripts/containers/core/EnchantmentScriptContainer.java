@@ -43,6 +43,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     // This might be fixed in the future.
     //
     // It may be beneficial in some cases to restart your server after making changes to enchantments, rather than just reloading scripts.
+    // Rarity, Category, and Slots do not apply changes to an already-loaded script until the next restart (except when the script is newly added).
     //
     // Using these may cause unpredictable compatibility issues with external plugins.
     //
@@ -126,7 +127,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //   # This is used internally by the enchanting table and the anvil to determine if this enchantment can be given alongside another.
     //   # If unspecified, will default to always true.
     //   # | Most enchantment scripts can exclude this key.
-    //   is_compatible: <context.enchantment_key.advanced_matches[minecraft:lure|minecraft:luck*]>
+    //   is_compatible: <context.enchantment_key.advanced_matches_text[minecraft:lure|minecraft:luck*]>
     //
     //   # A tag that returns a boolean indicating whether this enchantment can enchant a specific item.
     //   # Can make use of "<context.item>" for the applicable ItemTag.

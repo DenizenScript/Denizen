@@ -131,11 +131,11 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         boolean isCommandArg = args.length == 0 || (args.length == 1 && !isNewArg) || args[args.length - (isNewArg ? 1 : 2)].equals("-");
         if (isCommandArg) {
             if (isNewArg || args.length == 0) {
-                return new ArrayList<>(DenizenCore.getCommandRegistry().instances.keySet());
+                return new ArrayList<>(DenizenCore.commandRegistry.instances.keySet());
             }
             ArrayList<String> output = new ArrayList<>();
             String startOfName = CoreUtilities.toLowerCase(args[args.length - 1]);
-            for (String command : DenizenCore.getCommandRegistry().instances.keySet()) {
+            for (String command : DenizenCore.commandRegistry.instances.keySet()) {
                 if (command.startsWith(startOfName)) {
                     output.add(command);
                 }
@@ -255,10 +255,10 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                 }
             }
         }
-        AbstractCommand dcmd = DenizenCore.getCommandRegistry().get(args[0]);
+        AbstractCommand dcmd = DenizenCore.commandRegistry.get(args[0]);
         for (int i = args.length - 2; i >= 0; i--) {
             if (args[i].equals("-")) {
-                dcmd = DenizenCore.getCommandRegistry().get(args[i + 1]);
+                dcmd = DenizenCore.commandRegistry.get(args[i + 1]);
             }
         }
         if (dcmd == null) {

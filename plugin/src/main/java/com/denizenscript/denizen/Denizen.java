@@ -236,7 +236,7 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            DenizenCore.setCommandRegistry(commandRegistry);
+            DenizenCore.commandRegistry = commandRegistry;
             commandRegistry.registerCommands();
         }
         catch (Exception e) {
