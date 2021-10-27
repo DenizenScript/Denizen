@@ -160,12 +160,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void debugTagFill(Debuggable entry, String tag, String result) {
-        Debug.echoDebug(entry, ChatColor.DARK_GRAY + "Filled tag <" + ChatColor.WHITE + tag
-                + ChatColor.DARK_GRAY + "> with '" + ChatColor.WHITE + result + ChatColor.DARK_GRAY + "'.");
-    }
-
-    @Override
     public String queueHeaderInfo(ScriptEntry scriptEntry) {
         BukkitScriptEntryData data = ((BukkitScriptEntryData) scriptEntry.entryData);
         if (data.hasPlayer() && data.hasNPC()) {
