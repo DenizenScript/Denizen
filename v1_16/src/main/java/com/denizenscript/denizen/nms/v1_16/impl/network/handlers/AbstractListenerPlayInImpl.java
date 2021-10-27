@@ -59,8 +59,8 @@ public class AbstractListenerPlayInImpl extends PlayerConnection {
     }
 
     @Override
-    public void a(double d0, double d1, double d2, float f, float f1, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.a(d0, d1, d2, f, f1, set, cause);
+    public boolean a(double d0, double d1, double d2, float f, float f1, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set, PlayerTeleportEvent.TeleportCause cause) {
+        return oldListener.a(d0, d1, d2, f, f1, set, cause);
     }
 
     @Override
