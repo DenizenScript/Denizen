@@ -29,6 +29,8 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
     //
     // @Cancellable true
     //
+    // @Switch crossbow:<item> to only process the event if the crossbow is a specified item.
+    //
     // @Triggers when a living entity loads a crossbow with a projectile.
     //
     // @Context
@@ -69,6 +71,9 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean matches(ScriptPath path) {
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        if (!runWithCheck(path, new ItemTag(event.getCrossbow()), "crossbow")) {
             return false;
         }
         return super.matches(path);

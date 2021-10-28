@@ -761,8 +761,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
-    public boolean runWithCheck(ScriptPath path, ItemTag held) {
-        String with = path.switches.get("with");
+    public static boolean runWithCheck(ScriptPath path, ItemTag held) {
+        return runWithCheck(path, held, "with");
+    }
+
+    public static boolean runWithCheck(ScriptPath path, ItemTag held, String key) {
+        String with = path.switches.get(key);
         if (with != null) {
             if (CoreUtilities.equalsIgnoreCase(with, "item")) {
                 return true;

@@ -9,12 +9,14 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -30,6 +32,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
+    // @Switch with:<item> to only process the event if the fishing rod is a specified item.
+    //
     // @Triggers when a player uses a fishing rod.
     //
     // @Context
@@ -43,7 +47,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // "CAUGHT:" + ItemTag to change the item that was caught (only if an item was already being caught).
     // "XP:" + ElementTag(Number) to change how much experience will drop.
     //
-    // @Player Always.
+    // @Player If the fisher or the caught entity is a player (in most cases, the fisher can be assumed to be a real player).
+    // @NPC If the fisher or the caught entity is an NPC.
     //
     // -->
 
@@ -66,7 +71,6 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptPath path) {
         String fish = path.eventArgLowerAt(2);
-
         if (!fish.isEmpty() && !fish.equals("in") && !fish.equals("while")) {
             if (entity == null) {
                 return false;
@@ -80,18 +84,27 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
                 }
             }
         }
-
         String[] data = path.eventArgsLower;
         for (int index = 2; index < data.length; index++) {
             if (data[index].equals("while") && !data[index + 1].equalsIgnoreCase(state.asString())) {
                 return false;
             }
         }
-
         if (!runInCheck(path, hook.getLocation())) {
             return false;
         }
-
+        if (path.switches.containsKey("with")) {
+            if (!EntityTag.isPlayer(event.getPlayer())) {
+                return false;
+            }
+            ItemStack held = event.getPlayer().getEquipment().getItemInMainHand();
+            if (held.getType() != Material.FISHING_ROD) {
+                held = event.getPlayer().getEquipment().getItemInOffHand();
+            }
+            if (!runWithCheck(path, new ItemTag(held))) {
+                return false;
+            }
+        }
         return super.matches(path);
     }
 

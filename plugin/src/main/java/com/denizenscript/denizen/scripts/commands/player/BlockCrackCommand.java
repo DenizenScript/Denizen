@@ -63,9 +63,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(PlayerTag.class)) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
@@ -83,17 +81,13 @@ public class BlockCrackCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("progress")) {
             throw new InvalidArgumentsException("Must specify crack animation progress!");
         }
-
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a valid location!");
         }
-
         scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)))
                 .defaultObject("stack", new ElementTag(false));
     }
@@ -113,25 +107,17 @@ public class BlockCrackCommand extends AbstractCommand {
         ElementTag progress = scriptEntry.getElement("progress");
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag stack = scriptEntry.getElement("stack");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("players", players)
-                    + progress.debug() + location.debug() + stack.debug());
-
+            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("players", players), progress, location, stack);
         }
-
         Location loc = location.getBlock().getLocation();
         if (!progressTracker.containsKey(loc)) {
             progressTracker.put(loc, new HashMap<>());
             lastBase += 10;
         }
         Map<UUID, IntHolder> uuidInt = progressTracker.get(loc);
-
         boolean stackVal = stack.asBoolean();
-
         PacketHelper packetHelper = NMSHandler.getPacketHelper();
-
         for (PlayerTag player : players) {
             if (!player.isOnline()) {
                 Debug.echoError("Players must be online!");
