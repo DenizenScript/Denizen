@@ -33,6 +33,7 @@ public class InventoryCommand extends AbstractCommand {
         setSyntax("inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (duration:<duration>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
         setRequiredArguments(1, 6);
         isProcedural = false;
+        allowedDynamicPrefixes = true;
     }
 
     // <--[language]
@@ -256,7 +257,7 @@ public class InventoryCommand extends AbstractCommand {
         DataAction flagAction = (DataAction) scriptEntry.getObject("flag_action");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("actions", actions.toString()), destination, origin, mechanism, mechanismValue, flagAction, duration, slot);
+            Debug.report(scriptEntry, getName(), db("actions", actions.toString()), destination, origin, mechanism, mechanismValue, flagAction, duration, slot);
         }
         int slotId = SlotHelper.nameToIndexFor(slot.asString(), destination.getInventory().getHolder());
         if (slotId < 0) {

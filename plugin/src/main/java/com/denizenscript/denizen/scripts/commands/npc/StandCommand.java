@@ -63,7 +63,7 @@ public class StandCommand extends AbstractCommand {
             return;
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", Utilities.getEntryNPC(scriptEntry)));
+            Debug.report(scriptEntry, getName(), db("npc", Utilities.getEntryNPC(scriptEntry)));
         }
         Entity entity = npc.getEntity();
         if (entity instanceof Sittable) {

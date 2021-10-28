@@ -130,7 +130,7 @@ public class SwitchCommand extends AbstractCommand {
         ElementTag noPhysics = scriptEntry.getElement("no_physics");
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), interactLocations, duration, noPhysics, ArgumentHelper.debugObj("switchstate", switchState.name()));
+            Debug.report(scriptEntry, getName(), interactLocations, duration, noPhysics, db("switchstate", switchState.name()));
         }
         final boolean physics = noPhysics == null || !noPhysics.asBoolean();
         for (final LocationTag interactLocation : interactLocations.filter(LocationTag.class, scriptEntry)) {

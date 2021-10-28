@@ -31,6 +31,7 @@ public class ClickableCommand extends AbstractCommand {
         setSyntax("clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
         setRequiredArguments(1, 5);
         isProcedural = false;
+        allowedDynamicPrefixes = true;
     }
 
     // <--[command]
@@ -192,7 +193,7 @@ public class ClickableCommand extends AbstractCommand {
         DurationTag until = scriptEntry.getObjectTag("until");
         MapTag defMap = scriptEntry.getObjectTag("def_map");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), script, path, usages, definitions, defMap, until, (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
+            Debug.report(scriptEntry, getName(), script, path, usages, definitions, defMap, until, (forPlayers == null ? "" : db("for", forPlayers)));
         }
         UUID id = UUID.randomUUID();
         Clickable newClickable = new Clickable();

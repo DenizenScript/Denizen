@@ -115,7 +115,7 @@ public class TraitCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(),
                     traitName.debug() +
                     toggle.debug() +
-                    ArgumentHelper.debugList("npc", npcs));
+                    db("npc", npcs));
         }
 
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());

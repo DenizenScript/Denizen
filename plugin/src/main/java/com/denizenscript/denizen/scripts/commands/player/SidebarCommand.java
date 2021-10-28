@@ -232,13 +232,13 @@ public class SidebarCommand extends AbstractCommand {
                 start = new ElementTag(TagManager.tag(elStart.asString(), context));
             }
             debug = (title != null ? title.debug() : "") +
-                    (scores != null ? ArgumentHelper.debugObj("scores", scores) : "") +
-                    (value != null ? ArgumentHelper.debugObj("value", value) : "") +
+                    (scores != null ? db("scores", scores) : "") +
+                    (value != null ? db("value", value) : "") +
                     (increment != null ? increment.debug() : "") +
                     (start != null ? start.debug() : "");
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action.debug() + debug + ArgumentHelper.debugObj("players", players.debuggable()));
+            Debug.report(scriptEntry, getName(), action.debug() + debug + db("players", players.debuggable()));
         }
         switch (Action.valueOf(action.asString())) {
             case ADD:

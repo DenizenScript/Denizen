@@ -167,7 +167,7 @@ public class GiveCommand extends AbstractCommand {
             items = (List<ItemTag>) items_object;
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name()), inventory, quantity, unlimit_stack_size, (items != null ? ArgumentHelper.debugObj("Items", items) : ""), slot);
+            Debug.report(scriptEntry, getName(), db("Type", type.name()), inventory, quantity, unlimit_stack_size, (items != null ? db("Items", items) : ""), slot);
         }
         switch (type) {
             case MONEY:

@@ -99,7 +99,7 @@ public class ItemCooldownCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("materials", materials) + duration.debug());
+            Debug.report(scriptEntry, getName(), db("materials", materials) + duration.debug());
 
         }
 

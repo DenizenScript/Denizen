@@ -112,7 +112,7 @@ public class ResourcePackCommand extends AbstractCommand {
         ElementTag prompt = scriptEntry.getElement("prompt");
         ElementTag forced = scriptEntry.getElement("forced");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("Targets", targets), url, hash, prompt, forced);
+            Debug.report(scriptEntry, getName(), db("Targets", targets), url, hash, prompt, forced);
         }
         if (hash.asString().length() != 40) {
             Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");

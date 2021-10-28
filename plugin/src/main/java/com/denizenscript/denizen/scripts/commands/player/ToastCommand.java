@@ -110,7 +110,7 @@ public class ToastCommand extends AbstractCommand {
         ItemTag icon = scriptEntry.getObjectTag("icon");
         final List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, name, text, frame, icon, ArgumentHelper.debugList("targets", targets));
+            Debug.report(scriptEntry, name, text, frame, icon, db("targets", targets));
         }
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(Denizen.getInstance(), UUID.randomUUID().toString()), null,

@@ -68,7 +68,7 @@ public class SitCommand extends AbstractCommand {
             return;
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("npc", npc)
+            Debug.report(scriptEntry, getName(), db("npc", npc)
                     + (location != null ? location.debug() : ""));
         }
         Entity entity = npc.getEntity();

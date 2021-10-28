@@ -116,7 +116,7 @@ public class FakeSpawnCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), entity.debug()
                     + (cancel != null ? cancel.debug() : location.debug() + duration.debug())
-                    + ArgumentHelper.debugList("players", players));
+                    + db("players", players));
         }
         if (cancel != null && cancel.asBoolean()) {
             if (entity.isFake) {

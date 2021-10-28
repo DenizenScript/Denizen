@@ -108,7 +108,7 @@ public class MountCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", true) : ""), location, ArgumentHelper.debugList("entities", entities));
+            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", true) : ""), location, db("entities", entities));
         }
         if (!cancel) {
             for (EntityTag entity : entities) {

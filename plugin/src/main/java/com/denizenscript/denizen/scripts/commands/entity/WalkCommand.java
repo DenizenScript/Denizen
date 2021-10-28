@@ -172,7 +172,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     + (radius != null ? radius.debug() : "")
                     + (lookat != null ? lookat.debug() : "")
                     + stop.debug()
-                    + (ArgumentHelper.debugObj("entities", entities)));
+                    + (db("entities", entities)));
         }
         boolean shouldStop = stop.asBoolean();
         List<NPCTag> npcs = new ArrayList<>();

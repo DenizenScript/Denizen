@@ -318,7 +318,7 @@ public class DisguiseCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), entity.debug()
                     + (cancel != null ? cancel.debug() : as.debug())
                     + (global != null ? global.debug() : "")
-                    + ArgumentHelper.debugList("players", players));
+                    + db("players", players));
         }
         boolean isGlobal = global != null && global.asBoolean();
         HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());

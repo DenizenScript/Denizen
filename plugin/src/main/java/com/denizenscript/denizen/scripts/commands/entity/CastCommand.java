@@ -149,8 +149,8 @@ public class CastCommand extends AbstractCommand {
         ElementTag ambient = scriptEntry.getElement("ambient");
         ElementTag showIcon = scriptEntry.getElement("show_icon");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Target(s)", entities.toString()), ArgumentHelper.debugObj("Effect", effect.getName()),
-                            ArgumentHelper.debugObj("Amplifier", amplifier), duration, ambient, showParticles, showIcon);
+            Debug.report(scriptEntry, getName(), db("Target(s)", entities.toString()), db("Effect", effect.getName()),
+                            db("Amplifier", amplifier), duration, ambient, showParticles, showIcon);
         }
         boolean amb = ambient.asBoolean();
         boolean showP = showParticles.asBoolean();

@@ -103,11 +103,11 @@ public class PoseCommand extends AbstractCommand {
         LocationTag pose_loc = scriptEntry.getObjectTag("pose_loc");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("Target", target.toString())
+                    db("Target", target.toString())
                             + (target == TargetType.PLAYER ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + npc.debug()
-                            + ArgumentHelper.debugObj("Action", action.toString())
-                            + ArgumentHelper.debugObj("Id", id)
+                            + db("Action", action.toString())
+                            + db("Id", id)
                             + (pose_loc != null ? pose_loc.debug() : ""));
         }
         if (!npc.getCitizen().hasTrait(Poses.class)) {

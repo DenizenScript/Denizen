@@ -128,7 +128,7 @@ public class SignCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), typeElement.debug()
                     + location.debug()
-                    + (direction == null ? "" : ArgumentHelper.debugObj("direction", direction))
+                    + (direction == null ? "" : db("direction", direction))
                     + (material == null ? "" : material.debug())
                     + text.debug());
         }

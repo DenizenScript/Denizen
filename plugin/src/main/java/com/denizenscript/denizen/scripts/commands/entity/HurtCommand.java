@@ -127,7 +127,7 @@ public class HurtCommand extends AbstractCommand {
         ElementTag amountElement = scriptEntry.getElement("amount");
         ElementTag cause = scriptEntry.getElement("cause");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), amountElement, ArgumentHelper.debugList("entities", entities), cause, source);
+            Debug.report(scriptEntry, getName(), amountElement, db("entities", entities), cause, source);
         }
         double amount = amountElement.asDouble();
         for (EntityTag entity : entities) {

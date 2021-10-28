@@ -86,7 +86,7 @@ public class RemoveCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         WorldTag world = scriptEntry.getObjectTag("world");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), world, ArgumentHelper.debugList("entities", entities));
+            Debug.report(scriptEntry, getName(), world, db("entities", entities));
         }
         for (EntityTag entity : entities) {
             if (entity.isUnique()) {

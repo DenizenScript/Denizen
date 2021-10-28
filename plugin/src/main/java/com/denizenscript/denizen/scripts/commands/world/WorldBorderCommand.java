@@ -155,7 +155,7 @@ public class WorldBorderCommand extends AbstractCommand {
         DurationTag warningtime = scriptEntry.getObjectTag("warningtime");
         ElementTag reset = scriptEntry.getObjectTag("reset");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), world, (players != null ? ArgumentHelper.debugList("Player(s)", players) : ""),
+            Debug.report(scriptEntry, getName(), world, (players != null ? db("Player(s)", players) : ""),
                     center, size, currSize, damage, damagebuffer, warningdistance, warningtime, duration, reset);
 
         }

@@ -269,17 +269,17 @@ public class TakeCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
         List<ItemTag> items = scriptEntry.getObjectTag("items");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name())
+            Debug.report(scriptEntry, getName(), db("Type", type.name())
                             + quantity.debug()
                             + (inventory != null ? inventory.debug() : "")
                             + (displayNameList != null ? displayNameList.debug() : "")
-                            + (scriptItemList != null ? ArgumentHelper.debugList("scriptname", scriptItemList) : "")
-                            + (items != null ? ArgumentHelper.debugList("Items", items) : "")
+                            + (scriptItemList != null ? db("scriptname", scriptItemList) : "")
+                            + (items != null ? db("Items", items) : "")
                             + (slotList != null ? slotList.debug() : "")
                             + (nbtKey != null ? nbtKey.debug() : "")
                             + (flagList != null ? flagList.debug() : "")
                             + (matcherText != null ? matcherText.debug() : "")
-                            + (materialList != null ? ArgumentHelper.debugList("material",  materialList) : "")
+                            + (materialList != null ? db("material",  materialList) : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));
         }
         switch (type) {

@@ -154,7 +154,7 @@ public class BanCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     action.debug() +
-                            (targets != null ? ArgumentHelper.debugObj("targets", targets) : "") +
+                            (targets != null ? db("targets", targets) : "") +
                             (addresses != null ? addresses.debug() : "") +
                             reason.debug() +
                             (duration != null ? duration.debug() : "") +

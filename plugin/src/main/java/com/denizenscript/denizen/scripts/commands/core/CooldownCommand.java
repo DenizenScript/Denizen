@@ -105,7 +105,7 @@ public class CooldownCommand extends AbstractCommand {
         DurationTag duration = scriptEntry.getObjectTag("duration");
         Type type = (scriptEntry.hasObject("type") ? (Type) scriptEntry.getObject("type") : Type.PLAYER);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("Type", type.name()), script, (type.name().equalsIgnoreCase("player") ? Utilities.getEntryPlayer(scriptEntry) : null), duration);
+            Debug.report(scriptEntry, getName(), db("Type", type.name()), script, (type.name().equalsIgnoreCase("player") ? Utilities.getEntryPlayer(scriptEntry) : null), duration);
         }
         switch (type) {
             case PLAYER:

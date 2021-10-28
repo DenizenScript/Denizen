@@ -251,7 +251,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                     + (script != null ? script.debug() : "")
                     + (percents != null ? percents.debug() : "")
                     + (source != null ? source.debug() : "")
-                    +  (locations == null ? location_list.debug() : ArgumentHelper.debugList("locations", locations)));
+                    +  (locations == null ? location_list.debug() : db("locations", locations)));
         }
         Player sourcePlayer = source == null ? null : source.getPlayerEntity();
         final boolean doPhysics = physics.asBoolean();

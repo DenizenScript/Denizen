@@ -171,11 +171,11 @@ public class FakeEquipCommand extends AbstractCommand {
         ElementTag reset = scriptEntry.getElement("reset");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString())
-                    + ArgumentHelper.debugObj("equipment", equipment.toString())
+            Debug.report(scriptEntry, getName(), db("entities", entities.toString())
+                    + db("equipment", equipment.toString())
                     + (reset == null ? "" : reset.debug())
                     + (duration == null ? "" : duration.debug())
-                    + ArgumentHelper.debugList("for", playersFor));
+                    + db("for", playersFor));
         }
         boolean isReset = reset != null && reset.asBoolean();
         for (PlayerTag player : playersFor) {

@@ -97,7 +97,7 @@ public class AnchorCommand extends AbstractCommand {
         ElementTag id = scriptEntry.getElement("id");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), npc, ArgumentHelper.debugObj("action", action.name()), id, location, range);
+            Debug.report(scriptEntry, getName(), npc, db("action", action.name()), id, location, range);
         }
         Anchors anchors = npc.getCitizen().getOrAddTrait(Anchors.class);
         switch (action) {

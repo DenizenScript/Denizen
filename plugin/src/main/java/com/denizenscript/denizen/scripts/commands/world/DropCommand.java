@@ -157,7 +157,7 @@ public class DropCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     action.debug() + location.debug() + quantity.debug()
-                            + (items != null ? ArgumentHelper.debugList("items", items) : "")
+                            + (items != null ? db("items", items) : "")
                             + (entity != null ? entity.debug() : "")
                             + (speed != null ? speed.debug() : "")
                             + (delay != null ? delay.debug() : ""));

@@ -109,7 +109,7 @@ public class HealCommand extends AbstractCommand {
         }
         ElementTag amountelement = scriptEntry.getElement("amount");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), amountelement, ArgumentHelper.debugObj("entities", entities));
+            Debug.report(scriptEntry, getName(), amountelement, db("entities", entities));
         }
         if (amountelement.asDouble() == -1) {
             for (EntityTag entity : entities) {

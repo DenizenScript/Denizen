@@ -139,7 +139,7 @@ public class FollowCommand extends AbstractCommand {
         ListTag entities = scriptEntry.getObjectTag("entities");
         EntityTag target = scriptEntry.getObjectTag("target");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry), (!stop.asBoolean() ? ArgumentHelper.debugObj("Action", "FOLLOW") : ArgumentHelper.debugObj("Action", "STOP")),
+            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry), (!stop.asBoolean() ? db("Action", "FOLLOW") : db("Action", "STOP")),
                             lead, noTeleport, maxRange, allowWander, entities, target);
         }
         for (EntityTag entity : entities.filter(EntityTag.class, scriptEntry)) {

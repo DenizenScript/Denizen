@@ -255,7 +255,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, flags, mask, fakeDuration, (fakeTo != null ? ArgumentHelper.debugList("fake_to", fakeTo) : ""));
+            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, flags, mask, fakeDuration, (fakeTo != null ? db("fake_to", fakeTo) : ""));
         }
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());

@@ -72,7 +72,7 @@ public class KickCommand extends AbstractCommand {
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("targets", targets) +
+                    db("targets", targets) +
                             reason.debug());
         }
         for (PlayerTag player : targets) {

@@ -119,7 +119,7 @@ public class DebugBlockCommand extends AbstractCommand {
         ElementTag alpha = scriptEntry.getElement("alpha");
         ElementTag name = scriptEntry.getElement("name");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), clear == null ? ArgumentHelper.debugList("locations", locations) : clear, duration, ArgumentHelper.debugList("players", players), color, alpha, name);
+            Debug.report(scriptEntry, getName(), clear == null ? db("locations", locations) : clear, duration, db("players", players), color, alpha, name);
         }
         if (clear != null && clear.asBoolean()) {
             for (PlayerTag player : players) {

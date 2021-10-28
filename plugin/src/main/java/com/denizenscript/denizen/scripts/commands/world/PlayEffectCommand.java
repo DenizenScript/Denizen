@@ -224,18 +224,18 @@ public class PlayEffectCommand extends AbstractCommand {
         ElementTag special_data = scriptEntry.getElement("special_data");
         LocationTag velocity = scriptEntry.getObjectTag("velocity");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (effect != null ? ArgumentHelper.debugObj("effect", effect.name()) :
-                    particleEffect != null ? ArgumentHelper.debugObj("special effect", particleEffect.getName()) :
+            Debug.report(scriptEntry, getName(), (effect != null ? db("effect", effect.name()) :
+                    particleEffect != null ? db("special effect", particleEffect.getName()) :
                             (iconcrack != null ? iconcrack.debug() : "")) +
-                    ArgumentHelper.debugObj("locations", locations.toString()) +
-                    (targets != null ? ArgumentHelper.debugObj("targets", targets.toString()) : "") +
+                    db("locations", locations.toString()) +
+                    (targets != null ? db("targets", targets.toString()) : "") +
                     radius.debug() +
                     data.debug() +
                     quantity.debug() +
                     offset.debug() +
                     (special_data != null ? special_data.debug() : "") +
                     (velocity != null ? velocity.debug() : "") +
-                    (should_offset ? ArgumentHelper.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
+                    (should_offset ? db("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
         for (LocationTag location : locations) {
             if (should_offset) {

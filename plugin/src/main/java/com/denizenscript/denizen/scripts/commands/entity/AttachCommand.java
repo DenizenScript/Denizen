@@ -158,8 +158,8 @@ public class AttachCommand extends AbstractCommand {
         ElementTag pitch_offset = scriptEntry.getElement("pitch_offset");
         boolean shouldCancel = cancel.asBoolean();
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("entities", entities), (shouldCancel ? cancel.debug() : target.debug()), relative, offset,
-                    yaw_offset, pitch_offset, sync_server, no_rotate, no_pitch, (forPlayers == null ? "" : ArgumentHelper.debugList("for", forPlayers)));
+            Debug.report(scriptEntry, getName(), db("entities", entities), (shouldCancel ? cancel.debug() : target.debug()), relative, offset,
+                    yaw_offset, pitch_offset, sync_server, no_rotate, no_pitch, (forPlayers == null ? "" : db("for", forPlayers)));
         }
         BiConsumer<EntityTag, UUID> procPlayer = (entity, player) -> {
             if (shouldCancel) {

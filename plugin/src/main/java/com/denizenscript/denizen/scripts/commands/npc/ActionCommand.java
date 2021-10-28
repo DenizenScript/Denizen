@@ -99,7 +99,7 @@ public class ActionCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            Debug.report(scriptEntry, getName(), actions.debug() + context.debug() + ArgumentHelper.debugList("npcs", npcs));
+            Debug.report(scriptEntry, getName(), actions.debug() + context.debug() + db("npcs", npcs));
 
         }
 

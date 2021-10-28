@@ -173,13 +173,13 @@ public class FlyCommand extends AbstractCommand {
         final float rotationThreshold = ((ElementTag) scriptEntry.getObject("rotation_threshold")).asFloat();
         boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? ArgumentHelper.debugObj("cancel", cancel) : "") +
-                    ArgumentHelper.debugObj("origin", origin) +
-                    ArgumentHelper.debugObj("entities", entities.toString()) +
-                    ArgumentHelper.debugObj("speed", speed) +
-                    ArgumentHelper.debugObj("rotation threshold degrees", rotationThreshold) +
-                    (freeflight ? ArgumentHelper.debugObj("controller", controller)
-                            : ArgumentHelper.debugObj("destinations", destinations.toString())));
+            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", cancel) : "") +
+                    db("origin", origin) +
+                    db("entities", entities.toString()) +
+                    db("speed", speed) +
+                    db("rotation threshold degrees", rotationThreshold) +
+                    (freeflight ? db("controller", controller)
+                            : db("destinations", destinations.toString())));
         }
         if (!cancel) {
             for (EntityTag entity : entities) {

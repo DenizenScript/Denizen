@@ -108,7 +108,7 @@ public class BlockCrackCommand extends AbstractCommand {
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag stack = scriptEntry.getElement("stack");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugList("players", players), progress, location, stack);
+            Debug.report(scriptEntry, getName(), db("players", players), progress, location, stack);
         }
         Location loc = location.getBlock().getLocation();
         if (!progressTracker.containsKey(loc)) {

@@ -121,7 +121,7 @@ public class HealthCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), (quantity != null ? quantity.debug() : "") +
                     (action != null ? action.debug() : "") +
                     heal.debug() +
-                    ArgumentHelper.debugObj("target", targets.toString()));
+                    db("target", targets.toString()));
         }
         if (quantity == null && action == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Null quantity!");

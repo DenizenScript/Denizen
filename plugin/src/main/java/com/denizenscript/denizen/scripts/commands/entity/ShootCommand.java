@@ -230,8 +230,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         ElementTag spread = scriptEntry.getElement("spread");
         LocationTag lead = scriptEntry.getObjectTag("lead");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), originEntity, originLocation, ArgumentHelper.debugList("entities", entities),
-                    destination, height, gravity, speed, script, subPath, shooter, spread, lead, (no_rotate ? ArgumentHelper.debugObj("no_rotate", "true") : ""), definitions);
+            Debug.report(scriptEntry, getName(), originEntity, originLocation, db("entities", entities),
+                    destination, height, gravity, speed, script, subPath, shooter, spread, lead, (no_rotate ? db("no_rotate", "true") : ""), definitions);
         }
         final ListTag entityList = new ListTag();
         if (!no_rotate) {

@@ -127,7 +127,7 @@ public class EquipCommand extends AbstractCommand {
         Map<String, ItemTag> equipment = (Map<String, ItemTag>) scriptEntry.getObject("equipment");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("entities", entities.toString()), ArgumentHelper.debugObj("equipment", equipment.toString()));
+            Debug.report(scriptEntry, getName(), db("entities", entities.toString()), db("equipment", equipment.toString()));
         }
         for (EntityTag entity : entities) {
             if (entity.isGeneric()) {

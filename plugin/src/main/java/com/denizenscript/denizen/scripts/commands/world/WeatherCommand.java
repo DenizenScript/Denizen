@@ -127,11 +127,11 @@ public class WeatherCommand extends AbstractCommand {
         DurationTag resetAfter = scriptEntry.getObjectTag("reset_after");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("type", type.name())
-                    + (type.name().equalsIgnoreCase("player") ? ArgumentHelper.debugObj("player", Utilities.getEntryPlayer(scriptEntry)) : "")
-                    + (type.name().equalsIgnoreCase("global") ? ArgumentHelper.debugObj("world", world) : "")
+            Debug.report(scriptEntry, getName(), db("type", type.name())
+                    + (type.name().equalsIgnoreCase("player") ? db("player", Utilities.getEntryPlayer(scriptEntry)) : "")
+                    + (type.name().equalsIgnoreCase("global") ? db("world", world) : "")
                     + (resetAfter != null ? resetAfter.debug() : "")
-                    + ArgumentHelper.debugObj("value", value));
+                    + db("value", value));
         }
 
         if (type.equals(Type.GLOBAL)) {

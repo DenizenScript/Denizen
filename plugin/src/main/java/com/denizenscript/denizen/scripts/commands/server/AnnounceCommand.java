@@ -122,10 +122,10 @@ public class AnnounceCommand extends AbstractCommand {
         ElementTag flag = scriptEntry.getElement("flag");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("Message", text)
-                            + (format != null ? ArgumentHelper.debugObj("Format", format.getName()) : "")
-                            + ArgumentHelper.debugObj("Type", type.name())
-                            + (flag != null ? ArgumentHelper.debugObj("Flag_Name", flag) : ""));
+                    db("Message", text)
+                            + (format != null ? db("Format", format.getName()) : "")
+                            + db("Type", type.name())
+                            + (flag != null ? db("Flag_Name", flag) : ""));
         }
         String message = format != null ? format.getFormattedText(text.asString(), scriptEntry) : text.asString();
         // Use Bukkit to broadcast the message to everybody in the server.

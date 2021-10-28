@@ -137,7 +137,7 @@ public class RenameCommand extends AbstractCommand {
                         + targets.debug()
                         + perPlayer.debug()
                         + (listNameOnly != null ? listNameOnly.debug() : "")
-                        + (players == null ? "" : ArgumentHelper.debugList("for", players)));
+                        + (players == null ? "" : db("for", players)));
             }
             for (ObjectTag target : targets.objectForms) {
                 EntityTag entity = target.asType(EntityTag.class, CoreUtilities.noDebugContext);
@@ -204,7 +204,7 @@ public class RenameCommand extends AbstractCommand {
             nameString = nameString.substring(0, 256);
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), ArgumentHelper.debugObj("name", nameString)
+            Debug.report(scriptEntry, getName(), db("name", nameString)
                     + (listNameOnly != null ? listNameOnly.debug() : "")
                     + targets.debug());
         }

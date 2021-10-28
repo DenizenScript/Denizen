@@ -83,7 +83,7 @@ public class StrikeCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
                     location.debug()
-                            + ArgumentHelper.debugObj("Damageable", String.valueOf(damage)));
+                            + db("Damageable", String.valueOf(damage)));
         }
         if (damage) {
             location.getWorld().strikeLightning(location);

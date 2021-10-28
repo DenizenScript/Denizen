@@ -89,9 +89,9 @@ public class LookcloseCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             Debug.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry).debug()
-                    + ArgumentHelper.debugObj("realistic", scriptEntry.getObject("realistic"))
-                    + ArgumentHelper.debugObj("range", scriptEntry.getObject("range"))
-                    + ArgumentHelper.debugObj("toggle", scriptEntry.getObject("toggle")));
+                    + db("realistic", scriptEntry.getObject("realistic"))
+                    + db("range", scriptEntry.getObject("range"))
+                    + db("toggle", scriptEntry.getObject("toggle")));
 
         }
 

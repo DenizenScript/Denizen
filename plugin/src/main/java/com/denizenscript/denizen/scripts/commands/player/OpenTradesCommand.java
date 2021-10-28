@@ -109,10 +109,10 @@ public class OpenTradesCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
 
             Debug.report(scriptEntry, getName(),
-                    (entity != null ? ArgumentHelper.debugObj("entity", entity) : "")
-                            + (trades != null ? ArgumentHelper.debugList("trades", trades) : "")
-                            + (title.isEmpty() ? ArgumentHelper.debugObj("title", title) : "")
-                            + ArgumentHelper.debugList("players", players));
+                    (entity != null ? db("entity", entity) : "")
+                            + (trades != null ? db("trades", trades) : "")
+                            + (title.isEmpty() ? db("title", title) : "")
+                            + db("players", players));
 
         }
 

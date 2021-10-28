@@ -25,6 +25,7 @@ public class AdjustBlockCommand extends AbstractCommand {
         setSyntax("adjustblock [<location>|...] [<mechanism>](:<value>) (no_physics)");
         setRequiredArguments(2, 3);
         isProcedural = false;
+        allowedDynamicPrefixes = true;
     }
 
     // <--[command]
@@ -106,7 +107,7 @@ public class AdjustBlockCommand extends AbstractCommand {
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                            ArgumentHelper.debugList("locations", locations)
+                            db("locations", locations)
                             + mechanismName.debug()
                             + (noPhysics == null ? "" : noPhysics.debug())
                             + (value == null ? "" : value.debug()));

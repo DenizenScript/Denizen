@@ -141,8 +141,8 @@ public class SneakCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), mode.debug()
-                + ArgumentHelper.debugList("entities", entities)
-                + (forPlayers != null ? ArgumentHelper.debugList("for_players", forPlayers) : "")
+                + db("entities", entities)
+                + (forPlayers != null ? db("for_players", forPlayers) : "")
                 + (fake != null ? fake.debug() : "")
                 + (stopfake != null ? stopfake.debug() : ""));
         }

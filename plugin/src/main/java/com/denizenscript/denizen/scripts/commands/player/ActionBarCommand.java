@@ -122,8 +122,8 @@ public class ActionBarCommand extends AbstractCommand {
         }
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                    ArgumentHelper.debugObj("Message", text)
-                            + ArgumentHelper.debugList("Targets", targets)
+                    db("Message", text)
+                            + db("Targets", targets)
                             + (formatObj != null ? formatObj.debug() : "")
                             + (perPlayerObj != null ? perPlayerObj.debug() : ""));
         }

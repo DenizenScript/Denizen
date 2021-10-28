@@ -75,7 +75,7 @@ public class BurnCommand extends AbstractCommand {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), duration, ArgumentHelper.debugObj("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), duration, db("entities", entities.toString()));
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
