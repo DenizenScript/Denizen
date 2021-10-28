@@ -89,11 +89,29 @@ public class EntityArmorPose implements Property {
             return entity.getPoseMap();
         });
 
+        // <--[tag]
+        // @attribute <EntityTag.armor_pose_list>
+        // @returns ListTag
+        // @mechanism EntityTag.armor_pose
+        // @Deprecated Use 'armor_pose_map'
+        // @group attributes
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
+        // -->
         PropertyParser.<EntityArmorPose, ListTag>registerTag(ListTag.class, "armor_pose_list", (attribute, entity) -> {
             Deprecations.entityArmorPose.warn(attribute.context);
             return entity.getPoseList();
         });
 
+        // <--[tag]
+        // @attribute <EntityTag.armor_pose>
+        // @returns LocationTag
+        // @mechanism EntityTag.armor_pose
+        // @Deprecated Use 'armor_pose_map'
+        // @group attributes
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
+        // -->
         PropertyParser.<EntityArmorPose, LocationTag>registerTag(LocationTag.class, "armor_pose", (attribute, entity) -> {
             Deprecations.entityArmorPose.warn(attribute.context);
             if (!attribute.hasContext(1)) {

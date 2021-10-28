@@ -119,6 +119,15 @@ public class ItemEnchantments implements Property {
             return enchants.getObjectAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <ItemTag.enchantments>
+        // @returns ListTag
+        // @mechanism ItemTag.enchantments
+        // @group properties
+        // @Deprecated Use 'enchantment_types' or 'enchantment_map'
+        // @description
+        // Deprecated in favor of <@link tag ItemTag.enchantment_types> or <@link tag ItemTag.enchantment_map>
+        // -->
         if (attribute.startsWith("enchantments")) {
             Deprecations.itemEnchantmentsLegacy.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
