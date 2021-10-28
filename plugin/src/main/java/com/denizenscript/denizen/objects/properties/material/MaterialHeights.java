@@ -57,7 +57,7 @@ public class MaterialHeights implements Property {
         // Returns the list of heights for a wall block, in order North|East|South|West|Vertical.
         // For n/e/s/w, can be "tall", "low", or "none". For vertical, can be "tall" or "none".
         // -->
-        PropertyParser.<MaterialHeights, ListTag>registerTag(ListTag.class, "heights", (attribute, material) -> {
+        PropertyParser.<MaterialHeights, ListTag>registerStaticTag(ListTag.class, "heights", (attribute, material) -> {
             return material.getHeightsList();
         });
     }

@@ -45,7 +45,7 @@ public class MaterialLocked implements Property {
         // @description
         // Returns whether this redstone repeater material is locked.
         // -->
-        PropertyParser.<MaterialLocked, ElementTag>registerTag(ElementTag.class, "is_locked", (attribute, material) -> {
+        PropertyParser.<MaterialLocked, ElementTag>registerStaticTag(ElementTag.class, "is_locked", (attribute, material) -> {
             return new ElementTag(material.isLocked());
         });
     }

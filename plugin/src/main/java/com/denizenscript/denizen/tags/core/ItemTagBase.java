@@ -14,7 +14,7 @@ public class ItemTagBase {
         // Returns an item object constructed from the input value.
         // Refer to <@link objecttype ItemTag>.
         // -->
-        TagManager.registerStaticTagBaseHandler(ItemTag.class, "item", (attribute) -> {
+        TagManager.registerTagHandler(ItemTag.class, "item", (attribute) -> { // non-static as item scripts can contain tags
             if (!attribute.hasContext(1)) {
                 attribute.echoError("Item tag base must have input.");
                 return null;

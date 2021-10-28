@@ -93,7 +93,7 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the name of the default step of an interact script.
         // -->
-        PropertyParser.<BukkitScriptProperties, ElementTag>registerTag(ElementTag.class, "default_step", (attribute, script) -> {
+        PropertyParser.<BukkitScriptProperties, ElementTag>registerStaticTag(ElementTag.class, "default_step", (attribute, script) -> {
             String step = ((InteractScriptContainer) script.script.getContainer()).getDefaultStepName();
             return new ElementTag(step);
         });

@@ -60,7 +60,7 @@ public class MaterialMode implements Property {
         // For piston_heads, output is NORMAL or SHORT.
         // For bubble-columns, output is NORMAL or DRAG.
         // -->
-        PropertyParser.<MaterialMode, ElementTag>registerTag(ElementTag.class, "mode", (attribute, material) -> {
+        PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
         });
     }

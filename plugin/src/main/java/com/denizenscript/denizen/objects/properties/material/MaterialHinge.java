@@ -46,7 +46,7 @@ public class MaterialHinge implements Property {
         // Returns a door's hinge side.
         // Output is LEFT or RIGHT.
         // -->
-        PropertyParser.<MaterialHinge, ElementTag>registerTag(ElementTag.class, "hinge", (attribute, material) -> {
+        PropertyParser.<MaterialHinge, ElementTag>registerStaticTag(ElementTag.class, "hinge", (attribute, material) -> {
             return new ElementTag(material.getDoor().getHinge().name());
         });
     }
