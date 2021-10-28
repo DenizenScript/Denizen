@@ -10,10 +10,13 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffectType;
 
 public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -58,6 +61,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.projectile> returns a EntityTag of the projectile, if one caused the event.
     // <context.damage_type_map> returns a MapTag the damage dealt by a specific damage type with keys: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
+    // <context.was_critical> returns 'true' if the damage was a critical hit. (Warning: this value is calculated and not guaranteed to be correct if the event is altered).
     //
     // @Determine
     // ElementTag(Decimal) to set the amount of damage the entity receives.
@@ -167,34 +171,63 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 damager != null && damager.isCitizensNPC() ? damager.getDenizenNPC() : entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
+    public boolean calculateWasCritical() {
+        if (!(event instanceof EntityDamageByEntityEvent)) {
+            return false;
+        }
+        if (!damager.isPlayer()) {
+            return false;
+        }
+        // This based on the source of NMS EntityHuman#attack(Entity entity)
+        // boolean flag = f2 > 0.9F;
+        // boolean flag2 = flag && this.fallDistance > 0.0F && !this.onGround && !this.isClimbing() && !this.isInWater() && !this.hasEffect(MobEffects.BLINDNESS) && !this.isPassenger() && entity instanceof EntityLiving;
+        if (event.getDamage() <= 0.9) {
+            return false;
+        }
+        if (!(event.getEntity() instanceof LivingEntity)) {
+            return false;
+        }
+        Player player = damager.getPlayer();
+        if (player.getFallDistance() <= 0 || player.isOnGround() || player.isClimbing() || player.isInWater()) {
+            return false;
+        }
+        if (player.hasPotionEffect(PotionEffectType.BLINDNESS)) {
+            return false;
+        }
+        if (player.isInsideVehicle()) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("damage")) {
-            return new ElementTag(event.getDamage());
-        }
-        else if (name.equals("final_damage")) {
-            return new ElementTag(event.getFinalDamage());
-        }
-        else if (name.equals("cause")) {
-            return cause;
-        }
-        else if (name.equals("damager") && damager != null) {
-            return damager.getDenizenObject();
-        }
-        else if (name.equals("projectile") && projectile != null) {
-            return projectile.getDenizenObject();
-        }
-        else if (name.equals("damage_type_map")) {
-            MapTag map = new MapTag();
-            for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
-                map.putObject(dm.name(), new ElementTag(event.getDamage(dm)));
+        switch (name) {
+            case "entity": return entity.getDenizenObject();
+            case "damage": return new ElementTag(event.getDamage());
+            case "final_damage": return new ElementTag(event.getFinalDamage());
+            case "cause": return cause;
+            case "damager":
+                if (damager != null) {
+                    return damager.getDenizenObject();
+                }
+                break;
+            case "projectile":
+                if (projectile != null) {
+                    return projectile.getDenizenObject();
+                }
+                break;
+            case "damage_type_map": {
+                MapTag map = new MapTag();
+                for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+                    map.putObject(dm.name(), new ElementTag(event.getDamage(dm)));
+                }
+                return map;
             }
-            return map;
+            case "was_critical":
+                return new ElementTag(calculateWasCritical());
         }
-        else if (name.startsWith("damage_")) {
+        if (name.startsWith("damage_")) {
             Deprecations.damageEventTypeMap.warn();
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
                 if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
