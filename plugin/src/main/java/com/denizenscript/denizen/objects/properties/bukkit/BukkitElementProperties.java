@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -768,6 +769,59 @@ public class BukkitElementProperties implements Property {
                 output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(str.charAt(i));
                 hue += increment;
                 HSB[0] = Math.round(hue * 255f);
+            }
+            return new ElementTag(output.toString());
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.color_gradient[from=<color>;to=<color>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Returns the element with an RGB color gradient applied, with a unique color per character.
+        // Specify the input as a map with keys 'from' and 'to' both set to hex colors (or any valid ColorTag).
+        // For example: <element[these are the shades of gray].color_gradient[from=white;to=black]>
+        // Or: <element[this looks kinda like fire doesn't it].color_gradient[from=#FF0000;to=#FFFF00]>
+        // -->
+        PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "color_gradient", (attribute, object) -> {
+            if (!attribute.hasContext(1)) {
+                return null;
+            }
+            String str = ChatColor.stripColor(object.asString());
+            if (str.length() == 0) {
+                return new ElementTag("");
+            }
+            MapTag inputMap = attribute.contextAsType(1, MapTag.class);
+            if (inputMap == null) {
+                return null;
+            }
+            ObjectTag fromObj = inputMap.getObject("from");
+            ObjectTag toObj = inputMap.getObject("to");
+            if (fromObj == null || toObj == null) {
+                return null;
+            }
+            ColorTag fromColor = fromObj.asType(ColorTag.class, attribute.context);
+            ColorTag toColor = toObj.asType(ColorTag.class, attribute.context);
+            if (fromColor == null || toColor == null) {
+                return null;
+            }
+            float red = fromColor.getColor().getRed();
+            float green = fromColor.getColor().getGreen();
+            float blue = fromColor.getColor().getBlue();
+            float targetRed = toColor.getColor().getRed();
+            float targetGreen = toColor.getColor().getGreen();
+            float targetBlue = toColor.getColor().getBlue();
+            int length = str.length();
+            float redMove = (targetRed - red) / length;
+            float greenMove = (targetGreen - green) / length;
+            float blueMove = (targetBlue - blue) / length;
+            StringBuilder output = new StringBuilder(str.length() * 15);
+            for (int i = 0; i < str.length(); i++) {
+                String hex = Integer.toHexString((((int) red) << 16) | (((int) green) << 8) | ((int) blue));
+                output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(str.charAt(i));
+                red += redMove;
+                green += greenMove;
+                blue += blueMove;
             }
             return new ElementTag(output.toString());
         });
