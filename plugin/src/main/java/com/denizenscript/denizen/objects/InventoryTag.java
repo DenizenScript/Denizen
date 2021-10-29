@@ -1163,10 +1163,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns whether the inventory can fit an item.
         // -->
         tagProcessor.registerTag(ElementTag.class, "can_fit", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            List<ItemTag> items = attribute.contextAsType(1, ListTag.class).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
+            List<ItemTag> items = attribute.paramAsType(ListTag.class).filter(ItemTag.class, attribute.context, !attribute.hasAlternative());
             if (items == null || items.isEmpty()) {
                 return null;
             }
@@ -1235,10 +1235,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns a copy of the InventoryTag with items added.
         // -->
         tagProcessor.registerTag(InventoryTag.class, "include", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            List<ItemTag> items = ListTag.getListFor(attribute.getContextObject(1), attribute.context).filter(ItemTag.class, attribute.context);
+            List<ItemTag> items = ListTag.getListFor(attribute.getParamObject(), attribute.context).filter(ItemTag.class, attribute.context);
             InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
@@ -1279,10 +1279,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns a copy of the InventoryTag with all matching items excluded.
         // -->
         tagProcessor.registerTag(InventoryTag.class, "exclude_item", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String matcher = attribute.getContext(1);
+            String matcher = attribute.getParam();
             InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
@@ -1327,10 +1327,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
         tagProcessor.registerTag(InventoryTag.class, "exclude", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            List<ItemTag> items = ListTag.getListFor(attribute.getContextObject(1), attribute.context).filter(ItemTag.class, attribute.context);
+            List<ItemTag> items = ListTag.getListFor(attribute.getParamObject(), attribute.context).filter(ItemTag.class, attribute.context);
             InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
@@ -1402,11 +1402,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "contains_item", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             int qty = 1;
-            String matcher = attribute.getContext(1);
+            String matcher = attribute.getParam();
 
             // <--[tag]
             // @attribute <InventoryTag.contains_item[<matcher>].quantity[<#>]>
@@ -1734,10 +1734,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(found_items >= qty);
             }
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            ListTag list = attribute.contextAsType(1, ListTag.class);
+            ListTag list = attribute.paramAsType(ListTag.class);
             if (list.isEmpty()) {
                 return null;
             }
@@ -1765,10 +1765,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
         tagProcessor.registerTag(ElementTag.class, "contains_any", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            ListTag list = attribute.contextAsType(1, ListTag.class);
+            ListTag list = attribute.paramAsType(ListTag.class);
             if (list.isEmpty()) {
                 return null;
             }
@@ -1813,10 +1813,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "find_item", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String matcher = attribute.getContext(1);
+            String matcher = attribute.getParam();
             for (int i = 0; i < object.inventory.getSize(); i++) {
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
@@ -1837,11 +1837,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ListTag.class, "find_all_items", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             ListTag result = new ListTag();
-            String matcher = attribute.getContext(1);
+            String matcher = attribute.getParam();
             for (int i = 0; i < object.inventory.getSize(); i++) {
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
@@ -1891,10 +1891,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(slot);
             }
-            if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+            if (!attribute.hasParam() || !ItemTag.matches(attribute.getParam())) {
                 return null;
             }
-            ItemTag item = attribute.contextAsType(1, ItemTag.class);
+            ItemTag item = attribute.paramAsType(ItemTag.class);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < object.inventory.getSize(); i++) {
@@ -1912,10 +1912,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
         tagProcessor.registerTag(ElementTag.class, "find_imperfect", (attribute, object) -> {
             Deprecations.inventoryNonMatcherTags.warn(attribute.context);
-            if (!attribute.hasContext(1) || !ItemTag.matches(attribute.getContext(1))) {
+            if (!attribute.hasParam() || !ItemTag.matches(attribute.getParam())) {
                 return null;
             }
-            ItemTag item = attribute.contextAsType(1, ItemTag.class);
+            ItemTag item = attribute.paramAsType(ItemTag.class);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < object.inventory.getSize(); i++) {
@@ -1975,7 +1975,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Uses the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "quantity_item", (attribute, object) -> {
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
             int found_items = 0;
             for (ItemStack item : object.getContents()) {
                 if (item != null) {
@@ -2013,9 +2013,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 attribute.fulfill(1);
                 return new ElementTag(object.countByMaterial(material.getMaterial()));
             }
-            if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
+            if (attribute.hasParam() && ItemTag.matches(attribute.getParam())) {
                 return new ElementTag(object.count
-                        (attribute.contextAsType(1, ItemTag.class).getItemStack(), false));
+                        (attribute.paramAsType(ItemTag.class).getItemStack(), false));
             }
             else {
                 return new ElementTag(object.count(null, false));
@@ -2029,8 +2029,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns the number of itemstacks that match an item if one is specified, or the number of all itemstacks if one is not.
         // -->
         tagProcessor.registerTag(ElementTag.class, "stacks", (attribute, object) -> {
-            if (attribute.hasContext(1) && ItemTag.matches(attribute.getContext(1))) {
-                return new ElementTag(object.count(attribute.contextAsType(1, ItemTag.class).getItemStack(), true));
+            if (attribute.hasParam() && ItemTag.matches(attribute.getParam())) {
+                return new ElementTag(object.count(attribute.paramAsType(ItemTag.class).getItemStack(), true));
             }
             else {
                 return new ElementTag(object.count(null, true));
@@ -2045,10 +2045,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // If more than what slot is specified, returns a ListTag(ItemTag) of the item in each given slot.
         // -->
         tagProcessor.registerTag(ObjectTag.class, "slot", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            ListTag slots = ListTag.getListFor(attribute.getContextObject(1), attribute.context);
+            ListTag slots = ListTag.getListFor(attribute.getParamObject(), attribute.context);
             if (slots.isEmpty()) {
                 if (!attribute.hasAlternative()) {
                     Debug.echoError("Cannot get a list of zero slots.");
@@ -2056,7 +2056,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return null;
             }
             else if (slots.size() == 1) {
-                int slot = SlotHelper.nameToIndexFor(attribute.getContext(1), object.getInventory().getHolder());
+                int slot = SlotHelper.nameToIndexFor(attribute.getParam(), object.getInventory().getHolder());
                 if (slot < 0) {
                     slot = 0;
                 }
@@ -2288,10 +2288,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns whether the inventory matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(BukkitScriptEvent.tryInventory(object, attribute.getContext(1)));
+            return new ElementTag(BukkitScriptEvent.tryInventory(object, attribute.getParam()));
         });
     }
 

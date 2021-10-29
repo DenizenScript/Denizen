@@ -289,11 +289,11 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the chunk with the specified coordinates added to it.
         // -->
         tagProcessor.registerTag(ChunkTag.class, "add", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                 return null;
             }
-            List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
+            List<String> coords = CoreUtilities.split(attribute.getParam(), ',');
             if (coords.size() < 2) {
                 attribute.echoError("The tag ChunkTag.add[<#>,<#>] requires two values!");
                 return null;
@@ -316,11 +316,11 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the chunk with the specified coordinates subtracted from it.
         // -->
         tagProcessor.registerTag(ChunkTag.class, "sub", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
                 return null;
             }
-            List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
+            List<String> coords = CoreUtilities.split(attribute.getParam(), ',');
             if (coords.size() < 2) {
                 attribute.echoError("The tag ChunkTag.sub[<#>,<#>] requires two values!");
                 return null;
@@ -449,7 +449,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             if (chunk == null) {
                 return null;
             }
-            ListTag typeFilter = attribute.hasContext(1) ? attribute.contextAsType(1, ListTag.class) : null;
+            ListTag typeFilter = attribute.hasParam() ? attribute.paramAsType(ListTag.class) : null;
             try {
                 NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
                 for (Entity entity : chunk.getEntities()) {
@@ -573,8 +573,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
             int tolerance = 2;
-            if (attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-                tolerance = attribute.getIntContext(1);
+            if (attribute.hasParam() && ArgumentHelper.matchesInteger(attribute.getParam())) {
+                tolerance = attribute.getIntParam();
             }
             int x = heightMap[0];
             for (int i : heightMap) {
@@ -615,7 +615,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
         tagProcessor.registerTag(ListTag.class, "blocks_flagged", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("ChunkTag.blocks_flagged[...] must have an input value.");
                 return null;
             }
@@ -623,7 +623,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             if (chunk == null) {
                 return null;
             }
-            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            String flagName = CoreUtilities.toLowerCase(attribute.getParam());
             ListTag blocks = new ListTag();
             LocationFlagSearchHelper.getFlaggedLocations(chunk, flagName, (loc) -> {
                 blocks.addObject(new LocationTag(loc));

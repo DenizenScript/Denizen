@@ -562,7 +562,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             return;
         }
         Attribute attribute = event.getAttributes();
-        String id = attribute.hasContext(1) ? attribute.getContext(1).toUpperCase() : null;
+        String id = attribute.hasParam() ? attribute.getParam().toUpperCase() : null;
         attribute = attribute.fulfill(1);
 
         // <--[tag]
@@ -645,8 +645,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // An input location of 0,0,0 corresponds to the minimum corner of the schematic.
         // -->
         if (attribute.startsWith("block")) {
-            if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
-                LocationTag location = attribute.contextAsType(1, LocationTag.class);
+            if (attribute.hasParam() && LocationTag.matches(attribute.getParam())) {
+                LocationTag location = attribute.paramAsType(LocationTag.class);
                 FullBlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
                 event.setReplaced(new MaterialTag(block.data)
                         .getAttribute(attribute.fulfill(1)));
@@ -684,8 +684,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // @description
         // Returns a cuboid of where the schematic would be if it was pasted at an origin.
         // -->
-        if (attribute.startsWith("cuboid") && attribute.hasContext(1)) {
-            LocationTag origin = attribute.contextAsType(1, LocationTag.class);
+        if (attribute.startsWith("cuboid") && attribute.hasParam()) {
+            LocationTag origin = attribute.paramAsType(LocationTag.class);
             event.setReplaced(set.getCuboid(origin)
                     .getAttribute(attribute.fulfill(1)));
             return;

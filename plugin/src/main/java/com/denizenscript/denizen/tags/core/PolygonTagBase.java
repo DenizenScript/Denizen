@@ -15,11 +15,11 @@ public class PolygonTagBase {
         // Refer to <@link objecttype PolygonTag>.
         // -->
         TagManager.registerTagHandler(PolygonTag.class, "polygon", (attribute) -> { // non-static due to notes
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Polygon tag base must have input.");
                 return null;
             }
-            return PolygonTag.valueOf(attribute.getContext(1), attribute.context);
+            return PolygonTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

@@ -15,11 +15,11 @@ public class LocationTagBase {
         // Refer to <@link objecttype LocationTag>.
         // -->
         TagManager.registerTagHandler(LocationTag.class, "location", (attribute) -> { // non-static due to notes
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Location tag base must have input.");
                 return null;
             }
-            return LocationTag.valueOf(attribute.getContext(1), attribute.context);
+            return LocationTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

@@ -40,7 +40,7 @@ public class NPCTagBase implements Listener {
         if (Depends.citizens != null) {
             Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
             TagManager.registerTagHandler(NPCTag.class, "npc", (attribute) -> {
-                if (!attribute.hasContext(1)) {
+                if (!attribute.hasParam()) {
                     NPCTag npc = ((BukkitTagContext) attribute.context).npc;
                     if (npc != null) {
                         return npc;
@@ -50,7 +50,7 @@ public class NPCTagBase implements Listener {
                         return null;
                     }
                 }
-                return NPCTag.valueOf(attribute.getContext(1), attribute.context);
+                return NPCTag.valueOf(attribute.getParam(), attribute.context);
             });
         }
     }

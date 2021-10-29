@@ -15,11 +15,11 @@ public class EntityTagBase {
         // Refer to <@link objecttype EntityTag>.
         // -->
         TagManager.registerTagHandler(EntityTag.class, "entity", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Entity tag base must have input.");
                 return null;
             }
-            return EntityTag.valueOf(attribute.getContext(1), attribute.context);
+            return EntityTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

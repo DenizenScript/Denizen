@@ -84,9 +84,9 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("has_attribute") && attribute.hasContext(1)) {
+        if (attribute.startsWith("has_attribute") && attribute.hasParam()) {
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(
-                    org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase()));
+                    org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase()));
             return new ElementTag(instance != null).getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -101,8 +101,8 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_value") && attribute.hasContext(1)) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
+        if (attribute.startsWith("attribute_value") && attribute.hasParam()) {
+            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase());
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
             if (instance == null) {
                 attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
@@ -122,8 +122,8 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_base_value") && attribute.hasContext(1)) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
+        if (attribute.startsWith("attribute_base_value") && attribute.hasParam()) {
+            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase());
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
             if (instance == null) {
                 attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
@@ -143,8 +143,8 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_default_value") && attribute.hasContext(1)) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getContext(1).toUpperCase());
+        if (attribute.startsWith("attribute_default_value") && attribute.hasParam()) {
+            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase());
             AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
             if (instance == null) {
                 attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());

@@ -298,7 +298,7 @@ public class ColorTag implements ObjectTag {
         // Returns a copy of this color object with a different red value (0 to 255).
         // -->
         tagProcessor.registerTag(ColorTag.class, "with_red", (attribute, object) -> {
-            return new ColorTag(object.color.setRed(attribute.getIntContext(1)));
+            return new ColorTag(object.color.setRed(attribute.getIntParam()));
         });
 
         // <--[tag]
@@ -308,7 +308,7 @@ public class ColorTag implements ObjectTag {
         // Returns a copy of this color object with a different green value (0 to 255).
         // -->
         tagProcessor.registerTag(ColorTag.class, "with_green", (attribute, object) -> {
-            return new ColorTag(object.color.setGreen(attribute.getIntContext(1)));
+            return new ColorTag(object.color.setGreen(attribute.getIntParam()));
         });
 
         // <--[tag]
@@ -318,7 +318,7 @@ public class ColorTag implements ObjectTag {
         // Returns a copy of this color object with a different blue value (0 to 255).
         // -->
         tagProcessor.registerTag(ColorTag.class, "with_blue", (attribute, object) -> {
-            return new ColorTag(object.color.setBlue(attribute.getIntContext(1)));
+            return new ColorTag(object.color.setBlue(attribute.getIntParam()));
         });
 
         // <--[tag]
@@ -329,7 +329,7 @@ public class ColorTag implements ObjectTag {
         // -->
         tagProcessor.registerTag(ColorTag.class, "with_hue", (attribute, object) -> {
             int[] HSB = object.toHSB();
-            HSB[0] = attribute.getIntContext(1);
+            HSB[0] = attribute.getIntParam();
             return fromHSB(HSB);
         });
 
@@ -341,7 +341,7 @@ public class ColorTag implements ObjectTag {
         // -->
         tagProcessor.registerTag(ColorTag.class, "with_saturation", (attribute, object) -> {
             int[] HSB = object.toHSB();
-            HSB[1] = attribute.getIntContext(1);
+            HSB[1] = attribute.getIntParam();
             return fromHSB(HSB);
         });
 
@@ -353,7 +353,7 @@ public class ColorTag implements ObjectTag {
         // -->
         tagProcessor.registerTag(ColorTag.class, "with_brightness", (attribute, object) -> {
             int[] HSB = object.toHSB();
-            HSB[2] = attribute.getIntContext(1);
+            HSB[2] = attribute.getIntParam();
             return fromHSB(HSB);
         });
 
@@ -374,16 +374,16 @@ public class ColorTag implements ObjectTag {
         // Returns the color that results if you mix this color with another.
         // -->
         tagProcessor.registerTag(ColorTag.class, "mix", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 Debug.echoError("The tag ListTag.insert[...] must have a value.");
                 return null;
             }
-            ColorTag mixed_with = attribute.contextAsType(1, ColorTag.class);
+            ColorTag mixed_with = attribute.paramAsType(ColorTag.class);
             if (mixed_with != null) {
                 return new ColorTag(object.color.mixColors(mixed_with.getColor()));
             }
             else {
-                Debug.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
+                Debug.echoError("'" + attribute.getParam() + "' is not a valid color!");
                 return null;
             }
         });

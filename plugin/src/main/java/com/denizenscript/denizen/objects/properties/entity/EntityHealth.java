@@ -90,7 +90,7 @@ public class EntityHealth implements Property {
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
         // -->
         if (attribute.startsWith("formatted_health")) {
-            return getHealthFormatted(entity, attribute.hasContext(1) ? attribute.getDoubleContext(1) : null);
+            return getHealthFormatted(entity, attribute.hasParam() ? attribute.getDoubleParam() : null);
         }
         if (attribute.startsWith("health.formatted")) {
             Deprecations.entityHealthTags.warn(attribute.context);
@@ -125,8 +125,8 @@ public class EntityHealth implements Property {
         // -->
         if (attribute.startsWith("health_percentage")) {
             double maxHealth = entity.getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(1)) {
-                maxHealth = attribute.getIntContext(1);
+            if (attribute.hasParam()) {
+                maxHealth = attribute.getIntParam();
             }
             return new ElementTag((entity.getLivingEntity().getHealth() / maxHealth) * 100)
                     .getObjectAttribute(attribute.fulfill(1));

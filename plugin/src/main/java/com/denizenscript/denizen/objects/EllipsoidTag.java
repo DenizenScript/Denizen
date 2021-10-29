@@ -460,11 +460,11 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Returns a copy of this ellipsoid, shifted by the input location.
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "add", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("ellipsoid.add[...] tag must have an input.");
                 return null;
             }
-            return new EllipsoidTag(object.center.clone().add(attribute.contextAsType(1, LocationTag.class)), object.size.clone());
+            return new EllipsoidTag(object.center.clone().add(attribute.paramAsType(LocationTag.class)), object.size.clone());
         });
 
         // <--[tag]
@@ -474,11 +474,11 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Returns a copy of this ellipsoid, with the size value adapted to include the specified world location.
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "include", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("ellipsoid.include[...] tag must have an input.");
                 return null;
             }
-            LocationTag target = attribute.contextAsType(1, LocationTag.class);
+            LocationTag target = attribute.paramAsType(LocationTag.class);
             if (object.contains(target)) {
                 return object;
             }
@@ -524,11 +524,11 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Returns a copy of this ellipsoid, set to the specified location.
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "with_location", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("ellipsoid.with_location[...] tag must have an input.");
                 return null;
             }
-            return new EllipsoidTag(attribute.contextAsType(1, LocationTag.class), object.size.clone());
+            return new EllipsoidTag(attribute.paramAsType(LocationTag.class), object.size.clone());
         });
 
         // <--[tag]
@@ -538,11 +538,11 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // Returns a copy of this ellipsoid, set to the specified size.
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "with_size", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("ellipsoid.with_size[...] tag must have an input.");
                 return null;
             }
-            return new EllipsoidTag(object.center.clone(), attribute.contextAsType(1, LocationTag.class));
+            return new EllipsoidTag(object.center.clone(), attribute.paramAsType(LocationTag.class));
         });
 
         // <--[tag]

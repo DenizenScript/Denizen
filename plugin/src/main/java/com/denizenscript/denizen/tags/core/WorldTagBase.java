@@ -15,11 +15,11 @@ public class WorldTagBase {
         // Refer to <@link objecttype WorldTag>.
         // -->
         TagManager.registerTagHandler(WorldTag.class, "world", (attribute) -> { // non-static as worlds can be dynamically loaded
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("World tag base must have input.");
                 return null;
             }
-            return WorldTag.valueOf(attribute.getContext(1), attribute.context);
+            return WorldTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

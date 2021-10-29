@@ -63,7 +63,7 @@ public class ItemFlags implements Property {
             ItemTag item = new ItemTag(this.item.getItemStack().clone());
             FlagCommand.FlagActionProvider provider = new FlagCommand.FlagActionProvider();
             provider.tracker = item.getFlagTracker();
-            DataAction action = DataActionHelper.parse(provider, attribute.getContext(1), attribute.context);
+            DataAction action = DataActionHelper.parse(provider, attribute.getParam(), attribute.context);
 
             // <--[tag]
             // @attribute <ItemTag.with_flag[<flag_set_action>].duration[<expire_duration>]>

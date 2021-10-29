@@ -787,11 +787,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a list of block locations along the 2D outline of this CuboidTag, at the specified Y level.
         // -->
         tagProcessor.registerTag(ListTag.class, "outline_2d", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("CuboidTag.outline_2d[...] tag must have an input.");
                 return null;
             }
-            double y = attribute.getDoubleContext(1);
+            double y = attribute.getDoubleParam();
             return cuboid.getOutline2D(y);
         });
 
@@ -802,11 +802,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns whether this cuboid and another intersect.
         // -->
         tagProcessor.registerTag(ElementTag.class, "intersects", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.intersects[...] must have a value.");
                 return null;
             }
-            CuboidTag cub2 = attribute.contextAsType(1, CuboidTag.class);
+            CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
             if (cub2 != null) {
                 boolean intersects = false;
                 whole_loop:
@@ -853,12 +853,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a cuboid representing the one component of this cuboid (for cuboids that contain multiple sub-cuboids).
         // -->
         tagProcessor.registerTag(CuboidTag.class, "get", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.get[...] must have a value.");
                 return null;
             }
             else {
-                int member = attribute.getIntContext(1);
+                int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
                 }
@@ -878,12 +878,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a modified copy of this cuboid, with the specific sub-cuboid index changed to hold the input cuboid.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "set", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.set[...] must have a value.");
                 return null;
             }
             else {
-                CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
+                CuboidTag subCuboid = attribute.paramAsType(CuboidTag.class);
                 if (!attribute.startsWith("at", 2)) {
                     attribute.echoError("The tag CuboidTag.set[...] must be followed by an 'at'.");
                     return null;
@@ -915,7 +915,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a modified copy of this cuboid, with the input cuboid(s) added at the end.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "add_member", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.add_member[...] must have a value.");
                 return null;
             }
@@ -943,15 +943,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             if (member > cuboid.pairs.size() + 1) {
                 member = cuboid.pairs.size() + 1;
             }
-            if (attribute.getContext(1).startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
-                for (CuboidTag subCuboid : attribute.contextAsType(1, ListTag.class).filter(CuboidTag.class, attribute.context)) {
+            if (attribute.getParam().startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
+                for (CuboidTag subCuboid : attribute.paramAsType(ListTag.class).filter(CuboidTag.class, attribute.context)) {
                     LocationPair pair = subCuboid.pairs.get(0);
                     cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
                     member++;
                 }
             }
             else {
-                CuboidTag subCuboid = attribute.contextAsType(1, CuboidTag.class);
+                CuboidTag subCuboid = attribute.paramAsType(CuboidTag.class);
                 LocationPair pair = subCuboid.pairs.get(0);
                 cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
             }
@@ -966,12 +966,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns a modified copy of this cuboid, with member at the input index removed.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "remove_member", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.remove_member[...] must have a value.");
                 return null;
             }
             cuboid = cuboid.clone();
-            int member = attribute.getIntContext(1);
+            int member = attribute.getIntParam();
             if (member < 1) {
                 member = 1;
             }
@@ -990,11 +990,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // -->
         tagProcessor.registerTag(LocationTag.class, "center", (attribute, cuboid) -> {
             LocationPair pair;
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 pair = cuboid.pairs.get(0);
             }
             else {
-                int member = attribute.getIntContext(1);
+                int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
                 }
@@ -1032,11 +1032,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // -->
         tagProcessor.registerTag(LocationTag.class, "size", (attribute, cuboid) -> {
             LocationPair pair;
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 pair = cuboid.pairs.get(0);
             }
             else {
-                int member = attribute.getIntContext(1);
+                int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
                 }
@@ -1056,11 +1056,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns the highest-numbered (maximum) corner location.
         // -->
         tagProcessor.registerTag(LocationTag.class, "max", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return cuboid.pairs.get(0).high;
             }
             else {
-                int member = attribute.getIntContext(1);
+                int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
                 }
@@ -1078,11 +1078,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns the lowest-numbered (minimum) corner location.
         // -->
         tagProcessor.registerTag(LocationTag.class, "min", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return cuboid.pairs.get(0).low;
             }
             else {
-                int member = attribute.getIntContext(1);
+                int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
                 }
@@ -1101,11 +1101,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // For example, a cuboid from 5,5,5 to 10,10,10, shifted 100,0,100, would return a cuboid from 105,5,105 to 110,10,110.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "shift", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.shift[...] must have a value.");
                 return null;
             }
-            LocationTag vector = attribute.contextAsType(1, LocationTag.class);
+            LocationTag vector = attribute.paramAsType(LocationTag.class);
             if (vector != null) {
                 return cuboid.shifted(vector);
             }
@@ -1119,15 +1119,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Expands the first member of the CuboidTag to contain the given location (or entire cuboid), and returns the expanded cuboid.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.include[...] must have a value.");
                 return null;
             }
-            CuboidTag newCuboid = CuboidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
+            CuboidTag newCuboid = CuboidTag.valueOf(attribute.getParam(), CoreUtilities.noDebugContext);
             if (newCuboid != null) {
                 return cuboid.including(newCuboid.getLow(0)).including(newCuboid.getHigh(0));
             }
-            LocationTag loc = attribute.contextAsType(1, LocationTag.class);
+            LocationTag loc = attribute.paramAsType(LocationTag.class);
             if (loc != null) {
                 return cuboid.including(loc);
             }
@@ -1142,11 +1142,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include_x", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.include_x[...] must have a value.");
                 return null;
             }
-            double x = attribute.getDoubleContext(1);
+            double x = attribute.getDoubleParam();
             if (x < cuboid.pairs.get(0).low.getX()) {
                 cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), x, cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
             }
@@ -1164,11 +1164,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include_y", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.include_y[...] must have a value.");
                 return null;
             }
-            double y = attribute.getDoubleContext(1);
+            double y = attribute.getDoubleParam();
             if (y < cuboid.pairs.get(0).low.getY()) {
                 cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), y, cuboid.pairs.get(0).low.getZ());
             }
@@ -1186,11 +1186,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include_z", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.include_z[...] must have a value.");
                 return null;
             }
-            double z = attribute.getDoubleContext(1);
+            double z = attribute.getDoubleParam();
             if (z < cuboid.pairs.get(0).low.getZ()) {
                 cuboid.pairs.get(0).low = new LocationTag(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), z);
             }
@@ -1210,11 +1210,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids max value.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_min", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.with_min[...] must have a value.");
                 return null;
             }
-            LocationTag location = attribute.contextAsType(1, LocationTag.class);
+            LocationTag location = attribute.paramAsType(LocationTag.class);
             return new CuboidTag(location, cuboid.pairs.get(0).high);
         });
 
@@ -1228,11 +1228,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids min value.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_max", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.with_max[...] must have a value.");
                 return null;
             }
-            LocationTag location = attribute.contextAsType(1, LocationTag.class);
+            LocationTag location = attribute.paramAsType(LocationTag.class);
             return new CuboidTag(location, cuboid.pairs.get(0).low);
         });
 
@@ -1246,17 +1246,17 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
         // -->
         tagProcessor.registerTag(CuboidTag.class, "expand", (attribute, cuboid) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag CuboidTag.expand[...] must have a value.");
                 return null;
             }
             Vector expandBy;
-            if (ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-                int val = attribute.getIntContext(1);
+            if (ArgumentHelper.matchesInteger(attribute.getParam())) {
+                int val = attribute.getIntParam();
                 expandBy = new Vector(val, val, val);
             }
             else {
-                expandBy = attribute.contextAsType(1, LocationTag.class).toVector();
+                expandBy = attribute.paramAsType(LocationTag.class).toVector();
             }
             LocationPair pair = cuboid.pairs.get(0);
             return new CuboidTag(pair.low.clone().subtract(expandBy), pair.high.clone().add(expandBy));

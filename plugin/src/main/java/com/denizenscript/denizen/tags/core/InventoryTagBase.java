@@ -15,11 +15,11 @@ public class InventoryTagBase {
         // Refer to <@link objecttype InventoryTag>.
         // -->
         TagManager.registerTagHandler(InventoryTag.class, "inventory", (attribute) -> { // non-static due to notes
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Inventory tag base must have input.");
                 return null;
             }
-            return InventoryTag.valueOf(attribute.getContext(1), attribute.context);
+            return InventoryTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

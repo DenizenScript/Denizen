@@ -15,11 +15,11 @@ public class EllipsoidTagBase {
         // Refer to <@link objecttype EllipsoidTag>.
         // -->
         TagManager.registerTagHandler(EllipsoidTag.class, "ellipsoid", (attribute) -> { // non-static due to notes
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Ellipsoid tag base must have input.");
                 return null;
             }
-            return EllipsoidTag.valueOf(attribute.getContext(1), attribute.context);
+            return EllipsoidTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

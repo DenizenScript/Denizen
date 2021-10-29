@@ -195,7 +195,7 @@ public class ItemPotion implements Property {
             if (attribute.startsWith("potion_effect")) {
                 PotionMeta meta = ((PotionMeta) item.getItemMeta());
 
-                int potN = attribute.hasContext(1) ? attribute.getIntContext(1) - 1 : 0;
+                int potN = attribute.hasParam() ? attribute.getIntParam() - 1 : 0;
                 if (potN < 0 || potN > meta.getCustomEffects().size()) {
                     return null;
                 }

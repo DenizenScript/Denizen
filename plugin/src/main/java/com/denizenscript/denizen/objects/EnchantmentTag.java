@@ -184,10 +184,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For vanilla enchantments, uses language translation keys.
         // -->
         tagProcessor.registerTag(ElementTag.class, "full_name", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(NMSHandler.enchantmentHelper.getFullName(object.enchantment, attribute.getIntContext(1)));
+            return new ElementTag(NMSHandler.enchantmentHelper.getFullName(object.enchantment, attribute.getIntParam()));
         });
 
         // <--[tag]
@@ -296,10 +296,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns whether this enchantment can enchant the given ItemTag (based on material mainly).
         // -->
         tagProcessor.registerTag(ElementTag.class, "can_enchant", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(object.enchantment.canEnchantItem(attribute.contextAsType(1, ItemTag.class).getItemStack()));
+            return new ElementTag(object.enchantment.canEnchantItem(attribute.paramAsType(ItemTag.class).getItemStack()));
         });
 
         // <--[tag]
@@ -309,10 +309,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns whether this enchantment is compatible with another given enchantment.
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_compatible", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(!object.enchantment.conflictsWith(attribute.contextAsType(1, EnchantmentTag.class).enchantment));
+            return new ElementTag(!object.enchantment.conflictsWith(attribute.paramAsType(EnchantmentTag.class).enchantment));
         });
 
         // <--[tag]
@@ -322,10 +322,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns the minimum cost for this enchantment for the given level.
         // -->
         tagProcessor.registerTag(ElementTag.class, "min_cost", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(NMSHandler.enchantmentHelper.getMinCost(object.enchantment, attribute.getIntContext(1)));
+            return new ElementTag(NMSHandler.enchantmentHelper.getMinCost(object.enchantment, attribute.getIntParam()));
         });
 
         // <--[tag]
@@ -335,10 +335,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns the maximum cost for this enchantment for the given level.
         // -->
         tagProcessor.registerTag(ElementTag.class, "max_cost", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(NMSHandler.enchantmentHelper.getMaxCost(object.enchantment, attribute.getIntContext(1)));
+            return new ElementTag(NMSHandler.enchantmentHelper.getMaxCost(object.enchantment, attribute.getIntParam()));
         });
 
         // <--[tag]
@@ -350,10 +350,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For example, <[my_enchantment].damage_bonus[level=3;type=undead]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "damage_bonus", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            MapTag map = attribute.contextAsType(1, MapTag.class);
+            MapTag map = attribute.paramAsType(MapTag.class);
             if (map == null) {
                 attribute.echoError("Invalid MapTag input to damage_bonus - not a valid map.");
                 return null;
@@ -377,10 +377,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For example, <[my_enchantment].damage_protection[level=3;type=undead]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "damage_protection", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            MapTag map = attribute.contextAsType(1, MapTag.class);
+            MapTag map = attribute.paramAsType(MapTag.class);
             if (map == null) {
                 attribute.echoError("Invalid MapTag input to damage_protection - not a valid map.");
                 return null;

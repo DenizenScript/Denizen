@@ -15,11 +15,11 @@ public class TradeTagBase {
         // Refer to <@link objecttype TradeTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(TradeTag.class, "trade", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Trade tag base must have input.");
                 return null;
             }
-            return TradeTag.valueOf(attribute.getContext(1), attribute.context);
+            return TradeTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

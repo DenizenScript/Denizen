@@ -106,8 +106,8 @@ public class ServerTagBase {
             // @description
             // Returns the amount of money, formatted according to the server's economy.
             // -->
-            if (attribute.startsWith("format") && attribute.hasContext(1)) {
-                double amount = attribute.getDoubleContext(1);
+            if (attribute.startsWith("format") && attribute.hasParam()) {
+                double amount = attribute.getDoubleParam();
                 event.setReplacedObject(new ElementTag(Depends.economy.format(amount))
                         .getObjectAttribute(attribute.fulfill(1)));
                 return;
@@ -120,8 +120,8 @@ public class ServerTagBase {
             // @description
             // Returns the server's economy currency name (automatically singular or plural based on input value).
             // -->
-            if (attribute.startsWith("currency_name") && attribute.hasContext(1)) {
-                double amount = attribute.getDoubleContext(1);
+            if (attribute.startsWith("currency_name") && attribute.hasParam()) {
+                double amount = attribute.getDoubleParam();
                 event.setReplacedObject(new ElementTag(amount == 1 ? Depends.economy.currencyNameSingular() : Depends.economy.currencyNamePlural())
                         .getObjectAttribute(attribute.fulfill(1)));
                 return;
@@ -161,8 +161,8 @@ public class ServerTagBase {
         // @description
         // Returns the slot ID number for an input slot (see <@link language Slot Inputs>).
         // -->
-        if (attribute.startsWith("slot_id") && attribute.hasContext(1)) {
-            int slotId = SlotHelper.nameToIndex(attribute.getContext(1), null);
+        if (attribute.startsWith("slot_id") && attribute.hasParam()) {
+            int slotId = SlotHelper.nameToIndex(attribute.getParam(), null);
             if (slotId != -1) {
                 event.setReplacedObject(new ElementTag(slotId).getObjectAttribute(attribute.fulfill(1)));
             }
@@ -175,10 +175,10 @@ public class ServerTagBase {
         // @description
         // Returns the ItemTag resultant from parsing Bukkit item serialization data (under subkey "item").
         // -->
-        if (attribute.startsWith("parse_bukkit_item") && attribute.hasContext(1)) {
+        if (attribute.startsWith("parse_bukkit_item") && attribute.hasParam()) {
             YamlConfiguration config = new YamlConfiguration();
             try {
-                config.loadFromString(attribute.getContext(1));
+                config.loadFromString(attribute.getParam());
                 ItemStack item = config.getItemStack("item");
                 if (item != null) {
                     event.setReplacedObject(new ItemTag(item).getObjectAttribute(attribute.fulfill(1)));
@@ -202,7 +202,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("recipe_ids") || attribute.startsWith("list_recipe_ids")) {
             listDeprecateWarn(attribute);
-            String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
+            String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
             ListTag list = new ListTag();
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
             while (recipeIterator.hasNext()) {
@@ -225,8 +225,8 @@ public class ServerTagBase {
         // For furnace-style recipes, this will return a list with only 1 item.
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // -->
-        if (attribute.startsWith("recipe_items") && attribute.hasContext(1)) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+        if (attribute.startsWith("recipe_items") && attribute.hasParam()) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
             Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
             if (recipe == null) {
                 return;
@@ -270,8 +270,8 @@ public class ServerTagBase {
         // @description
         // Returns the shape of a shaped recipe, like '2x2' or '3x3'.
         // -->
-        if (attribute.startsWith("recipe_shape") && attribute.hasContext(1)) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+        if (attribute.startsWith("recipe_shape") && attribute.hasParam()) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
             Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
             if (!(recipe instanceof ShapedRecipe)) {
                 return;
@@ -288,8 +288,8 @@ public class ServerTagBase {
         // Returns the type of recipe that the given recipe ID is.
         // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING.
         // -->
-        if (attribute.startsWith("recipe_type") && attribute.hasContext(1)) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+        if (attribute.startsWith("recipe_type") && attribute.hasParam()) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
             Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
             if (recipe == null) {
                 return;
@@ -304,8 +304,8 @@ public class ServerTagBase {
         // @description
         // Returns the item that a recipe will create when crafted.
         // -->
-        if (attribute.startsWith("recipe_result") && attribute.hasContext(1)) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getContext(1));
+        if (attribute.startsWith("recipe_result") && attribute.hasParam()) {
+            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
             Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
             if (recipe == null) {
                 return;
@@ -332,8 +332,8 @@ public class ServerTagBase {
         if (attribute.startsWith("scoreboard")) {
             Scoreboard board;
             String name = "main";
-            if (attribute.hasContext(1)) {
-                name = attribute.getContext(1);
+            if (attribute.hasParam()) {
+                name = attribute.getParam();
                 board = ScoreboardHelper.getScoreboard(name);
             }
             else {
@@ -371,10 +371,10 @@ public class ServerTagBase {
                 event.setReplacedObject((list).getObjectAttribute(attribute.fulfill(1)));
             }
 
-            if (attribute.startsWith("objective") && attribute.hasContext(1)) {
-                Objective objective = board.getObjective(attribute.getContext(1));
+            if (attribute.startsWith("objective") && attribute.hasParam()) {
+                Objective objective = board.getObjective(attribute.getParam());
                 if (objective == null) {
-                    attribute.echoError("Scoreboard objective '" + attribute.getContext(1) + "' does not exist.");
+                    attribute.echoError("Scoreboard objective '" + attribute.getParam() + "' does not exist.");
                     return;
                 }
                 attribute = attribute.fulfill(1);
@@ -432,10 +432,10 @@ public class ServerTagBase {
                 event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
             }
 
-            if (attribute.startsWith("team") && attribute.hasContext(1)) {
-                Team team = board.getTeam(attribute.getContext(1));
+            if (attribute.startsWith("team") && attribute.hasParam()) {
+                Team team = board.getTeam(attribute.getParam());
                 if (team == null) {
-                    attribute.echoError("Scoreboard team '" + attribute.getContext(1) + "' does not exist.");
+                    attribute.echoError("Scoreboard team '" + attribute.getParam() + "' does not exist.");
                     return;
                 }
                 attribute = attribute.fulfill(1);
@@ -462,7 +462,7 @@ public class ServerTagBase {
         // Returns whether the object is a valid object (non-null), as well as not an ElementTag.
         // -->
         if (attribute.startsWith("object_is_valid")) {
-            ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
+            ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag(!(o == null || o instanceof ElementTag)).getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -955,8 +955,8 @@ public class ServerTagBase {
                 Debug.echoError("list_statistics is deprecated: use statistic_types");
             }
             Statistic.Type type = null;
-            if (attribute.hasContext(1)) {
-                type = Statistic.Type.valueOf(attribute.getContext(1).toUpperCase());
+            if (attribute.hasParam()) {
+                type = Statistic.Type.valueOf(attribute.getParam().toUpperCase());
             }
             ListTag statisticTypes = new ListTag();
             for (Statistic stat : Statistic.values()) {
@@ -994,8 +994,8 @@ public class ServerTagBase {
         if (attribute.startsWith("notes") || attribute.startsWith("list_notables") || attribute.startsWith("notables")) {
             listDeprecateWarn(attribute);
             ListTag allNotables = new ListTag();
-            if (attribute.hasContext(1)) {
-                String type = CoreUtilities.toLowerCase(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                String type = CoreUtilities.toLowerCase(attribute.getParam());
                 for (Map.Entry<String, Class> typeClass : NoteManager.namesToTypes.entrySet()) {
                     if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
                         for (Object notable : NoteManager.getAllType(typeClass.getValue())) {
@@ -1022,33 +1022,33 @@ public class ServerTagBase {
         // Returns UNTYPED, ITEM, ENTITY, or BLOCK.
         // Refer also to <@link tag server.statistic_types>.
         // -->
-        if (attribute.startsWith("statistic_type") && attribute.hasContext(1)) {
+        if (attribute.startsWith("statistic_type") && attribute.hasParam()) {
             Statistic statistic;
             try {
-                statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
+                statistic = Statistic.valueOf(attribute.getParam().toUpperCase());
             }
             catch (IllegalArgumentException ex) {
-                attribute.echoError("Statistic '" + attribute.getContext(1) + "' does not exist: " + ex.getMessage());
+                attribute.echoError("Statistic '" + attribute.getParam() + "' does not exist: " + ex.getMessage());
                 return;
             }
             event.setReplacedObject(new ElementTag(statistic.getType().name()).getObjectAttribute(attribute.fulfill(1)));
         }
 
-        if (attribute.startsWith("enchantment_max_level") && attribute.hasContext(1)) {
+        if (attribute.startsWith("enchantment_max_level") && attribute.hasParam()) {
             Deprecations.echantmentTagUpdate.warn(attribute.context);
-            EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getContext(1), attribute.context);
+            EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getParam(), attribute.context);
             if (ench == null) {
-                attribute.echoError("Enchantment '" + attribute.getContext(1) + "' does not exist.");
+                attribute.echoError("Enchantment '" + attribute.getParam() + "' does not exist.");
                 return;
             }
             event.setReplacedObject(new ElementTag(ench.enchantment.getMaxLevel()).getObjectAttribute(attribute.fulfill(1)));
         }
 
-        if (attribute.startsWith("enchantment_start_level") && attribute.hasContext(1)) {
+        if (attribute.startsWith("enchantment_start_level") && attribute.hasParam()) {
             Deprecations.echantmentTagUpdate.warn(attribute.context);
-            EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getContext(1), attribute.context);
+            EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getParam(), attribute.context);
             if (ench == null) {
-                attribute.echoError("Enchantment '" + attribute.getContext(1) + "' does not exist.");
+                attribute.echoError("Enchantment '" + attribute.getParam() + "' does not exist.");
                 return;
             }
             event.setReplacedObject(new ElementTag(ench.enchantment.getStartLevel()).getObjectAttribute(attribute.fulfill(1)));
@@ -1247,10 +1247,10 @@ public class ServerTagBase {
         // @description
         // Returns a list of NPCs with a certain name.
         // -->
-        if ((attribute.startsWith("npcs_named") || attribute.startsWith("list_npcs_named")) && Depends.citizens != null && attribute.hasContext(1)) {
+        if ((attribute.startsWith("npcs_named") || attribute.startsWith("list_npcs_named")) && Depends.citizens != null && attribute.hasParam()) {
             listDeprecateWarn(attribute);
             ListTag npcs = new ListTag();
-            String name = attribute.getContext(1);
+            String name = attribute.getParam();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (CoreUtilities.equalsIgnoreCase(npc.getName(), name)) {
                     npcs.addObject(new NPCTag(npc));
@@ -1266,8 +1266,8 @@ public class ServerTagBase {
         // @description
         // Returns true if the specified file exists. The starting path is /plugins/Denizen.
         // -->
-        if (attribute.startsWith("has_file") && attribute.hasContext(1)) {
-            File f = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));
+        if (attribute.startsWith("has_file") && attribute.hasParam()) {
+            File f = new File(Denizen.getInstance().getDataFolder(), attribute.getParam());
             try {
                 if (!Utilities.canReadFile(f)) {
                     Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
@@ -1288,8 +1288,8 @@ public class ServerTagBase {
         // @description
         // Returns a list of all files (and directories) in the specified directory. The starting path is /plugins/Denizen.
         // -->
-        if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
-            File folder = new File(Denizen.getInstance().getDataFolder(), attribute.getContext(1));
+        if (attribute.startsWith("list_files") && attribute.hasParam()) {
+            File folder = new File(Denizen.getInstance().getDataFolder(), attribute.getParam());
             try {
                 if (!Utilities.canReadFile(folder)) {
                     Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
@@ -1441,7 +1441,7 @@ public class ServerTagBase {
                 return;
             }
 
-            String group = attribute.getContext(1);
+            String group = attribute.getParam();
 
             if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
                 attribute.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
@@ -1482,7 +1482,7 @@ public class ServerTagBase {
                 return;
             }
 
-            String group = attribute.getContext(1);
+            String group = attribute.getParam();
 
             if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
                 attribute.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
@@ -1560,9 +1560,9 @@ public class ServerTagBase {
         // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns player object for 'bob',
         // input 'bobb' returns player object for 'bobby', and input 'b' returns player object for 'bo'.
         // -->
-        if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
+        if (attribute.startsWith("match_player") && attribute.hasParam()) {
             Player matchPlayer = null;
-            String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
+            String matchInput = CoreUtilities.toLowerCase(attribute.getParam());
             if (matchInput.isEmpty()) {
                 return;
             }
@@ -1595,9 +1595,9 @@ public class ServerTagBase {
         // input 'bobb' returns player object for 'bobby', and input 'b' returns player object for 'bo'.
         // When both an online player and an offline player match the name search, the online player will be returned.
         // -->
-        if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
+        if (attribute.startsWith("match_offline_player") && attribute.hasParam()) {
             PlayerTag matchPlayer = null;
-            String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
+            String matchInput = CoreUtilities.toLowerCase(attribute.getParam());
             if (matchInput.isEmpty()) {
                 return;
             }
@@ -1634,9 +1634,9 @@ public class ServerTagBase {
         // Returns a list of all NPCs assigned to a specified script.
         // -->
         if ((attribute.startsWith("npcs_assigned") || attribute.startsWith("list_npcs_assigned")) && Depends.citizens != null
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             listDeprecateWarn(attribute);
-            ScriptTag script = attribute.contextAsType(1, ScriptTag.class);
+            ScriptTag script = attribute.paramAsType(ScriptTag.class);
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
                 attribute.echoError("Invalid script specified.");
             }
@@ -1660,9 +1660,9 @@ public class ServerTagBase {
         // Returns a list of all online players with a specified flag set.
         // -->
         if ((attribute.startsWith("online_players_flagged") || attribute.startsWith("list_online_players_flagged"))
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             listDeprecateWarn(attribute);
-            String flag = attribute.getContext(1);
+            String flag = attribute.getParam();
             ListTag players = new ListTag();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerTag plTag = new PlayerTag(player);
@@ -1682,9 +1682,9 @@ public class ServerTagBase {
         // Warning: this will cause the player flag cache to temporarily fill with ALL historical playerdata.
         // -->
         if ((attribute.startsWith("players_flagged") || attribute.startsWith("list_players_flagged"))
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             listDeprecateWarn(attribute);
-            String flag = attribute.getContext(1);
+            String flag = attribute.getParam();
             ListTag players = new ListTag();
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
                 PlayerTag plTag = new PlayerTag(entry.getValue());
@@ -1703,9 +1703,9 @@ public class ServerTagBase {
         // Returns a list of all spawned NPCs with a specified flag set.
         // -->
         if ((attribute.startsWith("spawned_npcs_flagged") || attribute.startsWith("list_spawned_npcs_flagged")) && Depends.citizens != null
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             listDeprecateWarn(attribute);
-            String flag = attribute.getContext(1);
+            String flag = attribute.getParam();
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 NPCTag dNpc = new NPCTag(npc);
@@ -1724,9 +1724,9 @@ public class ServerTagBase {
         // Returns a list of all NPCs with a specified flag set.
         // -->
         if ((attribute.startsWith("npcs_flagged") || attribute.startsWith("list_npcs_flagged")) && Depends.citizens != null
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             listDeprecateWarn(attribute);
-            String flag = attribute.getContext(1);
+            String flag = attribute.getParam();
             ListTag npcs = new ListTag();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 NPCTag dNpc = new NPCTag(npc);
@@ -1763,10 +1763,10 @@ public class ServerTagBase {
             listDeprecateWarn(attribute);
             ListTag npcs = new ListTag();
             NPCRegistry registry = CitizensAPI.getNPCRegistry();
-            if (attribute.hasContext(1)) {
-                registry = NPCTag.getRegistryByName(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                registry = NPCTag.getRegistryByName(attribute.getParam());
                 if (registry == null) {
-                    attribute.echoError("NPC Registry '" + attribute.getContext(1) + "' does not exist.");
+                    attribute.echoError("NPC Registry '" + attribute.getParam() + "' does not exist.");
                     return;
                 }
             }
@@ -1896,9 +1896,9 @@ public class ServerTagBase {
         // @description
         // Returns whether the given ip address is banned.
         // -->
-        if (attribute.startsWith("is_banned") && attribute.hasContext(1)) {
+        if (attribute.startsWith("is_banned") && attribute.hasParam()) {
             // BanList contains an isBanned method that doesn't check expiration time
-            BanEntry ban = Bukkit.getBanList(BanList.Type.IP).getBanEntry(attribute.getContext(1));
+            BanEntry ban = Bukkit.getBanList(BanList.Type.IP).getBanEntry(attribute.getParam());
 
             if (ban == null) {
                 event.setReplacedObject(new ElementTag(false).getObjectAttribute(attribute.fulfill(1)));
@@ -1913,8 +1913,8 @@ public class ServerTagBase {
             return;
         }
 
-        if (attribute.startsWith("ban_info") && attribute.hasContext(1)) {
-            BanEntry ban = Bukkit.getBanList(BanList.Type.IP).getBanEntry(attribute.getContext(1));
+        if (attribute.startsWith("ban_info") && attribute.hasParam()) {
+            BanEntry ban = Bukkit.getBanList(BanList.Type.IP).getBanEntry(attribute.getParam());
             attribute.fulfill(1);
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return;
@@ -2052,22 +2052,22 @@ public class ServerTagBase {
             return;
         }
         else if (attribute.startsWith("entity_is_spawned")
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             Deprecations.isValidTag.warn(attribute.context);
-            EntityTag ent = EntityTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
+            EntityTag ent = EntityTag.valueOf(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag((ent != null && ent.isUnique() && ent.isSpawnedOrValidForTag()) ? "true" : "false")
                     .getObjectAttribute(attribute.fulfill(1)));
         }
         else if (attribute.startsWith("player_is_valid")
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             Deprecations.isValidTag.warn(attribute.context);
-            event.setReplacedObject(new ElementTag(PlayerTag.playerNameIsValid(attribute.getContext(1)))
+            event.setReplacedObject(new ElementTag(PlayerTag.playerNameIsValid(attribute.getParam()))
                     .getObjectAttribute(attribute.fulfill(1)));
         }
         else if (attribute.startsWith("npc_is_valid")
-                && attribute.hasContext(1)) {
+                && attribute.hasParam()) {
             Deprecations.isValidTag.warn(attribute.context);
-            NPCTag npc = NPCTag.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, null, false, null));
+            NPCTag npc = NPCTag.valueOf(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag((npc != null && npc.isValid()))
                     .getObjectAttribute(attribute.fulfill(1)));
         }
@@ -2089,8 +2089,8 @@ public class ServerTagBase {
         // @description
         // Returns a list of players that should be able to see the given bossbar ID from <@link command bossbar>.
         // -->
-        else if (attribute.startsWith("bossbar_viewers") && attribute.hasContext(1)) {
-            BossBar bar = BossBarCommand.bossBarMap.get(CoreUtilities.toLowerCase(attribute.getContext(1)));
+        else if (attribute.startsWith("bossbar_viewers") && attribute.hasParam()) {
+            BossBar bar = BossBarCommand.bossBarMap.get(CoreUtilities.toLowerCase(attribute.getParam()));
             if (bar != null) {
                 ListTag list = new ListTag();
                 for (Player player : bar.getPlayers()) {
@@ -2173,10 +2173,10 @@ public class ServerTagBase {
         // Returns a list of materials referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
         // -->
         else if (attribute.startsWith("vanilla_tagged_materials")) {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return;
             }
-            HashSet<Material> materials = VanillaTagHelper.tagsByKey.get(CoreUtilities.toLowerCase(attribute.getContext(1)));
+            HashSet<Material> materials = VanillaTagHelper.tagsByKey.get(CoreUtilities.toLowerCase(attribute.getParam()));
             if (materials == null) {
                 return;
             }
@@ -2195,9 +2195,9 @@ public class ServerTagBase {
         // Can specify by ScriptEvent name ("PlayerBreaksBlock"), or by full Bukkit class name ("org.bukkit.event.block.BlockBreakEvent").
         // This is a primarily a dev tool and is not necessarily useful to most players or scripts.
         // -->
-        else if ((attribute.matches("plugins_handling_event") || attribute.matches("list_plugins_handling_event")) && attribute.hasContext(1)) {
+        else if ((attribute.matches("plugins_handling_event") || attribute.matches("list_plugins_handling_event")) && attribute.hasParam()) {
             listDeprecateWarn(attribute);
-            String eventName = attribute.getContext(1);
+            String eventName = attribute.getParam();
             if (CoreUtilities.contains(eventName, '.')) {
                 try {
                     Class clazz = Class.forName(eventName, false, ServerTagBase.class.getClassLoader());
@@ -2247,8 +2247,8 @@ public class ServerTagBase {
         //
         // For example: <server.generate_loot_table[id=chests/spawn_bonus_chest;killer=<player>;location=<player.location>]>
         // -->
-        else if (attribute.startsWith("generate_loot_table") && attribute.hasContext(1)) {
-            MapTag map = attribute.contextAsType(1, MapTag.class);
+        else if (attribute.startsWith("generate_loot_table") && attribute.hasParam()) {
+            MapTag map = attribute.paramAsType(MapTag.class);
             ObjectTag idObj = map.getObject("id");
             ObjectTag locationObj = map.getObject("location");
             if (idObj == null || locationObj == null) {

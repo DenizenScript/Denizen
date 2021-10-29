@@ -244,7 +244,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag(ListTag.class, "entities", (attribute, object) -> {
             ListTag entities = new ListTag();
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
             for (Entity entity : object.getEntitiesForTag()) {
                 EntityTag current = new EntityTag(entity);
                 if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
@@ -763,11 +763,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
         // -->
         registerTag(ElementTag.class, "gamerule", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag 'worldtag.gamerule[...]' must have an input value.");
                 return null;
             }
-            GameRule rule = GameRule.getByName(attribute.getContext(1));
+            GameRule rule = GameRule.getByName(attribute.getParam());
             Object result = object.getWorld().getGameRuleValue(rule);
             return new ElementTag(result == null ? "null" : result.toString());
         });
@@ -854,10 +854,10 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns whether the world matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
         registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(BukkitScriptEvent.tryWorld(object, attribute.getContext(1)));
+            return new ElementTag(BukkitScriptEvent.tryWorld(object, attribute.getParam()));
         });
     }
 

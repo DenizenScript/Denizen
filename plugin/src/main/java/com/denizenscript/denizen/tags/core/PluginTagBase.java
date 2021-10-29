@@ -15,11 +15,11 @@ public class PluginTagBase {
         // Refer to <@link objecttype PluginTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(PluginTag.class, "plugin", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Plugin tag base must have input.");
                 return null;
             }
-            return PluginTag.valueOf(attribute.getContext(1), attribute.context);
+            return PluginTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

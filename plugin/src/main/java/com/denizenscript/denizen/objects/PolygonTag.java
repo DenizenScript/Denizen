@@ -588,11 +588,11 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a copy of the polygon, with all coordinates shifted by the given location-vector.
         // -->
         tagProcessor.registerTag(PolygonTag.class, "shift", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("PolygonTag.shift[...] tag must have an input.");
                 return null;
             }
-            LocationTag shift = attribute.contextAsType(1, LocationTag.class);
+            LocationTag shift = attribute.paramAsType(LocationTag.class);
             PolygonTag toReturn = polygon.clone();
             toReturn.yMin += shift.getY();
             toReturn.yMax += shift.getY();
@@ -615,11 +615,11 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a copy of the polygon, with the specified corner added to the end of the corner list.
         // -->
         tagProcessor.registerTag(PolygonTag.class, "with_corner", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("PolygonTag.with_corner[...] tag must have an input.");
                 return null;
             }
-            LocationTag corner = attribute.contextAsType(1, LocationTag.class);
+            LocationTag corner = attribute.paramAsType(LocationTag.class);
             PolygonTag toReturn = polygon.clone();
             Corner added = new Corner(corner.getX(), corner.getZ());
             toReturn.corners.add(added);
@@ -634,12 +634,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a copy of the polygon, with the specified minimum-Y value.
         // -->
         tagProcessor.registerTag(PolygonTag.class, "with_y_min", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("PolygonTag.with_y_min[...] tag must have an input.");
                 return null;
             }
             PolygonTag toReturn = polygon.clone();
-            toReturn.yMin = attribute.getDoubleContext(1);
+            toReturn.yMin = attribute.getDoubleParam();
             return toReturn;
         });
 
@@ -650,12 +650,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a copy of the polygon, with the specified maximum-Y value.
         // -->
         tagProcessor.registerTag(PolygonTag.class, "with_y_max", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("PolygonTag.with_y_max[...] tag must have an input.");
                 return null;
             }
             PolygonTag toReturn = polygon.clone();
-            toReturn.yMax = attribute.getDoubleContext(1);
+            toReturn.yMax = attribute.getDoubleParam();
             return toReturn;
         });
 
@@ -666,12 +666,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a copy of the polygon, with the specified Y value included as part of the Y range (expanding the Y-min or Y-max as needed).
         // -->
         tagProcessor.registerTag(PolygonTag.class, "include_y", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("PolygonTag.include_y[...] tag must have an input.");
                 return null;
             }
             PolygonTag toReturn = polygon.clone();
-            double y = attribute.getDoubleContext(1);
+            double y = attribute.getDoubleParam();
             toReturn.yMin = Math.min(y, toReturn.yMin);
             toReturn.yMax = Math.max(y, toReturn.yMax);
             return toReturn;
@@ -684,11 +684,11 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a list of locations along the 2D outline of this polygon, at the specified Y level (roughly a block-width of separation between each).
         // -->
         tagProcessor.registerTag(ListTag.class, "outline_2d", (attribute, polygon) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("PolygonTag.outline_2d[...] tag must have an input.");
                 return null;
             }
-            double y = attribute.getDoubleContext(1);
+            double y = attribute.getDoubleParam();
             ListTag output = new ListTag();
             polygon.addOutline2D(y, output);
             return output;

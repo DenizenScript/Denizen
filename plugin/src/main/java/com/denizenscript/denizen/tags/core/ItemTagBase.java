@@ -15,11 +15,11 @@ public class ItemTagBase {
         // Refer to <@link objecttype ItemTag>.
         // -->
         TagManager.registerTagHandler(ItemTag.class, "item", (attribute) -> { // non-static as item scripts can contain tags
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Item tag base must have input.");
                 return null;
             }
-            return ItemTag.valueOf(attribute.getContext(1), attribute.context);
+            return ItemTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

@@ -15,11 +15,11 @@ public class ColorTagBase {
         // Refer to <@link objecttype ColorTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(ColorTag.class, "color", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Color tag base must have input.");
                 return null;
             }
-            return ColorTag.valueOf(attribute.getContext(1), attribute.context);
+            return ColorTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

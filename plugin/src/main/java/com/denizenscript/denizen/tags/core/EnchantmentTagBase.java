@@ -15,11 +15,11 @@ public class EnchantmentTagBase {
         // Refer to <@link objecttype EnchantmentTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(EnchantmentTag.class, "enchantment", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Enchantment tag base must have input.");
                 return null;
             }
-            return EnchantmentTag.valueOf(attribute.getContext(1), attribute.context);
+            return EnchantmentTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

@@ -226,7 +226,7 @@ public class TextTagBase {
         // @description
         // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
         // -->
-        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&chr", (attribute) -> new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16))));
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&chr", (attribute) -> new ElementTag(String.valueOf((char) Integer.parseInt(attribute.getParam(), 16))));
 
         // <--[tag]
         // @attribute <n>
@@ -254,10 +254,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&hover", (attribute) -> { // Cannot be static due to hacked sub-tag
-              if (!attribute.hasContext(1)) {
+              if (!attribute.hasParam()) {
                   return null;
               }
-              String hoverText = attribute.getContext(1);
+              String hoverText = attribute.getParam();
 
               // <--[tag]
               // @attribute <&hover[<hover_text>].type[<type>]>
@@ -290,10 +290,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&click", (attribute) -> { // Cannot be static due to hacked sub-tag
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String clickText = attribute.getContext(1);
+            String clickText = attribute.getParam();
 
             // <--[tag]
             // @attribute <&click[<click_command>].type[<type>]>
@@ -323,10 +323,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&insertion", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String insertText = attribute.getContext(1);
+            String insertText = attribute.getParam();
             return new ElementTag(ChatColor.COLOR_CHAR + "[insertion=" + FormattedTextHelper.escape(insertText) + "]");
         });
 
@@ -372,10 +372,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&keybind", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String keybindText = attribute.getContext(1);
+            String keybindText = attribute.getParam();
             return new ElementTag(ChatColor.COLOR_CHAR + "[keybind=" + FormattedTextHelper.escape(keybindText) + "]");
         });
 
@@ -387,10 +387,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&selector", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String selectorText = attribute.getContext(1);
+            String selectorText = attribute.getParam();
             return new ElementTag(ChatColor.COLOR_CHAR + "[selector=" + FormattedTextHelper.escape(selectorText) + "]");
         });
 
@@ -404,10 +404,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&translate", (attribute) -> { // Cannot be static due to hacked sub-tag
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String translateText = attribute.getContext(1);
+            String translateText = attribute.getParam();
 
             // <--[tag]
             // @attribute <&translate[<key>].with[<text>|...]>
@@ -441,10 +441,10 @@ public class TextTagBase {
         //
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&score", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            ListTag scoreList = attribute.contextAsType(1, ListTag.class);
+            ListTag scoreList = attribute.paramAsType(ListTag.class);
             if (scoreList.size() < 2) {
                 return null;
             }
@@ -463,10 +463,10 @@ public class TextTagBase {
         // The ColorTag input option can be used for dynamic color effects, such as automatic rainbows.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&color", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String colorName = attribute.getContext(1);
+            String colorName = attribute.getParam();
             String colorOut = null;
             if (colorName.length() == 1) {
                 ChatColor color = ChatColor.getByChar(colorName.charAt(0));
@@ -504,10 +504,10 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&font", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + attribute.getContext(1) + "]");
+            return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + attribute.getParam() + "]");
         });
 
         // <--[tag]

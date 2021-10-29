@@ -527,8 +527,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC has a specified trait.
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_trait", (attribute, object) -> {
-            if (attribute.hasContext(1)) {
-                Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getParam());
                 if (trait != null) {
                     return new ElementTag(object.getCitizen().hasTrait(trait));
                 }
@@ -553,14 +553,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC has a specified trigger.
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_trigger", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             if (!object.getCitizen().hasTrait(TriggerTrait.class)) {
                 return new ElementTag(false);
             }
             TriggerTrait trait = object.getCitizen().getOrAddTrait(TriggerTrait.class);
-            return new ElementTag(trait.hasTrigger(attribute.getContext(1)));
+            return new ElementTag(trait.hasTrigger(attribute.getParam()));
         });
 
         // <--[tag]
@@ -595,13 +595,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ObjectTag.class, "anchor", (attribute, object) -> {
             Anchors trait = object.getCitizen().getOrAddTrait(Anchors.class);
-            if (attribute.hasContext(1)) {
-                Anchor anchor = trait.getAnchor(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                Anchor anchor = trait.getAnchor(attribute.getParam());
                     if (anchor != null) {
                         return new LocationTag(anchor.getLocation());
                     }
                     else {
-                        attribute.echoError("NPC Anchor '" + attribute.getContext(1) + "' is not defined.");
+                        attribute.echoError("NPC Anchor '" + attribute.getParam() + "' is not defined.");
                         return null;
                     }
             }
@@ -627,11 +627,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the specified constant from the NPC.
         // -->
         tagProcessor.registerTag(ElementTag.class, "constant", (attribute, object) -> {
-            if (attribute.hasContext(1)) {
+            if (attribute.hasParam()) {
                 if (object.getCitizen().hasTrait(ConstantsTrait.class)
-                        && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
+                        && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(attribute.getParam()) != null) {
                     return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class)
-                            .getConstant(attribute.getContext(1)));
+                            .getConstant(attribute.getParam()));
                 }
                 else {
                     return null;
@@ -647,8 +647,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_pose", (attribute, object) -> {
-            if (attribute.hasContext(1)) {
-                return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(attribute.getContext(1)));
+            if (attribute.hasParam()) {
+                return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(attribute.getParam()));
             }
             else {
                 return null;
@@ -663,8 +663,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // possible available world Bukkit knows about.
         // -->
         tagProcessor.registerTag(LocationTag.class, "pose", (attribute, object) -> {
-            if (attribute.hasContext(1)) {
-                Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(attribute.getParam());
                 return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
             }
             else {
@@ -1199,10 +1199,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the value of a Citizens NPC metadata key.
         // -->
         tagProcessor.registerTag(ElementTag.class, "citizens_data", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            Object val = object.getCitizen().data().get(attribute.getContext(1));
+            Object val = object.getCitizen().data().get(attribute.getParam());
             if (val == null) {
                 return null;
             }

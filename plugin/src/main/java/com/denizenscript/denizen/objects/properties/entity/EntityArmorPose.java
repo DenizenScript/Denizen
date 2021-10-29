@@ -114,10 +114,10 @@ public class EntityArmorPose implements Property {
         // -->
         PropertyParser.<EntityArmorPose, LocationTag>registerTag(LocationTag.class, "armor_pose", (attribute, entity) -> {
             Deprecations.entityArmorPose.warn(attribute.context);
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String name = attribute.getContext(1);
+            String name = attribute.getParam();
             PosePart posePart = PosePart.fromName(name);
             if (posePart == null) {
                 attribute.echoError("Invalid pose part specified: " + name);

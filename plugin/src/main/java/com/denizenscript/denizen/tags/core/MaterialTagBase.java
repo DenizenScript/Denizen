@@ -15,11 +15,11 @@ public class MaterialTagBase {
         // Refer to <@link objecttype MaterialTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(MaterialTag.class, "material", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Material tag base must have input.");
                 return null;
             }
-            return MaterialTag.valueOf(attribute.getContext(1), attribute.context);
+            return MaterialTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

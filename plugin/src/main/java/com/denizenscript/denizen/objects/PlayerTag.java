@@ -659,8 +659,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         tagProcessor.registerTag(ElementTag.class, "chat_history", (attribute, object) -> {
             int x = 1;
-            if (attribute.hasContext(1) && ArgumentHelper.matchesInteger(attribute.getContext(1))) {
-                x = attribute.getIntContext(1);
+            if (attribute.hasParam() && ArgumentHelper.matchesInteger(attribute.getParam())) {
+                x = attribute.getIntParam();
             }
             // No playerchathistory? Return null.
             if (!PlayerTagBase.playerChatHistory.containsKey(object.getUUID())) {
@@ -746,7 +746,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ObjectTag.class, "target", (attribute, object) -> {
             double range = 50;
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
 
             // <--[tag]
             // @attribute <PlayerTag.target[(<matcher>)].within[(<#.#>)]>
@@ -824,7 +824,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the cooldown duration remaining on player's material.
         // -->
         tagProcessor.registerTag(DurationTag.class, "item_cooldown", (attribute, object) -> {
-            MaterialTag mat = new ElementTag(attribute.getContext(1)).asType(MaterialTag.class, attribute.context);
+            MaterialTag mat = new ElementTag(attribute.getParam()).asType(MaterialTag.class, attribute.context);
             if (mat != null) {
                 return new DurationTag((long) object.getPlayerEntity().getCooldown(mat.getMaterial()));
             }
@@ -906,14 +906,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // Handle EntityTag health tags here to allow getting them when the player is offline
         tagProcessor.registerTag(ElementTag.class, "formatted_health", (attribute, object) -> {
-            Double maxHealth = attribute.hasContext(1) ? attribute.getDoubleContext(1) : null;
+            Double maxHealth = attribute.hasParam() ? attribute.getDoubleParam() : null;
             return EntityHealth.getHealthFormatted(new EntityTag(object.getPlayerEntity()), maxHealth);
         });
 
         tagProcessor.registerTag(ElementTag.class, "health_percentage", (attribute, object) -> {
             double maxHealth = object.getPlayerEntity().getMaxHealth();
-            if (attribute.hasContext(1)) {
-                maxHealth = attribute.getIntContext(1);
+            if (attribute.hasParam()) {
+                maxHealth = attribute.getIntParam();
             }
             return new ElementTag((object.getPlayerEntity().getHealth() / maxHealth) * 100);
         });
@@ -944,8 +944,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Deprecations.entityHealthTags.warn(attribute.context);
                 attribute.fulfill(1);
                 double maxHealth = object.getPlayerEntity().getMaxHealth();
-                if (attribute.hasContext(1)) {
-                    maxHealth = attribute.getIntContext(1);
+                if (attribute.hasParam()) {
+                    maxHealth = attribute.getIntParam();
                 }
                 return new ElementTag((object.getPlayerEntity().getHealth() / maxHealth) * 100);
             }
@@ -1047,10 +1047,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             ListTag list = new ListTag();
             WorldTag world = null;
-            if (attribute.hasContext(1)) {
-                world = attribute.contextAsType(1, WorldTag.class);
+            if (attribute.hasParam()) {
+                world = attribute.paramAsType(WorldTag.class);
                 if (world == null) {
-                    Debug.echoError("Invalid world specified: " + attribute.getContext(1));
+                    Debug.echoError("Invalid world specified: " + attribute.getParam());
                     return null;
                 }
             }
@@ -1180,7 +1180,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
 
-            String group = attribute.getContext(1);
+            String group = attribute.getParam();
 
             // <--[tag]
             // @attribute <PlayerTag.in_group[<group_name>].global>
@@ -1239,7 +1239,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // (May work with offline players, depending on your permissions system.)
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_permission", (attribute, object) -> {
-            String permission = attribute.getContext(1);
+            String permission = attribute.getParam();
 
             // <--[tag]
             // @attribute <PlayerTag.has_permission[permission.node].global>
@@ -1308,15 +1308,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         tagProcessor.registerTag(ElementTag.class, "statistic", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             Statistic statistic;
             try {
-                statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
+                statistic = Statistic.valueOf(attribute.getParam().toUpperCase());
             }
             catch (IllegalArgumentException ex) {
-                attribute.echoError("Statistic '" + attribute.getContext(1) + "' does not exist: " + ex.getMessage());
+                attribute.echoError("Statistic '" + attribute.getParam() + "' does not exist: " + ex.getMessage());
                 return null;
             }
 
@@ -1800,10 +1800,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the player has the chunk loaded on their client.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "chunk_loaded", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            ChunkTag chunk = attribute.contextAsType(1, ChunkTag.class);
+            ChunkTag chunk = attribute.paramAsType(ChunkTag.class);
             if (chunk == null) {
                 return null;
             }
@@ -1869,8 +1869,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "formatted_food_level", (attribute, object) -> {
             double maxHunger = object.getPlayerEntity().getMaxHealth();
-            if (attribute.hasContext(1)) {
-                maxHunger = attribute.getIntContext(1);
+            if (attribute.hasParam()) {
+                maxHunger = attribute.getIntParam();
             }
             attribute.fulfill(1);
             int foodLevel = object.getFoodLevel();
@@ -1999,13 +1999,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the player has completed the specified advancement.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "has_advancement", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            Advancement adv = AdvancementHelper.getAdvancement(attribute.getContext(1));
+            Advancement adv = AdvancementHelper.getAdvancement(attribute.getParam());
             if (adv == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("Advancement '" + attribute.getContext(1) + "' does not exist.");
+                    Debug.echoError("Advancement '" + attribute.getParam() + "' does not exist.");
                 }
                 return null;
             }
@@ -2197,10 +2197,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns null if the player doesn't have a fake block at the location.
         // -->
         tagProcessor.registerTag(MaterialTag.class, "fake_block", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            LocationTag input = attribute.contextAsType(1, LocationTag.class);
+            LocationTag input = attribute.paramAsType(LocationTag.class);
             FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(object.getUUID());
             if (map != null) {
                 FakeBlock block = map.byLocation.get(input);
@@ -2243,8 +2243,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             DisguiseCommand.TrackedDisguise disguise;
-            if (attribute.hasContext(1)) {
-                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+            if (attribute.hasParam()) {
+                PlayerTag player = attribute.paramAsType(PlayerTag.class);
                 if (player == null) {
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
@@ -2387,7 +2387,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(returnType, name, (attribute, object) -> {
             if (!object.isOnline()) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("Player is not online, but tag '" + attribute.getAttributeWithoutContext(1) + "' requires the player be online, for player: " + object.debuggable());
+                    Debug.echoError("Player is not online, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the player be online, for player: " + object.debuggable());
                 }
                 return null;
             }

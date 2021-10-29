@@ -251,8 +251,8 @@ public class EntityAreaEffectCloud implements Property {
         // If no effect is specified, returns whether it has any custom effect.
         // -->
         if (attribute.startsWith("has_custom_effect")) {
-            if (attribute.hasContext(1)) {
-                PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                PotionEffectType effectType = PotionEffectType.getByName(attribute.getParam());
                 for (PotionEffect effect : getHelper().getCustomEffects()) {
                     if (effect.getType().equals(effectType)) {
                         return new ElementTag(true).getObjectAttribute(attribute.fulfill(1));
@@ -291,7 +291,7 @@ public class EntityAreaEffectCloud implements Property {
         // -->
         if (attribute.startsWith("custom_effects")) {
             List<PotionEffect> effects = getHelper().getCustomEffects();
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 ListTag list = new ListTag();
                 for (PotionEffect effect : effects) {
                     list.add(effect.getType().getName() + "," +
@@ -302,7 +302,7 @@ public class EntityAreaEffectCloud implements Property {
                 }
                 return list.getObjectAttribute(attribute.fulfill(1));
             }
-            int val = attribute.getIntContext(1) - 1;
+            int val = attribute.getIntParam() - 1;
             if (val < 0 || val >= effects.size()) {
                 return null;
             }

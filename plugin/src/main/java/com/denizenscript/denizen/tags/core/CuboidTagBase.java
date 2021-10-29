@@ -15,11 +15,11 @@ public class CuboidTagBase {
         // Refer to <@link objecttype CuboidTag>.
         // -->
         TagManager.registerTagHandler(CuboidTag.class, "cuboid", (attribute) -> { // non-static due to notes
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Cuboid tag base must have input.");
                 return null;
             }
-            return CuboidTag.valueOf(attribute.getContext(1), attribute.context);
+            return CuboidTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

@@ -53,7 +53,7 @@ public class ItemNBT implements Property {
 
         if (attribute.startsWith("has_nbt")) {
             Deprecations.itemNbt.warn(attribute.context);
-            return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
+            return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getParam(), CustomNBT.KEY_DENIZEN))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -65,14 +65,14 @@ public class ItemNBT implements Property {
 
         if (attribute.matches("nbt")) {
             Deprecations.itemNbt.warn(attribute.context);
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 ListTag list = getNBTDataList();
                 if (list == null) {
                     return null;
                 }
                 return list.getObjectAttribute(attribute.fulfill(1));
             }
-            String res = CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN);
+            String res = CustomNBT.getCustomNBT(item.getItemStack(), attribute.getParam(), CustomNBT.KEY_DENIZEN);
             if (res == null) {
                 return null;
             }

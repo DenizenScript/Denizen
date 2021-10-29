@@ -15,11 +15,11 @@ public class ChunkTagBase {
         // Refer to <@link objecttype ChunkTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(ChunkTag.class, "chunk", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Chunk tag base must have input.");
                 return null;
             }
-            return ChunkTag.valueOf(attribute.getContext(1), attribute.context);
+            return ChunkTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

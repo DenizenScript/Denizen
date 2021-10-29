@@ -554,11 +554,11 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
         tagProcessor.registerTag(ElementTag.class, "has_vanilla_data_tag", (attribute, object) -> {
             Deprecations.materialHasDataPackTag.warn(attribute.context);
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("MaterialTag.has_vanilla_data_tag[...] tag must have an input value.");
                 return null;
             }
-            NamespacedKey key = NamespacedKey.minecraft(CoreUtilities.toLowerCase(attribute.getContext(1)));
+            NamespacedKey key = NamespacedKey.minecraft(CoreUtilities.toLowerCase(attribute.getParam()));
             Tag<Material> tagBlock = Bukkit.getTag("blocks", key, Material.class);
             Tag<Material> tagItem = Bukkit.getTag("items", key, Material.class);
             return new ElementTag((tagBlock != null && tagBlock.isTagged(object.getMaterial()) || (tagItem != null && tagItem.isTagged(object.getMaterial()))));
@@ -571,10 +571,10 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns whether the material matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(BukkitScriptEvent.tryMaterial(object, attribute.getContext(1)));
+            return new ElementTag(BukkitScriptEvent.tryMaterial(object, attribute.getParam()));
         });
 
         // <--[tag]

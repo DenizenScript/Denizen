@@ -280,12 +280,12 @@ public class BukkitElementProperties implements Property {
         // Returns the text re-formatted according to a format script.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "format", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
+            FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getParam());
             if (format == null) {
-                attribute.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
+                attribute.echoError("Could not find format script matching '" + attribute.getParam() + "'");
                 return null;
             }
             else {
@@ -308,7 +308,7 @@ public class BukkitElementProperties implements Property {
         // This will transfer colors over to new lines as well.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "split_lines_by_width", (attribute, object) -> {
-            int width = attribute.getIntContext(1);
+            int width = attribute.getIntParam();
             return new ElementTag(TextWidthHelper.splitLines(object.asString(), width));
         });
 
@@ -376,8 +376,8 @@ public class BukkitElementProperties implements Property {
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "parse_color", (attribute, object) -> {
             char prefix = '&';
-            if (attribute.hasContext(1)) {
-                prefix = attribute.getContext(1).charAt(0);
+            if (attribute.hasParam()) {
+                prefix = attribute.getParam().charAt(0);
             }
             String parsed = ChatColor.translateAlternateColorCodes(prefix, object.asString());
             parsed = replaceEssentialsHexColors(prefix, parsed);
@@ -461,10 +461,10 @@ public class BukkitElementProperties implements Property {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "on_hover", (attribute, object) -> { // non-static due to hacked sub-tag
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String hoverText = attribute.getContext(1);
+            String hoverText = attribute.getParam();
             String type = "SHOW_TEXT";
 
             // <--[tag]
@@ -497,10 +497,10 @@ public class BukkitElementProperties implements Property {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "on_click", (attribute, object) -> { // non-static due to hacked sub-tag
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String clickText = attribute.getContext(1);
+            String clickText = attribute.getParam();
             String type = "RUN_COMMAND";
 
             // <--[tag]
@@ -530,10 +530,10 @@ public class BukkitElementProperties implements Property {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "with_insertion", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String insertionText = attribute.getContext(1);
+            String insertionText = attribute.getParam();
             return new ElementTag(ChatColor.COLOR_CHAR + "[insertion="  + FormattedTextHelper.escape(insertionText) + "]"
                     + object.asString() + ChatColor.COLOR_CHAR + "[/insertion]");
         });
@@ -641,10 +641,10 @@ public class BukkitElementProperties implements Property {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "custom_color", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + CustomColorTagBase.getColor(attribute.getContext(1), attribute.context) + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+            return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + CustomColorTagBase.getColor(attribute.getParam(), attribute.context) + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
         });
 
         // <--[tag]
@@ -657,10 +657,10 @@ public class BukkitElementProperties implements Property {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "color", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String colorName = attribute.getContext(1);
+            String colorName = attribute.getParam();
             String colorOut = null;
             if (colorName.length() == 1) {
                 ChatColor color = ChatColor.getByChar(colorName.charAt(0));
@@ -706,10 +706,10 @@ public class BukkitElementProperties implements Property {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "font", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String fontName = attribute.getContext(1);
+            String fontName = attribute.getParam();
             return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + fontName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=font]");
         });
 
@@ -725,8 +725,8 @@ public class BukkitElementProperties implements Property {
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "rainbow", (attribute, object) -> {
             String str = object.asString();
             String pattern = "4c6e2ab319d5";
-            if (attribute.hasContext(1)) {
-                pattern = attribute.getContext(1);
+            if (attribute.hasParam()) {
+                pattern = attribute.getParam();
             }
             StringBuilder output = new StringBuilder(str.length() * 3);
             for (int i = 0; i < str.length(); i++) {
@@ -759,8 +759,8 @@ public class BukkitElementProperties implements Property {
             float hue = HSB[0] / 255f;
             str = ChatColor.stripColor(str);
             int length = str.length();
-            if (attribute.hasContext(1)) {
-                length = attribute.getIntContext(1);
+            if (attribute.hasParam()) {
+                length = attribute.getIntParam();
             }
             float increment = 1.0f / length;
             StringBuilder output = new StringBuilder(str.length() * 8);
@@ -784,14 +784,14 @@ public class BukkitElementProperties implements Property {
         // Or: <element[this looks kinda like fire doesn't it].color_gradient[from=#FF0000;to=#FFFF00]>
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "color_gradient", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             String str = ChatColor.stripColor(object.asString());
             if (str.length() == 0) {
                 return new ElementTag("");
             }
-            MapTag inputMap = attribute.contextAsType(1, MapTag.class);
+            MapTag inputMap = attribute.paramAsType(MapTag.class);
             if (inputMap == null) {
                 return null;
             }

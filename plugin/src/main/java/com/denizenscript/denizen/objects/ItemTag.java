@@ -656,7 +656,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // to limit to just recipes of that type.
         // -->
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
-            String type = attribute.hasContext(1) ? CoreUtilities.toLowerCase(attribute.getContext(1)) : null;
+            String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
             ItemScriptContainer container = object.isItemscript() ? ItemScriptHelper.getItemScriptContainer(object.getItemStack()) : null;
             ListTag list = new ListTag();
             for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
@@ -699,10 +699,10 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns whether the item matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(BukkitScriptEvent.tryItem(object, attribute.getContext(1)));
+            return new ElementTag(BukkitScriptEvent.tryItem(object, attribute.getParam()));
         });
     }
 

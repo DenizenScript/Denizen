@@ -111,8 +111,8 @@ public class EntityPotionEffects implements Property {
         // -->
         if (attribute.startsWith("has_effect")) {
             boolean returnElement = false;
-            if (attribute.hasContext(1)) {
-                PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
+            if (attribute.hasParam()) {
+                PotionEffectType effectType = PotionEffectType.getByName(attribute.getParam());
                 for (org.bukkit.potion.PotionEffect effect : getEffectsList()) {
                     if (effect.getType().equals(effectType)) {
                         returnElement = true;

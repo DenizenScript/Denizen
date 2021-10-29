@@ -47,10 +47,10 @@ public class CustomColorTagBase {
         // Default color names are 'base', 'emphasis', 'warning', 'error'.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&", attribute -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(getColor(attribute.getContext(1), attribute.context));
+            return new ElementTag(getColor(attribute.getParam(), attribute.context));
         });
     }
 }

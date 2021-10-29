@@ -139,7 +139,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Gets a list of all entities currently within the area, with an optional search parameter for the entity.
         // -->
         processor.registerTag(ListTag.class, "entities", (attribute, area) -> {
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
             ListTag entities = new ListTag();
             for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithinForTag()) {
                 if (area.doesContainLocation(ent.getLocation())) {
@@ -176,10 +176,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns a boolean indicating whether the specified location is inside this area.
         // -->
         processor.registerTag(ElementTag.class, "contains", (attribute, area) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            LocationTag loc = attribute.contextAsType(1, LocationTag.class);
+            LocationTag loc = attribute.paramAsType(LocationTag.class);
             if (loc == null) {
                 return null;
             }
@@ -194,10 +194,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // Optionally, specify a material match to only return locations with that block type.
         // -->
         processor.registerTag(ListTag.class, "blocks", (attribute, area) -> {
-            if (attribute.hasContext(1)) {
+            if (attribute.hasParam()) {
                 NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
                 try {
-                    String matcher = attribute.getContext(1);
+                    String matcher = attribute.getParam();
                     Predicate<Location> predicate = (l) -> BukkitScriptEvent.tryMaterial(l.getBlock().getType(), matcher);
                     return area.getBlocks(predicate);
                 }
@@ -218,8 +218,8 @@ public interface AreaContainmentObject extends ObjectTag {
         processor.registerTag(ListTag.class, "spawnable_blocks", (attribute, area) -> {
                 NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
                 try {
-                    if (attribute.hasContext(1)) {
-                        String matcher = attribute.getContext(1);
+                    if (attribute.hasParam()) {
+                        String matcher = attribute.getParam();
                         Predicate<Location> predicate = (l) -> isSpawnable(l) && BukkitScriptEvent.tryMaterial(l.getBlock().getRelative(0, -1, 0).getType(), matcher);
                         return area.getBlocks(predicate);
                     }
@@ -238,10 +238,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
         processor.registerTag(ListTag.class, "blocks_flagged", (attribute, area) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return area.getBlocksFlagged(CoreUtilities.toLowerCase(attribute.getContext(1)), attribute);
+            return area.getBlocksFlagged(CoreUtilities.toLowerCase(attribute.getParam()), attribute);
         });
 
         // <--[tag]
@@ -261,10 +261,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns whether this area is fully inside another cuboid.
         // -->
         processor.registerTag(ElementTag.class, "is_within", (attribute, area) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            CuboidTag cub2 = attribute.contextAsType(1, CuboidTag.class);
+            CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
             if (cub2 == null) {
                 return null;
             }
@@ -304,10 +304,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns a copy of the area, with the specified world.
         // -->
         processor.registerTag(type, "with_world", (attribute, area) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            WorldTag world = attribute.contextAsType(1, WorldTag.class);
+            WorldTag world = attribute.paramAsType(WorldTag.class);
             if (world == null) {
                 return null;
             }

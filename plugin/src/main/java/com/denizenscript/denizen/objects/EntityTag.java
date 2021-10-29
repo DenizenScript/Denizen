@@ -1432,8 +1432,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity can see the specified other entity (has an uninterrupted line-of-sight).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "can_see", (attribute, object) -> {
-            if (object.isLivingEntity() && attribute.hasContext(1) && EntityTag.matches(attribute.getContext(1))) {
-                EntityTag toEntity = attribute.contextAsType(1, EntityTag.class);
+            if (object.isLivingEntity() && attribute.hasParam() && EntityTag.matches(attribute.getParam())) {
+                EntityTag toEntity = attribute.paramAsType(EntityTag.class);
                 if (toEntity != null && toEntity.isSpawnedOrValidForTag()) {
                     return new ElementTag(object.getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity()));
                 }
@@ -1478,7 +1478,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This only uses solid blocks, ie it ignores passable blocks like tall-grass. Use <@link tag EntityTag.cursor_on> to include passable blocks.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "cursor_on_solid", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
             }
@@ -1501,7 +1501,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This uses all blocks, ie it includes passable blocks like tall-grass and water. Use <@link tag EntityTag.cursor_on_solid> to include passable blocks.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "cursor_on", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
             }
@@ -2052,7 +2052,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, specify a maximum range to find the entity from (defaults to 200).
         // -->
         registerSpawnedOnlyTag(EntityFormObject.class, "precise_target", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
+            int range = attribute.getIntParam();
             if (range < 1) {
                 range = 200;
             }
@@ -2067,7 +2067,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // -->
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
-                String matcher = attribute.getContext(1);
+                String matcher = attribute.getParam();
                 requirement = (e) -> !e.equals(object.getBukkitEntity()) && BukkitScriptEvent.tryEntity(new EntityTag(e), matcher);
             }
             else {
@@ -2088,7 +2088,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, specify a maximum range to find the target from (defaults to 200).
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "precise_target_position", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
+            int range = attribute.getIntParam();
             if (range < 1) {
                 range = 200;
             }
@@ -2103,7 +2103,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // -->
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
-                String matcher = attribute.getContext(1);
+                String matcher = attribute.getParam();
                 requirement = (e) -> !e.equals(object.getBukkitEntity()) && BukkitScriptEvent.tryEntity(new EntityTag(e), matcher);
             }
             else {
@@ -2405,8 +2405,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "weapon_damage", (attribute, object) -> {
             Entity target = null;
-            if (attribute.hasContext(1)) {
-                target = attribute.contextAsType(1, EntityTag.class).getBukkitEntity();
+            if (attribute.hasParam()) {
+                target = attribute.paramAsType(EntityTag.class).getBukkitEntity();
             }
             return new ElementTag(NMSHandler.getEntityHelper().getDamageTo(object.getLivingEntity(), target));
         });
@@ -2444,8 +2444,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (map == null) {
                 return new ElementTag(false);
             }
-            if (attribute.hasContext(1)) {
-                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+            if (attribute.hasParam()) {
+                PlayerTag player = attribute.paramAsType(PlayerTag.class);
                 if (player == null) {
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
@@ -2471,8 +2471,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             DisguiseCommand.TrackedDisguise disguise;
-            if (attribute.hasContext(1)) {
-                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+            if (attribute.hasParam()) {
+                PlayerTag player = attribute.paramAsType(PlayerTag.class);
                 if (player == null) {
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
@@ -2505,8 +2505,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             DisguiseCommand.TrackedDisguise disguise;
-            if (attribute.hasContext(1)) {
-                PlayerTag player = attribute.contextAsType(1, PlayerTag.class);
+            if (attribute.hasParam()) {
+                PlayerTag player = attribute.paramAsType(PlayerTag.class);
                 if (player == null) {
                     attribute.echoError("Invalid player for is_disguised tag.");
                     return null;
@@ -2547,10 +2547,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(BukkitScriptEvent.tryEntity(object, attribute.getContext(1)));
+            return new ElementTag(BukkitScriptEvent.tryEntity(object, attribute.getParam()));
         });
 
         // <--[tag]
@@ -2562,13 +2562,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // For example, has_equipped[diamond_*] will return true if the entity is wearing at least one piece of diamond armor.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "has_equipped", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             if (!object.isLivingEntity()) {
                 return null;
             }
-            String matcher = attribute.getContext(1);
+            String matcher = attribute.getParam();
             for (ItemStack item : object.getLivingEntity().getEquipment().getArmorContents()) {
                 if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
                     return new ElementTag(true);
@@ -2707,7 +2707,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, specify a player. If specified, will return entities attached visible to that player. If not specified, returns entities globally attached.
         // -->
         registerSpawnedOnlyTag(ListTag.class, "attached_entities", (attribute, object) -> {
-            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : null;
+            PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : null;
             EntityAttachmentHelper.EntityAttachedToMap data = EntityAttachmentHelper.toEntityToData.get(object.getUUID());
             ListTag result = new ListTag();
             if (data == null) {
@@ -2729,7 +2729,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, specify a player. If specified, will return entity attachment visible to that player. If not specified, returns any entity global attachment.
         // -->
         registerSpawnedOnlyTag(EntityTag.class, "attached_to", (attribute, object) -> {
-            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : null;
+            PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : null;
             EntityAttachmentHelper.PlayerAttachMap data = EntityAttachmentHelper.attachedEntityToData.get(object.getUUID());
             if (data == null) {
                 return null;
@@ -2749,7 +2749,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, specify a player. If specified, will return entity attachment visible to that player. If not specified, returns any entity global attachment.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "attached_offset", (attribute, object) -> {
-            PlayerTag player = attribute.hasContext(1) ? attribute.contextAsType(1, PlayerTag.class) : null;
+            PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : null;
             EntityAttachmentHelper.PlayerAttachMap data = EntityAttachmentHelper.attachedEntityToData.get(object.getUUID());
             if (data == null) {
                 return null;
@@ -2850,7 +2850,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(returnType, name, (attribute, object) -> {
             if (!object.isSpawnedOrValidForTag()) {
                 if (!attribute.hasAlternative()) {
-                    com.denizenscript.denizen.utilities.debugging.Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutContext(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
+                    com.denizenscript.denizen.utilities.debugging.Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
                 }
                 return null;
             }

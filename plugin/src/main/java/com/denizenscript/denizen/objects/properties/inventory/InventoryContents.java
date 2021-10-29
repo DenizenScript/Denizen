@@ -166,10 +166,10 @@ public class InventoryContents implements Property {
             if (attribute.startsWith("with_lore", 2)) {
                 attribute.fulfill(1);
                 // Must specify lore to check
-                if (!attribute.hasContext(1)) {
+                if (!attribute.hasParam()) {
                     return null;
                 }
-                String lore = attribute.getContext(1);
+                String lore = attribute.getParam();
                 attribute.fulfill(1);
 
                 // <--[tag]

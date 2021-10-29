@@ -15,11 +15,11 @@ public class BiomeTagBase {
         // Refer to <@link objecttype BiomeTag>.
         // -->
         TagManager.registerStaticTagBaseHandler(BiomeTag.class, "biome", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("Biome tag base must have input.");
                 return null;
             }
-            return BiomeTag.valueOf(attribute.getContext(1), attribute.context);
+            return BiomeTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 }

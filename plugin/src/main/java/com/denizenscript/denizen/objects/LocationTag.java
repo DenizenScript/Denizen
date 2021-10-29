@@ -940,7 +940,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // This just moves straight along the Y axis, equivalent to <@link tag LocationTag.add> with input 0,1,0 (or the input value instead of '1').
         // -->
         tagProcessor.registerTag(LocationTag.class, "above", (attribute, object) -> {
-            return new LocationTag(object.clone().add(0, attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1, 0));
+            return new LocationTag(object.clone().add(0, attribute.hasParam() ? attribute.getDoubleParam() : 1, 0));
         });
 
         // <--[tag]
@@ -951,7 +951,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // This just moves straight along the Y axis, equivalent to <@link tag LocationTag.sub> with input 0,1,0 (or the input value instead of '1').
         // -->
         tagProcessor.registerTag(LocationTag.class, "below", (attribute, object) -> {
-            return new LocationTag(object.clone().subtract(0, attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1, 0));
+            return new LocationTag(object.clone().subtract(0, attribute.hasParam() ? attribute.getDoubleParam() : 1, 0));
         });
 
         // <--[tag]
@@ -963,7 +963,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "forward_flat", (attribute, object) -> {
             Location loc = object.clone();
             loc.setPitch(0);
-            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = loc.getDirection().multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().add(vector));
         });
 
@@ -977,7 +977,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "backward_flat", (attribute, object) -> {
             Location loc = object.clone();
             loc.setPitch(0);
-            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = loc.getDirection().multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().subtract(vector));
         });
 
@@ -988,7 +988,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location in front of this location based on pitch and yaw. Optionally specify a number of blocks to go forward.
         // -->
         tagProcessor.registerTag(LocationTag.class, "forward", (attribute, object) -> {
-            Vector vector = object.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = object.getDirection().multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().add(vector));
         });
 
@@ -1000,7 +1000,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // This is equivalent to <@link tag LocationTag.forward> in the opposite direction.
         // -->
         tagProcessor.registerTag(LocationTag.class, "backward", (attribute, object) -> {
-            Vector vector = object.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = object.getDirection().multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().subtract(vector));
         });
 
@@ -1014,7 +1014,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "left", (attribute, object) -> {
             Location loc = object.clone();
             loc.setPitch(0);
-            Vector vector = loc.getDirection().rotateAroundY(Math.PI / 2).multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = loc.getDirection().rotateAroundY(Math.PI / 2).multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().add(vector));
         });
 
@@ -1028,7 +1028,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "right", (attribute, object) -> {
             Location loc = object.clone();
             loc.setPitch(0);
-            Vector vector = loc.getDirection().rotateAroundY(Math.PI / 2).multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = loc.getDirection().rotateAroundY(Math.PI / 2).multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().subtract(vector));
         });
 
@@ -1043,7 +1043,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "up", (attribute, object) -> {
             Location loc = object.clone();
             loc.setPitch(loc.getPitch() - 90);
-            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = loc.getDirection().multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().add(vector));
         });
 
@@ -1058,7 +1058,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "down", (attribute, object) -> {
             Location loc = object.clone();
             loc.setPitch(loc.getPitch() - 90);
-            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            Vector vector = loc.getDirection().multiply(attribute.hasParam() ? attribute.getDoubleParam() : 1);
             return new LocationTag(object.clone().subtract(vector));
         });
 
@@ -1071,10 +1071,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // To just get the location relative to this without rotation math, use <@link tag LocationTag.add> instead.
         // -->
         tagProcessor.registerTag(LocationTag.class, "relative", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            LocationTag offsetLoc = attribute.contextAsType(1, LocationTag.class);
+            LocationTag offsetLoc = attribute.paramAsType(LocationTag.class);
             if (offsetLoc == null) {
                 return null;
             }
@@ -1122,17 +1122,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // For example, for a location at 0,100,0, ".random_offset[1,2,3]" can return any decimal location within the cuboid from -1,98,-3 to 1,102,3.
         // -->
         tagProcessor.registerTag(LocationTag.class, "random_offset", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("LocationTag.random_offset[...] must have an input.");
                 return null;
             }
             Vector offsetLimit;
-            if (ArgumentHelper.matchesDouble(attribute.getContext(1))) {
-                double val = attribute.getDoubleContext(1);
+            if (ArgumentHelper.matchesDouble(attribute.getParam())) {
+                double val = attribute.getDoubleParam();
                 offsetLimit = new Vector(val, val, val);
             }
             else {
-                LocationTag val = attribute.contextAsType(1, LocationTag.class);
+                LocationTag val = attribute.paramAsType(LocationTag.class);
                 if (val == null) {
                     return null;
                 }
@@ -1332,8 +1332,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(ListTag.class, "drops", (attribute, object) -> {
             ItemStack inputItem = null;
-            if (attribute.hasContext(1)) {
-                inputItem = attribute.contextAsType(1, ItemTag.class).getItemStack();
+            if (attribute.hasParam()) {
+                inputItem = attribute.paramAsType(ItemTag.class).getItemStack();
             }
             ListTag list = new ListTag();
             for (ItemStack it : object.getDropsForTag(attribute, inputItem)) {
@@ -1505,12 +1505,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // (eg, 0.12345 .round_to[3] returns "0.123").
         // -->
         tagProcessor.registerTag(LocationTag.class, "round_to", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag LocationTag.round_to[...] must have a value.");
                 return null;
             }
             LocationTag result = object.clone();
-            int ten = (int) Math.pow(10, attribute.getIntContext(1));
+            int ten = (int) Math.pow(10, attribute.getIntParam());
             result.setX(((double) Math.round(result.getX() * ten)) / ten);
             result.setY(((double) Math.round(result.getY() * ten)) / ten);
             result.setZ(((double) Math.round(result.getZ() * ten)) / ten);
@@ -1528,12 +1528,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // (0.12345 .round_to_precision[0.005] returns "0.125").
         // -->
         tagProcessor.registerTag(LocationTag.class, "round_to_precision", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("The tag LocationTag.round_to_precision[...] must have a value.");
                 return null;
             }
             LocationTag result = object.clone();
-            float precision = (float) attribute.getDoubleContext(1);
+            float precision = (float) attribute.getDoubleParam();
             result.setX(((double) Math.round(result.getX() * precision)) / precision);
             result.setY(((double) Math.round(result.getY() * precision)) / precision);
             result.setZ(((double) Math.round(result.getZ() * precision)) / precision);
@@ -1588,7 +1588,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_impact_normal", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
             }
@@ -1607,7 +1607,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_cursor_on_block", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
             }
@@ -1626,7 +1626,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_cursor_on", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
             }
@@ -1645,7 +1645,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
         tagProcessor.registerTag(EntityTag.class, "precise_target", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 100;
             }
@@ -1661,7 +1661,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 Set<EntityType> types = new HashSet<>();
-                for (String str : attribute.contextAsType(1, ListTag.class)) {
+                for (String str : attribute.paramAsType(ListTag.class)) {
                     types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
                 }
                 result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> types.contains(e.getType()));
@@ -1683,7 +1683,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_target_position", (attribute, object) -> {
-            double range = attribute.getDoubleContext(1);
+            double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 100;
             }
@@ -1699,7 +1699,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 Set<EntityType> types = new HashSet<>();
-                for (String str : attribute.contextAsType(1, ListTag.class)) {
+                for (String str : attribute.paramAsType(ListTag.class)) {
                     types.add(EntityTag.valueOf(str, attribute.context).getBukkitEntityType());
                 }
                 result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, (e) -> types.contains(e.getType()));
@@ -1720,7 +1720,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Finds all locations between this location and another, separated by 1 block-width each.
         // -->
         tagProcessor.registerTag(ListTag.class, "points_between", (attribute, object) -> {
-            LocationTag target = attribute.contextAsType(1, LocationTag.class);
+            LocationTag target = attribute.paramAsType(LocationTag.class);
             if (target == null) {
                 return null;
             }
@@ -1759,7 +1759,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // will include 0,1,0 0,2,0 and so on.
         // -->
         tagProcessor.registerTag(ListTag.class, "facing_blocks", (attribute, object) -> {
-            int range = attribute.getIntContext(1);
+            int range = attribute.getIntParam();
             if (range < 1) {
                 range = 100;
             }
@@ -1785,10 +1785,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // line of sight.
         // -->
         tagProcessor.registerTag(ElementTag.class, "line_of_sight", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            LocationTag location = attribute.contextAsType(1, LocationTag.class);
+            LocationTag location = attribute.paramAsType(LocationTag.class);
             if (location != null) {
                 try {
                     NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
@@ -1821,10 +1821,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return new LocationTag(object.getWorld(), object.getDirection());
             }
             // Get the cardinal direction from this location to another
-            if (attribute.hasContext(1) && LocationTag.matches(attribute.getContext(1))) {
+            if (attribute.hasParam() && LocationTag.matches(attribute.getParam())) {
                 // Subtract this location's vector from the other location's vector,
                 // not the other way around
-                LocationTag target = attribute.contextAsType(1, LocationTag.class);
+                LocationTag target = attribute.paramAsType(LocationTag.class);
                 EntityHelper entityHelper = NMSHandler.getEntityHelper();
 
                 // <--[tag]
@@ -1859,7 +1859,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(LocationTag.class, "rotate_yaw", (attribute, object) -> {
             LocationTag loc = LocationTag.valueOf(object.identify(), attribute.context).clone();
-            loc.setYaw(loc.getYaw() + (float) attribute.getDoubleContext(1));
+            loc.setYaw(loc.getYaw() + (float) attribute.getDoubleParam());
             return loc;
         });
 
@@ -1871,7 +1871,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(LocationTag.class, "rotate_pitch", (attribute, object) -> {
             LocationTag loc = LocationTag.valueOf(object.identify(), attribute.context).clone();
-            loc.setPitch(Math.max(-90, Math.min(90, loc.getPitch() + (float) attribute.getDoubleContext(1))));
+            loc.setPitch(Math.max(-90, Math.min(90, loc.getPitch() + (float) attribute.getDoubleParam())));
             return loc;
         });
 
@@ -1883,10 +1883,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // to the target location.
         // -->
         tagProcessor.registerTag(LocationTag.class, "face", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            Location two = attribute.contextAsType(1, LocationTag.class);
+            Location two = attribute.paramAsType(LocationTag.class);
             return new LocationTag(NMSHandler.getEntityHelper().faceLocation(object, two));
         });
 
@@ -1897,16 +1897,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns whether the location's yaw is facing another entity or location, within a limit of 45 degrees of yaw.
         // -->
         tagProcessor.registerTag(ElementTag.class, "facing", (attribute, object) -> {
-            if (attribute.hasContext(1)) {
+            if (attribute.hasParam()) {
 
                 // The default number of degrees if there is no degrees attribute
                 int degrees = 45;
                 LocationTag facingLoc;
-                if (LocationTag.matches(attribute.getContext(1))) {
-                    facingLoc = attribute.contextAsType(1, LocationTag.class);
+                if (LocationTag.matches(attribute.getParam())) {
+                    facingLoc = attribute.paramAsType(LocationTag.class);
                 }
-                else if (EntityTag.matches(attribute.getContext(1))) {
-                    facingLoc = attribute.contextAsType(1, EntityTag.class).getLocation();
+                else if (EntityTag.matches(attribute.getParam())) {
+                    facingLoc = attribute.paramAsType(EntityTag.class).getLocation();
                 }
                 else {
                     if (!attribute.hasAlternative()) {
@@ -1960,7 +1960,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location with pitch and yaw.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_pose", (attribute, object) -> {
-            String context = attribute.getContext(1);
+            String context = attribute.getParam();
             float pitch = 0f;
             float yaw = 0f;
             if (EntityTag.matches(context)) {
@@ -2035,10 +2035,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Generally used in a format like <player.location.add[<location[0,1,0].rotate_around_x[<[some_angle]>]>]>.
         // -->
         tagProcessor.registerTag(LocationTag.class, "rotate_around_x", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            double angle = attribute.getDoubleContext(1);
+            double angle = attribute.getDoubleParam();
             double cos = Math.cos(angle);
             double sin = Math.sin(angle);
             double y = (object.getY() * cos) - (object.getZ() * sin);
@@ -2057,10 +2057,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Generally used in a format like <player.location.add[<location[1,0,0].rotate_around_y[<[some_angle]>]>]>.
         // -->
         tagProcessor.registerTag(LocationTag.class, "rotate_around_y", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            double angle = attribute.getDoubleContext(1);
+            double angle = attribute.getDoubleParam();
             double cos = Math.cos(angle);
             double sin = Math.sin(angle);
             double x = (object.getX() * cos) + (object.getZ() * sin);
@@ -2079,10 +2079,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Generally used in a format like <player.location.add[<location[1,0,0].rotate_around_z[<[some_angle]>]>]>.
         // -->
         tagProcessor.registerTag(LocationTag.class, "rotate_around_z", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            double angle = attribute.getDoubleContext(1);
+            double angle = attribute.getDoubleParam();
             double cos = Math.cos(angle);
             double sin = Math.sin(angle);
             double x = (object.getX() * cos) - (object.getY() * sin);
@@ -2111,15 +2111,15 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Note that the returned list will not be in any particular order.
         // -->
         tagProcessor.registerTag(ListTag.class, "flood_fill", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            AreaContainmentObject area = CuboidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
+            AreaContainmentObject area = CuboidTag.valueOf(attribute.getParam(), CoreUtilities.noDebugContext);
             if (area == null) {
-                area = EllipsoidTag.valueOf(attribute.getContext(1), CoreUtilities.noDebugContext);
+                area = EllipsoidTag.valueOf(attribute.getParam(), CoreUtilities.noDebugContext);
             }
             if (area == null) {
-                double radius = attribute.getDoubleContext(1);
+                double radius = attribute.getDoubleParam();
                 if (radius <= 0) {
                     return null;
                 }
@@ -2173,10 +2173,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Warning: may be extremely slow to process. Use with caution.
         // -->
         tagProcessor.registerTag(LocationTag.class, "find_nearest_biome", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            BiomeTag biome = attribute.contextAsType(1, BiomeTag.class);
+            BiomeTag biome = attribute.paramAsType(BiomeTag.class);
             if (biome == null) {
                 attribute.echoError("Invalid biome input.");
                 return null;
@@ -2198,13 +2198,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
         tagProcessor.registerTag(ListTag.class, "find_blocks_flagged", (attribute, object) -> {
-            if (!attribute.hasContext(1) || !attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
+            if (!attribute.hasParam() || !attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
                 attribute.echoError("find_blocks_flagged[...].within[...] tag malformed.");
                 return null;
             }
-            String flagName = CoreUtilities.toLowerCase(attribute.getContext(1));
+            String flagName = CoreUtilities.toLowerCase(attribute.getParam());
             attribute.fulfill(1);
-            double radius = attribute.getDoubleContext(1);
+            double radius = attribute.getDoubleParam();
             if (!object.isChunkLoadedSafe()) {
                 attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
@@ -2248,7 +2248,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
         // -->
         tagProcessor.registerTag(ListTag.class, "find_entities", (attribute, object) -> {
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
             if (!attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
                 return null;
             }
@@ -2277,7 +2277,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
         // -->
         tagProcessor.registerTag(ListTag.class, "find_blocks", (attribute, object) -> {
-            String matcher = attribute.hasContext(1) ? attribute.getContext(1) : null;
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
             if (!attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
                 return null;
             }
@@ -2569,10 +2569,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Uses a max range of 100 blocks from the start.
         // -->
         tagProcessor.registerTag(ListTag.class, "find_path", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            LocationTag two = attribute.contextAsType(1, LocationTag.class);
+            LocationTag two = attribute.paramAsType(LocationTag.class);
             if (two == null) {
                 return null;
             }
@@ -2696,11 +2696,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a copy of the location with a changed X value.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_x", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             LocationTag output = object.clone();
-            output.setX(attribute.getDoubleContext(1));
+            output.setX(attribute.getDoubleParam());
             return output;
         });
 
@@ -2711,11 +2711,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a copy of the location with a changed Y value.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_y", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             LocationTag output = object.clone();
-            output.setY(attribute.getDoubleContext(1));
+            output.setY(attribute.getDoubleParam());
             return output;
         });
 
@@ -2726,11 +2726,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a copy of the location with a changed Z value.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_z", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             LocationTag output = object.clone();
-            output.setZ(attribute.getDoubleContext(1));
+            output.setZ(attribute.getDoubleParam());
             return output;
         });
 
@@ -2741,11 +2741,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a copy of the location with a changed yaw value.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_yaw", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             LocationTag output = object.clone();
-            output.setYaw((float) attribute.getDoubleContext(1));
+            output.setYaw((float) attribute.getDoubleParam());
             return output;
         });
 
@@ -2756,11 +2756,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a copy of the location with a changed pitch value.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_pitch", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             LocationTag output = object.clone();
-            output.setPitch((float) attribute.getDoubleContext(1));
+            output.setPitch((float) attribute.getDoubleParam());
             return output;
         });
 
@@ -2771,11 +2771,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a copy of the location with a changed world value.
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_world", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
             LocationTag output = object.clone();
-            WorldTag world = attribute.contextAsType(1, WorldTag.class);
+            WorldTag world = attribute.paramAsType(WorldTag.class);
             output.setWorld(world.getWorld());
             return output;
         });
@@ -2805,10 +2805,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location with the specified coordinates added to it.
         // -->
         tagProcessor.registerTag(LocationTag.class, "add", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
+            String[] ints = attribute.getParam().replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
             if (ints.length >= 3) {
                 if (ArgumentHelper.matchesDouble(ints[0])
                         && ArgumentHelper.matchesDouble(ints[1])
@@ -2818,8 +2818,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             Double.valueOf(ints[2])));
                 }
             }
-            if (LocationTag.matches(attribute.getContext(1))) {
-                return object.clone().add(attribute.contextAsType(1, LocationTag.class));
+            if (LocationTag.matches(attribute.getParam())) {
+                return object.clone().add(attribute.paramAsType(LocationTag.class));
             }
             return null;
         });
@@ -2831,10 +2831,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location with the specified coordinates subtracted from it.
         // -->
         tagProcessor.registerTag(LocationTag.class, "sub", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
+            String[] ints = attribute.getParam().replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
             if (ints.length == 3 || ints.length == 4) {
                 if (ArgumentHelper.matchesDouble(ints[0])
                         && ArgumentHelper.matchesDouble(ints[1])
@@ -2844,8 +2844,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             Double.valueOf(ints[2])));
                 }
             }
-            if (LocationTag.matches(attribute.getContext(1))) {
-                return new LocationTag(object.clone().subtract(attribute.contextAsType(1, LocationTag.class)));
+            if (LocationTag.matches(attribute.getParam())) {
+                return new LocationTag(object.clone().subtract(attribute.paramAsType(LocationTag.class)));
             }
             return null;
         });
@@ -2857,10 +2857,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location multiplied by the specified length.
         // -->
         tagProcessor.registerTag(LocationTag.class, "mul", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new LocationTag(object.clone().multiply(Double.parseDouble(attribute.getContext(1))));
+            return new LocationTag(object.clone().multiply(Double.parseDouble(attribute.getParam())));
         });
 
         // <--[tag]
@@ -2870,10 +2870,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the location divided by the specified length.
         // -->
         tagProcessor.registerTag(LocationTag.class, "div", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new LocationTag(object.clone().multiply(1D / Double.parseDouble(attribute.getContext(1))));
+            return new LocationTag(object.clone().multiply(1D / Double.parseDouble(attribute.getParam())));
         });
 
         // <--[tag]
@@ -2925,11 +2925,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the distance between 2 locations, squared.
         // -->
         tagProcessor.registerTag(ElementTag.class, "distance_squared", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            if (LocationTag.matches(attribute.getContext(1))) {
-                LocationTag toLocation = attribute.contextAsType(1, LocationTag.class);
+            if (LocationTag.matches(attribute.getParam())) {
+                LocationTag toLocation = attribute.paramAsType(LocationTag.class);
                 if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
                     if (!attribute.hasAlternative()) {
                         Debug.echoError("Can't measure distance between two different worlds!");
@@ -2948,11 +2948,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the distance between 2 locations.
         // -->
         tagProcessor.registerTag(ElementTag.class, "distance", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            if (LocationTag.matches(attribute.getContext(1))) {
-                LocationTag toLocation = attribute.contextAsType(1, LocationTag.class);
+            if (LocationTag.matches(attribute.getParam())) {
+                LocationTag toLocation = attribute.paramAsType(LocationTag.class);
 
                 // <--[tag]
                 // @attribute <LocationTag.distance[<location>].horizontal>
@@ -3034,23 +3034,23 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns whether the location is within the specified area (cuboid, ellipsoid, polygon, ...).
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_within", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            if (EllipsoidTag.matches(attribute.getContext(1))) {
-                EllipsoidTag ellipsoid = attribute.contextAsType(1, EllipsoidTag.class);
+            if (EllipsoidTag.matches(attribute.getParam())) {
+                EllipsoidTag ellipsoid = attribute.paramAsType(EllipsoidTag.class);
                 if (ellipsoid != null) {
                     return new ElementTag(ellipsoid.contains(object));
                 }
             }
-            else if (PolygonTag.matches(attribute.getContext(1))) {
-                PolygonTag polygon = attribute.contextAsType(1, PolygonTag.class);
+            else if (PolygonTag.matches(attribute.getParam())) {
+                PolygonTag polygon = attribute.paramAsType(PolygonTag.class);
                 if (polygon != null) {
                     return new ElementTag(polygon.doesContainLocation(object));
                 }
             }
             else {
-                CuboidTag cuboid = attribute.contextAsType(1, CuboidTag.class);
+                CuboidTag cuboid = attribute.paramAsType(CuboidTag.class);
                 if (cuboid != null) {
                     return new ElementTag(cuboid.isInsideCuboid(object));
                 }
@@ -3066,11 +3066,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Size input is a vector of x,y,z size.
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "to_ellipsoid", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("to_ellipsoid[...] tag must have input.");
                 return null;
             }
-            return new EllipsoidTag(object.clone(), attribute.getContextObject(1).asType(LocationTag.class, attribute.context));
+            return new EllipsoidTag(object.clone(), attribute.getParamObject().asType(LocationTag.class, attribute.context));
         });
 
         // <--[tag]
@@ -3080,11 +3080,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a cuboid from this location to the specified location.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "to_cuboid", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 attribute.echoError("to_cuboid[...] tag must have input.");
                 return null;
             }
-            return new CuboidTag(object.clone(), attribute.getContextObject(1).asType(LocationTag.class, attribute.context));
+            return new CuboidTag(object.clone(), attribute.getParamObject().asType(LocationTag.class, attribute.context));
         });
 
         /////////////////////
@@ -3614,10 +3614,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Invalid input may produce odd error messages, as this is passed through the event system as a fake event.
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_in", (attribute, object) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(BukkitScriptEvent.inCheckInternal(attribute.context, "is_in tag", object, attribute.getContext(1), "is_in tag", "is_in tag"));
+            return new ElementTag(BukkitScriptEvent.inCheckInternal(attribute.context, "is_in tag", object, attribute.getParam(), "is_in tag", "is_in tag"));
         });
 
         // <--[tag]

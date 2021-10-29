@@ -134,13 +134,13 @@ public class ItemBook implements Property {
                 return new ElementTag(bookInfo.getPageCount())
                         .getObjectAttribute(attribute.fulfill(1));
             }
-            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1)) {
-                return new ElementTag(FormattedTextHelper.stringify(bookInfo.spigot().getPage(attribute.getIntContext(1)), ChatColor.BLACK))
+            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasParam()) {
+                return new ElementTag(FormattedTextHelper.stringify(bookInfo.spigot().getPage(attribute.getIntParam()), ChatColor.BLACK))
                         .getObjectAttribute(attribute.fulfill(1));
             }
-            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1)) {
+            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasParam()) {
                 Deprecations.bookItemRawTags.warn(attribute.context);
-                return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
+                return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntParam())))
                         .getObjectAttribute(attribute.fulfill(1));
             }
             if (attribute.startsWith("pages")) {

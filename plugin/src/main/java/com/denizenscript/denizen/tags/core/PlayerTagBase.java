@@ -27,7 +27,7 @@ public class PlayerTagBase implements Listener {
         // -->
         Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
         TagManager.registerTagHandler(PlayerTag.class, "player", (attribute) -> {
-            if (!attribute.hasContext(1)) {
+            if (!attribute.hasParam()) {
                 PlayerTag player = ((BukkitTagContext) attribute.context).player;
                 if (player != null) {
                     return player;
@@ -37,7 +37,7 @@ public class PlayerTagBase implements Listener {
                     return null;
                 }
             }
-            return PlayerTag.valueOf(attribute.getContext(1), attribute.context);
+            return PlayerTag.valueOf(attribute.getParam(), attribute.context);
         });
     }
 
