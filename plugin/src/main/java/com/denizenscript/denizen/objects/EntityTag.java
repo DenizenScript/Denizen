@@ -901,6 +901,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (isFake) {
             return true;
         }
+        if (entity == null) { // Note: this breaks thread-patch for entities that need revalidating
+            if (uuid == null) {
+                return false;
+            }
+            return isValid() || rememberedEntities.containsKey(uuid);
+        }
         NMSHandler.getChunkHelper().changeChunkServerThread(entity.getWorld());
         try {
             return isValid() || rememberedEntities.containsKey(entity.getUniqueId());
