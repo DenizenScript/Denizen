@@ -2842,6 +2842,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag
         // @description
         // Sets the name displayed for the player when chatting.
+        // This only applies if there's a chat plugin using it.
         // @tags
         // <PlayerTag.display_name>
         // -->

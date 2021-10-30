@@ -200,6 +200,26 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         tagProcessor.registerTag(ListTag.class, "authors", (attribute, object) -> {
             return new ListTag(object.plugin.getDescription().getAuthors());
         });
+
+        // <--[tag]
+        // @attribute <PluginTag.depends>
+        // @returns ListTag
+        // @description
+        // Gets the list of hard dependencies for the plugin specified.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "depends", (attribute, object) -> {
+            return new ListTag(object.plugin.getDescription().getDepend());
+        });
+
+        // <--[tag]
+        // @attribute <PluginTag.soft_depends>
+        // @returns ListTag
+        // @description
+        // Gets the list of soft dependencies for the plugin specified.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "soft_depends", (attribute, object) -> {
+            return new ListTag(object.plugin.getDescription().getSoftDepend());
+        });
     }
 
     public static ObjectTagProcessor<PluginTag> tagProcessor = new ObjectTagProcessor<>();
