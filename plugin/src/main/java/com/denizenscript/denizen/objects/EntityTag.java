@@ -1099,13 +1099,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (npc != null) {
             return npc.identify();
         }
-        if (isPlayer()) {
-            return getDenizenPlayer().identify();
-        }
         if (isFake) {
             return "e@fake:" + getUUID();
         }
         if (getUUID() != null) {
+            if (isPlayer()) {
+                return getDenizenPlayer().identify();
+            }
             if (entityScript != null) {
                 return "e@" + getUUID() + "/" + entityScript + getWaitingMechanismsString();
             }
@@ -1273,6 +1273,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return null;
         });
 
+        // <--[tag]
+        // @attribute <EntityTag.scriptname>
+        // @returns ElementTag
+        // @deprecated use ".script.name" instead.
+        // @group data
+        // @description
+        // Use ".script.name" instead.
+        // -->
         tagProcessor.registerTag(ElementTag.class, "scriptname", (attribute, object) -> {
             Deprecations.hasScriptTags.warn(attribute.context);
             if (object.entityScript == null) {

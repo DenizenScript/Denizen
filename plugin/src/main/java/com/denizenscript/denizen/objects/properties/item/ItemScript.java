@@ -54,6 +54,14 @@ public class ItemScript implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <ItemTag.scriptname>
+        // @returns ElementTag
+        // @deprecated use ".script.name" instead.
+        // @group data
+        // @description
+        // Use ".script.name" instead.
+        // -->
         if (attribute.startsWith("scriptname")) {
             Deprecations.hasScriptTags.warn(attribute.context);
             if (item.isItemscript()) {

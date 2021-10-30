@@ -93,7 +93,7 @@ public class EntityArmorPose implements Property {
         // @attribute <EntityTag.armor_pose_list>
         // @returns ListTag
         // @mechanism EntityTag.armor_pose
-        // @Deprecated Use 'armor_pose_map'
+        // @deprecated Use 'armor_pose_map'
         // @group attributes
         // @description
         // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
@@ -107,7 +107,7 @@ public class EntityArmorPose implements Property {
         // @attribute <EntityTag.armor_pose>
         // @returns LocationTag
         // @mechanism EntityTag.armor_pose
-        // @Deprecated Use 'armor_pose_map'
+        // @deprecated Use 'armor_pose_map'
         // @group attributes
         // @description
         // Deprecated in favor of <@link tag EntityTag.armor_pose_map>

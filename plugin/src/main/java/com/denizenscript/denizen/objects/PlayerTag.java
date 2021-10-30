@@ -2454,6 +2454,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Changes the player's vision to the provided entity type. Valid types:
         // ENDERMAN, CAVE_SPIDER, SPIDER, CREEPER
         // Provide no value to reset the player's vision.
+        // Note: This is powered by a bug in Minecraft that has been present for a long time, but may at some point be 'fixed' by Mojang.
         // -->
         if (mechanism.matches("vision")) {
             if (mechanism.hasValue() && mechanism.requireEnum(false, EntityType.values())) {

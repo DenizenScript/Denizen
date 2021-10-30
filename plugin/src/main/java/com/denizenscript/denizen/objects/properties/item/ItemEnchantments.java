@@ -124,7 +124,7 @@ public class ItemEnchantments implements Property {
         // @returns ListTag
         // @mechanism ItemTag.enchantments
         // @group properties
-        // @Deprecated Use 'enchantment_types' or 'enchantment_map'
+        // @deprecated Use 'enchantment_types' or 'enchantment_map'
         // @description
         // Deprecated in favor of <@link tag ItemTag.enchantment_types> or <@link tag ItemTag.enchantment_map>
         // -->
