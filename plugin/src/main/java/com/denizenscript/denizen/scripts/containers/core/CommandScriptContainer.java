@@ -204,7 +204,8 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runCommandScript(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
-        ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(new BukkitScriptEntryData(player, npc)));
+        ScriptQueue queue = new InstantQueue(getName());
+        queue.addEntries(getBaseEntries(new BukkitScriptEntryData(player, npc)));
         if (context != null) {
             ContextSource.SimpleMap src = new ContextSource.SimpleMap();
             src.contexts = context;
@@ -217,7 +218,8 @@ public class CommandScriptContainer extends ScriptContainer {
     public boolean runAllowedHelpProcedure(PlayerTag player, NPCTag npc, Map<String, ObjectTag> context) {
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "allowed help");
 
-        ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
+        ScriptQueue queue = new InstantQueue(getName());
+        queue.addEntries(entries);
         if (context != null) {
             ContextSource.SimpleMap src = new ContextSource.SimpleMap();
             src.contexts = context;
@@ -254,7 +256,8 @@ public class CommandScriptContainer extends ScriptContainer {
         }
         if (hasProcStyleTabComplete) {
             List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "tab complete");
-            ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
+            ScriptQueue queue = new InstantQueue(getName());
+            queue.addEntries(entries);
             if (contextSrc != null) {
                 queue.setContextSource(contextSrc);
             }
