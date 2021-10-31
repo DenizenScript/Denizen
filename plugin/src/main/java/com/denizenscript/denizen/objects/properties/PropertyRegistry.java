@@ -75,6 +75,9 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
             PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            PropertyParser.registerProperty(EntityFreezeDuration.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
