@@ -30,7 +30,7 @@ public class InventoryCommand extends AbstractCommand {
 
     public InventoryCommand() {
         setName("inventory");
-        setSyntax("inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (duration:<duration>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
+        setSyntax("inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (expire:<time>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)");
         setRequiredArguments(1, 6);
         isProcedural = false;
         allowedDynamicPrefixes = true;
@@ -68,7 +68,7 @@ public class InventoryCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Inventory
-    // @Syntax inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (duration:<duration>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
+    // @Syntax inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (expire:<time>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
     // @Required 1
     // @Maximum 6
     // @Short Edits the inventory of a player, NPC, or chest.
@@ -146,7 +146,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // @Usage
     // Use to set a temporary flag on the player's held item.
-    // - inventory flag slot:hand my_target:<player.cursor_on> duration:1d
+    // - inventory flag slot:hand my_target:<player.cursor_on> expire:1d
     // -->
 
     private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
@@ -208,11 +208,19 @@ public class InventoryCommand extends AbstractCommand {
                     scriptEntry.addObject("mechanism", arg.asElement());
                 }
             }
-            else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesPrefix("duration")
-                    && arg.matchesArgumentType(DurationTag.class)
+            else if (!scriptEntry.hasObject("expiration")
+                    && arg.matchesPrefix("duration", "expire", "expires", "expiration")
                     && isFlag) {
-                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
+                if (arg.matchesArgumentType(DurationTag.class)) {
+                    TimeTag now = TimeTag.now();
+                    scriptEntry.addObject("expiration", new TimeTag(now.millis() + arg.asType(DurationTag.class).getMillis(), now.instant.getZone()));
+                }
+                else if (arg.matchesArgumentType(TimeTag.class)) {
+                    scriptEntry.addObject("expiration", arg.asType(TimeTag.class));
+                }
+                else {
+                    arg.reportUnhandled();
+                }
             }
             else if (!scriptEntry.hasObject("flag_action")
                     && isFlag) {
@@ -255,9 +263,9 @@ public class InventoryCommand extends AbstractCommand {
         ElementTag mechanism = scriptEntry.getElement("mechanism");
         ObjectTag mechanismValue = scriptEntry.getObjectTag("mechanism_value");
         DataAction flagAction = (DataAction) scriptEntry.getObject("flag_action");
-        DurationTag duration = scriptEntry.getObjectTag("duration");
+        TimeTag expiration = scriptEntry.getObjectTag("expiration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("actions", actions.toString()), destination, origin, mechanism, mechanismValue, flagAction, duration, slot);
+            Debug.report(scriptEntry, getName(), db("actions", actions.toString()), destination, origin, mechanism, mechanismValue, flagAction, expiration, slot);
         }
         int slotId = SlotHelper.nameToIndexFor(slot.asString(), destination.getInventory().getHolder());
         if (slotId < 0) {
@@ -423,7 +431,7 @@ public class InventoryCommand extends AbstractCommand {
                 case FLAG:
                     ItemTag toFlag = new ItemTag(destination.getInventory().getItem(slotId));
                     FlagCommand.FlagActionProvider provider = (FlagCommand.FlagActionProvider) flagAction.provider;
-                    provider.expiration = duration == null ? null : new TimeTag(TimeTag.now().millis() + duration.getMillis());
+                    provider.expiration = expiration;
                     provider.tracker = toFlag.getFlagTracker();
                     flagAction.execute(scriptEntry.context);
                     toFlag.reapplyTracker(provider.tracker);
