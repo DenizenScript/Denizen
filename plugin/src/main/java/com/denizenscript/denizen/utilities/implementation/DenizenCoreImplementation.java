@@ -444,12 +444,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             public void run() {
                 if (!submit.isAlive()) {
                     this.cancel();
-                    if (submit.result == null) {
-                        processResult.accept(null);
-                    }
-                    else {
-                        processResult.accept(submit.result);
-                    }
+                    processResult.accept(submit.result);
                 }
             }
         };

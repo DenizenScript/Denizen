@@ -249,7 +249,7 @@ public class FormattedTextHelper {
         while (index != -1) {
             output.append(str, start, index);
             start = index;
-            if (index + 1 > str.length()) {
+            if (index + 1 >= str.length()) {
                 break;
             }
             char symbol = str.charAt(index + 1);

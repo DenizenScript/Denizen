@@ -32,6 +32,7 @@ public class DebugSubmit extends Thread {
             uc.setDoInput(true);
             uc.setDoOutput(true);
             uc.setConnectTimeout(10000);
+            uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             uc.connect();
             // Safely connected at this point
             // Build a list of plugins
@@ -65,7 +66,7 @@ public class DebugSubmit extends Thread {
             newlineLength = 0;
             int playerCount = Bukkit.getOnlinePlayers().size();
             for (Player pla : Bukkit.getOnlinePlayers()) {
-                String temp = pla.getDisplayName().replace(ChatColor.COLOR_CHAR, (char) 0x01) + ((char) 0x01) + "7(" + pla.getName() + "), ";
+                String temp = pla.getDisplayName() + ChatColor.GRAY + "(" + pla.getName() + "), ";
                 playerlist.append(temp);
                 newlineLength += temp.length();
                 if (newlineLength > 80) {
@@ -96,7 +97,7 @@ public class DebugSubmit extends Thread {
             // Create the final message pack and upload it
             uc.getOutputStream().write(("pastetype=log"
                     + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
-                    + "&pastecontents=" + URLEncoder.encode(("Java Version: " + System.getProperty("java.version")
+                    + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
                     + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - DenizenCore.startTime) / 50).formatted(false)
                     + "\nServer Version: " + Bukkit.getServer().getName() + " version " + Bukkit.getServer().getVersion()
                     + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + Denizen.getInstance().coreImplementation.getImplementationVersion()
@@ -106,12 +107,15 @@ public class DebugSubmit extends Thread {
                     + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
                     + "\nLast reload: " + new DurationTag((System.currentTimeMillis() - DenizenCore.lastReloadTime) / 1000.0).formatted(false) + " ago"
-                    + "\n\n").replace(ChatColor.COLOR_CHAR, (char) 0x01)) + recording)
+                    + "\n\n", "UTF-8") + recording)
                     .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
             // Record the response
             result = in.readLine();
+            if (result != null && result.startsWith(("<!DOCTYPE html"))) {
+                result = null;
+            }
             // Close the connection
             in.close();
         }

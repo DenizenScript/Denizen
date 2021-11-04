@@ -556,8 +556,12 @@ public class Debug {
 
             // Record current buffer to the to-be-submitted buffer
             if (Debug.record) {
-                Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date())
-                        + " [INFO] " + string.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
+                try {
+                    Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date()) + string + "\n", "UTF-8"));
+                }
+                catch (Throwable ex) {
+                    Debug.echoError(ex);
+                }
             }
             string = Settings.debugPrefix() + string;
             if (DenizenCore.logInterceptor.redirected) {
