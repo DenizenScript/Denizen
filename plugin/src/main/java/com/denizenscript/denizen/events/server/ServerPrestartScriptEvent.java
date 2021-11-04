@@ -41,7 +41,7 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
 
     public void specialHackRunEvent() {
         for (WorldScriptContainer container : ScriptEvent.worldContainers) {
-            if (container.contains("events.on server prestart")) {
+            if (container.containsScriptSection("events.on server prestart")) {
                 ScriptPath path = new ScriptPath(container, "server prestart", "on server prestart");
                 clone().run(path);
             }

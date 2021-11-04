@@ -2041,7 +2041,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @returns ObjectTag
         // @description
         // If one slot is specified, returns the ItemTag in the specified slot.
-        // If more than what slot is specified, returns a ListTag(ItemTag) of the item in each given slot.
+        // If more than one slot is specified, returns a ListTag(ItemTag) of the item in each given slot.
         // -->
         tagProcessor.registerTag(ObjectTag.class, "slot", (attribute, object) -> {
             if (!attribute.hasParam()) {

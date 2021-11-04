@@ -241,11 +241,13 @@ public class ItemEnchantments implements Property {
         // @input MapTag
         // @description
         // Sets the item's enchantments as a map of EnchantmentTags or enchantment names to level.
+        // For example: - inventory adjust slot:hand enchantments:sharpness=1
         // @tags
         // <ItemTag.enchantment_map>
         // -->
         if (mechanism.matches("enchantments")) {
-            if (mechanism.getValue().asString().startsWith("map@")) {
+            String val = mechanism.getValue().asString();
+            if (val.startsWith("map@") || val.startsWith("[") || (val.contains("=") && !val.contains(","))) {
                 MapTag map = mechanism.valueAsType(MapTag.class);
                 for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
                     Enchantment ench = EnchantmentTag.valueOf(enchantments.getKey().low, mechanism.context).enchantment;

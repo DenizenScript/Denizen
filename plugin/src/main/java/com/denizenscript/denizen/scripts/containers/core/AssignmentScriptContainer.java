@@ -4,6 +4,8 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
+import java.util.List;
+
 public class AssignmentScriptContainer extends ScriptContainer {
 
     // <--[language]
@@ -53,7 +55,7 @@ public class AssignmentScriptContainer extends ScriptContainer {
 
     public AssignmentScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
-        if (contains("interact scripts") && getStringList("interact scripts").size() > 1) {
+        if (contains("interact scripts", List.class) && getStringList("interact scripts").size() > 1) {
             Debug.echoError("Assignment script '" + getName() + "' invalid: assignment scripts should only have ONE interact script in modern Denizen, not multiple!");
         }
     }

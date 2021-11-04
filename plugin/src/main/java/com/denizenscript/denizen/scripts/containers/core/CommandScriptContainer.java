@@ -141,10 +141,10 @@ public class CommandScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
         CommandScriptHelper.init();
         CommandScriptHelper.commandScripts.put(getName(), this);
-        if (contains("tab complete")) {
+        if (containsScriptSection("tab complete")) {
             hasProcStyleTabComplete = true;
         }
-        if (contains("tab completions")) {
+        if (contains("tab completions", Map.class)) {
             tabCompletionTaggables = new HashMap<>();
             YamlConfiguration section = getConfigurationSection("tab completions");
             for (StringHolder key : section.getKeys(false)) {
@@ -270,7 +270,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public boolean hasAllowedHelpProcedure() {
-        return contains("allowed help");
+        return containsScriptSection("allowed help");
     }
 
     public boolean hasTabCompleteProcedure() {

@@ -86,7 +86,7 @@ public abstract class AbstractTrigger {
         Debug.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue
         long speedTicks;
-        if (script.contains("SPEED")) {
+        if (script.contains("SPEED", String.class)) {
             speedTicks = DurationTag.valueOf(script.getString("SPEED", "0"), new BukkitTagContext(script)).getTicks();
         }
         else {

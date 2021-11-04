@@ -36,7 +36,7 @@ public class ActionHandler {
             return determination;
         }
 
-        if (!assignment.contains("actions.on " + actionName)) {
+        if (!assignment.containsScriptSection("actions.on " + actionName)) {
             return determination;
         }
 

@@ -19,6 +19,7 @@ import com.denizenscript.denizencore.utilities.text.StringHolder;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class EntityScriptContainer extends ScriptContainer {
@@ -93,14 +94,14 @@ public class EntityScriptContainer extends ScriptContainer {
         EntityTag entity;
         try {
             TagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
-            if (contains("entity_type")) {
+            if (contains("entity_type", String.class)) {
                 String entityType = TagManager.tag((getString("entity_type", "")), context);
                 entity = EntityTag.valueOf(entityType, context);
             }
             else {
                 throw new Exception("Missing entity_type argument!");
             }
-            if (contains("flags")) {
+            if (contains("flags", Map.class)) {
                 YamlConfiguration flagSection = getConfigurationSection("flags");
                 MapTagFlagTracker tracker = new MapTagFlagTracker();
                 for (StringHolder key : flagSection.getKeys(false)) {
@@ -108,7 +109,7 @@ public class EntityScriptContainer extends ScriptContainer {
                 }
                 entity.safeAdjust(new Mechanism("flag_map", tracker.map, context));
             }
-            if (contains("mechanisms")) {
+            if (contains("mechanisms", Map.class)) {
                 YamlConfiguration mechSection = getConfigurationSection("mechanisms");
                 Set<StringHolder> strings = mechSection.getKeys(false);
                 for (StringHolder string : strings) {

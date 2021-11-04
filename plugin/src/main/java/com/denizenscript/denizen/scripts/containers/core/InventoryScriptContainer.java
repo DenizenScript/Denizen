@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
 public class InventoryScriptContainer extends ScriptContainer {
 
@@ -112,7 +113,7 @@ public class InventoryScriptContainer extends ScriptContainer {
         context.debug = context.debug && shouldDebug();
         try {
             InventoryType type = InventoryType.CHEST;
-            if (contains("inventory")) {
+            if (contains("inventory", String.class)) {
                 try {
                     type = InventoryType.valueOf(getString("inventory").toUpperCase());
                 }
@@ -128,7 +129,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 type = InventoryType.CHEST;
             }
             int size = 0;
-            if (contains("size")) {
+            if (contains("size", String.class)) {
                 if (type != InventoryType.CHEST) {
                     Debug.echoError(this, "You can only set the size of chest inventories!");
                 }
@@ -154,14 +155,14 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
             }
             if (size == 0) {
-                if (contains("slots") && type == InventoryType.CHEST) {
+                if (contains("slots", List.class) && type == InventoryType.CHEST) {
                     size = getStringList("slots").size() * 9;
                 }
                 else {
                     size = type.getDefaultSize();
                 }
             }
-            String title = contains("title") ? TagManager.tag(getString("title"), context) : null;
+            String title = contains("title", String.class) ? TagManager.tag(getString("title"), context) : null;
             if (type == InventoryType.CHEST) {
                 inventory = new InventoryTag(size, title != null ? title : "Chest");
             }
@@ -176,7 +177,7 @@ public class InventoryScriptContainer extends ScriptContainer {
             inventory.idType = "script";
             inventory.idHolder = thisScript;
             boolean[] filledSlots = new boolean[size];
-            if (contains("slots")) {
+            if (contains("slots", List.class)) {
                 ItemStack[] finalItems = new ItemStack[size];
                 int itemsAdded = 0;
                 for (String items : getStringList("slots")) {
@@ -195,7 +196,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                             continue;
                         }
                         filledSlots[itemsAdded] = true;
-                        if (contains("definitions." + item)) {
+                        if (contains("definitions." + item, String.class)) {
                             ItemTag def = ItemTag.valueOf(TagManager.tag(getString("definitions." + item), context), context);
                             if (def == null) {
                                 Debug.echoError(this, "Invalid definition '" + item + "'... Ignoring it and assuming 'AIR'");
@@ -226,12 +227,12 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
                 inventory.setContents(finalItems);
             }
-            if (contains("procedural items")) {
+            if (containsScriptSection("procedural items")) {
                 List<ScriptEntry> entries = getEntries(context.getScriptEntryData(), "procedural items");
                 if (!entries.isEmpty()) {
                     InstantQueue queue = new InstantQueue("INV_SCRIPT_ITEM_PROC");
                     queue.addEntries(entries);
-                    if (contains("definitions")) {
+                    if (contains("definitions", Map.class)) {
                         YamlConfiguration section = getConfigurationSection("definitions");
                         for (StringHolder string : section.getKeys(false)) {
                             String definition = string.str;

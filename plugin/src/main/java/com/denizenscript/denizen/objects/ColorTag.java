@@ -30,7 +30,7 @@ public class ColorTag implements ObjectTag {
     //
     // Note that a ColorTag is NOT a base dye color (used by wool, etc). That is handled by a separate naming system.
     //
-    // Construction a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF'.
+    // Constructing a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF'.
     //
     // A list of accepted color names can be found at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>

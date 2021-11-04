@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.triggers.core;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -149,36 +148,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     double entryRadius = triggerTrait.getRadius(name);
                     double exitRadius = triggerTrait.getRadius(name);
                     double moveRadius = triggerTrait.getRadius(name);
-
-                    //
-                    // If a script was found, it might have custom ranges.
-                    //
-                    if (script != null) {
-                        try {
-                            if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS")) {
-                                entryRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"));
-                            }
-                        }
-                        catch (NumberFormatException nfe) {
-                            Debug.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
-                        }
-                        try {
-                            if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS")) {
-                                exitRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"));
-                            }
-                        }
-                        catch (NumberFormatException nfe) {
-                            Debug.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
-                        }
-                        try {
-                            if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS")) {
-                                moveRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"));
-                            }
-                        }
-                        catch (NumberFormatException nfe) {
-                            Debug.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
-                        }
-                    }
 
                     Location npcLocation = npc.getLocation();
 

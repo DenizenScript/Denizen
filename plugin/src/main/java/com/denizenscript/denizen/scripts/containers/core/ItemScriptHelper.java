@@ -258,7 +258,7 @@ public class ItemScriptHelper implements Listener {
     public void rebuildRecipes() {
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
-                if (container.contains("recipes")) {
+                if (container.contains("recipes", Map.class)) {
                     YamlConfiguration section = container.getConfigurationSection("recipes");
                     int id = 0;
                     for (StringHolder key : section.getKeys(false)) {
@@ -302,15 +302,15 @@ public class ItemScriptHelper implements Listener {
                     }
                 }
                 // Old script style
-                if (container.contains("RECIPE")) {
+                if (container.contains("RECIPE", List.class)) {
                     Deprecations.oldRecipeScript.warn(container);
                     registerShapedRecipe(container, container.getCleanReference().getItemStack().clone(), container.getStringList("RECIPE"), getIdFor(container, "old_recipe", 0), "custom");
                 }
-                if (container.contains("SHAPELESS_RECIPE")) {
+                if (container.contains("SHAPELESS_RECIPE", String.class)) {
                     Deprecations.oldRecipeScript.warn(container);
                     registerShapelessRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom");
                 }
-                if (container.contains("FURNACE_RECIPE")) {
+                if (container.contains("FURNACE_RECIPE", String.class)) {
                     Deprecations.oldRecipeScript.warn(container);
                     registerFurnaceRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
                 }

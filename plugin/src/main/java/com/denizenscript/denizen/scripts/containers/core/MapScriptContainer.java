@@ -11,6 +11,7 @@ import org.bukkit.map.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MapScriptContainer extends ScriptContainer {
 
@@ -101,10 +102,10 @@ public class MapScriptContainer extends ScriptContainer {
     public void applyTo(MapView mapView) {
         boolean contextual = getString("contextual", "true").equalsIgnoreCase("true");
         DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(), getString("auto update", "true").equalsIgnoreCase("true"), contextual);
-        if (contains("original")) {
+        if (contains("original", String.class)) {
             renderer.displayOriginal = getString("original").equalsIgnoreCase("true");
         }
-        if (contains("objects")) {
+        if (contains("objects", Map.class)) {
             YamlConfiguration objectsSection = getConfigurationSection("objects");
             List<StringHolder> objectKeys1 = new ArrayList<>(objectsSection.getKeys(false));
             List<String> objectKeys = new ArrayList<>(objectKeys1.size());

@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ItemScriptContainer extends ScriptContainer {
 
@@ -233,7 +234,7 @@ public class ItemScriptContainer extends ScriptContainer {
         ItemTag stack;
         isProcessing = true;
         try {
-            if (!contains("material")) {
+            if (!contains("material", String.class)) {
                 Debug.echoError("Item script '" + getName() + "' does not contain a material. Script cannot function.");
                 return null;
             }
@@ -248,7 +249,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 return null;
             }
             // Handle listed mechanisms
-            if (contains("mechanisms")) {
+            if (contains("mechanisms", Map.class)) {
                 YamlConfiguration mechs = getConfigurationSection("mechanisms");
                 for (StringHolder key : mechs.getKeys(false)) {
                     ObjectTag obj = CoreUtilities.objectToTagForm(mechs.get(key.low), context, true, true);
@@ -256,16 +257,16 @@ public class ItemScriptContainer extends ScriptContainer {
                 }
             }
             // Set Display Name
-            if (contains("display name")) {
+            if (contains("display name", String.class)) {
                 String displayName = TagManager.tag(getString("display name"), context);
                 NMSHandler.getItemHelper().setDisplayName(stack, displayName);
             }
             // Set if the object is bound to the player
-            if (contains("bound")) {
+            if (contains("bound", String.class)) {
                 Deprecations.boundWarning.warn(context);
             }
             // Set Lore
-            if (contains("lore")) {
+            if (contains("lore", List.class)) {
                 List<String> lore = NMSHandler.getItemHelper().getLore(stack);
                 if (lore == null) {
                     lore = new ArrayList<>();
@@ -278,12 +279,12 @@ public class ItemScriptContainer extends ScriptContainer {
                 NMSHandler.getItemHelper().setLore(stack, lore);
             }
             // Set Durability
-            if (contains("durability")) {
+            if (contains("durability", String.class)) {
                 short durability = Short.valueOf(getString("durability"));
                 stack.setDurability(durability);
             }
             // Set Enchantments
-            if (contains("enchantments")) {
+            if (contains("enchantments", List.class)) {
                 for (String enchantment : getStringList("enchantments")) {
                     enchantment = TagManager.tag(enchantment, context);
                     try {
@@ -320,17 +321,17 @@ public class ItemScriptContainer extends ScriptContainer {
                 }
             }
             // Set Color
-            if (contains("color")) {
+            if (contains("color", String.class)) {
                 Deprecations.itemScriptColor.warn(context);
                 String color = TagManager.tag(getString("color"), context);
                 LeatherColorer.colorArmor(stack, color);
             }
             // Set Book
-            if (contains("book")) {
+            if (contains("book", String.class)) {
                 BookScriptContainer book = ScriptRegistry.getScriptContainer(TagManager.tag(getString("book"), context).replace("s@", ""));
                 stack = book.writeBookTo(stack, context);
             }
-            if (contains("flags")) {
+            if (contains("flags", Map.class)) {
                 YamlConfiguration flagSection = getConfigurationSection("flags");
                 AbstractFlagTracker tracker = stack.getFlagTracker();
                 for (StringHolder key : flagSection.getKeys(false)) {

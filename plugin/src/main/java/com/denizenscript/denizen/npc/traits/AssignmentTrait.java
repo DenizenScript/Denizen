@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -172,7 +173,7 @@ public class AssignmentTrait extends Trait {
         boolean entriesPresent = false;
         paginator.addLine(ChatColor.GRAY + "Interact Scripts:");
         paginator.addLine("<e>Key: <a>Priority  <b>Name");
-        if (assignmentScript.contains("INTERACT SCRIPTS")) {
+        if (assignmentScript.contains("INTERACT SCRIPTS", List.class)) {
             entriesPresent = true;
             for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS")) {
                 paginator.addLine("<b>" + scriptEntry);
@@ -188,25 +189,11 @@ public class AssignmentTrait extends Trait {
             }
             return;
         }
-        // Scheduled Activities
-        entriesPresent = false;
-        paginator.addLine(ChatColor.GRAY + "Scheduled Scripts:");
-        paginator.addLine("<e>Key: <a>Time  <b>Name");
-        if (assignmentScript.contains("SCHEDULED ACTIVITIES")) {
-            entriesPresent = true;
-            for (String scriptEntry : assignmentScript.getStringList("SCHEDULED ACTIVITIES")) {
-                paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
-            }
-        }
-        if (!entriesPresent) {
-            paginator.addLine("<c>No scheduled scripts activities.");
-        }
-        paginator.addLine("");
         // Actions
         entriesPresent = false;
         paginator.addLine(ChatColor.GRAY + "Actions:");
         paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
-        if (assignmentScript.contains("ACTIONS")) {
+        if (assignmentScript.contains("ACTIONS", Map.class)) {
             entriesPresent = true;
         }
         if (entriesPresent) {

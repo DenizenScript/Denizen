@@ -145,7 +145,7 @@ public class ConstantsTrait extends Trait {
         }
 
         try {
-            if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS")) {
+            if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS", Map.class)) {
                 for (StringHolder constant : ScriptRegistry.getScriptContainer(assignment)
                         .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false)) {
                     assignmentConstants.put(CoreUtilities.toLowerCase(constant.str),

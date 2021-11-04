@@ -23,7 +23,7 @@ public class InteractScriptHelper {
         if (assignmentScript == null) {
             return null;
         }
-        if (!assignmentScript.contains("interact scripts")) {
+        if (!assignmentScript.contains("interact scripts", List.class)) {
             return null;
         }
         List<String> assignedScripts = assignmentScript.getStringList("interact scripts");
