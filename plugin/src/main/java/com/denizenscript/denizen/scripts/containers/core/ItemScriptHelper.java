@@ -390,14 +390,20 @@ public class ItemScriptHelper implements Listener {
 
     private static ItemStack AIR = new ItemStack(Material.AIR);
 
-    public static boolean shouldDenyCraft(ItemStack[] items, Recipe recipe) {
+    public enum DenyCraftReason {
+        ALLOWED,
+        IMPOSSIBLE,
+        NOT_ALLOWED
+    }
+
+    public static DenyCraftReason shouldDenyCraft(ItemStack[] items, Recipe recipe) {
         int width = items.length == 9 ? 3 : 2;
         int shapeStartX = 0, shapeStartY = 0;
         if (recipe instanceof ShapedRecipe) {
             String[] shape = ((ShapedRecipe) recipe).getShape();
             if (shape.length != width || shape[0].length() != width) {
                 if (shape.length > width || shape[0].length() > width) {
-                    return false; // Already impossible regardless
+                    return DenyCraftReason.ALLOWED; // Already impossible regardless
                 }
                 loopStart:
                 for (shapeStartX = 0; shapeStartX <= width - shape[0].length(); shapeStartX++) {
@@ -442,7 +448,7 @@ public class ItemScriptHelper implements Listener {
                 int x = i % width - shapeStartX;
                 int y = i / width - shapeStartY;
                 if (x < 0 || y < 0) {
-                    return true;
+                    return DenyCraftReason.IMPOSSIBLE;
                 }
                 String[] shape = ((ShapedRecipe) recipe).getShape();
                 if (y < shape.length && x < shape[y].length()) {
@@ -460,7 +466,24 @@ public class ItemScriptHelper implements Listener {
                 allowed = true; // Shouldn't be possible?
             }
             if (!allowed) {
-                return true;
+                return DenyCraftReason.NOT_ALLOWED;
+            }
+        }
+        return DenyCraftReason.ALLOWED;
+    }
+
+    public static boolean hasAlternateValidRecipe(Recipe recipe, ItemStack[] items) {
+        // Workaround for Spigot bug with the wrong recipe ID getting grabbed
+        if (recipe instanceof ShapedRecipe) {
+            ItemStack result = recipe.getResult();
+            if (isItemscript(result)) {
+                for (Recipe altRecipe : Bukkit.getRecipesFor(result)) {
+                    if (altRecipe instanceof ShapedRecipe) {
+                        if (shouldDenyCraft(items, altRecipe) == DenyCraftReason.ALLOWED) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
         return false;
@@ -473,7 +496,7 @@ public class ItemScriptHelper implements Listener {
             return;
         }
         ItemStack[] items = event.getInventory().getMatrix();
-        if (shouldDenyCraft(items, recipe)) {
+        if (shouldDenyCraft(items, recipe) != DenyCraftReason.ALLOWED && !hasAlternateValidRecipe(recipe, items)) {
             event.getInventory().setResult(null);
         }
     }
@@ -482,7 +505,7 @@ public class ItemScriptHelper implements Listener {
     public void onItemCrafted(CraftItemEvent event) {
         Recipe recipe = event.getRecipe();
         ItemStack[] items = event.getInventory().getMatrix();
-        if (shouldDenyCraft(items, recipe)) {
+        if (shouldDenyCraft(items, recipe) != DenyCraftReason.ALLOWED && !hasAlternateValidRecipe(recipe, items)) {
             event.setCancelled(true);
         }
     }
@@ -495,7 +518,7 @@ public class ItemScriptHelper implements Listener {
         }
         ItemStack[] stacks = new ItemStack[] { event.getSource() };
         for (Recipe recipe : Bukkit.getRecipesFor(event.getResult())) {
-            if (recipe instanceof CookingRecipe && !shouldDenyCraft(stacks, recipe)) {
+            if (recipe instanceof CookingRecipe && shouldDenyCraft(stacks, recipe) == DenyCraftReason.ALLOWED) {
                 return;
             }
         }

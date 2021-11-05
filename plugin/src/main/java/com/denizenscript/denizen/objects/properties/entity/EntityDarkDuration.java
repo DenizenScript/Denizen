@@ -57,7 +57,7 @@ public class EntityDarkDuration implements Property {
         // <--[tag]
         // @attribute <EntityTag.dark_duration>
         // @returns DurationTag
-        // @mechanism EntityTag.direction
+        // @mechanism EntityTag.dark_duration
         // @group attributes
         // @description
         // Returns the duration remaining before a glow squid starts glowing.
