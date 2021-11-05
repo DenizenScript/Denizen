@@ -958,6 +958,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (comparedto.contains(":")) {
             if (comparedto.startsWith("item_flagged:")) {
+                if (item.getBukkitMaterial().isAir()) {
+                    return false;
+                }
                 for (String flag : CoreUtilities.split(rawComparedTo.substring("item_flagged:".length()), '|')) {
                     if (!item.getFlagTracker().hasFlag(flag)) {
                         return false;
@@ -967,7 +970,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             else if (comparedto.startsWith("item_enchanted:")) {
                 String enchMatcher = comparedto.substring("item_enchanted:".length());
-                if (!item.getItemMeta().hasEnchants()) {
+                if (item.getBukkitMaterial().isAir() || !item.getItemMeta().hasEnchants()) {
                     return false;
                 }
                 for (Enchantment enchant : item.getItemMeta().getEnchants().keySet()) {
