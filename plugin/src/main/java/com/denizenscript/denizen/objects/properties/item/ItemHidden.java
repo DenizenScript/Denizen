@@ -98,6 +98,9 @@ public class ItemHidden implements Property {
     public String getPropertyString() {
         ListTag hidden = hides();
         if (hidden.size() > 0) {
+            if (hidden.size() == ItemFlag.values().length) {
+                return "ALL";
+            }
             return hidden.identify();
         }
         else {
