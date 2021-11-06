@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
@@ -81,6 +82,22 @@ public class BukkitScriptProperties implements Property {
             PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer();
             if (player != null && player.isValid()) {
                 return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.script.getContainer().getName()));
+            }
+            else {
+                return null;
+            }
+        });
+
+        // <--[tag]
+        // @attribute <ScriptTag.step_expiration[(<player>)]>
+        // @returns TimeTag
+        // @description
+        // Returns the time that an interact script step expires at, if applied by <@link command zap> with a duration limit.
+        // -->
+        PropertyParser.<BukkitScriptProperties, TimeTag>registerTag(TimeTag.class, "step_expiration", (attribute, script) -> {
+            PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer();
+            if (player != null && player.isValid()) {
+                return InteractScriptHelper.getStepExpiration(player, script.script.getContainer().getName());
             }
             else {
                 return null;

@@ -98,7 +98,7 @@ Triggers:
       Player to NPC overheard: "<player.name> -> <npc.nickname>: <text>"
     Appears globally:
       If triggers missing: true
-      If triggers failed: false
+      If triggers failed: true
       If NPC uninteractable: true
   Click:
     Enabled: true
