@@ -159,7 +159,7 @@ public class InteractScriptContainer extends ScriptContainer {
      */
     public boolean containsTriggerInStep(String step, Class<? extends AbstractTrigger> trigger) {
         String triggerName = Denizen.getInstance().triggerRegistry.get(trigger).getName();
-        return contains("steps." + step + "." + triggerName + " trigger", String.class);
+        return contains("steps." + step + "." + triggerName + " trigger", Map.class);
     }
 
     public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger, PlayerTag player, NPCTag npc, String id, boolean quiet) {
