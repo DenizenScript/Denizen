@@ -45,6 +45,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FishHook;
@@ -2376,6 +2377,40 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (bar.getValue().getPlayers().contains(object.getPlayerEntity())) {
                     result.addObject(new ElementTag(bar.getKey(), true));
                 }
+            }
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.tab_completions[<command>]>
+        // @returns ListTag
+        // @description
+        // Returns a list of all tab completions for the given plaintext of a command.
+        // Input is formatted equivalent to if it were typed into a chat bar, minus the '/' slash at the start.
+        // Input must necessarily contain at least one space.
+        // For example: "<player.tab_completions[npc ]>" will return all /NPC sub command names available to the player.
+        // This is only compatible with commands registered in Spigot. Meaning in particular, vanilla commands are not recognized or supported.
+        // -->
+        registerOnlineOnlyTag(ListTag.class, "tab_completions", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            String cmdFull = attribute.getParam();
+            int space = cmdFull.indexOf(' ');
+            if (space == -1) {
+                attribute.echoError("Invalid command input '" + cmdFull + "': must have at least one space");
+                return null;
+            }
+            String cmdName = cmdFull.substring(0, space);
+            PluginCommand actualCmd = Bukkit.getPluginCommand(cmdName);
+            if (actualCmd == null) {
+                attribute.echoError("Unknown command '" + cmdName + "'");
+                return null;
+            }
+            String args = cmdFull.substring(space + 1);
+            ListTag result = new ListTag();
+            for (String str : actualCmd.tabComplete(object.getPlayerEntity(), cmdName, CoreUtilities.split(args, ' ').toArray(new String[0]))) {
+                result.addObject(new ElementTag(str, true));
             }
             return result;
         });
