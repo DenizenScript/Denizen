@@ -1,14 +1,15 @@
 package com.denizenscript.denizen.scripts.triggers.core;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Bukkit;
@@ -26,6 +27,22 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
     // Click Triggers are triggered when when a player right clicks the NPC.
     //
     // These are very basic with no extraneous complexity.
+    //
+    // They can optionally have an item matcher with multiple triggers, for the item in the player's hand. For example:
+    // <code>
+    // click trigger:
+    //     1:
+    //         trigger: my_item_script
+    //         script:
+    //         - narrate "Nice item script"
+    //     2:
+    //         trigger: stone
+    //         script:
+    //         - narrate "Nice vanilla item"
+    //     3:
+    //         script:
+    //         - narrate "I don't recognize your held item"
+    // </code>
     //
     // -->
 
@@ -120,21 +137,17 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         String id = null;
         if (script != null) {
             Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
-            if (!idMap.isEmpty())
-            // Iterate through the different id entries in the step's click trigger
-            {
+            if (!idMap.isEmpty()) {
+                ItemTag heldItem = new ItemTag(player.getPlayerEntity().getEquipment().getItemInMainHand());
                 for (Map.Entry<String, String> entry : idMap.entrySet()) {
-                    // Tag the entry value to account for replaceables
-                    // TODO: script arg?
                     String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(player, npc, null, false, null));
-                    // Check if the item specified in the specified id's 'trigger:' key
-                    // matches the item that the player is holding.
-                    ItemTag item = ItemTag.valueOf(entry_value, script);
-                    if (item == null) {
-                        Debug.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
+                    boolean isMatch = entry_value.isEmpty() || BukkitScriptEvent.tryItem(heldItem, entry_value);
+                    if (script.shouldDebug()) {
+                        Debug.echoDebug(script, "Comparing click trigger '<A>" + entry_value + "<W>' with item '<A>" + heldItem.debuggable() + "<W>': " + (isMatch ? "<GR>Match!" : "<Y>Not a match"));
                     }
-                    if (item != null && item.comparesTo(player.getPlayerEntity().getEquipment().getItemInMainHand()) >= 0) {
+                    if (isMatch) {
                         id = entry.getKey();
+                        break;
                     }
                 }
             }
