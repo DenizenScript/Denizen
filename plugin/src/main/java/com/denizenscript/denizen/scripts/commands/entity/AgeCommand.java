@@ -60,9 +60,7 @@ public class AgeCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
@@ -83,15 +81,10 @@ public class AgeCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
-        // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("No valid entities specified.");
         }
-
-        // Use default age if one is not specified
         scriptEntry.defaultObject("age", new ElementTag(1));
-
     }
 
     @Override
@@ -102,22 +95,12 @@ public class AgeCommand extends AbstractCommand {
         boolean lock = scriptEntry.hasObject("lock");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (lock ? db("lock", true) : "") +
-                    (ageType != null ? db("agetype", ageType)
-                            : db("age", age)) +
-                    db("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), (lock ? db("lock", true) : ""), (ageType != null ? db("agetype", ageType) : db("age", age)), db("entities", entities.toString()));
         }
-
-        // Go through all the entities and set their ages
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
-
-                // Check if entity specified can be described by 'EntityAge'
                 if (EntityAge.describes(entity)) {
-
                     EntityAge property = EntityAge.getFrom(entity);
-
-                    // Adjust 'ageType'
                     if (ageType != null) {
                         if (ageType.equals(AgeType.BABY)) {
                             property.setBaby(true);
@@ -129,16 +112,12 @@ public class AgeCommand extends AbstractCommand {
                     else {
                         property.setAge(age);
                     }
-
-                    // Adjust 'locked'
                     property.setLock(lock);
                 }
                 else {
                     Debug.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not ageable!");
                 }
-
             }
         }
-
     }
 }

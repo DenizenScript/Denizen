@@ -82,9 +82,7 @@ public class TriggerCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("cooldown")
                     && arg.matchesPrefix("cooldown", "c")
                     && arg.matchesArgumentType(DurationTag.class)) {
@@ -110,47 +108,32 @@ public class TriggerCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("trigger")) {
             throw new InvalidArgumentsException("Missing name argument!");
         }
-
         if (!scriptEntry.hasObject("toggle")) {
             scriptEntry.addObject("toggle", new ElementTag("TOGGLE"));
         }
-
         if (!Utilities.entryHasNPC(scriptEntry) && !scriptEntry.hasObject("npc")) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag toggle = scriptEntry.getElement("toggle");
         ElementTag trigger = scriptEntry.getElement("trigger");
         ElementTag radius = scriptEntry.getElement("radius");
         DurationTag cooldown = scriptEntry.getObjectTag("cooldown");
         NPCTag npc = scriptEntry.hasObject("npc") ? (NPCTag) scriptEntry.getObject("npc") : Utilities.getEntryNPC(scriptEntry);
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(),
-                    trigger.debug() + toggle.debug() +
-                            (radius != null ? radius.debug() : "") +
-                            (cooldown != null ? cooldown.debug() : "") +
-                            npc.debug());
-
+            Debug.report(scriptEntry, getName(), trigger, toggle, radius, cooldown, npc);
         }
-
         // Add trigger trait
         if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
             npc.getCitizen().addTrait(TriggerTrait.class);
         }
-
         TriggerTrait trait = npc.getCitizen().getOrAddTrait(TriggerTrait.class);
-
         switch (Toggle.valueOf(toggle.asString().toUpperCase())) {
 
             case TOGGLE:
@@ -165,11 +148,9 @@ public class TriggerCommand extends AbstractCommand {
                 trait.toggleTrigger(trigger.asString(), false);
                 break;
         }
-
         if (radius != null) {
             trait.setLocalRadius(trigger.asString(), radius.asInt());
         }
-
         if (cooldown != null) {
             trait.setLocalCooldown(trigger.asString(), cooldown.getSeconds());
         }

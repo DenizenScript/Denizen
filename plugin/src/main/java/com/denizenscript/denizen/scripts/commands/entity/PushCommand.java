@@ -198,18 +198,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
         ElementTag precision = scriptEntry.getElement("precision");
         ElementTag ignore_collision = scriptEntry.getElement("ignore_collision");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("origin", originEntity != null ? originEntity : originLocation) +
-                    db("entities", entities.toString()) +
-                    destination.debug() +
-                    speedElement.debug() +
-                    duration.debug() +
-                    (script != null ? script.debug() : "") +
-                    force_along.debug() +
-                    precision.debug() +
-                    (no_rotate ? db("no_rotate", "true") : "") +
-                    (no_damage ? db("no_damage", "true") : "") +
-                    (ignore_collision != null ? ignore_collision.debug() : "") +
-                    (definitions != null ? definitions.debug() : ""));
+            Debug.report(scriptEntry, getName(), db("origin", originEntity != null ? originEntity : originLocation),  db("entities", entities.toString()),
+                    destination, speedElement, duration, script, force_along, precision, (no_rotate ? db("no_rotate", "true") : ""), (no_damage ? db("no_damage", "true") : ""),
+                    ignore_collision, definitions);
         }
         final boolean ignoreCollision = ignore_collision != null && ignore_collision.asBoolean();
         final double speed = speedElement.asDouble();

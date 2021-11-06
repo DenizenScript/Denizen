@@ -118,10 +118,7 @@ public class AssignmentCommand extends AbstractCommand {
         Action action = (Action) scriptEntry.getObject("action");
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    db("action", action)
-                    + (script != null ? script.debug() : "")
-                    + db("npc", npcs));
+            Debug.report(scriptEntry, getName(), db("action", action), script, db("npc", npcs));
         }
         for (NPCTag npc : npcs) {
             if (action.equals(Action.SET)) {

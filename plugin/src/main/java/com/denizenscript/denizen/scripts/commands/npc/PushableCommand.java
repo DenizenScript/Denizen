@@ -48,9 +48,7 @@ public class PushableCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("state")
                     && arg.matchesPrefix("state", "s")
                     && arg.matchesEnum(Toggle.values())) {
@@ -66,45 +64,32 @@ public class PushableCommand extends AbstractCommand {
                     && arg.matchesBoolean()) {
                 scriptEntry.addObject("return", arg.asElement());
             }
-
         }
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         NPCTag denizenNPC = Utilities.getEntryNPC(scriptEntry);
         if (denizenNPC == null) {
             Debug.echoError("No valid NPC attached to this queue!");
             return;
         }
         PushableTrait trait = denizenNPC.getPushableTrait();
-
         ElementTag state = scriptEntry.getElement("state");
         DurationTag delay = scriptEntry.getObjectTag("delay");
         ElementTag returnable = scriptEntry.getElement("return");
-
         if (state == null && delay == null && returnable == null) {
             state = new ElementTag("TOGGLE");
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(),
-                    (state != null ? state.debug() : "") +
-                            (delay != null ? delay.debug() : "") +
-                            (returnable != null ? returnable.debug() : ""));
-
+            Debug.report(scriptEntry, getName(), denizenNPC, state, delay, returnable);
         }
-
         if (delay != null) {
             trait.setDelay(delay.getSecondsAsInt());
         }
-
         if (returnable != null) {
             trait.setReturnable(returnable.asBoolean());
         }
-
         if (state != null) {
             switch (Toggle.valueOf(state.asString().toUpperCase())) {
 
@@ -121,7 +106,6 @@ public class PushableCommand extends AbstractCommand {
                 case TOGGLE:
                     trait.setPushable(!trait.isPushable());
                     break;
-
             }
         }
     }

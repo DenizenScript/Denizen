@@ -96,21 +96,17 @@ public class EngageCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         DurationTag duration = scriptEntry.getObjectTag("duration");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), npc.debug() + duration.debug());
+            Debug.report(scriptEntry, getName(), npc, duration);
         }
-
         if (duration.getSecondsAsInt() > 0) {
             setEngaged(npc.getCitizen(), duration.getSecondsAsInt());
         }
         else {
             setEngaged(npc.getCitizen(), true);
         }
-
     }
 
     /*

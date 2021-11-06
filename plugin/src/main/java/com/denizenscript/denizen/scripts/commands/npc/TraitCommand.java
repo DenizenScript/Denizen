@@ -105,25 +105,17 @@ public class TraitCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ElementTag toggle = scriptEntry.getElement("state");
         ElementTag traitName = scriptEntry.getElement("trait");
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    traitName.debug() +
-                    toggle.debug() +
-                    db("npc", npcs));
+            Debug.report(scriptEntry, getName(), traitName, toggle, db("npc", npcs));
         }
-
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
-
         if (trait == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Trait not found: " + traitName.asString());
             return;
         }
-
         for (NPCTag npcTag : npcs) {
             NPC npc = npcTag.getCitizen();
             switch (Toggle.valueOf(toggle.asString())) {

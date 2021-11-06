@@ -126,11 +126,7 @@ public class FeedCommand extends AbstractCommand {
         ElementTag amount = scriptEntry.getElement("amount");
         ElementTag saturation = scriptEntry.getElement("saturation");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    (player == null ? "" : player.debug())
-                            + (npc == null ? "" : npc.debug())
-                            + amount.debug()
-                            + saturation.debug());
+            Debug.report(scriptEntry, getName(), player, npc, amount, saturation);
         }
         if (npc != null) {
             if (!npc.getCitizen().hasTrait(HungerTrait.class)) {

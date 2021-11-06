@@ -88,7 +88,7 @@ public class FishCommand extends AbstractCommand {
         ElementTag stop = scriptEntry.getElement("stop");
         ElementTag percent = scriptEntry.getElement("percent");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (location == null ? "" : location.debug()) + catchtype.debug() + percent.debug() + stop.debug());
+            Debug.report(scriptEntry, getName(), location, catchtype, percent, stop);
         }
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         FishingTrait trait = npc.getFishingTrait();

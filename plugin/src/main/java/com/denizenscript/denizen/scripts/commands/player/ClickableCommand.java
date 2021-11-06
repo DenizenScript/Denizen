@@ -192,7 +192,7 @@ public class ClickableCommand extends AbstractCommand {
         DurationTag until = scriptEntry.getObjectTag("until");
         MapTag defMap = scriptEntry.getObjectTag("def_map");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), script, path, usages, definitions, defMap, until, (forPlayers == null ? "" : db("for", forPlayers)));
+            Debug.report(scriptEntry, getName(), script, path, usages, definitions, defMap, until, db("for", forPlayers));
         }
         UUID id = UUID.randomUUID();
         Clickable newClickable = new Clickable();

@@ -144,7 +144,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag stepElement = scriptEntry.getElement("step");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry), script, stepElement != null ? stepElement.debug() : db("step", "++ (inc)"), duration);
+            Debug.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry), script, stepElement != null ? stepElement : db("step", "++ (inc)"), duration);
         }
         String step = stepElement == null ? null : stepElement.asString();
         String currentStep = InteractScriptHelper.getCurrentStep(Utilities.getEntryPlayer(scriptEntry), script.getName());

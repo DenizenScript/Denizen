@@ -93,9 +93,7 @@ public class BanCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("action") && (arg.matchesPrefix("action")
                     || arg.matchesEnum(Actions.values()))) {
                 scriptEntry.addObject("action", arg.asElement());
@@ -121,20 +119,16 @@ public class BanCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         scriptEntry.defaultObject("action", new ElementTag("add"))
                 .defaultObject("reason", new ElementTag("Banned."))
                 .defaultObject("source", new ElementTag("(Unknown)"));
-
         if (Actions.valueOf(scriptEntry.getObject("action").toString().toUpperCase()) == null) {
             throw new IllegalArgumentException("Invalid action specified.");
         }
-
         if ((!scriptEntry.hasObject("targets") || ((List<PlayerTag>) scriptEntry.getObject("targets")).isEmpty())
                 && (!scriptEntry.hasObject("addresses") || ((List<ElementTag>) scriptEntry.getObject("addresses")).isEmpty())) {
             throw new IllegalArgumentException("Must specify a valid target or address!");
         }
-
     }
 
     @Override
@@ -145,24 +139,14 @@ public class BanCommand extends AbstractCommand {
         ElementTag reason = scriptEntry.getElement("reason");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag source = scriptEntry.getElement("source");
-
         Date expiration = null;
         if (duration != null && duration.getTicks() != 0) {
             expiration = new Date(new DurationTag(System.currentTimeMillis() / 50 + duration.getTicks()).getTicks() * 50);
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    action.debug() +
-                            (targets != null ? db("targets", targets) : "") +
-                            (addresses != null ? addresses.debug() : "") +
-                            reason.debug() +
-                            (duration != null ? duration.debug() : "") +
-                            source.debug());
+            Debug.report(scriptEntry, getName(), action, (targets != null ? db("targets", targets) : ""), addresses, reason, duration, source);
         }
-
         Actions banAction = Actions.valueOf(action.toString().toUpperCase());
-
         switch (banAction) {
             case ADD:
                 if (targets != null) {
@@ -198,9 +182,6 @@ public class BanCommand extends AbstractCommand {
                     }
                 }
                 break;
-
         }
-
     }
-
 }

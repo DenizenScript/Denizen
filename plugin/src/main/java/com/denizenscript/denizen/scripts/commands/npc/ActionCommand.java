@@ -54,16 +54,14 @@ public class ActionCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("npcs")
                     && arg.matchesArgumentList(NPCTag.class)) {
                 scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(NPCTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("context")
                     && arg.matchesPrefix("context", "c")) {
-                scriptEntry.addObject("context", arg.asType(ListTag.class));
+                scriptEntry.addObject("context", arg.asType(ListTag.class)); // TODO: MapTag?
             }
             else if (!scriptEntry.hasObject("actions")) {
                 scriptEntry.addObject("actions", arg.asType(ListTag.class));
@@ -72,11 +70,9 @@ public class ActionCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("actions")) {
             throw new InvalidArgumentsException("Must specify a list of action names!");
         }
-
         if (!scriptEntry.hasObject("npcs")) {
             if (Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("npcs", Collections.singletonList(Utilities.getEntryNPC(scriptEntry)));
@@ -85,34 +81,25 @@ public class ActionCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify an NPC to use!");
             }
         }
-
         scriptEntry.defaultObject("context", new ListTag());
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ListTag actions = scriptEntry.getObjectTag("actions");
         ListTag context = scriptEntry.getObjectTag("context");
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), actions.debug() + context.debug() + db("npcs", npcs));
-
+            Debug.report(scriptEntry, getName(), actions, context, db("npcs", npcs));
         }
-
         if (context.size() % 2 == 1) { // Size is uneven!
             context.add("null");
         }
-
         // Change the context input to a list of objects
         Map<String, ObjectTag> context_map = new HashMap<>();
         for (int i = 0; i < context.size(); i += 2) {
             context_map.put(context.get(i), ObjectFetcher.pickObjectFor(context.get(i + 1), scriptEntry.getContext()));
         }
-
         for (NPCTag npc : npcs) {
             for (String action : actions) {
                 npc.action(action, Utilities.getEntryPlayer(scriptEntry), context_map);

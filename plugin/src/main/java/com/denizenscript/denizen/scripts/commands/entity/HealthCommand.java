@@ -117,10 +117,7 @@ public class HealthCommand extends AbstractCommand {
         ElementTag heal = scriptEntry.getElement("heal");
         List<EntityTag> targets = (List<EntityTag>) scriptEntry.getObject("target");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (quantity != null ? quantity.debug() : "") +
-                    (action != null ? action.debug() : "") +
-                    heal.debug() +
-                    db("target", targets.toString()));
+            Debug.report(scriptEntry, getName(), quantity, action, heal, db("target", targets.toString()));
         }
         if (quantity == null && action == null) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Null quantity!");

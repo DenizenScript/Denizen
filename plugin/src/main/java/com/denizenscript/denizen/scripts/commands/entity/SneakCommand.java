@@ -139,11 +139,7 @@ public class SneakCommand extends AbstractCommand {
         List<PlayerTag> forPlayers = (List<PlayerTag>) scriptEntry.getObject("for_players");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), mode.debug()
-                + db("entities", entities)
-                + (forPlayers != null ? db("for_players", forPlayers) : "")
-                + (fake != null ? fake.debug() : "")
-                + (stopfake != null ? stopfake.debug() : ""));
+            Debug.report(scriptEntry, getName(), mode, db("entities", entities), db("for_players", forPlayers), fake, stopfake);
         }
         boolean shouldSneak = mode.asString().equalsIgnoreCase("start");
         boolean shouldFake = fake != null && fake.asBoolean();

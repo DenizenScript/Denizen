@@ -53,9 +53,7 @@ public class LookcloseCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (arg.matches("realistic", "realistically")) {
                 scriptEntry.addObject("realistic", new ElementTag(true));
             }
@@ -65,54 +63,41 @@ public class LookcloseCommand extends AbstractCommand {
             else if (arg.matchesBoolean()) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
-            else if (arg.matchesArgumentType(NPCTag.class)) // TODO: better way of handling this?
-            {
+            else if (arg.matchesArgumentType(NPCTag.class)) {
+                scriptEntry.addObject("npc", arg.asType(NPCTag.class));
                 ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(NPCTag.class));
             }
             else {
                 arg.reportUnhandled();
             }
         }
-
-        // Only required thing is a valid NPC. This may be an already linked
-        // NPC, or one specified by arguments
-        if (Utilities.getEntryNPC(scriptEntry) == null) {
+        scriptEntry.defaultObject("npc", Utilities.getEntryNPC(scriptEntry));
+        if (!scriptEntry.hasObject("npc")) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
         }
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
+        ElementTag realistic = scriptEntry.getElement("realistic");
+        ElementTag range = scriptEntry.getElement("range");
+        ElementTag toggle = scriptEntry.getElement("toggle");
+        NPCTag npc = scriptEntry.getObjectTag("npc");
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry).debug()
-                    + db("realistic", scriptEntry.getObject("realistic"))
-                    + db("range", scriptEntry.getObject("range"))
-                    + db("toggle", scriptEntry.getObject("toggle")));
-
+            Debug.report(scriptEntry, getName(), npc, realistic, range, toggle);
         }
-
-        // Get the instance of the trait that belongs to the target NPC
-        LookClose trait = Utilities.getEntryNPC(scriptEntry).getCitizen().getOrAddTrait(LookClose.class);
-
-        // Handle toggle
-        if (scriptEntry.hasObject("toggle")) {
-            trait.lookClose(scriptEntry.getElement("toggle").asBoolean());
+        LookClose trait = npc.getCitizen().getOrAddTrait(LookClose.class);
+        if (toggle != null) {
+            trait.lookClose(toggle.asBoolean());
         }
-
-        // Handle realistic
-        if (scriptEntry.hasObject("realistic")) {
+        if (realistic != null && realistic.asBoolean()) {
             trait.setRealisticLooking(true);
         }
         else {
             trait.setRealisticLooking(false);
         }
-
-        // Handle range
-        if (scriptEntry.hasObject("range")) {
-            trait.setRange(scriptEntry.getElement("range").asInt());
+        if (range != null) {
+            trait.setRange(range.asInt());
         }
 
     }

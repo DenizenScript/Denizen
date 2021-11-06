@@ -79,7 +79,7 @@ public class HealthTrait extends Trait implements Listener {
     private String respawnDelay = Settings.healthTraitRespawnDelay();
 
     @Persist("respawnlocation")
-    private String respawnLocation = "<npc.flag[respawn_location] || <npc.location>>";
+    private String respawnLocation = "<npc.flag[respawn_location].if_null[<npc.location>]>";
 
     @Persist("blockdrops")
     private boolean blockDrops = Settings.healthTraitBlockDrops();

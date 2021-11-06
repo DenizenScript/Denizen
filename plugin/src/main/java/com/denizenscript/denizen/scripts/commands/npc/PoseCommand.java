@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.Poses;
@@ -64,7 +65,7 @@ public class PoseCommand extends AbstractCommand {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
             else if (arg.matchesPrefix("id")) {
-                scriptEntry.addObject("pose_id", arg.getValue());
+                scriptEntry.addObject("pose_id", arg.asElement());
             }
             else if (arg.matches("player")) {
                 scriptEntry.addObject("target", TargetType.PLAYER);
@@ -98,21 +99,17 @@ public class PoseCommand extends AbstractCommand {
         TargetType target = (TargetType) scriptEntry.getObject("target");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         Action action = (Action) scriptEntry.getObject("action");
-        String id = (String) scriptEntry.getObject("pose_id");
+        ElementTag idElement = scriptEntry.getElement("pose_id");
         LocationTag pose_loc = scriptEntry.getObjectTag("pose_loc");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    db("Target", target.toString())
-                            + (target == TargetType.PLAYER ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
-                            + npc.debug()
-                            + db("Action", action.toString())
-                            + db("Id", id)
-                            + (pose_loc != null ? pose_loc.debug() : ""));
+            Debug.report(scriptEntry, getName(), db("Target", target.toString()), (target == TargetType.PLAYER ? Utilities.getEntryPlayer(scriptEntry) : ""), npc,
+                            db("Action", action.toString()), idElement, pose_loc);
         }
         if (!npc.getCitizen().hasTrait(Poses.class)) {
             npc.getCitizen().addTrait(Poses.class);
         }
         Poses poses = npc.getCitizen().getOrAddTrait(Poses.class);
+        String id = idElement.asString();
         switch (action) {
             case ASSUME:
                 if (!poses.hasPose(id)) {

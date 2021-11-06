@@ -165,13 +165,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         final LocationTag lookat = scriptEntry.getObjectTag("lookat");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (loc != null ? loc.debug() : "")
-                    + (speed != null ? speed.debug() : "")
-                    + (auto_range != null ? auto_range.debug() : "")
-                    + (radius != null ? radius.debug() : "")
-                    + (lookat != null ? lookat.debug() : "")
-                    + stop.debug()
-                    + (db("entities", entities)));
+            Debug.report(scriptEntry, getName(), loc, speed, auto_range, radius, lookat, stop, (db("entities", entities)));
         }
         boolean shouldStop = stop.asBoolean();
         List<NPCTag> npcs = new ArrayList<>();

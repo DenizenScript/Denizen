@@ -98,9 +98,7 @@ public class AttackCommand extends AbstractCommand {
         EntityTag target = scriptEntry.getObjectTag("target");
         boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", "true") : "") +
-                    db("entities", entities) +
-                    (target != null ? db("target", target) : ""));
+            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", "true") : ""), db("entities", entities), db("target", target));
         }
         for (EntityTag entity : entities) {
             if (entity.isCitizensNPC()) {

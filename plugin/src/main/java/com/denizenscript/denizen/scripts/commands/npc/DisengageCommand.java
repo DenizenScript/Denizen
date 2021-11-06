@@ -65,8 +65,7 @@ public class DisengageCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
 
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    Utilities.getEntryNPC(scriptEntry).debug());
+            Debug.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry));
         }
 
         // Set Disengaged

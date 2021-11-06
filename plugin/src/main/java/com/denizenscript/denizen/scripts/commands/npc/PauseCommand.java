@@ -120,7 +120,7 @@ public class PauseCommand extends AbstractCommand {
         ElementTag pauseTypeElement = scriptEntry.getElement("pause_type");
         PauseType pauseType = PauseType.valueOf(pauseTypeElement.asString().toUpperCase());
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (duration == null ? "" : duration.debug()) + pauseTypeElement.debug());
+            Debug.report(scriptEntry, getName(), duration, pauseTypeElement);
         }
         NPCTag npc = null;
         if (Utilities.getEntryNPC(scriptEntry) != null) {

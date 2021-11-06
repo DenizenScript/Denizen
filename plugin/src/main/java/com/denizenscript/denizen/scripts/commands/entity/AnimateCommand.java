@@ -127,10 +127,8 @@ public class AnimateCommand extends AbstractCommand {
         String nmsAnimation = scriptEntry.hasObject("nms_animation") ? (String) scriptEntry.getObject("nms_animation") : null;
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(),
-                    (animation != null ? db("animation", animation.name()) :
-                    effect != null ? db("effect", effect.name()) : db("animation", nmsAnimation)) +
-                    db("entities", entities)
-                    + (forPlayers != null ? db("for", forPlayers) : ""));
+                    (animation != null ? db("animation", animation.name()) : effect != null ? db("effect", effect.name()) : db("animation", nmsAnimation)),
+                    db("entities", entities), db("for", forPlayers));
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {

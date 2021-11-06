@@ -110,7 +110,7 @@ public class InvisibleCommand extends AbstractCommand {
         ElementTag state = scriptEntry.getElement("state");
         EntityTag target = scriptEntry.getObjectTag("target");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), state.debug() + target.debug());
+            Debug.report(scriptEntry, getName(), state, target);
         }
         if (target.isCitizensNPC()) {
             NPC npc = target.getDenizenNPC().getCitizen();

@@ -128,7 +128,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            Debug.report(scriptEntry, getName(), location.debug() + npc.debug() + radius.debug());
+            Debug.report(scriptEntry, getName(), location, npc, radius);
 
         }
 
