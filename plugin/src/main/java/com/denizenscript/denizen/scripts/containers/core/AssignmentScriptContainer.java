@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 import java.util.List;
@@ -55,8 +57,34 @@ public class AssignmentScriptContainer extends ScriptContainer {
 
     public AssignmentScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
-        if (contains("interact scripts", List.class) && getStringList("interact scripts").size() > 1) {
-            Debug.echoError("Assignment script '" + getName() + "' invalid: assignment scripts should only have ONE interact script in modern Denizen, not multiple!");
+        if (contains("interact scripts", List.class)) {
+            List<String> names = getStringList("interact scripts");
+            if (!names.isEmpty()) {
+                if (names.size() > 1) {
+                    Debug.echoError("Assignment script '" + getName() + "' invalid: assignment scripts should only have ONE interact script in modern Denizen, not multiple!");
+                }
+                String name = names.get(0);
+                int space = name.indexOf(' ');
+                if (space != -1 && Character.isDigit(name.charAt(0))) {
+                    Deprecations.interactScriptPriority.warn(this);
+                    name = name.substring(space + 1).replace("^", "");
+                }
+                interactName = name;
+            }
         }
+    }
+
+    public String interactName;
+
+    public InteractScriptContainer interact;
+
+    public InteractScriptContainer getInteract() {
+        if (interact == null && interactName != null) {
+            interact = ScriptRegistry.getScriptContainerAs(interactName, InteractScriptContainer.class);
+            if (interact == null) {
+                Debug.echoError("'" + interactName + "' is not a valid Interact Script. Is there a duplicate script by this name, or is it missing?");
+            }
+        }
+        return interact;
     }
 }

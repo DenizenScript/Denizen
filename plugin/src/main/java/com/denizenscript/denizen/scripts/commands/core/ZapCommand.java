@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.scripts.commands.core;
 
+import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -121,20 +123,32 @@ public class ZapCommand extends AbstractCommand implements Listener {
         }
         if (!scriptEntry.hasObject("script")) {
             ScriptTag script = scriptEntry.getScript();
-            if (script == null || !CoreUtilities.toLowerCase(script.getType()).equals("interact")) {
-                script = null;
-                NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-                if (npc != null) {
-                    InteractScriptContainer scriptContainer = npc.getInteractScript();
-                    if (scriptContainer != null) {
-                        script = new ScriptTag(scriptContainer);
+            if (script != null) {
+                if (script.getContainer() instanceof InteractScriptContainer) {
+                    scriptEntry.addObject("script", script);
+                }
+                else if (script.getContainer() instanceof AssignmentScriptContainer) {
+                    InteractScriptContainer interact = ((AssignmentScriptContainer) script.getContainer()).interact;
+                    if (interact != null) {
+                        scriptEntry.addObject("script", new ScriptTag(interact));
                     }
                 }
             }
-            if (script == null) {
+            if (!scriptEntry.hasObject("script")) {
+                NPCTag npc = Utilities.getEntryNPC(scriptEntry);
+                if (npc != null && npc.getCitizen().hasTrait(AssignmentTrait.class)) {
+                    AssignmentTrait trait = npc.getCitizen().getOrAddTrait(AssignmentTrait.class);
+                    for (AssignmentScriptContainer container : trait.containerCache) {
+                        if (container != null && container.getInteract() != null) {
+                            scriptEntry.addObject("script", new ScriptTag(container.getInteract()));
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!scriptEntry.hasObject("script")) {
                 throw new InvalidArgumentsException("No script to zap! Must be in an interact script, or have a linked NPC with an associated interact script.");
             }
-            scriptEntry.addObject("script", script);
         }
     }
 

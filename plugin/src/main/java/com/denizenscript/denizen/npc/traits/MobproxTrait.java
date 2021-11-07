@@ -17,9 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Documenting language files
+// TODO: Documenting language docs
 
 public class MobproxTrait extends Trait {
+
     public MobproxTrait() {
         super("mobprox");
     }
@@ -115,8 +116,7 @@ public class MobproxTrait extends Trait {
             return;
         }
         onSpawn();
-        AssignmentTrait at = dnpc.getAssignmentTrait();
-        if (at == null || !at.hasAssignment()) {
+        if (!dnpc.getCitizen().hasTrait(AssignmentTrait.class)) {
             event.getCommandSender().sendMessage(ChatColor.RED + "Warning: This NPC doesn't have a script assigned! Mobprox only works with scripted Denizen NPCs!");
         }
     }

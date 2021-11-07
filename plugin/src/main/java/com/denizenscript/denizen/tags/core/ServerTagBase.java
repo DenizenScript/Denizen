@@ -1641,10 +1641,10 @@ public class ServerTagBase {
                 attribute.echoError("Invalid script specified.");
             }
             else {
+                AssignmentScriptContainer container = (AssignmentScriptContainer) script.getContainer();
                 ListTag npcs = new ListTag();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    if (npc.hasTrait(AssignmentTrait.class) && npc.getOrAddTrait(AssignmentTrait.class).hasAssignment()
-                            && CoreUtilities.equalsIgnoreCase(npc.getOrAddTrait(AssignmentTrait.class).getAssignment().getName(), script.getName())) {
+                    if (npc.hasTrait(AssignmentTrait.class) && npc.getOrAddTrait(AssignmentTrait.class).isAssigned(container)) {
                         npcs.addObject(new NPCTag(npc));
                     }
                 }

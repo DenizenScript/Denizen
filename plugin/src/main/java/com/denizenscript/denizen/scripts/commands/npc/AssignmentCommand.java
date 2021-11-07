@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -13,6 +15,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.Deprecations;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,14 +25,14 @@ public class AssignmentCommand extends AbstractCommand {
 
     public AssignmentCommand() {
         setName("assignment");
-        setSyntax("assignment [set/remove] (script:<name>) (to:<npc>|...)");
+        setSyntax("assignment [set/add/remove/clear] (script:<name>) (to:<npc>|...)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Assignment
-    // @Syntax assignment [set/remove] (script:<name>) (to:<npc>|...)
+    // @Syntax assignment [set/add/remove/clear] (script:<name>) (to:<npc>|...)
     // @Required 1
     // @Maximum 3
     // @Plugin Citizens
@@ -44,12 +47,14 @@ public class AssignmentCommand extends AbstractCommand {
     //
     // Optionally, specify a list of NPCs to apply the trait to. If unspecified, the linked NPC will be used.
     //
+    // 'Set' is equivalent to 'clear' + 'add'.
+    //
     // @Tags
     // <NPCTag.script>
     // <server.npcs_assigned[<assignment_script>]>
     //
     // @Usage
-    // Use to assign an npc with an assignment script named 'Bob_the_Builder'.
+    // Use to assign an npc with exactly one assignment script named 'Bob_the_Builder'.
     // - assignment set script:Bob_the_Builder
     //
     // @Usage
@@ -57,14 +62,26 @@ public class AssignmentCommand extends AbstractCommand {
     // - assignment set script:Bob_the_Builder npc:<[some_npc]>
     //
     // @Usage
-    // Use to remove an npc's assignment.
-    // - assignment remove
+    // Use to clear an npc's assignments.
+    // - assignment clear
+    //
+    // @Usage
+    // Use to add an extra assignment to the NPC.
+    // - assignment add script:name_fix_assign
+    //
+    // @Usage
+    // Use to remove an extra assignment from the NPC.
+    // - assignment add script:name_fix_assign
     // -->
 
-    private enum Action {SET, REMOVE}
+    private enum Action {SET, ADD, REMOVE, CLEAR}
 
     @Override
     public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+        addOne.accept("set");
+        addOne.accept("add");
+        addOne.accept("remove");
+        addOne.accept("clear");
         for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
             if (script instanceof AssignmentScriptContainer) {
                 addOne.accept(script.getName());
@@ -107,9 +124,6 @@ public class AssignmentCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify an action!");
         }
-        if (scriptEntry.getObject("action").equals(Action.SET) && !scriptEntry.hasObject("script")) {
-            throw new InvalidArgumentsException("Script specified was missing or invalid.");
-        }
     }
 
     @Override
@@ -120,13 +134,46 @@ public class AssignmentCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), db("action", action), script, db("npc", npcs));
         }
+        PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
         for (NPCTag npc : npcs) {
-            if (action.equals(Action.SET)) {
-                npc.getCitizen().getOrAddTrait(AssignmentTrait.class).setAssignment(script.getName(), Utilities.getEntryPlayer(scriptEntry));
-            }
-            else if (action.equals(Action.REMOVE)) {
-                npc.getCitizen().getOrAddTrait(AssignmentTrait.class).removeAssignment(Utilities.getEntryPlayer(scriptEntry));
-                npc.getCitizen().removeTrait(AssignmentTrait.class);
+            switch (action) {
+                case SET: {
+                    if (script == null) {
+                        throw new InvalidArgumentsRuntimeException("Missing script!");
+                    }
+                    AssignmentTrait assignment = npc.getCitizen().getOrAddTrait(AssignmentTrait.class);
+                    assignment.clearAssignments(player);
+                    assignment.addAssignmentScript((AssignmentScriptContainer) script.getContainer(), player);
+                    break;
+                }
+                case ADD:
+                    if (script == null) {
+                        throw new InvalidArgumentsRuntimeException("Missing script!");
+                    }
+                    npc.getCitizen().getOrAddTrait(AssignmentTrait.class).addAssignmentScript((AssignmentScriptContainer) script.getContainer(), player);
+                    break;
+                case REMOVE:
+                    if (script == null) {
+                        Deprecations.assignmentRemove.warn(scriptEntry);
+                        if (npc.getCitizen().hasTrait(AssignmentTrait.class)) {
+                            npc.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(player);
+                            npc.getCitizen().removeTrait(AssignmentTrait.class);
+                        }
+                    }
+                    else {
+                        if (npc.getCitizen().hasTrait(AssignmentTrait.class)) {
+                            AssignmentTrait trait = npc.getCitizen().getOrAddTrait(AssignmentTrait.class);
+                            trait.removeAssignmentScript(script.getName(), player);
+                            trait.checkAutoRemove();
+                        }
+                    }
+                    break;
+                case CLEAR:
+                    if (npc.getCitizen().hasTrait(AssignmentTrait.class)) {
+                        npc.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(player);
+                        npc.getCitizen().removeTrait(AssignmentTrait.class);
+                    }
+                    break;
             }
         }
     }

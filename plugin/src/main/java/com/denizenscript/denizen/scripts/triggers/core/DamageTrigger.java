@@ -12,6 +12,7 @@ import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
@@ -21,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DamageTrigger extends AbstractTrigger implements Listener {
@@ -96,8 +98,8 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                 damager = damager.getShooter();
             }
             context.put("damager", damager.getDenizenObject());
-            String determ = npc.action("damaged", null, context);
-            if (determ != null && determ.equalsIgnoreCase("CANCELLED")) {
+            ListTag determ = npc.action("damaged", null, context);
+            if (determ != null && determ.containsCaseInsensitive("cancelled")) {
                 event.setCancelled(true);
                 return;
             }
@@ -115,24 +117,30 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             if (!trigger.wasTriggered()) {
                 return;
             }
-            if (trigger.hasDetermination() && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
+            if (trigger.hasDetermination() && trigger.getDeterminations().containsCaseInsensitive("cancelled")) {
                 event.setCancelled(true);
                 return;
             }
-            InteractScriptContainer script = InteractScriptHelper.getInteractScript(npc, dplayer, true, getClass());
-            String id = null;
-            if (script != null) {
-                Map<String, String> idMap = script.getIdMapFor(this.getClass(), dplayer);
-                if (!idMap.isEmpty()) {
-                    for (Map.Entry<String, String> entry : idMap.entrySet()) {
-                        String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(dplayer, npc, null, false, new ScriptTag(script)));
-                        if (ItemTag.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getEquipment().getItemInMainHand()) >= 0) {
-                            id = entry.getKey();
+            List<InteractScriptContainer> scripts = InteractScriptHelper.getInteractScripts(npc, dplayer, true, ClickTrigger.class);
+            boolean any = false;
+            if (scripts != null) {
+                for (InteractScriptContainer script : scripts) {
+                    String id = null;
+                    Map<String, String> idMap = script.getIdMapFor(ClickTrigger.class, dplayer);
+                    if (!idMap.isEmpty()) {
+                        for (Map.Entry<String, String> entry : idMap.entrySet()) {
+                            String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(dplayer, npc, null, false, new ScriptTag(script)));
+                            if (ItemTag.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getEquipment().getItemInMainHand()) >= 0) {
+                                id = entry.getKey();
+                            }
                         }
+                    }
+                    if (parse(npc, dplayer, script, id, context)) {
+                        any = true;
                     }
                 }
             }
-            if (!parse(npc, dplayer, script, id, context)) {
+            if (!any) {
                 npc.action("no damage trigger", dplayer);
             }
         }

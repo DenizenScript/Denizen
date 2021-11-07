@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
+import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
@@ -240,16 +241,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return getCitizen().getName();
     }
 
-    public InteractScriptContainer getInteractScript() {
-        return InteractScriptHelper.getInteractScript(this);
+    public List<InteractScriptContainer> getInteractScripts() {
+        return InteractScriptHelper.getInteractScripts(this);
     }
 
-    public InteractScriptContainer getInteractScript(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
-        return InteractScriptHelper.getInteractScript(this, player, true, triggerType);
+    public List<InteractScriptContainer> getInteractScripts(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
+        return InteractScriptHelper.getInteractScripts(this, player, true, triggerType);
     }
 
-    public InteractScriptContainer getInteractScriptQuietly(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
-        return InteractScriptHelper.getInteractScript(this, player, false, triggerType);
+    public List<InteractScriptContainer> getInteractScriptsQuietly(PlayerTag player, Class<? extends AbstractTrigger> triggerType) {
+        return InteractScriptHelper.getInteractScripts(this, player, false, triggerType);
     }
 
     public void destroy() {
@@ -304,10 +305,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return getCitizen().getOrAddTrait(Owner.class).getOwnerId();
     }
 
-    public AssignmentTrait getAssignmentTrait() {
-        return getCitizen().getOrAddTrait(AssignmentTrait.class);
-    }
-
     public Equipment getEquipmentTrait() {
         return getCitizen().getOrAddTrait(Equipment.class);
     }
@@ -336,16 +333,24 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return getCitizen().getOrAddTrait(TriggerTrait.class);
     }
 
-    public String action(String actionName, PlayerTag player, Map<String, ObjectTag> context) {
+    public ListTag action(String actionName, PlayerTag player, Map<String, ObjectTag> context) {
+        ListTag result = new ListTag();
         if (getCitizen() != null) {
             if (getCitizen().hasTrait(AssignmentTrait.class)) {
-                return Denizen.getInstance().npcHelper.getActionHandler().doAction(actionName, this, player, getAssignmentTrait().getAssignment(), context);
+                for (AssignmentScriptContainer container : getCitizen().getOrAddTrait(AssignmentTrait.class).containerCache) {
+                    if (container != null) {
+                        ListTag singleResult = Denizen.getInstance().npcHelper.getActionHandler().doAction(actionName, this, player, container, context);
+                        if (singleResult != null) {
+                            result.addAll(singleResult);
+                        }
+                    }
+                }
             }
         }
-        return "none";
+        return result;
     }
 
-    public String action(String actionName, PlayerTag player) {
+    public ListTag action(String actionName, PlayerTag player) {
         return action(actionName, player, null);
     }
 
@@ -988,22 +993,51 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         tagProcessor.registerTag(ElementTag.class, "has_script", (attribute, object) -> {
             Deprecations.hasScriptTags.warn(attribute.context);
             NPC citizen = object.getCitizen();
-            return new ElementTag(citizen.hasTrait(AssignmentTrait.class) && citizen.getOrAddTrait(AssignmentTrait.class).hasAssignment());
+            return new ElementTag(citizen.hasTrait(AssignmentTrait.class));
         });
 
         // <--[tag]
         // @attribute <NPCTag.script>
         // @returns ScriptTag
+        // @deprecated Use 'NPCTag.scripts' (plural) instead.
         // @description
-        // Returns the NPC's assigned script.
+        // Deprecated variant of <@link tag NPCTag.scripts>.
         // -->
         tagProcessor.registerTag(ScriptTag.class, "script", (attribute, object) -> {
+            Deprecations.npcScriptSingle.warn(attribute.context);
             NPC citizen = object.getCitizen();
-            if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getOrAddTrait(AssignmentTrait.class).hasAssignment()) {
+            if (!citizen.hasTrait(AssignmentTrait.class)) {
                 return null;
             }
             else {
-                return new ScriptTag(citizen.getOrAddTrait(AssignmentTrait.class).getAssignment().getName());
+                for (AssignmentScriptContainer container : citizen.getOrAddTrait(AssignmentTrait.class).containerCache) {
+                    if (container != null) {
+                        return new ScriptTag(container);
+                    }
+                }
+                return null;
+            }
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.scripts>
+        // @returns ListTag(ScriptTag)
+        // @description
+        // Returns a list of all assignment scripts on the NPC. Returns null if none.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "scripts", (attribute, object) -> {
+            NPC citizen = object.getCitizen();
+            if (!citizen.hasTrait(AssignmentTrait.class)) {
+                return null;
+            }
+            else {
+                ListTag result = new ListTag();
+                for (AssignmentScriptContainer container : citizen.getOrAddTrait(AssignmentTrait.class).containerCache) {
+                    if (container != null) {
+                       result.addObject(new ScriptTag(container));
+                    }
+                }
+                return result;
             }
         });
 
@@ -1259,26 +1293,67 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name set_assignment
         // @input ScriptTag
         // @description
-        // Sets the NPC's assignment script.
+        // Sets the NPC's assignment script. Equivalent to 'clear_assignments' + 'add_assignment'.
         // @tags
         // <NPCTag.script>
         // -->
         if (mechanism.matches("set_assignment") && mechanism.requireObject(ScriptTag.class)) {
-            getAssignmentTrait().setAssignment(mechanism.valueAsType(ScriptTag.class).getName(), null);
+            AssignmentTrait trait = getCitizen().getOrAddTrait(AssignmentTrait.class);
+            trait.clearAssignments(null);
+            trait.addAssignmentScript((AssignmentScriptContainer) mechanism.valueAsType(ScriptTag.class).getContainer(), null);
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name add_assignment
+        // @input ScriptTag
+        // @description
+        // Adds an assignment script to the NPC.
+        // @tags
+        // <NPCTag.script>
+        // -->
+        if (mechanism.matches("add_assignment") && mechanism.requireObject(ScriptTag.class)) {
+            getCitizen().getOrAddTrait(AssignmentTrait.class).addAssignmentScript((AssignmentScriptContainer) mechanism.valueAsType(ScriptTag.class).getContainer(), null);
         }
 
         // <--[mechanism]
         // @object NPCTag
         // @name remove_assignment
-        // @input None
+        // @input ScriptTag
         // @description
-        // Removes the NPC's assigment script.
+        // Removes an assignment script from the NPC.
         // @tags
         // <NPCTag.script>
         // -->
         if (mechanism.matches("remove_assignment")) {
-            getAssignmentTrait().removeAssignment(null);
-            npc.removeTrait(AssignmentTrait.class);
+            if (npc.hasTrait(AssignmentTrait.class)) {
+                if (mechanism.hasValue()) {
+                    AssignmentTrait trait = getCitizen().getOrAddTrait(AssignmentTrait.class);
+                    trait.removeAssignmentScript(mechanism.getValue().asString(), null);
+                    trait.checkAutoRemove();
+                }
+                else {
+                    Deprecations.assignmentRemove.warn(mechanism.context);
+                    getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
+                    npc.removeTrait(AssignmentTrait.class);
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name clear_assignments
+        // @input None
+        // @description
+        // Removes all the NPC's assignment scripts.
+        // @tags
+        // <NPCTag.script>
+        // -->
+        if (mechanism.matches("clear_assignments")) {
+            if (npc.hasTrait(AssignmentTrait.class)) {
+                getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
+                npc.removeTrait(AssignmentTrait.class);
+            }
         }
 
         // <--[mechanism]

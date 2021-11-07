@@ -77,12 +77,10 @@ public abstract class AbstractTrigger {
         if (npc == null || player == null || script == null) {
             return false;
         }
-
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id, true);
         if (entries.isEmpty()) {
             return false;
         }
-
         Debug.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue
         long speedTicks;
@@ -114,7 +112,6 @@ public abstract class AbstractTrigger {
         }
         // Start it
         queue.start();
-
         return true;
     }
 }

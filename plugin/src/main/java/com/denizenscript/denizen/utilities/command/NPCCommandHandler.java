@@ -4,8 +4,11 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
@@ -162,29 +165,20 @@ public class NPCCommandHandler {
             Messaging.sendInfo(sender, npc.getName() + " has removed constant '" + args.getFlag("remove") + "'.");
             return;
         }
-        else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
-            Messaging.send(sender, "");
-            Messaging.send(sender, "<f>Use '--set name' to add/set a new NPC-specific constant.");
-            Messaging.send(sender, "<f>Must also specify '--value \"constant value\"'.");
-            Messaging.send(sender, "<b>Example: /npc constant --set constant_1 --value \"test value\"");
-            Messaging.send(sender, "<f>Remove NPC-specific constants with '--remove name'");
-            Messaging.send(sender, "<f>Note: Constants set will override any specified in an");
-            Messaging.send(sender, "<f>assignment. Constants specified in assignments cannot be");
-            Messaging.send(sender, "<f>removed with this command.");
-            Messaging.send(sender, "");
-            return;
-        }
-        try {
-            trait.describe(sender, args.getInteger(1, 1));
-        }
-        catch (net.citizensnpcs.api.command.exception.CommandException e) {
-            throw new CommandException(e.getMessage());
-        }
+        Messaging.send(sender, "");
+        Messaging.send(sender, "<f>Use '--set name' to add/set a new NPC-specific constant.");
+        Messaging.send(sender, "<f>Must also specify '--value \"constant value\"'.");
+        Messaging.send(sender, "<b>Example: /npc constant --set constant_1 --value \"test value\"");
+        Messaging.send(sender, "<f>Remove NPC-specific constants with '--remove name'");
+        Messaging.send(sender, "<f>Note: Constants set will override any specified in an");
+        Messaging.send(sender, "<f>assignment. Constants specified in assignments cannot be");
+        Messaging.send(sender, "<f>removed with this command.");
+        Messaging.send(sender, "");
     }
 
     @Command(
-            aliases = {"npc"}, usage = "assignment --set assignment_name (-r)",
-            desc = "Controls the assignment for an NPC.", flags = "r", modifiers = {"assignment", "assign"},
+            aliases = {"npc"}, usage = "assignment ((--set|--remove|--add) assignment_name) (-c)",
+            desc = "Controls the assignment for an NPC.", flags = "rc", modifiers = {"assignment", "assign"},
             min = 1, max = 3, permission = "denizen.npc.assign")
     @Requirements(selected = true, ownership = true)
     public void assignment(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -192,47 +186,75 @@ public class NPCCommandHandler {
         if (sender instanceof Player) {
             player = (Player) sender;
         }
-        AssignmentTrait trait = npc.getOrAddTrait(AssignmentTrait.class);
+        if (args.hasFlag('r') || args.hasFlag('c')) {
+            if (!npc.hasTrait(AssignmentTrait.class)) {
+                Messaging.sendError(sender, "That NPC has no assignments.");
+                return;
+            }
+            npc.getOrAddTrait(AssignmentTrait.class).clearAssignments(PlayerTag.mirrorBukkitPlayer(player));
+            npc.removeTrait(AssignmentTrait.class);
+            Messaging.sendInfo(sender, npc.getName() + "<f>'s assignments have been cleared.");
+            return;
+        }
         if (args.hasValueFlag("set")) {
             String script = args.getFlag("set").replace("\"", "");
-
-            if (trait.setAssignment(script, PlayerTag.mirrorBukkitPlayer(player))) {
-                if (trait.hasAssignment()) {
-                    Messaging.sendInfo(sender, npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
-                }
-                else {
-                    Messaging.sendInfo(sender, npc.getName() + "'s assignment was not able to be set.");
-                }
+            ScriptContainer container = ScriptRegistry.getScriptContainer(script);
+            if (container == null) {
+                Messaging.sendError(sender, "Invalid assignment! Has the script successfully loaded, or has it been misspelled?");
             }
-            else if (ScriptRegistry.containsScript(script)) {
+            else if (!(container instanceof AssignmentScriptContainer)) {
                 Messaging.sendError(sender, "A script with that name exists, but it is not an assignment script!");
             }
             else {
-                Messaging.sendError(sender, "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
+                AssignmentTrait trait = npc.getOrAddTrait(AssignmentTrait.class);
+                trait.clearAssignments(PlayerTag.mirrorBukkitPlayer(player));
+                trait.addAssignmentScript((AssignmentScriptContainer) container, PlayerTag.mirrorBukkitPlayer(player));
+                Messaging.sendInfo(sender, npc.getName() + "<f>'s assignment is now just: '" + container.getName() + "'.");
             }
             return;
         }
-        else if (args.hasFlag('r')) {
-            trait.removeAssignment(PlayerTag.mirrorBukkitPlayer(player));
-            npc.removeTrait(AssignmentTrait.class);
-            Messaging.sendInfo(sender, npc.getName() + "'s assignment has been removed.");
+        else if (args.hasValueFlag("add")) {
+            String script = args.getFlag("add").replace("\"", "");
+            ScriptContainer container = ScriptRegistry.getScriptContainer(script);
+            AssignmentTrait trait = npc.getOrAddTrait(AssignmentTrait.class);
+            if (container == null) {
+                Messaging.sendError(sender, "Invalid assignment! Has the script successfully loaded, or has it been misspelled?");
+            }
+            else if (!(container instanceof AssignmentScriptContainer)) {
+                Messaging.sendError(sender, "A script with that name exists, but it is not an assignment script!");
+            }
+            else if (trait.addAssignmentScript((AssignmentScriptContainer) container, PlayerTag.mirrorBukkitPlayer(player))) {
+                Messaging.sendInfo(sender, npc.getName() + "<f> is now assigned to '" + container.getName() + "'.");
+            }
+            else {
+                Messaging.sendError(sender, "That NPC was already assigned that script.");
+            }
             return;
         }
-        else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
-            Messaging.send(sender, "");
-            Messaging.send(sender, "<f>Use '--set name' to set an assignment script to this NPC.");
-            Messaging.send(sender, "<b>Example: /npc assignment --set \"Magic Shop\"");
-            Messaging.send(sender, "<f>Remove an assignment with '-r'.");
-            Messaging.send(sender, "<f>Note: Assigning a script will fire an 'On Assignment:' action.");
-            Messaging.send(sender, "");
+        else if (args.hasValueFlag("remove")) {
+            String script = args.getFlag("remove").replace("\"", "");
+            AssignmentTrait trait = npc.getOrAddTrait(AssignmentTrait.class);
+            if (trait.removeAssignmentScript(script, PlayerTag.mirrorBukkitPlayer(player))) {
+                trait.checkAutoRemove();
+                if (npc.hasTrait(AssignmentTrait.class)) {
+                    Messaging.sendInfo(sender, npc.getName() + "<f> is no longer assigned to '" + script + "'.");
+                }
+                else {
+                    Messaging.sendInfo(sender, npc.getName() + "<f> no longer has any assignment.");
+                }
+            }
+            else {
+                Messaging.sendError(sender, "That NPC was already not assigned that script.");
+            }
             return;
         }
-        try {
-            trait.describe(sender, args.getInteger(1, 1));
-        }
-        catch (net.citizensnpcs.api.command.exception.CommandException e) {
-            throw new CommandException(e.getMessage());
-        }
+        Messaging.send(sender, "");
+        Messaging.send(sender, "<f>Use '--set name' to set a single assignment script to this NPC.");
+        Messaging.send(sender, "<b>Example: /npc assignment --set \"Magic Shop\"");
+        Messaging.send(sender, "<f>Use '--add name' to add an assignment, or '--remove name' to remove one assignment.");
+        Messaging.send(sender, "<f>Clear all assignments with '-c'.");
+        Messaging.send(sender, "<f>Note: Assigning a script will fire an 'On Assignment:' action.");
+        Messaging.send(sender, "");
     }
 
     @Command(

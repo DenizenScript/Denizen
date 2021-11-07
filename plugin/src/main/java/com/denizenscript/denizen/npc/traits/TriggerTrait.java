@@ -9,6 +9,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -57,6 +58,10 @@ public class TriggerTrait extends Trait implements Listener {
 
     @Override
     public void onSpawn() {
+        if (!npc.hasTrait(AssignmentTrait.class)) {
+            npc.removeTrait(TriggerTrait.class);
+            return;
+        }
         for (String triggerName : Denizen.getInstance().triggerRegistry.list().keySet()) {
             if (!enabled.containsKey(triggerName)) {
                 enabled.put(triggerName, Settings.triggerEnabled(triggerName));
@@ -113,7 +118,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public boolean isEnabled(String triggerName) {
-        if (!new NPCTag(npc).getAssignmentTrait().hasAssignment()) {
+        if (!new NPCTag(npc).getCitizen().hasTrait(AssignmentTrait.class)) {
             return false;
         }
         return enabled.getOrDefault(triggerName.toUpperCase(), false);
@@ -214,7 +219,7 @@ public class TriggerTrait extends Trait implements Listener {
             // On Unavailable Action
 
             // TODO: Should this be refactored?
-            if (new NPCTag(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
+            if (new NPCTag(npc).action("unavailable", player, context).containsCaseInsensitive("available")) {
                 // If determined available, continue on...
                 // else, return a 'non-triggered' state.
             }
@@ -227,7 +232,7 @@ public class TriggerTrait extends Trait implements Listener {
         Denizen.getInstance().triggerRegistry.setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type));
 
         // Grab the determination of the action
-        String determination = new NPCTag(npc).action(trigger_type, player, context);
+        ListTag determination = new NPCTag(npc).action(trigger_type, player, context);
 
         return new TriggerContext(determination, true);
     }
@@ -242,19 +247,19 @@ public class TriggerTrait extends Trait implements Listener {
             this.triggered = triggered;
         }
 
-        public TriggerContext(String determination, boolean triggered) {
+        public TriggerContext(ListTag determination, boolean triggered) {
             this.determination = determination;
             this.triggered = triggered;
         }
 
-        String determination;
+        ListTag determination;
         boolean triggered;
 
         public boolean hasDetermination() {
-            return determination != null && !determination.equalsIgnoreCase("none");
+            return determination != null && !determination.isEmpty();
         }
 
-        public String getDetermination() {
+        public ListTag getDeterminations() {
             return determination;
         }
 

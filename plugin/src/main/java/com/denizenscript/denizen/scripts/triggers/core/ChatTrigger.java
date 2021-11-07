@@ -110,24 +110,16 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //
     // -->
     public ChatContext process(Player player, String message) {
-
-        // Check if there is an NPC within range of a player to chat to.
         NPCTag npc = Utilities.getClosestNPC_ChatTrigger(player.getLocation(), 25);
-        PlayerTag denizenPlayer = PlayerTag.mirrorBukkitPlayer(player);
-
         if (Debug.verbose) {
             Debug.log("Processing chat trigger: valid npc? " + (npc != null));
         }
-        // No NPC? Nothing else to do here.
         if (npc == null) {
             return new ChatContext(false);
         }
-
         if (Debug.verbose) {
             Debug.log("Has trait?  " + npc.getCitizen().hasTrait(TriggerTrait.class));
         }
-        // If the NPC doesn't have triggers, or the triggers are not enabled, then
-        // just return false.
         if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
             return new ChatContext(false);
         }
@@ -137,20 +129,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (!npc.getCitizen().getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
             return new ChatContext(false);
         }
-
-        // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(player.getLocation())) {
             if (Debug.verbose) {
                 Debug.log("Not in range");
             }
             return new ChatContext(false);
         }
-
-        // The Denizen config can require some other criteria for a successful chat-with-npc.
-        // Should we check 'line of sight'? Players cannot talk to NPCs through walls
-        // if enabled. Should the Player chat only when looking at the NPC? This may
-        // reduce accidental chats with NPCs.
-
         if (Settings.chatMustSeeNPC()) {
             if (!player.hasLineOfSight(npc.getEntity())) {
                 if (Debug.verbose) {
@@ -159,7 +143,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 return new ChatContext(false);
             }
         }
-
         if (Settings.chatMustLookAtNPC()) {
             if (!NMSHandler.getEntityHelper().isFacingEntity(player, npc.getEntity(), 45)) {
                 if (Debug.verbose) {
@@ -168,99 +151,79 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 return new ChatContext(false);
             }
         }
-
         boolean ret = false;
-
-        // Denizen should be good to interact with. Let's get the script.
-        InteractScriptContainer script = npc.getInteractScript(denizenPlayer, ChatTrigger.class);
-
         Map<String, ObjectTag> context = new HashMap<>();
         context.put("message", new ElementTag(message));
-
-        //
-        // Fire the Actions!
-        //
-
-        // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
-        // If available (not engaged, and cool) sets cool down and returns true.
-        TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(ChatTrigger.this, denizenPlayer, context);
-
-        // Return false if determine cancelled
+        TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(ChatTrigger.this, new PlayerTag(player), context);
         if (trigger.hasDetermination()) {
-            if (trigger.getDetermination().equalsIgnoreCase("cancelled")) {
+            if (trigger.getDeterminations().containsCaseInsensitive("cancelled")) {
                 if (Debug.verbose) {
                     Debug.log("Cancelled");
                 }
-                // Mark as handled, the event will cancel.
                 return new ChatContext(true);
             }
         }
-
-        // Return false if trigger was unable to fire
         if (!trigger.wasTriggered()) {
-            // If the NPC is not interact-able, Settings may allow the chat to filter
-            // through. Check the Settings if this is enabled.
             if (Settings.chatGloballyIfUninteractable()) {
-                Debug.echoDebug(script, ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
-                        + "The NPC is currently cooling down or engaged.");
+                if (Debug.verbose) {
+                    Debug.log(ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE + "The NPC is currently cooling down or engaged.");
+                }
                 return new ChatContext(false);
-
             }
             else {
                 ret = true;
             }
         }
-
-        // Change the text if it's in the determination
         if (trigger.hasDetermination()) {
-            message = trigger.getDetermination();
+            message = trigger.getDeterminations().get(0);
         }
-
-        if (script == null) {
+        List<InteractScriptContainer> scripts = npc.getInteractScripts(new PlayerTag(player), ChatTrigger.class);
+        if (scripts == null) {
             if (Debug.verbose) {
-                Debug.log("null script");
+                Debug.log("null scripts");
             }
             return new ChatContext(message, false);
         }
+        ChatContext returnable = new ChatContext(ret);
+        for (InteractScriptContainer script : scripts) {
+            processSingle(message, player, npc, context, script, returnable);
+        }
+        return returnable;
+    }
 
-        Debug.report(script, name, ArgumentHelper.debugObj("Player", player.getName())
-                + ArgumentHelper.debugObj("NPC", npc.toString())
-                + ArgumentHelper.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
-                + "(" + npc.getTriggerTrait().getRadius(name) + ")")
-                + ArgumentHelper.debugObj("Trigger text", message)
-                + ArgumentHelper.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
-                + ArgumentHelper.debugObj("Facing", String.valueOf(NMSHandler.getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
-
-        // Check if the NPC has Chat Triggers for this step.
+    public void processSingle(String message, Player player, NPCTag npc, Map<String, ObjectTag> context, InteractScriptContainer script, ChatContext returnable) {
+        context = new HashMap<>(context);
+        PlayerTag denizenPlayer = PlayerTag.mirrorBukkitPlayer(player);
+        if (script.shouldDebug()) {
+            Debug.report(script, name, ArgumentHelper.debugObj("Player", player.getName())
+                    + ArgumentHelper.debugObj("NPC", npc.toString())
+                    + ArgumentHelper.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
+                    + "(" + npc.getTriggerTrait().getRadius(name) + ")")
+                    + ArgumentHelper.debugObj("Trigger text", message)
+                    + ArgumentHelper.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
+                    + ArgumentHelper.debugObj("Facing", String.valueOf(NMSHandler.getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
+        }
         String step = InteractScriptHelper.getCurrentStep(denizenPlayer, script.getName());
         if (!script.containsTriggerInStep(step, ChatTrigger.class)) {
-
-            // No chat trigger for this step.. do we chat globally, or to the NPC?
             if (!Settings.chatGloballyIfNoChatTriggers()) {
                 Debug.echoDebug(script, player.getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + message);
-                return new ChatContext(false);
+                return;
             }
             else {
                 if (Debug.verbose) {
                     Debug.log("No trigger in step, chatting globally");
                 }
-                return new ChatContext(message, ret);
+                return;
             }
         }
-
-        // Parse the script and match Triggers.. if found, cancel the text! The
-        // parser will take care of everything else.
         String id = null;
         boolean matched = false;
         String replacementText = null;
         String regexId = null;
         String regexMessage = null;
-
         String messageLow = CoreUtilities.toLowerCase(message);
-
         Map<String, String> idMap = script.getIdMapFor(ChatTrigger.class, denizenPlayer);
-
         if (!idMap.isEmpty()) {
             for (Map.Entry<String, String> entry : idMap.entrySet()) {
 
@@ -355,7 +318,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (Debug.verbose) {
                 Debug.log("chat to NPC");
             }
-            return new ChatContext(!showNormalChat.equalsIgnoreCase("true"));
+            if (!showNormalChat.equalsIgnoreCase("true")) {
+                returnable.triggered = true;
+            }
+            return;
         }
         else {
             if (!Settings.chatGloballyIfFailedChatTriggers()) {
@@ -363,7 +329,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 if (Debug.verbose) {
                     Debug.log("Chat globally");
                 }
-                return new ChatContext(!showNormalChat.equalsIgnoreCase("true"));
+                if (!showNormalChat.equalsIgnoreCase("true")) {
+                    returnable.triggered = true;
+                }
+                return;
             }
             // No matching chat triggers, and the config.yml says we
             // should just ignore the interaction...
@@ -371,7 +340,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (Debug.verbose) {
             Debug.log("Finished calculating");
         }
-        return new ChatContext(message, ret);
+        returnable.changed_text = message;
     }
 
     @EventHandler
