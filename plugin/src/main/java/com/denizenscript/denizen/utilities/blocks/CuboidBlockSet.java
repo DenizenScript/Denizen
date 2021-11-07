@@ -104,6 +104,22 @@ public class CuboidBlockSet implements BlockSet {
 
     public ListTag entities = null;
 
+    public CuboidBlockSet duplicate() {
+        CuboidBlockSet result = new CuboidBlockSet();
+        result.blocks = blocks.clone();
+        result.hasFlags = hasFlags;
+        result.x_width = x_width;
+        result.y_length = y_length;
+        result.z_height = z_height;
+        result.center_x = center_x;
+        result.center_y = center_y;
+        result.center_z = center_z;
+        if (entities != null) {
+            result.entities = entities.duplicate();
+        }
+        return result;
+    }
+
     @Override
     public FullBlockData[] getBlocks() {
         return blocks;

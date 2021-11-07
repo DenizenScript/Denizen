@@ -10,6 +10,7 @@ import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -42,7 +43,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
+        setSyntax("schematic [create/load/unload/rotate/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
         setRequiredArguments(2, 13);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
@@ -54,11 +55,13 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         noPhys = false;
         Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         isProcedural = false;
+        setBooleansHandled("noair", "delayed", "entities", "flags");
+        setPrefixesHandled("angle", "fake_duration", "mask", "name", "filename", "max_delay_ms", "fake_to");
     }
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate (angle:<#>)/paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)
+    // @Syntax schematic [create/load/unload/rotate /paste (fake_to:<player>|... fake_duration:<duration>)/save/flip_x/flip_y/flip_z) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)
     // @Group world
     // @Required 2
     // @Maximum 13
@@ -75,8 +78,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     //
     // The 'create' option requires a cuboid region and a center location as input. This will create a new schematic in memory based on world data.
     //
-    // The "rotate" and "flip_x/y/z" options will apply the change to the copy of the schematic in memory, to later be pasted or saved.
+    // The "rotate angle:#" and "flip_x/y/z" options will apply the change to the copy of the schematic in memory, to later be pasted or saved.
     // This will rotate the set of blocks itself, the relative origin, and any directional blocks inside the schematic.
+    // Rotation angles must be a multiple of 90 degrees.
+    //
+    // When using 'paste', you can only specify 'angle:#' to have that paste rotated, without rotating the original schematic.
     //
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
@@ -166,54 +172,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", new ElementTag(arg.getRawValue().toUpperCase()));
             }
-            else if (!scriptEntry.hasObject("name")
-                    && arg.matchesPrefix("name")) {
-                scriptEntry.addObject("name", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("filename")
-                    && arg.matchesPrefix("filename")) {
-                scriptEntry.addObject("filename", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("angle")
-                    && arg.matchesPrefix("angle")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("angle", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("max_delay_ms")
-                    && arg.matchesPrefix("max_delay_ms")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("max_delay_ms", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("delayed")
-                    && arg.matches("delayed")) {
-                scriptEntry.addObject("delayed", new ElementTag("true"));
-            }
-            else if (!scriptEntry.hasObject("noair")
-                    && arg.matches("noair")) {
-                scriptEntry.addObject("noair", new ElementTag("true"));
-            }
-            else if (!scriptEntry.hasObject("entities")
-                    && arg.matches("entities")) {
-                scriptEntry.addObject("entities", new ElementTag("true"));
-            }
-            else if (!scriptEntry.hasObject("flags")
-                    && arg.matches("flags")) {
-                scriptEntry.addObject("flags", new ElementTag("true"));
-            }
-            else if (!scriptEntry.hasObject("mask")
-                    && arg.matchesPrefix("mask")) {
-                scriptEntry.addObject("mask", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("fake_to")
-                    && arg.matchesPrefix("fake_to")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("fake_to", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("fake_duration")
-                    && arg.matchesPrefix("fake_duration")
-                    && arg.matchesArgumentType(DurationTag.class)) {
-                scriptEntry.addObject("fake_duration", arg.asType(DurationTag.class));
-            }
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class).getBlockLocation());
@@ -226,36 +184,66 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 arg.reportUnhandled();
             }
         }
-        if (scriptEntry.shouldWaitFor()) {
-            scriptEntry.addObject("delayed", new ElementTag("true"));
-        }
-        scriptEntry.defaultObject("max_delay_ms", new ElementTag(50));
         if (!scriptEntry.hasObject("type")) {
             throw new InvalidArgumentsException("Missing type argument!");
         }
-        if (!scriptEntry.hasObject("name")) {
-            throw new InvalidArgumentsException("Missing name argument!");
+    }
+
+    public static void rotateSchem(CuboidBlockSet schematic, int angle, boolean delayed, Runnable callback) {
+        Runnable rotateRunnable = () -> {
+            int ang = angle;
+            while (ang < 0) {
+                ang = 360 + ang;
+            }
+            while (ang >= 360) {
+                ang -= 360;
+            }
+            if (ang != 0) {
+                ang = 360 - ang;
+                while (ang > 0) {
+                    ang -= 90;
+                    schematic.rotateOne();
+                }
+            }
+            Bukkit.getScheduler().runTask(Denizen.getInstance(), callback);
+        };
+        if (delayed) {
+            Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), rotateRunnable);
+        }
+        else {
+            try {
+                rotateRunnable.run();
+            }
+            finally {
+                if (callback != null) {
+                    callback.run();
+                }
+            }
         }
     }
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        ElementTag angle = scriptEntry.getElement("angle");
+        ElementTag angle = scriptEntry.argForPrefixAsElement("angle", null);
         ElementTag type = scriptEntry.getElement("type");
-        ElementTag name = scriptEntry.getElement("name");
-        ElementTag filename = scriptEntry.getElement("filename");
-        ElementTag noair = scriptEntry.getElement("noair");
-        ElementTag delayed = scriptEntry.getElement("delayed");
-        ElementTag maxDelayMs = scriptEntry.getElement("max_delay_ms");
-        ElementTag copyEntities = scriptEntry.getElement("entities");
-        ElementTag flags = scriptEntry.getElement("flags");
+        ElementTag name = scriptEntry.argForPrefixAsElement("name", null);
+        if (name == null) {
+            throw new InvalidArgumentsRuntimeException("Missing name argument!");
+        }
+        ElementTag filename = scriptEntry.argForPrefixAsElement("filename", null);
+        boolean noair = scriptEntry.argAsBoolean("noair");
+        boolean delayed = scriptEntry.argAsBoolean("delayed") || scriptEntry.shouldWaitFor();
+        ElementTag maxDelayMs = scriptEntry.argForPrefixAsElement("max_delay_ms", "50");
+        boolean copyEntities = scriptEntry.argAsBoolean("entities");
+        boolean flags = scriptEntry.argAsBoolean("flags");
         LocationTag location = scriptEntry.getObjectTag("location");
-        ElementTag mask = scriptEntry.getElement("mask");
-        List<PlayerTag> fakeTo = (List<PlayerTag>) scriptEntry.getObject("fake_to");
-        DurationTag fakeDuration = scriptEntry.getObjectTag("fake_duration");
+        ElementTag mask = scriptEntry.argForPrefixAsElement("mask", null);
+        List<PlayerTag> fakeTo = scriptEntry.argForPrefixList("fake_to", PlayerTag.class, true);
+        DurationTag fakeDuration = scriptEntry.argForPrefix("fake_duration", DurationTag.class, true);
         CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, noair, delayed, maxDelayMs, flags, mask, fakeDuration, (fakeTo != null ? db("fake_to", fakeTo) : ""));
+            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, db("noair", noair), db("delayed", delayed),
+                    maxDelayMs, db("flags", flags), db("entities", copyEntities), mask, fakeDuration, db("fake_to", fakeTo));
         }
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
@@ -278,20 +266,20 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
-                    if (delayed != null && delayed.asBoolean()) {
+                    if (delayed) {
                         set = new CuboidBlockSet();
                         set.buildDelayed(cuboid, location, () -> {
-                            if (copyEntities != null && copyEntities.asBoolean()) {
+                            if (copyEntities) {
                                 set.buildEntities(cuboid, location);
                             }
                             schematics.put(name.asString().toUpperCase(), set);
                             scriptEntry.setFinished(true);
-                        }, maxDelayMs.asLong(), flags != null && flags.asBoolean());
+                        }, maxDelayMs.asLong(), flags);
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        set = new CuboidBlockSet(cuboid, location, flags != null && flags.asBoolean());
-                        if (copyEntities != null && copyEntities.asBoolean()) {
+                        set = new CuboidBlockSet(cuboid, location, flags);
+                        if (copyEntities) {
                             set.buildEntities(cuboid, location);
                         }
                         schematics.put(name.asString().toUpperCase(), set);
@@ -337,7 +325,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             schematics.put(name.asString().toUpperCase(), newSet);
                             scriptEntry.setFinished(true);
                         };
-                        if (delayed != null && delayed.asBoolean()) {
+                        if (delayed) {
                             Bukkit.getScheduler().runTask(Denizen.getInstance(), storeSchem);
                         }
                         else {
@@ -349,7 +337,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             Debug.echoError(scriptEntry.getResidingQueue(), "Error loading schematic file " + name.asString() + ".");
                             Debug.echoError(scriptEntry.getResidingQueue(), ex);
                         };
-                        if (delayed != null && delayed.asBoolean()) {
+                        if (delayed) {
                             Bukkit.getScheduler().runTask(Denizen.getInstance(), showError);
                         }
                         else {
@@ -359,7 +347,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         return;
                     }
                 };
-                if (delayed != null && delayed.asBoolean()) {
+                if (delayed) {
                     Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), loadRunnable);
                 }
                 else {
@@ -389,32 +377,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
-                final int angleRaw = angle.asInt();
                 final CuboidBlockSet schematic = schematics.get(name.asString().toUpperCase());
-                Runnable rotateRunnable = () -> {
-                    int ang = angleRaw;
-                    while (ang < 0) {
-                        ang = 360 + ang;
-                    }
-                    while (ang >= 360) {
-                        ang -= 360;
-                    }
-                    if (ang != 0) {
-                        ang = 360 - ang;
-                        while (ang > 0) {
-                            ang -= 90;
-                            schematic.rotateOne();
-                        }
-                    }
-                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> scriptEntry.setFinished(true));
-                };
-                if (delayed != null && delayed.asBoolean()) {
-                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), rotateRunnable);
-                }
-                else {
-                    scriptEntry.setFinished(true);
-                    rotateRunnable.run();
-                }
+                rotateSchem(schematic, angle.asInt(), delayed, () -> scriptEntry.setFinished(true));
                 break;
             }
             case FLIP_X: {
@@ -461,9 +425,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 try {
                     BlockSet.InputParams input = new BlockSet.InputParams();
                     input.centerLocation = location;
-                    input.noAir = noair != null && noair.asBoolean();
+                    input.noAir = noair;
                     input.fakeTo = fakeTo;
-                    if (fakeTo != null && copyEntities != null && copyEntities.asBoolean()) {
+                    if (fakeTo != null && copyEntities) {
                         Debug.echoError(scriptEntry.getResidingQueue(), "Cannot fake paste entities currently.");
                         scriptEntry.setFinished(true);
                         return;
@@ -489,20 +453,29 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         }
                     }
                     set = schematics.get(name.asString().toUpperCase());
-                    if (delayed != null && delayed.asBoolean()) {
-                        set.setBlocksDelayed(() -> {
-                            if (copyEntities != null && copyEntities.asBoolean()) {
-                                set.pasteEntities(location);
+                    Consumer<CuboidBlockSet> pasteRunnable = (schematic) -> {
+                        if (delayed) {
+                            schematic.setBlocksDelayed(() -> {
+                                if (copyEntities) {
+                                    schematic.pasteEntities(location);
+                                }
+                                scriptEntry.setFinished(true);
+                            }, input, maxDelayMs.asLong());
+                        }
+                        else {
+                            schematic.setBlocks(input);
+                            if (copyEntities) {
+                                schematic.pasteEntities(location);
                             }
                             scriptEntry.setFinished(true);
-                        }, input, maxDelayMs.asLong());
+                        }
+                    };
+                    if (angle != null) {
+                        final CuboidBlockSet newSet = set.duplicate();
+                        rotateSchem(newSet, angle.asInt(), delayed, () -> pasteRunnable.accept(newSet));
                     }
                     else {
-                        set.setBlocks(input);
-                        if (copyEntities != null && copyEntities.asBoolean()) {
-                            set.pasteEntities(location);
-                        }
-                        scriptEntry.setFinished(true);
+                        pasteRunnable.accept(set);
                     }
                 }
                 catch (Exception ex) {
@@ -545,7 +518,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         return;
                     }
                 };
-                if (delayed != null && delayed.asBoolean()) {
+                if (delayed) {
                     Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), saveRunnable);
                 }
                 else {
