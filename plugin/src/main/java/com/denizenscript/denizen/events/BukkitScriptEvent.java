@@ -274,8 +274,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean couldMatchBlockOrItem(String text) {
-        if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion") || text.startsWith("item_flagged:") || text.startsWith("vanilla_tagged:")) {
+        if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion")) {
             return true;
+        }
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (itemCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (MaterialTag.matches(text)) {
             MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
@@ -338,12 +344,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
+    public static HashSet<String> itemCouldMatchPrefixes = new HashSet<>(Arrays.asList("item_flagged", "vanilla_tagged", "item_enchanted", "material_flagged", "raw_exact"));
+
     public boolean couldMatchItem(String text) {
         if (text.equals("item") || text.equals("potion")) {
             return true;
         }
-        if (text.startsWith("item_flagged:") || text.startsWith("vanilla_tagged:")) {
-            return true;
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (itemCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (MaterialTag.matches(text)) {
             MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);

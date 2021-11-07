@@ -61,7 +61,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
         if (!(middleWord.equals("raises") || middleWord.equals("lowers") || middleWord.equals("toggles"))) {
             return false;
         }
-        if (!path.eventArgLowerAt(2).equals("item") && !couldMatchItem(path.eventArgLowerAt(2))) {
+        if (!couldMatchItem(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;
