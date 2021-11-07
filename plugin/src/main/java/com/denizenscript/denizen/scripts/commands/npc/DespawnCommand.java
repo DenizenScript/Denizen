@@ -74,8 +74,7 @@ public class DespawnCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    db("NPCs", npcs.toString()));
+            Debug.report(scriptEntry, getName(), db("NPCs", npcs));
         }
         for (NPCTag npc : npcs) {
             if (npc.getCitizen().hasTrait(Spawned.class)) {

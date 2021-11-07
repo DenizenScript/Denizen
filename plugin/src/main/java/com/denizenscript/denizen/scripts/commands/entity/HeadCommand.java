@@ -67,7 +67,7 @@ public class HeadCommand extends AbstractCommand {
         ElementTag skin = scriptEntry.getElement("skin");
         MaterialTag material = scriptEntry.getObjectTag("material");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("entities", entities.toString()), skin, material);
+            Debug.report(scriptEntry, getName(), db("entities", entities), skin, material);
         }
         ItemStack item = null;
         if (skin != null) {

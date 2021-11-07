@@ -213,7 +213,7 @@ public class ScoreboardCommand extends AbstractCommand {
             displaySlot = new ElementTag("sidebar");
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action, id, viewers != null ? db("viewers", viewers.toString()) : "", objective, lines, score, objective, displaySlot, criteria, displayName, renderType);
+            Debug.report(scriptEntry, getName(), action, id, db("viewers", viewers), objective, lines, score, objective, displaySlot, criteria, displayName, renderType);
         }
         Scoreboard board = null;
         // Get the main scoreboard by default

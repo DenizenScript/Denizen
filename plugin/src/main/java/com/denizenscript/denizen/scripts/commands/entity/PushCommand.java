@@ -183,9 +183,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                         : null);
         // TODO: Should this be checked in argument parsing?
         if (destination == null) {
-            if (scriptEntry.dbCallShouldDebug()) {
-                Debug.report(scriptEntry, getName(), "No destination specified!");
-            }
+            Debug.echoError("No destination specified!");
             scriptEntry.setFinished(true);
             return;
         }
@@ -198,7 +196,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         ElementTag precision = scriptEntry.getElement("precision");
         ElementTag ignore_collision = scriptEntry.getElement("ignore_collision");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("origin", originEntity != null ? originEntity : originLocation),  db("entities", entities.toString()),
+            Debug.report(scriptEntry, getName(), db("origin", originEntity != null ? originEntity : originLocation),  db("entities", entities),
                     destination, speedElement, duration, script, force_along, precision, (no_rotate ? db("no_rotate", "true") : ""), (no_damage ? db("no_damage", "true") : ""),
                     ignore_collision, definitions);
         }

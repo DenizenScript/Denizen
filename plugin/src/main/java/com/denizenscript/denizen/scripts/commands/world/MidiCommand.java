@@ -129,12 +129,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         float tempo = scriptEntry.getElement("tempo").asFloat();
         float volume = scriptEntry.getElement("volume").asFloat();
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", cancel) : "") +
-                    (file != null ? db("file", file.getPath()) : "") +
-                    (entities != null ? db("entities", entities.toString()) : "") +
-                    (location != null ? location.debug() : "") +
-                    db("tempo", tempo) +
-                    db("volume", volume));
+            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", true) : ""), db("file", file.getPath()), db("entities", entities), location, db("tempo", tempo), db("volume", volume));
         }
         // Play the midi
         if (!cancel) {

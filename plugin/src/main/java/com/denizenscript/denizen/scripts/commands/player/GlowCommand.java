@@ -97,7 +97,7 @@ public class GlowCommand extends AbstractCommand {
         final ArrayList<EntityTag> entities = (ArrayList<EntityTag>) scriptEntry.getObject("entities");
         ElementTag glowing = scriptEntry.getElement("glowing");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("entities", entities) + glowing.debug());
+            Debug.report(scriptEntry, getName(), db("entities", entities), glowing);
         }
         boolean shouldGlow = glowing.asBoolean();
         final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getUUID();

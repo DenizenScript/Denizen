@@ -121,11 +121,7 @@ public class ActionBarCommand extends AbstractCommand {
             text = TagManager.tag(text, context);
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    db("Message", text)
-                            + db("Targets", targets)
-                            + (formatObj != null ? formatObj.debug() : "")
-                            + (perPlayerObj != null ? perPlayerObj.debug() : ""));
+            Debug.report(scriptEntry, getName(), db("message", text), db("targets", targets), formatObj, perPlayerObj);
         }
         FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
         for (PlayerTag player : targets) {

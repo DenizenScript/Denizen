@@ -63,9 +63,7 @@ public class OpenTradesCommand extends AbstractCommand {
     // -->
 
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
                     && arg.matchesArgumentList(TradeTag.class)) {
@@ -86,35 +84,22 @@ public class OpenTradesCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         if (!scriptEntry.hasObject("trades") && !scriptEntry.hasObject("entity")) {
             throw new InvalidArgumentsException("Must specify a villager entity or a list of trades for the player(s) to trade with!");
         }
-
         scriptEntry.defaultObject("title", new ElementTag(""))
                 .defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
-
     }
 
     public void execute(ScriptEntry scriptEntry) {
-
-        String title = scriptEntry.getElement("title").asString();
+        ElementTag title = scriptEntry.getElement("title");
         EntityTag entity = scriptEntry.getObjectTag("entity");
         List<TradeTag> trades = (List<TradeTag>) scriptEntry.getObject("trades");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(),
-                    (entity != null ? db("entity", entity) : "")
-                            + (trades != null ? db("trades", trades) : "")
-                            + (title.isEmpty() ? db("title", title) : "")
-                            + db("players", players));
-
+            Debug.report(scriptEntry, getName(), entity, db("trades", trades), title, db("players", players));
         }
-
         if (entity != null) {
             if (players.size() > 1) {
                 Debug.echoError("No more than one player can access the same entity!");
@@ -133,15 +118,13 @@ public class OpenTradesCommand extends AbstractCommand {
             Debug.echoError("The specified entity isn't a merchant!");
             return;
         }
-
         List<MerchantRecipe> recipes = new ArrayList<>();
         for (TradeTag trade : trades) {
             recipes.add(trade.getRecipe());
         }
-
         for (PlayerTag player : players) {
             if (player.isValid() && player.isOnline()) {
-                Merchant merchant = Bukkit.createMerchant(title);
+                Merchant merchant = Bukkit.createMerchant(title.asString());
                 merchant.setRecipes(recipes);
                 player.getPlayerEntity().openMerchant(merchant, true);
             }

@@ -208,11 +208,11 @@ public class SidebarCommand extends AbstractCommand {
             if (elStart != null) {
                 perStart = elStart.asString();
             }
-            debug = (elTitle != null ? elTitle.debug() : "") +
+            debug = scriptEntry.dbCallShouldDebug() ? ((elTitle != null ? elTitle.debug() : "") +
                     (elScores != null ? elScores.debug() : "") +
                     (elValue != null ? elValue.debug() : "") +
                     (elIncrement != null ? elIncrement.debug() : "") +
-                    (elStart != null ? elStart.debug() : "");
+                    (elStart != null ? elStart.debug() : "")) : null;
         }
         else {
             BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
@@ -231,14 +231,14 @@ public class SidebarCommand extends AbstractCommand {
             if (elStart != null) {
                 start = new ElementTag(TagManager.tag(elStart.asString(), context));
             }
-            debug = (title != null ? title.debug() : "") +
+            debug = scriptEntry.dbCallShouldDebug() ? ((title != null ? title.debug() : "") +
                     (scores != null ? db("scores", scores) : "") +
                     (value != null ? db("value", value) : "") +
                     (increment != null ? increment.debug() : "") +
-                    (start != null ? start.debug() : "");
+                    (start != null ? start.debug() : "")) : null;
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action.debug() + debug + db("players", players.debuggable()));
+            Debug.report(scriptEntry, getName(), action, debug, db("players", players));
         }
         switch (Action.valueOf(action.asString())) {
             case ADD:

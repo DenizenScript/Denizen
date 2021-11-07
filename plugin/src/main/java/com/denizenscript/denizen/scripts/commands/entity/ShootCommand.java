@@ -214,9 +214,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                         originLocation.getDirection().multiply(30))) : null));
         // TODO: Same as PUSH -- is this the place to do this?
         if (destination == null) {
-            if (scriptEntry.dbCallShouldDebug()) {
-                Debug.report(scriptEntry, getName(), "No destination specified!");
-            }
+            Debug.echoError("No destination specified!");
             return;
         }
         final List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");

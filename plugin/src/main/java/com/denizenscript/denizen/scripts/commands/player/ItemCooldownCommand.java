@@ -59,9 +59,7 @@ public class ItemCooldownCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("materials")
                     && (arg.matchesArgumentType(MaterialTag.class)
                     || arg.matchesArgumentType(ListTag.class))) {
@@ -76,32 +74,24 @@ public class ItemCooldownCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("materials")) {
             throw new InvalidArgumentsException("Missing materials argument!");
         }
-
         scriptEntry.defaultObject("duration", new DurationTag(1));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         ArrayList<MaterialTag> materials = (ArrayList<MaterialTag>) scriptEntry.getObject("materials");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
-
         if (player == null) {
             Debug.echoError("Invalid linked player.");
             return;
         }
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), db("materials", materials) + duration.debug());
-
+            Debug.report(scriptEntry, getName(), db("materials", materials), duration);
         }
-
         for (MaterialTag mat : materials) {
             player.getPlayerEntity().setCooldown(mat.getMaterial(), duration.getTicksAsInt());
         }

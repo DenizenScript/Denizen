@@ -106,11 +106,7 @@ public class AdjustBlockCommand extends AbstractCommand {
         ElementTag noPhysics = scriptEntry.getElement("no_physics");
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                            db("locations", locations)
-                            + mechanismName.debug()
-                            + (noPhysics == null ? "" : noPhysics.debug())
-                            + (value == null ? "" : value.debug()));
+            Debug.report(scriptEntry, getName(), db("locations", locations), mechanismName, noPhysics, value);
         }
         boolean doPhysics = noPhysics == null || !noPhysics.asBoolean();
         for (LocationTag location : locations) {

@@ -114,9 +114,7 @@ public class FakeSpawnCommand extends AbstractCommand {
         DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag cancel = scriptEntry.getElement("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), entity.debug()
-                    + (cancel != null ? cancel.debug() : location.debug() + duration.debug())
-                    + db("players", players));
+            Debug.report(scriptEntry, getName(), entity, cancel, location, duration, db("players", players));
         }
         if (cancel != null && cancel.asBoolean()) {
             if (entity.isFake) {

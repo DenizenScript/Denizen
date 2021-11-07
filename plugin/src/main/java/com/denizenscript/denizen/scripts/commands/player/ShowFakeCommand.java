@@ -139,10 +139,7 @@ public class ShowFakeCommand extends AbstractCommand {
         List<LocationTag> locations = (List<LocationTag>) scriptEntry.getObject("locations");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), duration.debug() + cancel.debug()
-                    + (materials != null ? db("materials", materials) : "")
-                    + db("locations", locations)
-                    + db("players", players));
+            Debug.report(scriptEntry, getName(), duration, cancel, db("materials", materials), db("locations", locations), db("players", players));
         }
         boolean shouldCancel = cancel.asBoolean();
         int i = 0;

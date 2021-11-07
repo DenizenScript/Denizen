@@ -205,13 +205,7 @@ public class AdvancementCommand extends AbstractCommand {
         ElementTag y = scriptEntry.getElement("y");
         ElementTag progressLength = scriptEntry.getElement("progress_length");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, name, id.debug() + (parent != null ? parent.debug() : "")
-                    + (delete != null ? delete.debug() : "") + (grant != null ? grant.debug() : "")
-                    + (revoke != null ? revoke.debug() : "")
-                    + icon.debug() + title.debug() + description.debug()
-                    + (background != null ? background.debug() : "")
-                    + (progressLength != null ? progressLength.debug() : "")
-                    + frame.debug() + toast.debug() + announce.debug() + hidden.debug() + x.debug() + y.debug());
+            Debug.report(scriptEntry, name, id, parent, delete, grant, revoke, icon, title, description, background, progressLength, frame, toast, announce, hidden, x, y);
         }
         final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
         NamespacedKey key = new NamespacedKey(Denizen.getInstance(), id.asString());

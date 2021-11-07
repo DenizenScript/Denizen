@@ -85,7 +85,7 @@ public class OxygenCommand extends AbstractCommand {
         ElementTag mode = scriptEntry.getElement("mode");
         ElementTag amount = scriptEntry.getElement("amount");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
+            Debug.report(scriptEntry, getName(), type, mode, amount);
         }
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
         switch (Type.valueOf(type.asString().toUpperCase())) {

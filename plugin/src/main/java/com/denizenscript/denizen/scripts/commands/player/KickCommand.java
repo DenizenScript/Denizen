@@ -70,9 +70,7 @@ public class KickCommand extends AbstractCommand {
         ElementTag reason = scriptEntry.getElement("reason");
         List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    db("targets", targets) +
-                            reason.debug());
+            Debug.report(scriptEntry, getName(), db("targets", targets), reason);
         }
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {

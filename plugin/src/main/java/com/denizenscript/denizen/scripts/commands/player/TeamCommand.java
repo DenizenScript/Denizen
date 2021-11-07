@@ -150,15 +150,7 @@ public class TeamCommand extends AbstractCommand {
         ElementTag status = scriptEntry.getElement("status");
         ElementTag color = scriptEntry.getElement("color");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    id.debug() +
-                            name.debug() +
-                            (add != null ? add.debug() : "") +
-                            (remove != null ? remove.debug() : "") +
-                            (prefix != null ? prefix.debug() : "") +
-                            (suffix != null ? suffix.debug() : "") +
-                            (color != null ? color.debug() : "") +
-                            (option != null ? option.debug() + status.debug() : ""));
+            Debug.report(scriptEntry, getName(), id, name, add, remove, prefix, suffix, color, option, status);
         }
         Scoreboard board;
         if (id.asString().equalsIgnoreCase("main")) {

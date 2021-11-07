@@ -135,7 +135,7 @@ public class FlyCommand extends AbstractCommand {
                         if (entities.get(entities.size() - 1) != entity) {
                             controller = entity;
                             if (scriptEntry.dbCallShouldDebug()) {
-                                Debug.report(scriptEntry, getName(), "Flight control defaulting to " + controller);
+                                Debug.echoDebug(scriptEntry, "Flight control defaulting to " + controller);
                             }
                             break;
                         }
@@ -144,7 +144,7 @@ public class FlyCommand extends AbstractCommand {
                 // If the controller is still null, we cannot continue
                 if (controller == null) {
                     if (scriptEntry.dbCallShouldDebug()) {
-                        Debug.report(scriptEntry, getName(), "There is no one to control the flight's path!");
+                        Debug.echoDebug(scriptEntry, "There is no one to control the flight's path!");
                     }
                     return;
                 }
@@ -162,7 +162,7 @@ public class FlyCommand extends AbstractCommand {
                 // Add the controller to the entity list
                 if (!found) {
                     if (scriptEntry.dbCallShouldDebug()) {
-                        Debug.report(scriptEntry, getName(), "Adding controller " + controller + " to flying entities.");
+                        Debug.echoDebug(scriptEntry, "Adding controller " + controller + " to flying entities.");
                     }
                     entities.add(0, controller);
                 }
@@ -172,13 +172,8 @@ public class FlyCommand extends AbstractCommand {
         final float rotationThreshold = ((ElementTag) scriptEntry.getObject("rotation_threshold")).asFloat();
         boolean cancel = scriptEntry.hasObject("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", cancel) : "") +
-                    db("origin", origin) +
-                    db("entities", entities.toString()) +
-                    db("speed", speed) +
-                    db("rotation threshold degrees", rotationThreshold) +
-                    (freeflight ? db("controller", controller)
-                            : db("destinations", destinations.toString())));
+            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", true) : ""), origin, db("entities", entities),
+                    db("speed", speed), db("rotation threshold degrees", rotationThreshold), (freeflight ? controller : db("destinations", destinations)));
         }
         if (!cancel) {
             for (EntityTag entity : entities) {

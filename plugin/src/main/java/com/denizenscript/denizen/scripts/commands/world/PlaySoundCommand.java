@@ -135,8 +135,7 @@ public class PlaySoundCommand extends AbstractCommand {
         ElementTag custom = scriptEntry.getElement("custom");
         ElementTag sound_category = scriptEntry.getElement("sound_category");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (locations != null ? db("locations", locations) : ""),
-                    (players != null ? db("entities", players) : ""), soundElement, volumeElement, pitchElement, custom);
+            Debug.report(scriptEntry, getName(), db("locations", locations), db("entities", players), soundElement, volumeElement, pitchElement, custom);
         }
         String sound = soundElement.asString();
         float volume = volumeElement.asFloat();

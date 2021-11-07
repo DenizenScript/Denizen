@@ -155,12 +155,7 @@ public class DropCommand extends AbstractCommand {
         EntityTag entity = scriptEntry.getObjectTag("entity");
         DurationTag delay = scriptEntry.getObjectTag("delay");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    action.debug() + location.debug() + quantity.debug()
-                            + (items != null ? db("items", items) : "")
-                            + (entity != null ? entity.debug() : "")
-                            + (speed != null ? speed.debug() : "")
-                            + (delay != null ? delay.debug() : ""));
+            Debug.report(scriptEntry, getName(), action, location, quantity, db("items", items), entity, speed, delay);
         }
         ListTag entityList = new ListTag();
         switch (Action.valueOf(action.asString())) {

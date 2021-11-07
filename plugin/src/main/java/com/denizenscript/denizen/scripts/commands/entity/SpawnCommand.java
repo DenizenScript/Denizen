@@ -117,7 +117,7 @@ public class SpawnCommand extends AbstractCommand {
         ElementTag spread = scriptEntry.getElement("spread");
         boolean persistent = scriptEntry.hasObject("persistent");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("entities", entities.toString()), location, spread, target, (persistent ? db("persistent", "true") : ""));
+            Debug.report(scriptEntry, getName(), db("entities", entities), location, spread, target, (persistent ? db("persistent", "true") : ""));
         }
         // Keep a ListTag of entities that can be called using <entry[name].spawned_entities> later in the script queue
         ListTag entityList = new ListTag();

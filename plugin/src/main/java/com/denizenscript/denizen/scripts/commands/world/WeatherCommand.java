@@ -80,9 +80,7 @@ public class WeatherCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
@@ -104,15 +102,10 @@ public class WeatherCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("value")) {
             throw new InvalidArgumentsException("Must specify a value!");
         }
-
         scriptEntry.defaultObject("type", Type.GLOBAL);
-
-        // If the world has not been specified, try to use the NPC's or player's
-        // world, or default to "world" if necessary
         scriptEntry.defaultObject("world", Utilities.entryDefaultWorld(scriptEntry, false));
     }
 
@@ -124,15 +117,11 @@ public class WeatherCommand extends AbstractCommand {
         WorldTag world = scriptEntry.getObjectTag("world");
         Type type = (Type) scriptEntry.getObject("type");
         DurationTag resetAfter = scriptEntry.getObjectTag("reset_after");
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("type", type.name())
-                    + (type.name().equalsIgnoreCase("player") ? db("player", Utilities.getEntryPlayer(scriptEntry)) : "")
-                    + (type.name().equalsIgnoreCase("global") ? db("world", world) : "")
-                    + (resetAfter != null ? resetAfter.debug() : "")
-                    + db("value", value));
+            Debug.report(scriptEntry, getName(), db("type", type.name()),
+                    (type.name().equalsIgnoreCase("player") ? db("player", Utilities.getEntryPlayer(scriptEntry)) : ""),
+                    (type.name().equalsIgnoreCase("global") ? db("world", world) : ""), resetAfter, db("value", value));
         }
-
         if (type.equals(Type.GLOBAL)) {
             switch (value) {
                 case SUNNY:

@@ -265,7 +265,7 @@ public class InventoryCommand extends AbstractCommand {
         DataAction flagAction = (DataAction) scriptEntry.getObject("flag_action");
         TimeTag expiration = scriptEntry.getObjectTag("expiration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("actions", actions.toString()), destination, origin, mechanism, mechanismValue, flagAction, expiration, slot);
+            Debug.report(scriptEntry, getName(), db("actions", actions), destination, origin, mechanism, mechanismValue, flagAction, expiration, slot);
         }
         int slotId = SlotHelper.nameToIndexFor(slot.asString(), destination.getInventory().getHolder());
         if (slotId < 0) {

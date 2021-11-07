@@ -115,14 +115,7 @@ public class TitleCommand extends AbstractCommand {
             subtitle = TagManager.tag(subtitle, context);
         }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    db("title", title)
-                            + db("subtitle", subtitle)
-                            + fade_in.debug()
-                            + stay.debug()
-                            + fade_out.debug()
-                            + db("targets", targets)
-                            + (perPlayerObj != null ? perPlayerObj.debug() : ""));
+            Debug.report(scriptEntry, getName(), db("title", title), db("subtitle", subtitle), fade_in, stay, fade_out, db("targets", targets), perPlayerObj);
         }
         for (PlayerTag player : targets) {
             if (player != null) {

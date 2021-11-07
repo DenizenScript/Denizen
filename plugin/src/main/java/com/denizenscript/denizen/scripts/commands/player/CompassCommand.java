@@ -67,9 +67,7 @@ public class CompassCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
@@ -82,7 +80,6 @@ public class CompassCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
@@ -92,15 +89,12 @@ public class CompassCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag reset = scriptEntry.getElement("reset");
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (location != null ? location.debug() : "") + reset.debug());
+            Debug.report(scriptEntry, getName(), location, reset);
         }
-
         if (reset.asBoolean()) {
             Location bed = player.getBedSpawnLocation();
             player.setCompassTarget(bed != null ? bed : player.getWorld().getSpawnLocation());
@@ -108,7 +102,6 @@ public class CompassCommand extends AbstractCommand {
         else {
             player.setCompassTarget(location);
         }
-
     }
 }
 

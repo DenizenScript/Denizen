@@ -119,7 +119,7 @@ public class LookCommand extends AbstractCommand {
         ElementTag pitch = scriptEntry.getElement("pitch");
         ElementTag cancel = scriptEntry.getElement("cancel");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), cancel, loc, duration, yaw, pitch, db("entities", entities.toString()));
+            Debug.report(scriptEntry, getName(), cancel, loc, duration, yaw, pitch, db("entities", entities));
         }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
