@@ -31,6 +31,7 @@ public class ExecuteCommand extends AbstractCommand {
         setSyntax("execute [as_player/as_op/as_npc/as_server] [<Bukkit-command>] (silent)");
         setRequiredArguments(2, 3);
         isProcedural = false;
+        setBooleansHandled("silent");
     }
 
     // <--[command]
@@ -102,10 +103,6 @@ public class ExecuteCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", new ElementTag("AS_SERVER"));
             }
-            else if (!scriptEntry.hasObject("silent")
-                    && arg.matches("silent")) {
-                scriptEntry.addObject("silent", new ElementTag("true"));
-            }
             else if (!scriptEntry.hasObject("command")) {
                 scriptEntry.addObject("command", new ElementTag(arg.getRawValue()));
             }
@@ -119,16 +116,15 @@ public class ExecuteCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("command")) {
             throw new InvalidArgumentsException("Missing command text!");
         }
-        scriptEntry.defaultObject("silent", new ElementTag("false"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag cmd = scriptEntry.getElement("command");
         ElementTag type = scriptEntry.getElement("type");
-        ElementTag silent = scriptEntry.getElement("silent");
+        boolean silent = scriptEntry.argAsBoolean("silent");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type, cmd, silent);
+            Debug.report(scriptEntry, getName(), type, cmd, db("silent", silent));
         }
         String command = cmd.asString();
         switch (Type.valueOf(type.asString())) {
@@ -137,15 +133,14 @@ public class ExecuteCommand extends AbstractCommand {
                     PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity(), "/" + command);
                     Bukkit.getPluginManager().callEvent(pcpe);
                     if (!pcpe.isCancelled()) {
-                        boolean silentBool = silent.asBoolean();
                         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-                        if (silentBool) {
+                        if (silent) {
                             NetworkInterceptHelper.enable();
                             silencedPlayers.add(player.getUniqueId());
                         }
                         player.performCommand(pcpe.getMessage().startsWith("/") ?
                                 pcpe.getMessage().substring(1) : pcpe.getMessage());
-                        if (silentBool) {
+                        if (silent) {
                             silencedPlayers.remove(player.getUniqueId());
                         }
                     }
@@ -170,14 +165,13 @@ public class ExecuteCommand extends AbstractCommand {
                     PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(player, "/" + command);
                     Bukkit.getPluginManager().callEvent(pcpe);
                     if (!pcpe.isCancelled()) {
-                        boolean silentBool = silent.asBoolean();
-                        if (silentBool) {
+                        if (silent) {
                             NetworkInterceptHelper.enable();
                             silencedPlayers.add(player.getUniqueId());
                         }
                         player.performCommand(pcpe.getMessage().startsWith("/") ?
                                 pcpe.getMessage().substring(1) : pcpe.getMessage());
-                        if (silentBool) {
+                        if (silent) {
                             silencedPlayers.remove(player.getUniqueId());
                         }
                     }
@@ -211,7 +205,7 @@ public class ExecuteCommand extends AbstractCommand {
                 break;
             case AS_SERVER:
                 dcs.clearOutput();
-                dcs.silent = silent.asBoolean();
+                dcs.silent = silent;
                 ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
                 Bukkit.getPluginManager().callEvent(sce);
                 Denizen.getInstance().getServer().dispatchCommand(dcs, sce.getCommand());
