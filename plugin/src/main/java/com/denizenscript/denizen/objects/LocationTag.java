@@ -1637,6 +1637,31 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.precise_target_list[<range>]>
+        // @returns ListTag(EntityTag)
+        // @description
+        // Returns a list of all entities this location is pointing directly at (using precise ray trace logic), up to a given range limit.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "precise_target_list", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            double range = attribute.getDoubleParam();
+            HashSet<UUID> hitIDs = new HashSet<>();
+            ListTag result = new ListTag();
+            Vector direction = object.getDirection();
+            World world = object.getWorld();
+            while (true) {
+                RayTraceResult hit = world.rayTrace(object, direction, range, FluidCollisionMode.NEVER, true, 0, (e) -> !hitIDs.contains(e.getUniqueId()));
+                if (hit == null || hit.getHitEntity() == null) {
+                    return result;
+                }
+                hitIDs.add(hit.getHitEntity().getUniqueId());
+                result.addObject(new EntityTag(hit.getHitEntity()));
+            }
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.precise_target[(<range>)]>
         // @returns EntityTag
         // @description
