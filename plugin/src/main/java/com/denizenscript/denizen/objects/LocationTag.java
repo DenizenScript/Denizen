@@ -749,7 +749,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!loc.isChunkLoaded()) {
                 return;
             }
-            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !BukkitScriptEvent.tryMaterial(loc.getBlock().getType(), matcher)) {
+            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !BukkitScriptEvent.tryLocation(loc, matcher)) {
                 return;
             }
             result.add(loc);
@@ -2166,7 +2166,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 // @returns ListTag(LocationTag)
                 // @description
                 // Returns the set of all blocks, starting at the given location,
-                // that can be directly reached in a way that only travels through blocks of the specified material type(s).
+                // that can be directly reached in a way that only travels through blocks that match the given LocationTag matcher.
                 // This will not travel diagonally, only the 6 cardinal directions (N/E/S/W/Up/Down).
                 // As this is potentially infinite for some block types (like air, stone, etc.) should there be any opening however small, a limit must be given.
                 // The limit value can be: a CuboidTag, an EllipsoidTag, or an ElementTag(Decimal) to use as a radius.
