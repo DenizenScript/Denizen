@@ -137,8 +137,14 @@ public class Denizen extends JavaPlugin {
                 || javaVersion.startsWith("12") || javaVersion.startsWith("13") || javaVersion.startsWith("14") || javaVersion.startsWith("15")) {
             getLogger().warning("Running unreliable Java version. Old Minecraft is built for Java 8, modern Minecraft is built for Java 16. Other Java versions are not guaranteed to function properly.");
         }
-        else {
+        else if (javaVersion.startsWith("16")) {
             getLogger().info("Running on fully supported Java 16.");
+        }
+        else if (javaVersion.startsWith("17")) {
+            getLogger().info("Running on probably(?) supported Java 17. Denizen is primarily tested against Java 16, not 17. If something breaks, try Java 16 instead.");
+        }
+        else {
+            getLogger().info("Running on unrecognized (future?) Java version. May or may not work.");
         }
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
