@@ -59,7 +59,7 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("loads") || !path.eventArgLowerAt(2).equals("crossbow")) {
+        if (!path.eventArgsLowEqualStartingAt(1, "loads", "crossbow")) {
             return false;
         }
         if (!couldMatchEntity(path.eventArgLowerAt(0))) {

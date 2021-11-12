@@ -57,7 +57,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         if (path.eventArgLowerAt(1).equals("crafted")) {
             return true;
         }
-        if (!path.eventArgLowerAt(1).equals("recipe") || !path.eventArgLowerAt(2).equals("formed")) {
+        if (!path.eventArgsLowEqualStartingAt(1, "recipe", "formed")) {
             return false;
         }
         if (!couldMatchItem(path.eventArgLowerAt(0))) {

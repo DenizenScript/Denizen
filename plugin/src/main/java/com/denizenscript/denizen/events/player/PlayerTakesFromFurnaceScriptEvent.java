@@ -49,7 +49,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player takes") || !path.eventArgLowerAt(3).equals("from") || !path.eventArgLowerAt(4).equals("furnace")) {
+        if (!path.eventLower.startsWith("player takes") || !path.eventArgsLowEqualStartingAt(3, "from", "furnace")) {
             return false;
         }
         if (!couldMatchItem(path.eventArgLowerAt(2))) {

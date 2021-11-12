@@ -48,7 +48,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("collides") || !path.eventArgLowerAt(2).equals("with")) {
+        if (!path.eventArgsLowEqualStartingAt(1, "collides", "with")) {
             return false;
         }
         if (!couldMatchEntity(path.eventArgLowerAt(0)) || !couldMatchEntity(path.eventArgLowerAt(3))) {

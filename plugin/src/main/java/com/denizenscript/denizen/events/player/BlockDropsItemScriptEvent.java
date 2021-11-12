@@ -51,7 +51,7 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("drops") || !path.eventArgLowerAt(3).equals("from") || !path.eventArgLowerAt(4).equals("breaking")) {
+        if (!path.eventArgsLowEqualStartingAt(1, "drops", "from", "breaking")) {
             return false;
         }
         if (!couldMatchBlock(path.eventArgLowerAt(0))) {

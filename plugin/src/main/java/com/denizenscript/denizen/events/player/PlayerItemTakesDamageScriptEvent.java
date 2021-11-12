@@ -61,7 +61,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         if (!path.eventArgLowerAt(0).equals("player")) {
             return false;
         }
-        if (!path.eventArgLowerAt(2).equals("takes") || !path.eventArgLowerAt(3).equals("damage")) {
+        if (!path.eventArgsLowEqualStartingAt(2, "takes", "damage")) {
             return false;
         }
         if (!couldMatchItem(path.eventArgLowerAt(1))) {

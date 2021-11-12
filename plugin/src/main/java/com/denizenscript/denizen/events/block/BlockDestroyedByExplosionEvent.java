@@ -56,7 +56,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("destroyed") || !path.eventArgLowerAt(2).equals("by") || !path.eventArgLowerAt(3).equals("explosion")) {
+        if (!path.eventArgsLowEqualStartingAt(1, "destroyed", "by", "explosion")) {
             return false;
         }
         if (!couldMatchBlock(path.eventArgLowerAt(0))) {

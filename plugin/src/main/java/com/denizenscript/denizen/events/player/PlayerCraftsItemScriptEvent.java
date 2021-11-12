@@ -60,7 +60,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("player") || !path.eventArgLowerAt(1).equals("crafts")) {
+        if (!path.eventArgsLowEqualStartingAt(0, "player", "crafts")) {
             return false;
         }
         if (!couldMatchItem(path.eventArgLowerAt(2))) {
