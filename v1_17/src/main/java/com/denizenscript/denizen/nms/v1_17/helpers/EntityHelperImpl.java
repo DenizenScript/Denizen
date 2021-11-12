@@ -670,7 +670,7 @@ public class EntityHelperImpl extends EntityHelper {
         // Bypass Spigot's must-be-at-least-1-tick requirement, as negative tick counts are useful
         ((CraftEntity) entity).getHandle().tickCount = ticks;
         if (entity instanceof CraftFallingBlock) {
-            ((CraftFallingBlock) entity).getHandle().tickCount = ticks;
+            ((CraftFallingBlock) entity).getHandle().time = ticks;
         }
         else if (entity instanceof CraftItem) {
             ((ItemEntity) ((CraftItem) entity).getHandle()).age = ticks;
