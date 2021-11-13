@@ -74,7 +74,7 @@ public class DenizenCommandHandler {
             return;
         }
         Messaging.send(sender, "Submitting...");
-        DenizenCore.getImplementation().submitRecording((s) -> {
+        DenizenCore.implementation.submitRecording((s) -> {
             if (s == null) {
                 Messaging.sendError(sender, "Error while submitting.");
             }

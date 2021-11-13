@@ -26,6 +26,8 @@ public class ScriptEventRegistry {
 
     public static void registerMainEvents() {
 
+        ScriptEvent.extraMatchers.add(BukkitScriptEvent::runAutomaticPlayerSwitches);
+
         // Block events
         ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
         ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());

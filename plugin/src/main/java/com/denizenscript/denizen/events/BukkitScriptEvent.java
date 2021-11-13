@@ -828,11 +828,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean runFlaggedCheck(ScriptPath path, PlayerTag player) {
+    public static boolean runFlaggedCheck(ScriptPath path, PlayerTag player) {
         return runFlaggedCheck(path, "flagged", player);
     }
 
-    public boolean runFlaggedCheck(ScriptPath path, String switchName, PlayerTag player) {
+    public static boolean runFlaggedCheck(ScriptPath path, String switchName, PlayerTag player) {
         String flagged = path.switches.get(switchName);
         if (flagged == null) {
             return true;
@@ -843,11 +843,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return coreFlaggedCheck(flagged, player.getFlagTracker());
     }
 
-    public boolean runPermissionCheck(ScriptPath path, PlayerTag player) {
+    public static boolean runPermissionCheck(ScriptPath path, PlayerTag player) {
         return runPermissionCheck(path, "permission", player);
     }
 
-    public boolean runPermissionCheck(ScriptPath path, String switchName, PlayerTag player) {
+    public static boolean runPermissionCheck(ScriptPath path, String switchName, PlayerTag player) {
         String perm = path.switches.get(switchName);
         if (perm == null) {
             return true;
@@ -863,11 +863,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean runAutomaticPlayerSwitches(ScriptPath path) {
+    public static boolean runAutomaticPlayerSwitches(ScriptEvent event, ScriptPath path) {
         if (!path.switches.containsKey("flagged") && !path.switches.containsKey("permission")) {
             return true;
         }
-        BukkitScriptEntryData data = (BukkitScriptEntryData) getScriptEntryData();
+        BukkitScriptEntryData data = (BukkitScriptEntryData) event.getScriptEntryData();
         if (!data.hasPlayer()) {
             return false;
         }
@@ -878,14 +878,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public boolean matches(ScriptPath path) {
-        if (!runAutomaticPlayerSwitches(path)) {
-            return false;
-        }
-        return super.matches(path);
     }
 
     // <--[language]
