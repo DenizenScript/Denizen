@@ -864,7 +864,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Decimal)
         // @mechanism PlayerTag.exhaustion
         // @description
-        // Returns how fast the food level drops (exhaustion).
+        // Returns the player's exhaustion value. Exhaustion is increased in vanilla when a player sprints or jumps, and is used to reduce food saturation over time.
+        // This can reach a maximum value of 40, and decreases by 4 every tick.
         // -->
         tagProcessor.registerTag(ElementTag.class, "exhaustion", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getExhaustion());
