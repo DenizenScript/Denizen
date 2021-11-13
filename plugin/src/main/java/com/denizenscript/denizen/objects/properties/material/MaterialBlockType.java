@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -9,6 +11,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Campfire;
+import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.TechnicalPiston;
 
@@ -25,7 +28,8 @@ public class MaterialBlockType implements Property {
         BlockData data = mat.getModernData();
         return data instanceof Slab
                 || data instanceof TechnicalPiston
-                || data instanceof Campfire;
+                || data instanceof Campfire
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone);
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -59,9 +63,10 @@ public class MaterialBlockType implements Property {
         // For slabs, output is TOP, BOTTOM, or DOUBLE.
         // For piston_heads, output is NORMAL or STICKY.
         // For campfires, output is NORMAL or SIGNAL.
+        // For pointed dripstone, output is BASE, FRUSTUM, MIDDLE, TIP, or TIP_MERGE.
         // -->
         PropertyParser.<MaterialBlockType, ElementTag>registerStaticTag(ElementTag.class, "type", (attribute, material) -> {
-            return new ElementTag(material.getSlab().getType().name());
+            return new ElementTag(material.getPropertyString());
         }, "slab_type");
     }
 
@@ -77,6 +82,10 @@ public class MaterialBlockType implements Property {
         return material.getModernData() instanceof Campfire;
     }
 
+    public boolean isDripstone() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof PointedDripstone;
+    }
+
     public Slab getSlab() {
         return (Slab) material.getModernData();
     }
@@ -89,17 +98,25 @@ public class MaterialBlockType implements Property {
         return (Campfire) material.getModernData();
     }
 
+    public PointedDripstone getDripstone() {
+        return (PointedDripstone) material.getModernData();
+    }
+
     @Override
     public String getPropertyString() {
         if (isSlab()) {
-            return String.valueOf(getSlab().getType());
+            return getSlab().getType().name();
         }
         else if (isCampfire()) {
             return getCampfire().isSignalFire() ? "SIGNAL" : "NORMAL";
         }
-        else {
-            return String.valueOf(getPistonHead().getType());
+        else if (isPistonHead()) {
+            return getPistonHead().getType().name();
         }
+        else if (isDripstone()) {
+            return getDripstone().getThickness().name();
+        }
+        return null; // Unreachable.
     }
 
     @Override
@@ -119,6 +136,7 @@ public class MaterialBlockType implements Property {
         // For slabs, input is TOP, BOTTOM, or DOUBLE.
         // For piston_heads, input is NORMAL or STICKY.
         // For campfires, input is NORMAL or SIGNAL.
+        // For pointed dripstone, input is BASE, FRUSTUM, MIDDLE, TIP, or TIP_MERGE.
         // @tags
         // <MaterialTag.type>
         // -->
@@ -131,6 +149,9 @@ public class MaterialBlockType implements Property {
             }
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isDripstone() && mechanism.requireEnum(false, PointedDripstone.Thickness.values())) {
+                getDripstone().setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
         }
     }
