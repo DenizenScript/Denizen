@@ -4362,4 +4362,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        return BukkitScriptEvent.tryLocation(this, matcher);
+    }
 }

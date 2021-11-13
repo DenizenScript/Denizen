@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
@@ -1849,5 +1850,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 new EntityTag(getEntity()).adjust(mechanism);
             }
         }
+    }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        return isSpawned() && BukkitScriptEvent.tryEntity(getDenizenEntity(), matcher);
     }
 }

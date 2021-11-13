@@ -684,4 +684,9 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        return BukkitScriptEvent.tryMaterial(this, matcher);
+    }
 }

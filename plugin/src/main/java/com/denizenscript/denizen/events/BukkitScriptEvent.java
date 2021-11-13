@@ -81,7 +81,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // "location_in:<area>": runs AreaObject checks, as defined below.
     // If none of the above are used, and the location is at a real block, a MaterialTag matchable is used. Refer to MaterialTag matchable list above.
     //
-    // AreaObject matchers (applies to CuboidTag, EllipsoidTag, PolygonTag, ...), sometimes identified as "<area>":
+    // AreaObject matchers (applies to CuboidTag, EllipsoidTag, PolygonTag, ...), sometimes identified as "<area>": (Note: this is internally always sourced from a LocationTag instance, not a raw area object!)
     // "biome:<name>": matches if the location is in a given biome, using advanced matchers.
     // "cuboid" plaintext: matches if the location is in any noted cuboid.
     // "ellipsoid" plaintext: matches if the location is in any noted ellipsoid.

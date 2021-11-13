@@ -3920,4 +3920,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        return BukkitScriptEvent.tryEntity(this, matcher);
+    }
 }

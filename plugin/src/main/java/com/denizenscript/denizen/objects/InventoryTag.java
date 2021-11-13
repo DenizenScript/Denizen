@@ -2473,4 +2473,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
         }
     }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        return BukkitScriptEvent.tryInventory(this, matcher);
+    }
 }

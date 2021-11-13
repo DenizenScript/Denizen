@@ -3747,6 +3747,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
         }
+    }
 
+    @Override
+    public boolean advancedMatches(String matcher) {
+        return isOnline() && BukkitScriptEvent.tryEntity(getDenizenEntity(), matcher);
     }
 }
