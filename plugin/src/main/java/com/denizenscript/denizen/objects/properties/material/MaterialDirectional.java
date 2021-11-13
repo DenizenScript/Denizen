@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -11,6 +13,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.util.Vector;
 
 public class MaterialDirectional implements Property {
@@ -24,7 +27,8 @@ public class MaterialDirectional implements Property {
             return false;
         }
         BlockData data = mat.getModernData();
-        if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable || data instanceof Rail)) {
+        if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable || data instanceof Rail
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone))) {
             return false;
         }
         return true;
@@ -77,7 +81,12 @@ public class MaterialDirectional implements Property {
                     toReturn.add(face.name());
                 }
             }
-            else {
+            else if (material.isDripstone()) {
+                for (BlockFace face : material.getDripstone().getVerticalDirections()) {
+                    toReturn.add(face.name());
+                }
+            }
+            else { // applies to rotatable
                 return null;
             }
             return toReturn;
@@ -136,9 +145,13 @@ public class MaterialDirectional implements Property {
             }
             return null; // Unreachable.
         }
-        else {
+        else if (isDirectional()) {
             return getDirectional().getFacing().getDirection();
         }
+        else if (isDripstone()) {
+            return getDripstone().getVerticalDirection().getDirection();
+        }
+        return null; // Unreachable.
     }
 
     public String getDirectionName() {
@@ -151,9 +164,13 @@ public class MaterialDirectional implements Property {
         else if (isRail()) {
             return getRail().getShape().name();
         }
-        else {
+        else if (isDirectional()) {
             return getDirectional().getFacing().name();
         }
+        else if (isDripstone()) {
+            return getDripstone().getVerticalDirection().name();
+        }
+        return null; // Unreachable
     }
 
     public boolean isOrientable() {
@@ -166,6 +183,10 @@ public class MaterialDirectional implements Property {
 
     public boolean isDirectional() {
         return material.getModernData() instanceof Directional;
+    }
+
+    public boolean isDripstone() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof PointedDripstone;
     }
 
     public boolean isRail() {
@@ -182,6 +203,10 @@ public class MaterialDirectional implements Property {
 
     public Directional getDirectional() {
         return (Directional) material.getModernData();
+    }
+
+    public PointedDripstone getDripstone() {
+        return (PointedDripstone) material.getModernData();
     }
 
     public Rail getRail() {
@@ -228,6 +253,9 @@ public class MaterialDirectional implements Property {
         }
         else if (isDirectional()) {
             getDirectional().setFacing(face);
+        }
+        else if (isDripstone()) {
+            getDripstone().setVerticalDirection(face);
         }
     }
 
