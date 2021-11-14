@@ -57,7 +57,7 @@ public class InventoryScriptHelper implements Listener {
     public static HashSet<ClickType> allowedClicks = new HashSet<>(Arrays.asList(ClickType.CONTROL_DROP, ClickType.CREATIVE, ClickType.DROP, ClickType.LEFT,
             ClickType.MIDDLE, ClickType.NUMBER_KEY, ClickType.RIGHT, ClickType.WINDOW_BORDER_LEFT, ClickType.WINDOW_BORDER_RIGHT));
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerClicks(InventoryClickEvent event) {
         InventoryTag inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
         if (event.getRawSlot() >= event.getInventory().getSize() || event.getRawSlot() < 0) {
@@ -75,7 +75,7 @@ public class InventoryScriptHelper implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerDrags(InventoryDragEvent event) {
         InventoryTag inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
         if (inventory.getIdHolder() instanceof ScriptTag) {
