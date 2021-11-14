@@ -30,9 +30,7 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class has utility methods for various tasks.
@@ -121,6 +119,15 @@ public class Utilities {
         }
     }
 
+    /** File extensions to just outright forbid generating from scripts, to reduce potential routes for abuse. Most importantly, forbid creation of files that the minecraft server will execute. */
+    public static HashSet<String> FORBIDDEN_EXTENSIONS = new HashSet<>(Arrays.asList(
+            "jar", "java", // Java related files
+            "sh", "bash", // Linux scripts
+            "bat", "ps1", "vb", "vbs", "vbscript", "batch", "cmd", "com", "msc", "sct", "ws", "wsf", // Windows scripts
+            "exe", "scr", "msi", "dll", "bin", // Windows executables
+            "lnk", "reg", "rgs" // other weird Windows files
+    ));
+
     public static boolean isFileCanonicalStringSafeToWrite(String lown) {
         if (lown.contains("denizen/config.yml")) {
             return false;
@@ -128,13 +135,11 @@ public class Utilities {
         if (lown.contains("denizen/scripts/")) {
             return false;
         }
-        if (lown.endsWith(".jar") || lown.endsWith(".java")) {
-            return false;
-        }
-        if (lown.endsWith(".sh") || lown.endsWith(".bat")) {
-            return false;
-        }
         if (lown.endsWith("plugins/")) {
+            return false;
+        }
+        int dot = lown.lastIndexOf('.');
+        if (dot != -1 && FORBIDDEN_EXTENSIONS.contains(lown.substring(dot + 1))) {
             return false;
         }
         return true;
