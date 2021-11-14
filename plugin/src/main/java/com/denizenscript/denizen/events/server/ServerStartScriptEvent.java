@@ -8,8 +8,6 @@ public class ServerStartScriptEvent extends BukkitScriptEvent {
     // @Events
     // server start
     //
-    // @Regex ^on server start$
-    //
     // @Group Server
     //
     // @Triggers when the server starts.
@@ -18,17 +16,10 @@ public class ServerStartScriptEvent extends BukkitScriptEvent {
 
     public ServerStartScriptEvent() {
         instance = this;
+        registerCouldMatcher("server start");
     }
 
     public static ServerStartScriptEvent instance;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("server start")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String getName() {

@@ -10,8 +10,6 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
     // @Events
     // server prestart
     //
-    // @Regex ^on server prestart$
-    //
     // @Group Server
     //
     // @Triggers before the server finishes starting... fired after some saves are loaded, but before other data is loaded. Use with extreme caution.
@@ -22,17 +20,10 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
 
     public ServerPrestartScriptEvent() {
         instance = this;
+        registerCouldMatcher("server prestart");
     }
 
     public static ServerPrestartScriptEvent instance;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("server prestart")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String getName() {

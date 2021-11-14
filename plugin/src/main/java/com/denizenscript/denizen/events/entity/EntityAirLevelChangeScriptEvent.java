@@ -16,10 +16,7 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     // <--[event]
     // @Events
-    // entity changes air level
     // <entity> changes air level
-    //
-    // @Regex ^on [^\s]+ changes air level$
     //
     // @Synonyms player loses oxygen,player drowns,player is drowning,oxygen depletion
     //
@@ -46,22 +43,12 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     public EntityAirLevelChangeScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> changes air level");
     }
 
     public static EntityAirLevelChangeScriptEvent instance;
     public EntityTag entity;
     public EntityAirChangeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains("changes air level")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

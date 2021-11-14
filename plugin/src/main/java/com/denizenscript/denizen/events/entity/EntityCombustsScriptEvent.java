@@ -19,10 +19,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity combusts
     // <entity> combusts
-    //
-    // @Regex ^on [^\s]+ combusts$
     //
     // @Group Entity
     //
@@ -49,22 +46,12 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     public EntityCombustsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> combusts");
     }
 
     public static EntityCombustsScriptEvent instance;
     public EntityTag entity;
     public EntityCombustEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("combusts")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

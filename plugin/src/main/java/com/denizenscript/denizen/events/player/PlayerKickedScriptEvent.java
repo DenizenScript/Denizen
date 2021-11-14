@@ -20,8 +20,6 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // player kicked (for flying)
     //
-    // @Regex ^on player kicked( for flying)?$
-    //
     // @Group Player
     //
     // @Cancellable true
@@ -44,6 +42,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     public PlayerKickedScriptEvent() {
         instance = this;
+        registerCouldMatcher("player kicked (for flying)");
     }
 
     public static PlayerKickedScriptEvent instance;
@@ -52,11 +51,6 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     public boolean isFlying() {
         return NMSHandler.getPlayerHelper().getFlyKickCooldown(player.getPlayerEntity()) == 0;
-    }
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player kicked");
     }
 
     @Override

@@ -16,13 +16,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity changes block
-    // entity changes block (into <material>)
-    // entity changes <material> (into <material>)
-    // <entity> changes block (into <material>)
-    // <entity> changes <material> (into <material>)
-    //
-    // @Regex ^on [^\s]+ changes [^\s]+( into [^\s]+)?$
+    // <entity> changes <block> (into <block>)
     //
     // @Group Entity
     //
@@ -44,6 +38,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     public EntityChangesBlockScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> changes <block> (into <block>)");
     }
 
     public static EntityChangesBlockScriptEvent instance;
@@ -52,20 +47,6 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public MaterialTag old_material;
     public MaterialTag new_material;
     public EntityChangeBlockEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("changes")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

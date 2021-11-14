@@ -19,8 +19,6 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     // lingering potion splash|splashes
     // lingering <item> splash|splashes
     //
-    // @Regex ^on lingering [^\s]+ splash(es)?$
-    //
     // @Group World
     //
     // @Location true
@@ -40,7 +38,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     public LingeringPotionSplashScriptEvent() {
         instance = this;
-        registerCouldMatcher("lingering <item> splashes");
+        registerCouldMatcher("lingering <item> splash|splashes");
     }
 
     public static LingeringPotionSplashScriptEvent instance;

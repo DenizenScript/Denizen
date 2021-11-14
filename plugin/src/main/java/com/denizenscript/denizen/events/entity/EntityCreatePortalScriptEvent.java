@@ -17,10 +17,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity creates portal
     // <entity> creates portal
-    //
-    // @Regex ^on [^\s]+ creates portal$
     //
     // @Group Entity
     //
@@ -41,22 +38,12 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     public EntityCreatePortalScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> creates portal");
     }
 
     public static EntityCreatePortalScriptEvent instance;
     public EntityTag entity;
     public EntityCreatePortalEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains("creates portal")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

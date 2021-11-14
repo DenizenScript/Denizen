@@ -19,8 +19,6 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     // @Events
     // tab complete
     //
-    // @Regex ^on tab complete$
-    //
     // @Group Server
     //
     // @Cancellable true
@@ -43,6 +41,7 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     public TabCompleteScriptEvent() {
         instance = this;
+        registerCouldMatcher("tab complete");
     }
 
     public static TabCompleteScriptEvent instance;
@@ -60,14 +59,6 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     public String getCurrentArg() {
         int i = event.getBuffer().lastIndexOf(' ');
         return i > 0 ? event.getBuffer().substring(i + 1) : getCommand();
-    }
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("tab complete")) {
-            return false;
-        }
-        return true;
     }
 
     @Override

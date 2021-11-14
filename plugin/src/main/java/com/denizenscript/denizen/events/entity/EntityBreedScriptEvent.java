@@ -15,10 +15,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity breeds
     // <entity> breeds
-    //
-    // @Regex ^on [^\s]+ breeds$
     //
     // @Group Entity
     //
@@ -43,6 +40,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityBreedScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> breeds");
     }
 
     public static EntityBreedScriptEvent instance;
@@ -53,17 +51,6 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     private ItemTag item;
     private int experience;
     public EntityBreedEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("breeds")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

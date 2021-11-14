@@ -26,11 +26,10 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // server list ping
     //
-    // @Regex ^on server list ping$
-    //
     // @Group Server
     //
     // @Triggers when the server is pinged for a client's server list.
+    //
     // @Context
     // <context.motd> returns the MOTD that will show.
     // <context.max_players> returns the number of max players that will show.
@@ -52,19 +51,12 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     public ListPingScriptEvent() {
         instance = this;
+        registerCouldMatcher("server list ping");
     }
 
     public static ListPingScriptEvent instance;
 
     public ServerListPingEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("server list ping")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String getName() {

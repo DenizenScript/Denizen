@@ -14,8 +14,6 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     // @Events
     // resource pack status
     //
-    // @Regex ^on resource pack status$
-    //
     // @Group Player
     //
     // @Triggers when a player accepts, denies, successfully loads, or fails to download a resource pack.
@@ -31,17 +29,13 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
 
     public ResourcePackStatusScriptEvent() {
         instance = this;
+        registerCouldMatcher("resource pack status");
     }
 
     public static ResourcePackStatusScriptEvent instance;
 
     public ElementTag status;
     public PlayerTag player;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("resource pack status");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

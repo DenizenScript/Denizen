@@ -26,11 +26,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity enters/exits cuboid/ellipsoid/polygon
-    // <entity> enters <area>
-    // <entity> exits <area>
-    //
-    // @Regex ^on [^\s]+ (enters|exits) [^\s]+$
+    // <entity> enters|exits <area>
     //
     // @Group Entity
     //
@@ -53,6 +49,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     public AreaEnterExitScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> enters|exits <area>");
     }
 
     public static AreaEnterExitScriptEvent instance;
@@ -61,21 +58,6 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     public AreaContainmentObject area;
     public boolean isEntering;
     public Location to;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("enters") && !path.eventArgLowerAt(1).equals("exits")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        String areaName = path.eventArgLowerAt(2);
-        if (!couldMatchArea(areaName) && !areaName.equals("notable")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

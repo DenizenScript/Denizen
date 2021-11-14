@@ -22,8 +22,6 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     // @Events
     // internal bukkit event
     //
-    // @Regex ^on internal bukkit event$
-    //
     // @Switch event:<path> (required) to specify the Bukkit event path to use (like "event:org.bukkit.event.block.BlockBreakEvent")
     //
     // @Warning This exists primarily for testing/debugging, and is almost never a good idea to include in a real script.
@@ -42,13 +40,15 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
 
     public InternalEventScriptEvent() {
         instance = this;
+        registerCouldMatcher("internal bukkit event");
+        registerSwitches("event");
     }
 
     public static InternalEventScriptEvent instance;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("internal bukkit event")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (!path.switches.containsKey("event")) {

@@ -17,8 +17,6 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     // @Events
     // player jumps
     //
-    // @Regex ^on player jumps$
-    //
     // @Group Player
     //
     // @Location true
@@ -36,17 +34,13 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
 
     public PlayerJumpScriptEvent() {
         instance = this;
+        registerCouldMatcher("player jumps");
     }
 
     public static PlayerJumpScriptEvent instance;
 
     public LocationTag location;
     public PlayerTag player;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player jumps");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

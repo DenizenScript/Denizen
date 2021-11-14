@@ -14,10 +14,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // entity explosion primes
     // <entity> explosion primes
-    //
-    // @Regex ^on [^\s]+ explosion primes$
     //
     // @Group Entity
     //
@@ -35,22 +32,12 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     public EntityExplosionPrimesScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> explosion primes");
     }
 
     public static EntityExplosionPrimesScriptEvent instance;
     public EntityTag entity;
     public ExplosionPrimeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains("explosion primes")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

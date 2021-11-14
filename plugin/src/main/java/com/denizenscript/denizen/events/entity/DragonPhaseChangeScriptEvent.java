@@ -13,10 +13,8 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // dragon changes phase
+    // ender_dragon changes phase
     // <entity> changes phase
-    //
-    // @Regex ^on [^\s]+ changes phase$
     //
     // @Group Entity
     //
@@ -40,22 +38,13 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
 
     public DragonPhaseChangeScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> changes phase");
+        registerSwitches("from", "to");
     }
 
     public static DragonPhaseChangeScriptEvent instance;
     public EntityTag entity;
     public EnderDragonChangePhaseEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains("changes phase")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
