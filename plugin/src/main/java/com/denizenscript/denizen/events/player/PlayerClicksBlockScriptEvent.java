@@ -21,13 +21,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player clicks block
-    // player (right/left) clicks <material>
-    // player (right/left) clicks block
+    // player (right|left) clicks <block>
     //
     // @Cancellable true
-    //
-    // @Regex ^on player ([^\s]+ )?clicks [^\s]+$
     //
     // @Group Player
     //
@@ -54,6 +50,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     public PlayerClicksBlockScriptEvent() {
         instance = this;
+        registerCouldMatcher("player (right|left) clicks <block>");
+        registerSwitches("with", "using", "type");
     }
 
     public PlayerClicksBlockScriptEvent instance;
@@ -94,7 +92,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("player")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         boolean clickFirst = path.eventArgLowerAt(1).equals("clicks");

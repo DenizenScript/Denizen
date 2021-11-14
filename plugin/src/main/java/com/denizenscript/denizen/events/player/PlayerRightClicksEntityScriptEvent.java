@@ -17,10 +17,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     // <--[event]
     // @Events
-    // player right clicks entity
     // player right clicks <entity>
-    //
-    // @Regex ^on player right clicks [^\s]+$
     //
     // @Group Player
     //
@@ -49,15 +46,10 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     EntityTag entity;
     ItemTag item;
 
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player right clicks")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(3))) {
-            return false;
-        }
-        return true;
+    public PlayerRightClicksEntityScriptEvent() {
+        instance = this;
+        registerCouldMatcher("player right clicks <entity>");
+        registerSwitches("with", "type");
     }
 
     @Override
