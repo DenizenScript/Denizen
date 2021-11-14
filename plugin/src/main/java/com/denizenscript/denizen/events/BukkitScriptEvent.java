@@ -364,7 +364,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean couldMatchBlock(String text, Function<Material, Boolean> requirement) {
-        if (text.equals("block") || text.equals("material") || text.startsWith("vanilla_tagged:")) {
+        if (text.equals("block") || text.equals("material") || text.startsWith("vanilla_tagged:") || text.startsWith("material_flagged:")) {
             return true;
         }
         if (text.equals("item")) {

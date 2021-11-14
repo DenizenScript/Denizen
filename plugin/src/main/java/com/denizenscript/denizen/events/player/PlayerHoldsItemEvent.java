@@ -22,12 +22,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // player raises <item>
-    // player lowers <item>
-    // player toggles <item>
-    // player (raises/lowers/toggles) <item>
-    //
-    // @Regex ^on player (toggles|raises|lowers) [^\s]+$
+    // player raises|lowers|toggles <item>
     //
     // @Synonyms player raises shield, player raises spyglass
     //
@@ -46,6 +41,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
 
     public PlayerHoldsItemEvent() {
         instance = this;
+        registerCouldMatcher("player raises|lowers|toggles <item>");
     }
 
     public static PlayerHoldsItemEvent instance;

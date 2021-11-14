@@ -21,8 +21,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player (equips|unequips) armor|helmet|chestplate|leggings|boots
-    // player (equips|unequips) <item>
+    // player equips|unequips armor|helmet|chestplate|leggings|boots
+    // player equips|unequips <item>
     //
     // @Plugin Paper
     //

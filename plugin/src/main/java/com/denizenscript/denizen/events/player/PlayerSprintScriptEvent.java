@@ -14,11 +14,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player toggles sprinting
-    // player starts sprinting
-    // player stops sprinting
-    //
-    // @Regex ^on player (toggles|starts|stops) sprinting$
+    // player toggles|starts|stops sprinting
     //
     // @Group Player
     //
@@ -37,23 +33,12 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     public PlayerSprintScriptEvent() {
         instance = this;
+        registerCouldMatcher("player toggles|starts|stops sprinting");
     }
 
     public static PlayerSprintScriptEvent instance;
     public boolean state;
     public PlayerToggleSprintEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("player") || !path.eventArgLowerAt(2).equals("sprinting")) {
-            return false;
-        }
-        String middleWord = path.eventArgAt(1);
-        if (!(middleWord.equals("starts") || middleWord.equals("stops") || middleWord.equals("toggles"))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -14,12 +14,7 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity toggles gliding
-    // entity starts gliding
-    // entity stops gliding
-    // <entity> (starts/stops/toggles) gliding
-    //
-    // @Regex ^on [^\s]+ (toggles|starts|stops) gliding$
+    // <entity> toggles|starts|stops gliding
     //
     // @Group Entity
     //
@@ -41,26 +36,12 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityGlideScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> toggles|starts|stops gliding");
     }
 
     public static EntityGlideScriptEvent instance;
     public EntityTag entity;
     public boolean state;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(2).equals("gliding")) {
-            return false;
-        }
-        String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("starts") && !cmd.equals("stops") && !cmd.equals("toggles")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

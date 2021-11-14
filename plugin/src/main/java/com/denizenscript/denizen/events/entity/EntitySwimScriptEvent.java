@@ -14,12 +14,7 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // entity toggles swimming
-    // entity starts swimming
-    // entity stops swimming
-    // <entity> (starts/stops/toggles) swimming
-    //
-    // @Regex ^on [^\s]+ (toggles|starts|stops) swimming$
+    // <entity> toggles|starts|stops swimming
     //
     // @Group Entity
     //
@@ -41,26 +36,12 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     public EntitySwimScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> toggles|starts|stops swimming");
     }
 
     public static EntitySwimScriptEvent instance;
     public EntityTag entity;
     public boolean state;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(2).equals("swimming")) {
-            return false;
-        }
-        String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("starts") && !cmd.equals("stops") && !cmd.equals("toggles")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

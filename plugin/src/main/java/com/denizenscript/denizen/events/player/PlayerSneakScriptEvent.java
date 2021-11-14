@@ -14,11 +14,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // player toggles sneaking
-    // player starts sneaking
-    // player stops sneaking
-    //
-    // @Regex ^on player (toggles|starts|stops) sneaking$
+    // player toggles|starts|stops sneaking
     //
     // @Group Player
     //
@@ -37,23 +33,12 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     public PlayerSneakScriptEvent() {
         instance = this;
+        registerCouldMatcher("player toggles|starts|stops sneaking");
     }
 
     public static PlayerSneakScriptEvent instance;
     public boolean state;
     public PlayerToggleSneakEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("player") || !path.eventArgLowerAt(2).equals("sneaking")) {
-            return false;
-        }
-        String middleWord = path.eventArgAt(1);
-        if (!(middleWord.equals("starts") || middleWord.equals("stops") || middleWord.equals("toggles"))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
