@@ -24,14 +24,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity death
-    // entity dies
-    // <entity> dies
-    // <entity> death
+    // <entity> dies|deaths
     //
     // @Cancellable true
-    //
-    // @Regex ^on [^\s]+ (death|dies)$
     //
     // @Group Entity
     //
@@ -68,6 +63,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityDeathScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> dies|deaths");
+        registerSwitches("by", "cause");
     }
 
     public static EntityDeathScriptEvent instance;
@@ -76,18 +73,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     public EntityTag damager;
     public ElementTag cause;
     public EntityDeathEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("dies") && !cmd.equals("death")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

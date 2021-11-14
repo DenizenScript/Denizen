@@ -16,9 +16,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // player throws (hatching/non-hatching) egg
-    //
-    // @Regex ^on player throws( (hatching|non-hatching))? egg$
+    // player throws (hatching|non-hatching) egg
     //
     // @Group Player
     //
@@ -41,23 +39,12 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
 
     public PlayerThrowsEggScriptEvent() {
         instance = this;
+        registerCouldMatcher("player throws (hatching|non-hatching) egg");
     }
 
     public static PlayerThrowsEggScriptEvent instance;
     public EntityTag egg;
     public PlayerEggThrowEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player throws") || !path.eventLower.contains("egg")) {
-            return false;
-        }
-        String type = path.eventArgLowerAt(2);
-        if (!type.equals("hatching") && !type.equals("non-hatching") && !type.equals("egg")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -14,15 +14,11 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // npc begins navigation
-    // npc completes navigation
-    // npc cancels navigation
+    // npc begins|completes|cancels navigation
     //
     // @Group NPC
     //
     // @Location true
-    //
-    // @Regex ^on npc (begins|completes|cancels) navigation$
     //
     // @Warning This event may fire very rapidly.
     //
@@ -37,26 +33,12 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
 
     public NPCNavigationScriptEvent() {
         instance = this;
+        registerCouldMatcher("npc begins|completes|cancels navigation");
     }
 
     public static NPCNavigationScriptEvent instance;
     public NPCTag npc;
     public String type;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("npc")) {
-            return false;
-        }
-        if (!path.eventArgLowerAt(2).equals("navigation")) {
-            return false;
-        }
-        String arg1 = path.eventArgLowerAt(1);
-        if (!arg1.equals("begins") && !arg1.equals("completes") && !arg1.equals("cancels")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

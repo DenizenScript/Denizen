@@ -13,10 +13,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // entity resurrected
     // <entity> resurrected
-    //
-    // @Regex ^on [^\s]+ resurrected$
     //
     // @Group Entity
     //
@@ -35,22 +32,12 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     public EntityResurrectScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> resurrected");
     }
 
     public static EntityResurrectScriptEvent instance;
     public EntityTag entity;
     public EntityResurrectEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("resurrected")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

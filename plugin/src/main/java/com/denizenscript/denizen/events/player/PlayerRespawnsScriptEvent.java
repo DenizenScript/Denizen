@@ -16,9 +16,8 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player respawns (at bed/elsewhere)
-    //
-    // @Regex ^on player respawns( at (bed|elsewhere))?$
+    // player respawns (at bed)
+    // player respawns elsewhere
     //
     // @Group Player
     //
@@ -37,15 +36,12 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
 
     public PlayerRespawnsScriptEvent() {
         instance = this;
+        registerCouldMatcher("player respawns (at bed)");
+        registerCouldMatcher("player respawns elsewhere");
     }
 
     public static PlayerRespawnsScriptEvent instance;
     public PlayerRespawnEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player respawns");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
