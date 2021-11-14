@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.events;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
@@ -875,6 +876,40 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         if (!runPermissionCheck(path, data.getPlayer())) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean runAssignedCheck(ScriptPath path, NPCTag npc) {
+        String matcher = path.switches.get("assigned");
+        if (matcher == null) {
+            return true;
+        }
+        if (npc == null) {
+            return false;
+        }
+        AssignmentTrait trait = npc.getCitizen().getTraitNullable(AssignmentTrait.class);
+        if (trait == null) {
+            return false;
+        }
+        for (String script : trait.assignments) {
+            if (runGenericCheck(matcher, script)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean runAutomaticNPCSwitches(ScriptEvent event, ScriptPath path) {
+        if (!path.switches.containsKey("assigned")) {
+            return true;
+        }
+        BukkitScriptEntryData data = (BukkitScriptEntryData) event.getScriptEntryData();
+        if (!data.hasNPC()) {
+            return false;
+        }
+        if (!runAssignedCheck(path, data.getNPC())) {
             return false;
         }
         return true;
