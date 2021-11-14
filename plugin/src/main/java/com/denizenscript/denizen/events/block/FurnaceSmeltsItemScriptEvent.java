@@ -12,12 +12,9 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // furnace smelts item (into <item>)
     // furnace smelts <item> (into <item>)
     //
     // @Cancellable true
-    //
-    // @Regex ^on furnace smelts [^\s]+( into [^\s]+)?$
     //
     // @Group Block
     //
@@ -37,6 +34,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     public FurnaceSmeltsItemScriptEvent() {
         instance = this;
+        registerCouldMatcher("furnace smelts <item> (into <item>)");
     }
 
     public static FurnaceSmeltsItemScriptEvent instance;
@@ -44,17 +42,6 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     public ItemTag result_item;
     public LocationTag location;
     public FurnaceSmeltEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("furnace smelts")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

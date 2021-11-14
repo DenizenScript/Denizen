@@ -12,9 +12,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // slime splits (into <#>)
-    //
-    // @Regex ^on slime splits( into [^\s]+)?$
+    // slime splits (into <'#'>)
     //
     // @Group Entity
     //
@@ -35,19 +33,12 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     public SlimeSplitsScriptEvent() {
         instance = this;
+        registerCouldMatcher("slime splits (into <'#'>)");
     }
 
     public static SlimeSplitsScriptEvent instance;
     public EntityTag entity;
     public SlimeSplitEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("slime splits")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

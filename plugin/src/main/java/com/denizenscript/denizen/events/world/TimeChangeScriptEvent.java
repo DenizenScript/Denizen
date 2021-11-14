@@ -12,11 +12,9 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
     // <--[event]
     // @Events
     // time changes (in <world>)
-    // time <0-23> in <world>
+    // time <'0-23'> (in <world>)
     //
     // @Group World
-    //
-    // @Regex ^on time [^\s]+( in [^\s]+)$
     //
     // @Triggers when the current time changes in a world (once per mine-hour).
     //
@@ -28,6 +26,8 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
 
     public TimeChangeScriptEvent() {
         instance = this;
+        registerCouldMatcher("time changes (in <world>)");
+        registerCouldMatcher("time <'0-23'> (in <world>)");
     }
 
     public static TimeChangeScriptEvent instance;
@@ -35,18 +35,6 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
     public int hour;
 
     public WorldTag world;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("time")) {
-            return false;
-        }
-        String arg1 = path.eventArgLowerAt(1);
-        if (!arg1.equals("changes") && !ArgumentHelper.matchesInteger(arg1)) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

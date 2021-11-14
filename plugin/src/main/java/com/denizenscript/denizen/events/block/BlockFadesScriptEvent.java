@@ -12,10 +12,7 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block fades
     // <block> fades
-    //
-    // @Regex ^on [^\s]+ fades$
     //
     // @Group Block
     //
@@ -33,23 +30,13 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockFadesScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> fades");
     }
 
     public static BlockFadesScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockFadeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("fades")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

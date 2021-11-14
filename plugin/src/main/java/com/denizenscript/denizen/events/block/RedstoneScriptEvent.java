@@ -14,8 +14,6 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // redstone recalculated
     //
-    // @Regex ^on redstone recalculated$
-    //
     // @Group Block
     //
     // @Location true
@@ -36,20 +34,13 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     public RedstoneScriptEvent() {
         instance = this;
+        registerCouldMatcher("redstone recalculated");
     }
 
     public static RedstoneScriptEvent instance;
 
     public LocationTag location;
     public BlockRedstoneEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("redstone recalculated")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

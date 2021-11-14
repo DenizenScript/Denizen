@@ -21,20 +21,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // entity killed
-    // entity killed by <cause>
-    // entity killed by entity
-    // entity killed by <entity>
-    // <entity> killed
-    // <entity> killed by <cause>
-    // <entity> killed by entity
-    // <entity> killed by <entity>
-    // entity kills entity
-    // entity kills <entity>
-    // <entity> kills entity
+    // <entity> killed (by <'cause'>)
+    // <entity> killed (by <entity>)
     // <entity> kills <entity>
-    //
-    // @Regex ^on [^\s]+ ((kills [^\s]+)|killed( by [^\s]+)?)$
     //
     // @Group Entity
     //
@@ -66,6 +55,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     public EntityKilledScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> killed (by <'cause'>)");
+        registerCouldMatcher("<entity> killed (by <entity>)");
+        registerCouldMatcher("<entity> kills <entity>");
     }
 
     public static EntityKilledScriptEvent instance;
@@ -76,18 +68,6 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     public EntityTag damager;
     public EntityTag projectile;
     public EntityDamageEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("killed") && !cmd.equals("kills")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

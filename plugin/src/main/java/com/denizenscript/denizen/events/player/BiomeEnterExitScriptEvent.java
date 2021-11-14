@@ -19,14 +19,11 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player enters <biome>
-    // player exits <biome>
-    // player enters biome
-    // player exits biome
+    // player enters|exits biome
     //
     // @Group Player
     //
-    // @Regex ^on player (enters|exits) [^\s]+$
+    // @Switch biome:<name> to only process the event when a specific biome is being entered.
     //
     // @Location true
     //
@@ -48,6 +45,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     public BiomeEnterExitScriptEvent() {
         instance = this;
+        registerCouldMatcher("player enters|exits <biome>");
+        registerSwitches("biome");
     }
 
     public static BiomeEnterExitScriptEvent instance;
@@ -60,7 +59,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player enters") && !path.eventLower.startsWith("player exits")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchEnum(path.eventArgLowerAt(2), Biome.values())) {
@@ -77,13 +76,14 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, from) && !runInCheck(path, to)) {
             return false;
         }
-
         BiomeTag biome = direction.equals("enters") ? new_biome : (direction.equals("exits") ? old_biome : null);
         if (biome == null) {
             return false;
         }
-
         if (!biome_test.equals("biome") && !biome_test.equals(CoreUtilities.toLowerCase(biome.getBiome().getName()))) {
+            return false;
+        }
+        if (!runGenericSwitchCheck(path, "biome", biome.getBiome().getName())) {
             return false;
         }
         return super.matches(path);

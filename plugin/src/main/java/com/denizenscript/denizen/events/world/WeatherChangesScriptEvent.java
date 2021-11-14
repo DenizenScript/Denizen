@@ -12,9 +12,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // weather changes/rains/clears (in <world>)
-    //
-    // @Regex ^on weather (changes|rains|clears)( in [^\s]+)?$
+    // weather changes|rains|clears (in <world>)
     //
     // @Group World
     //
@@ -30,20 +28,13 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
 
     public WeatherChangesScriptEvent() {
         instance = this;
+        registerCouldMatcher("weather changes|rains|clears (in <world>)");
     }
 
     public static WeatherChangesScriptEvent instance;
     public WorldTag world;
     public ElementTag weather;
     public WeatherChangeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("weather")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -16,10 +16,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity targets (<entity>) (because <cause>)
-    // <entity> targets (<entity>) (because <cause>)
-    //
-    // @Regex ^on [^\s]+ targets( [^\s]+)?( because [^\s]+)?$
+    // <entity> targets (<entity>) (because <'cause'>)
     //
     // @Group Entity
     //
@@ -43,6 +40,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     public EntityTargetsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> targets (<entity>) (because <'cause'>)");
     }
 
     public static EntityTargetsScriptEvent instance;
@@ -51,17 +49,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public EntityTag target;
     private LocationTag location;
     public EntityTargetEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("targets")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

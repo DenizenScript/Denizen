@@ -18,8 +18,6 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // piston extends
     // <block> extends
     //
-    // @Regex ^on [^\s]+ extends$
-    //
     // @Group Block
     //
     // @Location true
@@ -40,23 +38,14 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
 
     public PistonExtendsScriptEvent() {
         instance = this;
+        registerCouldMatcher("piston extends");
+        registerCouldMatcher("<block> extends");
     }
 
     public static PistonExtendsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockPistonExtendEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("extends")) {
-            return false;
-        }
-        if (!path.eventArgLowerAt(0).equals("piston") && !couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

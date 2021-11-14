@@ -18,10 +18,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // block destroyed by explosion
     // <block> destroyed by explosion
-    //
-    // @Regex ^on [^\s]+ destroyed by explosion$
     //
     // @Group Block
     //
@@ -46,6 +43,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
 
     public BlockDestroyedByExplosionEvent() {
         instance = this;
+        registerCouldMatcher("<block> destroyed by explosion");
     }
 
     public static BlockDestroyedByExplosionEvent instance;
@@ -53,17 +51,6 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     public EntityExplodeEvent entityEvent;
     public Block block;
     public List<Block> rawList;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "destroyed", "by", "explosion")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

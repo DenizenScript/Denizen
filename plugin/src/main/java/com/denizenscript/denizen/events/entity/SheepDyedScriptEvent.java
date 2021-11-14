@@ -14,9 +14,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // sheep dyed (<color>)
-    //
-    // @Regex ^on sheep dyed [^\s]+$
+    // sheep dyed (<'color'>)
     //
     // @Group Entity
     //
@@ -39,6 +37,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     public SheepDyedScriptEvent() {
         instance = this;
+        registerCouldMatcher("sheep dyed (<'color'>)");
+        registerCouldMatcher("player dyes sheep (<'color'>)"); // historical
     }
 
     public static SheepDyedScriptEvent instance;
@@ -47,26 +47,15 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     public SheepDyeWoolEvent event;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("sheep dyed") && !path.eventLower.startsWith("player dyes sheep")) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         String cmd = path.eventArgLowerAt(1);
-
         String new_color = cmd.equals("dyes") ? path.eventArgLowerAt(3) : path.eventArgLowerAt(2);
         if (!new_color.isEmpty() && !new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

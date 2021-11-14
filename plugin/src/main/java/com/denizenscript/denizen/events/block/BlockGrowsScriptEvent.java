@@ -14,10 +14,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block grows
     // <block> grows
-    //
-    // @Regex ^on [^\s]+ grows$
     //
     // @Group Block
     //
@@ -36,6 +33,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockGrowsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> grows");
+        registerSwitches("from", "to");
     }
 
     public static BlockGrowsScriptEvent instance;
@@ -45,17 +44,10 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("grows")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
-        String block = path.eventArgLowerAt(0);
-        if (!couldMatchBlock(block)) {
-            return false;
-        }
-        if (block.equals("block")) {
-            return true;
-        }
-        MaterialTag mat = MaterialTag.valueOf(block, CoreUtilities.noDebugContext);
+        MaterialTag mat = MaterialTag.valueOf(path.eventArgLowerAt(0), CoreUtilities.noDebugContext);
         return mat == null || !mat.isStructure();
     }
 

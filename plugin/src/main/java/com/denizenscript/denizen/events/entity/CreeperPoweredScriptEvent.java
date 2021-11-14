@@ -13,9 +13,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // creeper powered (because <cause>)
-    //
-    // @Regex ^on creeper powered( because [^\s]+)?$
+    // creeper powered (because <'cause'>)
     //
     // @Group Entity
     //
@@ -34,6 +32,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
 
     public CreeperPoweredScriptEvent() {
         instance = this;
+        registerCouldMatcher("creeper powered (because <'cause'>)");
     }
 
     public static CreeperPoweredScriptEvent instance;
@@ -41,11 +40,6 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     public EntityTag entity;
     public ElementTag cause;
     public CreeperPowerEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("creeper powered");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

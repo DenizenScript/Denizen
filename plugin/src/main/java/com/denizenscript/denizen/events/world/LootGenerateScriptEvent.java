@@ -23,11 +23,10 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // loot generates
     //
-    // @Regex ^on loot generates$
-    //
     // @Group World
     //
     // @Location true
+    //
     // @Switch for:<type> to only process the event if a certain inventory type is receiving loot (like 'for:chest').
     //
     // @Cancellable true
@@ -49,18 +48,12 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
 
     public LootGenerateScriptEvent() {
         instance = this;
+        registerCouldMatcher("loot generates");
+        registerSwitches("for");
     }
 
     public static LootGenerateScriptEvent instance;
     public LootGenerateEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("loot generates")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

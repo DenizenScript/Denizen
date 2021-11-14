@@ -16,8 +16,8 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // lingering potion splash
-    // lingering <item> splashes
+    // lingering potion splash|splashes
+    // lingering <item> splash|splashes
     //
     // @Regex ^on lingering [^\s]+ splash(es)?$
     //
@@ -40,27 +40,13 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     public LingeringPotionSplashScriptEvent() {
         instance = this;
+        registerCouldMatcher("lingering <item> splashes");
     }
 
     public static LingeringPotionSplashScriptEvent instance;
     public LingeringPotionSplashEvent event;
     public LocationTag location;
     public ItemTag item;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("lingering")) {
-            return false;
-        }
-        String cmd = path.eventArgLowerAt(2);
-        if (!cmd.equals("splash") && !cmd.equals("splashes")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(1))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

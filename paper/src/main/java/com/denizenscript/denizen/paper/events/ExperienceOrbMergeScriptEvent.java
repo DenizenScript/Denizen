@@ -16,8 +16,6 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // experience orbs merge
     //
-    // @Regex ^on experience orbs merge$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -36,15 +34,11 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
 
     public ExperienceOrbMergeScriptEvent() {
         instance = this;
+        registerCouldMatcher("experience orbs merge");
     }
 
     public static ExperienceOrbMergeScriptEvent instance;
     public ExperienceOrbMergeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("experience orbs merge");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

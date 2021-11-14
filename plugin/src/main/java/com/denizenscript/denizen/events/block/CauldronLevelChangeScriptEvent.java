@@ -13,11 +13,7 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // cauldron level changes
-    // cauldron level raises
-    // cauldron level lowers
-    //
-    // @Regex ^on cauldron level (changes|raises|lowers)$
+    // cauldron level changes|raises|lowers
     //
     // @Group Block
     //
@@ -42,23 +38,13 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
 
     public CauldronLevelChangeScriptEvent() {
         instance = this;
+        registerCouldMatcher("cauldron level changes|raises|lowers");
+        registerSwitches("cause");
     }
 
     public static CauldronLevelChangeScriptEvent instance;
     public LocationTag location;
     public CauldronLevelChangeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("cauldron level ")) {
-            return false;
-        }
-        String type = path.eventArgLowerAt(2);
-        if (!type.equals("changes") && !type.equals("raises") && !type.equals("lowers")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

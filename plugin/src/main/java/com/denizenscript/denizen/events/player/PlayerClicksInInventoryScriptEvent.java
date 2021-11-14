@@ -70,10 +70,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
 
     // <--[event]
     // @Events
-    // player clicks in inventory
-    // player (<click type>) clicks (<item>) in <inventory>
-    //
-    // @Regex ^on player( [^\s]+)? clicks( [^\s]+)? in [^\s]+$
+    // player (<'click_type'>) clicks (<item>) in <inventory>
     //
     // @Group Player
     //
@@ -110,6 +107,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
 
     public PlayerClicksInInventoryScriptEvent() {
         instance = this;
+        registerCouldMatcher("player (<'click_type'>) clicks (<item>) in <inventory>");
+        registerSwitches("with", "in_area", "action", "slot");
     }
 
     public static PlayerClicksInInventoryScriptEvent instance;
@@ -123,7 +122,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         boolean clickFirst = path.eventArgLowerAt(1).equals("clicks");
@@ -141,9 +140,6 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
             }
         }
         if (inIndex == -1) {
-            return false;
-        }
-        if (!couldMatchInventory(path.eventArgLowerAt(inIndex + 1))) {
             return false;
         }
         return true;

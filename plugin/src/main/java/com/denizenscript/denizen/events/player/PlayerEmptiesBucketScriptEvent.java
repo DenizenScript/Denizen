@@ -17,9 +17,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     // <--[event]
     // @Events
     // player empties bucket
-    // player empties <bucket>
-    //
-    // @Regex ^on player empties [^\s]+$
+    // player empties <item>
     //
     // @Group Player
     //
@@ -40,6 +38,8 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     public PlayerEmptiesBucketScriptEvent() {
         instance = this;
+        registerCouldMatcher("player empties bucket");
+        registerCouldMatcher("player empties <item>");
     }
 
     public static PlayerEmptiesBucketScriptEvent instance;
@@ -48,18 +48,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     public MaterialTag material;
     public LocationTag location;
     public PlayerBucketEmptyEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player empties")) {
-            return false;
-        }
-        String bucket = path.eventArgLowerAt(2);
-        if (!bucket.equals("bucket") && !couldMatchItem(bucket)) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -14,12 +14,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // <--[event]
     // @Events
     // liquid spreads
-    // <liquid block> spreads
     // dragon egg moves
     //
-    // @Regex ^on [^\s]+ spreads$
-    //
-    // @Switch type:<material> to only run if the block spreading matches the material input.
+    // @Switch type:<block> to only run if the block spreading matches the material input.
     //
     // @Group Block
     //
@@ -38,6 +35,10 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     public LiquidSpreadScriptEvent() {
         instance = this;
+        registerCouldMatcher("liquid spreads");
+        registerCouldMatcher("<block> spreads"); // NOTE: exists for historical compat reasons.
+        registerCouldMatcher("dragon egg moves"); // TODO: this should just be a separate event?
+        registerSwitches("type");
     }
 
     public static LiquidSpreadScriptEvent instance;
@@ -48,16 +49,10 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("spreads")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (path.eventLower.startsWith("block")) {
-            return false;
-        }
-        if (path.eventLower.startsWith("dragon egg moves")) {
-            return true;
-        }
-        if (!path.eventLower.startsWith("liquid") && !couldMatchBlock(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

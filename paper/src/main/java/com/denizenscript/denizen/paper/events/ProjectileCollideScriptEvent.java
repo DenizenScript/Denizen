@@ -13,10 +13,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // projectile collides with entity
     // <projectile> collides with <entity>
-    //
-    // @Regex ^on [^\s]+ collides with [^\s]+$
     //
     // @Location true
     //
@@ -39,23 +36,13 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     public ProjectileCollideScriptEvent() {
         instance = this;
+        registerCouldMatcher("<projectile> collides with <entity>");
     }
 
     public static ProjectileCollideScriptEvent instance;
     public ProjectileCollideEvent event;
     public EntityTag projectile;
     public EntityTag collidedWith;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "collides", "with")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0)) || !couldMatchEntity(path.eventArgLowerAt(3))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

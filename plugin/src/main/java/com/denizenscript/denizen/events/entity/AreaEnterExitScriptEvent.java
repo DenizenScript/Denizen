@@ -193,7 +193,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         List<MatchHelper> matchList = new ArrayList<>();
         HashSet<String> flags = new HashSet<>();
         onlyTrackPlayers = true;
-        for (ScriptPath path : eventPaths) {
+        for (ScriptPath path : eventData.eventPaths) {
             if (!path.eventArgLowerAt(0).equals("player")) {
                 onlyTrackPlayers = false;
             }

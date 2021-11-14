@@ -16,12 +16,7 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity prespawns
-    // entity prespawns (because <cause>)
-    // <entity> prespawns
-    // <entity> prespawns (because <cause>)
-    //
-    // @Regex ^on [^\s]+ prespawns( because [^\s]+)?$
+    // <entity> prespawns (because <'cause'>)
     //
     // @Plugin Paper
     //
@@ -46,23 +41,13 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
 
     public PreEntitySpawnScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> prespawns (because <'cause'>)");
     }
 
     public static PreEntitySpawnScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public PreCreatureSpawnEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("prespawns")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

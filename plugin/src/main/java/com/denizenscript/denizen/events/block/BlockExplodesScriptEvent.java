@@ -18,10 +18,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // block explodes
     // <block> explodes
-    //
-    // @Regex ^on [^\s]+ explodes$
     //
     // @Group Block
     //
@@ -44,22 +41,12 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     public BlockExplodesScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> explodes");
     }
 
     public static BlockExplodesScriptEvent instance;
     public BlockExplodeEvent event;
     public List<Block> blocks;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("explodes")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

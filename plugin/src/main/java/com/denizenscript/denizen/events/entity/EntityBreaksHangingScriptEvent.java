@@ -20,12 +20,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // entity breaks hanging (because <cause>)
-    // entity breaks <hanging> (because <cause>)
-    // <entity> breaks hanging (because <cause>)
-    // <entity> breaks <hanging> (because <cause>)
-    //
-    // @Regex ^on [^\s]+ breaks [^\s]+( because [^\s]+)?$
+    // <entity> breaks <hanging> (because <'cause'>)
     //
     // @Group Entity
     //
@@ -48,6 +43,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     public EntityBreaksHangingScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> breaks <hanging> (because <'cause'>)");
     }
 
     public static EntityBreaksHangingScriptEvent instance;
@@ -57,20 +53,14 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public LocationTag location;
     public HangingBreakByEntityEvent event;
 
-    public static HashSet<String> notRelevantBreakables = new HashSet<>(Arrays.asList("item", "held", "block"));
+    public static HashSet<String> notRelevantBreakables = new HashSet<>(Arrays.asList("item", "held", "block", "because"));
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("breaks")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (notRelevantBreakables.contains(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;

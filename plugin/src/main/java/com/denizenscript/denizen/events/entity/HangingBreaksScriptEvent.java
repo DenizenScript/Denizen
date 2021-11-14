@@ -17,10 +17,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // hanging breaks (because <cause>)
-    // <hanging> breaks (because <cause>)
-    //
-    // @Regex ^on [^\s]+ breaks( because [^\s]+)?$
+    // <hanging> breaks (because <'cause'>)
     //
     // @Group Entity
     //
@@ -38,6 +35,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     public HangingBreaksScriptEvent() {
         instance = this;
+        registerCouldMatcher("<hanging> breaks (because <'cause'>)");
     }
 
     public static HangingBreaksScriptEvent instance;
@@ -45,23 +43,6 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     public EntityTag entity;
     public EntityTag hanging;
     public HangingBreakEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("breaks")) {
-            return false;
-        }
-        if (couldMatchEntity(path.eventArgLowerAt(2))) { // Deconflict with '<entity> breaks <hanging>'
-            return false;
-        }
-        if (path.eventArgLowerAt(0).equals("player")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

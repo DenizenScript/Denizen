@@ -15,8 +15,6 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     // leaves decay
     // <block> decay
     //
-    // @Regex ^on [^\s]+ decay$
-    //
     // @Group Block
     //
     // @Location true
@@ -33,23 +31,14 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
 
     public LeafDecaysScriptEvent() {
         instance = this;
+        registerCouldMatcher("leaves decay");
+        registerCouldMatcher("<block> decay");
     }
 
     public static LeafDecaysScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public LeavesDecayEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("decay")) {
-            return false;
-        }
-        if (!path.eventArgLowerAt(0).equals("leaves") && !couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

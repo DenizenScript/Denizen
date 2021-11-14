@@ -14,8 +14,6 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // brewing stand brews
     //
-    // @Regex ^on brewing stand brews$
-    //
     // @Group Block
     //
     // @Location true
@@ -32,19 +30,12 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     public BrewsScriptEvent() {
         instance = this;
+        registerCouldMatcher("brewing stand brews");
     }
 
     public static BrewsScriptEvent instance;
     public LocationTag location;
     public BrewEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("brewing stand brews")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

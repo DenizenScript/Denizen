@@ -11,10 +11,7 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // world saves
     // <world> saves
-    //
-    // @Regex ^on [^\s]+ saves$
     //
     // @Group World
     //
@@ -27,19 +24,12 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
 
     public WorldSavesScriptEvent() {
         instance = this;
+        registerCouldMatcher("<world> saves");
     }
 
     public static WorldSavesScriptEvent instance;
     public WorldTag world;
     public WorldSaveEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("saves")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

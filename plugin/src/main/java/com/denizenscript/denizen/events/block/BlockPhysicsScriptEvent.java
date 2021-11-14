@@ -19,10 +19,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // block physics
-    // <material> physics
-    //
-    // @Regex ^on [^\s]+ physics$
+    // <block> physics
     //
     // @Group Block
     //
@@ -30,7 +27,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Switch adjacent:<material> to only process the event if the block or an immediately adjacent block (up/down/n/e/s/w) matches the material matcher specified. This can be useful to prevent blocks from breaking.
+    // @Switch adjacent:<block> to only process the event if the block or an immediately adjacent block (up/down/n/e/s/w) matches the material matcher specified. This can be useful to prevent blocks from breaking.
     //
     // @Cancellable true
     //
@@ -44,6 +41,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     public BlockPhysicsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> physics");
+        registerSwitches("adjacent");
     }
 
     public static BlockPhysicsScriptEvent instance;
@@ -51,17 +50,6 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     public LocationTag location;
     public MaterialTag material;
     public BlockPhysicsEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("physics")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

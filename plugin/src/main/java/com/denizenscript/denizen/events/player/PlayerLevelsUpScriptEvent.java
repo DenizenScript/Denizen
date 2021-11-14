@@ -15,9 +15,7 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player levels up (from <level>) (to <level>)
-    //
-    // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?$
+    // player levels up (from <'level'>) (to <'level'>)
     //
     // @Group Player
     //
@@ -35,6 +33,7 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
 
     public PlayerLevelsUpScriptEvent() {
         instance = this;
+        registerCouldMatcher("player levels up (from <'level'>) (to <'level'>)");
     }
 
     public static PlayerLevelsUpScriptEvent instance;
@@ -42,11 +41,6 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     public int old_level;
     public PlayerTag player;
     public PlayerLevelChangeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player levels up");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

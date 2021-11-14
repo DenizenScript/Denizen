@@ -14,8 +14,6 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     // @Events
     // spawn changes
     //
-    // @Regex ^on spawn changes$
-    //
     // @Switch for:<world> to only process the event when a specified world's spawn changes.
     //
     // @Group World
@@ -31,18 +29,12 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     public SpawnChangeScriptEvent() {
         instance = this;
+        registerCouldMatcher("spawn changes");
+        registerSwitches("for");
     }
 
     public static SpawnChangeScriptEvent instance;
     public SpawnChangeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("spawn changes")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -15,14 +15,10 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     // <--[event]
     // @Events
-    // entity knocks back entity
-    // entity knocks back <entity>
-    // <entity> knocks back entity
     // <entity> knocks back <entity>
     //
-    // @Regex ^on [^\s]+ knocks back [^\s]+$
-    //
     // @Location true
+    //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
     //
     // @Plugin Paper
@@ -49,6 +45,8 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     public EntityKnocksbackEntityScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> knocks back <entity>");
+        registerSwitches("with");
     }
 
     public static EntityKnocksbackEntityScriptEvent instance;
@@ -57,17 +55,6 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     public EntityTag hitBy;
     public ItemTag held;
     public EntityKnockbackByEntityEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "knocks", "back")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0)) || !couldMatchEntity(path.eventArgLowerAt(3))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

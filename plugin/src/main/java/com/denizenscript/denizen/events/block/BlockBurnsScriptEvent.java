@@ -12,10 +12,7 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block burns
     // <block> burns
-    //
-    // @Regex ^on [^\s]+ burns$
     //
     // @Group Block
     //
@@ -33,23 +30,13 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockBurnsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> burns");
     }
 
     public static BlockBurnsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockBurnEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("burns")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

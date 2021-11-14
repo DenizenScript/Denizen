@@ -134,7 +134,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // -->
 
 
-    public boolean couldMatchLegacyInArea(String lower) {
+    public static boolean couldMatchLegacyInArea(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
         if (index == -1) {
             return true;
@@ -152,7 +152,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean couldMatchArea(String text) {
+    public static boolean couldMatchArea(String text) {
         if (text.equals("area") || text.equals("cuboid") || text.equals("polygon") || text.equals("ellipsoid")) {
             return true;
         }
@@ -174,7 +174,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean exactMatchesEnum(String text, final Enum<?>[] enumVals) {
+    public static boolean exactMatchesEnum(String text, final Enum<?>[] enumVals) {
         for (Enum<?> val : enumVals) {
             if (CoreUtilities.equalsIgnoreCase(val.name(), text)) {
                 return true;
@@ -184,7 +184,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean couldMatchEnum(String text, final Enum<?>[] enumVals) {
+    public static boolean couldMatchEnum(String text, final Enum<?>[] enumVals) {
         if (exactMatchesEnum(text, enumVals)) {
             return true;
         }
@@ -200,7 +200,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean couldMatchInventory(String text) {
+    public static boolean couldMatchInventory(String text) {
         if (text.equals("inventory") || text.equals("notable") || text.equals("note")) {
             return true;
         }
@@ -237,7 +237,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean couldMatchEntity(String text) {
+    public static boolean couldMatchEntity(String text) {
         if (exactMatchEntity(text)) {
             return true;
         }
@@ -258,7 +258,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean exactMatchEntity(String text) {
+    public static boolean exactMatchEntity(String text) {
         if (specialEntityMatchables.contains(text)) {
             return true;
         }
@@ -272,7 +272,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean exactMatchesVehicle(String text) {
+    public static boolean exactMatchesVehicle(String text) {
         if (text.equals("vehicle")) {
             return true;
         }
@@ -301,7 +301,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean couldMatchVehicle(String text) {
+    public static boolean couldMatchVehicle(String text) {
         if (exactMatchesVehicle(text)) {
             return true;
         }
@@ -322,7 +322,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean couldMatchBlockOrItem(String text) {
+    public static boolean couldMatchBlockOrItem(String text) {
         if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion")) {
             return true;
         }
@@ -359,11 +359,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean couldMatchBlock(String text) {
+    public static boolean couldMatchBlock(String text) {
         return couldMatchBlock(text, null);
     }
 
-    public boolean couldMatchBlock(String text, Function<Material, Boolean> requirement) {
+    public static boolean couldMatchBlock(String text, Function<Material, Boolean> requirement) {
         if (text.equals("block") || text.equals("material") || text.startsWith("vanilla_tagged:")) {
             return true;
         }
@@ -395,7 +395,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public static HashSet<String> itemCouldMatchPrefixes = new HashSet<>(Arrays.asList("item_flagged", "vanilla_tagged", "item_enchanted", "material_flagged", "raw_exact"));
 
-    public boolean couldMatchItem(String text) {
+    public static boolean couldMatchItem(String text) {
         if (text.equals("item") || text.equals("potion")) {
             return true;
         }
@@ -433,7 +433,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
+    public static boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
         int index;
         for (index = 0; index < path.eventArgsLower.length; index++) {
             if (path.eventArgsLower[index].equals("with")) {
@@ -591,7 +591,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (priorityHandlers == null) {
             priorityHandlers = new HashMap<>();
         }
-        for (ScriptPath path : new ArrayList<>(eventPaths)) {
+        for (ScriptPath path : new ArrayList<>(eventData.eventPaths)) {
             String bukkitPriority = path.switches.get("bukkit_priority");
             if (bukkitPriority != null) {
                 try {
@@ -599,14 +599,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     BukkitScriptEvent handler = priorityHandlers.get(priority);
                     if (handler == null) {
                         handler = (BukkitScriptEvent) clone();
-                        handler.eventPaths = new ArrayList<>();
+                        handler.eventData.eventPaths = new ArrayList<>();
                         handler.priorityHandlers = null;
                         handler.registeredHandlers = null;
                         priorityHandlers.put(priority, handler);
                         handler.initForPriority(priority, (Listener) handler);
                     }
-                    handler.eventPaths.add(path);
-                    eventPaths.remove(path);
+                    handler.eventData.eventPaths.add(path);
+                    eventData.eventPaths.remove(path);
                 }
                 catch (IllegalArgumentException ex) {
                     Debug.echoError("Invalid 'bukkit_priority' switch for event '" + path.event + "' in script '" + path.container.getName() + "'.");
@@ -614,7 +614,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
-        if (!eventPaths.isEmpty()) {
+        if (!eventData.eventPaths.isEmpty()) {
             initForPriority(EventPriority.NORMAL, listener);
         }
     }

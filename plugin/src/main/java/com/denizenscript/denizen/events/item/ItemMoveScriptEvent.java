@@ -13,14 +13,9 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // item moves from inventory (to <inventory type>)
-    // item moves from <inventory type> (to <inventory type>)
-    // <item> moves from inventory (to <inventory type>)
-    // <item> moves from <inventory type> (to <inventory type>)
+    // <item> moves from <inventory> (to <inventory>)
     //
     // @Group Item
-    //
-    // @Regex ^on [^\s]+ moves from [^\s]+( to [^\s]+)?$
     //
     // @Location true
     //
@@ -41,6 +36,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     public ItemMoveScriptEvent() {
         instance = this;
+        registerCouldMatcher("<item> moves from <inventory> (to <inventory>)");
     }
 
     public static ItemMoveScriptEvent instance;
@@ -49,20 +45,6 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     public InventoryTag destination;
     public ItemTag item;
     public InventoryMoveItemEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "moves", "from")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchInventory(path.eventArgLowerAt(3))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

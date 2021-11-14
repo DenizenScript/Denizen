@@ -20,12 +20,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // structure grows (naturally/from bonemeal)
-    // <structure> grows (naturally/from bonemeal)
-    // plant grows (naturally/from bonemeal)
-    // <plant> grows (naturally/from bonemeal)
-    //
-    // @Regex ^on [^\s]+ grows( naturally|from bonemeal)?$
+    // <'structure/plant'> grows (naturally)
+    // <'structure/plant'> grows from bonemeal
     //
     // @Group World
     //
@@ -48,6 +44,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     public StructureGrowsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<'structure/plant'> grows (naturally)");
+        registerCouldMatcher("<'structure/plant'> grows from bonemeal");
     }
 
     public static StructureGrowsScriptEvent instance;
@@ -55,7 +53,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("grows")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         String type = path.eventArgLowerAt(0);

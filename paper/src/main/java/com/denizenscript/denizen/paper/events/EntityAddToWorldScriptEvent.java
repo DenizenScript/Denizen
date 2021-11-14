@@ -14,10 +14,7 @@ public class EntityAddToWorldScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // entity added to world
     // <entity> added to world
-    //
-    // @Regex ^on [^\s]+ added to world$
     //
     // @Plugin Paper
     //
@@ -35,23 +32,13 @@ public class EntityAddToWorldScriptEvent extends BukkitScriptEvent implements Li
 
     public EntityAddToWorldScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> added to world");
     }
 
     public static EntityAddToWorldScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityAddToWorldEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "added", "to", "world")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -17,8 +17,6 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     // @Events
     // tnt primes
     //
-    // @Regex ^on tnt primes$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -40,16 +38,12 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
 
     public TNTPrimesScriptEvent() {
         instance = this;
+        registerCouldMatcher("tnt primes");
     }
 
     public static TNTPrimesScriptEvent instance;
     public TNTPrimeEvent event;
     public LocationTag location;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("tnt primes");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

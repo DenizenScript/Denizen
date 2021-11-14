@@ -15,10 +15,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity heals (because <cause>)
-    // <entity> heals (because <cause>)
-    //
-    // @Regex ^on [^\s]+ heals( because [^\s]+)?$
+    // <entity> heals (because <'cause'>)
     //
     // @Group Entity
     //
@@ -44,23 +41,13 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityHealsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> heals (because <'cause'>)");
     }
 
     public static EntityHealsScriptEvent instance;
     public EntityTag entity;
     public ElementTag reason;
     public EntityRegainHealthEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("heals")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

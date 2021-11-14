@@ -27,9 +27,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     // <--[event]
     // @Events
     // command
-    // <command_name> command
-    //
-    // @Regex ^on( [^\s]+)? command$
+    // <'command_name'> command
     //
     // @Group Server
     //
@@ -58,6 +56,8 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
 
     public CommandScriptEvent() {
         instance = this;
+        registerCouldMatcher("command");
+        registerCouldMatcher("<'command_name'> command");
     }
 
     public static CommandScriptEvent instance;
@@ -71,15 +71,6 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public String getName() {
         return "Command";
-    }
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("command") &&
-                (!path.eventArgLowerAt(0).equals("command") || path.eventArgLowerAt(1).equals("unknown"))) {
-            return false;
-        }
-        return true;
     }
 
     @Override

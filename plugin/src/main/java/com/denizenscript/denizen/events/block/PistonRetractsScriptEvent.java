@@ -18,8 +18,6 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     // piston retracts
     // <block> retracts
     //
-    // @Regex ^on [^\s]+ retracts$
-    //
     // @Group Block
     //
     // @Location true
@@ -40,24 +38,14 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
 
     public PistonRetractsScriptEvent() {
         instance = this;
+        registerCouldMatcher("piston retracts");
+        registerCouldMatcher("<block> retracts");
     }
 
     public static PistonRetractsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockPistonRetractEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("retracts")) {
-            return false;
-        }
-        if (!path.eventArgLowerAt(0).equals("piston") && !couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

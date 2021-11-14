@@ -15,10 +15,7 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity pathfinds
     // <entity> pathfinds
-    //
-    // @Regex ^on [^\s]+ pathfinds$
     //
     // @Location true
     // @Switch to:<area> to only process the event if the entity is pathfinding into a specified area.
@@ -45,6 +42,8 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
 
     public EntityPathfindScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> pathfinds");
+        registerSwitches("to", "at");
     }
 
     public static EntityPathfindScriptEvent instance;
@@ -52,17 +51,6 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
     public EntityTag entity;
     public EntityTag target;
     public EntityPathfindEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("pathfinds")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

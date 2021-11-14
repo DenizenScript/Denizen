@@ -16,8 +16,6 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     // @Events
     // lightning strikes
     //
-    // @Regex ^on lightning strikes$
-    //
     // @Group World
     //
     // @Location true
@@ -34,19 +32,12 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
 
     public LightningStrikesScriptEvent() {
         instance = this;
+        registerCouldMatcher("lightning strikes");
     }
 
     public static LightningStrikesScriptEvent instance;
     public LocationTag location;
     public LightningStrikeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("lightning strikes")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

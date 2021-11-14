@@ -16,11 +16,8 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player shears entity
     // player shears <entity>
-    // player shears <color> sheep
-    //
-    // @Regex ^on player shears [^\s]+( sheep)?$
+    // player shears <'color'> sheep
     //
     // @Group Player
     //
@@ -39,6 +36,8 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     public PlayerShearsScriptEvent() {
         instance = this;
+        registerCouldMatcher("player shears <entity>");
+        registerCouldMatcher("player shears <'color'> sheep");
     }
 
     public static PlayerShearsScriptEvent instance;
@@ -47,7 +46,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player shears")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (!couldMatchEntity(path.eventArgLowerAt(2)) && !couldMatchEnum(path.eventArgLowerAt(2), DyeColor.values())) {

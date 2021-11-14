@@ -14,8 +14,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block being built (on <material>)
-    // <material> being built (on <material>)
+    // <block> being built (on <block>)
     //
     // @Regex ^on [^\s]+ being built$
     //
@@ -39,6 +38,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockBuiltScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> being built (on <block>)");
     }
 
     public static BlockBuiltScriptEvent instance;
@@ -46,17 +46,6 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public MaterialTag old_material;
     public MaterialTag new_material;
     public BlockCanBuildEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("being") ||!path.eventArgLowerAt(2).equals("built")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

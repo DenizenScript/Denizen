@@ -18,8 +18,6 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     // @Events
     // player trades with merchant
     //
-    // @Regex ^on player trades with merchant$
-    //
     // @Switch result:<result> to only process the event if the player received a specific result item.
     //
     // @Location true
@@ -46,18 +44,12 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
 
     public PlayerTradesWithMerchantScriptEvent() {
         instance = this;
+        registerCouldMatcher("player trades with merchant");
+        registerSwitches("result");
     }
 
     public static PlayerTradesWithMerchantScriptEvent instance;
     public PlayerPurchaseEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player trades with merchant")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -15,9 +15,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // <--[event]
     // @Events
     // horse jumps
-    // (<color>) (<type>) jumps
-    //
-    // @Regex ^on [^\s]+( [^\s]+)? jumps$
+    // (<'color'>) <entity> jumps
     //
     // @Group Entity
     //
@@ -39,6 +37,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     public HorseJumpsScriptEvent() {
         instance = this;
+        registerCouldMatcher("(<'color'>) <entity> jumps");
     }
 
     public static HorseJumpsScriptEvent instance;
@@ -48,7 +47,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.equals("horse jumps") && !path.eventLower.endsWith("jumps")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (path.eventLower.startsWith("player")) {

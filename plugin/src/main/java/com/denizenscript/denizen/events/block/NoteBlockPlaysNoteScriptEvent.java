@@ -15,11 +15,10 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // noteblock plays note
     //
-    // @Regex ^on noteblock plays note$
-    //
     // @Group Block
     //
     // @Location true
+    //
     // @Switch instrument:<instrument> to only process the event if a specific instrument was played.
     //
     // @Cancellable true
@@ -39,19 +38,13 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
 
     public NoteBlockPlaysNoteScriptEvent() {
         instance = this;
+        registerCouldMatcher("noteblock plays note");
+        registerSwitches("instrument");
     }
 
     public static NoteBlockPlaysNoteScriptEvent instance;
     public NotePlayEvent event;
     public LocationTag location;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("noteblock plays note")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

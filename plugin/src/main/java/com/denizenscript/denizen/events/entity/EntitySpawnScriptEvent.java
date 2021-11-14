@@ -18,12 +18,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity spawns
-    // entity spawns (because <cause>)
-    // <entity> spawns
-    // <entity> spawns (because <cause>)
-    //
-    // @Regex ^on [^\s]+ spawns( because [^\s]+)?$
+    // <entity> spawns (because <'cause'>)
     //
     // @Group Entity
     //
@@ -45,6 +40,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntitySpawnScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> spawns (because <'cause'>)");
     }
 
     public static EntitySpawnScriptEvent instance;
@@ -55,13 +51,10 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("spawns")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (path.eventLower.startsWith("item") || path.eventLower.startsWith("spawner") || path.eventLower.startsWith("npc")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

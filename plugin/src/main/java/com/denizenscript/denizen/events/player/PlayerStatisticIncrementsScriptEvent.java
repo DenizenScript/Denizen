@@ -19,9 +19,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     // <--[event]
     // @Events
     // player statistic increments
-    // player statistic <statistic> increments
-    //
-    // @Regex ^on player ( [^\s]+ )increments$
+    // player statistic <'statistic'> increments
     //
     // @Group Player
     //
@@ -41,6 +39,8 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     public PlayerStatisticIncrementsScriptEvent() {
         instance = this;
+        registerCouldMatcher("player statistic increments");
+        registerCouldMatcher("player statistic <'statistic'> increments");
     }
 
     public static PlayerStatisticIncrementsScriptEvent instance;
@@ -49,7 +49,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player statistic")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (!path.eventArgLowerAt(2).equals("increments")) {

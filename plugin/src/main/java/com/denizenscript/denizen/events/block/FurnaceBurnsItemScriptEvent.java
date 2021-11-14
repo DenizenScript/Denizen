@@ -14,10 +14,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // furnace burns item
     // furnace burns <item>
-    //
-    // @Regex ^on furnace burns [^\s]+$
     //
     // @Group Block
     //
@@ -38,23 +35,13 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     public FurnaceBurnsItemScriptEvent() {
         instance = this;
+        registerCouldMatcher("furnace burns <item>");
     }
 
     public static FurnaceBurnsItemScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public FurnaceBurnEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("furnace burns")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

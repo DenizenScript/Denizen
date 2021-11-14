@@ -2404,9 +2404,9 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("reset_event_stats")) {
             for (ScriptEvent se : ScriptEvent.events) {
-                se.stats.fires = 0;
-                se.stats.scriptFires = 0;
-                se.stats.nanoTimes = 0;
+                se.eventData.stats_fires = 0;
+                se.eventData.stats_scriptFires = 0;
+                se.eventData.stats_nanoTimes = 0;
             }
         }
 

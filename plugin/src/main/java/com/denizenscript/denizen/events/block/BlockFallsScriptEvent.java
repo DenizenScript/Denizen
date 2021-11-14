@@ -14,10 +14,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block falls
-    // <material> falls
-    //
-    // @Regex ^on [^\s]+ falls$
+    // <block> falls
     //
     // @Group Block
     //
@@ -37,6 +34,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockFallsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> falls");
     }
 
     public static BlockFallsScriptEvent instance;
@@ -44,17 +42,6 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     public LocationTag location;
     public MaterialTag material;
     public EntityChangeBlockEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("falls")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

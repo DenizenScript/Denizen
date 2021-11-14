@@ -17,9 +17,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // portal created (because <reason>)
-    //
-    // @Regex ^on portal created( because [^\s]+)?$
+    // portal created (because <'reason'>)
     //
     // @Group World
     //
@@ -39,19 +37,12 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     public PortalCreateScriptEvent() {
         instance = this;
+        registerCouldMatcher("portal created (because <'reason'>)");
     }
 
     public static PortalCreateScriptEvent instance;
     public ElementTag reason;
     public PortalCreateEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("portal created")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

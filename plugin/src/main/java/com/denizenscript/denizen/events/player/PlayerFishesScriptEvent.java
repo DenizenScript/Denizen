@@ -22,9 +22,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player fishes (<entity>/<item>) (while <state>)
-    //
-    // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?$
+    // player fishes (<entity>) (while <'state'>)
+    // player fishes (<item>) (while <'state'>)
     //
     // @Group Player
     //
@@ -54,6 +53,9 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     public PlayerFishesScriptEvent() {
         instance = this;
+        registerCouldMatcher("player fishes (<entity>) (while <'state'>)");
+        registerCouldMatcher("player fishes (<item>) (while <'state'>)");
+        registerSwitches("with");
     }
 
     public static PlayerFishesScriptEvent instance;
@@ -62,11 +64,6 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     public EntityTag entity;
     public ItemTag item;
     public PlayerFishEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player fishes");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

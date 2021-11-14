@@ -15,9 +15,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player animates (<animation>)
-    //
-    // @Regex ^on player animates( [^\s]+)?$
+    // player animates (<'animation'>)
     //
     // @Group Player
     //
@@ -36,6 +34,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     public PlayerAnimatesScriptEvent() {
         instance = this;
+        registerCouldMatcher("player animates (<'animation'>)");
     }
 
     public static PlayerAnimatesScriptEvent instance;
@@ -44,7 +43,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player animates")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (!path.eventArgLowerAt(2).isEmpty() && !couldMatchEnum(path.eventArgLowerAt(2), PlayerAnimationType.values())) {

@@ -11,10 +11,7 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // world initializes
     // <world> initializes
-    //
-    // @Regex ^on [^\s]+ initializes$
     //
     // @Group World
     //
@@ -27,19 +24,12 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
 
     public WorldInitsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<world> initializes");
     }
 
     public static WorldInitsScriptEvent instance;
     public WorldTag world;
     public WorldInitEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("initializes")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

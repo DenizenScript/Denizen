@@ -13,10 +13,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // entity unleashed (because <reason>)
-    // <entity> unleashed (because <reason>)
-    //
-    // @Regex ^on [^\s]+ unleashed( because [^\s]+)?$
+    // <entity> unleashed (because <'reason'>)
     //
     // @Group Entity
     //
@@ -35,6 +32,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
 
     public EntityUnleashedScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> unleashed (because <'reason'>)");
     }
 
     public static EntityUnleashedScriptEvent instance;
@@ -43,31 +41,16 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     public EntityUnleashEvent event;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("unleashed")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
-
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (path.eventArgAt(2).equals("because") && !path.eventArgLowerAt(3).equals(CoreUtilities.toLowerCase(reason.asString()))) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

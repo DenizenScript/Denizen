@@ -15,10 +15,8 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // potion splash
-    // <item> splashes
-    //
-    // @Regex ^on [^\s]+ splash(es)?$
+    // potion splash|splashes
+    // <item> splash|splashes
     //
     // @Group World
     //
@@ -38,24 +36,13 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     public PotionSplashScriptEvent() {
         instance = this;
+        registerCouldMatcher("<item> splash|splashes");
     }
 
     public static PotionSplashScriptEvent instance;
     public ItemTag potion;
     public LocationTag location;
     public PotionSplashEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        String cmd = path.eventArgLowerAt(1);
-        if (!cmd.equals("splash") && !cmd.equals("splashes")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

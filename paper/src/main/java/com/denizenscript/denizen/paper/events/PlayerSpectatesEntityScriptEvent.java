@@ -15,8 +15,6 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
     // @Events
     // player spectates <entity>
     //
-    // @Regex ^on player spectates [^\s]+$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -37,21 +35,11 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
 
     public PlayerSpectatesEntityScriptEvent() {
         instance = this;
+        registerCouldMatcher("player spectates <entity>");
     }
 
     public static PlayerSpectatesEntityScriptEvent instance;
     public PlayerStartSpectatingEntityEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player spectates ")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

@@ -21,11 +21,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player (un)equips armor
-    // player (un)equips <item>
-    // player (un)equips [helmet/chestplate/leggings/boots]
-    //
-    // @Regex ^on player (un)?equips [^\s]+$
+    // player (equips|unequips) armor|helmet|chestplate|leggings|boots
+    // player (equips|unequips) <item>
     //
     // @Plugin Paper
     //
@@ -58,6 +55,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         registerSlot("chestplate", PlayerArmorChangeEvent.SlotType.CHEST);
         registerSlot("leggings", PlayerArmorChangeEvent.SlotType.LEGS);
         registerSlot("boots", PlayerArmorChangeEvent.SlotType.FEET);
+        registerCouldMatcher("player (equips|unequips) armor|helmet|chestplate|leggings|boots");
+        registerCouldMatcher("player (equips|unequips) <item>");
     }
 
     public static PlayerEquipsArmorScriptEvent instance;
@@ -65,11 +64,6 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     public ItemTag newItem;
     public PlayerArmorChangeEvent.SlotType slot;
     public PlayerTag player;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player equips ") || path.eventLower.startsWith("player unequips ");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

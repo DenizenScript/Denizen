@@ -12,10 +12,7 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block forms
     // <block> forms
-    //
-    // @Regex ^on [^\s]+ forms$
     //
     // @Group Block
     //
@@ -33,23 +30,13 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockFormsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> forms");
     }
 
     public static BlockFormsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockFormEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("forms")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

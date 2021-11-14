@@ -14,9 +14,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // player changes gamemode (to <gamemode>)
-    //
-    // @Regex ^on player changes gamemode( to [^\s]+)?$
+    // player changes gamemode (to <'gamemode'>)
     //
     // @Group Player
     //
@@ -33,19 +31,12 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
 
     public PlayerChangesGamemodeScriptEvent() {
         instance = this;
+        registerCouldMatcher("player changes gamemode (to <'gamemode'>)");
     }
 
     public static PlayerChangesGamemodeScriptEvent instance;
     public ElementTag gamemode;
     public PlayerGameModeChangeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player changes gamemode")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

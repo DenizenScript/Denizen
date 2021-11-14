@@ -13,10 +13,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     // <--[event]
     // @Events
-    // inventory picks up item
-    // inventory picks up <item>
-    // <inventory type> picks up item
-    // <inventory type> picks up <item>
+    // <inventory> picks up <item>
     //
     // @Regex ^on [^\s]+ picks up [^\s]+$
     //
@@ -37,6 +34,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     public InventoryPicksUpItemScriptEvent() {
         instance = this;
+        registerCouldMatcher("<inventory> picks up <item>");
     }
 
     public static InventoryPicksUpItemScriptEvent instance;
@@ -46,16 +44,10 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "picks", "up")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchInventory(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(3))) {
             return false;
         }
         return true;

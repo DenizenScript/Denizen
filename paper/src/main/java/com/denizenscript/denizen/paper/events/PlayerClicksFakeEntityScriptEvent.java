@@ -15,10 +15,7 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
 
     // <--[event]
     // @Events
-    // player clicks fake entity
-    // player (right/left) clicks fake entity
-    //
-    // @Regex ^on player ([^\s]+ )?clicks fake entity$
+    // player (right|left) clicks fake entity
     //
     // @Location true
     //
@@ -40,17 +37,11 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
 
     public PlayerClicksFakeEntityScriptEvent() {
         instance = this;
+        registerCouldMatcher("player (right|left) clicks fake entity");
     }
 
     public static PlayerClicksFakeEntityScriptEvent instance;
     public PlayerUseUnknownEntityEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptEvent.ScriptPath path) {
-        return path.eventLower.startsWith("player clicks fake entity")
-                || path.eventLower.startsWith("player right clicks fake entity")
-                || path.eventLower.startsWith("player left clicks fake entity");
-    }
 
     @Override
     public boolean matches(ScriptEvent.ScriptPath path) {

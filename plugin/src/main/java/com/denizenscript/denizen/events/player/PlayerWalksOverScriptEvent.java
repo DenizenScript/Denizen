@@ -18,9 +18,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     // <--[event]
     // @Events
     // player walks over notable
-    // player walks over <location>
-    //
-    // @Regex ^on player walks over [^\s]+$
+    // player walks over <'location'>
     //
     // @Group Player
     //
@@ -39,16 +37,13 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
 
     public PlayerWalksOverScriptEvent() {
         instance = this;
+        registerCouldMatcher("player walks over notable");
+        registerCouldMatcher("player walks over <'location'>");
     }
 
     public static PlayerWalksOverScriptEvent instance;
     public String notable;
     public PlayerMoveEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player walks over");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

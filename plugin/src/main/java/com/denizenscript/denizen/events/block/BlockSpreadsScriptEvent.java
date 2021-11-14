@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -13,11 +14,8 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     // <--[event]
     // @Events
     // block spreads
-    // <material> spreads
     //
-    // @Regex ^on [^\s]+ spreads$
-    //
-    // @Switch type:<material> to only run if the block spreading matches the material input.
+    // @Switch type:<block> to only run if the block spreading matches the material input.
     //
     // @Group Block
     //
@@ -36,6 +34,9 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     public BlockSpreadsScriptEvent() {
         instance = this;
+        registerCouldMatcher("block spreads");
+        registerCouldMatcher("<block> spreads"); // NOTE: exists for historical compat reasons.
+        registerSwitches("type");
     }
 
     public static BlockSpreadsScriptEvent instance;
@@ -45,14 +46,14 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("spreads")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (path.eventArgLowerAt(0).equals("liquid")) {
             return false;
         }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
+        if (!path.eventArgLowerAt(0).equals("block")) {
+            Deprecations.blockSpreads.warn(getTagContext(path));
         }
         return true;
     }

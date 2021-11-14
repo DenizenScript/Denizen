@@ -15,8 +15,6 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     // @Events
     // chunk unloads
     //
-    // @Regex ^on chunk unloads$
-    //
     // @Group World
     //
     // @Location true
@@ -34,20 +32,13 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
 
     public ChunkUnloadScriptEvent() {
         instance = this;
+        registerCouldMatcher("chunk unloads");
     }
 
     public static ChunkUnloadScriptEvent instance;
 
     public ChunkTag chunk;
     public ChunkUnloadEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("chunk unloads")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

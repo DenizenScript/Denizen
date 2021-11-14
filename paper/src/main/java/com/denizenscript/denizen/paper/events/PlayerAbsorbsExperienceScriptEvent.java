@@ -16,8 +16,6 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
     // @Events
     // player absorbs experience
     //
-    // @Regex ^on player absorbs experience$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -37,15 +35,11 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
 
     public PlayerAbsorbsExperienceScriptEvent() {
         instance = this;
+        registerCouldMatcher("player absorbs experience");
     }
 
     public static PlayerAbsorbsExperienceScriptEvent instance;
     public PlayerPickupExperienceEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptEvent.ScriptPath path) {
-        return path.eventLower.startsWith("player absorbs experience");
-    }
 
     @Override
     public boolean matches(ScriptEvent.ScriptPath path) {

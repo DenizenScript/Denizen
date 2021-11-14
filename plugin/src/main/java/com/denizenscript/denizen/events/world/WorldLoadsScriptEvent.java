@@ -11,10 +11,7 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // world loads
     // <world> loads
-    //
-    // @Regex ^on [^\s]+ loads$
     //
     // @Group World
     //
@@ -27,6 +24,7 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
 
     public WorldLoadsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<world> loads");
     }
 
     public static WorldLoadsScriptEvent instance;
@@ -35,13 +33,10 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!super.couldMatch(path)) {
+            return false;
+        }
         if (path.eventArgLowerAt(0).equals("chunk")) {
-            return false;
-        }
-        if (!path.eventArgLowerAt(1).equals("loads")) {
-            return false;
-        }
-        if (path.eventArgLowerAt(2).equals("crossbow")) {
             return false;
         }
         return true;

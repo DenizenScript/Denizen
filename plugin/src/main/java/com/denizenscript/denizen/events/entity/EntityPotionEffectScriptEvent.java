@@ -16,12 +16,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity potion effects modified
     // <entity> potion effects modified
-    // entity potion effects <change action>
-    // <entity> potion effects <change action>
-    //
-    // @Regex ^on [^\s]+ potion effects [^\s]+$
+    // <entity> potion effects <'change_action'>
     //
     // @Group Entity
     //
@@ -53,6 +49,9 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
 
     public EntityPotionEffectScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> potion effects modified");
+        registerCouldMatcher("<entity> potion effects <'change_action'>");
+        registerSwitches("cause", "effect");
     }
 
     public static EntityPotionEffectScriptEvent instance;
@@ -61,14 +60,11 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains(" potion effects ")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         String change = path.eventArgAt(3);
         if (!change.equals("modified") && !couldMatchEnum(change, EntityPotionEffectEvent.Action.values())) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;
@@ -82,23 +78,18 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
         if (!change.equals("modified") && !runGenericCheck(change, CoreUtilities.toLowerCase(event.getAction().name()))) {
             return false;
         }
-
         if (!tryEntity(entity, target)) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         if (!runGenericSwitchCheck(path, "cause", CoreUtilities.toLowerCase(event.getCause().name()))) {
             return false;
         }
-
         if (!runGenericSwitchCheck(path, "effect", CoreUtilities.toLowerCase(event.getModifiedType().getName()))) {
             return false;
         }
-
         return super.matches(path);
     }
 

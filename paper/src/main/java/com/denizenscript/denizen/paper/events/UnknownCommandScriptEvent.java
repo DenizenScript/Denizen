@@ -27,8 +27,6 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     // @Events
     // command unknown
     //
-    // @Regex ^on command unknown$
-    //
     // @Plugin Paper
     //
     // @Group Paper
@@ -56,6 +54,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
 
     public UnknownCommandScriptEvent() {
         instance = this;
+        registerCouldMatcher("command unknown");
     }
 
     public static UnknownCommandScriptEvent instance;
@@ -63,11 +62,6 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     public String command;
     public String rawArgs;
     public String sourceType;
-
-    @Override
-    public boolean couldMatch(ScriptEvent.ScriptPath path) {
-        return path.eventLower.startsWith("command unknown");
-    }
 
     @Override
     public String getName() {

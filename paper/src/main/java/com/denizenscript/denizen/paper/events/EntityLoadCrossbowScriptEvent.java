@@ -16,10 +16,7 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity loads crossbow
     // <entity> loads crossbow
-    //
-    // @Regex ^on [^\s]+ loads crossbow$
     //
     // @Location true
     //
@@ -50,23 +47,14 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
 
     public EntityLoadCrossbowScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> loads crossbow");
+        registerSwitches("crossbow");
     }
 
     public static EntityLoadCrossbowScriptEvent instance;
 
     public EntityLoadCrossbowEvent event;
     public EntityTag entity;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgsLowEqualStartingAt(1, "loads", "crossbow")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

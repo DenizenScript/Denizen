@@ -15,6 +15,9 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
+
+import java.util.Arrays;
 
 public class ScriptEventRegistry {
 
@@ -25,8 +28,22 @@ public class ScriptEventRegistry {
     }
 
     public static void registerMainEvents() {
-
+        // Special data for matching to register
         ScriptEvent.extraMatchers.add((event, path) -> BukkitScriptEvent.runAutomaticPlayerSwitches(event, path) && BukkitScriptEvent.runAutomaticNPCSwitches(event, path));
+        ScriptEvent.ScriptPath.notSwitches.addAll(Arrays.asList("item_flagged", "world_flagged", "area_flagged", "inventory_flagged",
+                "player_flagged", "npc_flagged", "entity_flagged", "vanilla_tagged", "raw_exact", "item_enchanted", "material_flagged", "location_in", "block_flagged"));
+        ScriptEvent.globalSwitches.addAll(Arrays.asList("bukkit_priority", "assigned", "flagged", "permission", "location_flagged"));
+        ScriptEventCouldMatcher.knownValidatorTypes.put("entity", BukkitScriptEvent::couldMatchEntity);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("hanging", BukkitScriptEvent::couldMatchEntity);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("projectile", BukkitScriptEvent::couldMatchEntity);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("vehicle", BukkitScriptEvent::couldMatchVehicle);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("item", BukkitScriptEvent::couldMatchItem);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("inventory", BukkitScriptEvent::couldMatchInventory);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("block", BukkitScriptEvent::couldMatchBlock);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("material", BukkitScriptEvent::couldMatchBlockOrItem);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("area", BukkitScriptEvent::couldMatchArea);
+        ScriptEventCouldMatcher.knownValidatorTypes.put("world", (t) -> true); // TODO: ?
+        ScriptEventCouldMatcher.knownValidatorTypes.put("biome", (t) -> true); // TODO: ?
 
         // Block events
         ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());

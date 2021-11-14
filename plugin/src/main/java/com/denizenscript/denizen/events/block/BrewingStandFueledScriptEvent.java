@@ -15,8 +15,6 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // brewing stand fueled (with <item>)
     //
-    // @Regex ^on brewing stand fueled( with [^\s]+)?$
-    //
     // @Group Block
     //
     // @Location true
@@ -40,20 +38,13 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
 
     public BrewingStandFueledScriptEvent() {
         instance = this;
+        registerCouldMatcher("brewing stand fueled (with <item>)");
     }
 
     public static BrewingStandFueledScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     public BrewingStandFuelEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("brewing stand fueled")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

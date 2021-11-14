@@ -31,18 +31,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity damaged (by <cause>)
-    // <entity> damaged (by <cause>)
-    // entity damages entity
-    // entity damages <entity>
-    // entity damaged by entity
-    // entity damaged by <entity>
-    // <entity> damages entity
-    // <entity> damaged by entity
+    // <entity> damaged (by <'cause'>)
     // <entity> damaged by <entity>
     // <entity> damages <entity>
-    //
-    // @Regex ^on [^\s]+ ((damages [^\s]+)|damaged( by [^\s]+)?)$
     //
     // @Group Entity
     //
@@ -76,6 +67,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     public EntityDamagedScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> damaged (by <'cause'>)");
+        registerCouldMatcher("<entity> damaged by <entity>");
+        registerCouldMatcher("<entity> damages <entity>");
+        registerSwitches("with");
     }
 
     public static EntityDamagedScriptEvent instance;
@@ -89,6 +84,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!super.couldMatch(path)) {
+            return false;
+        }
         String cmd = path.eventArgLowerAt(1);
         if (cmd.equals("damaged")) {
             if (path.eventArgLowerAt(0).equals("vehicle")) {
@@ -96,17 +94,11 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             }
         }
         else if (cmd.equals("damages")) {
-            if (!couldMatchEntity(path.eventArgLowerAt(2))) {
-                return false;
-            }
             if (path.eventArgLowerAt(2).equals("vehicle")) {
                 return false;
             }
         }
         else {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
             return false;
         }
         return true;

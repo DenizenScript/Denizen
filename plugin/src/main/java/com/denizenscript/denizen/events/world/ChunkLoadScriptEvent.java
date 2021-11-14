@@ -15,8 +15,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     // @Events
     // chunk loads (for the first time)
     //
-    // @Regex ^on chunk loads( for the first time)?$
-    //
     // @Group World
     //
     // @Location true
@@ -33,20 +31,13 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     public ChunkLoadScriptEvent() {
         instance = this;
+        registerCouldMatcher("chunk loads (for the first time)");
     }
 
     public static ChunkLoadScriptEvent instance;
 
     public ChunkTag chunk;
     public ChunkLoadEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("chunk loads")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

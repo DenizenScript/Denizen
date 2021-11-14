@@ -19,8 +19,6 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // player beacon effect applied
     //
-    // @Regex ^on player beacon effect applied$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -46,15 +44,11 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
 
     public PlayerBeaconEffectScriptEvent() {
         instance = this;
+        registerCouldMatcher("player beacon effect applied");
     }
 
     public static PlayerBeaconEffectScriptEvent instance;
     public BeaconEffectEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player beacon effect applied");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

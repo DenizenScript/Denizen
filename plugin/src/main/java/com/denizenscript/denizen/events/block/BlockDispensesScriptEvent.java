@@ -15,12 +15,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // block dispenses item
-    // block dispenses <item>
-    // <block> dispenses item
     // <block> dispenses <item>
-    //
-    // @Regex ^on [^\s]+ dispenses [^\s]+$
     //
     // @Group Block
     //
@@ -43,6 +38,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     public BlockDispensesScriptEvent() {
         instance = this;
+        registerCouldMatcher("<block> dispenses <item>");
     }
 
     public static BlockDispensesScriptEvent instance;
@@ -50,20 +46,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public ItemTag item;
     private MaterialTag material;
     public BlockDispenseEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("dispenses")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

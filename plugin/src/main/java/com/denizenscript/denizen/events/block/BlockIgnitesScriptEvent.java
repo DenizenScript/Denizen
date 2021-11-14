@@ -16,8 +16,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // block ignites
     //
-    // @Regex ^on [^\s]+ ignites$
-    //
     // @Group Block
     //
     // @Location true
@@ -37,6 +35,8 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
 
     public BlockIgnitesScriptEvent() {
         instance = this;
+        registerCouldMatcher("block ignites");
+        registerSwitches("cause");
     }
 
     public static BlockIgnitesScriptEvent instance;
@@ -44,17 +44,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     public MaterialTag material;
     public ElementTag cause;
     public BlockIgniteEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("ignites")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

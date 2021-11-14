@@ -15,8 +15,6 @@ public class PlayerClicksInRecipeBookScriptEvent extends BukkitScriptEvent imple
     // @Events
     // player uses recipe book
     //
-    // @Regex ^on player uses recipe book$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -37,15 +35,11 @@ public class PlayerClicksInRecipeBookScriptEvent extends BukkitScriptEvent imple
 
     public PlayerClicksInRecipeBookScriptEvent() {
         instance = this;
+        registerCouldMatcher("player uses recipe book");
     }
 
     public static PlayerClicksInRecipeBookScriptEvent instance;
     public PlayerRecipeBookClickEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player uses recipe book");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

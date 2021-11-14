@@ -124,7 +124,7 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     public void init() {
         registeredHandlers = new ArrayList<>();
         HashSet<String> eventsGrabbed = new HashSet<>();
-        for (ScriptPath path : new ArrayList<>(eventPaths)) {
+        for (ScriptPath path : new ArrayList<>(eventData.eventPaths)) {
             String eventName = path.switches.get("event");
             if (!eventsGrabbed.add(eventName)) {
                 continue;
@@ -147,11 +147,11 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
                     }
                 }
                 InternalEventScriptEvent handler = (InternalEventScriptEvent) clone();
-                handler.eventPaths = new ArrayList<>();
-                handler.eventPaths.add(path);
+                handler.eventData.eventPaths = new ArrayList<>();
+                handler.eventData.eventPaths.add(path);
                 handler.registeredHandlers = null;
                 handler.initForPriority(priority, this, (Class<? extends Event>) clazz);
-                eventPaths.remove(path);
+                eventData.eventPaths.remove(path);
             }
             catch (ClassNotFoundException ex) {
                 Debug.echoError("Cannot initialize Internal Bukkit Event for event '" + eventName + "': that event class does not exist.");

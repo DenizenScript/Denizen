@@ -15,8 +15,6 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
     // @Events
     // player stops spectating (<entity>)
     //
-    // @Regex ^on player stops spectating( [^\s]+)?$
-    //
     // @Location true
     //
     // @Plugin Paper
@@ -36,15 +34,11 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
 
     public PlayerStopsSpectatingScriptEvent() {
         instance = this;
+        registerCouldMatcher("player stops spectating (<entity>)");
     }
 
     public static PlayerStopsSpectatingScriptEvent instance;
     public PlayerStopSpectatingEntityEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player stops spectating");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
