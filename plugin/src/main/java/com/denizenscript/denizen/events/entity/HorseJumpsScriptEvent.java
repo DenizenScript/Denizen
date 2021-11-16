@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +16,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // <--[event]
     // @Events
     // horse jumps
-    // (<'color'>) <entity> jumps
+    // <entity> jumps
     //
     // @Group Entity
     //
@@ -37,7 +38,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     public HorseJumpsScriptEvent() {
         instance = this;
-        registerCouldMatcher("(<'color'>) <entity> jumps");
+        registerCouldMatcher("<entity> jumps");
     }
 
     public static HorseJumpsScriptEvent instance;
@@ -48,6 +49,10 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean couldMatch(ScriptPath path) {
         if (!super.couldMatch(path)) {
+            if (path.eventArgLowerAt(2).equals("jumps") && couldMatchEntity(path.eventArgLowerAt(1))) {
+                Deprecations.horseJumpsFormat.warn(path.container);
+                return true;
+            }
             return false;
         }
         if (path.eventLower.startsWith("player")) {

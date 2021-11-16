@@ -60,24 +60,33 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // @Description
     // Shoots an entity through the air up to a certain height, optionally triggering a script on impact with a target.
     //
-    // Generally, use the "speed" argument to send an entity exactly the direction you input,
-    // and don't include it to have the entity automatically attempt to land exactly on the destination by calculating an arc.
+    // The launch has three modes: arc, lead, and direct.
     //
-    // If the origin is not an entity, specify a shooter so the damage handling code knows who to assume shot the projectile.
+    // The "arc" mode calculates a launch arc to exactly hit the target location.
+    // If you want to use this, specify the "height" argument as how high the arc should go, in blocks.
+    // Do not specify "speed" or "lead".
+    // You can optionally specify a custom "gravity" (hidden from syntax line intentionally) if you know what you're doing and really need to.
+    //
+    // The "lead" mode calculates a modified arc intended to hit a target based on a lead factor (usually the entity's velocity).
+    // To use, specify the "lead" argument as a vector and "speed" as a launch speed.
+    // Do not specify "height".
+    //
+    // Generally, most users should prefer direct mode: it just launches straight in the direction of the destination, at the speed you specify.
+    // To use this, just input the "speed" argument, and don't specify "height" or "lead".
+    //
+    // If the origin is not an entity, you can specify a "shooter" so the damage handling code knows who to assume shot the projectile.
     //
     // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
-    // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
+    // specify the "spread" argument with a decimal number indicating how wide to spread the entities.
     //
-    // Use the 'script:<name>' argument to run a task script when the projectiles land.
+    // Use the "script:<name>" argument to run a task script when the projectiles land.
     // When that script runs, the following definitions will be available:
     // <[shot_entities]> for all shot entities (as in, the projectiles),
     // <[last_entity]> for the last one (The controlling entity),
     // <[location]> for the last known location of the last shot entity, and
     // <[hit_entities]> for a list of any entities that were hit by fired projectiles.
     //
-    // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
-    //
-    // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
+    // Optionally, add "no_rotate" to prevent the shoot command from rotating launched entities.
     //
     // The shoot command is ~waitable. Refer to <@link language ~waitable>.
     //
@@ -256,14 +265,11 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         if (spread == null) {
             Position.mount(Conversion.convertEntities(entities));
         }
-        // Get the entity at the bottom of the entity list, because
-        // only its gravity should be affected and tracked considering
-        // that the other entities will be mounted on it
         final EntityTag lastEntity = entities.get(entities.size() - 1);
-        if (gravity == null) {
-            gravity = new ElementTag(lastEntity.getEntityType().getGravity());
-        }
         if (speed == null) {
+            if (gravity == null) {
+                gravity = new ElementTag(lastEntity.getEntityType().getGravity());
+            }
             Vector v1 = lastEntity.getLocation().toVector();
             Vector v2 = destination.toVector();
             Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height.asDouble());
