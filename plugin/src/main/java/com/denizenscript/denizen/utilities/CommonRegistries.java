@@ -312,13 +312,12 @@ public class CommonRegistries {
     }
 
     private static void registerSubtypeSets() {
-        ArrayList<Class<? extends ObjectTag>> entitySubTypes = new ArrayList<>();
-        entitySubTypes.add(EntityTag.class);
-        entitySubTypes.add(PlayerTag.class);
+        ObjectFetcher.registerCrossType(EntityTag.class, EntityFormObject.class);
+        ObjectFetcher.registerCrossType(PlayerTag.class, EntityTag.class);
+        ObjectFetcher.registerCrossType(PlayerTag.class, EntityFormObject.class);
         if (Depends.citizens != null) {
-            entitySubTypes.add(NPCTag.class);
+            ObjectFetcher.registerCrossType(NPCTag.class, EntityTag.class);
+            ObjectFetcher.registerCrossType(NPCTag.class, EntityFormObject.class);
         }
-        ObjectFetcher.customSubtypeList.put(EntityTag.class, entitySubTypes);
-        ObjectFetcher.customSubtypeList.put(EntityFormObject.class, entitySubTypes);
     }
 }
