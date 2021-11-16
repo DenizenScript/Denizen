@@ -439,6 +439,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         final DebugSubmit submit = new DebugSubmit();
         submit.recording = Debug.recording.toString();
         Debug.recording = new StringBuilder();
+        submit.build();
         submit.start();
         BukkitRunnable task = new BukkitRunnable() {
             public void run() {

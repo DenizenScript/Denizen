@@ -4,9 +4,11 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -19,22 +21,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class DebugSubmit extends Thread {
+
     public String recording;
     public String result = null;
 
-    @Override
-    public void run() {
-        BufferedReader in = null;
+    public String prefix;
+
+    public void build() {
         try {
-            // Open a connection to the paste server
-            URL url = new URL("http://paste.denizenscript.com/New/Log");
-            HttpURLConnection uc = (HttpURLConnection) url.openConnection();
-            uc.setDoInput(true);
-            uc.setDoOutput(true);
-            uc.setConnectTimeout(10000);
-            uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            uc.connect();
-            // Safely connected at this point
             // Build a list of plugins
             StringBuilder pluginlist = new StringBuilder();
             int newlineLength = 0;
@@ -93,9 +87,21 @@ public class DebugSubmit extends Thread {
                 Debug.echoError(ex);
             }
             // Gather other setting info
-            boolean bungee = Bukkit.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
-            // Create the final message pack and upload it
-            uc.getOutputStream().write(("pastetype=log"
+            boolean proxied = false;
+            String modeSuffix = "";
+            if (Bukkit.getServer().spigot().getConfig().getBoolean("settings.bungeecord")) {
+                modeSuffix = " (BungeeCord)";
+                proxied = true;
+            }
+            else if (Denizen.supportsPaper) {
+                if (getPaperConfigKey("settings.velocity-support.enabled")) {
+                    boolean velocityOnline = getPaperConfigKey("settings.velocity-support.online-mode");
+                    modeSuffix = velocityOnline ? ChatColor.GREEN + " (Velocity: online)" : ChatColor.RED + " (Velocity: offline)";
+                    proxied = true;
+                }
+            }
+            String onlineMode = (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (proxied ? ChatColor.YELLOW : ChatColor.RED) + "offline") + modeSuffix;
+            prefix = "pastetype=log"
                     + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
                     + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
                     + "\nUp-time: " + new DurationTag((System.currentTimeMillis() - DenizenCore.startTime) / 50).formatted(false)
@@ -105,10 +111,48 @@ public class DebugSubmit extends Thread {
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                     + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
-                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (bungee ? ChatColor.YELLOW : ChatColor.RED) + "offline") + (bungee ? " (BungeeCord)" : "")
+                    + "\nMode: " + onlineMode
                     + "\nLast reload: " + new DurationTag((System.currentTimeMillis() - DenizenCore.lastReloadTime) / 1000.0).formatted(false) + " ago"
-                    + "\n\n", "UTF-8") + recording)
-                    .getBytes(StandardCharsets.UTF_8));
+                    + "\n\n", "UTF-8");
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    public static YamlConfiguration paperConfig;
+
+    public static boolean getPaperConfigKey(String key) {
+        if (!Denizen.supportsPaper) {
+            return false;
+        }
+        try {
+            if (paperConfig == null) {
+                paperConfig = (YamlConfiguration) ReflectionHelper.getFields(Class.forName("com.destroystokyo.paper.PaperConfig")).get("config").get(null);
+            }
+            return paperConfig.getBoolean(key);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return false;
+    }
+
+    @Override
+    public void run() {
+        BufferedReader in = null;
+        try {
+            // Open a connection to the paste server
+            URL url = new URL("https://paste.denizenscript.com/New/Log");
+            HttpURLConnection uc = (HttpURLConnection) url.openConnection();
+            uc.setDoInput(true);
+            uc.setDoOutput(true);
+            uc.setConnectTimeout(10000);
+            uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            uc.connect();
+            // Safely connected at this point
+            // Create the final message pack and upload it
+            uc.getOutputStream().write((prefix + recording).getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
             // Record the response
