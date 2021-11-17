@@ -1282,6 +1282,104 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.spawner_spawn_delay>
+        // @mechanism LocationTag.spawner_delay_data
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the current spawn delay for the spawner.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_spawn_delay", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getDelay());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_minimum_spawn_delay>
+        // @mechanism LocationTag.spawner_delay_data
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the minimum spawn delay for the mob spawner.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_minimum_spawn_delay", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getMinSpawnDelay());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_maximum_spawn_delay>
+        // @mechanism LocationTag.spawner_delay_data
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the maximum spawn delay for the mob spawner.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_maximum_spawn_delay", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof  CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getMaxSpawnDelay());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_player_range>
+        // @mechanism LocationTag.spawner_player_range
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the maximum player range for the spawner (ie how close a player must be for this spawner to be active).
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_player_range", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getRequiredPlayerRange());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_range>
+        // @mechanism LocationTag.spawner_range
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the spawn range for the spawner
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_range", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getSpawnRange());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_max_nearby_entities>
+        // @mechanism LocationTag.spawner_max_nearby_entities
+        // @returns ElementTag(Number)
+        // @description
+        // 	Returns the maximum nearby entities for the spawner.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_max_nearby_entities", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getMaxNearbyEntities());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.spawner_count>
+        // @mechanism LocationTag.spawner_count
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the spawn count for the spawner.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "spawner_count", (attribute, object) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+                return null;
+            }
+            return new ElementTag(((CreatureSpawner) object.getBlockStateForTag(attribute)).getSpawnCount());
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.lock>
         // @mechanism LocationTag.lock
         // @returns ElementTag
@@ -3742,6 +3840,103 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             spawner.setSpawnedType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
+            spawner.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_delay_data
+        // @input ListTag
+        // @description
+        // Sets the current spawn delay, minimum spawn delay, and maximum spawn delay of the mob spawner.
+        // For example, -1|200|800
+        // @tags
+        // <LocationTag.spawner_spawn_delay>
+        // <LocationTag.spawner_minimum_spawn_delay>
+        // <LocationTag.spawner_maximum_spawn_delay>
+        // -->
+        if (mechanism.matches("spawner_delay_data") && getBlockState() instanceof CreatureSpawner) {
+            ListTag list = mechanism.valueAsType(ListTag.class);
+            if (list.size() < 3) {
+                return;
+            }
+            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
+            spawner.setDelay(Integer.parseInt(list.get(0)));
+            int minDelay = Integer.parseInt(list.get(1));
+            int maxDelay = Integer.parseInt(list.get(2));
+            // Minecraft won't set the limits if the new max would be lower than the current min
+            // or new min would be higher than the current max
+            if (minDelay > spawner.getMaxSpawnDelay()) {
+                spawner.setMaxSpawnDelay(maxDelay);
+                spawner.setMinSpawnDelay(minDelay);
+            } else {
+                spawner.setMinSpawnDelay(minDelay);
+                spawner.setMaxSpawnDelay(maxDelay);
+            }
+            spawner.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_max_nearby_entities
+        // @input ElementTag(Number)
+        // @description
+        // Sets the maximum nearby entities of the spawner.
+        // @tags
+        // <LocationTag.spawner_max_nearby_entities>
+        // -->
+        if (mechanism.matches("spawner_max_nearby_entities") && mechanism.requireInteger()
+                && getBlockState() instanceof CreatureSpawner) {
+            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
+            spawner.setMaxNearbyEntities(mechanism.getValue().asInt());
+            spawner.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_player_range
+        // @input ElementTag(Number)
+        // @description
+        // Sets the maximum player range of the spawner.
+        // @tags
+        // <LocationTag.spawner_player_range>
+        // -->
+        if (mechanism.matches("spawner_player_range") && mechanism.requireInteger()
+                && getBlockState() instanceof CreatureSpawner) {
+            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
+            spawner.setRequiredPlayerRange(mechanism.getValue().asInt());
+            spawner.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_range
+        // @input ElementTag(Number)
+        // @description
+        // Sets the spawn range of the spawner.
+        // @tags
+        // <LocationTag.spawner_range>
+        // -->
+        if (mechanism.matches("spawner_range") && mechanism.requireInteger()
+                && getBlockState() instanceof CreatureSpawner) {
+            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
+            spawner.setSpawnRange(mechanism.getValue().asInt());
+            spawner.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_count
+        // @input ElementTag(Number)
+        // @description
+        // Sets the spawn count of the spawner.
+        // @tags
+        // <LocationTag.spawner_count>
+        // -->
+        if (mechanism.matches("spawner_count") && mechanism.requireInteger()
+                && getBlockState() instanceof CreatureSpawner) {
+            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
+            spawner.setSpawnCount(mechanism.getValue().asInt());
             spawner.update();
         }
 
