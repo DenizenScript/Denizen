@@ -131,8 +131,17 @@ public class ItemSpawnerDelay implements Property {
             BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
             CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
             state.setDelay(Integer.parseInt(list.get(0)));
-            state.setMinSpawnDelay(Integer.parseInt(list.get(1)));
-            state.setMaxSpawnDelay(Integer.parseInt(list.get(2)));
+            int minDelay = Integer.parseInt(list.get(1));
+            int maxDelay = Integer.parseInt(list.get(2));
+            // Minecraft won't set the limits if the new max would be lower than the current min
+            // or new min would be higher than the current max
+            if (minDelay > state.getMaxSpawnDelay()) {
+                state.setMaxSpawnDelay(maxDelay);
+                state.setMinSpawnDelay(minDelay);
+            } else {
+                state.setMinSpawnDelay(minDelay);
+                state.setMaxSpawnDelay(maxDelay);
+            }
             meta.setBlockState(state);
             item.setItemMeta(meta);
         }
