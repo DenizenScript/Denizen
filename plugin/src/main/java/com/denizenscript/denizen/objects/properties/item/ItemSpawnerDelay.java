@@ -55,6 +55,7 @@ public class ItemSpawnerDelay implements Property {
         // @group properties
         // @description
         // Returns the current spawn delay for a spawner block item.
+        // This changes over time between <@link tag ItemTag.spawner_minimum_spawn_delay> and <@link tag ItemTag.spawner_maximum_spawn_delay>.
         // -->
         if (attribute.startsWith("spawner_spawn_delay")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();

@@ -53,7 +53,7 @@ public class ItemSpawnerRange implements Property {
         // @mechanism ItemTag.spawner_range
         // @group properties
         // @description
-        // Returns the spawn range for a spawner block item.
+        // Returns the spawn range for a spawner block item (the radius mobs will spawn in).
         // -->
         if (attribute.startsWith("spawner_range")) {
             BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
@@ -85,7 +85,7 @@ public class ItemSpawnerRange implements Property {
         // @name spawner_range
         // @input ElementTag(Number)
         // @description
-        // Sets the spawn range of a spawner block item.
+        // Sets the spawn range of a spawner block item (the radius mobs will spawn in).
         // @tags
         // <ItemTag.spawner_range>
         // -->

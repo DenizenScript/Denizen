@@ -1287,6 +1287,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ElementTag(Number)
         // @description
         // Returns the current spawn delay for the spawner.
+        // This changes over time between <@link tag LocationTag.spawner_minimum_spawn_delay> and <@link tag LocationTag.spawner_maximum_spawn_delay>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "spawner_spawn_delay", (attribute, object) -> {
             if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
@@ -1342,7 +1343,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @mechanism LocationTag.spawner_range
         // @returns ElementTag(Number)
         // @description
-        // Returns the spawn range for the spawner
+        // Returns the spawn range for the spawner (the radius mobs will spawn in).
         // -->
         tagProcessor.registerTag(ElementTag.class, "spawner_range", (attribute, object) -> {
             if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
@@ -1356,7 +1357,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @mechanism LocationTag.spawner_max_nearby_entities
         // @returns ElementTag(Number)
         // @description
-        // 	Returns the maximum nearby entities for the spawner.
+        // 	Returns the maximum nearby entities for the spawner (the radius mobs will spawn in).
         // -->
         tagProcessor.registerTag(ElementTag.class, "spawner_max_nearby_entities", (attribute, object) -> {
             if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
@@ -3836,8 +3837,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @tags
         // <LocationTag.spawner_type>
         // -->
-        if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class)
-                && getBlockState() instanceof CreatureSpawner) {
+        if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class) && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             spawner.setSpawnedType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
             spawner.update();
@@ -3885,8 +3885,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @tags
         // <LocationTag.spawner_max_nearby_entities>
         // -->
-        if (mechanism.matches("spawner_max_nearby_entities") && mechanism.requireInteger()
-                && getBlockState() instanceof CreatureSpawner) {
+        if (mechanism.matches("spawner_max_nearby_entities") && mechanism.requireInteger() && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             spawner.setMaxNearbyEntities(mechanism.getValue().asInt());
             spawner.update();
@@ -3901,8 +3900,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @tags
         // <LocationTag.spawner_player_range>
         // -->
-        if (mechanism.matches("spawner_player_range") && mechanism.requireInteger()
-                && getBlockState() instanceof CreatureSpawner) {
+        if (mechanism.matches("spawner_player_range") && mechanism.requireInteger() && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             spawner.setRequiredPlayerRange(mechanism.getValue().asInt());
             spawner.update();
@@ -3913,12 +3911,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @name spawner_range
         // @input ElementTag(Number)
         // @description
-        // Sets the spawn range of the spawner.
+        // Sets the spawn range of the spawner (the radius mobs will spawn in).
         // @tags
         // <LocationTag.spawner_range>
         // -->
-        if (mechanism.matches("spawner_range") && mechanism.requireInteger()
-                && getBlockState() instanceof CreatureSpawner) {
+        if (mechanism.matches("spawner_range") && mechanism.requireInteger() && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             spawner.setSpawnRange(mechanism.getValue().asInt());
             spawner.update();
@@ -3933,8 +3930,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @tags
         // <LocationTag.spawner_count>
         // -->
-        if (mechanism.matches("spawner_count") && mechanism.requireInteger()
-                && getBlockState() instanceof CreatureSpawner) {
+        if (mechanism.matches("spawner_count") && mechanism.requireInteger() && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             spawner.setSpawnCount(mechanism.getValue().asInt());
             spawner.update();
