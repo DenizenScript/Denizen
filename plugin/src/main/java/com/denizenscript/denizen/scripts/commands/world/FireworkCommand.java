@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -8,8 +9,8 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -29,27 +30,38 @@ public class FireworkCommand extends AbstractCommand {
 
     public FireworkCommand() {
         setName("firework");
-        setSyntax("firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)");
-        setRequiredArguments(0, 7);
+        setSyntax("firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail) (life:<duration>)");
+        setRequiredArguments(0, 8);
         isProcedural = false;
+        setPrefixesHandled("life", "power", "primary", "fade");
+        setBooleansHandled("flicker", "trail");
     }
 
     // <--[command]
     // @Name Firework
-    // @Syntax firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
+    // @Syntax firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail) (life:<duration>)
     // @Required 0
-    // @Maximum 7
-    // @Short Launches a firework with specific coloring
+    // @Maximum 8
+    // @Short Launches a firework with customizable style.
     // @Group world
     //
     // @Description
     // This command launches a firework from the specified location.
+    //
     // If no location is given, the linked NPC or player's location will be used by default.
-    // The power option, which defaults to 1 if left empty, specifies how high the firework will go before exploding.
+    //
+    // The power option, which defaults to 1 if left empty, specifies the 'power' integer of the firework, which mainly controls how high the firework will go before exploding.
+    // Alternately, the "life" option allows you to manually specify a specific duration.
+    //
     // The type option which specifies the shape the firework will explode with. If unspecified, 'ball' will be used.
+    // Can be any of: ball, ball_large, star, burst, or creeper
+    //
     // The primary option specifies what color the firework explosion will start with, as a ColorTag. If unspecified, 'yellow' will be used.
+    //
     // The fade option specifies what color the firework explosion will fade into, as a ColorTag.
+    //
     // The trail option means the firework will leave a trail behind it.
+    //
     // The flicker option means the firework will explode with a flicker effect.
     //
     // @Tags
@@ -97,52 +109,32 @@ public class FireworkCommand extends AbstractCommand {
                     && arg.matchesEnum(FireworkEffect.Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("power")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("power", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("flicker")
-                    && arg.matches("flicker")) {
-                scriptEntry.addObject("flicker", "");
-            }
-            else if (!scriptEntry.hasObject("trail")
-                    && arg.matches("trail")) {
-                scriptEntry.addObject("trail", "");
-            }
-            else if (!scriptEntry.hasObject("primary")
-                    && arg.matchesPrefix("primary")
-                    && arg.matchesArgumentList(ColorTag.class)) {
-                scriptEntry.addObject("primary", arg.asType(ListTag.class).filter(ColorTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("fade")
-                    && arg.matchesPrefix("fade")
-                    && arg.matchesArgumentList(ColorTag.class)) {
-                scriptEntry.addObject("fade", arg.asType(ListTag.class).filter(ColorTag.class, scriptEntry));
-            }
             else {
                 arg.reportUnhandled();
             }
         }
         scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
+        if (!scriptEntry.hasObject("location")) {
+            throw new InvalidArgumentsException("Missing location!");
+        }
         scriptEntry.defaultObject("type", new ElementTag("ball"));
-        scriptEntry.defaultObject("power", new ElementTag(1));
-        scriptEntry.defaultObject("primary", Collections.singletonList(new ColorTag(Color.YELLOW)));
     }
 
     @Override
     public void execute(final ScriptEntry scriptEntry) {
-        final LocationTag location = scriptEntry.hasObject("location") ?
-                (LocationTag) scriptEntry.getObject("location") :
-                Utilities.getEntryNPC(scriptEntry).getLocation();
+        final LocationTag location = (LocationTag) scriptEntry.getObject("location");
         ElementTag type = scriptEntry.getElement("type");
-        ElementTag power = scriptEntry.getElement("power");
-        boolean flicker = scriptEntry.hasObject("flicker");
-        boolean trail = scriptEntry.hasObject("trail");
-        List<ColorTag> primary = (List<ColorTag>) scriptEntry.getObject("primary");
-        List<ColorTag> fade = (List<ColorTag>) scriptEntry.getObject("fade");
+        List<ColorTag> primary = scriptEntry.argForPrefixList("primary", ColorTag.class, true);
+        if (primary == null) {
+            primary = Collections.singletonList(new ColorTag(Color.YELLOW));
+        }
+        List<ColorTag> fade = scriptEntry.argForPrefixList("fade", ColorTag.class, true);
+        boolean flicker = scriptEntry.argAsBoolean("flicker");
+        boolean trail = scriptEntry.argAsBoolean("trail");
+        ElementTag power = scriptEntry.argForPrefixAsElement("power", "1");
+        DurationTag life = scriptEntry.argForPrefix("life", DurationTag.class, true);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), location, type, power, (flicker ? db("flicker", true) : ""),
-                    (trail ? db("trail", true) : ""), db("primary colors", primary), db("fade colors", fade));
+            Debug.report(scriptEntry, getName(), location, type, power, life, db("flicker", flicker), db("trail", trail), db("primary colors", primary), db("fade colors", fade));
         }
         Firework firework = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
@@ -161,6 +153,9 @@ public class FireworkCommand extends AbstractCommand {
         }
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);
+        if (life != null) {
+            NMSHandler.getEntityHelper().setFireworkLifetime(firework, life.getTicksAsInt());
+        }
         scriptEntry.addObject("launched_firework", new EntityTag(firework));
     }
 }

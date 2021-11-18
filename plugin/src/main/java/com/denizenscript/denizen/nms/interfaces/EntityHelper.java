@@ -373,4 +373,12 @@ public abstract class EntityHelper {
     public EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner) {
         throw new UnsupportedOperationException();
     }
+
+    public void setFireworkLifetime(Firework firework, int ticks) {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getFireworkLifetime(Firework firework) {
+        throw new UnsupportedOperationException();
+    }
 }

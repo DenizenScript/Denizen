@@ -833,4 +833,14 @@ public class EntityHelperImpl extends EntityHelper {
         net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(((CraftWorld) spawner.getWorld()).getHandle());
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
+
+    @Override
+    public void setFireworkLifetime(Firework firework, int ticks) {
+        ((CraftFirework) firework).getHandle().lifetime = ticks;
+    }
+
+    @Override
+    public int getFireworkLifetime(Firework firework) {
+        return ((CraftFirework) firework).getHandle().lifetime;
+    }
 }
