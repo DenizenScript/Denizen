@@ -11,10 +11,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.DefinitionProvider;
-import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
-import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.*;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -104,7 +101,10 @@ public class EconomyScriptContainer extends ScriptContainer {
             }
             DefinitionProvider defProvider = new SimpleDefinitionProvider();
             defProvider.addDefinition("amount", new ElementTag(amountText));
-            value = value.replace("<amount", "<element[" + amountText + "]"); // TODO: Deprecated amount hack-tag
+            if (value.contains("<amount")) {
+                Deprecations.pseudoTagBases.warn(backingScript);
+                value = value.replace("<amount", "<element[" + amountText + "]");
+            }
             return autoTag(value, player, defProvider);
         }
 

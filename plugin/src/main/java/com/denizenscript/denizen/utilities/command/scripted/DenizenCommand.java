@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -96,7 +97,10 @@ public class DenizenCommand extends Command {
                     npc = new NPCTag(citizen);
                 }
             }
-            permissionMessage = permissionMessage.replace("<permission>", getPermission()); // TODO: Deprecated legacy pseudo-tag
+            if (permissionMessage.contains("<permission>")) {
+                Deprecations.pseudoTagBases.warn(script);
+                permissionMessage = permissionMessage.replace("<permission>", getPermission());
+            }
             BukkitTagContext context = new BukkitTagContext(player, npc, null, false, new ScriptTag(script));
             context.definitionProvider = new SimpleDefinitionProvider();
             context.definitionProvider.addDefinition("permission", new ElementTag(getPermission()));

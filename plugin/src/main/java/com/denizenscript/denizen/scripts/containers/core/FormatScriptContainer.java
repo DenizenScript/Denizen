@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
@@ -50,8 +51,11 @@ public class FormatScriptContainer extends ScriptContainer {
 
     public String getFormattedText(String textToReplace, NPCTag npc, PlayerTag player) {
         String name = npc != null ? npc.getName() : (player != null ? player.getName() : "");
-        // TODO: Deprecated tag hack
-        String text = getFormat().replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped").replace("<name", "<element[" + EscapeTagBase.escape(name) + "].unescaped");
+        String text = getFormat();
+        if (text.contains("<text") || text.contains("<name")) {
+            Deprecations.pseudoTagBases.warn(this);
+            text = text.replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped").replace("<name", "<element[" + EscapeTagBase.escape(name) + "].unescaped");
+        }
         BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
         context.definitionProvider = new SimpleDefinitionProvider();
         context.definitionProvider.addDefinition("text", new ElementTag(textToReplace));
@@ -60,8 +64,12 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormatText(NPCTag npc, PlayerTag player) {
-        String text = getFormat().replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04))
-                .replace("<[text]>", String.valueOf((char) 0x00)).replace("<[name]>", String.valueOf((char) 0x04));
+        String text = getFormat();
+        if (text.contains("<text") || text.contains("<name")) {
+            Deprecations.pseudoTagBases.warn(this);
+            text = text.replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04));
+        }
+        text = text.replace("<[text]>", String.valueOf((char) 0x00)).replace("<[name]>", String.valueOf((char) 0x04));
         return TagManager.tag(text, new BukkitTagContext(player, npc, new ScriptTag(this)))
                 .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s").replace(String.valueOf((char) 0x04), "%1$s");
     }
