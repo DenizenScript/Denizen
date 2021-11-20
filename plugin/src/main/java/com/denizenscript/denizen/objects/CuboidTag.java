@@ -920,6 +920,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
             cuboid = cuboid.clone();
             int member = cuboid.pairs.size() + 1;
+            ObjectTag param = attribute.getParamObject();
 
             // <--[tag]
             // @attribute <CuboidTag.add_member[<cuboid>|...].at[<index>]>
@@ -942,15 +943,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             if (member > cuboid.pairs.size() + 1) {
                 member = cuboid.pairs.size() + 1;
             }
-            if (attribute.getParam().startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
-                for (CuboidTag subCuboid : attribute.paramAsType(ListTag.class).filter(CuboidTag.class, attribute.context)) {
+            if (!(param instanceof CuboidTag) && param.toString().startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
+                for (CuboidTag subCuboid : param.asType(ListTag.class, attribute.context).filter(CuboidTag.class, attribute.context)) {
                     LocationPair pair = subCuboid.pairs.get(0);
                     cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
                     member++;
                 }
             }
             else {
-                CuboidTag subCuboid = attribute.paramAsType(CuboidTag.class);
+                CuboidTag subCuboid = param.asType(CuboidTag.class, attribute.context);
                 LocationPair pair = subCuboid.pairs.get(0);
                 cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
             }
