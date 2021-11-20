@@ -1873,6 +1873,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group attributes
         // @description
         // Returns whether the entity will not be removed completely when far away from players.
+        // In other words: whether the entity should be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
+        // -->
+        // <--[tag]
+        // @attribute <EntityTag.persistent>
+        // @returns ElementTag(Boolean)
+        // @group attributes
+        // @deprecated use 'is_persistent'
+        // @description
+        // Outdated form of <@link tag EntityTag.is_persistent>
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_persistent", (attribute, object) -> {
             return new ElementTag(object.isLivingEntity() && !object.getLivingEntity().getRemoveWhenFarAway());
@@ -2015,17 +2024,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new DurationTag((long) object.getLivingEntity().getRemainingAir());
         });
 
-        // <--[tag]
-        // @attribute <EntityTag.persistent>
-        // @returns ElementTag(Boolean)
-        // @group attributes
-        // @mechanism EntityTag.persistent
-        // @description
-        // Returns whether the entity should be be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
-        // -->
-        registerSpawnedOnlyTag(ElementTag.class, "persistent", (attribute, object) -> {
-            return new ElementTag(!object.getLivingEntity().getRemoveWhenFarAway());
-        });
         registerSpawnedOnlyTag(ElementTag.class, "remove_when_far", (attribute, object) -> {
             Deprecations.entityRemoveWhenFar.warn(attribute.context);
             return new ElementTag(object.getLivingEntity().getRemoveWhenFarAway());
