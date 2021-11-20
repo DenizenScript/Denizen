@@ -672,7 +672,9 @@ public class ServerTagBase {
             listDeprecateWarn(attribute);
             ListTag allBiomes = new ListTag();
             for (Biome biome : Biome.values()) {
-                allBiomes.addObject(new BiomeTag(biome));
+                if (biome != Biome.CUSTOM) {
+                    allBiomes.addObject(new BiomeTag(biome));
+                }
             }
             event.setReplacedObject(allBiomes.getObjectAttribute(attribute.fulfill(1)));
         }
