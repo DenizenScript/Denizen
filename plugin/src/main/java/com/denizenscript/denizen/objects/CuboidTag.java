@@ -1097,7 +1097,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.shift[<vector>]>
         // @returns CuboidTag
         // @description
-        // Returns a copy of this cuboid, with the first member shifted by the given vector LocationTag.
+        // Returns a copy of this cuboid, with all members shifted by the given vector LocationTag.
         // For example, a cuboid from 5,5,5 to 10,10,10, shifted 100,0,100, would return a cuboid from 105,5,105 to 110,10,110.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "shift", (attribute, cuboid) -> {
@@ -1337,9 +1337,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     public CuboidTag shifted(LocationTag vec) {
         CuboidTag cuboid = clone();
-        LocationTag low = cuboid.pairs.get(0).low.clone().add(vec.toVector());
-        LocationTag high = cuboid.pairs.get(0).high.clone().add(vec.toVector());
-        cuboid.pairs.get(0).regenerate(low, high);
+        for (LocationPair pair : cuboid.pairs) {
+            LocationTag low = pair.low.clone().add(vec.toVector());
+            LocationTag high = pair.high.clone().add(vec.toVector());
+            pair.regenerate(low, high);
+        }
         return cuboid;
     }
 
