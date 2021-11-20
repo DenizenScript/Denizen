@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
@@ -95,9 +96,11 @@ public class DenizenCommand extends Command {
                     npc = new NPCTag(citizen);
                 }
             }
-            // <permission> is built into Bukkit... let's keep it here
-            for (String line : TagManager.tag(permissionMessage.replace("<permission>", getPermission()),
-                    new BukkitTagContext(player, npc, null, false, new ScriptTag(script))).split("\n")) {
+            permissionMessage = permissionMessage.replace("<permission>", getPermission()); // TODO: Deprecated legacy pseudo-tag
+            BukkitTagContext context = new BukkitTagContext(player, npc, null, false, new ScriptTag(script));
+            context.definitionProvider = new SimpleDefinitionProvider();
+            context.definitionProvider.addDefinition("permission", new ElementTag(getPermission()));
+            for (String line : TagManager.tag(permissionMessage, context).split("\n")) {
                 target.sendMessage(line);
             }
         }

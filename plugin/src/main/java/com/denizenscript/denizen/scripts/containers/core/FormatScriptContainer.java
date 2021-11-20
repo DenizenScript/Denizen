@@ -4,11 +4,13 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
@@ -24,8 +26,9 @@ public class FormatScriptContainer extends ScriptContainer {
     //
     //   type: format
     //
-    //   # The only key is the format. The format can use '<text>' as a special tag to contain the message being sent.
-    //   # '<name>' is available as a special tag as well for use with the 'on player chats' event to fill the player's name properly.
+    //   # The only key is the format. The format can use '<[text]>' as a special def to contain the message being sent.
+    //   # '<[name]>' is available as a special def as well for use with the 'on player chats' event to fill the player's name properly.
+    //   # Note that 'special' means special: these tags behave a little funny in certain circumstances.
     //   # | All format scripts MUST have this key!
     //   format: <name> says <text>
     // </code>
@@ -46,13 +49,19 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(String textToReplace, NPCTag npc, PlayerTag player) {
-        String text = getFormat().replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped")
-                .replace("<name", "<el@val[" + EscapeTagBase.escape(npc != null ? npc.getName() : (player != null ? player.getName() : "")) + "].unescaped");
-        return TagManager.tag(text, new BukkitTagContext(player, npc, new ScriptTag(this)));
+        String name = npc != null ? npc.getName() : (player != null ? player.getName() : "");
+        // TODO: Deprecated tag hack
+        String text = getFormat().replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped").replace("<name", "<element[" + EscapeTagBase.escape(name) + "].unescaped");
+        BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
+        context.definitionProvider = new SimpleDefinitionProvider();
+        context.definitionProvider.addDefinition("text", new ElementTag(textToReplace));
+        context.definitionProvider.addDefinition("name", new ElementTag(name));
+        return TagManager.tag(text, context);
     }
 
     public String getFormatText(NPCTag npc, PlayerTag player) {
-        String text = getFormat().replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04));
+        String text = getFormat().replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04))
+                .replace("<[text]>", String.valueOf((char) 0x00)).replace("<[name]>", String.valueOf((char) 0x04));
         return TagManager.tag(text, new BukkitTagContext(player, npc, new ScriptTag(this)))
                 .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s").replace(String.valueOf((char) 0x04), "%1$s");
     }

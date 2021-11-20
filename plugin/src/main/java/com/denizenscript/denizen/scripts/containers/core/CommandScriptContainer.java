@@ -83,8 +83,9 @@ public class CommandScriptContainer extends ScriptContainer {
     //
     //   # The message to send to the player when they try to use the command without
     //   # permission. If this is not specified, the default Bukkit message will be sent.
+    //   # Has "permission" def available.
     //   # | Most command scripts should NOT have this key, but it's available.
-    //   permission message: Sorry, <player.name>, you can't use my command because you don't have the permission '<permission>'!
+    //   permission message: Sorry, <player.name>, you can't use my command because you don't have the permission '<[permission]>'!
     //
     //   # The procedure-based script that will be checked when a player or the console
     //   # is trying to view help for this command. This must always be determined true

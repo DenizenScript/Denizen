@@ -12,6 +12,8 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.DefinitionProvider;
+import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.Economy;
@@ -59,16 +61,16 @@ public class EconomyScriptContainer extends ScriptContainer {
     //   name plural: scriptos
     //   # How many digits after the decimal to include. For example, '2' means '1.05' is a valid amount, but '1.005' will be rounded.
     //   digits: 2
-    //   # Format the standard output for the money in human-readable format. Use "<amount>" for the actual amount to display.
+    //   # Format the standard output for the money in human-readable format. Use "<[amount]>" for the actual amount to display.
     //   # Fully supports tags.
-    //   format: $<amount>
+    //   format: $<[amount]>
     //   # A tag that returns the balance of a linked player. Use a 'proc[]' tag if you need more complex logic.
     //   # Must return a decimal number.
     //   balance: <player.flag[money]>
-    //   # A tag that returns a boolean indicating whether the linked player has the amount specified by auto-tag "<amount>".
+    //   # A tag that returns a boolean indicating whether the linked player has the amount specified by def "<[amount]>".
     //   # Use a 'proc[]' tag if you need more complex logic.
     //   # Must return 'true' or 'false'.
-    //   has: <player.flag[money].is[or_more].than[<amount>]>
+    //   has: <player.flag[money].is[or_more].than[<[amount]>]>
     //   # A script that removes the amount of money needed from a player.
     //   # Note that it's generally up to the systems calling this script to verify that the amount can be safely withdrawn, not this script itself.
     //   # However you may wish to verify that the player has the amount required within this script.
@@ -100,7 +102,10 @@ public class EconomyScriptContainer extends ScriptContainer {
                 DecimalFormat d = new DecimalFormat("0." + new String(new char[digits]).replace('\0', '0'), CoreUtilities.decimalFormatSymbols);
                 amountText = d.format(amount);
             }
-            return autoTag(value.replace("<amount", "<element[" + amountText + "]"), player);
+            DefinitionProvider defProvider = new SimpleDefinitionProvider();
+            defProvider.addDefinition("amount", new ElementTag(amountText));
+            value = value.replace("<amount", "<element[" + amountText + "]"); // TODO: Deprecated amount hack-tag
+            return autoTag(value, player, defProvider);
         }
 
         public void validateThread() {
@@ -115,12 +120,14 @@ public class EconomyScriptContainer extends ScriptContainer {
             }
         }
 
-        public String autoTag(String value, OfflinePlayer player) {
+        public String autoTag(String value, OfflinePlayer player, DefinitionProvider defProvider) {
             if (value == null) {
                 return null;
             }
             validateThread();
-            return TagManager.tag(value, new BukkitTagContext(player == null ? null : new PlayerTag(player), null, new ScriptTag(backingScript)));
+            BukkitTagContext context = new BukkitTagContext(player == null ? null : new PlayerTag(player), null, new ScriptTag(backingScript));
+            context.definitionProvider = defProvider;
+            return TagManager.tag(value, context);
         }
 
         public String runSubScript(String pathName, OfflinePlayer player, double amount) {
@@ -177,7 +184,13 @@ public class EconomyScriptContainer extends ScriptContainer {
                 Debug.echoError("Economy attempted BALANCE-CHECK to NULL player.");
                 return 0;
             }
-            return Double.parseDouble(autoTag(backingScript.getString("balance"), player));
+            try {
+                return Double.parseDouble(autoTag(backingScript.getString("balance"), player, null));
+            }
+            catch (NumberFormatException ex) {
+                Debug.echoError("Economy script '" + getName() + "' returned invalid balance for player '" + new PlayerTag(player).debuggable() + "': " + ex.getMessage());
+                return 0;
+            }
         }
 
         @Override
