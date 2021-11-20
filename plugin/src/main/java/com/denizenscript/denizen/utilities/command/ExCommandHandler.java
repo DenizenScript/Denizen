@@ -89,7 +89,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                         sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
                     }
                     else {
-                        sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command...");
+                        //sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command...");
                     }
                 }
                 else {
