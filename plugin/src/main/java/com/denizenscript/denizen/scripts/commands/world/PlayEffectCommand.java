@@ -68,6 +68,7 @@ public class PlayEffectCommand extends AbstractCommand {
     //
     // Some particles will require input to the "special_data" argument. The data input is unique per particle.
     // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid ColorTag object.
+    // - For DUST_COLOR_TRANSITION particles, the input is of format <size>|<from_color>|<to_color>, for example "1.2|red|blue". Color input is any valid ColorTag object.
     // - For FALLING_DUST, BLOCK_CRACK, or BLOCK_DUST particles, the input is any valid MaterialTag, eg "stone".
     // - For ITEM_CRACK particles, the input is any valid ItemTag, eg "stick".
     //
@@ -268,17 +269,32 @@ public class PlayEffectCommand extends AbstractCommand {
                 Object dataObject = null;
                 if (clazz != null) {
                     if (special_data == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
+                        Debug.echoError("Missing required special data for particle: " + particleEffect.getName());
+                        return;
                     }
                     else if (clazz == org.bukkit.Particle.DustOptions.class) {
                         ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
                         if (dataList.size() != 2) {
-                            Debug.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
+                            Debug.echoError("DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
+                            return;
                         }
                         else {
                             float size = Float.parseFloat(dataList.get(0));
                             ColorTag color = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
                             dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
+                        }
+                    }
+                    else if (clazz == org.bukkit.Particle.DustTransition.class) {
+                        ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                        if (dataList.size() != 3) {
+                            Debug.echoError("DustTransition special_data must have 3 list entries for particle: " + particleEffect.getName());
+                            return;
+                        }
+                        else {
+                            float size = Float.parseFloat(dataList.get(0));
+                            ColorTag fromColor = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
+                            ColorTag toColor = ColorTag.valueOf(dataList.get(2), scriptEntry.context);
+                            dataObject = new org.bukkit.Particle.DustTransition(fromColor.getColor(), toColor.getColor(), size);
                         }
                     }
                     else if (clazz == BlockData.class) {
@@ -290,11 +306,13 @@ public class PlayEffectCommand extends AbstractCommand {
                         dataObject = itemType.getItemStack();
                     }
                     else {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
+                        Debug.echoError("Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
+                        return;
                     }
                 }
                 else if (special_data != null) {
                     Debug.echoError("Particles of type '" + particleEffect.getName() + "' cannot take special_data as input.");
+                    return;
                 }
                 Random random = CoreUtilities.getRandom();
                 int quantityInt = quantity.asInt();
