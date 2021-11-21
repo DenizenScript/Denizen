@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -49,7 +50,7 @@ public class MaterialBlockType implements Property {
         material = _material;
     }
 
-    MaterialTag material;
+    public MaterialTag material;
 
     public static void registerTags() {
 
@@ -98,9 +99,9 @@ public class MaterialBlockType implements Property {
         return (Campfire) material.getModernData();
     }
 
-    public PointedDripstone getDripstone() {
+    /*public PointedDripstone getDripstone() { // TODO: 1.17
         return (PointedDripstone) material.getModernData();
-    }
+    }*/
 
     @Override
     public String getPropertyString() {
@@ -114,7 +115,7 @@ public class MaterialBlockType implements Property {
             return getPistonHead().getType().name();
         }
         else if (isDripstone()) {
-            return getDripstone().getThickness().name();
+            return ((PointedDripstone) material.getModernData()).getThickness().name(); // TODO: 1.17
         }
         return null; // Unreachable.
     }
@@ -150,8 +151,8 @@ public class MaterialBlockType implements Property {
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isDripstone() && mechanism.requireEnum(false, PointedDripstone.Thickness.values())) {
-                getDripstone().setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else {
+                MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
             }
         }
     }

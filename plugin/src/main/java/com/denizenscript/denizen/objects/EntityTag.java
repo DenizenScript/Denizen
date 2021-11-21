@@ -1871,6 +1871,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @attribute <EntityTag.is_persistent>
         // @returns ElementTag(Boolean)
         // @group attributes
+        // @mechanism EntityTag.persistent
         // @description
         // Returns whether the entity will not be removed completely when far away from players.
         // In other words: whether the entity should be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
@@ -1879,6 +1880,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @attribute <EntityTag.persistent>
         // @returns ElementTag(Boolean)
         // @group attributes
+        // @mechanism EntityTag.persistent
         // @deprecated use 'is_persistent'
         // @description
         // Outdated form of <@link tag EntityTag.is_persistent>
@@ -3255,7 +3257,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the entity should be be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
         // The entity must be living.
         // @tags
-        // <EntityTag.persistent>
+        // <EntityTag.is_persistent>
         // -->
         if (mechanism.matches("persistent") && mechanism.requireBoolean()) {
             getLivingEntity().setRemoveWhenFarAway(!mechanism.getValue().asBoolean());

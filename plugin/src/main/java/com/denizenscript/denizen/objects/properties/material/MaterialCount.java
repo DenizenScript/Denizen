@@ -117,9 +117,9 @@ public class MaterialCount implements Property {
         return (RespawnAnchor) material.getModernData();
     }
 
-    public Candle getCandle() {
+    /*public Candle getCandle() { // TODO: 1.17
         return (Candle) material.getModernData();
-    }
+    }*/
 
     public int getCurrent() {
         if (isSeaPickle()) {
@@ -132,7 +132,7 @@ public class MaterialCount implements Property {
             return getRespawnAnchor().getCharges();
         }
         else if (isCandle()) {
-            return getCandle().getCandles();
+            return ((Candle) material.getModernData()).getCandles(); // TODO: 1.17
         }
         throw new UnsupportedOperationException();
     }
@@ -148,7 +148,7 @@ public class MaterialCount implements Property {
             return getRespawnAnchor().getMaximumCharges();
         }
         else if (isCandle()) {
-            return getCandle().getMaximumCandles();
+            return ((Candle) material.getModernData()).getMaximumCandles(); // TODO: 1.17
         }
         throw new UnsupportedOperationException();
     }
@@ -209,7 +209,7 @@ public class MaterialCount implements Property {
                 getRespawnAnchor().setCharges(count);
             }
             else if (isCandle()) {
-                getCandle().setCandles(count);
+                ((Candle) material.getModernData()).setCandles(count); // TODO: 1.17
             }
         }
     }

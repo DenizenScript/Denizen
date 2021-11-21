@@ -82,7 +82,7 @@ public class MaterialDirectional implements Property {
                 }
             }
             else if (material.isDripstone()) {
-                for (BlockFace face : material.getDripstone().getVerticalDirections()) {
+                for (BlockFace face : ((PointedDripstone) material.material.getModernData()).getVerticalDirections()) { // TODO: 1.17
                     toReturn.add(face.name());
                 }
             }
@@ -149,7 +149,7 @@ public class MaterialDirectional implements Property {
             return getDirectional().getFacing().getDirection();
         }
         else if (isDripstone()) {
-            return getDripstone().getVerticalDirection().getDirection();
+            return ((PointedDripstone) material.getModernData()).getVerticalDirection().getDirection(); // TODO: 1.17
         }
         return null; // Unreachable.
     }
@@ -168,7 +168,7 @@ public class MaterialDirectional implements Property {
             return getDirectional().getFacing().name();
         }
         else if (isDripstone()) {
-            return getDripstone().getVerticalDirection().name();
+            return ((PointedDripstone) material.getModernData()).getVerticalDirection().name(); // TODO: 1.17
         }
         return null; // Unreachable
     }
@@ -205,9 +205,9 @@ public class MaterialDirectional implements Property {
         return (Directional) material.getModernData();
     }
 
-    public PointedDripstone getDripstone() {
+    /*public PointedDripstone getDripstone() { // TODO: 1.17
         return (PointedDripstone) material.getModernData();
-    }
+    }*/
 
     public Rail getRail() {
         return (Rail) material.getModernData();
@@ -255,7 +255,7 @@ public class MaterialDirectional implements Property {
             getDirectional().setFacing(face);
         }
         else if (isDripstone()) {
-            getDripstone().setVerticalDirection(face);
+            ((PointedDripstone) material.getModernData()).setVerticalDirection(face); // TODO: 1.17
         }
     }
 

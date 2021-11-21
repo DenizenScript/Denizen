@@ -1,15 +1,17 @@
-package com.denizenscript.denizen.utilities.entity;
+package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
+import com.denizenscript.denizen.objects.properties.material.MaterialBlockType;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Goat;
 
-public class ColorHelper1_17 {
+public class MultiVersionHelper1_17 { // TODO: 1.17
 
     public static boolean colorIsApplicable(EntityType type) {
         return type == EntityType.GOAT || type == EntityType.AXOLOTL;
@@ -44,6 +46,12 @@ public class ColorHelper1_17 {
         }
         else if (entity instanceof Axolotl && mech.requireEnum(false, Axolotl.Variant.values())) {
             ((Axolotl) entity).setVariant(Axolotl.Variant.valueOf(mech.getValue().asString().toUpperCase()));
+        }
+    }
+
+    public static void materialBlockTypeRunMech(Mechanism mechanism, MaterialBlockType object) {
+        if (object.isDripstone() && mechanism.requireEnum(false, PointedDripstone.Thickness.values())) {
+            ((PointedDripstone) object.material.getModernData()).setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }
