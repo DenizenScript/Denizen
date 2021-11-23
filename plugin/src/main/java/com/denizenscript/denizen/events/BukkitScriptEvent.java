@@ -591,7 +591,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (priorityHandlers == null) {
             priorityHandlers = new HashMap<>();
         }
-        for (ScriptPath path : new ArrayList<>(eventData.eventPaths)) {
+        for (ScriptPath path : new ArrayList<>(eventPaths)) {
             String bukkitPriority = path.switches.get("bukkit_priority");
             if (bukkitPriority != null) {
                 try {
@@ -599,14 +599,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     BukkitScriptEvent handler = priorityHandlers.get(priority);
                     if (handler == null) {
                         handler = (BukkitScriptEvent) clone();
-                        handler.eventData.eventPaths = new ArrayList<>();
+                        handler.eventPaths = new ArrayList<>();
                         handler.priorityHandlers = null;
                         handler.registeredHandlers = null;
                         priorityHandlers.put(priority, handler);
                         handler.initForPriority(priority, (Listener) handler);
                     }
-                    handler.eventData.eventPaths.add(path);
-                    eventData.eventPaths.remove(path);
+                    handler.eventPaths.add(path);
+                    eventPaths.remove(path);
                 }
                 catch (IllegalArgumentException ex) {
                     Debug.echoError("Invalid 'bukkit_priority' switch for event '" + path.event + "' in script '" + path.container.getName() + "'.");
@@ -614,7 +614,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
-        if (!eventData.eventPaths.isEmpty()) {
+        if (!eventPaths.isEmpty()) {
             initForPriority(EventPriority.NORMAL, listener);
         }
     }

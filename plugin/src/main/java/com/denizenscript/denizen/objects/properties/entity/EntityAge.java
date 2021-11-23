@@ -132,7 +132,11 @@ public class EntityAge implements Property {
         // @mechanism EntityTag.age
         // @group properties
         // @description
-        // If the entity is ageable, returns the entity's age number (-24000 to 0)
+        // If the entity is ageable, returns the entity's age number.
+        // Age moves 1 towards zero each tick.
+        // A newly spawned baby is -24000.
+        // A standard adult is 0.
+        // An adult that just bred is 6000.
         // -->
         if (attribute.startsWith("age")) {
             return new ElementTag(getAge())
@@ -195,7 +199,7 @@ public class EntityAge implements Property {
         // @input ElementTag
         // @description
         // Sets the entity's age.
-        // Inputs can be 'baby', 'adult', or a valid age number (-24000 to 0)
+        // Inputs can be 'baby', 'adult', or a valid age number. A default baby is -24000, a default adult is 0, an adult that just bred is 6000.
         // Optionally, add '|locked' or 'unlocked' to lock/unlock the entity into/from the current age.
         // (EG, age:baby|locked or age:-24000|unlocked)
         // Also available: <@link mechanism EntityTag.age_lock>
