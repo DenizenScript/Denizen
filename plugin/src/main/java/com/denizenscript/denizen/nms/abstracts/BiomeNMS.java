@@ -19,17 +19,7 @@ public abstract class BiomeNMS {
         this.name = CoreUtilities.toLowerCase(name);
     }
 
-    public DownfallType getDownfallType() {
-        if (getDoesSnow()) {
-            return DownfallType.SNOW;
-        }
-        else if (getDoesRain()) {
-            return DownfallType.RAIN;
-        }
-        else {
-            return DownfallType.NONE;
-        }
-    }
+    public abstract DownfallType getDownfallType();
 
     public String getName() {
         return name;
@@ -60,13 +50,13 @@ public abstract class BiomeNMS {
 
     public abstract void setTemperature(float temperature);
 
+    public void setPrecipitation(DownfallType type) {
+        throw new UnsupportedOperationException();
+    }
+
     public enum DownfallType {
         RAIN, SNOW, NONE
     }
-
-    protected abstract boolean getDoesRain();
-
-    protected abstract boolean getDoesSnow();
 
     public abstract void setTo(Block block);
 }

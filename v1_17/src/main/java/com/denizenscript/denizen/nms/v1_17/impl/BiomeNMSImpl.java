@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.block.Block;
@@ -30,6 +31,21 @@ public class BiomeNMSImpl extends BiomeNMS {
         super(world.getWorld(), name);
         this.world = world;
         biomeBase = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).get(new ResourceLocation(name));
+    }
+
+    @Override
+    public DownfallType getDownfallType() {
+        Biome.Precipitation nmsType = biomeBase.getPrecipitation();
+        switch (nmsType) {
+            case RAIN:
+                return DownfallType.RAIN;
+            case SNOW:
+                return DownfallType.SNOW;
+            case NONE:
+                return DownfallType.NONE;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     @Override
@@ -62,26 +78,40 @@ public class BiomeNMSImpl extends BiomeNMS {
         return getSpawnableEntities(MobCategory.WATER_CREATURE);
     }
 
+    public Object getClimate() {
+        return ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
+    }
+
     @Override
     public void setHumidity(float humidity) {
-        Object climate = ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
+        Object climate = getClimate();
         ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_downfall, climate, humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
-        Object climate = ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
+        Object climate = getClimate();
         ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_temperature, climate, temperature);
     }
 
     @Override
-    protected boolean getDoesRain() {
-        return biomeBase.getPrecipitation() == net.minecraft.world.level.biome.Biome.Precipitation.RAIN;
-    }
-
-    @Override
-    protected boolean getDoesSnow() {
-        return biomeBase.getPrecipitation() == net.minecraft.world.level.biome.Biome.Precipitation.SNOW;
+    public void setPrecipitation(DownfallType type) {
+        Biome.Precipitation nmsType;
+        switch (type) {
+            case NONE:
+                nmsType = Biome.Precipitation.NONE;
+                break;
+            case RAIN:
+                nmsType = Biome.Precipitation.RAIN;
+                break;
+            case SNOW:
+                nmsType = Biome.Precipitation.SNOW;
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        Object climate = getClimate();
+        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_precipitation, climate, nmsType);
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {

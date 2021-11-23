@@ -176,6 +176,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // <--[tag]
         // @attribute <BiomeTag.downfall_type>
         // @returns ElementTag
+        // @mechanism BiomeTag.downfall_type
         // @description
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
@@ -310,14 +311,26 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ElementTag(Decimal)
         // @description
         // Sets the temperature for this biome server-wide.
-        // If this is less than 1.5, snow will form on the ground
-        // when weather occurs in the world and a layer of ice
-        // will form over water.
+        // If this is less than 1.5, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
         // @tags
         // <BiomeTag.temperature>
         // -->
         if (mechanism.matches("temperature") && mechanism.requireFloat()) {
             biome.setTemperature(mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object BiomeTag
+        // @name downfall_type
+        // @input ElementTag
+        // @description
+        // Sets the downfall-type for this biome server-wide.
+        // This can be RAIN, SNOW, or NONE.
+        // @tags
+        // <BiomeTag.temperature>
+        // -->
+        if (mechanism.matches("downfall_type") && mechanism.requireEnum(false, BiomeNMS.DownfallType.values())) {
+            biome.setPrecipitation(BiomeNMS.DownfallType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
     }

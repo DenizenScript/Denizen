@@ -27,6 +27,21 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
+    public DownfallType getDownfallType() {
+        BiomeBase.Precipitation nmsType = biomeBase.c();
+        switch (nmsType) {
+            case RAIN:
+                return DownfallType.RAIN;
+            case SNOW:
+                return DownfallType.SNOW;
+            case NONE:
+                return DownfallType.NONE;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
     public float getHumidity() {
         return biomeBase.getHumidity();
     }
@@ -64,16 +79,6 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTemperature(float temperature) {
         ReflectionHelper.setFieldValue(BiomeBase.class, "i", biomeBase, temperature);
-    }
-
-    @Override
-    protected boolean getDoesRain() {
-        return biomeBase.c() == BiomeBase.Precipitation.RAIN;
-    }
-
-    @Override
-    protected boolean getDoesSnow() {
-        return biomeBase.c() == BiomeBase.Precipitation.SNOW;
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {

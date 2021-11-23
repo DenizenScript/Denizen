@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_17;
 
 public class ReflectionMappingsInfo {
 
-    // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.17
+    // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.17.1
 
     public static String AdvancementList_roots = "c";
     public static String AdvancementList_tasks = "d";
@@ -36,6 +36,7 @@ public class ReflectionMappingsInfo {
     public static String Biome_climateSettings = "k";
     public static String Biome_ClimateSettings_temperature = "c";
     public static String Biome_ClimateSettings_downfall = "e";
+    public static String Biome_ClimateSettings_precipitation = "b";
 
     public static String ThreadedLevelLightEngine_Update_PRE_UPDATE = "a";
 
