@@ -180,6 +180,7 @@ public class BossBarCommand extends AbstractCommand {
                     }
                 }
                 BossBar bossBar = Bukkit.createBossBar(barTitle, barColor, barStyle, barFlags);
+                NMSHandler.getPlayerHelper().setBossBarTitle(bossBar, barTitle);
                 bossBar.setProgress(barProgress);
                 for (PlayerTag player : barPlayers) {
                     if (!player.isOnline()) {

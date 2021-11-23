@@ -311,7 +311,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ElementTag(Decimal)
         // @description
         // Sets the temperature for this biome server-wide.
-        // If this is less than 1.5, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
+        // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
         // @tags
         // <BiomeTag.temperature>
         // -->
