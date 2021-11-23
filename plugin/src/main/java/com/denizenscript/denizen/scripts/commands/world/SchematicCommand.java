@@ -226,10 +226,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     public void execute(final ScriptEntry scriptEntry) {
         ElementTag angle = scriptEntry.argForPrefixAsElement("angle", null);
         ElementTag type = scriptEntry.getElement("type");
-        ElementTag name = scriptEntry.argForPrefixAsElement("name", null);
-        if (name == null) {
-            throw new InvalidArgumentsRuntimeException("Missing name argument!");
-        }
+        ElementTag name = scriptEntry.requiredArgForPrefixAsElement("name");
         ElementTag filename = scriptEntry.argForPrefixAsElement("filename", null);
         boolean noair = scriptEntry.argAsBoolean("noair");
         boolean delayed = scriptEntry.argAsBoolean("delayed") || scriptEntry.shouldWaitFor();
