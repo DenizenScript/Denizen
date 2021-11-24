@@ -645,6 +645,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean runLocationFlaggedCheck(ScriptPath path, String switchName, Location location) {
+        if (!path.switches.containsKey(switchName)) { // NOTE: opti to avoid 'getFlagTracker' call, also prevents pre-1.16 borks
+            return true;
+        }
         return runFlaggedCheck(path, switchName, location == null ? null : new LocationTag(location).getFlagTracker());
     }
 
