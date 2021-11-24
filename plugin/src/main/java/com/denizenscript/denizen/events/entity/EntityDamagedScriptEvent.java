@@ -31,8 +31,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // <entity> damaged (by <'cause'>)
     // <entity> damaged by <entity>
+    // <entity> damaged (by <'cause'>)
     // <entity> damages <entity>
     //
     // @Group Entity

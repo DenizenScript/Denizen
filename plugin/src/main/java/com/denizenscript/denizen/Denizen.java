@@ -39,6 +39,7 @@ import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizen.utilities.world.VoidGenerator;
+import com.denizenscript.denizen.utilities.world.VoidGenerator1_17;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
@@ -593,8 +594,13 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && CoreUtilities.toLowerCase(id).equals("void")) {
-            return new VoidGenerator();
+        if (CoreUtilities.toLowerCase(id).equals("void")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                return new VoidGenerator1_17();
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+                return new VoidGenerator();
+            }
         }
         return null;
     }
