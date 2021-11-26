@@ -284,6 +284,15 @@ public class PlayEffectCommand extends AbstractCommand {
                             dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
                         }
                     }
+                    else if (clazz == BlockData.class) {
+                        MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                        dataObject = blockMaterial.getModernData();
+                    }
+                    else if (clazz == ItemStack.class) {
+                        ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());
+                        dataObject = itemType.getItemStack();
+                    }
+                    // Intentionally list last due to requiring 1.17+
                     else if (clazz == org.bukkit.Particle.DustTransition.class) {
                         ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
                         if (dataList.size() != 3) {
@@ -296,14 +305,6 @@ public class PlayEffectCommand extends AbstractCommand {
                             ColorTag toColor = ColorTag.valueOf(dataList.get(2), scriptEntry.context);
                             dataObject = new org.bukkit.Particle.DustTransition(fromColor.getColor(), toColor.getColor(), size);
                         }
-                    }
-                    else if (clazz == BlockData.class) {
-                        MaterialTag blockMaterial = MaterialTag.valueOf(special_data.asString(), scriptEntry.getContext());
-                        dataObject = blockMaterial.getModernData();
-                    }
-                    else if (clazz == ItemStack.class) {
-                        ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());
-                        dataObject = itemType.getItemStack();
                     }
                     else {
                         Debug.echoError("Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
