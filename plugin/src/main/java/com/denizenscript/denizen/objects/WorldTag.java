@@ -515,6 +515,17 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
+        // @attribute <WorldTag.hardcore>
+        // @returns ElementTag(Boolean)
+        // @mechanism WorldTag.hardcore
+        // @description
+        // Returns whether the world is in hardcore mode.
+        // -->
+        registerTag(ElementTag.class, "hardcore", (attribute, object) -> {
+            return new ElementTag(object.getWorld().isHardcore());
+        });
+
+        // <--[tag]
         // @attribute <WorldTag.keep_spawn>
         // @returns ElementTag(Boolean)
         // @mechanism WorldTag.keep_spawn
@@ -949,6 +960,19 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             if (diff != null) {
                 getWorld().setDifficulty(diff);
             }
+        }
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name hardcore
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the world is hardcore mode.
+        // @tags
+        // <WorldTag.hardcore>
+        // -->
+        if (mechanism.matches("hardcore") && mechanism.requireBoolean()) {
+            getWorld().setHardcore(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]

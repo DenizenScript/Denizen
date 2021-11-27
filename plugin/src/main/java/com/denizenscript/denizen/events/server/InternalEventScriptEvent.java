@@ -8,6 +8,9 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.debugging.VerySlowWarning;
+import com.denizenscript.denizencore.utilities.debugging.Warning;
 import org.bukkit.event.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -69,6 +72,9 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     public String getName() {
         return "InternalBukkitEvent";
     }
+
+    public static Warning depFieldContext = new VerySlowWarning("The context.field_<name> special tag for 'internal bukkit event' is experimental and subject to be removed or replace in the future");
+
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("fields")) {
@@ -85,6 +91,7 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
             return result;
         }
         if (name.startsWith("field_")) {
+            depFieldContext.warn();
             String fName = CoreUtilities.toLowerCase(name.substring("field_".length()));
             Class c = currentEvent.getClass();
             while (c != null && c != Object.class) {
