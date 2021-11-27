@@ -1058,18 +1058,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getBukkitMaterial().name()).contains("potion")) {
             return true;
         }
-        MatchHelper matcher = createMatcher(comparedto);
-        if (item.isItemscript()) {
+        boolean isItemScript = item.isItemscript();
+        if (isItemScript) {
+            MatchHelper matcher = createMatcher(comparedto);
             if (matcher.doesMatch(item.getScriptName())) {
                 return true;
             }
         }
-        else {
-            if (matcher.doesMatch(item.getMaterialName())) {
-                return true;
-            }
-        }
-        return tryMaterial(item.getMaterial(), comparedto);
+        return tryMaterialInternal(item.getBukkitMaterial(), comparedto, !isItemScript);
     }
 
     public static boolean tryLocation(Location location, String comparedto) {
@@ -1103,6 +1099,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean tryMaterial(Material mat, String comparedto) {
+        return tryMaterialInternal(mat, comparedto, true);
+    }
+
+    public static boolean tryMaterialInternal(Material mat, String comparedto, boolean allowByMaterialName) {
         if (comparedto == null || comparedto.isEmpty() || mat == null) {
             return false;
         }
@@ -1135,18 +1135,15 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return coreFlaggedCheck(comparedto.substring("material_flagged:".length()), new MaterialTag(mat).getFlagTracker());
             }
         }
-        MaterialTag quickOf = MaterialTag.quickOfNamed(comparedto);
-        if (quickOf != null) {
-            if (quickOf.getMaterial() != mat) {
-                return false;
+        if (!allowByMaterialName) {
+            Material quickOf = Material.getMaterial(comparedto);
+            if (quickOf != null) {
+                return quickOf == mat;
             }
-            if (quickOf.getMaterial().equals(mat)) {
+            MatchHelper matcher = createMatcher(comparedto);
+            if (matcher.doesMatch(mat.name())) {
                 return true;
             }
-        }
-        MatchHelper matcher = createMatcher(comparedto);
-        if (matcher.doesMatch(mat.name())) {
-            return true;
         }
         return false;
     }
