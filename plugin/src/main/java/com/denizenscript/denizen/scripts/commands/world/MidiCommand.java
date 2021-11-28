@@ -68,7 +68,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
-                scriptEntry.addObject("cancel", "");
+                scriptEntry.addObject("cancel", "true");
             }
             else if (!scriptEntry.hasObject("location") &&
                     arg.matchesArgumentType(LocationTag.class)) {
@@ -88,15 +88,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("tempo", arg.asElement());
             }
             else if (!scriptEntry.hasObject("file")) {
-
-                String path = Denizen.getInstance().getDataFolder() +
-                        File.separator + "midi" +
-                        File.separator + arg.getValue();
-                if (!path.endsWith(".mid")) {
-                    path = path + ".mid";
-                }
-
-                scriptEntry.addObject("file", new ElementTag(path));
+                scriptEntry.addObject("file", arg.asElement());
             }
             else {
                 arg.reportUnhandled();
@@ -115,24 +107,29 @@ public class MidiCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         boolean cancel = scriptEntry.hasObject("cancel");
-        File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
-        if (!cancel && !Utilities.canReadFile(file)) {
-            Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
-            return;
-        }
-        if (!cancel && !file.exists()) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid file " + scriptEntry.getElement("file").asString());
-            return;
-        }
+        ElementTag filePath = scriptEntry.getElement("file");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
         LocationTag location = scriptEntry.getObjectTag("location");
         float tempo = scriptEntry.getElement("tempo").asFloat();
         float volume = scriptEntry.getElement("volume").asFloat();
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", true) : ""), db("file", file.getPath()), db("entities", entities), location, db("tempo", tempo), db("volume", volume));
+            Debug.report(scriptEntry, getName(), (cancel ? db("cancel", true) : ""), filePath, db("entities", entities), location, db("tempo", tempo), db("volume", volume));
         }
         // Play the midi
         if (!cancel) {
+            String fName = scriptEntry.getElement("file").asString();
+            if (!fName.endsWith(".mid")) {
+                fName += ".mid";
+            }
+            File file = new File(Denizen.getInstance().getDataFolder(), "/midi/" + fName);
+            if (!Utilities.canReadFile(file)) {
+                Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
+                return;
+            }
+            if (!file.exists()) {
+                Debug.echoError(scriptEntry.getResidingQueue(), "Invalid file " + filePath.asString());
+                return;
+            }
             NoteBlockReceiver rec;
             if (location != null) {
                 rec = MidiUtil.playMidi(file, tempo, volume, location);
