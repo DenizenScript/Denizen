@@ -79,10 +79,11 @@ public class Debug {
                 continue;
             }
             if (obj instanceof ObjectTag) {
-                output.append(((ObjectTag) obj).debug());
+                ObjectTag objTag = (ObjectTag) obj;
+                output.append("<G>").append(objTag.getPrefix()).append("='<Y>").append(objTag.debuggable()).append("<G>'  ");
             }
             else {
-                output.append(obj.toString());
+                output.append(obj);
             }
         }
         echo("<Y>+> <G>Executing '<Y>" + name + "<G>': " + trimMessage(output.toString()), caller);

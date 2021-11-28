@@ -75,7 +75,7 @@ public class GameRuleCommand extends AbstractCommand {
         ElementTag gamerule = scriptEntry.getElement("gamerule");
         ElementTag value = scriptEntry.getElement("value");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
+            Debug.report(scriptEntry, getName(), world, gamerule, value);
         }
         if (!world.getWorld().setGameRuleValue(gamerule.asString(), value.asString())) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Invalid gamerule!");

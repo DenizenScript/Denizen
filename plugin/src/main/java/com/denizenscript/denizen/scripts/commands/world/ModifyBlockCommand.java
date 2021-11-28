@@ -240,18 +240,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         final List<MaterialTag> materialList = materials.filter(MaterialTag.class, scriptEntry);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), materials.debug()
-                    + physics.debug()
-                    + radiusElement.debug()
-                    + heightElement.debug()
-                    + depthElement.debug()
-                    + (natural == null ? "" : natural.debug())
-                    + delayed.debug()
-                    + maxDelayMs.debug()
-                    + (script != null ? script.debug() : "")
-                    + (percents != null ? percents.debug() : "")
-                    + (source != null ? source.debug() : "")
-                    +  (locations == null ? location_list.debug() : db("locations", locations)));
+            Debug.report(scriptEntry, getName(), materials, physics, radiusElement, heightElement, depthElement, natural,
+                    delayed, maxDelayMs, script, percents, source, (locations == null ? location_list : db("locations", locations)));
         }
         Player sourcePlayer = source == null ? null : source.getPlayerEntity();
         final boolean doPhysics = physics.asBoolean();

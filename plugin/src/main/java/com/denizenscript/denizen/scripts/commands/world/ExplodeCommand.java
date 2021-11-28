@@ -120,12 +120,7 @@ public class ExplodeCommand extends AbstractCommand {
         ElementTag fire = scriptEntry.getElement("fire");
         EntityTag source = scriptEntry.getObjectTag("source");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    location.debug() +
-                            (source == null ? "" : source.debug()) +
-                            power.debug() +
-                            breakblocks.debug() +
-                            fire.debug());
+            Debug.report(scriptEntry, getName(), location, source, power, breakblocks, fire);
         }
         location.getWorld().createExplosion(location, power.asFloat(), fire.asBoolean(), breakblocks.asBoolean(), source == null ? null : source.getBukkitEntity());
     }

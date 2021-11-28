@@ -67,9 +67,7 @@ public class LightCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
@@ -87,32 +85,23 @@ public class LightCommand extends AbstractCommand {
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
-
         }
-
         if (!scriptEntry.hasObject("location") ||
                 (!scriptEntry.hasObject("light") && !scriptEntry.hasObject("reset"))) {
             throw new InvalidArgumentsException("Must specify a valid location and light level.");
         }
-
         scriptEntry.defaultObject("reset", new ElementTag(false));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         LocationTag location = scriptEntry.getObjectTag("location");
         ElementTag light = scriptEntry.getElement("light");
         ElementTag reset = scriptEntry.getElement("reset");
         DurationTag duration = scriptEntry.getObjectTag("duration");
-
         if (scriptEntry.dbCallShouldDebug()) {
-
-            Debug.report(scriptEntry, getName(), location.debug() + reset.debug()
-                    + (light != null ? light.debug() : "") + (duration != null ? duration.debug() : ""));
-
+            Debug.report(scriptEntry, getName(), location, reset, light, duration);
         }
-
         if (!Utilities.isLocationYSafe(location)) {
             Debug.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");
             return;

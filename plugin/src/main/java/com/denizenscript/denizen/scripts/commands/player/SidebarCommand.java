@@ -191,7 +191,6 @@ public class SidebarCommand extends AbstractCommand {
         ListTag value = null;
         ElementTag increment = null;
         ElementTag start = null;
-        String debug;
         if (per_player) {
             if (elTitle != null) {
                 perTitle = elTitle.asString();
@@ -208,11 +207,9 @@ public class SidebarCommand extends AbstractCommand {
             if (elStart != null) {
                 perStart = elStart.asString();
             }
-            debug = scriptEntry.dbCallShouldDebug() ? ((elTitle != null ? elTitle.debug() : "") +
-                    (elScores != null ? elScores.debug() : "") +
-                    (elValue != null ? elValue.debug() : "") +
-                    (elIncrement != null ? elIncrement.debug() : "") +
-                    (elStart != null ? elStart.debug() : "")) : null;
+            if (scriptEntry.dbCallShouldDebug()) {
+                Debug.report(scriptEntry, getName(), action, elTitle, elScores, elValue, elIncrement, elStart, db("players", players));
+            }
         }
         else {
             BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
@@ -231,14 +228,9 @@ public class SidebarCommand extends AbstractCommand {
             if (elStart != null) {
                 start = new ElementTag(TagManager.tag(elStart.asString(), context));
             }
-            debug = scriptEntry.dbCallShouldDebug() ? ((title != null ? title.debug() : "") +
-                    (scores != null ? db("scores", scores) : "") +
-                    (value != null ? db("value", value) : "") +
-                    (increment != null ? increment.debug() : "") +
-                    (start != null ? start.debug() : "")) : null;
-        }
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action, debug, db("players", players));
+            if (scriptEntry.dbCallShouldDebug()) {
+                Debug.report(scriptEntry, getName(), action, title, scores, value, increment, start, db("players", players));
+            }
         }
         switch (Action.valueOf(action.asString())) {
             case ADD:

@@ -78,11 +78,9 @@ public class StrikeCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
-        Boolean damage = scriptEntry.getElement("damage").asBoolean();
+        boolean damage = scriptEntry.getElement("damage").asBoolean();
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    location.debug()
-                            + db("Damageable", String.valueOf(damage)));
+            Debug.report(scriptEntry, getName(), location, db("damage", damage));
         }
         if (damage) {
             location.getWorld().strikeLightning(location);

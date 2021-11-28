@@ -134,11 +134,7 @@ public class TimeCommand extends AbstractCommand {
         ElementTag freeze = scriptEntry.getElement("freeze");
         Type type = Type.valueOf(type_element.asString().toUpperCase());
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type_element.debug()
-                    + (reset != null ? reset.debug() : value.debug())
-                    + (freeze != null ? freeze.debug() : "")
-                    + (resetAfter != null ? resetAfter.debug() : "")
-                    + world.debug());
+            Debug.report(scriptEntry, getName(), type_element, reset, value, freeze, resetAfter, world);
         }
         if (type.equals(Type.GLOBAL)) {
             world.getWorld().setTime(value.getTicks());

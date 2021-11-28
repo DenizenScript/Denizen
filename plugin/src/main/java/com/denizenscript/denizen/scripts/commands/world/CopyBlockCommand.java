@@ -86,8 +86,7 @@ public class CopyBlockCommand extends AbstractCommand {
         LocationTag destination = scriptEntry.getObjectTag("destination");
         ElementTag remove_original = scriptEntry.getElement("remove");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
-                    + destination.debug() + remove_original.debug());
+            Debug.report(scriptEntry, getName(), copy_location, destination, remove_original);
         }
         List<Location> locations = new ArrayList<>();
         if (copy_location != null) {

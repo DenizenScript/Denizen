@@ -122,10 +122,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         ListTag chunklocs = scriptEntry.getObjectTag("location");
         DurationTag length = scriptEntry.getObjectTag("duration");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(),
-                    action.debug()
-                            + chunklocs.debug()
-                            + length.debug());
+            Debug.report(scriptEntry, getName(), action, chunklocs, length);
         }
         for (String chunkText : chunklocs) {
             Chunk chunk;
