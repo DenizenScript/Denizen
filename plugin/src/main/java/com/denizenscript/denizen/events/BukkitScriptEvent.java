@@ -1135,7 +1135,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return coreFlaggedCheck(comparedto.substring("material_flagged:".length()), new MaterialTag(mat).getFlagTracker());
             }
         }
-        if (!allowByMaterialName) {
+        if (allowByMaterialName) {
             Material quickOf = Material.getMaterial(comparedto);
             if (quickOf != null) {
                 return quickOf == mat;
