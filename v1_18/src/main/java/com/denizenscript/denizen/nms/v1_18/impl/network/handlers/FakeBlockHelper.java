@@ -1,36 +1,19 @@
 package com.denizenscript.denizen.nms.v1_18.impl.network.handlers;
 
-import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
-import com.denizenscript.denizen.utilities.debugging.Debug;
-import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
-import net.minecraft.util.BitStorage;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import org.bukkit.craftbukkit.v1_18_R1.block.data.CraftBlockData;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.ListIterator;
-
 public class FakeBlockHelper {
-
-    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_buffer);
-    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_blockEntitiesTags);
 
     public static BlockState getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData()).getState();
     }
+
+    // TODO: 1.18: Rewrite showfake persistence over chunk packets
+    /*
+    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_buffer);
+    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_blockEntitiesTags);
 
     public static boolean anyBlocksInSection(List<FakeBlock> blocks, int y) {
         int minY = y << 4;
@@ -89,7 +72,6 @@ public class FakeBlockHelper {
             Debug.echoError(ex);
         }
     }
-
     public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(ClientboundLevelChunkWithLightPacket originalPacket, List<FakeBlock> blocks) {
         try {
             ClientboundLevelChunkWithLightPacket packet = new ClientboundLevelChunkWithLightPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
@@ -208,5 +190,5 @@ public class FakeBlockHelper {
             Debug.echoError(ex);
         }
         return null;
-    }
+    }*/
 }

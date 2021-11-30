@@ -903,7 +903,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             return false;
         }
         try {
-            if (packet instanceof ClientboundLevelChunkWithLightPacket) {
+            /*if (packet instanceof ClientboundLevelChunkWithLightPacket) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUUID());
                 if (map == null) {
                     return false;
@@ -919,7 +919,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
-            else if (packet instanceof ClientboundSectionBlocksUpdatePacket) {
+            else */if (packet instanceof ClientboundSectionBlocksUpdatePacket) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUUID());
                 if (map == null) {
                     return false;
