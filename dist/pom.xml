@@ -155,6 +155,14 @@
                                     <pattern>org.objectweb</pattern>
                                     <shadedPattern>com.denizenscript.shaded.org.objectweb</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>redis</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.redis</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.org.apache</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
