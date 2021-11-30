@@ -24,6 +24,7 @@
         <module>v1_15</module>
         <module>v1_16</module>
         <module>v1_17</module>
+        <module>v1_18</module>
         <module>paper</module>
         <module>dist</module>
     </modules>
