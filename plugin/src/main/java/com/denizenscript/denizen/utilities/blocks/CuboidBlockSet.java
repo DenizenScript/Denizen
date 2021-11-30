@@ -206,7 +206,7 @@ public class CuboidBlockSet implements BlockSet {
                     }
                 }
                 Location spawnLoc = relative.clone().add(offset);
-                spawnLoc.setYaw(offset.getYaw() + rotation);
+                spawnLoc.setYaw(offset.getYaw() - rotation);
                 spawnLoc.setPitch(offset.getPitch());
                 entity.spawnAt(spawnLoc);
             }
