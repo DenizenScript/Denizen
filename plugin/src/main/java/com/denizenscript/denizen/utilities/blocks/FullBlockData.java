@@ -139,6 +139,16 @@ public class FullBlockData {
             ((Rail) newData).setShape(rotateRailShapeOne(((Rail) data).getShape()));
             return new FullBlockData(newData, tileEntityData, flags);
         }
+        else if (data instanceof MultipleFacing) {
+            MultipleFacing newData = (MultipleFacing) data.clone();
+            for (BlockFace face : ((MultipleFacing) data).getFaces()) {
+                newData.setFace(face, false);
+            }
+            for (BlockFace face : ((MultipleFacing) data).getFaces()) {
+                newData.setFace(rotateFaceOne(face), true);
+            }
+            return new FullBlockData(newData, tileEntityData, flags);
+        }
         return this;
     }
 
