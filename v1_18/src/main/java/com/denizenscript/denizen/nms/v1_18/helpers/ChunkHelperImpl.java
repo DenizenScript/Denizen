@@ -1,11 +1,20 @@
 package com.denizenscript.denizen.nms.v1_18.helpers;
 
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.v1_18.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.minecraft.core.QuartPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
@@ -81,5 +90,28 @@ public class ChunkHelperImpl implements ChunkHelper {
             }
         }
         return outputMap;
+    }
+
+    @Override
+    public void setAllBiomes(Chunk chunk, BiomeNMS biome) {
+        Biome nmsBiome = ((BiomeNMSImpl) biome).biomeBase;
+        LevelChunk nmsChunk = ((CraftChunk) chunk).getHandle();
+        ChunkPos chunkcoordintpair = nmsChunk.getPos();
+        int i = QuartPos.fromBlock(chunkcoordintpair.getMinBlockX());
+        int j = QuartPos.fromBlock(chunkcoordintpair.getMinBlockZ());
+        LevelHeightAccessor levelheightaccessor = nmsChunk.getHeightAccessorForGeneration();
+        for(int k = levelheightaccessor.getMinSection(); k < levelheightaccessor.getMaxSection(); ++k) {
+            LevelChunkSection chunksection = nmsChunk.getSection(nmsChunk.getSectionIndexFromSectionY(k));
+            PalettedContainer<Biome> datapaletteblock = chunksection.getBiomes();
+            datapaletteblock.acquire();
+            for(int l = 0; l < 4; ++l) {
+                for(int i1 = 0; i1 < 4; ++i1) {
+                    for(int j1 = 0; j1 < 4; ++j1) {
+                        datapaletteblock.getAndSetUnchecked(l, i1, j1, nmsBiome);
+                    }
+                }
+            }
+            datapaletteblock.release();
+        }
     }
 }

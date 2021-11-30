@@ -771,6 +771,17 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             }
         }
 
+        // <--[mechanism]
+        // @object ChunkTag
+        // @name set_all_biomes
+        // @input BiomeTag
+        // @description
+        // Sets all biomes in the chunk to the given biome.
+        // -->
+        if (mechanism.matches("set_all_biomes") && mechanism.requireObject(BiomeTag.class)) {
+            NMSHandler.getChunkHelper().setAllBiomes(getChunk(), mechanism.valueAsType(BiomeTag.class).getBiome());
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

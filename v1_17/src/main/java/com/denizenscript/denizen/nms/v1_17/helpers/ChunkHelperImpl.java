@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.v1_17.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -9,6 +11,9 @@ import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkBiomeContainer;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
@@ -97,5 +102,20 @@ public class ChunkHelperImpl implements ChunkHelper {
             }
         }
         return outputMap;
+    }
+
+    @Override
+    public void setAllBiomes(Chunk chunk, BiomeNMS biome) {
+        Biome nmsBiome = ((BiomeNMSImpl) biome).biomeBase;
+        LevelChunk nmsChunk = ((CraftChunk) chunk).getHandle();
+        ChunkBiomeContainer biomeContainer = nmsChunk.getBiomes();
+        for(int x = 0; x < 4; x++) {
+            for (int y = 0; y < 64; y++) {
+                for (int z = 0; z < 4; z++) {
+                    biomeContainer.setBiome(x, y, z, nmsBiome);
+                }
+            }
+        }
+        nmsChunk.markUnsaved();
     }
 }
