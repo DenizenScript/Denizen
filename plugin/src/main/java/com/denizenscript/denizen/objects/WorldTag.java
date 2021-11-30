@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -858,9 +859,22 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
+        // @attribute <WorldTag.biomes>
+        // @returns ListTag(BiomeTag)
+        // @description
+        // Returns a list of all biomes in this world (including custom biomes).
+        // -->
+        registerTag(ListTag.class, "biomes", (attribute, object) -> {
+            ListTag output = new ListTag();
+            for (BiomeNMS biome : NMSHandler.getInstance().getBiomes(object.getWorld())) {
+                output.addObject(new BiomeTag(biome));
+            }
+            return output;
+        });
+
+        // <--[tag]
         // @attribute <WorldTag.advanced_matches[<matcher>]>
         // @returns ElementTag(Boolean)
-        // @group element checking
         // @description
         // Returns whether the world matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
         // -->

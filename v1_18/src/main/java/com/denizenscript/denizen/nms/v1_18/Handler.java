@@ -32,6 +32,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -61,6 +62,7 @@ import org.spigotmc.AsyncCatcher;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Handler extends NMSHandler {
@@ -229,6 +231,16 @@ public class Handler extends NMSHandler {
     @Override
     public ProfileEditor getProfileEditor() {
         return profileEditor;
+    }
+
+    @Override
+    public List<BiomeNMS> getBiomes(World world) {
+        ServerLevel level = ((CraftWorld) world).getHandle();
+        ArrayList<BiomeNMS> output = new ArrayList<>();
+        for (Map.Entry<ResourceKey<Biome>, Biome> pair : level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).entrySet()) {
+            output.add(new BiomeNMSImpl(level, pair.getKey().location().toString()));
+        }
+        return output;
     }
 
     @Override

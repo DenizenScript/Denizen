@@ -167,6 +167,10 @@ public abstract class NMSHandler {
 
     public abstract ProfileEditor getProfileEditor();
 
+    public List<BiomeNMS> getBiomes(World world) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract BiomeNMS getBiomeNMS(World world, String name);
 
     public BiomeNMS getBiomeAt(Block block) {
