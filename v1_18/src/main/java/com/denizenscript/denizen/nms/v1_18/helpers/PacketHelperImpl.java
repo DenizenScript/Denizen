@@ -42,6 +42,7 @@ import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -88,6 +89,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static MethodHandle CANVAS_GET_BUFFER = ReflectionHelper.getMethodHandle(CraftMapCanvas.class, "getBuffer");
     public static Field MAPVIEW_WORLDMAP = ReflectionHelper.getFields(CraftMapView.class).get("worldMap");
+
+    public static MethodHandle BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundBlockEntityDataPacket.class, BlockPos.class, BlockEntityType.class, CompoundTag.class);
 
     public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA;
     public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
@@ -180,7 +183,7 @@ public class PacketHelperImpl implements PacketHelper {
         // allowing the player to retain whatever vision the mob they spectated had.
         send(player, new ClientboundAddMobPacket(entity));
         send(player, new ClientboundSetCameraPacket(entity));
-        ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(),
+        ((CraftServer) Bukkit.getServer()).getHandle().respawn(((CraftPlayer) player).getHandle(),
                 ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false);
     }
 
@@ -205,7 +208,13 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) {
         BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
-        send(player, new ClientboundBlockEntityDataPacket(position, action, ((CompoundTagImpl) compoundTag).toNMSTag()));
+        try {
+            ClientboundBlockEntityDataPacket packet = (ClientboundBlockEntityDataPacket) BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR.invoke(position, action, ((CompoundTagImpl) compoundTag).toNMSTag());
+            send(player, packet);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     @Override
@@ -307,7 +316,7 @@ public class PacketHelperImpl implements PacketHelper {
             send(player, new ClientboundOpenSignEditorPacket(pos));
             return true;
         }
-        BlockEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), true);
+        BlockEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getBlockEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), true);
         if (tileEntity instanceof SignBlockEntity) {
             SignBlockEntity sign = (SignBlockEntity) tileEntity;
             // Prevent client crashing by sending current state of the sign
@@ -336,8 +345,8 @@ public class PacketHelperImpl implements PacketHelper {
                 }
                 else {
                     // For player entities, force a respawn packet and let the dynamic intercept correct the details
-                    ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkProvider().chunkMap;
-                    ChunkMap.TrackedEntity entityTracker = tracker.G.get(entity.getEntityId());
+                    ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
+                    ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
                     if (entityTracker != null) {
                         try {
                             ServerEntity entry = (ServerEntity) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);

@@ -90,7 +90,7 @@ public class FishingHelperImpl implements FishingHelper {
     public FishHook spawnHook(Location location, Player player) {
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         FishingHook hook = new FishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0);
-        nmsWorld.addEntity(hook, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        nmsWorld.addFreshEntity(hook, CreatureSpawnEvent.SpawnReason.CUSTOM);
         return (FishHook) hook.getBukkitEntity();
     }
 

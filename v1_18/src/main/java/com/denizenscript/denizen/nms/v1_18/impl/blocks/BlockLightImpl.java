@@ -104,7 +104,7 @@ public class BlockLightImpl extends BlockLight {
             int chunkX = pos.getX() >> 4;
             int chunkZ = pos.getZ() >> 4;
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
-                LevelChunk chunk = world.getChunkAt(chunkX, chunkZ);
+                LevelChunk chunk = world.getChunk(chunkX, chunkZ);
                 boolean any = false;
                 for (Vector vec : RELATIVE_CHUNKS) {
                     ChunkAccess other = world.getChunk(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ(), ChunkStatus.FULL, false);
@@ -135,8 +135,8 @@ public class BlockLightImpl extends BlockLight {
         try {
             int cX = packet.getX();
             int cZ = packet.getZ();
-            BitSet bitMask = packet.getBlockYMask();
-            List<byte[]> blockData = packet.getBlockUpdates();
+            BitSet bitMask = packet.getLightData().getBlockYMask();
+            List<byte[]> blockData = packet.getLightData().getBlockUpdates();
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
                 ChunkAccess chk = world.getChunk(cX, cZ, ChunkStatus.FULL, false);
                 if (!(chk instanceof LevelChunk)) {

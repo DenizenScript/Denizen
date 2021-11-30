@@ -64,7 +64,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         getAdvancementDataWorld().advancements.advancements.put(nms.getId(), nms);
         advancement.registered = true;
         if (!advancement.hidden && advancement.parent != null) {
-            ((CraftServer) Bukkit.getServer()).getHandle().sendAll(new ClientboundUpdateAdvancementsPacket(false,
+            ((CraftServer) Bukkit.getServer()).getHandle().broadcastAll(new ClientboundUpdateAdvancementsPacket(false,
                     Collections.singleton(nms), Collections.emptySet(), Collections.emptyMap()), (net.minecraft.world.entity.player.Player) null);
         }
     }
@@ -87,7 +87,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         }
         advancements.remove(key);
         advancement.registered = false;
-        ((CraftServer) Bukkit.getServer()).getHandle().sendAll(new ClientboundUpdateAdvancementsPacket(false,
+        ((CraftServer) Bukkit.getServer()).getHandle().broadcastAll(new ClientboundUpdateAdvancementsPacket(false,
                 Collections.emptySet(), Collections.singleton(key), Collections.emptyMap()), (net.minecraft.world.entity.player.Player) null);
     }
 

@@ -148,8 +148,8 @@ public class BiomeNMSImpl extends BiomeNMS {
         if (world.hasChunkAt(pos)) {
             LevelChunk chunk = world.getChunkAt(pos);
             if (chunk != null) {
-                chunk.getBiomes().setBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2, biomeBase);
-                chunk.markUnsaved();
+                chunk.setBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2, biomeBase);
+                chunk.setUnsaved(true);
             }
         }
     }

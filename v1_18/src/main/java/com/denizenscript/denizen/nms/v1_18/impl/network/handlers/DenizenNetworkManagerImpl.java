@@ -230,11 +230,6 @@ public class DenizenNetworkManagerImpl extends Connection {
                 ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
                 Debug.log("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
             }
-            else if (packet instanceof ClientboundLevelChunkPacket) {
-                ClientboundLevelChunkPacket chunkPacket = (ClientboundLevelChunkPacket) packet;
-                Debug.log("Packet: ClientboundLevelChunkPacket sent to " + player.getScoreboardName() + " for chunk: " + chunkPacket.getX() + ", " + chunkPacket.getZ()
-                        + ", blockEnts: " + chunkPacket.getBlockEntitiesTags().size() + ", bufferLen: " + chunkPacket.getReadBuffer().array().length);
-            }
             else {
                 Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
             }
@@ -908,19 +903,19 @@ public class DenizenNetworkManagerImpl extends Connection {
             return false;
         }
         try {
-            if (packet instanceof ClientboundLevelChunkPacket) {
+            if (packet instanceof ClientboundLevelChunkWithLightPacket) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(player.getUUID());
                 if (map == null) {
                     return false;
                 }
-                int chunkX = ((ClientboundLevelChunkPacket) packet).getX();
-                int chunkZ = ((ClientboundLevelChunkPacket) packet).getZ();
+                int chunkX = ((ClientboundLevelChunkWithLightPacket) packet).getX();
+                int chunkZ = ((ClientboundLevelChunkWithLightPacket) packet).getZ();
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getLevel().getWorld().getName());
                 List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUUID(), chunkCoord);
                 if (blocks == null || blocks.isEmpty()) {
                     return false;
                 }
-                ClientboundLevelChunkPacket newPacket = FakeBlockHelper.handleMapChunkPacket((ClientboundLevelChunkPacket) packet, blocks);
+                ClientboundLevelChunkWithLightPacket newPacket = FakeBlockHelper.handleMapChunkPacket((ClientboundLevelChunkWithLightPacket) packet, blocks);
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -967,7 +962,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
             }
             else if (packet instanceof ClientboundBlockBreakAckPacket) {
-                BlockPos pos = ((ClientboundBlockBreakAckPacket) packet).getPos();
+                BlockPos pos = ((ClientboundBlockBreakAckPacket) packet).pos();
                 LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {

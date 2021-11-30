@@ -5,7 +5,9 @@ import org.bukkit.World;
 
 public interface ChunkHelper {
 
-    void refreshChunkSections(Chunk chunk);
+    default void refreshChunkSections(Chunk chunk) {
+        throw new UnsupportedOperationException();
+    }
 
     int[] getHeightMap(Chunk chunk);
 

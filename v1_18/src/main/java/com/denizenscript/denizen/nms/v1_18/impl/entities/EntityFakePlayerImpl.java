@@ -30,7 +30,7 @@ public class EntityFakePlayerImpl extends ServerPlayer {
         networkManager.setListener(connection);
         getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
         if (doAdd) {
-            worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            worldserver.addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
     }
 

@@ -53,7 +53,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     }
                     else {
                         if (isSkinChanging) {
-                            ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
+                            ((CraftServer) Bukkit.getServer()).getHandle().respawn(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
                         }
                         player.updateInventory();
                     }

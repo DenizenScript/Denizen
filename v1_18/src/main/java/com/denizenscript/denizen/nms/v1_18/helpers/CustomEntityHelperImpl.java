@@ -42,7 +42,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
     public ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack) {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityItemProjectileImpl entity = new EntityItemProjectileImpl(world.getHandle(), location, CraftItemStack.asNMSCopy(itemStack));
-        world.getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        world.getHandle().addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
         return entity.getBukkitEntity();
     }
 

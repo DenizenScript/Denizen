@@ -4,11 +4,8 @@ import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementat
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
-import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
@@ -43,7 +40,7 @@ public class ChunkHelperImpl implements ChunkHelper {
             return;
         }
         ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
-        ServerChunkCache provider = nmsWorld.getChunkProvider();
+        ServerChunkCache provider = nmsWorld.getChunkSource();
         try {
             resetServerThread = (Thread) chunkProviderServerThreadField.get(provider);
             chunkProviderServerThreadFieldSetter.invoke(provider, Thread.currentThread());
@@ -63,7 +60,7 @@ public class ChunkHelperImpl implements ChunkHelper {
             return;
         }
         ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
-        ServerChunkCache provider = nmsWorld.getChunkProvider();
+        ServerChunkCache provider = nmsWorld.getChunkSource();
         try {
             chunkProviderServerThreadFieldSetter.invoke(provider, resetServerThread);
             worldThreadFieldSetter.invoke(nmsWorld, resetServerThread);
@@ -72,19 +69,6 @@ public class ChunkHelperImpl implements ChunkHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-    }
-
-    @Override
-    public void refreshChunkSections(Chunk chunk) {
-        ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(((CraftChunk) chunk).getHandle());
-        ChunkPos pos = new ChunkPos(chunk.getX(), chunk.getZ());
-        ChunkHolder playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().chunkMap.l.get(pos.toLong());
-        if (playerChunk == null) {
-            return;
-        }
-        playerChunk.playerProvider.getPlayers(pos, false).forEach(player -> {
-            player.connection.send(packet);
-        });
     }
 
     @Override

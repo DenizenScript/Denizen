@@ -763,7 +763,12 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Refreshes all 16x16x16 chunk sections within the chunk.
         // -->
         if (mechanism.matches("refresh_chunk_sections")) {
-            NMSHandler.getChunkHelper().refreshChunkSections(getChunk());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                getBukkitWorld().regenerateChunk(chunkX, chunkZ);
+            }
+            else {
+                NMSHandler.getChunkHelper().refreshChunkSections(getChunk());
+            }
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

@@ -54,8 +54,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void a(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.a(d0, d1, d2, f, f1, cause);
+    public void dismount(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
+        oldListener.dismount(d0, d1, d2, f, f1, cause);
     }
 
     @Override
@@ -64,8 +64,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void b(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.b(d0, d1, d2, f, f1, cause);
+    public void teleport(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
+        oldListener.teleport(d0, d1, d2, f, f1, cause);
     }
 
     @Override
@@ -74,13 +74,13 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void a(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.a(d0, d1, d2, f, f1, set, cause);
+    public void teleport(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, PlayerTeleportEvent.TeleportCause cause) {
+        oldListener.teleport(d0, d1, d2, f, f1, set, cause);
     }
 
     @Override
-    public boolean a(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, boolean flag, PlayerTeleportEvent.TeleportCause cause) {
-        return oldListener.a(d0, d1, d2, f, f1, set, flag, cause);
+    public boolean teleport(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, boolean flag, PlayerTeleportEvent.TeleportCause cause) {
+        return oldListener.teleport(d0, d1, d2, f, f1, set, flag, cause);
     }
 
     @Override

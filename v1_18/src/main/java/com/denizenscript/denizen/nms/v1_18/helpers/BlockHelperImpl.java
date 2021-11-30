@@ -123,10 +123,9 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
+        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
         if (te != null) {
-            net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
-            te.save(compound);
+            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata();
             return CompoundTagImpl.fromNMSTag(compound);
         }
         return null;
@@ -140,7 +139,7 @@ public class BlockHelperImpl implements BlockHelper {
         builder.putInt("z", block.getZ());
         ctag = builder.build();
         BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
-        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos, true);
+        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
         te.load(((CompoundTagImpl) ctag).toNMSTag());
     }
 

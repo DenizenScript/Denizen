@@ -10,6 +10,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacket;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.util.BitStorage;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,14 +65,14 @@ public class FakeBlockHelper {
     public static Field PAPER_CHUNK_READY;
     public static boolean tryPaperPatch = true;
 
-    public static void copyPacketPaperPatch(ClientboundLevelChunkPacket newPacket, ClientboundLevelChunkPacket oldPacket) {
+    public static void copyPacketPaperPatch(ClientboundLevelChunkWithLightPacket newPacket, ClientboundLevelChunkWithLightPacket oldPacket) {
         if (!Denizen.supportsPaper || !tryPaperPatch) {
             return;
         }
         try {
             if (PAPER_CHUNK_EXTRAPACKETS == null) {
-                PAPER_CHUNK_EXTRAPACKETS = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("extraPackets");
-                PAPER_CHUNK_READY = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get("ready");
+                PAPER_CHUNK_EXTRAPACKETS = ReflectionHelper.getFields(ClientboundLevelChunkWithLightPacket.class).get("extraPackets");
+                PAPER_CHUNK_READY = ReflectionHelper.getFields(ClientboundLevelChunkWithLightPacket.class).get("ready");
             }
         }
         catch (Throwable ex) {
@@ -89,15 +90,15 @@ public class FakeBlockHelper {
         }
     }
 
-    public static ClientboundLevelChunkPacket handleMapChunkPacket(ClientboundLevelChunkPacket originalPacket, List<FakeBlock> blocks) {
+    public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(ClientboundLevelChunkWithLightPacket originalPacket, List<FakeBlock> blocks) {
         try {
-            ClientboundLevelChunkPacket packet = new ClientboundLevelChunkPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
+            ClientboundLevelChunkWithLightPacket packet = new ClientboundLevelChunkWithLightPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
             copyPacketPaperPatch(packet, originalPacket);
             // TODO: properly update HeightMap?
-            BitSet bitmask = packet.getAvailableSections();
-            FriendlyByteBuf serial = originalPacket.getReadBuffer();
+            BitSet bitmask = packet.getChunkData().getAvailableSections();
+            FriendlyByteBuf serial = originalPacket.getChunkData().getReadBuffer();
             FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(serial.readableBytes()));
-            List<net.minecraft.nbt.CompoundTag> blockEntities = new ArrayList<>(packet.getBlockEntitiesTags());
+            List<net.minecraft.nbt.CompoundTag> blockEntities = new ArrayList<>(packet.getChunkData().getBlockEntitiesTags());
             BLOCKENTITIES_MAPCHUNK.set(packet, blockEntities);
             ListIterator<CompoundTag> iterator = blockEntities.listIterator();
             while (iterator.hasNext()) {

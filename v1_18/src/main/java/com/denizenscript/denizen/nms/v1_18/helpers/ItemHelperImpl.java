@@ -40,7 +40,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryPlayer;
@@ -455,7 +455,7 @@ public class ItemHelperImpl extends ItemHelper {
 
                                         BlockState iblockdata1;
                                         do {
-                                            blockposition_mutableblockposition1.t(l4--);
+                                            blockposition_mutableblockposition1.setY(l4--);
                                             iblockdata1 = chunk.getBlockState(blockposition_mutableblockposition1);
                                             k3++;
                                         } while (l4 > world.getMinBuildHeight() && !blockStateFluidIsEmpty(iblockdata1));

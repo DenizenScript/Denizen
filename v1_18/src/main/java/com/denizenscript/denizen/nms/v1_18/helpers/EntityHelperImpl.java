@@ -243,7 +243,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setTarget(Creature entity, LivingEntity target) {
         net.minecraft.world.entity.LivingEntity nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
-        ((CraftCreature) entity).getHandle().setGoalTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
+        ((CraftCreature) entity).getHandle().setTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
         entity.setTarget(target);
     }
 
@@ -445,8 +445,8 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public List<Player> getPlayersThatSee(Entity entity) {
-        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkProvider().chunkMap;
-        ChunkMap.TrackedEntity entityTracker = tracker.G.get(entity.getEntityId());
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
+        ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
         ArrayList<Player> output = new ArrayList<>();
         if (entityTracker == null) {
             return output;
@@ -470,9 +470,9 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         ServerPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkProvider().chunkMap;
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkSource().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.TrackedEntity entry = tracker.G.get(other.getId());
+            ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
             if (entry != null) {
                 entry.removePlayer(entityPlayer);
             }
@@ -491,9 +491,9 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         ServerPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkProvider().chunkMap;
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkSource().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.TrackedEntity entry = tracker.G.get(other.getId());
+            ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
             if (entry != null) {
                 entry.removePlayer(entityPlayer);
                 entry.updatePlayer(entityPlayer);

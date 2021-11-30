@@ -88,7 +88,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void deTrackEntity(Player player, Entity entity) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ServerLevel world = (ServerLevel) nmsPlayer.level;
-        ChunkMap.TrackedEntity tracker = world.getChunkProvider().chunkMap.G.get(entity.getEntityId());
+        ChunkMap.TrackedEntity tracker = world.getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
         if (tracker == null) {
             return;
         }
@@ -279,8 +279,8 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public boolean hasChunkLoaded(Player player, Chunk chunk) {
-        return ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().chunkMap
-                .getPlayers(new ChunkPos(chunk.getX(), chunk.getZ()), false)
+        return ((CraftWorld) chunk.getWorld()).getHandle().getChunkSource().chunkMap
+                .getPlayers(new ChunkPos(chunk.getX(), chunk.getZ()), false).stream()
                 .anyMatch(entityPlayer -> entityPlayer.getUUID().equals(player.getUniqueId()));
     }
 
