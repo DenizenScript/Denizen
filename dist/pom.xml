@@ -144,10 +144,6 @@
                                     <shadedPattern>com.denizenscript.shaded.org.json</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.yaml</pattern>
-                                    <shadedPattern>com.denizenscript.shaded.org.yaml</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.ow2.asm</pattern>
                                     <shadedPattern>com.denizenscript.shaded.org.ow2.asm</shadedPattern>
                                 </relocation>
