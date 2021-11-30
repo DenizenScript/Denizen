@@ -176,7 +176,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos);
     public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions);
     public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states);
-    public static Field BLOCKDATA_BLOCKBREAK = ReflectionHelper.getFields(ClientboundBlockBreakAckPacket.class).get(ReflectionMappingsInfo.ClientboundBlockBreakAckPacket_state);
     public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityDataPacket_packedItems);
 
     @Override
@@ -962,18 +961,18 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
             }
             else if (packet instanceof ClientboundBlockBreakAckPacket) {
-                BlockPos pos = ((ClientboundBlockBreakAckPacket) packet).pos();
+                ClientboundBlockBreakAckPacket origPack = (ClientboundBlockBreakAckPacket) packet;
+                BlockPos pos = origPack.pos();
                 LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {
-                    ClientboundBlockBreakAckPacket newPacket = new ClientboundBlockBreakAckPacket(copyPacket(packet));
-                    BLOCKDATA_BLOCKBREAK.set(newPacket, FakeBlockHelper.getNMSState(block));
+                    ClientboundBlockBreakAckPacket newPacket = new ClientboundBlockBreakAckPacket(origPack.pos(), FakeBlockHelper.getNMSState(block), origPack.action(), false);
                     oldManager.send(newPacket, genericfuturelistener);
                     return true;
                 }
             }
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             Debug.echoError(ex);
         }
         return false;

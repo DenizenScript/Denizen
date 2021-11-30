@@ -250,10 +250,10 @@ public class BlockHelperImpl implements BlockHelper {
     // This is to debork Spigot's class remapper mishandling 'getFluidState' which remaps 'FluidState' to 'material.FluidType' (incorrectly) in the call and thus errors out.
     // TODO: 1.18: This might be fixed by Spigot and can be switched to raw method calls
     // Relevant issue: https://hub.spigotmc.org/jira/browse/SPIGOT-6696
-    public static MethodHandle BLOCKSTATEBASE_GETFLUIDSTATE = ReflectionHelper.getMethodHandle(BlockBehaviour.BlockStateBase.class, "getFluid");
+    public static MethodHandle BLOCKSTATEBASE_GETFLUIDSTATE = ReflectionHelper.getMethodHandle(BlockBehaviour.BlockStateBase.class, "n");
     public static MethodHandle FLUIDSTATE_ISRANDOMLYTICKING = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "f");
-    public static MethodHandle FLUIDSTATE_ISEMPTY = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "isEmpty");
-    public static MethodHandle FLUIDSTATE_CREATELEGACYBLOCK = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "getBlockData");
+    public static MethodHandle FLUIDSTATE_ISEMPTY = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "c");
+    public static MethodHandle FLUIDSTATE_CREATELEGACYBLOCK = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "g");
     public static MethodHandle FLUIDSTATE_ANIMATETICK = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), "a", Level.class, BlockPos.class, Random.class);
 
     @Override

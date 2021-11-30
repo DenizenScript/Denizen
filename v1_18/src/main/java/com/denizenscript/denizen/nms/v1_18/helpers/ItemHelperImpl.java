@@ -389,6 +389,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     public static boolean blockStateFluidIsEmpty(BlockState iblockdata) {
         try {
+            // return iblockdata.getFluidState().isEmpty();
             Object fluid = BlockHelperImpl.BLOCKSTATEBASE_GETFLUIDSTATE.invoke(iblockdata);
             return (boolean) BlockHelperImpl.FLUIDSTATE_ISEMPTY.invoke(fluid);
         }

@@ -33,29 +33,29 @@ import java.util.List;
 
 public class BlockLightImpl extends BlockLight {
 
-    public static final Class LIGHTENGINETHREADED_UPDATE = ThreadedLevelLightEngine.class.getDeclaredClasses()[0]; // TaskType
-    public static final Object LIGHTENGINETHREADED_UPDATE_PRE;
+    public static final Class LIGHTENGINETHREADED_TASKTYPE = ThreadedLevelLightEngine.class.getDeclaredClasses()[0]; // TaskType
+    public static final Object LIGHTENGINETHREADED_TASKTYPE_PRE;
 
     static {
         Object preObj = null;
         try {
-            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_UPDATE).get(ReflectionMappingsInfo.ThreadedLevelLightEngine_Update_PRE_UPDATE).get(null);
+            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_TASKTYPE).get(ReflectionMappingsInfo.ThreadedLevelLightEngine_TaskType_PRE_UPDATE).get(null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();
         }
-        LIGHTENGINETHREADED_UPDATE_PRE = preObj;
+        LIGHTENGINETHREADED_TASKTYPE_PRE = preObj;
     }
 
     public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, ReflectionMappingsInfo.ThreadedLevelLightEngine_addTask,
-            int.class, int.class,  LIGHTENGINETHREADED_UPDATE, Runnable.class);
+            int.class, int.class,  LIGHTENGINETHREADED_TASKTYPE, Runnable.class);
 
     public static void enqueueRunnable(LevelChunk chunk, Runnable runnable) {
         LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
         if (lightEngine instanceof ThreadedLevelLightEngine) {
             ChunkPos coord = chunk.getPos();
             try {
-                LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x, coord.z, LIGHTENGINETHREADED_UPDATE_PRE, runnable);
+                LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x, coord.z, LIGHTENGINETHREADED_TASKTYPE_PRE, runnable);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
