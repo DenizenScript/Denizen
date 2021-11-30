@@ -34,7 +34,9 @@ public interface PacketHelper {
 
     void setVision(Player player, EntityType entityType);
 
-    void showDemoScreen(Player player);
+    default void showDemoScreen(Player player) {
+        throw new UnsupportedOperationException();
+    }
 
     void showBlockAction(Player player, Location location, int action, int state);
 

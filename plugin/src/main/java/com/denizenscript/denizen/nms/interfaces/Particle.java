@@ -12,10 +12,6 @@ public class Particle {
         this.particle = particle;
     }
 
-    public void playFor(Player player, Location location, int count, Vector offset, double extra) {
-        player.spawnParticle(particle, location, count, offset.getX(), offset.getY(), offset.getZ(), extra);
-    }
-
     public <T> void playFor(Player player, Location location, int count, Vector offset, double extra, T data) {
         player.spawnParticle(particle, location, count, offset.getX(), offset.getY(), offset.getZ(), extra, data);
     }

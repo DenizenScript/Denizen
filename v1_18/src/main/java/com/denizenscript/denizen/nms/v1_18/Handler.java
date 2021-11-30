@@ -76,7 +76,7 @@ public class Handler extends NMSHandler {
         itemHelper = new ItemHelperImpl();
         soundHelper = new SoundHelperImpl();
         packetHelper = new PacketHelperImpl();
-        particleHelper = new ParticleHelperImpl();
+        particleHelper = new ParticleHelper();
         playerHelper = new PlayerHelperImpl();
         worldHelper = new WorldHelperImpl();
         enchantmentHelper = new EnchantmentHelperImpl();

@@ -188,11 +188,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showDemoScreen(Player player) {
-        send(player, new ClientboundGameEventPacket(ClientboundGameEventPacket.DEMO_EVENT, 0f));
-    }
-
-    @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
         BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
         Block block = ((CraftWorld) location.getWorld()).getHandle().getBlockState(position).getBlock();

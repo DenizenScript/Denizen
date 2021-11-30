@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
@@ -3228,7 +3229,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Shows the player the demo screen.
         // -->
         if (mechanism.matches("show_demo")) {
-            NMSHandler.getPacketHelper().showDemoScreen(getPlayerEntity());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                getPlayerEntity().showDemoScreen();
+            }
+            else {
+                NMSHandler.getPacketHelper().showDemoScreen(getPlayerEntity());
+            }
         }
 
         // <--[mechanism]
