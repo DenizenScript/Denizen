@@ -43,8 +43,7 @@ public class ItemScriptHelper implements Listener {
     public static final Map<String, ItemScriptContainer> recipeIdToItemScript = new HashMap<>();
 
     public ItemScriptHelper() {
-        Denizen.getInstance().getServer().getPluginManager()
-                .registerEvents(this, Denizen.getInstance());
+        Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
     }
 
     public static void removeDenizenRecipes() {

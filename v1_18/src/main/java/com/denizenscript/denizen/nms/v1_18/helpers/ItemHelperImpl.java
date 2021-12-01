@@ -55,6 +55,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class ItemHelperImpl extends ItemHelper {
@@ -94,20 +95,40 @@ public class ItemHelperImpl extends ItemHelper {
         return recipe.toBukkitRecipe();
     }
 
+    public static Field RECIPE_MANAGER_BY_NAME = ReflectionHelper.getFields(RecipeManager.class).get(ReflectionMappingsInfo.RecipeManager_byName);
+
     @Override
     public void removeRecipe(NamespacedKey key) {
         ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
+        RecipeManager recipeManager = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager();
+        try {
+            Map<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> byName = (Map) RECIPE_MANAGER_BY_NAME.get(recipeManager);
+            byName.remove(nmsKey);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : recipeManager.recipes.values()) {
             recipeMap.remove(nmsKey);
         }
     }
 
     @Override
     public void clearDenizenRecipes() {
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
+        RecipeManager recipeManager = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager();
+        Map<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> byName;
+        try {
+            byName = (Map) RECIPE_MANAGER_BY_NAME.get(recipeManager);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return;
+        }
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : recipeManager.recipes.values()) {
             for (ResourceLocation key : new ArrayList<>(recipeMap.keySet())) {
                 if (key.getNamespace().equalsIgnoreCase("denizen")) {
                     recipeMap.remove(key);
+                    byName.remove(key);
                 }
             }
         }

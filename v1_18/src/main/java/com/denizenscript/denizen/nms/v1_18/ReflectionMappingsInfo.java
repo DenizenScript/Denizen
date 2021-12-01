@@ -14,6 +14,9 @@ public class ReflectionMappingsInfo {
     // net.minecraft.stats.RecipeBook
     public static String RecipeBook_known = "a";
 
+    // net.minecraft.world.item.crafting.RecipeManager
+    public static String RecipeManager_byName = "d";
+
     // net.minecraft.world.entity.Entity
     public static String Entity_onGround = "z";
     public static String Entity_DATA_SHARED_FLAGS_ID = "aa";
