@@ -31,7 +31,7 @@ public class FormatScriptContainer extends ScriptContainer {
     //   # '<[name]>' is available as a special def as well for use with the 'on player chats' event to fill the player's name properly.
     //   # Note that 'special' means special: these tags behave a little funny in certain circumstances.
     //   # | All format scripts MUST have this key!
-    //   format: <name> says <text>
+    //   format: <[name]> says <[text]>
     // </code>
     //
     // -->

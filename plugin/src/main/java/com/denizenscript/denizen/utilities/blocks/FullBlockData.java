@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
@@ -12,6 +13,7 @@ import org.bukkit.Axis;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.Wall;
 
 import java.util.Map;
 
@@ -147,6 +149,14 @@ public class FullBlockData {
             for (BlockFace face : ((MultipleFacing) data).getFaces()) {
                 newData.setFace(rotateFaceOne(face), true);
             }
+            return new FullBlockData(newData, tileEntityData, flags);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Wall) {
+            Wall newData = (Wall) data.clone();
+            newData.setHeight(BlockFace.NORTH, ((Wall) data).getHeight(BlockFace.EAST));
+            newData.setHeight(BlockFace.WEST, ((Wall) data).getHeight(BlockFace.NORTH));
+            newData.setHeight(BlockFace.EAST, ((Wall) data).getHeight(BlockFace.SOUTH));
+            newData.setHeight(BlockFace.SOUTH, ((Wall) data).getHeight(BlockFace.WEST));
             return new FullBlockData(newData, tileEntityData, flags);
         }
         return this;
