@@ -216,7 +216,21 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         if (obj instanceof LocationTag) {
             return (LocationTag) obj;
         }
-        return LocationTag.valueOf(obj.toString(), entry.context);
+        else {
+            return LocationTag.valueOf(obj.toString(), entry.context);
+        }
+    }
+
+    public static boolean isLocationBad(ScriptEntry entry, LocationTag loc) {
+        if (loc == null) {
+            Debug.echoError(entry.getResidingQueue(), "Input is not a valid LocationTag");
+            return true;
+        }
+        if (loc.getWorld() == null) {
+            Debug.echoError(entry.getResidingQueue(), "Input '" + loc + "' is missing a world value");
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -239,6 +253,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             percents = null;
         }
         final List<MaterialTag> materialList = materials.filter(MaterialTag.class, scriptEntry);
+        for (MaterialTag mat : materialList) {
+            if (!mat.getMaterial().isBlock()) {
+                Debug.echoError("Material '" + mat.getMaterial().name() + "' is not a block material");
+                return;
+            }
+        }
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), materials, physics, radiusElement, heightElement, depthElement, natural,
                     delayed, maxDelayMs, script, percents, source, (locations == null ? location_list : db("locations", locations)));
@@ -283,6 +303,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                         else {
                             loc = getLocAt(location_list, 0, scriptEntry);
                         }
+                        if (isLocationBad(scriptEntry, loc)) {
+                            scriptEntry.setFinished(true);
+                            cancel();
+                            return;
+                        }
                         boolean was_static = preSetup(loc);
                         while ((locations != null && locations.size() > index) || (location_list != null && location_list.size() > index)) {
                             LocationTag nLoc;
@@ -291,6 +316,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                             }
                             else {
                                 nLoc = getLocAt(location_list, index, scriptEntry);
+                            }
+                            if (isLocationBad(scriptEntry, nLoc)) {
+                                scriptEntry.setFinished(true);
+                                cancel();
+                                return;
                             }
                             handleLocation(nLoc, index, materialList, doPhysics, natural, radius, height, depth, percs, sourcePlayer, scriptEntry);
                             index++;
@@ -321,17 +351,27 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             else {
                 loc = getLocAt(location_list, 0, scriptEntry);
             }
+            if (isLocationBad(scriptEntry, loc)) {
+                return;
+            }
             boolean was_static = preSetup(loc);
             int index = 0;
             if (locations != null) {
-                for (ObjectTag obj : locations) {
-                    handleLocation((LocationTag) obj, index, materialList, doPhysics, natural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
+                for (LocationTag obj : locations) {
+                    if (isLocationBad(scriptEntry, obj)) {
+                        return;
+                    }
+                    handleLocation(obj, index, materialList, doPhysics, natural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
                     index++;
                 }
             }
             else {
                 for (int i = 0; i < location_list.size(); i++) {
-                    handleLocation(getLocAt(location_list, i, scriptEntry), index, materialList, doPhysics, natural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
+                    LocationTag obj = getLocAt(location_list, i, scriptEntry);
+                    if (isLocationBad(scriptEntry, obj)) {
+                        return;
+                    }
+                    handleLocation(obj, index, materialList, doPhysics, natural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
                     index++;
                 }
             }
