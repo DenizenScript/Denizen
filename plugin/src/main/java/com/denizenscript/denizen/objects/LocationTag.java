@@ -4563,6 +4563,25 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
         }
 
+        // <--[mechanism]
+        // @object LocationTag
+        // @name ring_bell
+        // @input None
+        // @description
+        // Causes the bell to ring.
+        // @tags
+        // <LocationTag.campfire_items>
+        // -->
+        if (mechanism.matches("ring_bell")) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Bell)) {
+                Debug.echoError("'ring_bell' mechanism can only be called on Bell blocks.");
+            }
+            else {
+                NMSHandler.getBlockHelper().ringBell((Bell) state);
+            }
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

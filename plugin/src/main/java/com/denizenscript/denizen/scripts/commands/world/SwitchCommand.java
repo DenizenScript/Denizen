@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialSwitchable;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -16,6 +17,8 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Bell;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
@@ -56,6 +59,7 @@ public class SwitchCommand extends AbstractCommand {
     // - Single-use interactables like buttons, note blocks, dispensers, droppers, ...
     // - Redstone interactables like repeaters, ...
     // - Special interactables like tripwires, ...
+    // - Bells as a special case will ring when you use 'switch' on them, ...
     // - Almost any other block with an interaction handler.
     //
     // This will generally (but not always) function equivalently to a user right-clicking the block
@@ -168,6 +172,10 @@ public class SwitchCommand extends AbstractCommand {
         MaterialSwitchable switchable = MaterialSwitchable.getFrom(materialTag);
         if (switchable == null) {
             Debug.echoError("Cannot switch block of type '" + materialTag.getMaterial().name() + "'");
+            return;
+        }
+        if (materialTag.getMaterial() == Material.BELL) {
+            NMSHandler.getBlockHelper().ringBell((Bell) block.getState());
             return;
         }
         boolean currentState = switchable.getState();

@@ -12,11 +12,13 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,15 +28,11 @@ import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Skull;
+import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlockState;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_17_R1.block.*;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
@@ -286,5 +284,28 @@ public class BlockHelperImpl implements BlockHelper {
         net.minecraft.world.level.block.Block blockType = getBlockFrom(mat);
         NoteBlockInstrument nmsInstrument = NoteBlockInstrument.byState(blockType.defaultBlockState());
         return Instrument.values()[(nmsInstrument.ordinal())];
+    }
+
+    @Override
+    public void ringBell(Bell block) {
+        org.bukkit.block.data.type.Bell bellData = (org.bukkit.block.data.type.Bell) block.getBlockData();
+        Direction face = Direction.byName(bellData.getFacing().name());
+        Direction dir = Direction.NORTH;
+        switch (bellData.getAttachment()) {
+            case DOUBLE_WALL:
+            case SINGLE_WALL:
+                switch (face) {
+                    case NORTH:
+                    case SOUTH:
+                        dir = Direction.EAST;
+                        break;
+                }
+                break;
+            case FLOOR:
+                dir = face;
+                break;
+        }
+        CraftBlock craftBlock = (CraftBlock) block.getBlock();
+        ((BellBlock) Blocks.BELL).attemptToRing(craftBlock.getCraftWorld().getHandle(), craftBlock.getPosition(), dir);
     }
 }

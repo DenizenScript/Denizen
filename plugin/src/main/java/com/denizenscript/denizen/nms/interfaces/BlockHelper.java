@@ -5,9 +5,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Skull;
+import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.world.PortalCreateEvent;
 
@@ -81,6 +79,10 @@ public interface BlockHelper {
     }
 
     default Instrument getInstrumentFor(Material mat) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void ringBell(Bell block) {
         throw new UnsupportedOperationException();
     }
 }

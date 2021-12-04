@@ -31,7 +31,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @Group Entity
     //
     // @Location true
-    // @Switch by:<entity type> to only process the event if the killer is of a specified entity type.
+    // @Switch by:<entity> to only process the event if the killer is known and matches the specified entity matcher.
     // @Switch cause:<cause> to only process the event if it was caused by a specific damage cause.
     //
     // @Triggers when an entity dies. Note that this fires *after* the entity dies, and thus some data may be lost from the entity.
