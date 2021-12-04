@@ -52,7 +52,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     // Optionally specify a world type which can be specified with 'worldtype:' (defaults to NORMAL).
     // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
     //
-    // Optionally specify an environment (defaults to NORMAL, can also be NETHER or THE_END).
+    // Optionally specify an environment (defaults to NORMAL, can also be NETHER, THE_END, or CUSTOM).
     //
     // Optionally specify an existing world to copy files from.
     // The 'copy_from' argument is ~waitable. Refer to <@link language ~waitable>.

@@ -379,9 +379,14 @@ public class FormattedTextHelper {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
         if (firstChar == -1) {
-            TextComponent base = new TextComponent();
-            base.addExtra(new TextComponent(str)); // This is for compat with how Spigot does parsing of plaintext.
-            return new BaseComponent[] { base };
+            if (str.contains("://")) {
+                firstChar = 0;
+            }
+            else {
+                TextComponent base = new TextComponent();
+                base.addExtra(new TextComponent(str)); // This is for compat with how Spigot does parsing of plaintext.
+                return new BaseComponent[]{base};
+            }
         }
         str = cleanRedundantCodes(str);
         if (cleanBase && str.length() < 512 && !str.contains(ChatColor.COLOR_CHAR + "[") && !str.contains("://")) {

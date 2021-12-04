@@ -148,25 +148,18 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public static boolean matches(String arg) {
-
         if (arg == null) {
             return false;
         }
-
-        // All ObjectTags should 'match' if there is a proper
-        // ObjectFetcher identifier
         if (CoreUtilities.toLowerCase(arg).startsWith("i@")) {
             return true;
         }
-
-        // Try a quick and simple item/book script match
         if (ScriptRegistry.containsScript(arg, ItemScriptContainer.class)) {
             return true;
         }
         else if (ScriptRegistry.containsScript(arg, BookScriptContainer.class)) {
             return true;
         }
-
         if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
             return true;
         }
