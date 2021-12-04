@@ -57,6 +57,18 @@ public class ExperienceCommand extends AbstractCommand {
 
     private enum Type {SET, GIVE, TAKE}
 
+    public static int XP_FOR_NEXT_LEVEL(int level) {
+        return level >= 30 ? 112 + (level - 30) * 9 : (level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2);
+    }
+
+    public static long TOTAL_XP_FOR_LEVEL(int level) {
+        long count = 0;
+        for (int i = 0; i < level; i++) {
+            count += TOTAL_XP_FOR_LEVEL(i);
+        }
+        return count;
+    }
+
     public static void setTotalExperience(Player player, int exp) {
         player.setTotalExperience(0);
         player.setLevel(0);

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
+import com.denizenscript.denizen.scripts.commands.player.ExperienceCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
@@ -2073,6 +2074,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.calculate_xp>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the calculated total amount of XP the player has, based on the amount of experience needed per level, for each level the player has.
+        // -->
+        registerOnlineOnlyTag(ElementTag.class, "calculate_xp", (attribute, object) -> {
+            int level = object.getPlayerEntity().getLevel();
+            return new ElementTag(ExperienceCommand.TOTAL_XP_FOR_LEVEL(level) + (object.getPlayerEntity().getExp() * ExperienceCommand.XP_FOR_NEXT_LEVEL(level)));
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.xp_level>
         // @returns ElementTag(Number)
         // @description
@@ -2081,6 +2093,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerOnlineOnlyTag(ElementTag.class, "xp_level", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getLevel());
         });
+
         // <--[tag]
         // @attribute <PlayerTag.xp_to_next_level>
         // @returns ElementTag(Number)
@@ -2096,6 +2109,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Number)
         // @description
         // Returns the total amount of experience points the player has.
+        // This is how much XP the player has ever received, not a current value.
+        // To get the current total, use @<link tag PlayerTag.calculate_xp>.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "xp_total", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getTotalExperience());
