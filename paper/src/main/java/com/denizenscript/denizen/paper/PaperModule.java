@@ -27,6 +27,7 @@ public class PaperModule {
 
         // Events
         ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEventPaperImpl());
+        ScriptEvent.registerScriptEvent(new BellRingScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityAddToWorldScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityLoadCrossbowScriptEvent());
