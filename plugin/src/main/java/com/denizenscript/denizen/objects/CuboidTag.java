@@ -575,7 +575,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if (pairs.size() != 1) {
             return world.getEntitiesForTag();
         }
-        BoundingBox box = BoundingBox.of(getLow(0).toVector(), getHigh(0).toVector());
+        BoundingBox box = BoundingBox.of(getLow(0).toVector(), getHigh(0).toVector().add(new Vector(1, 1, 1)));
         return world.getPossibleEntitiesForBoundary(box);
     }
 
