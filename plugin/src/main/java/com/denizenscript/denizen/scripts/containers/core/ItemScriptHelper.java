@@ -2,7 +2,10 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -21,14 +24,13 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.*;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCookEvent;
-import org.bukkit.event.inventory.BrewEvent;
-import org.bukkit.event.inventory.BrewingStandFuelEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
 
 import java.math.BigInteger;
@@ -44,6 +46,9 @@ public class ItemScriptHelper implements Listener {
 
     public ItemScriptHelper() {
         Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            Denizen.getInstance().getServer().getPluginManager().registerEvents(new Events_1_16(), Denizen.getInstance());
+        }
     }
 
     public static void removeDenizenRecipes() {
@@ -549,6 +554,35 @@ public class ItemScriptHelper implements Listener {
     public void onBrewingStandFuel(BrewingStandFuelEvent event) {
         if (!isAllowedToCraftWith(event.getFuel())) {
             event.setCancelled(true);
+        }
+    }
+
+    public static class Events_1_16 implements Listener {
+
+        @EventHandler(priority = EventPriority.LOW)
+        public void onItemSmithing(PrepareSmithingEvent event) {
+            if (!isItemscript(event.getResult())) {
+                return;
+            }
+            Recipe recipe = event.getInventory().getRecipe();
+            if (!(recipe instanceof SmithingRecipe) || !((SmithingRecipe) recipe).getKey().getNamespace().equals("denizen")) {
+                return;
+            }
+            ItemScriptContainer realResult = recipeIdToItemScript.get(((SmithingRecipe) recipe).getKey().toString());
+            if (realResult == null) {
+                return;
+            }
+            PlayerTag player = null;
+            if (!event.getInventory().getViewers().isEmpty()) {
+                HumanEntity human = event.getInventory().getViewers().get(0);
+                if (!EntityTag.isNPC(human) && human instanceof Player) {
+                    player = new PlayerTag((Player) human);
+                }
+            }
+            ItemTag got = realResult.getItemFrom(new BukkitTagContext(player, null, new ScriptTag(realResult)));
+            if (got != null) {
+                event.setResult(got.getItemStack());
+            }
         }
     }
 }
