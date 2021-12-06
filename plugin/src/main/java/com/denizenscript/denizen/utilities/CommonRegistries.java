@@ -227,10 +227,22 @@ public class CommonRegistries {
             }
         });
         CoreUtilities.typeConverters.put(EntityTag.class, (obj, context) -> {
-            if (obj instanceof PlayerTag && ((PlayerTag) obj).isOnline()) {
+            if (obj instanceof PlayerTag) {
+                if (!((PlayerTag) obj).isOnline()) {
+                    if (context.showErrors()) {
+                        Debug.echoError("Player '" + obj.debuggable() + "' is offline, cannot convert to EntityTag.");
+                    }
+                    return null;
+                }
                 return new EntityTag(((PlayerTag) obj).getPlayerEntity());
             }
-            else if (obj instanceof NPCTag && ((NPCTag) obj).isSpawned()) {
+            else if (obj instanceof NPCTag) {
+                if (!((NPCTag) obj).isSpawned()) {
+                    if (context.showErrors()) {
+                        Debug.echoError("NPC '" + obj.debuggable() + "' is unspawned, cannot convert to EntityTag.");
+                    }
+                    return null;
+                }
                 return new EntityTag(((NPCTag) obj).getEntity());
             }
             return EntityTag.valueOf(obj.toString(), context);

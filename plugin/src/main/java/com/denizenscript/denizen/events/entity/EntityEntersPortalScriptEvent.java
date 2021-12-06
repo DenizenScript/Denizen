@@ -23,7 +23,7 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     //
     // @Location true
     //
-    // @Triggers when an entity enters a portal.
+    // @Triggers when an entity enters a portal. That is, when the entity touches a portal block.
     //
     // @Context
     // <context.entity> returns the EntityTag.

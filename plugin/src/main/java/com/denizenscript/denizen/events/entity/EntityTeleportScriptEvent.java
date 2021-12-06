@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -37,7 +38,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <context.origin> returns the LocationTag the entity teleported from.
     // <context.destination> returns the LocationTag the entity teleported to.
     // <context.cause> returns an ElementTag of the teleport cause. Can be:
-    // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, END_GATEWAY, CHORUS_FRUIT, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
+    // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, END_GATEWAY, CHORUS_FRUIT, SPECTATE, UNKNOWN, ENTITY_TELEPORT, or ENTITY_PORTAL
     //
     // @Determine
     // "ORIGIN:" + LocationTag to change the location the entity teleported from.
@@ -165,7 +166,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         to = new LocationTag(event.getTo());
         from = new LocationTag(event.getFrom());
         entity = new EntityTag(event.getEntity());
-        cause = "ENTITY_TELEPORT";
+        cause = event instanceof EntityPortalEvent ? "ENTITY_PORTAL" : "ENTITY_TELEPORT";
         this.event = event;
         pEvent = null;
         fire(event);
