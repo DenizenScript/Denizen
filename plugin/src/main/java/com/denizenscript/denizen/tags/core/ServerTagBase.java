@@ -479,6 +479,21 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.whitelisted_players>
+        // @returns ListTag(PlayerTag)
+        // @description
+        // Returns a list of all players whitelisted on this server.
+        // -->
+        if (attribute.startsWith("whitelisted_players")) {
+            ListTag result = new ListTag();
+            for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+                result.addObject(new PlayerTag(player));
+            }
+            event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
         // @returns ElementTag(Boolean)
         // @description
