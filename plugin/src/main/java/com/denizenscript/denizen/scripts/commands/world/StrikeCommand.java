@@ -4,7 +4,6 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -16,25 +15,30 @@ public class StrikeCommand extends AbstractCommand {
 
     public StrikeCommand() {
         setName("strike");
-        setSyntax("strike (no_damage) [<location>]");
-        setRequiredArguments(1, 2);
+        setSyntax("strike [<location>] (no_damage) (silent)");
+        setRequiredArguments(1, 3);
         isProcedural = false;
+        setBooleansHandled("no_damage", "silent");
     }
 
     // <--[command]
     // @Name Strike
-    // @Syntax strike (no_damage) [<location>]
+    // @Syntax strike [<location>] (no_damage) (silent)
     // @Required 1
-    // @Maximum 2
+    // @Maximum 3
     // @Short Strikes lightning down upon the location.
     // @Synonyms Lightning
     // @Group world
     //
     // @Description
     // Causes lightning to strike at the specified location, which can optionally have damage disabled.
+    //
     // The lightning will still cause fires to start, even without the 'no_damage' argument.
+    //
     // Lightning caused by this command will cause creepers to activate. Using the no_damage argument makes the
     // lightning do no damage to the player or any other entities, and means creepers struck will not activate.
+    //
+    // Use 'silent' to remove the sound of the lightning strike.
     //
     // @Tags
     // None
@@ -62,9 +66,6 @@ public class StrikeCommand extends AbstractCommand {
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
-            else if (arg.matches("no_damage") || arg.matches("nodamage")) {
-                scriptEntry.addObject("damage", new ElementTag(false));
-            }
             else {
                 arg.reportUnhandled();
             }
@@ -72,21 +73,21 @@ public class StrikeCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
         }
-        scriptEntry.defaultObject("damage", new ElementTag(true));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
-        boolean damage = scriptEntry.getElement("damage").asBoolean();
+        boolean noDamage = scriptEntry.argAsBoolean("no_damage");
+        boolean silent = scriptEntry.argAsBoolean("silent");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), location, db("damage", damage));
+            Debug.report(scriptEntry, getName(), location, db("no_damage", noDamage), db("silent", silent));
         }
-        if (damage) {
-            location.getWorld().strikeLightning(location);
+        if (noDamage) {
+            location.getWorld().spigot().strikeLightningEffect(location, silent);
         }
         else {
-            location.getWorld().strikeLightningEffect(location);
+            location.getWorld().spigot().strikeLightning(location, silent);
         }
     }
 }
