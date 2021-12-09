@@ -15,6 +15,7 @@ import org.bukkit.util.BlockVector;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,16 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class SpongeSchematicHelper {
+
+    public static String stringifyTag(Tag t) {
+        if (t instanceof StringTag) {
+            return ((StringTag) t).getValue();
+        }
+        else if (t instanceof ByteArrayTag) {
+            return new String(((ByteArrayTag) t).getValue(), StandardCharsets.UTF_8);
+        }
+        return t.toString();
+    }
 
     // Referenced from WorldEdit source and Sponge schematic format v2 documentation
     // Some values are custom and specific to Denizen
@@ -38,7 +49,7 @@ public class SpongeSchematicHelper {
             CompoundTag schematicTag = (CompoundTag) rootTag.getTag();
             Map<String, Tag> schematic = schematicTag.getValue();
             if (schematic.containsKey("DenizenEntities")) {
-                String entities = getChildTag(schematic, "DenizenEntities", StringTag.class).getValue();
+                String entities = stringifyTag(schematic.get("DenizenEntities"));
                 cbs.entities = ListTag.valueOf(entities, CoreUtilities.errorButNoDebugContext);
             }
             short width = getChildTag(schematic, "Width", ShortTag.class).getValue();
@@ -125,12 +136,12 @@ public class SpongeSchematicHelper {
                 Map<String, Tag> flags = getChildTag(schematic, "DenizenFlags", CompoundTag.class).getValue();
                 for (Map.Entry<String, Tag> flagData : flags.entrySet()) {
                     int flagIndex = Integer.valueOf(flagData.getKey());
-                    cbs.blocks[flagIndex].flags = MapTag.valueOf(((StringTag) flagData.getValue()).getValue(), CoreUtilities.noDebugContext);
+                    cbs.blocks[flagIndex].flags = MapTag.valueOf(stringifyTag(flagData.getValue()), CoreUtilities.noDebugContext);
                 }
             }
         }
         catch (Exception e) {
-            Debug.echoError(e);
+            throw new RuntimeException("Failed to load Sponge-format schematic file", e);
         }
         return cbs;
     }
@@ -154,7 +165,7 @@ public class SpongeSchematicHelper {
             schematic.put("Height", new ShortTag((short) (blockSet.y_length)));
             schematic.put("DenizenOffset", new IntArrayTag(new int[] {blockSet.center_x, blockSet.center_y, blockSet.center_z}));
             if (blockSet.entities != null) {
-                schematic.put("DenizenEntities", new StringTag(blockSet.entities.toString()));
+                schematic.put("DenizenEntities", new ByteArrayTag(blockSet.entities.toString().getBytes(StandardCharsets.UTF_8)));
             }
             Map<String, Tag> palette = new HashMap<>();
             ByteArrayOutputStream blocksBuffer = new ByteArrayOutputStream((blockSet.x_width) * (blockSet.y_length) * (blockSet.z_height));
@@ -198,7 +209,7 @@ public class SpongeSchematicHelper {
                 Map<String, Tag> flagMap = new HashMap<>();
                 for (int i = 0; i < blockSet.blocks.length; i++) {
                     if (blockSet.blocks[i].flags != null) {
-                        flagMap.put(String.valueOf(i), new StringTag(blockSet.blocks[i].flags.toString()));
+                        flagMap.put(String.valueOf(i), new ByteArrayTag(blockSet.blocks[i].flags.toString().getBytes(StandardCharsets.UTF_8)));
                     }
                 }
                 if (!flagMap.isEmpty()) {
