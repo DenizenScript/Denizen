@@ -113,6 +113,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
         ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
         ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            ScriptEvent.registerScriptEvent(new PiglinBarterScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileHitsBlockScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileHitsEntityScriptEvent());
