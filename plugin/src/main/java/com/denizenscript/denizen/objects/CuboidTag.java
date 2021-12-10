@@ -987,13 +987,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns LocationTag
         // @description
         // Returns the location of the exact center of the cuboid.
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(LocationTag.class, "center", (attribute, cuboid) -> {
             LocationPair pair;
             if (!attribute.hasParam()) {
                 pair = cuboid.pairs.get(0);
             }
-            else {
+            else { // legacy
                 int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
@@ -1016,6 +1017,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the volume of the cuboid.
         // Effectively equivalent to: (size.x * size.y * size.z).
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(ElementTag.class, "volume", (attribute, cuboid) -> {
             LocationPair pair = cuboid.pairs.get(0);
@@ -1029,13 +1031,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the size of the cuboid.
         // Effectively equivalent to: (max - min) + (1,1,1)
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(LocationTag.class, "size", (attribute, cuboid) -> {
             LocationPair pair;
             if (!attribute.hasParam()) {
                 pair = cuboid.pairs.get(0);
             }
-            else {
+            else { // legacy
                 int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
@@ -1054,12 +1057,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns LocationTag
         // @description
         // Returns the highest-numbered (maximum) corner location.
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(LocationTag.class, "max", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
                 return cuboid.pairs.get(0).high;
             }
-            else {
+            else { // legacy
                 int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
@@ -1076,12 +1080,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns LocationTag
         // @description
         // Returns the lowest-numbered (minimum) corner location.
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(LocationTag.class, "min", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
                 return cuboid.pairs.get(0).low;
             }
-            else {
+            else { // legacy
                 int member = attribute.getIntParam();
                 if (member < 1) {
                     member = 1;
@@ -1204,10 +1209,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.with_min[<location>]>
         // @returns CuboidTag
         // @description
-        // Changes the first member of the CuboidTag to have the given minimum location, and returns the changed cuboid.
+        // Changes the cuboid to have the given minimum location, and returns the changed cuboid.
         // If values in the new min are higher than the existing max, the output max will contain the new min values,
         // and the output min will contain the old max values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids max value.
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_min", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1222,10 +1228,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.with_max[<location>]>
         // @returns CuboidTag
         // @description
-        // Changes the first member of the CuboidTag to have the given maximum location, and returns the changed cuboid.
+        // Changes the cuboid to have the given maximum location, and returns the changed cuboid.
         // If values in the new max are lower than the existing min, the output min will contain the new max values,
         // and the output max will contain the old min values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids min value.
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_max", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1240,10 +1247,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.expand[<location>]>
         // @returns CuboidTag
         // @description
-        // Changes the first member of the CuboidTag to be expanded by the given amount, and returns the changed cuboid.
+        // Expands the cuboid by the given amount, and returns the changed cuboid.
         // This will decrease the min coordinates by the given vector location, and increase the max coordinates by it.
         // Supplying a negative input will therefore contract the cuboid.
         // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
+        // Not valid for multi-member CuboidTags.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "expand", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1260,6 +1268,101 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
             LocationPair pair = cuboid.pairs.get(0);
             return new CuboidTag(pair.low.clone().subtract(expandBy), pair.high.clone().add(expandBy));
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.expand_one_side[<location>]>
+        // @returns CuboidTag
+        // @description
+        // Expands the cuboid by the given amount in just one direction, and returns the changed cuboid.
+        // If a coordinate is positive, it will expand the high value. If it is negative, it will expand the low value.
+        // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
+        // Inverted by <@link tag CuboidTag.shrink_one_side>
+        // Not valid for multi-member CuboidTags.
+        // -->
+        tagProcessor.registerTag(CuboidTag.class, "expand_one_side", (attribute, cuboid) -> {
+            if (!attribute.hasParam()) {
+                attribute.echoError("The tag CuboidTag.expand_one_side[...] must have a value.");
+                return null;
+            }
+            Vector expandBy;
+            if (ArgumentHelper.matchesInteger(attribute.getParam())) {
+                int val = attribute.getIntParam();
+                expandBy = new Vector(val, val, val);
+            }
+            else {
+                expandBy = attribute.paramAsType(LocationTag.class).toVector();
+            }
+            LocationPair pair = cuboid.pairs.get(0);
+            LocationTag low = pair.low.clone();
+            LocationTag high = pair.high.clone();
+            if (expandBy.getBlockX() < 0) {
+                low.setX(low.getBlockX() + expandBy.getBlockX());
+            }
+            else {
+                high.setX(high.getBlockX() + expandBy.getBlockX());
+            }
+            if (expandBy.getBlockY() < 0) {
+                low.setY(low.getBlockY() + expandBy.getBlockY());
+            }
+            else {
+                high.setY(high.getBlockY() + expandBy.getBlockY());
+            }
+            if (expandBy.getBlockZ() < 0) {
+                low.setZ(low.getBlockZ() + expandBy.getBlockZ());
+            }
+            else {
+                high.setZ(high.getBlockZ() + expandBy.getBlockZ());
+            }
+            return new CuboidTag(low, high);
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.shrink_one_side[<location>]>
+        // @returns CuboidTag
+        // @description
+        // Shrinks the cuboid by the given amount in just one direction, and returns the changed cuboid.
+        // If a coordinate is positive, it will shrink the high value. If it is negative, it will shrink the low value.
+        // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
+        // Inverted by <@link tag CuboidTag.expand_one_side>
+        // Not valid for multi-member CuboidTags.
+        // If you shrink past the limits of the cuboid's size, the cuboid will flip and start expanding the opposite direction.
+        // -->
+        tagProcessor.registerTag(CuboidTag.class, "shrink_one_side", (attribute, cuboid) -> {
+            if (!attribute.hasParam()) {
+                attribute.echoError("The tag CuboidTag.shrink_one_side[...] must have a value.");
+                return null;
+            }
+            Vector expandBy;
+            if (ArgumentHelper.matchesInteger(attribute.getParam())) {
+                int val = attribute.getIntParam();
+                expandBy = new Vector(val, val, val);
+            }
+            else {
+                expandBy = attribute.paramAsType(LocationTag.class).toVector();
+            }
+            LocationPair pair = cuboid.pairs.get(0);
+            LocationTag low = pair.low.clone();
+            LocationTag high = pair.high.clone();
+            if (expandBy.getBlockX() < 0) {
+                low.setX(low.getBlockX() - expandBy.getBlockX());
+            }
+            else {
+                high.setX(high.getBlockX() - expandBy.getBlockX());
+            }
+            if (expandBy.getBlockY() < 0) {
+                low.setY(low.getBlockY() - expandBy.getBlockY());
+            }
+            else {
+                high.setY(high.getBlockY() - expandBy.getBlockY());
+            }
+            if (expandBy.getBlockZ() < 0) {
+                low.setZ(low.getBlockZ() - expandBy.getBlockZ());
+            }
+            else {
+                high.setZ(high.getBlockZ() - expandBy.getBlockZ());
+            }
+            return new CuboidTag(low, high);
         });
 
         // <--[tag]
