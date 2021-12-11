@@ -1631,7 +1631,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             LocationTag result = object.clone();
-            float precision = (float) attribute.getDoubleParam();
+            float precision = 1f / (float) attribute.getDoubleParam();
             result.setX(((double) Math.round(result.getX() * precision)) / precision);
             result.setY(((double) Math.round(result.getY() * precision)) / precision);
             result.setZ(((double) Math.round(result.getZ() * precision)) / precision);
