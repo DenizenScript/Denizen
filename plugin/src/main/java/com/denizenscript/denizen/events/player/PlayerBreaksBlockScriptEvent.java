@@ -25,6 +25,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player breaks [^\s]+$
     //
+    // @Synonyms player mines block,player mines ore,player digs block
+    //
     // @Group Player
     //
     // @Location true

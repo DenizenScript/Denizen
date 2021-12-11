@@ -25,6 +25,9 @@ public class ReflectionMappingsInfo {
 
     public static String EnderMan_DATA_CREEPY = "bU";
 
+    public static String Zombie_inWaterTime = "cc";
+    public static String Zombie_conversionTime = "cd";
+
     public static String Item_maxStackSize = "c";
 
     public static String Level_isClientSide = "y";

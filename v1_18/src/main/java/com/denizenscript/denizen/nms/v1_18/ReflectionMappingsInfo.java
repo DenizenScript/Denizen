@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_18;
 
 public class ReflectionMappingsInfo {
 
-    // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.18
+    // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.18.1
 
     // net.minecraft.advancements.AdvancementList
     public static String AdvancementList_roots = "c";
@@ -35,6 +35,10 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.entity.monster.EnderMan
     public static String EnderMan_DATA_CREEPY = "bY";
+
+    // net.minecraft.world.entity.monster.Zombie
+    public static String Zombie_inWaterTime = "cf";
+    public static String Zombie_conversionTime = "cg";
 
     // net.minecraft.world.item.Item
     public static String Item_maxStackSize = "c";
