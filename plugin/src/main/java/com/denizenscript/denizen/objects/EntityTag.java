@@ -405,7 +405,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
         if (npc != null) {
             this.npc = npc;
-
             if (npc.isSpawned()) {
                 this.entity = npc.getEntity();
                 this.entity_type = DenizenEntityType.getByName(npc.getEntityType().name());
@@ -415,7 +414,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         else {
             Debug.echoError("NPC referenced is null!");
         }
-
     }
 
     /////////////////////
@@ -748,9 +746,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
             }
             else {
-                getDenizenNPC().getCitizen().spawn(location);
-                entity = getDenizenNPC().getCitizen().getEntity();
-                uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
+                if (getDenizenNPC().getCitizen().spawn(location)) {
+                    entity = getDenizenNPC().getCitizen().getEntity();
+                    uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
+                }
+                else {
+                    if (new LocationTag(location).isChunkLoaded()) {
+                        Debug.echoError("Error spawning NPC - tried to spawn in an unloaded chunk.");
+                    }
+                    else {
+                        Debug.echoError("Error spawning NPC - blocked by plugin");
+                    }
+                }
             }
         }
         else if (isUnique() && entity != null) {
@@ -872,7 +879,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("Cannot spawn a null EntityTag!");
             }
             if (!isUnique()) {
-                Debug.echoError("Error spawning entity - bad entity type, blocked by another plugin, or tried to spawn in an unloaded chunk?");
+                if (new LocationTag(location).isChunkLoaded()) {
+                    Debug.echoError("Error spawning entity - tried to spawn in an unloaded chunk.");
+                }
+                else {
+                    Debug.echoError("Error spawning entity - bad entity type, blocked by another plugin?");
+                }
                 return;
             }
             for (Mechanism mechanism : mechanisms) {

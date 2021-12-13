@@ -237,13 +237,13 @@ public class CommonRegistries {
                 return new EntityTag(((PlayerTag) obj).getPlayerEntity());
             }
             else if (obj instanceof NPCTag) {
-                if (!((NPCTag) obj).isSpawned()) {
+                if (!((NPCTag) obj).isSpawned() && !EntityTag.allowDespawnedNpcs) {
                     if (context.showErrors()) {
                         Debug.echoError("NPC '" + obj.debuggable() + "' is unspawned, cannot convert to EntityTag.");
                     }
                     return null;
                 }
-                return new EntityTag(((NPCTag) obj).getEntity());
+                return new EntityTag((NPCTag) obj);
             }
             return EntityTag.valueOf(obj.toString(), context);
         });
