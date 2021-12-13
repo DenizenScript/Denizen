@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.tags.core.*;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -20,8 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.plugin.Plugin;
-
-import java.util.ArrayList;
 
 public class CommonRegistries {
 
@@ -106,11 +104,13 @@ public class CommonRegistries {
         registerConversions();
         registerSubtypeSets();
         // Final debug
-        StringBuilder debug = new StringBuilder(256);
-        for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
-            debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
+        if (Debug.verbose) {
+            StringBuilder debug = new StringBuilder(256);
+            for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
+                debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
+            }
+            Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
         }
-        Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
     }
 
     private static void registerObjectTypes() {
