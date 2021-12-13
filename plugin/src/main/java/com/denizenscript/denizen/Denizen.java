@@ -368,7 +368,7 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
-        Debug.log("Loaded <A>" + commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types");
+        Debug.log("Loaded <A>" + commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types.");
         exCommand = new ExCommandHandler();
         exCommand.enableFor(getCommand("ex"));
         ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
@@ -427,6 +427,7 @@ public class Denizen extends JavaPlugin {
                 if (!MapTagBasedFlagTracker.skipAllCleanings && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
                     BukkitWorldScriptHelper.cleanAllWorldChunkFlags();
                 }
+                Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);
                 Debug.log("Denizen fully loaded at: " + TimeTag.now().format());
             }
             catch (Throwable ex) {
@@ -441,7 +442,6 @@ public class Denizen extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 100, 20 * 60 * 60);
-        Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);
         new BukkitRunnable() {
             @Override
             public void run() {
