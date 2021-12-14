@@ -204,6 +204,10 @@ public class ItemScriptContainer extends ScriptContainer {
     public ItemTag getCleanReference() {
         if (cleanReference == null) {
             cleanReference = getItemFrom();
+            if (cleanReference == null) {
+                Debug.echoError("Item script '" + getName() + "' is invalid and unable to construct an ItemTag.");
+                return null;
+            }
         }
         return new ItemTag(cleanReference.getItemStack().clone());
     }
@@ -246,6 +250,7 @@ public class ItemScriptContainer extends ScriptContainer {
             stack = ItemTag.valueOf(material, this);
             // Make sure we're working with a valid base ItemStack
             if (stack == null) {
+                Debug.echoError("Item script '" + getName() + "' contains an invalid or incorrect material '" + material + "' (did you spell the material name wrong?). Script cannot function.");
                 return null;
             }
             // Handle listed mechanisms
