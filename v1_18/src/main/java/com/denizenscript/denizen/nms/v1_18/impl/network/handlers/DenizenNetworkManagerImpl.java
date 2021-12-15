@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_18.impl.network.handlers;
 
+import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_18.Handler;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
@@ -51,6 +52,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_18_R1.CraftParticle;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
@@ -239,6 +241,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
             || processParticlesForPacket(packet)
+            || processSoundPacket(packet)
             || processDisguiseForPacket(packet, genericfuturelistener)
             || processMetadataChangesForPacket(packet, genericfuturelistener)
             || processEquipmentForPacket(packet, genericfuturelistener)
@@ -247,6 +250,33 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         processBlockLightForPacket(packet);
         oldManager.send(packet, genericfuturelistener);
+    }
+
+    public boolean processSoundPacket(Packet<?> packet) {
+        if (!PlayerHearsSoundScriptEvent.enabled) {
+            return false;
+        }
+        // (Player player, String name, String category, boolean isCustom, Entity entity, Location location, float volume, float pitch)
+        if (packet instanceof ClientboundSoundPacket) {
+            ClientboundSoundPacket spacket = (ClientboundSoundPacket) packet;
+            return PlayerHearsSoundScriptEvent.instance.run(player.getBukkitEntity(), spacket.getSound().getLocation().getPath(), spacket.getSource().name(),
+                    false, null, new Location(player.getBukkitEntity().getWorld(), spacket.getX(), spacket.getY(), spacket.getZ()), spacket.getVolume(), spacket.getPitch());
+        }
+        else if (packet instanceof ClientboundSoundEntityPacket) {
+            ClientboundSoundEntityPacket spacket = (ClientboundSoundEntityPacket) packet;
+            Entity entity = player.getLevel().getEntity(spacket.getId());
+            if (entity == null) {
+                return false;
+            }
+            return PlayerHearsSoundScriptEvent.instance.run(player.getBukkitEntity(), spacket.getSound().getLocation().getPath(), spacket.getSource().name(),
+                    false, entity.getBukkitEntity(), null, spacket.getVolume(), spacket.getPitch());
+        }
+        else if (packet instanceof ClientboundCustomSoundPacket) {
+            ClientboundCustomSoundPacket spacket = (ClientboundCustomSoundPacket) packet;
+            return PlayerHearsSoundScriptEvent.instance.run(player.getBukkitEntity(), spacket.getName().toString(), spacket.getSource().name(),
+                    true, null, new Location(player.getBukkitEntity().getWorld(), spacket.getX(), spacket.getY(), spacket.getZ()), spacket.getVolume(), spacket.getPitch());
+        }
+        return false;
     }
 
     public boolean processEquipmentForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {

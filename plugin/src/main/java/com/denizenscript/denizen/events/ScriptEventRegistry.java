@@ -168,6 +168,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new PlayerFillsBucketScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
+        ScriptEvent.registerScriptEvent(new PlayerHearsSoundScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerHoldsItemEvent());
         ScriptEvent.registerScriptEvent(new PlayerItemTakesDamageScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerJoinsScriptEvent());
