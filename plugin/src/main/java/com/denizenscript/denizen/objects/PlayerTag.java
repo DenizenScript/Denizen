@@ -48,10 +48,7 @@ import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
@@ -3121,6 +3118,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Use with no input value to reset to the player's normal health.
         // Optionally, you can specify a fake food level, between 0 and 20.
         // You can also optionally specify a food saturation level between 0 and 10.
+        // For example:
         // - adjust <player> fake_health:1
         // - adjust <player> fake_health:10|15
         // - adjust <player> fake_health:<player.health>|3|0
@@ -3155,12 +3153,87 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name fake_mount_health
+        // @input ElementTag(Decimal)|ElementTag(Decimal)
+        // @description
+        // Shows the player a fake health bar for their mounted. Specify both the current and maximum health values.
+        // Use with no input value to reset to the real health value.
+        // Using a health of '0' will make your mount look dead but continue to function.
+        // For example:
+        // - adjust <player> fake_mount_health:10|15
+        // -->
+        if (mechanism.matches("fake_mount_health")) {
+            if (!isOnline() || !getPlayerEntity().isInsideVehicle()) {
+                mechanism.echoError("Cannot run fake_mount_health - player is offline or unmounted.");
+                return;
+            }
+            Entity vehicle = getPlayerEntity().getVehicle();
+            if (!(vehicle instanceof LivingEntity)) {
+                mechanism.echoError("Cannot run fake_mount_health - vehicle is not a living entity.");
+                return;
+            }
+            LivingEntity liveVehicle = (LivingEntity) vehicle;
+            double current, maximum;
+            if (mechanism.hasValue()) {
+                ListTag input = mechanism.valueAsType(ListTag.class);
+                if (input.size() != 2) {
+                    mechanism.echoError("Cannot run fake_mount_health - improper input.");
+                    return;
+                }
+                current = new ElementTag(input.get(0)).asDouble();
+                maximum = new ElementTag(input.get(1)).asDouble();
+            }
+            else {
+                current = liveVehicle.getHealth();
+                maximum = liveVehicle.getMaxHealth();
+            }
+            NMSHandler.getPacketHelper().showMobHealth(getPlayerEntity(), liveVehicle, current, maximum);
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name fake_entity_health
+        // @input MapTag
+        // @description
+        // Shows the player a fake health number for a given entity.
+        // Input is a map with 'entity' as the target entity, and 'health' as the health amount.
+        // Optionally add 'max' to set the max health too.
+        // Using health of '0' can cause an entity to look dead.
+        // For example:
+        // - adjust <player> fake_entity_health:[entity=<player.target>;health=0]
+        // -->
+        if (mechanism.matches("fake_entity_health") && mechanism.requireObject(MapTag.class)) {
+            if (!isOnline()) {
+                mechanism.echoError("Cannot run fake_entity_health - player is offline.");
+                return;
+            }
+            MapTag map = mechanism.valueAsType(MapTag.class);
+            ObjectTag entityObject = map.getObject("entity");
+            ObjectTag healthObject = map.getObject("health");
+            ObjectTag maxObject = map.getObject("max");
+            if (entityObject == null || healthObject == null) {
+                mechanism.echoError("Cannot run fake_entity_health - input map is missing keys.");
+                return;
+            }
+            EntityTag entity = entityObject.asType(EntityTag.class, mechanism.context);
+            double health = new ElementTag(healthObject.toString()).asDouble();
+            if (entity == null || !entity.isLivingEntity()) {
+                mechanism.echoError("Cannot run fake_entity_health - entity is invalid or not living.");
+                return;
+            }
+            double max = maxObject == null ? entity.getLivingEntity().getMaxHealth() : new ElementTag(maxObject.toString()).asDouble();
+            NMSHandler.getPacketHelper().showMobHealth(getPlayerEntity(), entity.getLivingEntity(), health, max);
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name fake_equipment
         // @input EntityTag(|ElementTag|ItemTag)
         // @description
         // Shows the player fake equipment on the specified living entity, which has no real non-visual effects.
         // Input is in the form Entity|Slot|Item, where the slot can be one of the following: HAND, OFF_HAND, BOOTS, LEGS, CHEST, HEAD
         // Optionally, exclude the slot and item to stop showing the fake equipment, if any, on the specified entity.
+        // For example:
         // - adjust <player> fake_equipment:<[some_entity]>|chest|diamond_chestplate
         // - adjust <player> fake_equipment:<player>|head|jack_o_lantern
         // Consider instead using <@link command fakeequip>.

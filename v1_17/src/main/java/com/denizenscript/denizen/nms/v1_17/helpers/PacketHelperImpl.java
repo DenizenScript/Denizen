@@ -35,6 +35,8 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.CaveSpider;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -274,6 +276,20 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void openBook(Player player, EquipmentSlot hand) {
         send(player, new ClientboundOpenBookPacket(hand == EquipmentSlot.OFF_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
+    }
+
+    @Override
+    public void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth) {
+        AttributeInstance attr = new AttributeInstance(Attributes.MAX_HEALTH, (a) -> { });
+        attr.setBaseValue(maxHealth);
+        send(player, new ClientboundUpdateAttributesPacket(mob.getEntityId(), Collections.singletonList(attr)));
+        FriendlyByteBuf healthData = new FriendlyByteBuf(Unpooled.buffer());
+        healthData.writeVarInt(mob.getEntityId());
+        healthData.writeByte(9); // health id
+        healthData.writeVarInt(2); // type = float
+        healthData.writeFloat((float) health);
+        healthData.writeByte(255); // Mark end of packet
+        send(player, new ClientboundSetEntityDataPacket(healthData));
     }
 
     @Override

@@ -60,6 +60,10 @@ public interface PacketHelper {
 
     void showHealth(Player player, float health, int food, float saturation);
 
+    default void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth) {
+        throw new UnsupportedOperationException();
+    }
+
     void resetHealth(Player player);
 
     void showExperience(Player player, float experience, int level);
