@@ -152,8 +152,8 @@
                                     <shadedPattern>com.denizenscript.shaded.org.objectweb</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>redis</pattern>
-                                    <shadedPattern>com.denizenscript.shaded.redis</shadedPattern>
+                                    <pattern>redis.clients.jedis</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.redis.clients.jedis</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache</pattern>
