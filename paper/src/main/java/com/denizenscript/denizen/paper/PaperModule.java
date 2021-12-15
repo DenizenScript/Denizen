@@ -26,27 +26,27 @@ public class PaperModule {
         Debug.log("Loading Paper support module...");
 
         // Events
-        ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEventPaperImpl());
-        ScriptEvent.registerScriptEvent(new BellRingScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityAddToWorldScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityKnocksbackEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityLoadCrossbowScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityPathfindScriptEvent());
-        ScriptEvent.registerScriptEvent(new ExperienceOrbMergeScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerAbsorbsExperienceScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerBeaconEffectScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerClicksFakeEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerClicksInRecipeBookScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerJumpsScriptEventPaperImpl());
-        ScriptEvent.registerScriptEvent(new PlayerSpectatesEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerStopsSpectatingScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerTradesWithMerchantScriptEvent());
-        ScriptEvent.registerScriptEvent(new PreEntitySpawnScriptEvent());
-        ScriptEvent.registerScriptEvent(new ProjectileCollideScriptEvent());
-        ScriptEvent.registerScriptEvent(new ServerListPingScriptEventPaperImpl());
-        ScriptEvent.registerScriptEvent(new TNTPrimesScriptEvent());
-        ScriptEvent.registerScriptEvent(new UnknownCommandScriptEvent());
+        ScriptEvent.registerScriptEvent(AreaEnterExitScriptEventPaperImpl.class);
+        ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityAddToWorldScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityKnocksbackEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityLoadCrossbowScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityPathfindScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ExperienceOrbMergeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerAbsorbsExperienceScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerEquipsArmorScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
+        ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);
+        ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
 
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);

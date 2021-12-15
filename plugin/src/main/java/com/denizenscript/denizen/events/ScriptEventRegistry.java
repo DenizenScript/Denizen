@@ -22,9 +22,9 @@ import java.util.Arrays;
 public class ScriptEventRegistry {
 
     public static void registerCitizensEvents() {
-        ScriptEvent.registerScriptEvent(new NPCNavigationScriptEvent());
-        ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
-        ScriptEvent.registerScriptEvent(new NPCStuckScriptEvent());
+        ScriptEvent.registerScriptEvent(NPCNavigationScriptEvent.class);
+        ScriptEvent.registerScriptEvent(NPCSpawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(NPCStuckScriptEvent.class);
     }
 
     public static void registerMainEvents() {
@@ -46,86 +46,86 @@ public class ScriptEventRegistry {
         ScriptEventCouldMatcher.knownValidatorTypes.put("biome", (t) -> true); // TODO: ?
 
         // Block events
-        ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockDestroyedByExplosionEvent());
-        ScriptEvent.registerScriptEvent(new BlockDispensesScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockExplodesScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockFadesScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockFallsScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockFormsScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockGrowsScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockIgnitesScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockSpreadsScriptEvent());
-        ScriptEvent.registerScriptEvent(new BrewingStandFueledScriptEvent());
-        ScriptEvent.registerScriptEvent(new BrewsScriptEvent());
-        ScriptEvent.registerScriptEvent(new CauldronLevelChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
-        ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
-        ScriptEvent.registerScriptEvent(new NoteBlockPlaysNoteScriptEvent());
-        ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
-        ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
+        ScriptEvent.registerScriptEvent(BlockBuiltScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockDestroyedByExplosionEvent.class);
+        ScriptEvent.registerScriptEvent(BlockDispensesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockExplodesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockFadesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockFallsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockFormsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockGrowsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockIgnitesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockPhysicsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockSpreadsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BrewingStandFueledScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(FurnaceSmeltsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
+        ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
+        ScriptEvent.registerScriptEvent(NoteBlockPlaysNoteScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PistonExtendsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PistonRetractsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(RedstoneScriptEvent.class);
 
         // Entity events
         if (!Denizen.supportsPaper) {
-            ScriptEvent.registerScriptEvent(new AreaEnterExitScriptEvent());
+            ScriptEvent.registerScriptEvent(AreaEnterExitScriptEvent.class);
         }
-        ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
-        ScriptEvent.registerScriptEvent(new DragonPhaseChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityAirLevelChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityBreaksHangingScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityBreedScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityChangesBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityCreatePortalScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityDropsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityEntersPortalScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityEntersVehicleScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityExitsPortalScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityExitsVehicleScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityExplodesScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityExplosionPrimesScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityFoodLevelChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityFormsBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityGlideScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityPicksUpItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityPotionEffectScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
-        ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntitySwimScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityTargetsScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityTransformScriptEvent());
-        ScriptEvent.registerScriptEvent(new EntityUnleashedScriptEvent());
-        ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
-        ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
-        ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
+        ScriptEvent.registerScriptEvent(CreeperPoweredScriptEvent.class);
+        ScriptEvent.registerScriptEvent(DragonPhaseChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityAirLevelChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityBreaksHangingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityBreedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityChangesBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityCombustsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityCreatePortalScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityDamagedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityDeathScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityDespawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityDropsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityEntersPortalScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityEntersVehicleScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityExitsPortalScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityExitsVehicleScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityExplodesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityExplosionPrimesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityFoodLevelChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityFormsBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityGlideScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityHealsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityInteractScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityKilledScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityPicksUpItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityPotionEffectScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityResurrectScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityShootsBowEvent.class);
+        ScriptEvent.registerScriptEvent(EntitySpawnerSpawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntitySpawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntitySwimScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityTamesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityTargetsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityTeleportScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityTransformScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityUnleashedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(FireworkBurstsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(HangingBreaksScriptEvent.class);
+        ScriptEvent.registerScriptEvent(HorseJumpsScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            ScriptEvent.registerScriptEvent(new PiglinBarterScriptEvent());
+            ScriptEvent.registerScriptEvent(PiglinBarterScriptEvent.class);
         }
-        ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
-        ScriptEvent.registerScriptEvent(new ProjectileHitsBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new ProjectileHitsEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
-        ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
-        ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
-        ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerAcquiresTradeScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerChangesProfessionScriptEvent());
-        ScriptEvent.registerScriptEvent(new VillagerReplenishesTradeScriptEvent());
+        ScriptEvent.registerScriptEvent(PigZappedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ProjectileHitsBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ProjectileHitsEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ProjectileLaunchedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(SheepDyedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(SheepRegrowsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(SlimeSplitsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VillagerAcquiresTradeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VillagerChangesProfessionScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VillagerReplenishesTradeScriptEvent.class);
 
         // NPC events
         if (Depends.citizens != null) {
@@ -133,123 +133,123 @@ public class ScriptEventRegistry {
         }
 
         // Item events
-        ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemRecipeFormedScriptEvent());
-        ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
+        ScriptEvent.registerScriptEvent(InventoryPicksUpItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ItemDespawnsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ItemEnchantedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ItemMergesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ItemMoveScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ItemRecipeFormedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ItemSpawnsScriptEvent.class);
 
         // Player events
-        ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
-        ScriptEvent.registerScriptEvent(new BlockDropsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new ChatScriptEvent());
-        ScriptEvent.registerScriptEvent(new HotbarScrollScriptEvent());
-        ScriptEvent.registerScriptEvent(new ExperienceBottleBreaksScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerAnimatesScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerBreaksItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerChangesGamemodeScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerChangesSignScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerChangesWorldScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerChangesXPScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerClicksBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerClicksInInventoryScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerCompletesAdvancementScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerCraftsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerDragsInInvScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerEditsBookScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerEmptiesBucketScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerFillsBucketScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerHearsSoundScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerHoldsItemEvent());
-        ScriptEvent.registerScriptEvent(new PlayerItemTakesDamageScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerJoinsScriptEvent());
+        ScriptEvent.registerScriptEvent(BiomeEnterExitScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockDropsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ChatScriptEvent.class);
+        ScriptEvent.registerScriptEvent(HotbarScrollScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ExperienceBottleBreaksScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerAnimatesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerBreaksBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerBreaksItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesGamemodeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesSignScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesWorldScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesXPScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerClicksBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerClicksInInventoryScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerClosesInvScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerConsumesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerCraftsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerDamagesBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerDragsInInvScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerEditsBookScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerEmptiesBucketScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerEntersBedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerFillsBucketScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerFishesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerFlyingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerHearsSoundScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerHoldsItemEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerJoinsScriptEvent.class);
         if (!Denizen.supportsPaper) {
-            ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent.PlayerJumpsSpigotScriptEventImpl());
+            ScriptEvent.registerScriptEvent(PlayerJumpScriptEvent.PlayerJumpsSpigotScriptEventImpl.class);
         }
-        ScriptEvent.registerScriptEvent(new PlayerKickedScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerLeashesEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerLocaleChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPickupArrowScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPreLoginScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerPreparesEnchantScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerRightClicksEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerShearsScriptEvent());
+        ScriptEvent.registerScriptEvent(PlayerKickedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerLeashesEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerLeavesBedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerLevelsUpScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerLocaleChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerLoginScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerMendsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerOpensInvScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPickupArrowScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPlacesBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPlacesHangingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreLoginScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreparesAnvilCraftScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreparesEnchantScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerReceivesCommandsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerReceivesMessageScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerRespawnsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerRightClicksEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerRiptideScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            ScriptEvent.registerScriptEvent(new PlayerSmithsItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayersPrepareSmithingTableScriptEvent());
+            ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
+            ScriptEvent.registerScriptEvent(PlayersPrepareSmithingTableScriptEvent.class);
         }
-        ScriptEvent.registerScriptEvent(new PlayerSneakScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerSprintScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerStandsOnScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerStatisticIncrementsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerSteersEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerSwapsItemsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerTakesFromLecternScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerThrowsEggScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerWalksOverScriptEvent());
-        ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
+        ScriptEvent.registerScriptEvent(PlayerSneakScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerSprintScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerStandsOnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerStatisticIncrementsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerSteersEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerStepsOnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerSwapsItemsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerTakesFromFurnaceScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerTakesFromLecternScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerThrowsEggScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerUsesPortalScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerWalkScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerWalksOverScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ResourcePackStatusScriptEvent.class);
 
         // Server events
-        ScriptEvent.registerScriptEvent(new CommandScriptEvent());
-        ScriptEvent.registerScriptEvent(new InternalEventScriptEvent());
+        ScriptEvent.registerScriptEvent(CommandScriptEvent.class);
+        ScriptEvent.registerScriptEvent(InternalEventScriptEvent.class);
         if (!Denizen.supportsPaper) {
-            ScriptEvent.registerScriptEvent(new ListPingScriptEvent.ListPingScriptEventSpigotImpl());
+            ScriptEvent.registerScriptEvent(ListPingScriptEvent.ListPingScriptEventSpigotImpl.class);
         }
-        ScriptEvent.registerScriptEvent(new ServerPrestartScriptEvent());
-        ScriptEvent.registerScriptEvent(new ServerStartScriptEvent());
-        ScriptEvent.registerScriptEvent(new TabCompleteScriptEvent());
+        ScriptEvent.registerScriptEvent(ServerPrestartScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ServerStartScriptEvent.class);
+        ScriptEvent.registerScriptEvent(TabCompleteScriptEvent.class);
 
         // Vehicle
-        ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleCreatedScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleDamagedScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleDestroyedScriptEvent());
-        ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
+        ScriptEvent.registerScriptEvent(VehicleCollidesBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VehicleCollidesEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VehicleCreatedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VehicleDamagedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VehicleDestroyedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(VehicleMoveScriptEvent.class);
 
         // World events
-        ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
-        ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
-        ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
-        ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
+        ScriptEvent.registerScriptEvent(ChunkLoadScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ChunkUnloadScriptEvent.class);
+        ScriptEvent.registerScriptEvent(LightningStrikesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(LingeringPotionSplashScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            ScriptEvent.registerScriptEvent(new LootGenerateScriptEvent());
+            ScriptEvent.registerScriptEvent(LootGenerateScriptEvent.class);
         }
-        ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
-        ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
-        ScriptEvent.registerScriptEvent(new SpawnChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new StructureGrowsScriptEvent());
-        ScriptEvent.registerScriptEvent(new TimeChangeScriptEvent());
-        ScriptEvent.registerScriptEvent(new WeatherChangesScriptEvent());
-        ScriptEvent.registerScriptEvent(new WorldInitsScriptEvent());
-        ScriptEvent.registerScriptEvent(new WorldLoadsScriptEvent());
-        ScriptEvent.registerScriptEvent(new WorldSavesScriptEvent());
-        ScriptEvent.registerScriptEvent(new WorldUnloadsScriptEvent());
+        ScriptEvent.registerScriptEvent(PortalCreateScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PotionSplashScriptEvent.class);
+        ScriptEvent.registerScriptEvent(SpawnChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(StructureGrowsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(TimeChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WeatherChangesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WorldInitsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WorldLoadsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WorldSavesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WorldUnloadsScriptEvent.class);
     }
 }
