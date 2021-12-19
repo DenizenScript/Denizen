@@ -1880,6 +1880,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group attributes
         // @description
         // Returns whether the entity is supported by a block.
+        // This can be inaccurate for players.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_on_ground", (attribute, object) -> {
             return new ElementTag(object.getBukkitEntity().isOnGround());

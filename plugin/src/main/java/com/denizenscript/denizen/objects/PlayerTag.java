@@ -415,6 +415,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return new ItemTag(getPlayerEntity().getEquipment().getItemInMainHand());
     }
 
+    public ItemTag getOffhandItem() {
+        return new ItemTag(getPlayerEntity().getEquipment().getItemInOffHand());
+    }
+
     public void decrementStatistic(Statistic statistic, int amount) {
         getOfflinePlayer().decrementStatistic(statistic, amount);
     }

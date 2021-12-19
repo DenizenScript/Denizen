@@ -1,8 +1,10 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -32,8 +34,11 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
     //
     // @Triggers when a player starts or stops holding up an item, such as a shield, spyglass, or crossbow.
     //
+    // @Warning For 'lowers', the item may be tracked incorrectly. Prefer 'player lowers item' (the generic item form) for a 'lowers' event (similar for 'toggles').
+    // Also be aware this event may misfire in some cases.
+    //
     // @Context
-    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now holding a shield and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now holding up a raisable item and "false" otherwise.
     //
     // @Player Always.
     //
@@ -47,6 +52,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
     public static PlayerHoldsItemEvent instance;
     public PlayerTag player;
     public boolean state;
+    public ItemTag raised;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -76,7 +82,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
         String item = path.eventArgLowerAt(2);
-        if (!item.equals("item") && !tryItem(player.getHeldItem(), item)) {
+        if (!item.equals("item") && !tryItem(raised, item)) {
             return false;
         }
         return super.matches(path);
@@ -115,15 +121,26 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
         enabled = false;
     }
 
+    public void run(Player pl) {
+        cancelled = false;
+        player = new PlayerTag(pl);
+        if (DenizenPacketHandler.raisableItems.contains(player.getHeldItem().getBukkitMaterial())
+            || !DenizenPacketHandler.raisableItems.contains(player.getOffhandItem().getBukkitMaterial())) {
+            raised = player.getHeldItem();
+        }
+        else {
+            raised = player.getOffhandItem();
+        }
+        fire();
+    }
+
     public static void signalDidRaise(Player player) {
         if (raisedShields.contains(player.getUniqueId())) {
             return;
         }
         raisedShields.add(player.getUniqueId());
         instance.state = true;
-        instance.player = new PlayerTag(player);
-        instance.cancelled = false;
-        instance.fire();
+        instance.run(player);
     }
 
     public static void signalDidLower(Player player) {
@@ -131,9 +148,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
             return;
         }
         instance.state = false;
-        instance.player = new PlayerTag(player);
-        instance.cancelled = false;
-        instance.fire();
+        instance.run(player);
     }
 
     @EventHandler
