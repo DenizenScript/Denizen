@@ -61,6 +61,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // A common matchable type found among different objects is a Flag Matchable. This usually looks like "item_flagged:<flag>"
     // This matches if the object has the specified flag, and fails to match if the object doesn't have that flag.
     // You can specify multiple required flags with '|', like "item_flagged:a|b|c", which will match if-and-only-if the item has ALL the flags named.
+    // They can also be used to require the object does NOT have the flag with a "!" like "item_flagged:!<flag>".
+    // When using multiple flags with "|", the "!" is per-entry, so "item_flagged:!a|b" requires the item DOES have 'b' but does NOT have 'a'.
     //
     // Note also that in addition to events, tags often also have matchables as input params,
     // usually documented like ".types[<matcher>]", with tag documentation specifying what matcher is used,
