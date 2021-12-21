@@ -149,11 +149,11 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     if (!chunk.isLoaded()) {
                         chunk.load();
                     }
-                    chunk.setForceLoaded(true);
+                    chunk.addPluginChunkTicket(Denizen.getInstance());
                     if (length.getSeconds() > 0) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
                             if (chunkDelays.containsKey(coord) && chunkDelays.get(coord) <= System.currentTimeMillis()) {
-                                chunk.setForceLoaded(false);
+                                chunk.removePluginChunkTicket(Denizen.getInstance());
                                 chunkDelays.remove(coord);
                             }
                         }, length.getTicks() + 20);
@@ -162,7 +162,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 case REMOVE:
                     if (chunkDelays.containsKey(coord)) {
                         chunkDelays.remove(coord);
-                        chunk.setForceLoaded(false);
+                        chunk.removePluginChunkTicket(Denizen.getInstance());
                         Debug.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                     }
                     else {
@@ -172,7 +172,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 case REMOVEALL:
                     Debug.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
                     for (ChunkCoordinate loopCoord : chunkDelays.keySet()) {
-                        loopCoord.getChunk().getChunk().setForceLoaded(false);
+                        loopCoord.getChunk().getChunk().removePluginChunkTicket(Denizen.getInstance());
                     }
                     chunkDelays.clear();
                     break;

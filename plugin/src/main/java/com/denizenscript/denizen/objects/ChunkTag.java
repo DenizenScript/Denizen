@@ -23,6 +23,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
@@ -358,9 +359,9 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // <--[tag]
         // @attribute <ChunkTag.force_loaded>
         // @returns ElementTag(Boolean)
+        // @mechanism ChunkTag.force_loaded
         // @description
         // Returns whether the chunk is forced to stay loaded at all times.
-        // This is related to the <@link command chunkload> command.
         // -->
         tagProcessor.registerTag(ElementTag.class, "force_loaded", (attribute, object) -> {
             if (!object.isLoadedSafe()) {
@@ -368,6 +369,26 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             Chunk chunk = object.getChunkForTag(attribute);
             return new ElementTag(chunk != null && chunk.isForceLoaded());
+        });
+
+        // <--[tag]
+        // @attribute <ChunkTag.plugin_tickets>
+        // @returns ListTag(PluginTag)
+        // @mechanism ChunkTag.clear_plugin_tickets
+        // @description
+        // Returns a list of plugins that are keeping this chunk loaded.
+        // This is related to the <@link command chunkload> command.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "plugin_tickets", (attribute, object) -> {
+            if (!object.isLoadedSafe()) {
+                return new ListTag();
+            }
+            Chunk chunk = object.getChunkForTag(attribute);
+            ListTag result = new ListTag();
+            for (Plugin plugin : chunk.getPluginChunkTickets()) {
+                result.addObject(new PluginTag(plugin));
+            }
+            return result;
         });
 
         // <--[tag]
@@ -713,6 +734,36 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         if (mechanism.matches("unload_without_saving")) {
             getBukkitWorld().unloadChunk(getX(), getZ(), false);
+        }
+
+        // <--[mechanism]
+        // @object ChunkTag
+        // @name force_loaded
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether this plugin is force-loaded or not.
+        // Unless you have a specific reason to use this, prefer <@link command chunkload>.
+        // @tags
+        // <ChunkTag.force_loaded>
+        // -->
+        if (mechanism.matches("force_loaded") && mechanism.requireBoolean()) {
+            getChunk().setForceLoaded(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object ChunkTag
+        // @name clear_plugin_tickets
+        // @input None
+        // @description
+        // Forcibly removes all plugin tickets from this chunk, usually allowing it to unload.
+        // This is usually a bad idea.
+        // @tags
+        // <ChunkTag.clear_plugin_tickets>
+        // -->
+        if (mechanism.matches("clear_plugin_tickets")) {
+            for (Plugin plugin : new ArrayList<>(getChunk().getPluginChunkTickets())) {
+                getChunk().removePluginChunkTicket(plugin);
+            }
         }
 
         // <--[mechanism]

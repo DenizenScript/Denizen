@@ -109,17 +109,16 @@ public class FakeBlock {
         }
     }
 
-    public static HashMap<String, HashMap<ChunkCoordinate, BukkitTask>> scheduled = new HashMap<>();
+    public static HashMap<ChunkCoordinate, BukkitTask> scheduled = new HashMap<>();
 
     public static void scheduleChunkRefresh(World world, ChunkCoordinate coord) {
-        HashMap<ChunkCoordinate, BukkitTask> tasks = scheduled.computeIfAbsent(world.getName(), k -> new HashMap<>());
-        BukkitTask task = tasks.get(coord);
+        BukkitTask task = scheduled.get(coord);
         if (task != null && !task.isCancelled()) {
             return;
         }
-        tasks.put(coord, Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
+        scheduled.put(coord, Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
             world.refreshChunk(coord.x, coord.z);
-            tasks.remove(coord);
+            scheduled.remove(coord);
         }, 1));
     }
 

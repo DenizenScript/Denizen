@@ -107,16 +107,6 @@ public class FakeBlockHelper {
                     }
                 }
             }
-            // TODO: rewrite for 1.18? is this needed?
-            /*for (FakeBlock block : blocks) {
-                LocationTag loc = block.location;
-                net.minecraft.nbt.CompoundTag newCompound = new net.minecraft.nbt.CompoundTag();
-                newCompound.putInt("x", loc.getBlockX());
-                newCompound.putInt("y", loc.getBlockY());
-                newCompound.putInt("z", loc.getBlockZ());
-                newCompound.putString("id", block.material.getMaterial().getKey().toString());
-                blockEntities.add(newCompound);
-            }*/
             int worldMinY = world.getMinHeight();
             int worldMaxY = world.getMaxHeight();
             int minChunkY = worldMinY >> 4;
