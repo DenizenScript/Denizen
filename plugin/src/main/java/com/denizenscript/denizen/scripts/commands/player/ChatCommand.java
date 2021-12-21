@@ -64,7 +64,7 @@ public class ChatCommand extends AbstractCommand {
     //
     // @Usage
     // Use to have an NPC talk to a group of individuals.
-    // - chat targets:<npc.location.find.players.within[6].filter[has_flag[clan_initiate]]> "Welcome, initiate!"
+    // - chat targets:<npc.location.find_players_within[6].filter[has_flag[clan_initiate]]> "Welcome, initiate!"
     // -->
 
     @Override

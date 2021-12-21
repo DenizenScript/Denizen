@@ -2436,6 +2436,50 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return found;
         });
 
+        // <--[tag]
+        // @attribute <LocationTag.find_players_within[<#.#>]>
+        // @returns ListTag(PlayerTag)
+        // @description
+        // Returns a list of players within a radius.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "find_players_within", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            double radius = attribute.getDoubleParam();
+            ArrayList<PlayerTag> found = new ArrayList<>();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (!player.isDead() && Utilities.checkLocationWithBoundingBox(object, player, radius)) {
+                    found.add(new PlayerTag(player));
+                }
+            }
+            found.sort((pl1, pl2) -> object.compare(pl1.getLocation(), pl2.getLocation()));
+            return new ListTag(found);
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.find_npcs_within[<#.#>]>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns a list of NPCs within a radius.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "find_npcs_within", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            double radius = attribute.getDoubleParam();
+            ArrayList<NPCTag> found = new ArrayList<>();
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.isSpawned() && Utilities.checkLocationWithBoundingBox(object, npc.getEntity(), radius)) {
+                    found.add(new NPCTag(npc));
+                }
+            }
+            found.sort((npc1, npc2) -> object.compare(npc1.getLocation(), npc2.getLocation()));
+            return new ListTag(found);
+        });
+
         tagProcessor.registerTag(ObjectTag.class, "find", (attribute, object) -> {
             if (!attribute.startsWith("within", 3) || !attribute.hasContext(3)) {
                 return null;
@@ -2551,14 +2595,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return new ListTag(found);
             }
 
-            // <--[tag]
-            // @attribute <LocationTag.find.players.within[<#.#>]>
-            // @returns ListTag(PlayerTag)
-            // @description
-            // Returns a list of players within a radius.
-            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
-            // -->
             else if (attribute.startsWith("players", 2)) {
+                Deprecations.locationFindEntities.warn(attribute.context);
                 ArrayList<PlayerTag> found = new ArrayList<>();
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -2570,14 +2608,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return new ListTag(found);
             }
 
-            // <--[tag]
-            // @attribute <LocationTag.find.npcs.within[<#.#>]>
-            // @returns ListTag(NPCTag)
-            // @description
-            // Returns a list of NPCs within a radius.
-            // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
-            // -->
             else if (attribute.startsWith("npcs", 2)) {
+                Deprecations.locationFindEntities.warn(attribute.context);
                 ArrayList<NPCTag> found = new ArrayList<>();
                 attribute.fulfill(2);
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {

@@ -70,7 +70,7 @@ public class FakeEquipCommand extends AbstractCommand {
     //
     // @Usage
     // Use to make all players within 30 blocks of an entity see it permanently equip a shield.
-    // - fakeequip <[entity]> offhand:shield for:<[entity].find.players.within[30]> duration:0
+    // - fakeequip <[entity]> offhand:shield for:<[entity].find_players_within[30]> duration:0
     //
     // -->
 
