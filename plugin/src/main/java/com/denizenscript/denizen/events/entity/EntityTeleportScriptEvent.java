@@ -17,6 +17,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class EntityTeleportScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // <--[language]
+    // @name Teleport Cause
+    // @group Useful Lists
+    // @description
+    // NOTE: Teleport causes only work for player entities.
+    // Possible teleport causes: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/PlayerTeleportEvent.TeleportCause.html>
+    // These are used in <@link event entity teleports>, <@link tag server.teleport_causes>, <@link command teleport>, ...
+    // -->
+
     // <--[event]
     // @Events
     // entity teleports
@@ -37,8 +46,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <context.entity> returns the EntityTag.
     // <context.origin> returns the LocationTag the entity teleported from.
     // <context.destination> returns the LocationTag the entity teleported to.
-    // <context.cause> returns an ElementTag of the teleport cause. Can be:
-    // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, END_GATEWAY, CHORUS_FRUIT, SPECTATE, UNKNOWN, ENTITY_TELEPORT, or ENTITY_PORTAL
+    // <context.cause> returns an ElementTag of the teleport cause when the entity being teleported is a player - see <@link language teleport cause> for causes.
     //
     // @Determine
     // "ORIGIN:" + LocationTag to change the location the entity teleported from.
