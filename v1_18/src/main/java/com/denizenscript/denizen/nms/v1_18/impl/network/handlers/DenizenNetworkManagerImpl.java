@@ -944,10 +944,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (blocks == null || blocks.isEmpty()) {
                     return false;
                 }
-                oldManager.send(packet, genericfuturelistener);
-                for (FakeBlock block : blocks) {
-                    player.getBukkitEntity().sendBlockChange(block.location, block.material.getModernData());
-                }
+                ClientboundLevelChunkWithLightPacket newPacket = FakeBlockHelper.handleMapChunkPacket(player.getBukkitEntity().getWorld(), (ClientboundLevelChunkWithLightPacket) packet, chunkX, chunkZ, blocks);
+                oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
             else if (packet instanceof ClientboundSectionBlocksUpdatePacket) {

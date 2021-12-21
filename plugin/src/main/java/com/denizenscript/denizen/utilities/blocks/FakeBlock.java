@@ -6,6 +6,8 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -78,7 +80,7 @@ public class FakeBlock {
         this.chunkCoord = new ChunkCoordinate(location);
     }
 
-    public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration) {
+    public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration, boolean sendNow) {
         NetworkInterceptHelper.enable();
         for (PlayerTag player : players) {
             if (!player.isOnline() || !player.isValid()) {
@@ -91,9 +93,8 @@ public class FakeBlock {
                 blocks.put(uuid, playerBlocks);
             }
             FakeBlock block = playerBlocks.getOrAdd(player, location);
-            block.updateBlock(material, duration);
+            block.updateBlock(material, duration, sendNow);
         }
-        lastChunkRefresh.clear();
     }
 
     public static void stopShowingTo(List<PlayerTag> players, final LocationTag location) {
@@ -108,7 +109,19 @@ public class FakeBlock {
         }
     }
 
-    public static HashMap<ChunkCoordinate, Long> lastChunkRefresh = new HashMap<>();
+    public static HashMap<String, HashMap<ChunkCoordinate, BukkitTask>> scheduled = new HashMap<>();
+
+    public static void scheduleChunkRefresh(World world, ChunkCoordinate coord) {
+        HashMap<ChunkCoordinate, BukkitTask> tasks = scheduled.computeIfAbsent(world.getName(), k -> new HashMap<>());
+        BukkitTask task = tasks.get(coord);
+        if (task != null && !task.isCancelled()) {
+            return;
+        }
+        tasks.put(coord, Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
+            world.refreshChunk(coord.x, coord.z);
+            tasks.remove(coord);
+        }, 1));
+    }
 
     public void cancelBlock() {
         if (currentTask != null) {
@@ -117,12 +130,7 @@ public class FakeBlock {
         }
         material = null;
         if (player.isOnline()) {
-            location.getBlock().getState().update();
-            Long l = lastChunkRefresh.get(chunkCoord);
-            if (l == null || l < location.getWorld().getFullTime()) {
-                lastChunkRefresh.put(chunkCoord, location.getWorld().getFullTime());
-                location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
-            }
+            scheduleChunkRefresh(location.getWorld(), chunkCoord);
         }
         FakeBlockMap mapping = blocks.get(player.getUUID());
         mapping.remove(this);
@@ -131,16 +139,16 @@ public class FakeBlock {
         }
     }
 
-    private void updateBlock(MaterialTag material, DurationTag duration) {
+    private void updateBlock(MaterialTag material, DurationTag duration, boolean sendNow) {
         if (currentTask != null) {
             currentTask.cancel();
         }
         this.material = material;
         if (player.hasChunkLoaded(location.getChunk())) {
-            player.getPlayerEntity().sendBlockChange(location, material.getModernData());
-            if (material.getMaterial().name().endsWith("_BANNER")) { // Banners are weird
-                location.getWorld().refreshChunk(chunkCoord.x, chunkCoord.z);
+            if (sendNow) {
+                player.getPlayerEntity().sendBlockChange(location, material.getModernData());
             }
+            scheduleChunkRefresh(location.getWorld(), chunkCoord);
         }
         if (duration != null && duration.getTicks() > 0) {
             currentTask = new BukkitRunnable() {
@@ -153,4 +161,3 @@ public class FakeBlock {
         }
     }
 }
-

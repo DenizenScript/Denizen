@@ -235,7 +235,7 @@ public class CuboidBlockSet implements BlockSet {
             block.set(destBlock, false);
         }
         else {
-            FakeBlock.showFakeBlockTo(input.fakeTo, new LocationTag(destBlock.getLocation()), new MaterialTag(block.data), input.fakeDuration);
+            FakeBlock.showFakeBlockTo(input.fakeTo, new LocationTag(destBlock.getLocation()), new MaterialTag(block.data), input.fakeDuration, false);
         }
     }
 

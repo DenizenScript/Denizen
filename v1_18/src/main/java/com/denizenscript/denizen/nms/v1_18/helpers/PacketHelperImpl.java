@@ -321,7 +321,7 @@ public class PacketHelperImpl implements PacketHelper {
         if (location == null) {
             LocationTag fakeSign = new LocationTag(player.getLocation());
             fakeSign.setY(0);
-            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1));
+            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
             BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
             ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
             send(player, new ClientboundOpenSignEditorPacket(pos));

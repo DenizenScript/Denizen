@@ -75,9 +75,6 @@ public class ReflectionMappingsInfo {
     // net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
     public static String ClientboundSetEntityDataPacket_packedItems = "b";
 
-    // net.minecraft.network.protocol.game.ClientboundBlockBreakAckPacket
-    public static String ClientboundBlockBreakAckPacket_state = "b";
-
     // net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket
     public static String ClientboundSectionBlocksUpdatePacket_sectionPos = "b";
     public static String ClientboundSectionBlocksUpdatePacket_states = "d";
@@ -101,11 +98,9 @@ public class ReflectionMappingsInfo {
     public static String ClientboundTeleportEntityPacket_yRot = "e";
     public static String ClientboundTeleportEntityPacket_xRot = "f";
 
-    /*
-    public static String ClientboundLevelChunkPacket_buffer = "g";
-    public static String ClientboundLevelChunkPacket_blockEntitiesTags = "h";
-
-    public static String ClientboundMerchantOffersPacket_containerId = "a";*/
+    // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData
+    public static String ClientboundLevelChunkPacketData_BlockEntityInfo_packedXZ = "a";
+    public static String ClientboundLevelChunkPacketData_BlockEntityInfo_y = "b";
 
     // net.minecraft.world.entity.projectile.FishingHook
     public static String FishingHook_nibble = "ar";
