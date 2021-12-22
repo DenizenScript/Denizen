@@ -758,7 +758,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Forcibly removes all plugin tickets from this chunk, usually allowing it to unload.
         // This is usually a bad idea.
         // @tags
-        // <ChunkTag.clear_plugin_tickets>
+        // <ChunkTag.plugin_tickets>
         // -->
         if (mechanism.matches("clear_plugin_tickets")) {
             for (Plugin plugin : new ArrayList<>(getChunk().getPluginChunkTickets())) {

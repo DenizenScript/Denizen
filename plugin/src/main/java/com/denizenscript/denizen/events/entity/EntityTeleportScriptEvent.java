@@ -26,7 +26,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // Note that these causes will only work for player entities.
     //
     // Additionally, Denizen provides two basic teleport causes for non-player entity teleport events: ENTITY_PORTAL and ENTITY_TELEPORT.
-    // These additional causes are not usable in <@link command teleport>, and will not show in <@link tag server.teleport_causes>.
+    // These additional causes are only for <@link event entity teleports>, and thus not usable in <@link command teleport>, and will not show in <@link tag server.teleport_causes>.
     // -->
 
     // <--[event]

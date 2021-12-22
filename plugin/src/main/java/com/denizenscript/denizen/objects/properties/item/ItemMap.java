@@ -172,7 +172,7 @@ public class ItemMap implements Property {
         // Example usage to render sections slowly (to reduce server impact):
         // <code>
         // - repeat 16 as:x:
-        //     - adjust <item[map[map=4]]> full_render:<[value].sub[1].mul[8]>,0,<[value].mul[8]>,128
+        //     - adjust <item[map[map=4]]> full_render:<[x].sub[1].mul[8]>,0,<[x].mul[8]>,128
         //     - wait 2t
         // </code>
         // @tags

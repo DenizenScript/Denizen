@@ -1759,7 +1759,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!(object.getLivingEntity() instanceof HumanEntity)) {
                 return null;
             }
-            return new EntityTag(((HumanEntity) object.getLivingEntity()).getShoulderEntityLeft()).getDenizenObject();
+            Entity e = ((HumanEntity) object.getLivingEntity()).getShoulderEntityLeft();
+            if (e == null) {
+                return null;
+            }
+            return new EntityTag(e).getDenizenObject();
         });
 
         // <--[tag]
@@ -1776,7 +1780,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!(object.getLivingEntity() instanceof HumanEntity)) {
                 return null;
             }
-            return new EntityTag(((HumanEntity) object.getLivingEntity()).getShoulderEntityRight()).getDenizenObject();
+            Entity e = ((HumanEntity) object.getLivingEntity()).getShoulderEntityRight();
+            if (e == null) {
+                return null;
+            }
+            return new EntityTag(e).getDenizenObject();
         });
 
         // <--[tag]
