@@ -52,6 +52,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
@@ -670,6 +671,23 @@ public class ServerTagBase {
             ListTag list = new ListTag();
             for (EntityDamageEvent.DamageCause damageCause : EntityDamageEvent.DamageCause.values()) {
                 list.add(damageCause.name());
+            }
+            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.teleport_causes>
+        // @returns ListTag
+        // @description
+        // Returns a list of all registered player teleport causes.
+        // Generally used with <@link event entity teleports>.
+        // See <@link language teleport cause> for the current list of causes.
+        // -->
+        if (attribute.startsWith("teleport_causes")) {
+            ListTag list = new ListTag();
+            for (PlayerTeleportEvent.TeleportCause teleportCause : PlayerTeleportEvent.TeleportCause.values()) {
+                list.add(teleportCause.name());
             }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;

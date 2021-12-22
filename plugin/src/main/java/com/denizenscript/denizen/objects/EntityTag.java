@@ -736,6 +736,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void spawnAt(Location location) {
+        spawnAt(location, TeleportCause.PLUGIN);
+    }
+
+    public void spawnAt(Location location, TeleportCause cause) {
         if (location.getWorld() == null) {
             Debug.echoError("Cannot teleport or spawn entity at location '" + new LocationTag(location) + "' because it is missing a world.");
             return;
@@ -743,7 +747,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is already spawned, teleport it.
         if (isCitizensNPC()) {
             if (getDenizenNPC().getCitizen().isSpawned()) {
-                getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
+                getDenizenNPC().getCitizen().teleport(location, cause);
             }
             else {
                 if (getDenizenNPC().getCitizen().spawn(location)) {
@@ -761,7 +765,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
         else if (isUnique() && entity != null) {
-            teleport(location);
+            teleport(location, cause);
         }
         else {
             if (entity_type != null) {
@@ -942,15 +946,19 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void teleport(Location location) {
+        teleport(location, TeleportCause.PLUGIN);
+    }
+
+    public void teleport(Location location, TeleportCause cause) {
         if (isCitizensNPC()) {
-            getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
+            getDenizenNPC().getCitizen().teleport(location, cause);
         }
         else if (isFake) {
             NMSHandler.getEntityHelper().snapPositionTo(entity, location.toVector());
             NMSHandler.getEntityHelper().look(entity, location.getYaw(), location.getPitch());
         }
         else {
-            getBukkitEntity().teleport(location);
+            getBukkitEntity().teleport(location, cause);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
                 NMSHandler.getEntityHelper().teleport(entity, location);
             }

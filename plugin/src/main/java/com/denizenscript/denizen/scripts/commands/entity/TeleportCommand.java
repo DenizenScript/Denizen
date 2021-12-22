@@ -7,11 +7,13 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,16 +23,16 @@ public class TeleportCommand extends AbstractCommand {
 
     public TeleportCommand() {
         setName("teleport");
-        setSyntax("teleport (<entity>|...) [<location>]");
-        setRequiredArguments(1, 2);
+        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>)");
+        setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Teleport
-    // @Syntax teleport (<entity>|...) [<location>]
+    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>)
     // @Required 1
-    // @Maximum 2
+    // @Maximum 3
     // @Short Teleports the entity(s) to a new location.
     // @Synonyms tp
     // @Group entity
@@ -38,6 +40,7 @@ public class TeleportCommand extends AbstractCommand {
     // @Description
     // Teleports the entity or entities to the new location.
     // Entities can be teleported between worlds using this command.
+    // You may optionally specify a teleport cause for player entities, allowing proper teleport event handling. When not specified, this is "PLUGIN". See <@link language teleport cause> for causes.
     //
     // @Tags
     // <EntityTag.location>
@@ -61,6 +64,10 @@ public class TeleportCommand extends AbstractCommand {
     // @Usage
     // Use to teleport the NPC to a location that was noted wih the <@link command note> command.
     // - teleport <npc> my_prenoted_location
+    //
+    // @Usage
+    // Use to teleport a player to some location, and inform events that it was caused by a nether portal.
+    // - teleport <player> <server.flag[nether_hub_location]> cause:nether_portal
     // -->
 
     @Override
@@ -85,6 +92,10 @@ public class TeleportCommand extends AbstractCommand {
             else if (arg.matches("npc") && Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
             }
+            else if (!scriptEntry.hasObject("cause")
+                    && arg.matchesEnum(PlayerTeleportEvent.TeleportCause.values())) {
+                scriptEntry.addObject("cause", arg.asElement());
+            }
             else {
                 arg.reportUnhandled();
             }
@@ -101,16 +112,18 @@ public class TeleportCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        ElementTag cause = scriptEntry.getElement("cause");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), location, db("entities", entities));
+            Debug.report(scriptEntry, getName(), location, db("entities", entities), cause);
         }
+        PlayerTeleportEvent.TeleportCause causeEnum = cause == null ? PlayerTeleportEvent.TeleportCause.PLUGIN : PlayerTeleportEvent.TeleportCause.valueOf(cause.asString().toUpperCase());
         for (EntityTag entity : entities) {
             if (entity.isFake && entity.getWorld().equals(location.getWorld())) {
                 NMSHandler.getEntityHelper().snapPositionTo(entity.getBukkitEntity(), location.toVector());
                 NMSHandler.getEntityHelper().look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
             }
-            entity.spawnAt(location);
+            entity.spawnAt(location, causeEnum);
         }
     }
 }
