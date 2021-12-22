@@ -21,9 +21,12 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // @name Teleport Cause
     // @group Useful Lists
     // @description
-    // NOTE: Teleport causes only work for player entities.
-    // Possible teleport causes: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/PlayerTeleportEvent.TeleportCause.html>
+    // Possible player teleport causes: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/player/PlayerTeleportEvent.TeleportCause.html>
     // These are used in <@link event entity teleports>, <@link tag server.teleport_causes>, <@link command teleport>, ...
+    // Note that these causes will only work for player entities.
+    //
+    // Additionally, Denizen provides two basic teleport causes for non-player entity teleport events: ENTITY_PORTAL and ENTITY_TELEPORT.
+    // These additional causes are not usable in <@link command teleport>, and will not show in <@link tag server.teleport_causes>.
     // -->
 
     // <--[event]
@@ -46,7 +49,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <context.entity> returns the EntityTag.
     // <context.origin> returns the LocationTag the entity teleported from.
     // <context.destination> returns the LocationTag the entity teleported to.
-    // <context.cause> returns an ElementTag of the teleport cause when the entity being teleported is a player - see <@link language teleport cause> for causes.
+    // <context.cause> returns an ElementTag of the teleport cause - see <@link language teleport cause> for causes.
     //
     // @Determine
     // "ORIGIN:" + LocationTag to change the location the entity teleported from.
