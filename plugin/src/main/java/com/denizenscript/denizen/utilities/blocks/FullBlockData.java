@@ -13,6 +13,7 @@ import org.bukkit.Axis;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.RedstoneWire;
 import org.bukkit.block.data.type.Wall;
 
 import java.util.Map;
@@ -149,6 +150,14 @@ public class FullBlockData {
             for (BlockFace face : ((MultipleFacing) data).getFaces()) {
                 newData.setFace(rotateFaceOne(face), true);
             }
+            return new FullBlockData(newData, tileEntityData, flags);
+        }
+        else if (data instanceof RedstoneWire) {
+            RedstoneWire newData = (RedstoneWire) data.clone();
+            newData.setFace(BlockFace.NORTH, ((RedstoneWire) data).getFace(BlockFace.EAST));
+            newData.setFace(BlockFace.WEST, ((RedstoneWire) data).getFace(BlockFace.NORTH));
+            newData.setFace(BlockFace.EAST, ((RedstoneWire) data).getFace(BlockFace.SOUTH));
+            newData.setFace(BlockFace.SOUTH, ((RedstoneWire) data).getFace(BlockFace.WEST));
             return new FullBlockData(newData, tileEntityData, flags);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Wall) {
