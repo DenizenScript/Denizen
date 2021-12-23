@@ -172,6 +172,10 @@ public class ItemScriptContainer extends ScriptContainer {
     //          # Smithing recipes take one base item and one upgrade item.
     //          type: smithing
     //          base: ItemTag
+    //          # Optionally, choose what values to retain, as a simple pipe-separated list of parts to retain.
+    //          # If unspecified, no values will be retained.
+    //          # Parts can be: 'display', 'enchantments'
+    //          retain: display|enchantments
     //          upgrade: ItemTag
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.

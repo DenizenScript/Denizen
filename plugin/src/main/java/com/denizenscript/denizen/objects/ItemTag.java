@@ -368,10 +368,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         return new MaterialTag(getBukkitMaterial());
     }
 
-    public String getMaterialName() {
-        return CoreUtilities.toLowerCase(getBukkitMaterial().name());
-    }
-
     public void setAmount(int value) {
         if (item != null) {
             item.setAmount(value);
