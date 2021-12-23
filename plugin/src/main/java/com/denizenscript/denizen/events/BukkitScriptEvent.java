@@ -1167,7 +1167,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 case "player":
                     return entity.isPlayer();
                 case "living":
-                    return bEntity instanceof LivingEntity;
+                    return entity.isLivingEntityType();
                 case "vehicle":
                     return bEntity instanceof Vehicle;
                 case "fish":
@@ -1177,11 +1177,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 case "hanging":
                     return bEntity instanceof Hanging;
                 case "monster":
-                    return bEntity instanceof Monster;
+                    return entity.isMonsterType();
                 case "mob":
-                    return bEntity instanceof Mob;
+                    return entity.isMobType();
                 case "animal":
-                    return bEntity instanceof Animals;
+                    return entity.isAnimalType();
             }
         }
         if (comparedto.contains(":")) {

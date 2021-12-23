@@ -553,7 +553,35 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean isLivingEntity() {
-        return (entity instanceof LivingEntity);
+        return entity instanceof LivingEntity;
+    }
+
+    public boolean isLivingEntityType() {
+        if (getBukkitEntity() == null && entity_type != null) {
+            return entity_type.getBukkitEntityType().isAlive();
+        }
+        return entity instanceof LivingEntity;
+    }
+
+    public boolean isMonsterType() {
+        if (getBukkitEntity() == null && entity_type != null) {
+            return Monster.class.isAssignableFrom(entity_type.getBukkitEntityType().getEntityClass());
+        }
+        return getBukkitEntity() instanceof Monster;
+    }
+
+    public boolean isMobType() {
+        if (getBukkitEntity() == null && entity_type != null) {
+            return Mob.class.isAssignableFrom(entity_type.getBukkitEntityType().getEntityClass());
+        }
+        return getBukkitEntity() instanceof Mob;
+    }
+
+    public boolean isAnimalType() {
+        if (getBukkitEntity() == null && entity_type != null) {
+            return Animals.class.isAssignableFrom(entity_type.getBukkitEntityType().getEntityClass());
+        }
+        return getBukkitEntity() instanceof Animals;
     }
 
     public boolean hasInventory() {
@@ -2274,10 +2302,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Not to be confused with the idea of being alive - see <@link tag EntityTag.is_spawned>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_living", (attribute, object) -> {
-            if (object.getBukkitEntity() == null && object.entity_type != null) {
-                return new ElementTag(object.entity_type.getBukkitEntityType().isAlive());
-            }
-            return new ElementTag(object.isLivingEntity());
+            return new ElementTag(object.isLivingEntityType());
         });
 
         // <--[tag]
@@ -2288,10 +2313,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity type is a hostile monster.
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_monster", (attribute, object) -> {
-            if (object.getBukkitEntity() == null && object.entity_type != null) {
-                return new ElementTag(Monster.class.isAssignableFrom(object.entity_type.getBukkitEntityType().getEntityClass()));
-            }
-            return new ElementTag(object.getBukkitEntity() instanceof Monster);
+            return new ElementTag(object.isMonsterType());
         });
 
         // <--[tag]
@@ -2302,11 +2324,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the entity type is a mob (Not a player or NPC).
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_mob", (attribute, object) -> {
-            if (object.getBukkitEntity() == null && object.entity_type != null) {
-                EntityType type = object.entity_type.getBukkitEntityType();
-                return new ElementTag(Mob.class.isAssignableFrom(type.getEntityClass()));
-            }
-            return new ElementTag(!object.isNPC() && object.getBukkitEntity() instanceof Mob);
+            return new ElementTag(object.isMobType());
         });
 
         // <--[tag]
