@@ -27,7 +27,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Switch adjacent:<block> to only process the event if the block or an immediately adjacent block (up/down/n/e/s/w) matches the material matcher specified. This can be useful to prevent blocks from breaking.
+    // @Switch adjacent:<block> to only process the event if the block or an immediately adjacent block (up/down/n/e/s/w) matches the LocationTag matcher specified. This can be useful to prevent blocks from breaking.
     //
     // @Cancellable true
     //
@@ -63,12 +63,12 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         if (adjacent != null) {
             if (!tryMaterial(material, adjacent)) {
                 Block block = location.getBlock();
-                if (!tryMaterial(block.getRelative(0, 1, 0).getType(), adjacent)
-                        && !tryMaterial(block.getRelative(0, -1, 0).getType(), adjacent)
-                        && !tryMaterial(block.getRelative(1, 0, 0).getType(), adjacent)
-                        && !tryMaterial(block.getRelative(-1, 0, 0).getType(), adjacent)
-                        && !tryMaterial(block.getRelative(0, 0, 1).getType(), adjacent)
-                        && !tryMaterial(block.getRelative(0, 0, -1).getType(), adjacent)) {
+                if (!tryLocation(block.getRelative(0, 1, 0).getLocation(), adjacent)
+                        && !tryLocation(block.getRelative(0, -1, 0).getLocation(), adjacent)
+                        && !tryLocation(block.getRelative(1, 0, 0).getLocation(), adjacent)
+                        && !tryLocation(block.getRelative(-1, 0, 0).getLocation(), adjacent)
+                        && !tryLocation(block.getRelative(0, 0, 1).getLocation(), adjacent)
+                        && !tryLocation(block.getRelative(0, 0, -1).getLocation(), adjacent)) {
                     return false;
                 }
             }
