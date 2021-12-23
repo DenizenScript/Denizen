@@ -64,7 +64,7 @@ public class ExperienceCommand extends AbstractCommand {
     public static long TOTAL_XP_FOR_LEVEL(int level) {
         long count = 0;
         for (int i = 0; i < level; i++) {
-            count += TOTAL_XP_FOR_LEVEL(i);
+            count += XP_FOR_NEXT_LEVEL(i);
         }
         return count;
     }
