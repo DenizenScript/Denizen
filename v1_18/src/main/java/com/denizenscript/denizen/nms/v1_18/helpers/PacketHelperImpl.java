@@ -92,7 +92,7 @@ public class PacketHelperImpl implements PacketHelper {
     public static MethodHandle CANVAS_GET_BUFFER = ReflectionHelper.getMethodHandle(CraftMapCanvas.class, "getBuffer");
     public static Field MAPVIEW_WORLDMAP = ReflectionHelper.getFields(CraftMapView.class).get("worldMap");
 
-    public static MethodHandle BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundBlockEntityDataPacket.class, BlockPos.class, BlockEntityType.class, CompoundTag.class);
+    public static MethodHandle BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundBlockEntityDataPacket.class, BlockPos.class, BlockEntityType.class, net.minecraft.nbt.CompoundTag.class);
 
     public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA;
     public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
