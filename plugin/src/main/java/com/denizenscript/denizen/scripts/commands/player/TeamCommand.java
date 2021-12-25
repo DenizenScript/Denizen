@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -9,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Scoreboard;
@@ -37,6 +39,9 @@ public class TeamCommand extends AbstractCommand {
     // Use the "prefix" or "suffix" arguments to modify a team's playername prefix and suffix.
     // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
     //
+    // The "entry" value can be a player's name to affect that player, or an entity's UUID to affect that entity.
+    // You can alternately input a raw PlayerTag or EntityTag, and they will be automatically translated to the name/UUID internally.
+    //
     // Use the "color" argument to set the team color (for glowing, names, etc). Must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html>.
     //
     // Use the "add" and "remove" arguments to add or remove players by name to/from the team.
@@ -50,11 +55,11 @@ public class TeamCommand extends AbstractCommand {
     //
     // @Usage
     // Use to add a player to a team.
-    // - team name:red add:<player.name>
+    // - team name:red add:<player>
     //
     // @Usage
-    // Use to add an NPC to a team.
-    // - team name:blue add:<npc.name>
+    // Use to add some mob to a team.
+    // - team name:blue add:<player.location.find_entities[monster].within[10]>
     //
     // @Usage
     // Use to change the prefix for a team.
@@ -138,6 +143,22 @@ public class TeamCommand extends AbstractCommand {
         scriptEntry.defaultObject("id", new ElementTag("main"));
     }
 
+    public static String translateEntry(String entry, TagContext context) {
+        if (entry.startsWith("p@")) {
+            PlayerTag player = PlayerTag.valueOf(entry, context);
+            if (player != null) {
+                return player.getName();
+            }
+        }
+        else if (entry.startsWith("e@")) {
+            EntityTag entity = EntityTag.valueOf(entry, context);
+            if (entity != null) {
+                return entity.getUUID().toString();
+            }
+        }
+        return entry;
+    }
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ElementTag id = scriptEntry.getElement("id");
@@ -174,9 +195,7 @@ public class TeamCommand extends AbstractCommand {
         }
         if (add != null) {
             for (String string : add) {
-                if (string.startsWith("p@")) {
-                    string = PlayerTag.valueOf(string, scriptEntry.context).getName();
-                }
+                string = translateEntry(string, scriptEntry.context);
                 if (!team.hasEntry(string)) {
                     team.addEntry(string);
                 }
@@ -184,9 +203,7 @@ public class TeamCommand extends AbstractCommand {
         }
         if (remove != null) {
             for (String string : remove) {
-                if (string.startsWith("p@")) {
-                    string = PlayerTag.valueOf(string, scriptEntry.context).getName();
-                }
+                string = translateEntry(string, scriptEntry.context);
                 if (team.hasEntry(string)) {
                     team.removeEntry(string);
                 }
