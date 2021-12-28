@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -23,6 +24,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -478,10 +480,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             physitick = tick;
         }
         if (!Utilities.isLocationYSafe(location)) {
-            Debug.echoError("Invalid modifyblock location: " + new LocationTag(location).toString());
+            Debug.echoError("Invalid modifyblock location: " + new LocationTag(location));
             return;
         }
         if (natural != null && material.getMaterial() == Material.AIR) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                int xp = NMSHandler.getBlockHelper().getExpDrop(location.getBlock(), natural.getItemStack());
+                if (xp > 0) {
+                    ExperienceOrb orb = (ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB);
+                    orb.setExperience(xp);
+                }
+            }
             location.getBlock().breakNaturally(natural.getItemStack());
         }
         else {
