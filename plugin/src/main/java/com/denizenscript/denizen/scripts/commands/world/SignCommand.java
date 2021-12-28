@@ -42,26 +42,30 @@ public class SignCommand extends AbstractCommand {
     // @Description
     // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
     //
-    // The direction argument tells which direction the text shown. If a direction is not specified, it defaults to south.
     // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
     // If there is not already a sign there, defaults to a sign_post.
     //
     // Optionally specify a material to use. If not specified, will use an oak sign (unless the block is already a sign, and 'type' is 'automatic').
     //
+    // The direction argument specifies which direction the sign should face.
+    // If a direction is not specified, and there is not already a sign there for 'automatic', the direction defaults to south.
+    // If a sign_post is placed, you can specify any specific blockface value as the direction, eg "SOUTH_WEST".
+    // See also <@link tag MaterialTag.valid_directions> (test in-game for example via "/ex narrate <material[oak_sign].valid_directions>").
+    //
     // @Tags
     // <LocationTag.sign_contents>
     //
     // @Usage
-    // Use to edit some text on a sign
-    // - sign type:automatic "Hello|this is|some|text" <player.location>
+    // Use to edit some text on an existing sign.
+    // - sign "Hello|this is|some|text" <context.location>
     //
     // @Usage
-    // Use to show the time on a sign that points north
-    // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" <context.location> direction:north
+    // Use to show the time on a sign and ensure that it points north.
+    // - sign "I point|North.|System Time<&co>|<util.time_now.formatted>" <[location]> direction:north
     //
     // @Usage
-    // Use to force a sign to be a wall_sign if no sign is found.
-    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.online_players.size>" <context.location>
+    // Use to place a new wall_sign regardless of whether there is already a sign there.
+    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.online_players.size>" <player.location>
     //
     // -->
 

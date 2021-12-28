@@ -324,40 +324,23 @@ public class Utilities {
     }
 
     public static BlockFace chooseSignRotation(String direction) {
-        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
         String dirUpper = direction.toUpperCase();
-        String firstChar = dirUpper.substring(0, 1);
-        for (BlockFace blockFace : blockFaces) {
-            if (blockFace.name().startsWith(firstChar)) {
-                return blockFace;
-            }
-        }
-        for (BlockFace blockFace : BlockFace.values()) { // Avoid valueOf which throws exceptions on failure
+        for (BlockFace blockFace : MaterialDirectional.rotatableValidFaces) {
             if (blockFace.name().equals(dirUpper)) {
                 return blockFace;
             }
+        }
+        switch (dirUpper.charAt(0)) {
+            case 'N': return BlockFace.NORTH;
+            case 'S': return BlockFace.SOUTH;
+            case 'E': return BlockFace.EAST;
+            case 'W': return BlockFace.WEST;
         }
         return BlockFace.SOUTH;
     }
 
     public static void setSignRotation(BlockState signState, String direction) {
-        direction = CoreUtilities.toLowerCase(direction);
-        BlockFace bf;
-        if (direction.startsWith("n")) {
-            bf = BlockFace.NORTH;
-        }
-        else if (direction.startsWith("e")) {
-            bf = BlockFace.EAST;
-        }
-        else if (direction.startsWith("s")) {
-            bf = BlockFace.SOUTH;
-        }
-        else if (direction.startsWith("w")) {
-            bf = BlockFace.WEST;
-        }
-        else {
-            return;
-        }
+        BlockFace bf = chooseSignRotation(direction);
         MaterialTag signMaterial = new MaterialTag(signState.getBlock());
         MaterialDirectional.getFrom(signMaterial).setFacing(bf);
         signState.getBlock().setBlockData(signMaterial.getModernData());
