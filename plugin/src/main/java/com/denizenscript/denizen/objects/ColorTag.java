@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 
@@ -30,7 +31,7 @@ public class ColorTag implements ObjectTag {
     //
     // Note that a ColorTag is NOT a base dye color (used by wool, etc). That is handled by a separate naming system.
     //
-    // Constructing a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF'.
+    // Constructing a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF', or valid minecraft chat color codes (hex or historical codes).
     //
     // A list of accepted color names can be found at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>
@@ -67,7 +68,7 @@ public class ColorTag implements ObjectTag {
         }
     }
 
-    public static AsciiMatcher HexMatcher = new AsciiMatcher("0123456789abcdefABCDEF");
+    public static AsciiMatcher HEX_MATCHER = new AsciiMatcher("0123456789abcdefABCDEF");
 
     /**
      * Gets a Color Object from a string form.
@@ -87,8 +88,18 @@ public class ColorTag implements ObjectTag {
                     CoreUtilities.getRandom().nextInt(256),
                     CoreUtilities.getRandom().nextInt(256));
         }
-        if (string.startsWith("#") && string.length() == 7 && HexMatcher.isOnlyMatches(string.substring(1))) {
+        if (string.startsWith("#") && string.length() == 7 && HEX_MATCHER.isOnlyMatches(string.substring(1))) {
             return new ColorTag(Color.fromRGB(Integer.parseInt(string.substring(1), 16)));
+        }
+        if (string.startsWith(ChatColor.COLOR_CHAR + "x") && string.length() == 14) {
+            String pieces = string.substring(2).replace(String.valueOf(ChatColor.COLOR_CHAR), "");
+            if (pieces.length() == 6 && HEX_MATCHER.isOnlyMatches(pieces)) {
+                return new ColorTag(Color.fromRGB(Integer.parseInt(pieces, 16)));
+            }
+        }
+        else if (string.startsWith(String.valueOf(ChatColor.COLOR_CHAR)) && string.length() == 2 && HEX_MATCHER.isOnlyMatches(string.substring(1))) {
+            // the & is because 'getRGB' actually returns ARGB, so strip the Alpha
+            return new ColorTag(Color.fromRGB(ChatColor.getByChar(string.charAt(1)).asBungee().getColor().getRGB() & 0xFFFFFF));
         }
         List<String> split = CoreUtilities.split(string, ',');
         if (split.size() == 3) {

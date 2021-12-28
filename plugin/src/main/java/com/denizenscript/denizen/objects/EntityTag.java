@@ -3339,8 +3339,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Boolean)
         // @description
         // Sets whether the entity is collidable.
+        // For NPCs, Sets the persistent collidable value.
         // NOTE: To disable collision between two entities, set this mechanism to false on both entities.
-        // Sets the persistent collidable value for NPCs.
+        // NOTE: For players, to fully remove collision you need to use <@link command team> and set "option:collision_rule status:never"
         // @tags
         // <EntityTag.is_collidable>
         // -->
