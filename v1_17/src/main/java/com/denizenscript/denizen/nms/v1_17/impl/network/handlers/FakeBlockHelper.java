@@ -36,7 +36,7 @@ public class FakeBlockHelper {
         int maxY = (y << 4) + 16;
         for (FakeBlock block : blocks) {
             int blockY = block.location.getBlockY();
-            if (blockY >= minY && blockY < maxY) {
+            if (blockY >= minY && blockY < maxY && block.material != null) {
                 return true;
             }
         }
@@ -107,20 +107,22 @@ public class FakeBlockHelper {
                 int z = blockEnt.getInt("z");
                 for (FakeBlock block : blocks) {
                     LocationTag loc = block.location;
-                    if (loc.getBlockX() == x && loc.getBlockY() == y && loc.getBlockZ() == z) {
+                    if (loc.getBlockX() == x && loc.getBlockY() == y && loc.getBlockZ() == z && block.material != null) {
                         iterator.remove();
                         break;
                     }
                 }
             }
             for (FakeBlock block : blocks) {
-                LocationTag loc = block.location;
-                net.minecraft.nbt.CompoundTag newCompound = new net.minecraft.nbt.CompoundTag();
-                newCompound.putInt("x", loc.getBlockX());
-                newCompound.putInt("y", loc.getBlockY());
-                newCompound.putInt("z", loc.getBlockZ());
-                newCompound.putString("id", block.material.getMaterial().getKey().toString());
-                blockEntities.add(newCompound);
+                if (block.material != null) {
+                    LocationTag loc = block.location;
+                    net.minecraft.nbt.CompoundTag newCompound = new net.minecraft.nbt.CompoundTag();
+                    newCompound.putInt("x", loc.getBlockX());
+                    newCompound.putInt("y", loc.getBlockY());
+                    newCompound.putInt("z", loc.getBlockZ());
+                    newCompound.putString("id", block.material.getMaterial().getKey().toString());
+                    blockEntities.add(newCompound);
+                }
             }
             for (int y = 0; y < 16; y++) {
                 if (bitmask.get(y)) {
@@ -156,35 +158,37 @@ public class FakeBlockHelper {
                     int minY = y << 4;
                     int maxY = (y << 4) + 16;
                     for (FakeBlock block : blocks) {
-                        int blockY = block.location.getBlockY();
-                        if (blockY >= minY && blockY < maxY) {
-                            int blockX = block.location.getBlockX();
-                            int blockZ = block.location.getBlockZ();
-                            blockX -= (blockX >> 4) * 16;
-                            blockY -= (blockY >> 4) * 16;
-                            blockZ -= (blockZ >> 4) * 16;
-                            int blockIndex = blockArrayIndex(blockX, blockY, blockZ);
-                            BlockState replacementData = getNMSState(block);
-                            int globalPaletteIndex = indexInPalette(replacementData);
-                            int subPaletteId = getPaletteSubId(palette, globalPaletteIndex);
-                            if (subPaletteId == -1) {
-                                int[] newPalette = new int[paletteLen + 1];
-                                if (paletteLen >= 0) System.arraycopy(palette, 0, newPalette, 0, paletteLen);
-                                newPalette[paletteLen] = globalPaletteIndex;
-                                subPaletteId = paletteLen;
-                                paletteLen++;
-                                palette = newPalette;
-                                int newWidth = Mth.ceillog2(paletteLen);
-                                if (newWidth > width) {
-                                    BitStorage newBits = new BitStorage(newWidth, 4096);
-                                    for (int i = 0; i < bits.getSize(); i++) {
-                                        newBits.getAndSet(i, bits.get(i));
+                        if (block.material != null) {
+                            int blockY = block.location.getBlockY();
+                            if (blockY >= minY && blockY < maxY) {
+                                int blockX = block.location.getBlockX();
+                                int blockZ = block.location.getBlockZ();
+                                blockX -= (blockX >> 4) * 16;
+                                blockY -= (blockY >> 4) * 16;
+                                blockZ -= (blockZ >> 4) * 16;
+                                int blockIndex = blockArrayIndex(blockX, blockY, blockZ);
+                                BlockState replacementData = getNMSState(block);
+                                int globalPaletteIndex = indexInPalette(replacementData);
+                                int subPaletteId = getPaletteSubId(palette, globalPaletteIndex);
+                                if (subPaletteId == -1) {
+                                    int[] newPalette = new int[paletteLen + 1];
+                                    if (paletteLen >= 0) System.arraycopy(palette, 0, newPalette, 0, paletteLen);
+                                    newPalette[paletteLen] = globalPaletteIndex;
+                                    subPaletteId = paletteLen;
+                                    paletteLen++;
+                                    palette = newPalette;
+                                    int newWidth = Mth.ceillog2(paletteLen);
+                                    if (newWidth > width) {
+                                        BitStorage newBits = new BitStorage(newWidth, 4096);
+                                        for (int i = 0; i < bits.getSize(); i++) {
+                                            newBits.getAndSet(i, bits.get(i));
+                                        }
+                                        bits = newBits;
+                                        width = newWidth;
                                     }
-                                    bits = newBits;
-                                    width = newWidth;
                                 }
+                                bits.getAndSet(blockIndex, subPaletteId);
                             }
-                            bits.getAndSet(blockIndex, subPaletteId);
                         }
                     }
                     outputSerial.writeByte(width);
