@@ -1099,6 +1099,30 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
+        // @attribute <CuboidTag.corners>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns all 8 corners of the cuboid.
+        // The 4 low corners, then the 4 high corners.
+        // In order X-Z-, X+Z-, X-Z+, X+Z+
+        // If the object is a multi-member cuboid, returns corners for all members in sequence.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "corners", (attribute, cuboid) -> {
+            ListTag output = new ListTag();
+            for (LocationPair pair : cuboid.pairs) {
+                output.addObject(new LocationTag(pair.low.getX(), pair.low.getY(), pair.low.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.high.getX(), pair.low.getY(), pair.low.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.low.getX(), pair.low.getY(), pair.high.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.high.getX(), pair.low.getY(), pair.high.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.low.getX(), pair.high.getY(), pair.low.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.high.getX(), pair.high.getY(), pair.low.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.low.getX(), pair.high.getY(), pair.high.getZ(), pair.low.getWorldName()));
+                output.addObject(new LocationTag(pair.high.getX(), pair.high.getY(), pair.high.getZ(), pair.low.getWorldName()));
+            }
+            return output;
+        });
+
+        // <--[tag]
         // @attribute <CuboidTag.shift[<vector>]>
         // @returns CuboidTag
         // @description
