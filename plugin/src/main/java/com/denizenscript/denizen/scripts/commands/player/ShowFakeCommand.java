@@ -145,10 +145,10 @@ public class ShowFakeCommand extends AbstractCommand {
         int i = 0;
         for (LocationTag loc : locations) {
             if (!shouldCancel) {
-                FakeBlock.showFakeBlockTo(players, loc, materials.get(i % materials.size()), duration, locations.size() < 5);
+                FakeBlock.showFakeBlockTo(players, loc.getBlockLocation(), materials.get(i % materials.size()), duration, locations.size() < 5);
             }
             else {
-                FakeBlock.stopShowingTo(players, loc);
+                FakeBlock.stopShowingTo(players, loc.getBlockLocation());
             }
             i++;
         }
