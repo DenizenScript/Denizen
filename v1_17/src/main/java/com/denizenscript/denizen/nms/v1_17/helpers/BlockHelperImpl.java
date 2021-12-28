@@ -308,4 +308,10 @@ public class BlockHelperImpl implements BlockHelper {
         CraftBlock craftBlock = (CraftBlock) block.getBlock();
         ((BellBlock) Blocks.BELL).attemptToRing(craftBlock.getCraftWorld().getHandle(), craftBlock.getPosition(), dir);
     }
+
+    @Override
+    public int getExpDrop(Block block, org.bukkit.inventory.ItemStack item) {
+        return getBlockFrom(block.getType()).getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
+                item == null ? null : CraftItemStack.asNMSCopy(item));
+    }
 }

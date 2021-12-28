@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -83,6 +84,10 @@ public interface BlockHelper {
     }
 
     default void ringBell(Bell block) {
+        throw new UnsupportedOperationException();
+    }
+
+    default int getExpDrop(Block block, ItemStack item) {
         throw new UnsupportedOperationException();
     }
 }

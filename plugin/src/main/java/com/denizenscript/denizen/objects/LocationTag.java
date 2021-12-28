@@ -515,6 +515,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
     }
 
+    public int getExpDropForTag(Attribute attribute, ItemStack item) {
+        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return 0;
+            }
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return 0;
+            }
+            return NMSHandler.getBlockHelper().getExpDrop(super.getBlock(), item);
+        }
+        finally {
+            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+        }
+    }
+
     public BlockState getBlockState() {
         return getBlock().getState();
     }
@@ -1438,6 +1460,23 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 list.addObject(new ItemTag(it));
             }
             return list;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.xp_drop[(<item>)]>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns how much experience, if any, the block at the location would drop if broken naturally.
+        // Returns 0 if a block wouldn't drop xp.
+        // Optionally specifier a breaker item.
+        // Not guaranteed to contain exactly the amount that actual drops if then broken later, as the value is usually randomized.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "xp_drop", (attribute, object) -> {
+            ItemStack inputItem = new ItemStack(Material.AIR);
+            if (attribute.hasParam()) {
+                inputItem = attribute.paramAsType(ItemTag.class).getItemStack();
+            }
+            return new ElementTag(object.getExpDropForTag(attribute, inputItem));
         });
 
         // <--[tag]
