@@ -43,6 +43,12 @@ public class Debug {
         showDebug = !showDebug;
     }
 
+    public static void onTick() {
+        outputThisTick = 0;
+        errorDuplicatePrevention = false;
+        lastErrorHeader = "";
+    }
+
     ////////////
     //  Public debugging methods, toggleable by checking extra criteria as implemented
     //  by the Debuggable interface, which usually checks a ScriptContainer's 'debug' node
@@ -210,36 +216,40 @@ public class Debug {
             errorDuplicatePrevention = false;
             return;
         }
-        StringBuilder fullMessage = new StringBuilder();
-        fullMessage.append(ChatColor.LIGHT_PURPLE).append(" ").append(ChatColor.RED).append("ERROR");
+        StringBuilder headerBuilder = new StringBuilder();
+        headerBuilder.append(ERROR_HEADER_START);
         if (sourceScript != null) {
-            fullMessage.append(" in script '").append(ChatColor.AQUA).append(sourceScript.getName()).append(ChatColor.RED).append("'");
+            headerBuilder.append(" in script '").append(ChatColor.AQUA).append(sourceScript.getName()).append(ChatColor.RED).append("'");
         }
         if (sourceQueue != null) {
-            fullMessage.append(" in queue '").append(sourceQueue.debugId).append(ChatColor.RED).append("'");
+            headerBuilder.append(" in queue '").append(sourceQueue.debugId).append(ChatColor.RED).append("'");
         }
         if (sourceEntry != null) {
-            fullMessage.append(" while executing command '").append(ChatColor.AQUA).append(sourceEntry.getCommandName()).append(ChatColor.RED).append("'");
+            headerBuilder.append(" while executing command '").append(ChatColor.AQUA).append(sourceEntry.getCommandName()).append(ChatColor.RED).append("'");
             if (sourceScript != null) {
-                fullMessage.append(" in file '").append(ChatColor.AQUA).append(sourceScript.getContainer().getRelativeFileName()).append(ChatColor.RED)
+                headerBuilder.append(" in file '").append(ChatColor.AQUA).append(sourceScript.getContainer().getRelativeFileName()).append(ChatColor.RED)
                         .append("' on line '").append(ChatColor.AQUA).append(sourceEntry.internal.lineNumber).append(ChatColor.RED).append("'");
             }
             BukkitScriptEntryData data = Utilities.getEntryData(sourceEntry);
             if (data.hasPlayer()) {
-                fullMessage.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().getName()).append(ChatColor.RED).append("'");
+                headerBuilder.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().getName()).append(ChatColor.RED).append("'");
             }
             if (data.hasNPC()) {
-                fullMessage.append(" with NPC '").append(ChatColor.AQUA).append(data.getNPC().debuggable()).append(ChatColor.RED).append("'");
+                headerBuilder.append(" with NPC '").append(ChatColor.AQUA).append(data.getNPC().debuggable()).append(ChatColor.RED).append("'");
             }
         }
         if (addedContext != null) {
-            fullMessage.append("\n     ").append(addedContext);
+            headerBuilder.append("\n     ").append(addedContext);
         }
-        fullMessage.append("!\n").append(ChatColor.GRAY).append("     Error Message: ").append(ChatColor.WHITE).append(message);
-        if (sourceScript != null && !sourceScript.getContainer().shouldDebug()) {
-            fullMessage.append(ChatColor.GRAY).append(" ... ").append(ChatColor.RED).append("Enable debug on the script for more information.");
+        headerBuilder.append(ERROR_HEADER_END);
+        String header = headerBuilder.toString();
+        boolean showDebugSuffix = sourceScript != null && !sourceScript.getContainer().shouldDebug();
+        String headerRef = header;
+        if (header.equals(lastErrorHeader)) {
+            header = ADDITIONAL_ERROR_HEADER;
+            showDebugSuffix = false;
         }
-        finalOutputDebugText(fullMessage.toString(), sourceQueue, reformat);
+        finalOutputDebugText(header + message + (showDebugSuffix ? ENABLE_DEBUG_MESSAGE : ""), sourceQueue, reformat);
         errorDuplicatePrevention = false;
         if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && depthCorrectError == 0) {
             depthCorrectError++;
@@ -251,7 +261,14 @@ public class Debug {
             }
             depthCorrectError--;
         }
+        lastErrorHeader = headerRef;
     }
+
+    public static String lastErrorHeader = "";
+    public static String ENABLE_DEBUG_MESSAGE = ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.",
+            ERROR_HEADER_START = ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR",
+            ERROR_HEADER_END = "!\n" + ChatColor.GRAY + "     Error Message: " + ChatColor.WHITE,
+            ADDITIONAL_ERROR_HEADER = ChatColor.GRAY + "Additional Error Info: " + ChatColor.WHITE;
 
     static long depthCorrectError = 0;
 
@@ -368,7 +385,6 @@ public class Debug {
             return;
         }
         StringBuilder sb = new StringBuilder(24);
-
         switch (element) {
             case Footer:
                 sb.append(ChatColor.LIGHT_PURPLE).append("+---------------------+");
@@ -381,7 +397,6 @@ public class Debug {
             default:
                 break;
         }
-
         finalOutputDebugText(sb.toString(), null);
     }
 
@@ -486,6 +501,7 @@ public class Debug {
     public static int outputThisTick = 0;
 
     static void finalOutputDebugText(String message, Debuggable caller, boolean reformat) {
+        lastErrorHeader = "";
         outputThisTick++;
         if (outputThisTick >= Settings.debugLimitPerTick()) {
             if (outputThisTick == Settings.debugLimitPerTick()) {

@@ -419,8 +419,7 @@ public class Denizen extends JavaPlugin {
                     Bukkit.shutdown();
                 }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, () -> {
-                    Debug.outputThisTick = 0;
-                    Debug.errorDuplicatePrevention = false;
+                    Debug.onTick();
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();
