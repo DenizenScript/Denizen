@@ -53,6 +53,12 @@ public class MaterialDirectional implements Property {
 
     MaterialTag material;
 
+    public static BlockFace[] rotatableValidFaces = new BlockFace[] {
+            BlockFace.SOUTH, BlockFace.SOUTH_SOUTH_WEST, BlockFace.SOUTH_WEST, BlockFace.WEST_SOUTH_WEST, BlockFace.WEST,
+            BlockFace.WEST_NORTH_WEST, BlockFace.NORTH_WEST, BlockFace.NORTH_NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_NORTH_EAST,
+            BlockFace.NORTH_EAST, BlockFace.EAST_NORTH_EAST, BlockFace.EAST, BlockFace.EAST_SOUTH_EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_SOUTH_EAST
+    };
+
     public static void registerTags() {
 
         // <--[tag]
@@ -81,12 +87,17 @@ public class MaterialDirectional implements Property {
                     toReturn.add(face.name());
                 }
             }
+            else if (material.isRotatable()) {
+                for (BlockFace face : rotatableValidFaces) {
+                    toReturn.add(face.name());
+                }
+            }
             else if (material.isDripstone()) {
                 for (BlockFace face : ((PointedDripstone) material.material.getModernData()).getVerticalDirections()) { // TODO: 1.17
                     toReturn.add(face.name());
                 }
             }
-            else { // applies to rotatable
+            else { // Unreachable
                 return null;
             }
             return toReturn;
