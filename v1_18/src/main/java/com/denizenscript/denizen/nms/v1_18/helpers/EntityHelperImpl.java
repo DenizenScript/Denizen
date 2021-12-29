@@ -105,6 +105,12 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
+    public void setSleeping(Entity player, boolean sleep) {
+        Pose pose = sleep ? Pose.SLEEPING : Pose.STANDING;
+        ((CraftEntity) player).getHandle().setPose(pose);
+    }
+
+    @Override
     public double getDamageTo(LivingEntity attacker, Entity target) {
         MobType monsterType;
         if (target instanceof LivingEntity) {

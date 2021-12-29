@@ -32,6 +32,10 @@ public abstract class EntityHelper {
 
     public abstract void setSneaking(Entity player, boolean sneak);
 
+    public void setSleeping(Entity player, boolean sleep) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract double getDamageTo(LivingEntity attacker, Entity target);
 
     public abstract String getRawHoverText(Entity entity);

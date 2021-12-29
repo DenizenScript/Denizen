@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.citizensnpcs.api.persistence.Persist;
@@ -56,7 +58,12 @@ public class SleepingTrait extends Trait {
                 ((Player) npc.getEntity()).sleep(bedLocation.clone(), true);
             }
             else {
-                PlayerAnimation.SLEEP.play((Player) npc.getEntity());
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                    NMSHandler.getEntityHelper().setSleeping(npc.getEntity(), true);
+                }
+                else {
+                    PlayerAnimation.SLEEP.play((Player) npc.getEntity());
+                }
             }
         }
         else {
@@ -122,7 +129,12 @@ public class SleepingTrait extends Trait {
             if (((Player) npc.getEntity()).isSleeping()) {
                 ((Player) npc.getEntity()).wakeup(false);
             }
-            PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                NMSHandler.getEntityHelper().setSleeping(npc.getEntity(), false);
+            }
+            else {
+                PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());
+            }
         }
         bedLocation = null;
     }
