@@ -8,12 +8,16 @@ import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+
+import java.util.List;
+import java.util.Map;
 
 public class PluginTag implements ObjectTag, FlaggableObject {
 
@@ -219,6 +223,49 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         // -->
         tagProcessor.registerTag(ListTag.class, "soft_depends", (attribute, object) -> {
             return new ListTag(object.plugin.getDescription().getSoftDepend());
+        });
+
+        // <--[tag]
+        // @attribute <PluginTag.commands>
+        // @returns MapTag(MapTag)
+        // @description
+        // Gets a map of commands registered this plugin registers by default.
+        // Map key is command name, map value is a sub-mapping with keys:
+        // description (ElementTag), usage (ElementTag), permission (ElementTag), aliases (ListTag)
+        // Not all keys will be present.
+        // For example, <plugin[denizen].commands.get[ex]> will return a MapTag with:
+        // [description=Executes a Denizen script command.;usage=/ex (-q) <Denizen script command> (arguments);permission=denizen.ex]
+        // -->
+        tagProcessor.registerTag(MapTag.class, "commands", (attribute, object) -> {
+            Map<String, Map<String, Object>> commands = object.plugin.getDescription().getCommands();
+            MapTag output = new MapTag();
+            if (commands == null || commands.isEmpty()) {
+                return output;
+            }
+            for (Map.Entry<String, Map<String, Object>> command : commands.entrySet()) {
+                MapTag dataMap = new MapTag();
+                if (command.getValue().containsKey("description")) {
+                    dataMap.putObject("description", new ElementTag(command.getValue().get("description").toString(), true));
+                }
+                if (command.getValue().containsKey("usage")) {
+                    dataMap.putObject("usage", new ElementTag(command.getValue().get("usage").toString(), true));
+                }
+                if (command.getValue().containsKey("permission")) {
+                    dataMap.putObject("permission", new ElementTag(command.getValue().get("permission").toString(), true));
+                }
+                if (command.getValue().containsKey("aliases")) {
+                    Object obj = command.getValue().get("aliases");
+                    if (obj instanceof List) {
+                        ListTag aliases = new ListTag();
+                        for (Object entry : (List) obj) {
+                            aliases.addObject(new ElementTag(String.valueOf(entry), true));
+                        }
+                        dataMap.putObject("aliases", aliases);
+                    }
+                }
+                output.putObject(command.getKey(), dataMap);
+            }
+            return output;
         });
     }
 

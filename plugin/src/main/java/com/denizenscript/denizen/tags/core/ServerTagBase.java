@@ -43,6 +43,7 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -598,6 +599,21 @@ public class ServerTagBase {
             CommandScriptHelper.init();
             ListTag list = new ListTag(CommandScriptHelper.knownCommands.keySet());
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.command_source_plugin[<name>]>
+        // @returns PluginTag
+        // @description
+        // Returns the plugin that created a command (if known).
+        // For example, <server.command_plugin[ex]> should return a PluginTag of Denizen.
+        // -->
+        if (attribute.startsWith("command_plugin")) {
+            PluginCommand cmd = Bukkit.getPluginCommand(attribute.getParam());
+            if (cmd != null) {
+                event.setReplacedObject(new PluginTag(cmd.getPlugin()).getObjectAttribute(attribute.fulfill(1)));
+            }
             return;
         }
 
