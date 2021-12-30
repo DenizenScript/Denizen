@@ -370,6 +370,26 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
+        // @attribute <WorldTag.max_height>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the maximum block height of the world.
+        // -->
+        registerTag(ElementTag.class, "max_height", (attribute, object) -> {
+            return new ElementTag(object.getWorld().getMaxHeight());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.min_height>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the minimum block height of the world.
+        // -->
+        registerTag(ElementTag.class, "min_height", (attribute, object) -> {
+            return new ElementTag(object.getWorld().getMinHeight());
+        });
+
+        // <--[tag]
         // @attribute <WorldTag.spawn_location>
         // @returns LocationTag
         // @mechanism WorldTag.spawn_location

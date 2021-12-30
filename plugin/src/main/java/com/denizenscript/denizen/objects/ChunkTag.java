@@ -428,8 +428,16 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a cuboid of this chunk.
         // -->
         tagProcessor.registerTag(CuboidTag.class, "cuboid", (attribute, object) -> {
-            return new CuboidTag(new LocationTag(object.getWorldName(), object.getX() * 16, 0, object.getZ() * 16, 0, 0),
-                    new LocationTag(object.getWorldName(), object.getX() * 16 + 15, 255, object.getZ() * 16 + 15, 0, 0));
+            int yMin = 0, yMax = 255;
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                World world = object.getBukkitWorld();
+                if (world != null) {
+                    yMin = world.getMinHeight();
+                    yMax = world.getMaxHeight();
+                }
+            }
+            return new CuboidTag(new LocationTag(object.getWorldName(), object.getX() * 16, yMin, object.getZ() * 16, 0, 0),
+                    new LocationTag(object.getWorldName(), object.getX() * 16 + 15, yMax, object.getZ() * 16 + 15, 0, 0));
         });
 
         // <--[tag]

@@ -230,6 +230,7 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         // @returns MapTag(MapTag)
         // @description
         // Gets a map of commands registered this plugin registers by default.
+        // Note that dynamically registered commands won't show up (for example, command scripts won't be listed under Denizen).
         // Map key is command name, map value is a sub-mapping with keys:
         // description (ElementTag), usage (ElementTag), permission (ElementTag), aliases (ListTag)
         // Not all keys will be present.
