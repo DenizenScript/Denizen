@@ -786,7 +786,9 @@ public class ServerTagBase {
             listDeprecateWarn(attribute);
             ListTag allEnt = new ListTag();
             for (EntityType entity : EntityType.values()) {
-                allEnt.add(entity.name());
+                if (entity != EntityType.UNKNOWN) {
+                    allEnt.add(entity.name());
+                }
             }
             event.setReplacedObject(allEnt.getObjectAttribute(attribute.fulfill(1)));
         }

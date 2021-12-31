@@ -270,8 +270,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
         List<String> data = CoreUtilities.split(string, ',');
         // Handle custom DenizenEntityTypes
-        if (DenizenEntityType.isRegistered(data.get(0))) {
-            EntityTag entity = new EntityTag(DenizenEntityType.getByName(data.get(0)), data.size() > 1 ? data.get(1) : null);
+        DenizenEntityType type = DenizenEntityType.getByName(data.get(0));
+        if (type != null && type.getBukkitEntityType() != EntityType.UNKNOWN) {
+            EntityTag entity = new EntityTag(type, data.size() > 1 ? data.get(1) : null);
             entity.uuid = id;
             return entity;
         }
