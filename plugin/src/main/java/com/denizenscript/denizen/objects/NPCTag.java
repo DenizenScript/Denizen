@@ -365,10 +365,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     @Override
     public String debuggable() {
         if (npc.getOwningRegistry() == CitizensAPI.getNPCRegistry()) {
-            return "n@" + npc.getId() + "<GR> (" + getName() + "<GR>)";
+            return "<G>n@<Y>" + npc.getId() + "<GR> (" + getName() + "<GR>)";
         }
         else {
-            return "n@" + npc.getId() + "<G>," + npc.getOwningRegistry().getName() + "<GR> (" + getName() + "<GR>)";
+            return "<G>n@<Y>" + npc.getId() + "<G>," + npc.getOwningRegistry().getName() + "<GR> (" + getName() + "<GR>)";
         }
     }
 

@@ -435,7 +435,15 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         if (item == null || item.getType() == Material.AIR) {
             return "i@air";
         }
-        return "i@" + getMaterial().identifyNoPropertiesNoIdentifier().replace("m@", "") + PropertyParser.getPropertiesString(this);
+        return "i@" + getMaterial().identifyNoPropertiesNoIdentifier() + PropertyParser.getPropertiesString(this);
+    }
+
+    @Override
+    public String debuggable() {
+        if (item == null || item.getType() == Material.AIR) {
+            return "i@air";
+        }
+        return "<G>i@<Y>" + getMaterial().identifyNoPropertiesNoIdentifier() + PropertyParser.getPropertiesDebuggable(this);
     }
 
     @Override

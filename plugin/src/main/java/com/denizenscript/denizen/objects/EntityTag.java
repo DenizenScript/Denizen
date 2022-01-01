@@ -51,6 +51,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject, Cloneable {
 
@@ -1121,13 +1122,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().debuggable();
             }
             else if (isFake) {
-                return "e@FAKE: " + getUUID() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "<G>e@<Y>FAKE: " + getUUID() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
             }
             else if (isSpawnedOrValidForTag()) {
-                return "e@ " + getUUID() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "<G>e@<Y> " + getUUID() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
-        return identify();
+        return identify(this::getWaitingMechanismsDebuggable);
     }
 
     @Override
@@ -1148,6 +1149,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public String identify() {
+        return identify(this::getWaitingMechanismsString);
+    }
+
+    public String identify(Supplier<String> mechsHandler) {
         if (npc != null) {
             return npc.identify();
         }
@@ -1159,19 +1164,30 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().identify();
             }
             if (entityScript != null) {
-                return "e@" + getUUID() + "/" + entityScript + getWaitingMechanismsString();
+                return "e@" + getUUID() + "/" + entityScript + mechsHandler.get();
             }
             if (entity_type != null) {
-                return "e@" + getUUID() + "/" + entity_type.getLowercaseName() + getWaitingMechanismsString();
+                return "e@" + getUUID() + "/" + entity_type.getLowercaseName() + mechsHandler.get();
             }
         }
         if (entityScript != null) {
-            return "e@" + entityScript + getWaitingMechanismsString();
+            return "e@" + entityScript + mechsHandler.get();
         }
         if (entity_type != null) {
-            return "e@" + entity_type.getLowercaseName() + getWaitingMechanismsString();
+            return "e@" + entity_type.getLowercaseName() + mechsHandler.get();
         }
         return "null";
+    }
+
+    public String getWaitingMechanismsDebuggable() {
+        StringBuilder properties = new StringBuilder();
+        for (Mechanism mechanism : mechanisms) {
+            properties.append(mechanism.getName()).append("<G>=<Y>").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append("<G>; <Y>");
+        }
+        if (properties.length() > 0) {
+            return "<G>[<Y>" + properties.substring(0, properties.length() - "; <Y>".length()) + " <G>]";
+        }
+        return "";
     }
 
     public String getWaitingMechanismsString() {

@@ -1118,6 +1118,17 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     }
 
     @Override
+    public String debuggable() {
+        if (isUnique()) {
+            return "<G>in@<Y>" + NoteManager.getSavedId(this);
+        }
+        else {
+            trackTemporaryInventory(this);
+            return "<G>in@<Y>" + idType + PropertyParser.getPropertiesDebuggable(this);
+        }
+    }
+
+    @Override
     public String identifySimple() {
         return identify();
     }
