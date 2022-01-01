@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -122,6 +123,10 @@ public class PlayEffectCommand extends AbstractCommand {
                 if (particleHelper.hasParticle(arg.getValue())) {
                     scriptEntry.addObject("particleeffect", particleHelper.getParticle(arg.getValue()));
                     continue;
+                }
+                else if (arg.matches("barrier") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                    scriptEntry.addObject("particleeffect", particleHelper.getParticle("block_marker"));
+                    scriptEntry.addObject("special_data", new ElementTag("barrier"));
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
