@@ -558,16 +558,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <WorldTag.max_height>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the maximum height of this world.
-        // -->
-        registerTag(ElementTag.class, "max_height", (attribute, object) -> {
-            return new ElementTag(object.getWorld().getMaxHeight());
-        });
-
-        // <--[tag]
         // @attribute <WorldTag.ticks_per_animal_spawn>
         // @returns DurationTag
         // @mechanism WorldTag.ticks_per_animal_spawns
