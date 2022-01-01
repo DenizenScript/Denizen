@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -473,5 +474,16 @@ public class Utilities {
             return true;
         }
         return y >= world.getMinHeight() && y <= world.getMaxHeight();
+    }
+
+    public static ArrayList<Material> allMaterialsThatMatch(String matcherText) {
+        ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(matcherText);
+        ArrayList<Material> mats = new ArrayList<>();
+        for (Material material : Material.values()) {
+            if (matcher.doesMatch(material.name()) && !material.name().startsWith("LEGACY_")) {
+                mats.add(material);
+            }
+        }
+        return mats;
     }
 }

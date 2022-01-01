@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -214,16 +215,17 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns each LocationTag within the area that is safe for players or similar entities to spawn in.
         // Optionally, specify a material matcher to only return locations with that block type.
+        // Uses the same spawnable check as <@link tag LocationTag.is_spawnable>
         // -->
         processor.registerTag(ListTag.class, "spawnable_blocks", (attribute, area) -> {
                 NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
                 try {
                     if (attribute.hasParam()) {
                         String matcher = attribute.getParam();
-                        Predicate<Location> predicate = (l) -> isSpawnable(l) && BukkitScriptEvent.tryMaterial(l.getBlock().getRelative(0, -1, 0).getType(), matcher);
+                        Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && BukkitScriptEvent.tryMaterial(l.getBlock().getRelative(0, -1, 0).getType(), matcher);
                         return area.getBlocks(predicate);
                     }
-                    return area.getBlocks(AreaContainmentObject::isSpawnable);
+                    return area.getBlocks(SpawnableHelper::isSpawnable);
                 }
                 finally {
                     NMSHandler.getChunkHelper().restoreServerThread(area.getWorld().getWorld());
@@ -313,11 +315,5 @@ public interface AreaContainmentObject extends ObjectTag {
             }
             return (T) area.withWorld(world);
         });
-    }
-
-    static boolean isSpawnable(Location loc) {
-        return loc.getBlock().getType().isAir()
-                && (loc.clone().add(0, 1, 0).getBlock().getType().isAir()
-                && (loc.clone().add(0, -1, 0)).getBlock().getType().isSolid());
     }
 }

@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
@@ -2523,6 +2524,49 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.find_spawnable_blocks_within[<#.#>]>
+        // @returns ListTag(LocationTag)
+        // @group finding
+        // @description
+        // Returns a list of blocks within a radius, that are safe for spawning, with the same logic as <@link tag LocationTag.is_spawnable>.
+        // Note: current implementation measures the center of nearby block's distance from the exact given location.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "find_spawnable_blocks_within", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            double radius = attribute.getDoubleParam();
+            ListTag found = new ListTag();
+            int max = Settings.blockTagsMaxBlocks();
+            int index = 0;
+            Location tstart = object.getBlockLocation();
+            double tstartY = tstart.getY();
+            int radiusInt = (int) radius;
+            fullloop:
+            for (int y = -radiusInt; y <= radiusInt; y++) {
+                double newY = y + tstartY;
+                if (!Utilities.isLocationYSafe(newY, object.getWorld())) {
+                    continue;
+                }
+                for (int x = -radiusInt; x <= radiusInt; x++) {
+                    for (int z = -radiusInt; z <= radiusInt; z++) {
+                        index++;
+                        if (index > max) {
+                            break fullloop;
+                        }
+                        Location loc = tstart.clone().add(x + 0.5, y + 0.5, z + 0.5);
+                        if (Utilities.checkLocation(object, loc, radius) && SpawnableHelper.isSpawnable(loc)) {
+                            found.addObject(new LocationTag(loc.add(0, -0.5, 0)));
+                        }
+                    }
+                }
+            }
+            found.objectForms.sort((loc1, loc2) -> object.compare((LocationTag) loc1, (LocationTag) loc2));
+            return found;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.find_players_within[<#.#>]>
         // @returns ListTag(PlayerTag)
         // @group finding
@@ -3939,6 +3983,22 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 output.addObject(new ItemTag(fire.getItem(i)));
             }
             return output;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.is_spawnable>
+        // @returns ElementTag(Boolean)
+        // @group world
+        // @description
+        // Returns whether the location is safe to spawn at, for a player or player-like entity.
+        // Specifically this verifies that:
+        // - The block above this location is air.
+        // - The block at this location is non-solid.
+        // - The block below this location is solid.
+        // - All relevant blocks are not dangerous (like fire, lava, etc.), or unstable/small/awkward (like fences, doors, etc.) or otherwise likely to go wrong (like pressure plates).
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "is_spawnable", (attribute, object) -> {
+            return new ElementTag(SpawnableHelper.isSpawnable(object));
         });
     }
 
