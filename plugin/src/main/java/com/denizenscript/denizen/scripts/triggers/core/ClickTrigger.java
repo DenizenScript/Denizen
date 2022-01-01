@@ -25,9 +25,15 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
     // @name Click Triggers
     // @group NPC Interact Scripts
     // @description
-    // Click Triggers are triggered when when a player right clicks the NPC.
+    // Click Triggers are triggered when a player right clicks the NPC.
     //
     // These are very basic with no extraneous complexity.
+    //
+    // <code>
+    // click trigger:
+    //     script:
+    //     - narrate "hi <player.name>"
+    // </code>
     //
     // They can optionally have an item matcher with multiple triggers, for the item in the player's hand. For example:
     // <code>
