@@ -64,6 +64,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
+        ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
         ScriptEvent.registerScriptEvent(NoteBlockPlaysNoteScriptEvent.class);
         ScriptEvent.registerScriptEvent(PistonExtendsScriptEvent.class);
