@@ -76,6 +76,10 @@ public interface PacketHelper {
 
     void setNetworkManagerFor(Player player);
 
+    default void enableNetworkManager() {
+        // Pre-1.18 do nothing
+    }
+
     default void sendRename(Player player, Entity entity, String name, boolean listMode) {
         throw new UnsupportedOperationException();
     }

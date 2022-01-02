@@ -45,8 +45,10 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +56,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_18_R1.CraftParticle;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
@@ -99,6 +103,28 @@ public class DenizenNetworkManagerImpl extends Connection {
         ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl playerConnection = entityPlayer.connection;
         setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.connection));
+    }
+
+    public static void enableNetworkManager() {
+        for (World w : Bukkit.getWorlds()) {
+            for (ChunkMap.TrackedEntity tracker : ((CraftWorld) w).getHandle().getChunkSource().chunkMap.entityMap.values()) {
+                ArrayList<ServerPlayerConnection> connections = new ArrayList<>(tracker.seenBy);
+                tracker.seenBy.clear();
+                for (ServerPlayerConnection connection : connections) {
+                    tracker.seenBy.add(connection.getPlayer().connection);
+                }
+            }
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return oldManager.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object c2) {
+        return oldManager.equals(c2);
     }
 
     @Override
@@ -185,6 +211,45 @@ public class DenizenNetworkManagerImpl extends Connection {
         send(packet, null);
     }
 
+    public void debugOutputPacket(Packet<?> packet) {
+        if (packet instanceof ClientboundSetEntityDataPacket) {
+            StringBuilder output = new StringBuilder(128);
+            output.append("Packet: ClientboundSetEntityDataPacket sent to ").append(player.getScoreboardName()).append(" for entity ID: ").append(((ClientboundSetEntityDataPacket) packet).getId()).append(": ");
+            List<SynchedEntityData.DataItem<?>> list = ((ClientboundSetEntityDataPacket) packet).getUnpackedData();
+            if (list == null) {
+                output.append("None");
+            }
+            else {
+                for (SynchedEntityData.DataItem<?> data : list) {
+                    output.append('[').append(data.getAccessor().getId()).append(": ").append(data.getValue()).append("], ");
+                }
+            }
+            Debug.log(output.toString());
+        }
+        else if (packet instanceof ClientboundSetEntityMotionPacket) {
+            try {
+                throw new RuntimeException("Trace");
+            }
+            catch (Exception ex) {
+                Debug.echoError(ex);
+            }
+            ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
+            Debug.log("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
+        }
+        else if (packet instanceof ClientboundAddEntityPacket) {
+            ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;
+            Debug.log("Packet: ClientboundAddEntityPacket sent to " + player.getScoreboardName() + " for entity ID: " + addEntityPacket.getId() + ": " + "uuid: " + addEntityPacket.getUUID()
+                    + ", type: " + addEntityPacket.getType() + ", at: " + addEntityPacket.getX() + "," + addEntityPacket.getY() + "," + addEntityPacket.getZ() + ", data: " + addEntityPacket.getData());
+        }
+        else if (packet instanceof ClientboundMapItemDataPacket) {
+            ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
+            Debug.log("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
+        }
+        else {
+            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
+        }
+    }
+
     @Override
     public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (!Bukkit.isPrimaryThread()) {
@@ -204,36 +269,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             return;
         }
         if (NMSHandler.debugPackets) {
-            if (packet instanceof ClientboundSetEntityDataPacket) {
-                StringBuilder output = new StringBuilder(128);
-                output.append("Packet: ClientboundSetEntityDataPacket sent to ").append(player.getScoreboardName()).append(" for entity ID: ").append(((ClientboundSetEntityDataPacket) packet).getId()).append(": ");
-                List<SynchedEntityData.DataItem<?>> list = ((ClientboundSetEntityDataPacket) packet).getUnpackedData();
-                if (list == null) {
-                    output.append("None");
-                }
-                else {
-                    for (SynchedEntityData.DataItem<?> data : list) {
-                        output.append('[').append(data.getAccessor().getId()).append(": ").append(data.getValue()).append("], ");
-                    }
-                }
-                Debug.log(output.toString());
-            }
-            else if (packet instanceof ClientboundSetEntityMotionPacket) {
-                ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
-                Debug.log("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
-            }
-            else if (packet instanceof ClientboundAddEntityPacket) {
-                ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;
-                Debug.log("Packet: ClientboundAddEntityPacket sent to " + player.getScoreboardName() + " for entity ID: " + addEntityPacket.getId() + ": " + "uuid: " + addEntityPacket.getUUID()
-                        + ", type: " + addEntityPacket.getType() + ", at: " + addEntityPacket.getX() + "," + addEntityPacket.getY() + "," + addEntityPacket.getZ() + ", data: " + addEntityPacket.getData());
-            }
-            else if (packet instanceof ClientboundMapItemDataPacket) {
-                ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
-                Debug.log("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
-            }
-            else {
-                Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
-            }
+            debugOutputPacket(packet);
         }
         packetsSent++;
         if (processAttachToForPacket(packet)
@@ -256,7 +292,6 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (!PlayerHearsSoundScriptEvent.enabled) {
             return false;
         }
-        // (Player player, String name, String category, boolean isCustom, Entity entity, Location location, float volume, float pitch)
         if (packet instanceof ClientboundSoundPacket) {
             ClientboundSoundPacket spacket = (ClientboundSoundPacket) packet;
             return PlayerHearsSoundScriptEvent.instance.run(player.getBukkitEntity(), spacket.getSound().getLocation().getPath(), spacket.getSource().name(),

@@ -24,6 +24,7 @@ public class NetworkInterceptHelper implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             NMSHandler.getPacketHelper().setNetworkManagerFor(player);
         }
+        NMSHandler.getPacketHelper().enableNetworkManager();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
