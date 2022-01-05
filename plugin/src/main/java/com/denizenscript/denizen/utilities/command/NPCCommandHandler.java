@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -514,7 +515,7 @@ public class NPCCommandHandler {
     }
 
     @Command(
-            aliases = {"npc"}, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
+            aliases = {"npc"}, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c) (--reel_time <duration>) (--cast_time <duration>)",
             desc = "Makes the NPC fish, casting at the given location.", flags = "c", modifiers = {"fish"},
             min = 1, max = 3, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
@@ -526,6 +527,24 @@ public class NPCCommandHandler {
         }
         if (args.hasValueFlag("percent")) {
             trait.setCatchPercent(args.getFlagInteger("percent"));
+        }
+        if (args.hasValueFlag("reel_time")) {
+            DurationTag duration = DurationTag.valueOf(args.getFlag("reel_time"), CoreUtilities.basicContext);
+            if (duration == null) {
+                Messaging.sendError(sender, "Invalid reel duration.");
+                return;
+            }
+            trait.reelTickRate = duration.getTicksAsInt();
+            Messaging.send(sender, "Set reel rate to " + duration.formatted(true));
+        }
+        if (args.hasValueFlag("cast_time")) {
+            DurationTag duration = DurationTag.valueOf(args.getFlag("cast_time"), CoreUtilities.basicContext);
+            if (duration == null) {
+                Messaging.sendError(sender, "Invalid cast duration.");
+                return;
+            }
+            trait.reelTickRate = duration.getTicksAsInt();
+            Messaging.send(sender, "Set cast rate to " + duration.formatted(true));
         }
         if (args.hasFlag('c')) {
             trait.startFishing(args.getSenderTargetBlockLocation());

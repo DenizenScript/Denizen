@@ -87,7 +87,6 @@ public class InventoryScriptContainer extends ScriptContainer {
     //     - determine <[list]>
     //
     //   # You can specify the items in the slots of the inventory. For empty spaces, simply put an empty "slot" value, like "[]".
-    //   # Note the quotes around the entire lines.
     //   # | Most inventory scripts SHOULD have this key!
     //   slots:
     //     - [] [] [] [my item] [ItemTag] [] [other item] [] []

@@ -117,7 +117,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // "projectile" plaintext: matches for any projectile type (arrow, trident, fish hook, snowball, etc).
     // "hanging" plaintext: matches for any hanging type (painting, item_frame, etc).
     // "monster" plaintext: matches for any monster type (creepers, zombies, etc).
-    // "animals" plaintext: matches for any animal type (pigs, cows, etc).
+    // "animal" plaintext: matches for any animal type (pigs, cows, etc).
     // "mob" plaintext: matches for any mob type (creepers, pigs, etc).
     // "living" plaintext: matches for any living type (players, pigs, creepers, etc).
     // "entity_flagged:<flag>": a Flag Matchable for EntityTag flags.
