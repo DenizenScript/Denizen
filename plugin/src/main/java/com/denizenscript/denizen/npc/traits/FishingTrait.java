@@ -47,6 +47,11 @@ public class FishingTrait extends Trait {
     public boolean isCast = false;
 
     @Override
+    public void onSpawn() {
+        isCast = false;
+    }
+
+    @Override
     public void run() {
         if (fish != null) {
             if (fish.getLocation().distance(npc.getStoredLocation()) < 3) {
@@ -58,6 +63,7 @@ public class FishingTrait extends Trait {
             }
         }
         if (!fishing) {
+            isCast = false;
             return;
         }
         if (isCast) {
