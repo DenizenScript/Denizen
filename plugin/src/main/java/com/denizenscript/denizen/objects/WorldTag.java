@@ -579,6 +579,16 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             return new DurationTag(object.getWorld().getTicksPerMonsterSpawns());
         });
 
+        // <--[tag]
+        // @attribute <WorldTag.duration_since_created>
+        // @returns DurationTag
+        // @description
+        // Returns the total duration of time since this world was first created.
+        // -->
+        registerTag(DurationTag.class, "duration_since_created", (attribute, object) -> {
+            return new DurationTag(object.getWorld().getGameTime());
+        });
+
         /////////////////////
         //   TIME ATTRIBUTES
         /////////////////
