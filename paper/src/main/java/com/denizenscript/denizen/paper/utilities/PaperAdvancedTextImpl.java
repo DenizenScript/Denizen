@@ -31,6 +31,17 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     }
 
     @Override
+    public String parseComponent(Object input, ChatColor baseColor) {
+        if (input == null) {
+            return null;
+        }
+        if (input instanceof Component) {
+            return PaperModule.stringifyComponent((Component) input, baseColor);
+        }
+        return super.parseComponent(input, baseColor);
+    }
+
+    @Override
     public String getTitle(Inventory inventory) {
         // TODO: Paper lacks an inventory.getTitle? 0.o
         return NMSHandler.getInstance().getTitle(inventory);
