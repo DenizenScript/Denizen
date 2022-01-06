@@ -130,29 +130,9 @@ public class BlockHelperImpl implements BlockHelper {
         te.load(((CraftBlockData) block.getBlockData()).getState(), ((CompoundTagImpl) ctag).toNMSTag());
     }
 
-    private static net.minecraft.server.v1_16_R3.Block getBlockFrom(Material material) {
-        if (material == Material.FLOWER_POT) {
-            return Blocks.FLOWER_POT;
-        }
-        ItemStack is = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(material));
-        if (is == null) {
-            return null;
-        }
-        Item item = is.getItem();
-        if (!(item instanceof ItemBlock)) {
-            return null;
-        }
-        return ((ItemBlock) item).getBlock();
-    }
-
-    @Override
-    public boolean hasBlock(Material material) {
-        return getBlockFrom(material) != null;
-    }
-
     @Override
     public boolean setBlockResistance(Material material, float resistance) {
-        net.minecraft.server.v1_16_R3.Block block = getBlockFrom(material);
+        net.minecraft.server.v1_16_R3.Block block = getMaterialBlock(material);
         if (block == null) {
             return false;
         }
@@ -163,7 +143,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockResistance(Material material) {
-        net.minecraft.server.v1_16_R3.Block block = getBlockFrom(material);
+        net.minecraft.server.v1_16_R3.Block block = getMaterialBlock(material);
         if (block == null) {
             return 0;
         }
@@ -184,6 +164,9 @@ public class BlockHelperImpl implements BlockHelper {
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.BlockBase.BlockData.class, "strength");
 
     public net.minecraft.server.v1_16_R3.Block getMaterialBlock(Material bukkitMaterial) {
+        if (!bukkitMaterial.isBlock()) {
+            return null;
+        }
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
     }
 

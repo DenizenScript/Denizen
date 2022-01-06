@@ -25,8 +25,6 @@ public interface BlockHelper {
 
     void setNbtData(Block block, CompoundTag compoundTag);
 
-    boolean hasBlock(Material material);
-
     boolean setBlockResistance(Material material, float resistance);
 
     float getBlockResistance(Material material);

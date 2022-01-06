@@ -462,7 +462,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the explosion resistance for all blocks of this material type.
         // -->
         tagProcessor.registerTag(ElementTag.class, "block_resistance", (attribute, object) -> {
-            if (!NMSHandler.getBlockHelper().hasBlock(object.getMaterial())) {
+            if (!object.getMaterial().isBlock()) {
                 Debug.echoError("Provided material does not have a placeable block.");
                 return null;
             }

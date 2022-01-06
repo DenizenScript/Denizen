@@ -142,29 +142,9 @@ public class BlockHelperImpl implements BlockHelper {
         te.load(((CompoundTagImpl) ctag).toNMSTag());
     }
 
-    private static net.minecraft.world.level.block.Block getBlockFrom(Material material) {
-        if (material == Material.FLOWER_POT) {
-            return Blocks.FLOWER_POT;
-        }
-        ItemStack is = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(material));
-        if (is == null) {
-            return null;
-        }
-        Item item = is.getItem();
-        if (!(item instanceof BlockItem)) {
-            return null;
-        }
-        return ((BlockItem) item).getBlock();
-    }
-
-    @Override
-    public boolean hasBlock(Material material) {
-        return getBlockFrom(material) != null;
-    }
-
     @Override
     public boolean setBlockResistance(Material material, float resistance) {
-        net.minecraft.world.level.block.Block block = getBlockFrom(material);
+        net.minecraft.world.level.block.Block block = getMaterialBlock(material);
         if (block == null) {
             return false;
         }
@@ -174,7 +154,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockResistance(Material material) {
-        net.minecraft.world.level.block.Block block = getBlockFrom(material);
+        net.minecraft.world.level.block.Block block = getMaterialBlock(material);
         if (block == null) {
             return 0;
         }
@@ -203,6 +183,9 @@ public class BlockHelperImpl implements BlockHelper {
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, float.class); // destroySpeed
 
     public net.minecraft.world.level.block.Block getMaterialBlock(Material bukkitMaterial) {
+        if (!bukkitMaterial.isBlock()) {
+            return null;
+        }
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
     }
 
@@ -281,7 +264,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public Instrument getInstrumentFor(Material mat) {
-        net.minecraft.world.level.block.Block blockType = getBlockFrom(mat);
+        net.minecraft.world.level.block.Block blockType = getMaterialBlock(mat);
         NoteBlockInstrument nmsInstrument = NoteBlockInstrument.byState(blockType.defaultBlockState());
         return Instrument.values()[(nmsInstrument.ordinal())];
     }
@@ -311,7 +294,11 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public int getExpDrop(Block block, org.bukkit.inventory.ItemStack item) {
-        return getBlockFrom(block.getType()).getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
+        net.minecraft.world.level.block.Block blockType = getMaterialBlock(block.getType());
+        if (blockType == null) {
+            return 0;
+        }
+        return blockType.getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
                 item == null ? null : CraftItemStack.asNMSCopy(item));
     }
 }
