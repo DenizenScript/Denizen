@@ -123,7 +123,7 @@ public class TeleportCommand extends AbstractCommand {
                 NMSHandler.getEntityHelper().look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
             }
-            entity.spawnAt(location, causeEnum);
+            entity.teleport(location, causeEnum);
         }
     }
 }

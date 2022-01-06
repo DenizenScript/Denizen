@@ -775,26 +775,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return;
         }
         // If the entity is already spawned, teleport it.
-        if (isCitizensNPC()) {
-            if (getDenizenNPC().getCitizen().isSpawned()) {
-                getDenizenNPC().getCitizen().teleport(location, cause);
-            }
-            else {
-                if (getDenizenNPC().getCitizen().spawn(location)) {
-                    entity = getDenizenNPC().getCitizen().getEntity();
-                    uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
-                }
-                else {
-                    if (new LocationTag(location).isChunkLoaded()) {
-                        Debug.echoError("Error spawning NPC - tried to spawn in an unloaded chunk.");
-                    }
-                    else {
-                        Debug.echoError("Error spawning NPC - blocked by plugin");
-                    }
-                }
-            }
-        }
-        else if (isUnique() && entity != null) {
+        if (isCitizensNPC() || (isUnique() && entity != null)) {
             teleport(location, cause);
         }
         else {
@@ -980,8 +961,28 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void teleport(Location location, TeleportCause cause) {
+        if (location.getWorld() == null) {
+            Debug.echoError("Cannot teleport or spawn entity at location '" + new LocationTag(location) + "' because it is missing a world.");
+            return;
+        }
         if (isCitizensNPC()) {
-            getDenizenNPC().getCitizen().teleport(location, cause);
+            if (getDenizenNPC().getCitizen().isSpawned()) {
+                getDenizenNPC().getCitizen().teleport(location, cause);
+            }
+            else {
+                if (getDenizenNPC().getCitizen().spawn(location)) {
+                    entity = getDenizenNPC().getCitizen().getEntity();
+                    uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
+                }
+                else {
+                    if (new LocationTag(location).isChunkLoaded()) {
+                        Debug.echoError("Error spawning NPC - tried to spawn in an unloaded chunk.");
+                    }
+                    else {
+                        Debug.echoError("Error spawning NPC - blocked by plugin");
+                    }
+                }
+            }
         }
         else if (isFake) {
             NMSHandler.getEntityHelper().snapPositionTo(entity, location.toVector());
