@@ -90,6 +90,10 @@ public interface BlockHelper {
         throw new UnsupportedOperationException();
     }
 
+    default void setSpawnerCustomRules(CreatureSpawner spawner, int skyMin, int skyMax, int blockMin, int blockMax) {
+        throw new UnsupportedOperationException();
+    }
+
     default void setSpawnerSpawnedType(CreatureSpawner spawner, EntityTag entity) {
         spawner.setSpawnedType(entity.getBukkitEntityType());
     }

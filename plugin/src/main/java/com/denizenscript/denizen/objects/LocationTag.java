@@ -27,6 +27,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
@@ -4062,6 +4063,25 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("biome") && mechanism.requireObject(BiomeTag.class)) {
             mechanism.valueAsType(BiomeTag.class).getBiome().setTo(getBlock());
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_custom_rules
+        // @input MapTag
+        // @description
+        // Sets the custom spawner rules for this spawner. Input is a map, like: [sky_min=0;sky_max=15;block_min=0;block_max=15]
+        // -->
+        if (mechanism.matches("spawner_custom_rules") && mechanism.requireObject(MapTag.class) && getBlockState() instanceof CreatureSpawner) {
+            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
+            MapTag map = mechanism.valueAsType(MapTag.class);
+            ObjectTag skyMin = map.getObject("sky_min"), skyMax = map.getObject("sky_max"), blockMin = map.getObject("block_min"), blockMax = map.getObject("block_max");
+            if (skyMin == null || skyMax == null || blockMin == null || blockMax == null) {
+                mechanism.echoError("Invalid spawner_custom_rules input, missing map keys.");
+                return;
+            }
+            NMSHandler.getBlockHelper().setSpawnerCustomRules(spawner, Integer.parseInt(skyMin.toString()), Integer.parseInt(skyMax.toString()), Integer.parseInt(blockMin.toString()), Integer.parseInt(blockMax.toString()));
+            spawner.update();
         }
 
         // <--[mechanism]

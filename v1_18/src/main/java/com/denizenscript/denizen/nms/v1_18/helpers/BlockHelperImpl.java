@@ -16,6 +16,8 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.InclusiveRange;
+import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
@@ -43,10 +45,7 @@ import org.bukkit.event.world.PortalCreateEvent;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class BlockHelperImpl implements BlockHelper {
 
@@ -327,7 +326,22 @@ public class BlockHelperImpl implements BlockHelper {
             SpawnData toSpawn = nmsSpawner.nextSpawnData;
             net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
             nmsEntity.saveWithoutId(tag);
-            net.minecraft.nbt.CompoundTag spawnerSave = new net.minecraft.nbt.CompoundTag();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void setSpawnerCustomRules(CreatureSpawner spawner, int skyMin, int skyMax, int blockMin, int blockMax) {
+        try {
+            CraftCreatureSpawner bukkitSpawner = (CraftCreatureSpawner) spawner;
+            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
+            BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
+            SpawnData toSpawn = nmsSpawner.nextSpawnData;
+            SpawnData.CustomSpawnRules rules = skyMin == -1 ? null : new SpawnData.CustomSpawnRules(new InclusiveRange<>(skyMin, skyMax), new InclusiveRange<>(blockMin, blockMax));
+            nmsSpawner.nextSpawnData = new SpawnData(toSpawn.entityToSpawn(), Optional.ofNullable(rules));
+            nmsSpawner.spawnPotentials = SimpleWeightedRandomList.empty();
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
