@@ -4075,7 +4075,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class) && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
-            spawner.setSpawnedType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
+            NMSHandler.getBlockHelper().setSpawnerSpawnedType(spawner, mechanism.valueAsType(EntityTag.class));
             spawner.update();
         }
 

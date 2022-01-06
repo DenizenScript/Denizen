@@ -3,6 +3,8 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -14,13 +16,14 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -299,5 +302,35 @@ public class BlockHelperImpl implements BlockHelper {
         }
         return blockType.getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
                 item == null ? null : CraftItemStack.asNMSCopy(item));
+    }
+
+    @Override
+    public void setSpawnerSpawnedType(CreatureSpawner spawner, EntityTag entity) {
+        spawner.setSpawnedType(entity.getBukkitEntityType());
+        if (entity.getWaitingMechanisms() == null || entity.getWaitingMechanisms().size() == 0) {
+            return;
+        }
+        try {
+            // Wrangle a fake entity
+            Entity nmsEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
+            EntityTag entityTag = new EntityTag(nmsEntity.getBukkitEntity());
+            entityTag.isFake = true;
+            entityTag.isFakeValid = true;
+            for (Mechanism mechanism : entity.getWaitingMechanisms()) {
+                entityTag.safeAdjustDuplicate(mechanism);
+            }
+            nmsEntity.unsetRemoved();
+            // Store it into the spawner
+            CraftCreatureSpawner bukkitSpawner = (CraftCreatureSpawner) spawner;
+            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
+            BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
+            SpawnData toSpawn = nmsSpawner.nextSpawnData;
+            net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
+            nmsEntity.saveWithoutId(tag);
+            net.minecraft.nbt.CompoundTag spawnerSave = new net.minecraft.nbt.CompoundTag();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 }

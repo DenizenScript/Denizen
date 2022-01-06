@@ -227,12 +227,6 @@ public class DenizenNetworkManagerImpl extends Connection {
             Debug.log(output.toString());
         }
         else if (packet instanceof ClientboundSetEntityMotionPacket) {
-            try {
-                throw new RuntimeException("Trace");
-            }
-            catch (Exception ex) {
-                Debug.echoError(ex);
-            }
             ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
             Debug.log("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
         }
