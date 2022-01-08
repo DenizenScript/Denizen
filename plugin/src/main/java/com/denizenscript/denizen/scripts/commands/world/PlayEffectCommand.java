@@ -127,6 +127,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.matches("barrier") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
                     scriptEntry.addObject("particleeffect", particleHelper.getParticle("block_marker"));
                     scriptEntry.addObject("special_data", new ElementTag("barrier"));
+                    continue;
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used

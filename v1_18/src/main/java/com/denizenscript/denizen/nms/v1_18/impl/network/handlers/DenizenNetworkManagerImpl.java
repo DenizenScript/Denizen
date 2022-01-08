@@ -1061,6 +1061,9 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     @Override
     public void disconnect(Component ichatbasecomponent) {
+        if (!player.getBukkitEntity().isOnline()) { // Workaround Paper duplicate quit event issue
+            return;
+        }
         oldManager.disconnect(ichatbasecomponent);
     }
 
