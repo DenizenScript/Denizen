@@ -707,7 +707,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         if (id.equals("air")) {
             return "nothing";
         }
-        if (id.equals("ice") || id.equals("dirt") || id.endsWith("copper")) {
+        if (id.equals("ice") || id.equals("dirt") || id.endsWith("copper") || id.endsWith("cream")) {
             return id;
         }
         if (getItemStack().getAmount() > 1) {
