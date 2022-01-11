@@ -683,7 +683,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (entity instanceof Player) {
             return entity.getName();
         }
-        String customName = entity.getCustomName();
+        String customName = entity == null ? null : entity.getCustomName();
         if (customName != null) {
             return customName;
         }

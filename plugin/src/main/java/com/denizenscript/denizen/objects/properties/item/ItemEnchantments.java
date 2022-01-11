@@ -242,6 +242,7 @@ public class ItemEnchantments implements Property {
         // @description
         // Sets the item's enchantments as a map of EnchantmentTags or enchantment names to level.
         // For example: - inventory adjust slot:hand enchantments:sharpness=1
+        // Does not remove existing enchantments, for that use <@link mechanism ItemTag.remove_enchantments>
         // @tags
         // <ItemTag.enchantment_map>
         // -->

@@ -65,7 +65,12 @@ public class BukkitListProperties implements Property {
                 if (val.startsWith("e@") || val.startsWith("n@")) {
                     EntityTag gotten = object.asType(EntityTag.class, attribute.context);
                     if (gotten != null) {
-                        output.append(gotten.getName());
+                        if (gotten.isValid()) {
+                            output.append(gotten.getName());
+                        }
+                        else {
+                            output.append(gotten.getEntityType().getName());
+                        }
                         handled = true;
                     }
                 }
