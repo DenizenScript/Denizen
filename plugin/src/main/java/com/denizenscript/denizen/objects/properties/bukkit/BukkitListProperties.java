@@ -43,7 +43,9 @@ public class BukkitListProperties implements Property {
         // @returns ElementTag
         // @description
         // Returns the list in a human-readable format.
+        // Note that this will parse the values within the list to be human-readable as well when possible.
         // EG, a list of "<npc>|<player>|potato" will return "GuardNPC, bob, and potato".
+        // The exact formatting rules that will be followed are not guaranteed, other than that it will be a semi-clean human-readable format.
         // -->
         PropertyParser.<BukkitListProperties, ElementTag>registerTag(ElementTag.class, "formatted", (attribute, listObj) -> {
             ListTag list = listObj.list;

@@ -9,6 +9,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -34,14 +35,15 @@ public class DisguiseCommand extends AbstractCommand {
 
     public DisguiseCommand() {
         setName("disguise");
-        setSyntax("disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...)");
+        setSyntax("disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...) (self)");
         setRequiredArguments(2, 4);
+        setBooleansHandled("cancel", "global", "self");
         isProcedural = false;
     }
 
     // <--[command]
     // @Name disguise
-    // @Syntax disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...)
+    // @Syntax disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...) (self)
     // @Required 2
     // @Maximum 4
     // @Short Makes the player see an entity as though it were a different type of entity.
@@ -61,7 +63,7 @@ public class DisguiseCommand extends AbstractCommand {
     //
     // Optionally, specify a list of players to show or cancel the entity to.
     // If unspecified, will default to the linked player.
-    // Or, specify 'global' to make the disguise or cancel apply for all players. If using global, use "players:<player>" to show to the self-player.
+    // Or, specify 'global' to make the disguise or cancel apply for all players. If using global, use "self" to show to the self-player.
     //
     // To remove a disguise, use the 'cancel' argument.
     //
@@ -97,10 +99,6 @@ public class DisguiseCommand extends AbstractCommand {
                     && arg.matchesPrefix("to", "players")) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
-            else if (!scriptEntry.hasObject("global")
-                    && arg.matches("global")) {
-                scriptEntry.addObject("global", new ElementTag(true));
-            }
             else if (arg.matchesPrefix("as")
                     && arg.matchesArgumentType(EntityTag.class)) {
                 scriptEntry.addObject("as", arg.asType(EntityTag.class));
@@ -108,10 +106,6 @@ public class DisguiseCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entity")
                     && arg.matchesArgumentType(EntityTag.class)) {
                 scriptEntry.addObject("entity", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("cancel")
-                    && arg.matches("cancel")) {
-                scriptEntry.addObject("cancel", new ElementTag(true));
             }
             else {
                 arg.reportUnhandled();
@@ -124,12 +118,6 @@ public class DisguiseCommand extends AbstractCommand {
             else {
                 scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
-        }
-        if (!scriptEntry.hasObject("as") && !scriptEntry.hasObject("cancel")) {
-            throw new InvalidArgumentsException("Must specify a valid type to disguise as!");
-        }
-        if (!scriptEntry.hasObject("players") && !scriptEntry.hasObject("global")) {
-            throw new InvalidArgumentsException("Must have a valid player attached, or 'global' set!");
         }
         if (!scriptEntry.hasObject("entity")) {
             throw new InvalidArgumentsException("Must specify a valid entity!");
@@ -310,16 +298,22 @@ public class DisguiseCommand extends AbstractCommand {
         NetworkInterceptHelper.enable();
         EntityTag entity = scriptEntry.getObjectTag("entity");
         EntityTag as = scriptEntry.getObjectTag("as");
-        ElementTag cancel = scriptEntry.getElement("cancel");
-        ElementTag global = scriptEntry.getElement("global");
+        boolean cancel = scriptEntry.argAsBoolean("cancel");
+        boolean global = scriptEntry.argAsBoolean("global");
+        boolean self = scriptEntry.argAsBoolean("self");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), entity, cancel, as, global, db("players", players));
+        if (!scriptEntry.hasObject("as") && !cancel) {
+            throw new InvalidArgumentsRuntimeException("Must specify a valid type to disguise as!");
         }
-        boolean isGlobal = global != null && global.asBoolean();
+        if (!scriptEntry.hasObject("players") && !global) {
+            throw new InvalidArgumentsRuntimeException("Must have a valid player attached, or 'global' set!");
+        }
+        if (scriptEntry.dbCallShouldDebug()) {
+            Debug.report(scriptEntry, getName(), entity, db("cancel", cancel), as, db("global", global), db("self", self), db("players", players));
+        }
         HashMap<UUID, TrackedDisguise> playerMap = disguises.get(entity.getUUID());
         if (playerMap != null) {
-            if (isGlobal) {
+            if (global) {
                 for (Map.Entry<UUID, TrackedDisguise> entry : playerMap.entrySet()) {
                     if (entry.getKey() == null) {
                         if (entry.getValue().toOthers != null) {
@@ -355,16 +349,16 @@ public class DisguiseCommand extends AbstractCommand {
                 }
             }
         }
-        if (cancel == null || !cancel.asBoolean()) {
+        if (!cancel) {
             TrackedDisguise disguise = new TrackedDisguise(entity, as);
             disguise.as.entity = NMSHandler.getPlayerHelper().sendEntitySpawn(new ArrayList<>(), as.getEntityType(), entity.getLocation(), as.getWaitingMechanisms(), -1, null, false).entity.getBukkitEntity();
-            if (isGlobal) {
+            if (global) {
                 playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
                 playerMap.put(null, disguise);
                 disguise.isActive = true;
                 ArrayList<PlayerTag> playerSet = players == null ? new ArrayList<>() : new ArrayList<>(players);
                 for (Player player : entity.getWorld().getPlayers()) {
-                    if (!EntityTag.isNPC(player) && !playerSet.contains(new PlayerTag(player)) && !player.getUniqueId().equals(entity.getUUID())) {
+                    if (!EntityTag.isNPC(player) && !playerSet.contains(new PlayerTag(player)) && (self || !player.getUniqueId().equals(entity.getUUID()))) {
                         playerSet.add(new PlayerTag(player));
                     }
                 }
