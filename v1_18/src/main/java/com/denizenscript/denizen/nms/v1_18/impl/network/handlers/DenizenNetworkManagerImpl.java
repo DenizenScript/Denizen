@@ -19,6 +19,7 @@ import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
@@ -63,6 +64,7 @@ import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -71,6 +73,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DenizenNetworkManagerImpl extends Connection {
 
@@ -213,6 +216,9 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public static void doPacketOutput(String text) {
+        if (!NMSHandler.debugPackets) {
+            return;
+        }
         if (NMSHandler.debugPacketFilter == null || NMSHandler.debugPacketFilter.trim().isEmpty()
                 || CoreUtilities.toLowerCase(text).contains(NMSHandler.debugPacketFilter)) {
             Debug.log(text);
@@ -246,6 +252,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         else if (packet instanceof ClientboundMapItemDataPacket) {
             ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
             doPacketOutput("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
+        }
+        else if (packet instanceof ClientboundRemoveEntitiesPacket) {
+            ClientboundRemoveEntitiesPacket removePacket = (ClientboundRemoveEntitiesPacket) packet;
+            doPacketOutput("Packet: ClientboundRemoveEntitiesPacket sent to " + player.getScoreboardName() + " for entities: " + removePacket.getEntityIds().stream().map(Object::toString).collect(Collectors.joining(", ")));
         }
         else {
             doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
@@ -504,54 +514,13 @@ public class DenizenNetworkManagerImpl extends Connection {
             return false;
         }
         try {
-            if (packet instanceof ClientboundSetEntityDataPacket) {
-                ClientboundSetEntityDataPacket metadataPacket = (ClientboundSetEntityDataPacket) packet;
-                int eid = metadataPacket.getId();
-                Entity ent = player.level.getEntity(eid);
-                if (ent == null) {
-                    return false;
-                }
-                HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(ent.getUUID());
-                if (playerMap == null) {
-                    return false;
-                }
-                DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUUID());
-                if (disguise == null) {
-                    disguise = playerMap.get(null);
-                    if (disguise == null) {
-                        return false;
-                    }
-                }
-                if (ent.getId() == player.getId()) {
-                    if (!disguise.shouldFake) {
-                        return false;
-                    }
-                    List<SynchedEntityData.DataItem<?>> data = metadataPacket.getUnpackedData();
-                    for (SynchedEntityData.DataItem item : data) {
-                        EntityDataAccessor<?> watcherObject = item.getAccessor();
-                        int watcherId = watcherObject.getId();
-                        if (watcherId == 0) { // Entity flags
-                            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(copyPacket(metadataPacket));
-                            data = new ArrayList<>(data);
-                            ENTITY_METADATA_LIST.set(altPacket, data);
-                            data.remove(item);
-                            byte flags = (byte) item.getValue();
-                            flags |= 0x20; // Invisible flag
-                            data.add(new SynchedEntityData.DataItem(watcherObject, flags));
-                            ClientboundSetEntityDataPacket updatedPacket = getModifiedMetadataFor(altPacket);
-                            oldManager.send(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
-                            return true;
-                        }
-                    }
-                }
-                else {
-                    ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(ent.getId(), ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getEntityData(), true);
-                    oldManager.send(altPacket, genericfuturelistener);
-                    return true;
-                }
-                return false;
-            }
             int ider = -1;
+            if (packet instanceof ClientboundSetEntityDataPacket) {
+                ider = ((ClientboundSetEntityDataPacket) packet).getId();
+            }
+            if (packet instanceof ClientboundUpdateAttributesPacket) {
+                ider = ((ClientboundUpdateAttributesPacket) packet).getEntityId();
+            }
             if (packet instanceof ClientboundAddPlayerPacket) {
                 ider = ((ClientboundAddPlayerPacket) packet).getEntityId();
             }
@@ -576,6 +545,53 @@ public class DenizenNetworkManagerImpl extends Connection {
                     if (disguise == null) {
                         return false;
                     }
+                }
+                if (!disguise.isActive) {
+                    return false;
+                }
+                if (NMSHandler.debugPackets) {
+                    doPacketOutput("DISGUISED packet " + packet.getClass().getName() + " for entity " + ider + " to player " + player.getScoreboardName());
+                }
+                if (packet instanceof ClientboundSetEntityDataPacket) {
+                    ClientboundSetEntityDataPacket metadataPacket = (ClientboundSetEntityDataPacket) packet;
+                    if (e.getId() == player.getId()) {
+                        if (!disguise.shouldFake) {
+                            return false;
+                        }
+                        List<SynchedEntityData.DataItem<?>> data = metadataPacket.getUnpackedData();
+                        for (SynchedEntityData.DataItem item : data) {
+                            EntityDataAccessor<?> watcherObject = item.getAccessor();
+                            int watcherId = watcherObject.getId();
+                            if (watcherId == 0) { // Entity flags
+                                ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(copyPacket(metadataPacket));
+                                data = new ArrayList<>(data);
+                                ENTITY_METADATA_LIST.set(altPacket, data);
+                                data.remove(item);
+                                byte flags = (byte) item.getValue();
+                                flags |= 0x20; // Invisible flag
+                                data.add(new SynchedEntityData.DataItem(watcherObject, flags));
+                                ClientboundSetEntityDataPacket updatedPacket = getModifiedMetadataFor(altPacket);
+                                oldManager.send(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
+                                return true;
+                            }
+                        }
+                    }
+                    else {
+                        ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(e.getId(), ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getEntityData(), true);
+                        oldManager.send(altPacket, genericfuturelistener);
+                        return true;
+                    }
+                    return false;
+                }
+                if (packet instanceof ClientboundUpdateAttributesPacket) {
+                    FakeEntity fake = ider == player.getId() ? disguise.fakeToSelf : disguise.toOthers;
+                    if (fake == null) {
+                        return false;
+                    }
+                    if (fake.entity.entity instanceof LivingEntity) {
+                        return false;
+                    }
+                    return true; // Non-living don't have attributes
                 }
                 antiDuplicate = true;
                 disguise.sendTo(Collections.singletonList(new PlayerTag(player.getBukkitEntity())));
