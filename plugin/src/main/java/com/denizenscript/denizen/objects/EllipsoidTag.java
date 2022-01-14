@@ -262,7 +262,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     public String debuggable() {
         if (isUnique()) {
-            return "ellipsoid@" + noteName + "<GR> (" + identifyFull() + ")";
+            return "<LG>ellipsoid@<Y>" + noteName + "<GR> (" + identifyFull() + ")";
         }
         else {
             return identifyFull();

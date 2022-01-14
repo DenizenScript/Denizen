@@ -115,7 +115,7 @@ public class TradeTag implements ObjectTag, Adjustable {
 
     @Override
     public String debuggable() {
-        return "<G>trade@trade" + PropertyParser.getPropertiesDebuggable(this);
+        return "<LG>trade@trade<Y>" + PropertyParser.getPropertiesDebuggable(this);
     }
 
     @Override

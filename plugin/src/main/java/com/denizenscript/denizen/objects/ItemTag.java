@@ -441,9 +441,9 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     @Override
     public String debuggable() {
         if (item == null || item.getType() == Material.AIR) {
-            return "i@air";
+            return "<LG>i@<Y>air";
         }
-        return "<G>i@<Y>" + getMaterial().identifyNoPropertiesNoIdentifier() + PropertyParser.getPropertiesDebuggable(this);
+        return "<LG>i@<Y>" + getMaterial().identifyNoPropertiesNoIdentifier() + PropertyParser.getPropertiesDebuggable(this);
     }
 
     @Override
