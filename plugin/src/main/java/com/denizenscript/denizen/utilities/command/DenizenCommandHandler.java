@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.command.CommandSender;
 
@@ -112,6 +113,7 @@ public class DenizenCommandHandler {
     // '-n' enables/disables debug trimming. When enabled, messages longer than 1024 characters will be 'snipped'.
     // '-i' enables/disables source information. When enabled, debug will show where it came from (when possible).
     // '-p' enables/disables packet debug logging. When enabled, all packets sent to players (from anywhere) will be logged to console.
+    // or, '--pfilter (filter)' to enable packet debug logging with a string contain filter.
     // '-f' enables/disables showing of future warnings. When enabled, future warnings (such as upcoming deprecations) will be displayed in console logs.
     // '-v' enables/disables advanced verbose log output. This will *flood* your console super hard.
     // '-o' enables/disables 'override' mode. This will display all script debug, even when 'debug: false' is set for scripts.
@@ -206,8 +208,19 @@ public class DenizenCommandHandler {
             }
             NetworkInterceptHelper.enable();
             NMSHandler.debugPackets = !NMSHandler.debugPackets;
-            Messaging.sendInfo(sender, (NMSHandler.debugPackets ? "Denizen debugger is now showing packet logs."
+            NMSHandler.debugPacketFilter = "";
+            Messaging.sendInfo(sender, (NMSHandler.debugPackets ? "Denizen debugger is now showing unfiltered packet logs."
                     : "Denizen debugger is no longer showing packet logs."));
+        }
+        if (args.hasValueFlag("pfilter")) {
+            if (!Debug.showDebug) {
+                Debug.toggle();
+            }
+            NetworkInterceptHelper.enable();
+            NMSHandler.debugPackets = true;
+            NMSHandler.debugPacketFilter = CoreUtilities.toLowerCase(args.getFlag("pfilter"));
+            Messaging.sendInfo(sender, "Denizen debug packet log now enabled and filtered.");
+            return;
         }
         if (args.hasFlag('l')) {
             if (!Debug.showDebug) {

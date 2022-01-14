@@ -29,6 +29,7 @@ public abstract class NMSHandler {
     private static JavaPlugin javaPlugin;
 
     public static boolean debugPackets = false;
+    public static String debugPacketFilter = "";
 
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;

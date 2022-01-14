@@ -121,7 +121,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handlePacketIn(Packet<ServerGamePacketListener> packet) {
         denizenNetworkManager.packetsReceived++;
         if (NMSHandler.debugPackets) {
-            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getScoreboardName());
+            DenizenNetworkManagerImpl.doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getScoreboardName());
         }
     }
 

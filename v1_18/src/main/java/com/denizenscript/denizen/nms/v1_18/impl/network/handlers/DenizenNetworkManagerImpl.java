@@ -22,6 +22,7 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -211,6 +212,13 @@ public class DenizenNetworkManagerImpl extends Connection {
         send(packet, null);
     }
 
+    public static void doPacketOutput(String text) {
+        if (NMSHandler.debugPacketFilter == null || NMSHandler.debugPacketFilter.trim().isEmpty()
+                || CoreUtilities.toLowerCase(text).contains(NMSHandler.debugPacketFilter)) {
+            Debug.log(text);
+        }
+    }
+
     public void debugOutputPacket(Packet<?> packet) {
         if (packet instanceof ClientboundSetEntityDataPacket) {
             StringBuilder output = new StringBuilder(128);
@@ -224,23 +232,23 @@ public class DenizenNetworkManagerImpl extends Connection {
                     output.append('[').append(data.getAccessor().getId()).append(": ").append(data.getValue()).append("], ");
                 }
             }
-            Debug.log(output.toString());
+            doPacketOutput(output.toString());
         }
         else if (packet instanceof ClientboundSetEntityMotionPacket) {
             ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
-            Debug.log("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
+            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
         }
         else if (packet instanceof ClientboundAddEntityPacket) {
             ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;
-            Debug.log("Packet: ClientboundAddEntityPacket sent to " + player.getScoreboardName() + " for entity ID: " + addEntityPacket.getId() + ": " + "uuid: " + addEntityPacket.getUUID()
+            doPacketOutput("Packet: ClientboundAddEntityPacket sent to " + player.getScoreboardName() + " for entity ID: " + addEntityPacket.getId() + ": " + "uuid: " + addEntityPacket.getUUID()
                     + ", type: " + addEntityPacket.getType() + ", at: " + addEntityPacket.getX() + "," + addEntityPacket.getY() + "," + addEntityPacket.getZ() + ", data: " + addEntityPacket.getData());
         }
         else if (packet instanceof ClientboundMapItemDataPacket) {
             ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
-            Debug.log("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
+            doPacketOutput("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
         }
         else {
-            Debug.log("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
+            doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }
     }
 
@@ -720,7 +728,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                             YAW_PACKTELENT.setByte(newTeleportPacket, newYaw);
                             PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
                             if (NMSHandler.debugPackets) {
-                                Debug.log("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
+                                doPacketOutput("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
                             oldManager.send(newTeleportPacket);
                         }
@@ -733,14 +741,14 @@ public class DenizenNetworkManagerImpl extends Connection {
                                 PITCH_PACKENT.setByte(pNew, pitch);
                             }
                             if (NMSHandler.debugPackets) {
-                                Debug.log("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with original yaw " + yaw + " adapted to " + newYaw);
+                                doPacketOutput("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
                             oldManager.send(pNew);
                         }
                     }
                     else {
                         if (NMSHandler.debugPackets) {
-                            Debug.log("Attach Replica-Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                            doPacketOutput("Attach Replica-Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName());
                         }
                         oldManager.send(pNew);
                     }
@@ -763,7 +771,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     ClientboundSetEntityMotionPacket pNew = new ClientboundSetEntityMotionPacket(copyPacket(packet));
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
-                        Debug.log("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName());
+                        doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName());
                     }
                     oldManager.send(pNew);
                 }
@@ -809,7 +817,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                         YAW_PACKTELENT.setByte(pNew, newYaw);
                         PITCH_PACKTELENT.setByte(pNew, pitch);
                         if (NMSHandler.debugPackets) {
-                            Debug.log("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getName() + " with raw yaw " + yaw + " adapted to " + newYaw);
+                            doPacketOutput("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID()
+                                    + " sent to " + player.getScoreboardName() + " with raw yaw " + yaw + " adapted to " + newYaw);
                         }
                     }
                     att.visiblePositions.put(player.getUUID(), resultPos.clone());
