@@ -343,6 +343,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     }
 
     public void addPair(LocationTag point_1, LocationTag point_2) {
+        if (point_1.getWorldName() == null) {
+            Debug.echoError("Tried to make cuboid without a world!");
+            return;
+        }
         if (!point_1.getWorldName().equals(point_2.getWorldName())) {
             Debug.echoError("Tried to make cross-world cuboid!");
             return;
@@ -665,7 +669,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     @Override
     public String debuggable() {
         if (isUnique()) {
-            return "cu@" + noteName + " <GR>(" + identifyFull() + ")";
+            return "<LG>cu@<Y>" + noteName + " <GR>(" + identifyFull() + ")";
         }
         else {
             return identifyFull();

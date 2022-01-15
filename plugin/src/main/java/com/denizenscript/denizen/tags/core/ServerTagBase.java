@@ -2358,6 +2358,17 @@ public class ServerTagBase {
             String trace = com.denizenscript.denizen.utilities.debugging.Debug.getFullExceptionMessage(new RuntimeException("TRACE"), false);
             event.setReplacedObject(new ElementTag(trace).getObjectAttribute(attribute.fulfill(1)));
         }
+
+        // <--[tag]
+        // @attribute <server.has_whitelist>
+        // @returns ElementTag(Boolean)
+        // @mechanism server.has_whitelist
+        // @description
+        // Returns true if the whitelist is enabled on the server.
+        // -->
+        else if (attribute.startsWith("has_whitelist")) {
+            event.setReplacedObject(new ElementTag(Bukkit.hasWhitelist()).getObjectAttribute(attribute.fulfill(1)));
+        }
     }
 
     public static void listDeprecateWarn(Attribute attribute) {
@@ -2588,6 +2599,19 @@ public class ServerTagBase {
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server shutdown by a Denizen script, see config to prevent this!");
             Bukkit.shutdown();
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name has_whitelist
+        // @input ElementTag(Boolean)
+        // @description
+        // Toggles whether the server's whitelist is enabled.
+        // @tags
+        // <server.has_whitelist>
+        // -->
+        if (mechanism.matches("has_whitelist") && mechanism.requireBoolean()) {
+            Bukkit.setWhitelist(mechanism.getValue().asBoolean());
         }
     }
 }

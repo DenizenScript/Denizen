@@ -236,13 +236,19 @@ public class AdvancementCommand extends AbstractCommand {
                     toast.asBoolean(), announce.asBoolean(), hidden.asBoolean(), x.asFloat(), y.asFloat(), progressLength == null ? 1 : progressLength.asInt());
             advancementHelper.register(advancement);
             customRegistered.put(key, advancement);
+            return;
         }
-        else if (delete != null) {
-            advancementHelper.unregister(customRegistered.get(key));
+        Advancement advancement = customRegistered.get(key);
+        if (advancement == null) {
+            Debug.echoError("Invalid advancement key '" + key + "': not registered. Are you sure you registered it using the 'advancement' command previously?"
+                     + " Note that the 'advancement' command is not for vanilla advancements.");
+            return;
+        }
+        if (delete != null) {
+            advancementHelper.unregister(advancement);
             customRegistered.remove(key);
         }
         else if (grant != null) {
-            Advancement advancement = customRegistered.get(key);
             for (PlayerTag target : grant.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
@@ -256,7 +262,6 @@ public class AdvancementCommand extends AbstractCommand {
             }
         }
         else /*if (revoke != null)*/ {
-            Advancement advancement = customRegistered.get(key);
             for (PlayerTag target : revoke.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {

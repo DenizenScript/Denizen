@@ -3,6 +3,8 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -14,13 +16,16 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.InclusiveRange;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -40,10 +45,7 @@ import org.bukkit.event.world.PortalCreateEvent;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class BlockHelperImpl implements BlockHelper {
 
@@ -141,29 +143,9 @@ public class BlockHelperImpl implements BlockHelper {
         te.load(((CompoundTagImpl) ctag).toNMSTag());
     }
 
-    private static net.minecraft.world.level.block.Block getBlockFrom(Material material) {
-        if (material == Material.FLOWER_POT) {
-            return Blocks.FLOWER_POT;
-        }
-        ItemStack is = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(material));
-        if (is == null) {
-            return null;
-        }
-        Item item = is.getItem();
-        if (!(item instanceof BlockItem)) {
-            return null;
-        }
-        return ((BlockItem) item).getBlock();
-    }
-
-    @Override
-    public boolean hasBlock(Material material) {
-        return getBlockFrom(material) != null;
-    }
-
     @Override
     public boolean setBlockResistance(Material material, float resistance) {
-        net.minecraft.world.level.block.Block block = getBlockFrom(material);
+        net.minecraft.world.level.block.Block block = getMaterialBlock(material);
         if (block == null) {
             return false;
         }
@@ -173,7 +155,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockResistance(Material material) {
-        net.minecraft.world.level.block.Block block = getBlockFrom(material);
+        net.minecraft.world.level.block.Block block = getMaterialBlock(material);
         if (block == null) {
             return 0;
         }
@@ -202,6 +184,9 @@ public class BlockHelperImpl implements BlockHelper {
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, float.class); // destroySpeed
 
     public net.minecraft.world.level.block.Block getMaterialBlock(Material bukkitMaterial) {
+        if (!bukkitMaterial.isBlock()) {
+            return null;
+        }
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
     }
 
@@ -280,7 +265,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public Instrument getInstrumentFor(Material mat) {
-        net.minecraft.world.level.block.Block blockType = getBlockFrom(mat);
+        net.minecraft.world.level.block.Block blockType = getMaterialBlock(mat);
         NoteBlockInstrument nmsInstrument = NoteBlockInstrument.byState(blockType.defaultBlockState());
         return Instrument.values()[(nmsInstrument.ordinal())];
     }
@@ -310,7 +295,56 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public int getExpDrop(Block block, org.bukkit.inventory.ItemStack item) {
-        return getBlockFrom(block.getType()).getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
+        net.minecraft.world.level.block.Block blockType = getMaterialBlock(block.getType());
+        if (blockType == null) {
+            return 0;
+        }
+        return blockType.getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
                 item == null ? null : CraftItemStack.asNMSCopy(item));
+    }
+
+    @Override
+    public void setSpawnerSpawnedType(CreatureSpawner spawner, EntityTag entity) {
+        spawner.setSpawnedType(entity.getBukkitEntityType());
+        if (entity.getWaitingMechanisms() == null || entity.getWaitingMechanisms().size() == 0) {
+            return;
+        }
+        try {
+            // Wrangle a fake entity
+            Entity nmsEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
+            EntityTag entityTag = new EntityTag(nmsEntity.getBukkitEntity());
+            entityTag.isFake = true;
+            entityTag.isFakeValid = true;
+            for (Mechanism mechanism : entity.getWaitingMechanisms()) {
+                entityTag.safeAdjustDuplicate(mechanism);
+            }
+            nmsEntity.unsetRemoved();
+            // Store it into the spawner
+            CraftCreatureSpawner bukkitSpawner = (CraftCreatureSpawner) spawner;
+            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
+            BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
+            SpawnData toSpawn = nmsSpawner.nextSpawnData;
+            net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
+            nmsEntity.saveWithoutId(tag);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void setSpawnerCustomRules(CreatureSpawner spawner, int skyMin, int skyMax, int blockMin, int blockMax) {
+        try {
+            CraftCreatureSpawner bukkitSpawner = (CraftCreatureSpawner) spawner;
+            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
+            BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
+            SpawnData toSpawn = nmsSpawner.nextSpawnData;
+            SpawnData.CustomSpawnRules rules = skyMin == -1 ? null : new SpawnData.CustomSpawnRules(new InclusiveRange<>(skyMin, skyMax), new InclusiveRange<>(blockMin, blockMax));
+            nmsSpawner.nextSpawnData = new SpawnData(toSpawn.entityToSpawn(), Optional.ofNullable(rules));
+            nmsSpawner.spawnPotentials = SimpleWeightedRandomList.empty();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 }

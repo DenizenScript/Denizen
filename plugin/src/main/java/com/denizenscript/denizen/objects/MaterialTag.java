@@ -200,7 +200,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public String debuggable() {
-        return "<G>m@<Y>" + CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesDebuggable(this);
+        return "<LG>m@<Y>" + CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesDebuggable(this);
     }
 
     @Override
@@ -462,7 +462,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the explosion resistance for all blocks of this material type.
         // -->
         tagProcessor.registerTag(ElementTag.class, "block_resistance", (attribute, object) -> {
-            if (!NMSHandler.getBlockHelper().hasBlock(object.getMaterial())) {
+            if (!object.getMaterial().isBlock()) {
                 Debug.echoError("Provided material does not have a placeable block.");
                 return null;
             }

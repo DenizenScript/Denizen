@@ -32,66 +32,66 @@ public class MapScriptContainer extends ScriptContainer {
     // # The name of the map script is used by the map command.
     // Map_Script_Name:
     //
-    //   type: map
+    //     type: map
     //
-    //   # Whether to display the original map below the custom values. Defaults to true.
-    //   # | Some map scripts should have this key!
-    //   original: true/false
+    //     # Whether to display the original map below the custom values. Defaults to true.
+    //     # | Some map scripts should have this key!
+    //     original: true/false
     //
-    //   # Whether to constantly update things. Defaults to true.
-    //   # | Some map scripts should have this key!
-    //   auto update: true
+    //     # Whether to constantly update things. Defaults to true.
+    //     # | Some map scripts should have this key!
+    //     auto update: true
     //
-    //   # Whether this map script renders uniquely per-player. Defaults to true.
-    //   # | Some map scripts should have this key!
-    //   contextual: true
+    //     # Whether this map script renders uniquely per-player. Defaults to true.
+    //     # | Some map scripts should have this key!
+    //     contextual: true
     //
-    //   # Lists all contained objects.
-    //   # | Most map scripts should have this key!
-    //   objects:
+    //     # Lists all contained objects.
+    //     # | Most map scripts should have this key!
+    //     objects:
     //
-    //     # The first object...
-    //     1:
-    //       # Specify the object type
-    //       # Type can be IMAGE, TEXT, CURSOR, or DOT.
-    //       type: image
-    //       # Specify an HTTP url or file path within Denizen/images/ for the image. Supports animated .gif!
-    //       image: my_image.png
-    //       # Optionally add width/height numbers.
-    //       width: 128
-    //       height: 128
+    //         # The first object...
+    //         1:
+    //             # Specify the object type
+    //             # Type can be IMAGE, TEXT, CURSOR, or DOT.
+    //             type: image
+    //             # Specify an HTTP url or file path within Denizen/images/ for the image. Supports animated .gif!
+    //             image: my_image.png
+    //             # Optionally add width/height numbers.
+    //             width: 128
+    //             height: 128
     //
-    //     2:
-    //       type: text
-    //       # Specify any text to display. Color codes not permitted (unless you know how to format CraftMapCanvas byte-ID color codes).
-    //       text: Hello <player.name>
-    //       # Specify the color of the text as any valid ColorTag.
-    //       color: red
-    //       # Specify a tag to show or hide custom content! Valid for all objects.
-    //       # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
-    //       visible: <player.name.contains[bob].not>
+    //         2:
+    //             type: text
+    //             # Specify any text to display. Color codes not permitted (unless you know how to format CraftMapCanvas byte-ID color codes).
+    //             text: Hello <player.name>
+    //             # Specify the color of the text as any valid ColorTag.
+    //             color: red
+    //             # Specify a tag to show or hide custom content! Valid for all objects.
+    //             # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
+    //             visible: <player.name.contains[bob].not>
     //
-    //     3:
-    //       type: cursor
-    //       # Specify a cursor type
-    //       cursor: red_marker
-    //       # Optionally, specify a cursor direction. '180' seems to display as up-right usually.
-    //       direction: 180
-    //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
-    //       x: 5
-    //       # If 'world_coordinates' is set to 'true', the 'y' value corresponds to the 'z' value of a location.
-    //       y: 5
-    //       # If true: uses world coordinates. If false: uses map local coordinates. (Defaults to false).
-    //       world_coordinates: false
-    //       # If true: when the object goes past the edge, will stay in view at the corner. If false: disappears past the edge (defaults to false).
-    //       show_past_edge: false
+    //         3:
+    //             type: cursor
+    //             # Specify a cursor type
+    //             cursor: red_marker
+    //             # Optionally, specify a cursor direction. '180' seems to display as up-right usually.
+    //             direction: 180
+    //             # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
+    //             x: 5
+    //             # If 'world_coordinates' is set to 'true', the 'y' value corresponds to the 'z' value of a location.
+    //             y: 5
+    //             # If true: uses world coordinates. If false: uses map local coordinates. (Defaults to false).
+    //             world_coordinates: false
+    //             # If true: when the object goes past the edge, will stay in view at the corner. If false: disappears past the edge (defaults to false).
+    //             show_past_edge: false
     //
-    //     4:
-    //       type: dot
-    //       # Specify the radius of the dot.
-    //       radius: 1
-    //       # Specify the color of the dot as any valid ColorTag.
-    //       color: red
+    //         4:
+    //             type: dot
+    //             # Specify the radius of the dot.
+    //             radius: 1
+    //             # Specify the color of the dot as any valid ColorTag.
+    //             color: red
     //
     // </code>
     //

@@ -50,90 +50,90 @@ public class CommandScriptContainer extends ScriptContainer {
     // # The name of the script doesn't matter, and will not affect the command in any way.
     // Command_Script_Name:
     //
-    //   type: command
+    //     type: command
     //
-    //   # The name of the command. This will be the default method for running the command, and will show in '/help'.
-    //   # | All command scripts MUST have this key!
-    //   name: mycmd
+    //     # The name of the command. This will be the default method for running the command, and will show in '/help'.
+    //     # | All command scripts MUST have this key!
+    //     name: mycmd
     //
-    //   # The description of the command. This will be shown in the '/help' command.
-    //   # Multiple lines are acceptable, via <&nl> (the tag for a new line), but you should
-    //   # make the first line a brief summary of what your command does.
-    //   # | All command scripts MUST have this key!
-    //   description: My command.
+    //     # The description of the command. This will be shown in the '/help' command.
+    //     # Multiple lines are acceptable, via <&nl> (the tag for a new line), but you should
+    //     # make the first line a brief summary of what your command does.
+    //     # | All command scripts MUST have this key!
+    //     description: My command.
     //
-    //   # Correct usage for the command. This will show in the '/help' command.
-    //   # This is NOT the name of the command, and it is NOT used to control input parsing. It is EXCLUSIVELY for '/help'.
-    //   # | All command scripts MUST have this key!
-    //   usage: /mycmd <&lt>myArg1<&gt>
+    //     # Correct usage for the command. This will show in the '/help' command.
+    //     # This is NOT the name of the command, and it is NOT used to control input parsing. It is EXCLUSIVELY for '/help'.
+    //     # | All command scripts MUST have this key!
+    //     usage: /mycmd <&lt>myArg1<&gt>
     //
-    //   # A list of aliases for the command. These will be used as alternative ways to trigger the command, and will show in the '/help' command.
-    //   # | Some command scripts might have this key, but it's optional.
-    //   aliases:
-    //   - myalias
-    //   - mycommand
+    //     # A list of aliases for the command. These will be used as alternative ways to trigger the command, and will show in the '/help' command.
+    //     # | Some command scripts might have this key, but it's optional.
+    //     aliases:
+    //     - myalias
+    //     - mycommand
     //
-    //   # The permission node to check for permissions plugins. This will automatically
-    //   # block players without the permission from accessing the command and help for
-    //   # the command.
-    //   # Note that you can include multiple permission nodes (a player only needs to have any one permission from the list)
-    //   # by separating them with a semicolon, like: perm.one;perm.two;third.perm
-    //   # | Most command scripts should have this key!
-    //   permission: my.permission.node
+    //     # The permission node to check for permissions plugins. This will automatically
+    //     # block players without the permission from accessing the command and help for
+    //     # the command.
+    //     # Note that you can include multiple permission nodes (a player only needs to have any one permission from the list)
+    //     # by separating them with a semicolon, like: perm.one;perm.two;third.perm
+    //     # | Most command scripts should have this key!
+    //     permission: my.permission.node
     //
-    //   # The message to send to the player when they try to use the command without
-    //   # permission. If this is not specified, the default Bukkit message will be sent.
-    //   # Has "permission" def available.
-    //   # | Most command scripts should NOT have this key, but it's available.
-    //   permission message: Sorry, <player.name>, you can't use my command because you don't have the permission '<[permission]>'!
+    //     # The message to send to the player when they try to use the command without
+    //     # permission. If this is not specified, the default Bukkit message will be sent.
+    //     # Has "permission" def available.
+    //     # | Most command scripts should NOT have this key, but it's available.
+    //     permission message: Sorry, <player.name>, you can't use my command because you don't have the permission '<[permission]>'!
     //
-    //   # The procedure-based script that will be checked when a player or the console
-    //   # is trying to view help for this command. This must always be determined true
-    //   # or false. If there is no script, it's assumed that all players and the console
-    //   # should be allowed to view the help for this command.
-    //   # Available context: <context.server> returns whether the server is viewing the help (a player if false).
-    //   # | Most command scripts should NOT have this key, but it's available.
-    //   allowed help:
-    //   - determine <player.has_flag[special_allowed_help_flag]||<context.server>>
+    //     # The procedure-based script that will be checked when a player or the console
+    //     # is trying to view help for this command. This must always be determined true
+    //     # or false. If there is no script, it's assumed that all players and the console
+    //     # should be allowed to view the help for this command.
+    //     # Available context: <context.server> returns whether the server is viewing the help (a player if false).
+    //     # | Most command scripts should NOT have this key, but it's available.
+    //     allowed help:
+    //     - determine <player.has_flag[special_allowed_help_flag]||<context.server>>
     //
-    //   # You can optionally specify tab completions on a per-argument basis.
-    //   # Available context:
-    //   # <context.args> returns a list of input arguments.
-    //   # <context.raw_args> returns all the arguments as raw text.
-    //   # <context.server> returns whether the server is using tab completion (a player if false).
-    //   # <context.alias> returns the command alias being used.
-    //   # | This key is great to have when used well, but is not required.
-    //   tab completions:
-    //     # This will complete "alpha" and "beta" for the first argument
-    //     1: alpha|beta
-    //     # This will complete any online player name for the second argument
-    //     2: <server.online_players.parse[name]>
-    //     # This will allow flags "-a", "-b", or "-c" to be entered in the third, fourth, or fifth argument.
-    //     3 4 5: -a|-b|-c
-    //     # Any argument other than the ones explicitly listed will be handled here with a tab complete that just says 'StopTyping'.
-    //     default: StopTyping
+    //     # You can optionally specify tab completions on a per-argument basis.
+    //     # Available context:
+    //     # <context.args> returns a list of input arguments.
+    //     # <context.raw_args> returns all the arguments as raw text.
+    //     # <context.server> returns whether the server is using tab completion (a player if false).
+    //     # <context.alias> returns the command alias being used.
+    //     # | This key is great to have when used well, but is not required.
+    //     tab completions:
+    //         # This will complete "alpha" and "beta" for the first argument
+    //         1: alpha|beta
+    //         # This will complete any online player name for the second argument
+    //         2: <server.online_players.parse[name]>
+    //         # This will allow flags "-a", "-b", or "-c" to be entered in the third, fourth, or fifth argument.
+    //         3 4 5: -a|-b|-c
+    //         # Any argument other than the ones explicitly listed will be handled here with a tab complete that just says 'StopTyping'.
+    //         default: StopTyping
     //
-    //   # You can also optionally use the 'tab complete' key to build custom procedure-style tab complete logic
-    //   # if the simply numeric argument basis isn't sufficient.
-    //   # Has the same context available as 'tab completions'.
-    //   # | Most scripts should leave this key off, though it can be useful to some.
-    //   tab complete:
-    //   - determine some|dynamic|logic|here
+    //     # You can also optionally use the 'tab complete' key to build custom procedure-style tab complete logic
+    //     # if the simply numeric argument basis isn't sufficient.
+    //     # Has the same context available as 'tab completions'.
+    //     # | Most scripts should leave this key off, though it can be useful to some.
+    //     tab complete:
+    //     - determine some|dynamic|logic|here
     //
-    //   # The script that will run when the command is executed.
-    //   # No, you do not need '- determine fulfilled' or anything of the sort, since the command is fully registered.
-    //   # Available context:
-    //   # <context.args> returns a list of input arguments.
-    //   # <context.raw_args> returns all the arguments as raw text.
-    //   # <context.source_type> returns the source of the command. Can be: PLAYER, SERVER, COMMAND_BLOCK, or COMMAND_MINECART.
-    //   # <context.alias> returns the command alias being used.
-    //   # <context.command_block_location> returns the command block's location (if the command was run from one).
-    //   # <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
-    //   # | All command scripts MUST have this key!
-    //   script:
-    //   - narrate Yay!
-    //   - narrate "My command worked!"
-    //   - narrate "And I typed '/<context.alias> <context.raw_args>'!"
+    //     # The script that will run when the command is executed.
+    //     # No, you do not need '- determine fulfilled' or anything of the sort, since the command is fully registered.
+    //     # Available context:
+    //     # <context.args> returns a list of input arguments.
+    //     # <context.raw_args> returns all the arguments as raw text.
+    //     # <context.source_type> returns the source of the command. Can be: PLAYER, SERVER, COMMAND_BLOCK, or COMMAND_MINECART.
+    //     # <context.alias> returns the command alias being used.
+    //     # <context.command_block_location> returns the command block's location (if the command was run from one).
+    //     # <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
+    //     # | All command scripts MUST have this key!
+    //     script:
+    //     - narrate Yay!
+    //     - narrate "My command worked!"
+    //     - narrate "And I typed '/<context.alias> <context.raw_args>'!"
     // </code>
     //
     // -->

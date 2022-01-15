@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_18;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.*;
 import com.denizenscript.denizen.nms.v1_18.helpers.*;
@@ -10,6 +11,7 @@ import com.denizenscript.denizen.nms.v1_18.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
@@ -59,6 +61,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.spigotmc.AsyncCatcher;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -178,9 +181,22 @@ public class Handler extends NMSHandler {
         return ((CraftServer) Bukkit.getServer()).getServer().getPort();
     }
 
+    public static MethodHandle PAPER_INVENTORY_TITLE_GETTER;
+
     @Override
     public String getTitle(Inventory inventory) {
         Container nms = ((CraftInventory) inventory).getInventory();
+        if (inventory instanceof CraftInventoryCustom && Denizen.supportsPaper) {
+            try {
+                if (PAPER_INVENTORY_TITLE_GETTER == null) {
+                    PAPER_INVENTORY_TITLE_GETTER = ReflectionHelper.getMethodHandle(nms.getClass(), "title");
+                }
+                return AdvancedTextImpl.instance.parseComponent(PAPER_INVENTORY_TITLE_GETTER.invoke(nms), ChatColor.BLACK);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+        }
         if (nms instanceof Nameable) {
             return CraftChatMessage.fromComponent(((Nameable) nms).getDisplayName());
         }

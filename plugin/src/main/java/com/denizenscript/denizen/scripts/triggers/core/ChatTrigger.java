@@ -49,41 +49,41 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     // <code>
     // # Some identifier for the trigger, this only serves to make the sub-triggers unique, and sort them (alphabetically).
     // 1:
-    //   # The trigger message written by a player. The text between // must be typed by a player, the other text is filled automatically.
-    //   trigger: /keyword/ othertext
-    //   script:
-    //   # Your code here
-    //   - wait 1
-    //   # use "<context.message>" for the exact text written by the player.
-    //   - chat "<context.message> eh?"
+    //     # The trigger message written by a player. The text between // must be typed by a player, the other text is filled automatically.
+    //     trigger: /keyword/ othertext
+    //     script:
+    //     # Your code here
+    //     - wait 1
+    //     # use "<context.message>" for the exact text written by the player.
+    //     - chat "<context.message> eh?"
     // # You can list as many as you want
     // 2:
-    //   # You can have multi-option triggers, separated by pipes (the "|" symbol). This example matches if player types 'hi', 'hello', OR 'hey'.
-    //   trigger: /hi|hello|hey/
-    //   script:
-    //   - wait 1
-    //   # use "<context.keyword>" for the specific word that was said.
-    //   # this example will respond to players that said 'hi' with "hi there buddy!", 'hello' with "hello there buddy!", etc.
-    //   - chat "<context.keyword> there buddy!"
+    //     # You can have multi-option triggers, separated by pipes (the "|" symbol). This example matches if player types 'hi', 'hello', OR 'hey'.
+    //     trigger: /hi|hello|hey/
+    //     script:
+    //     - wait 1
+    //     # use "<context.keyword>" for the specific word that was said.
+    //     # this example will respond to players that said 'hi' with "hi there buddy!", 'hello' with "hello there buddy!", etc.
+    //     - chat "<context.keyword> there buddy!"
     // 3:
-    //   # You can have regex triggers. This example matches when the player types any numbers.
-    //   trigger: /regex:\d+/
-    //   script:
-    //   - wait 1
-    //   # use "<context.keyword>" for the text matched by the regex matcher.
-    //   - chat "<context.keyword> eh?"
+    //     # You can have regex triggers. This example matches when the player types any numbers.
+    //     trigger: /regex:\d+/
+    //     script:
+    //     - wait 1
+    //     # use "<context.keyword>" for the text matched by the regex matcher.
+    //     - chat "<context.keyword> eh?"
     // 4:
-    //   # Use '*' as the trigger to match anything at all.
-    //   trigger: /*/
-    //   # Add this line to hide the "[Player -> NPC]: hi" initial trigger message.
-    //   hide trigger message: true
-    //   # Add this line to show the player chat message in the normal chat.
-    //   show as normal chat: true
-    //   script:
-    //   # If you hide the trigger message but not show as normal chat, you might want to fill that spot with something else.
-    //   - narrate "[Player -> NPC]: I don't know how to type the right thing"
-    //   - wait 1
-    //   - chat "Well type 'keyword' or any number!"
+    //     # Use '*' as the trigger to match anything at all.
+    //     trigger: /*/
+    //     # Add this line to hide the "[Player -> NPC]: hi" initial trigger message.
+    //     hide trigger message: true
+    //     # Add this line to show the player chat message in the normal chat.
+    //     show as normal chat: true
+    //     script:
+    //     # If you hide the trigger message but not show as normal chat, you might want to fill that spot with something else.
+    //     - narrate "[Player -> NPC]: I don't know how to type the right thing"
+    //     - wait 1
+    //     - chat "Well type 'keyword' or any number!"
     // </code>
     //
     // -->

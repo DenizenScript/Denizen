@@ -122,6 +122,9 @@ public class SittingTrait extends Trait implements Listener {
     }
 
     public void safetyCleanup(Location loc) {
+        if (loc.getWorld() == null) {
+            return;
+        }
         for (Entity entity : loc.getWorld().getNearbyEntities(loc, 3, 3, 3)) {
             if (entity.getType() == EntityType.ARMOR_STAND && entity.getCustomName() != null && entity.getCustomName().equals(SIT_STAND_NAME) && entity.getPassengers().isEmpty()) {
                 ArmorStand stand = (ArmorStand) entity;

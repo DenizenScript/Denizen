@@ -50,121 +50,121 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     // <code>
     // Enchantment_Script_Name:
     //
-    //   type: enchantment
+    //     type: enchantment
     //
-    //   # The ID is used as the internal registration key, and for lookups with things like the 'enchantments' mechanism.
-    //   # If unspecified, will use the script name.
-    //   # Limited to A-Z or _.
-    //   # | Most enchantment scripts should have this key!
-    //   id: my_id
+    //     # The ID is used as the internal registration key, and for lookups with things like the 'enchantments' mechanism.
+    //     # If unspecified, will use the script name.
+    //     # Limited to A-Z or _.
+    //     # | Most enchantment scripts should have this key!
+    //     id: my_id
     //
-    //   # A list of slots this enchantment is valid in.
-    //   # | ALL enchantment scripts MUST have this key!
-    //   slots:
-    //   # Can be any of: mainhand, offhand, feet, legs, chest, head
-    //   - mainhand
+    //     # A list of slots this enchantment is valid in.
+    //     # | ALL enchantment scripts MUST have this key!
+    //     slots:
+    //     # Can be any of: mainhand, offhand, feet, legs, chest, head
+    //     - mainhand
     //
-    //   # The rarity level of this enchantment. Can be any of: COMMON, UNCOMMON, RARE, VERY_RARE
-    //   # If unspecified, will use COMMON.
-    //   # | Most enchantment scripts should have this key!
-    //   rarity: common
+    //     # The rarity level of this enchantment. Can be any of: COMMON, UNCOMMON, RARE, VERY_RARE
+    //     # If unspecified, will use COMMON.
+    //     # | Most enchantment scripts should have this key!
+    //     rarity: common
     //
-    //   # The category/type of this enchantment. Can be any of: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_CHEST, ARMOR_HEAD,
-    //   # WEAPON, DIGGER, FISHING_ROD, TRIDENT, BREAKABLE, BOW, WEARABLE, CROSSBOW, VANISHABLE
-    //   # This is used internally by the enchanting table to determine which items to offer the enchantment for.
-    //   # If unspecified, will use WEAPON.
-    //   # | Most enchantment scripts should have this key!
-    //   category: weapon
+    //     # The category/type of this enchantment. Can be any of: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_CHEST, ARMOR_HEAD,
+    //     # WEAPON, DIGGER, FISHING_ROD, TRIDENT, BREAKABLE, BOW, WEARABLE, CROSSBOW, VANISHABLE
+    //     # This is used internally by the enchanting table to determine which items to offer the enchantment for.
+    //     # If unspecified, will use WEAPON.
+    //     # | Most enchantment scripts should have this key!
+    //     category: weapon
     //
-    //   # The per-level full name of this enchantment. Does not appear in lore automatically (but might in the future?).
-    //   # Can make use of "<context.level>" for the applicable level.
-    //   # | Most enchantment scripts should have this key!
-    //   full_name: My Enchantment <context.level>
+    //     # The per-level full name of this enchantment. Does not appear in lore automatically (but might in the future?).
+    //     # Can make use of "<context.level>" for the applicable level.
+    //     # | Most enchantment scripts should have this key!
+    //     full_name: My Enchantment <context.level>
     //
-    //   # The minimum level of this enchantment.
-    //   # If unspecified, will use 1.
-    //   # | Most enchantment scripts can exclude this key.
-    //   min_level: 1
+    //     # The minimum level of this enchantment.
+    //     # If unspecified, will use 1.
+    //     # | Most enchantment scripts can exclude this key.
+    //     min_level: 1
     //
-    //   # The maximum level of this enchantment.
-    //   # If unspecified, will use 1.
-    //   # | Some enchantment scripts should have this key.
-    //   max_level: 1
+    //     # The maximum level of this enchantment.
+    //     # If unspecified, will use 1.
+    //     # | Some enchantment scripts should have this key.
+    //     max_level: 1
     //
-    //   # The per-level minimum XP cost of enchanting.
-    //   # Can make use of "<context.level>" for the applicable level.
-    //   # | Most enchantment scripts should have this key!
-    //   min_cost: <context.level.mul[1]>
+    //     # The per-level minimum XP cost of enchanting.
+    //     # Can make use of "<context.level>" for the applicable level.
+    //     # | Most enchantment scripts should have this key!
+    //     min_cost: <context.level.mul[1]>
     //
-    //   # The per-level maximum XP cost of enchanting.
-    //   # Can make use of "<context.level>" for the applicable level.
-    //   # | Most enchantment scripts should have this key!
-    //   max_cost: <context.level.mul[1]>
+    //     # The per-level maximum XP cost of enchanting.
+    //     # Can make use of "<context.level>" for the applicable level.
+    //     # | Most enchantment scripts should have this key!
+    //     max_cost: <context.level.mul[1]>
     //
-    //   # Whether this enchantment is only considered to be treasure. Treasure enchantments do not show in the enchanting table.
-    //   # If unspecified, will be false.
-    //   # | Most enchantment scripts can exclude this key.
-    //   treasure_only: false
+    //     # Whether this enchantment is only considered to be treasure. Treasure enchantments do not show in the enchanting table.
+    //     # If unspecified, will be false.
+    //     # | Most enchantment scripts can exclude this key.
+    //     treasure_only: false
     //
-    //   # Whether this enchantment is only considered to be a curse. Curses are removed at grindstones, and spread from crafting table repairs.
-    //   # If unspecified, will be false.
-    //   # | Most enchantment scripts can exclude this key.
-    //   is_curse: false
+    //     # Whether this enchantment is only considered to be a curse. Curses are removed at grindstones, and spread from crafting table repairs.
+    //     # If unspecified, will be false.
+    //     # | Most enchantment scripts can exclude this key.
+    //     is_curse: false
     //
-    //   # Whether this enchantment is only considered to be tradable. Villagers won't trade this enchantment if set to false.
-    //   # If unspecified, will be true.
-    //   # | Most enchantment scripts can exclude this key.
-    //   is_tradable: true
+    //     # Whether this enchantment is only considered to be tradable. Villagers won't trade this enchantment if set to false.
+    //     # If unspecified, will be true.
+    //     # | Most enchantment scripts can exclude this key.
+    //     is_tradable: true
     //
-    //   # Whether this enchantment is only considered to be discoverable.
-    //   # If true, this will spawn from vanilla sources like the enchanting table. If false, it can only be given directly by script.
-    //   # If unspecified, will be true.
-    //   # | Most enchantment scripts can exclude this key.
-    //   is_discoverable: true
+    //     # Whether this enchantment is only considered to be discoverable.
+    //     # If true, this will spawn from vanilla sources like the enchanting table. If false, it can only be given directly by script.
+    //     # If unspecified, will be true.
+    //     # | Most enchantment scripts can exclude this key.
+    //     is_discoverable: true
     //
-    //   # A tag that returns a boolean indicating whether this enchantment is compatible with another.
-    //   # Can make use of "<context.enchantment_key>" for the applicable enchantment's key, like "minecraft:sharpness".
-    //   # This is used internally by the enchanting table and the anvil to determine if this enchantment can be given alongside another.
-    //   # If unspecified, will default to always true.
-    //   # | Most enchantment scripts can exclude this key.
-    //   is_compatible: <context.enchantment_key.advanced_matches_text[minecraft:lure|minecraft:luck*]>
+    //     # A tag that returns a boolean indicating whether this enchantment is compatible with another.
+    //     # Can make use of "<context.enchantment_key>" for the applicable enchantment's key, like "minecraft:sharpness".
+    //     # This is used internally by the enchanting table and the anvil to determine if this enchantment can be given alongside another.
+    //     # If unspecified, will default to always true.
+    //     # | Most enchantment scripts can exclude this key.
+    //     is_compatible: <context.enchantment_key.advanced_matches_text[minecraft:lure|minecraft:luck*]>
     //
-    //   # A tag that returns a boolean indicating whether this enchantment can enchant a specific item.
-    //   # Can make use of "<context.item>" for the applicable ItemTag.
-    //   # This is used internally to decide whether survival players can copy the enchantment between items on an anvil, as well as for commands like "/enchant".
-    //   # If unspecified, will default to always true.
-    //   # | Most enchantment scripts can exclude this key.
-    //   can_enchant: <context.item.advanced_matches[*_sword|*_axe]>
+    //     # A tag that returns a boolean indicating whether this enchantment can enchant a specific item.
+    //     # Can make use of "<context.item>" for the applicable ItemTag.
+    //     # This is used internally to decide whether survival players can copy the enchantment between items on an anvil, as well as for commands like "/enchant".
+    //     # If unspecified, will default to always true.
+    //     # | Most enchantment scripts can exclude this key.
+    //     can_enchant: <context.item.advanced_matches[*_sword|*_axe]>
     //
-    //   # A tag that returns a decimal number indicating how much extra damage this item should deal.
-    //   # Can make use of "<context.level>" for the enchantment level,
-    //   # and "<context.type>" for the type of monster being fought: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
-    //   # If unspecified, will default to 0.0.
-    //   # | Most enchantment scripts can exclude this key.
-    //   damage_bonus: 0.0
+    //     # A tag that returns a decimal number indicating how much extra damage this item should deal.
+    //     # Can make use of "<context.level>" for the enchantment level,
+    //     # and "<context.type>" for the type of monster being fought: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
+    //     # If unspecified, will default to 0.0.
+    //     # | Most enchantment scripts can exclude this key.
+    //     damage_bonus: 0.0
     //
-    //   # A tag that returns an integer number indicating how much this item should protection against damage.
-    //   # Can make use of "<context.level>" for the enchantment level, and "<context.cause>" for the applicable damage cause, using internal cause names (different from Spigot Damage Causes).
-    //   # Internal cause names: inFire, lightningBolt, onFire, lava, hotFloor, inWall, cramming, drown, starve, cactus, fall, flyIntoWall,
-    //   # outOfWorld, generic, magic, wither, anvil, fallingBlock, dragonBreath, dryout, sweetBerryBush, freeze, fallingStalactite, stalagmite
-    //   # Also "<context.attacker>" as an EntityTag if the cause has an attacker specified.
-    //   # If unspecified, will default to 0.
-    //   # | Most enchantment scripts can exclude this key.
-    //   damage_protection: 0
+    //     # A tag that returns an integer number indicating how much this item should protection against damage.
+    //     # Can make use of "<context.level>" for the enchantment level, and "<context.cause>" for the applicable damage cause, using internal cause names (different from Spigot Damage Causes).
+    //     # Internal cause names: inFire, lightningBolt, onFire, lava, hotFloor, inWall, cramming, drown, starve, cactus, fall, flyIntoWall,
+    //     # outOfWorld, generic, magic, wither, anvil, fallingBlock, dragonBreath, dryout, sweetBerryBush, freeze, fallingStalactite, stalagmite
+    //     # Also "<context.attacker>" as an EntityTag if the cause has an attacker specified.
+    //     # If unspecified, will default to 0.
+    //     # | Most enchantment scripts can exclude this key.
+    //     damage_protection: 0
     //
-    //   # Triggered after an enchanted weapon is used to attack an entity.
-    //   # Has <context.attacker> (EntityTag), <context.victim> (EntityTag), and <context.level>.
-    //   # May fire rapidly or multiple times per hit. Use a ratelimit to prevent this.
-    //   # | Some enchantment scripts should have this key.
-    //   after attack:
-    //   - narrate "You attacked <context.victim.name> with a <context.level> enchantment!"
+    //     # Triggered after an enchanted weapon is used to attack an entity.
+    //     # Has <context.attacker> (EntityTag), <context.victim> (EntityTag), and <context.level>.
+    //     # May fire rapidly or multiple times per hit. Use a ratelimit to prevent this.
+    //     # | Some enchantment scripts should have this key.
+    //     after attack:
+    //     - narrate "You attacked <context.victim.name> with a <context.level> enchantment!"
     //
-    //   # Triggered after an enchanted armor is used to defend against an attack.
-    //   # Also fires if an entity is holding a weapon with this enchantment while being hit.
-    //   # Has <context.attacker> (EntityTag), <context.victim> (EntityTag), and <context.level>.
-    //   # | Some enchantment scripts should have this key.
-    //   after hurt:
-    //   - narrate "You got hurt by <context.attacker.name> and protected by a level <context.level> enchantment!"
+    //     # Triggered after an enchanted armor is used to defend against an attack.
+    //     # Also fires if an entity is holding a weapon with this enchantment while being hit.
+    //     # Has <context.attacker> (EntityTag), <context.victim> (EntityTag), and <context.level>.
+    //     # | Some enchantment scripts should have this key.
+    //     after hurt:
+    //     - narrate "You got hurt by <context.attacker.name> and protected by a level <context.level> enchantment!"
     // </code>
     //
     // -->

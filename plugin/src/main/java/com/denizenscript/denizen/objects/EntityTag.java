@@ -683,7 +683,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (entity instanceof Player) {
             return entity.getName();
         }
-        String customName = entity.getCustomName();
+        String customName = entity == null ? null : entity.getCustomName();
         if (customName != null) {
             return customName;
         }
@@ -775,26 +775,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return;
         }
         // If the entity is already spawned, teleport it.
-        if (isCitizensNPC()) {
-            if (getDenizenNPC().getCitizen().isSpawned()) {
-                getDenizenNPC().getCitizen().teleport(location, cause);
-            }
-            else {
-                if (getDenizenNPC().getCitizen().spawn(location)) {
-                    entity = getDenizenNPC().getCitizen().getEntity();
-                    uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
-                }
-                else {
-                    if (new LocationTag(location).isChunkLoaded()) {
-                        Debug.echoError("Error spawning NPC - tried to spawn in an unloaded chunk.");
-                    }
-                    else {
-                        Debug.echoError("Error spawning NPC - blocked by plugin");
-                    }
-                }
-            }
-        }
-        else if (isUnique() && entity != null) {
+        if (isCitizensNPC() || (isUnique() && entity != null)) {
             teleport(location, cause);
         }
         else {
@@ -980,8 +961,28 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void teleport(Location location, TeleportCause cause) {
+        if (location.getWorld() == null) {
+            Debug.echoError("Cannot teleport or spawn entity at location '" + new LocationTag(location) + "' because it is missing a world.");
+            return;
+        }
         if (isCitizensNPC()) {
-            getDenizenNPC().getCitizen().teleport(location, cause);
+            if (getDenizenNPC().getCitizen().isSpawned()) {
+                getDenizenNPC().getCitizen().teleport(location, cause);
+            }
+            else {
+                if (getDenizenNPC().getCitizen().spawn(location)) {
+                    entity = getDenizenNPC().getCitizen().getEntity();
+                    uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
+                }
+                else {
+                    if (new LocationTag(location).isChunkLoaded()) {
+                        Debug.echoError("Error spawning NPC - tried to spawn in an unloaded chunk.");
+                    }
+                    else {
+                        Debug.echoError("Error spawning NPC - blocked by plugin");
+                    }
+                }
+            }
         }
         else if (isFake) {
             NMSHandler.getEntityHelper().snapPositionTo(entity, location.toVector());
@@ -1122,10 +1123,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().debuggable();
             }
             else if (isFake) {
-                return "<G>e@<Y>FAKE: " + getUUID() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "<LG>e@<Y>FAKE: " + getUUID() + "<GR>(FAKE-" + entity.getType().name() + "/" + entity.getName() + ")";
             }
             else if (isSpawnedOrValidForTag()) {
-                return "<G>e@<Y> " + getUUID() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
+                return "<LG>e@<Y> " + getUUID() + "<GR>(" + entity.getType().name() + "/" + entity.getName() + ")";
             }
         }
         return identify(this::getWaitingMechanismsDebuggable);
@@ -1182,10 +1183,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public String getWaitingMechanismsDebuggable() {
         StringBuilder properties = new StringBuilder();
         for (Mechanism mechanism : mechanisms) {
-            properties.append(mechanism.getName()).append("<G>=<Y>").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append("<G>; <Y>");
+            properties.append(mechanism.getName()).append(" <LG>=<Y> ").append(mechanism.getValue().asString()).append("<LG>; <Y>");
         }
         if (properties.length() > 0) {
-            return "<G>[<Y>" + properties.substring(0, properties.length() - "; <Y>".length()) + " <G>]";
+            return "<LG>[<Y>" + properties.substring(0, properties.length() - "; <Y>".length()) + " <LG>]";
         }
         return "";
     }
@@ -1193,7 +1194,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public String getWaitingMechanismsString() {
         StringBuilder properties = new StringBuilder();
         for (Mechanism mechanism : mechanisms) {
-            properties.append(mechanism.getName()).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
+            properties.append(PropertyParser.escapePropertyKey(mechanism.getName())).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
         }
         if (properties.length() > 0) {
             return "[" + properties.substring(0, properties.length() - 1) + "]";

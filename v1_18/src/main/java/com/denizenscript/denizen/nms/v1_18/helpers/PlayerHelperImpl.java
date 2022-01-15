@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.v1_18.Handler;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
@@ -90,6 +91,9 @@ public class PlayerHelperImpl extends PlayerHelper {
         ServerLevel world = (ServerLevel) nmsPlayer.level;
         ChunkMap.TrackedEntity tracker = world.getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
         if (tracker == null) {
+            if (NMSHandler.debugPackets) {
+                DenizenNetworkManagerImpl.doPacketOutput("Failed to de-track entity " + entity.getEntityId() + " for " + player.getName() + ": tracker null");
+            }
             return;
         }
         sendEntityDestroy(player, entity);

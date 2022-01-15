@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.objects.EntityTag;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,8 +25,6 @@ public interface BlockHelper {
     CompoundTag getNbtData(Block block);
 
     void setNbtData(Block block, CompoundTag compoundTag);
-
-    boolean hasBlock(Material material);
 
     boolean setBlockResistance(Material material, float resistance);
 
@@ -89,5 +88,13 @@ public interface BlockHelper {
 
     default int getExpDrop(Block block, ItemStack item) {
         throw new UnsupportedOperationException();
+    }
+
+    default void setSpawnerCustomRules(CreatureSpawner spawner, int skyMin, int skyMax, int blockMin, int blockMax) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void setSpawnerSpawnedType(CreatureSpawner spawner, EntityTag entity) {
+        spawner.setSpawnedType(entity.getBukkitEntityType());
     }
 }

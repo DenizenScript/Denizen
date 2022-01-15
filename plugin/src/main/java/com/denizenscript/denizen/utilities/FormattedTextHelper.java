@@ -109,22 +109,25 @@ public class FormattedTextHelper {
         StringBuilder builder = new StringBuilder(128);
         ChatColor color = component.getColorRaw();
         if (color != null) {
-            builder.append(color.toString());
+            builder.append(color);
         }
         if (boolNotNull(component.isBoldRaw())) {
-            builder.append(ChatColor.BOLD.toString());
+            builder.append(ChatColor.BOLD);
         }
         if (boolNotNull(component.isItalicRaw())) {
-            builder.append(ChatColor.ITALIC.toString());
+            builder.append(ChatColor.ITALIC);
         }
         if (boolNotNull(component.isStrikethroughRaw())) {
-            builder.append(ChatColor.STRIKETHROUGH.toString());
+            builder.append(ChatColor.STRIKETHROUGH);
         }
         if (boolNotNull(component.isUnderlinedRaw())) {
-            builder.append(ChatColor.UNDERLINE.toString());
+            builder.append(ChatColor.UNDERLINE);
         }
         if (boolNotNull(component.isObfuscatedRaw())) {
-            builder.append(ChatColor.MAGIC.toString());
+            builder.append(ChatColor.MAGIC);
+        }
+        if (component.getFontRaw() != null) {
+            builder.append(ChatColor.COLOR_CHAR).append("[font=").append(component.getFontRaw()).append("]");
         }
         boolean hasInsertion = component.getInsertion() != null;
         if (hasInsertion) {

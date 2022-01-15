@@ -558,16 +558,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <WorldTag.max_height>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the maximum height of this world.
-        // -->
-        registerTag(ElementTag.class, "max_height", (attribute, object) -> {
-            return new ElementTag(object.getWorld().getMaxHeight());
-        });
-
-        // <--[tag]
         // @attribute <WorldTag.ticks_per_animal_spawn>
         // @returns DurationTag
         // @mechanism WorldTag.ticks_per_animal_spawns
@@ -587,6 +577,16 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag(DurationTag.class, "ticks_per_monster_spawn", (attribute, object) -> {
             return new DurationTag(object.getWorld().getTicksPerMonsterSpawns());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.duration_since_created>
+        // @returns DurationTag
+        // @description
+        // Returns the total duration of time since this world was first created.
+        // -->
+        registerTag(DurationTag.class, "duration_since_created", (attribute, object) -> {
+            return new DurationTag(object.getWorld().getGameTime());
         });
 
         /////////////////////

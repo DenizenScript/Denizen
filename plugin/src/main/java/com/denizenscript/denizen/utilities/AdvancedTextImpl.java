@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -20,6 +22,24 @@ public class AdvancedTextImpl {
 
     public Inventory createInventory(InventoryHolder holder, InventoryType type, String title) {
         return Bukkit.getServer().createInventory(holder, type, title);
+    }
+
+    public String parseComponent(Object input, ChatColor baseColor) {
+        if (input == null) {
+            return null;
+        }
+        if (input instanceof String) {
+            return (String) input;
+        }
+        else if (input instanceof BaseComponent[]) {
+            return FormattedTextHelper.stringify((BaseComponent[]) input, baseColor);
+        }
+        else if (input instanceof BaseComponent) {
+            return FormattedTextHelper.stringify((BaseComponent) input);
+        }
+        else {
+            return input.toString();
+        }
     }
 
     public String getTitle(Inventory inventory) {
