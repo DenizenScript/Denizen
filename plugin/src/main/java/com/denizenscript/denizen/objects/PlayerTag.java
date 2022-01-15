@@ -3360,7 +3360,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // To cause real spectator mode spectating, use <@link mechanism PlayerTag.spectator_target>
         // Note that in some cases you may want to force the player into the spectate gamemode prior to using this mechanism.
         // Note: They cannot cancel the spectating without a re-log -- you must make them spectate themselves to cancel the effect.
-        // (i.e. - adjust <player> spectate:<player>)
+        // Like: - adjust <player> spectate:<player>
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(EntityTag.class)) {
             NMSHandler.getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());

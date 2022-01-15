@@ -1183,10 +1183,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public String getWaitingMechanismsDebuggable() {
         StringBuilder properties = new StringBuilder();
         for (Mechanism mechanism : mechanisms) {
-            properties.append(mechanism.getName()).append("<G>=<Y>").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append("<G>; <Y>");
+            properties.append(mechanism.getName()).append(" <LG>=<Y> ").append(mechanism.getValue().asString()).append("<LG>; <Y>");
         }
         if (properties.length() > 0) {
-            return "<G>[<Y>" + properties.substring(0, properties.length() - "; <Y>".length()) + " <G>]";
+            return "<LG>[<Y>" + properties.substring(0, properties.length() - "; <Y>".length()) + " <LG>]";
         }
         return "";
     }
@@ -1194,7 +1194,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public String getWaitingMechanismsString() {
         StringBuilder properties = new StringBuilder();
         for (Mechanism mechanism : mechanisms) {
-            properties.append(mechanism.getName()).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
+            properties.append(PropertyParser.escapePropertyKey(mechanism.getName())).append("=").append(PropertyParser.escapePropertyValue(mechanism.getValue().asString())).append(";");
         }
         if (properties.length() > 0) {
             return "[" + properties.substring(0, properties.length() - 1) + "]";

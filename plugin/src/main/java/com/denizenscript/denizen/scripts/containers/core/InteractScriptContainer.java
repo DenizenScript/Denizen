@@ -42,20 +42,20 @@ public class InteractScriptContainer extends ScriptContainer {
     // <code>
     // Interact_Script_Name:
     //
-    //   type: interact
+    //     type: interact
     //
-    //   # | All interact scripts MUST have this key!
-    //   steps:
+    //     # | All interact scripts MUST have this key!
+    //     steps:
     //
-    //     # The first step
-    //     1:
-    //       # Any trigger type here
-    //       click trigger:
-    //         script:
-    //         # Handle what happens when the NPC is clicked during step 1
-    //         - some commands
-    //       # Other triggers here
-    //     # other steps here
+    //         # The first step
+    //         1:
+    //             # Any trigger type here
+    //             click trigger:
+    //                 script:
+    //                     # Handle what happens when the NPC is clicked during step 1
+    //                     - some commands
+    //             # Other triggers here
+    //         # other steps here
     //
     // </code>
     //

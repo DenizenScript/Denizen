@@ -29,23 +29,23 @@ public class AssignmentScriptContainer extends ScriptContainer {
     // <code>
     // Assignment_Script_Name:
     //
-    //   type: assignment
+    //     type: assignment
     //
-    //   # | All assignment scripts MUST have this key!
-    //   actions:
-    //     on <action>:
-    //     - ...
+    //     # | All assignment scripts MUST have this key!
+    //     actions:
+    //         on <action>:
+    //         - ...
     //
-    //   # | Most assignment scripts should exclude this key, but it's available.
-    //   default constants:
-    //     <constant_name>: <value>
-    //     <constant_list>:
-    //     - ...
+    //     # | Most assignment scripts should exclude this key, but it's available.
+    //     default constants:
+    //         <constant_name>: <value>
+    //         <constant_list>:
+    //         - ...
     //
-    //   # | MOST assignment scripts should have this key!
-    //   interact scripts:
-    //   - <interact_script_name>
-    //   </code>
+    //     # | MOST assignment scripts should have this key!
+    //     interact scripts:
+    //     - <interact_script_name>
+    // </code>
     //
     // All part of an assignment script are optional. The three features provided can be
     // used together, but do not require one another.

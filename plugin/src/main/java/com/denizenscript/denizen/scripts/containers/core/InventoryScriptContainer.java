@@ -45,50 +45,50 @@ public class InventoryScriptContainer extends ScriptContainer {
     // # can be referred to as 'Super_Cool_Inventory'.
     // Inventory_Script_Name:
     //
-    //   type: inventory
+    //     type: inventory
     //
-    //   # Must be a valid inventory type.
-    //   # Valid inventory types: BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, WORKBENCH
-    //   # | All inventory scripts MUST have this key!
-    //   inventory: inventory type
+    //     # Must be a valid inventory type.
+    //     # Valid inventory types: BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, WORKBENCH
+    //     # | All inventory scripts MUST have this key!
+    //     inventory: inventory type
     //
-    //   # The title can be anything you wish. Use color tags to make colored titles.
-    //   # Note that titles only work for some inventory types, including CHEST, DISPENSER, FURNACE, ENCHANTING, and HOPPER.
-    //   # | MOST inventory scripts should have this key!
-    //   title: custom title
+    //     # The title can be anything you wish. Use color tags to make colored titles.
+    //     # Note that titles only work for some inventory types, including CHEST, DISPENSER, FURNACE, ENCHANTING, and HOPPER.
+    //     # | MOST inventory scripts should have this key!
+    //     title: custom title
     //
-    //   # The size must be a multiple of 9. It is recommended to not go above 54, as it will not show correctly when a player looks into it.
-    //   # | Some inventory scripts should have this key! Most can exclude it if 'slots' is used.
-    //   size: 27
+    //     # The size must be a multiple of 9. It is recommended to not go above 54, as it will not show correctly when a player looks into it.
+    //     # | Some inventory scripts should have this key! Most can exclude it if 'slots' is used.
+    //     size: 27
     //
-    //   # Set 'gui' to 'true' to indicate that the inventory is a GUI, meaning it's a set of buttons to be clicked, not a container of items.
-    //   # This will prevent players from taking items out of or putting items into the inventory.
-    //   # | SOME inventory scripts should have this key!
-    //   gui: true
+    //     # Set 'gui' to 'true' to indicate that the inventory is a GUI, meaning it's a set of buttons to be clicked, not a container of items.
+    //     # This will prevent players from taking items out of or putting items into the inventory.
+    //     # | SOME inventory scripts should have this key!
+    //     gui: true
     //
-    //   # You can use definitions to define items to use in the slots. These are not like normal script definitions, and do not need to be in a definition tag.
-    //   # | Some inventory scripts MAY have this key, but it is optional. Most scripts will just specify items directly.
-    //   definitions:
-    //     my item: ItemTag
-    //     other item: ItemTag
+    //     # You can use definitions to define items to use in the slots. These are not like normal script definitions, and do not need to be in a definition tag.
+    //     # | Some inventory scripts MAY have this key, but it is optional. Most scripts will just specify items directly.
+    //     definitions:
+    //         my item: ItemTag
+    //         other item: ItemTag
     //
-    //   # Procedural items can be used to specify a list of ItemTags for the empty slots to be filled with.
-    //   # Each item in the list represents the next available empty slot.
-    //   # When the inventory has no more empty slots, it will discard any remaining items in the list.
-    //   # A slot is considered empty when it has no value specified in the slots section.
-    //   # If the slot is filled with air, it will no longer count as being empty.
-    //   # | Most inventory scripts should exclude this key, but it may be useful in some cases.
-    //   procedural items:
+    //     # Procedural items can be used to specify a list of ItemTags for the empty slots to be filled with.
+    //     # Each item in the list represents the next available empty slot.
+    //     # When the inventory has no more empty slots, it will discard any remaining items in the list.
+    //     # A slot is considered empty when it has no value specified in the slots section.
+    //     # If the slot is filled with air, it will no longer count as being empty.
+    //     # | Most inventory scripts should exclude this key, but it may be useful in some cases.
+    //     procedural items:
     //     - define list <list>
     //     - foreach <server.online_players>:
-    //       # Insert some form of complex doesn't-fit-in-just-a-tag logic here
-    //       - define item <[value].skull_item>
-    //       - define list:->:<[item]>
+    //         # Insert some form of complex doesn't-fit-in-just-a-tag logic here
+    //         - define item <[value].skull_item>
+    //         - define list:->:<[item]>
     //     - determine <[list]>
     //
-    //   # You can specify the items in the slots of the inventory. For empty spaces, simply put an empty "slot" value, like "[]".
-    //   # | Most inventory scripts SHOULD have this key!
-    //   slots:
+    //     # You can specify the items in the slots of the inventory. For empty spaces, simply put an empty "slot" value, like "[]".
+    //     # | Most inventory scripts SHOULD have this key!
+    //     slots:
     //     - [] [] [] [my item] [ItemTag] [] [other item] [] []
     //     - [my item] [] [] [] [] [ItemTag] [ItemTag] [] []
     //     - [] [] [] [] [] [] [] [] [other item]

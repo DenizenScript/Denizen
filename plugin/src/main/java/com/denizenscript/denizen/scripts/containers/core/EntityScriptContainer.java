@@ -43,35 +43,35 @@ public class EntityScriptContainer extends ScriptContainer {
     // # can be referred to as 'space_zombie'.
     // Entity_Script_Name:
     //
-    //   type: entity
+    //     type: entity
     //
-    //   # Must be a valid EntityTag (EG 'zombie' or 'pig[age=baby]') See 'EntityTag' for more information.
-    //   # | All entity scripts MUST have this key!
-    //   entity_type: BASE_ENTITY_TYPE_HERE
+    //     # Must be a valid EntityTag (EG 'zombie' or 'pig[age=baby]') See 'EntityTag' for more information.
+    //     # | All entity scripts MUST have this key!
+    //     entity_type: BASE_ENTITY_TYPE_HERE
     //
-    //   # If you want custom data that won't be parsed, use the 'data' root key.
-    //   # | Some entity scripts should have this key!
-    //   data:
-    //     example_key: example value
+    //     # If you want custom data that won't be parsed, use the 'data' root key.
+    //     # | Some entity scripts should have this key!
+    //     data:
+    //         example_key: example value
     //
-    //   # You can set flags on the entity when it spawns.
-    //   # | Some entity scripts should have this key!
-    //   flags:
-    //     my_flag: my value
+    //     # You can set flags on the entity when it spawns.
+    //     # | Some entity scripts should have this key!
+    //     flags:
+    //         my_flag: my value
     //
-    //   # Specify any mechanisms to apply the entity when it spawns.
-    //   # | Some entity scripts should have this key!
-    //   mechanisms:
+    //     # Specify any mechanisms to apply the entity when it spawns.
+    //     # | Some entity scripts should have this key!
+    //     mechanisms:
     //
-    //     # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
+    //         # Samples of mechanisms to use (any valid EntityTag mechanisms may be listed like this):
     //
-    //     # Whether the entity has the default AI
-    //     # | Do not copy this line, it is only an example.
-    //     has_ai: true/false
+    //         # Whether the entity has the default AI
+    //         # | Do not copy this line, it is only an example.
+    //         has_ai: true/false
     //
-    //     # What age the entity is
-    //     # | Do not copy this line, it is only an example.
-    //     age: baby/adult/<#>
+    //         # What age the entity is
+    //         # | Do not copy this line, it is only an example.
+    //         age: baby/adult/<#>
     // </code>
     //
     // MORE MECHANISM OPTIONS ARE LISTED HERE: <@link url https://meta.denizenscript.com/Docs/Mechanisms/entitytag.>

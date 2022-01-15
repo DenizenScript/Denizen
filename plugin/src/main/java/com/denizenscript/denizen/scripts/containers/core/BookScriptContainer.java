@@ -28,26 +28,26 @@ public class BookScriptContainer extends ScriptContainer {
     // <code>
     // Book_Script_Name:
     //
-    //   type: book
+    //     type: book
     //
-    //   # The 'custom name' can be anything you wish.
-    //   # | All book scripts MUST have this key!
-    //   title: custom name
+    //     # The 'custom name' can be anything you wish.
+    //     # | All book scripts MUST have this key!
+    //     title: custom name
     //
-    //   # The 'custom name' can be anything you wish.
-    //   # | All book scripts MUST have this key!
-    //   author: custom name
+    //     # The 'custom name' can be anything you wish.
+    //     # | All book scripts MUST have this key!
+    //     author: custom name
     //
-    //   # Defaults to true. Set to false to spawn a 'book and quill' instead of a 'written book'.
-    //   # | Some book scripts might have this key!
-    //   signed: true/false
+    //     # Defaults to true. Set to false to spawn a 'book and quill' instead of a 'written book'.
+    //     # | Some book scripts might have this key!
+    //     signed: true/false
     //
-    //   # Each -line in the text section represents an entire page.
-    //   # To create a newline, use the tag <n>. To create a paragraph, use <p>.
-    //   # | All book scripts MUST have this key!
-    //   text:
-    //   - page
-    //   - ...
+    //     # Each -line in the text section represents an entire page.
+    //     # To create a newline, use the tag <n>. To create a paragraph, use <p>.
+    //     # | All book scripts MUST have this key!
+    //     text:
+    //     - page
+    //     - ...
     // </code>
     //
     // -->
