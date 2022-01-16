@@ -220,7 +220,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialSwitchFace.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialUnstable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
-        PropertyParser.registerProperty(MaterialHasEye.class, MaterialTag.class);
 
         // register core TradeTag properties
         PropertyParser.registerProperty(TradeHasXp.class, TradeTag.class);

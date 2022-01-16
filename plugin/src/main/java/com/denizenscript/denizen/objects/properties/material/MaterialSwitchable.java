@@ -13,8 +13,9 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.DaylightDetector;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Piston;
+import org.bukkit.block.data.type.EndPortalFrame;
 
-public class MaterialSwitchable  implements Property {
+public class MaterialSwitchable implements Property {
 
     public static boolean describes(ObjectTag material) {
         if (!(material instanceof MaterialTag)) {
@@ -30,7 +31,8 @@ public class MaterialSwitchable  implements Property {
                 || data instanceof Dispenser
                 || data instanceof DaylightDetector
                 || data instanceof Piston
-                || data instanceof Lightable;
+                || data instanceof Lightable
+                || data instanceof EndPortalFrame;
     }
 
     public static MaterialSwitchable getFrom(ObjectTag _material) {
@@ -61,7 +63,8 @@ public class MaterialSwitchable  implements Property {
         // @synonyms MaterialTag.lit, MaterialTag.open, MaterialTag.active
         // @group properties
         // @description
-        // Returns whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched.
+        // Returns whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched,
+        // Or whether an end portal frame has an ender eye.
         // -->
         PropertyParser.<MaterialSwitchable, ElementTag>registerStaticTag(ElementTag.class, "switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -92,6 +95,10 @@ public class MaterialSwitchable  implements Property {
         return material.getModernData() instanceof Lightable;
     }
 
+    public boolean isPiston() {
+        return material.getModernData() instanceof Piston;
+    }
+
     public Openable getOpenable() {
         return (Openable) material.getModernData();
     }
@@ -112,6 +119,10 @@ public class MaterialSwitchable  implements Property {
         return (Lightable) material.getModernData();
     }
 
+    public EndPortalFrame getEndFrame() {
+        return (EndPortalFrame) material.getModernData();
+    }
+
     public boolean getState() {
         if (isOpenable()) {
             return getOpenable().isOpen();
@@ -128,8 +139,10 @@ public class MaterialSwitchable  implements Property {
         else if (isLightable()) {
             return getLightable().isLit();
         }
-        else {
+        else if (isPiston()) {
             return getPiston().isExtended();
+        } else {
+            return getEndFrame().hasEye();
         }
     }
 
@@ -149,8 +162,10 @@ public class MaterialSwitchable  implements Property {
         else if (isLightable()) {
             getLightable().setLit(state);
         }
-        else {
+        else if (isPiston()) {
             getPiston().setExtended(state);
+        } else {
+            getEndFrame().setEye(state);
         }
     }
 
@@ -172,7 +187,8 @@ public class MaterialSwitchable  implements Property {
         // @name switched
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched.
+        // Sets whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched,
+        // Or whether an end portal frame has an ender eye.
         // @tags
         // <MaterialTag.switched>
         // -->
