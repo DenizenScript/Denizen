@@ -141,7 +141,8 @@ public class MaterialSwitchable implements Property {
         }
         else if (isPiston()) {
             return getPiston().isExtended();
-        } else {
+        }
+        else {
             return getEndFrame().hasEye();
         }
     }
@@ -164,7 +165,8 @@ public class MaterialSwitchable implements Property {
         }
         else if (isPiston()) {
             getPiston().setExtended(state);
-        } else {
+        }
+        else {
             getEndFrame().setEye(state);
         }
     }
