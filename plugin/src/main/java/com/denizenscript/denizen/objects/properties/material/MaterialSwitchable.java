@@ -63,8 +63,15 @@ public class MaterialSwitchable implements Property {
         // @synonyms MaterialTag.lit, MaterialTag.open, MaterialTag.active
         // @group properties
         // @description
-        // Returns whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched,
-        // Or whether an end portal frame has an ender eye.
+        // Returns whether a material is 'switched on', which has different semantic meaning depending on the material type.
+        // More specifically, this returns whether:
+        // - a Powerable material (like pressure plates) is activated
+        // - an Openable material (like doors) is open
+        // - a dispenser is powered and should dispense its contents
+        // - a daylight sensor can see the sun
+        // - a lightable block is lit
+        // - a piston block is extended
+        // - an end portal frame has an ender eye in it
         // -->
         PropertyParser.<MaterialSwitchable, ElementTag>registerStaticTag(ElementTag.class, "switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -97,6 +104,10 @@ public class MaterialSwitchable implements Property {
 
     public boolean isPiston() {
         return material.getModernData() instanceof Piston;
+    }
+
+    public boolean isEndFrame() {
+        return material.getModernData() instanceof EndPortalFrame;
     }
 
     public Openable getOpenable() {
@@ -142,9 +153,10 @@ public class MaterialSwitchable implements Property {
         else if (isPiston()) {
             return getPiston().isExtended();
         }
-        else {
+        else if (isEndFrame()) {
             return getEndFrame().hasEye();
         }
+        return false; // Unreachable
     }
 
     public void setState(boolean state) {
@@ -166,7 +178,7 @@ public class MaterialSwitchable implements Property {
         else if (isPiston()) {
             getPiston().setExtended(state);
         }
-        else {
+        else if (isEndFrame()) {
             getEndFrame().setEye(state);
         }
     }
@@ -189,8 +201,8 @@ public class MaterialSwitchable implements Property {
         // @name switched
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether a Powerable material (like pressure plates) an Openable material (like doors), a dispenser, a daylight sensor, a lightable block, or a piston is switched,
-        // Or whether an end portal frame has an ender eye.
+        // Sets whether a material is 'switched on', which has different semantic meaning depending on the material type (eg a door is opened, a piston is extended, etc).
+        // Refer to <@link tag MaterialTag.switched> for specifics.
         // @tags
         // <MaterialTag.switched>
         // -->
