@@ -61,36 +61,27 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void handleAnimate(ServerboundSwingPacket packet) {
-        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-        if (playersMap != null) {
-            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
-            if (override != null && (override.hand != null || override.offhand != null)) {
-                player.getBukkitEntity().updateInventory();
-            }
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), getCraftPlayer());
+        if (override != null && (override.hand != null || override.offhand != null)) {
+            player.getBukkitEntity().updateInventory();
         }
         super.handleAnimate(packet);
     }
 
     @Override
     public void handleSetCarriedItem(ServerboundSetCarriedItemPacket packet) {
-        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-        if (playersMap != null) {
-            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
-            if (override != null && override.hand != null) {
-                Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 2);
-            }
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), getCraftPlayer());
+        if (override != null && override.hand != null) {
+            Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 2);
         }
         super.handleSetCarriedItem(packet);
     }
 
     @Override
     public void handleContainerClick(ServerboundContainerClickPacket packet) {
-        HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-        if (playersMap != null) {
-            FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
-            if (override != null && packet.getContainerId() == 0) {
-                Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
-            }
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), getCraftPlayer());
+        if (override != null && packet.getContainerId() == 0) {
+            Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
         }
         super.handleContainerClick(packet);
     }

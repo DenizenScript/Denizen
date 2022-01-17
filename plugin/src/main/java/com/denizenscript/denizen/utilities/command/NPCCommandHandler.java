@@ -669,6 +669,29 @@ public class NPCCommandHandler {
     }
 
     @Command(
+            aliases = {"npc"}, usage = "mirrorequipment",
+            desc = "Makes the NPC mirror the equipment of the player looking at it.", modifiers = {"mirrorequipment", "mirrorequip"},
+            min = 1, max = 1, permission = "denizen.npc.mirror")
+    @Requirements(selected = true, ownership = true)
+    public void mirrorEquipment(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (!npc.hasTrait(MirrorEquipmentTrait.class)) {
+            npc.getOrAddTrait(MirrorEquipmentTrait.class).enableMirror();
+            Messaging.send(sender, npc.getName() + " is now mirroring player equipment.");
+            return;
+        }
+        MirrorEquipmentTrait trait = npc.getOrAddTrait(MirrorEquipmentTrait.class);
+        if (trait.mirror) {
+            trait.disableMirror();
+            npc.removeTrait(MirrorEquipmentTrait.class);
+            Messaging.send(sender, npc.getName() + " is no longer mirroring player equipment.");
+        }
+        else {
+            trait.enableMirror();
+            Messaging.send(sender, npc.getName() + " is now mirroring player equipment.");
+        }
+    }
+
+    @Command(
             aliases = {"npc"}, usage = "invisible",
             desc = "Turns the NPC invisible.", modifiers = {"invisible"},
             min = 1, max = 3, permission = "denizen.npc.invisible")

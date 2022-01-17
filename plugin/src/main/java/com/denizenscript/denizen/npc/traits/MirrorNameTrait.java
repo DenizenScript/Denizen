@@ -2,6 +2,7 @@ package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -39,6 +40,7 @@ public class MirrorNameTrait extends Trait {
     }
 
     public void mirrorOn() {
+        NetworkInterceptHelper.enable();
         if (!npc.isSpawned()) {
             return;
         }
@@ -51,6 +53,9 @@ public class MirrorNameTrait extends Trait {
     public void mirrorOff() {
         if (mirroredUUID == null) {
             return;
+        }
+        if (RenameCommand.customNames.remove(mirroredUUID) != null && npc.isSpawned() && npc.getEntity().getType() == EntityType.PLAYER) {
+            respawn();
         }
     }
 
@@ -65,9 +70,6 @@ public class MirrorNameTrait extends Trait {
     public void disableMirror() {
         mirror = false;
         mirrorOff();
-        if (RenameCommand.customNames.remove(mirroredUUID) != null && npc.isSpawned() && npc.getEntity().getType() == EntityType.PLAYER) {
-            respawn();
-        }
     }
 
     @Override

@@ -291,16 +291,12 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         try {
             if (packet instanceof ClientboundSetEquipmentPacket) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-                if (playersMap == null) {
-                    return false;
-                }
                 int eid = ((ClientboundSetEquipmentPacket) packet).getEntity();
                 Entity ent = player.level.getEntity(eid);
                 if (ent == null) {
                     return false;
                 }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUUID());
+                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), player.getBukkitEntity());
                 if (override == null) {
                     return false;
                 }
@@ -335,15 +331,11 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             else if (packet instanceof ClientboundEntityEventPacket) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-                if (playersMap == null) {
-                    return false;
-                }
                 Entity ent = ((ClientboundEntityEventPacket) packet).getEntity(player.level);
                 if (!(ent instanceof net.minecraft.world.entity.LivingEntity)) {
                     return false;
                 }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(ent.getUUID());
+                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), player.getBukkitEntity());
                 if (override == null || (override.hand == null && override.offhand == null)) {
                     return false;
                 }
@@ -360,11 +352,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             else if (packet instanceof ClientboundContainerSetContentPacket) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-                if (playersMap == null) {
-                    return false;
-                }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
+                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), player.getBukkitEntity());
                 if (override == null) {
                     return false;
                 }
@@ -396,11 +384,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             else if (packet instanceof ClientboundContainerSetSlotPacket) {
-                HashMap<UUID, FakeEquipCommand.EquipmentOverride> playersMap = FakeEquipCommand.overrides.get(player.getUUID());
-                if (playersMap == null) {
-                    return false;
-                }
-                FakeEquipCommand.EquipmentOverride override = playersMap.get(player.getUUID());
+                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), player.getBukkitEntity());
                 if (override == null) {
                     return false;
                 }

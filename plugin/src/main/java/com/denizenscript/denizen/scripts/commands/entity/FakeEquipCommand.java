@@ -16,6 +16,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -157,6 +158,25 @@ public class FakeEquipCommand extends AbstractCommand {
             legs = override.legs == null ? legs : override.legs;
             boots = override.boots == null ? boots : override.boots;
         }
+
+        public EquipmentOverride getVariantFor(Player player) {
+            return this;
+        }
+    }
+
+    public static EquipmentOverride getOverrideFor(UUID entity, Player player) {
+        HashMap<UUID, EquipmentOverride> playerMap = overrides.get(player.getUniqueId());
+        if (playerMap == null) {
+            playerMap = overrides.get(null);
+            if (playerMap == null) {
+                return null;
+            }
+        }
+        EquipmentOverride override = playerMap.get(entity);
+        if (override == null) {
+            return null;
+        }
+        return override.getVariantFor(player);
     }
 
     public static HashMap<UUID, HashMap<UUID, EquipmentOverride>> overrides = new HashMap<>();
