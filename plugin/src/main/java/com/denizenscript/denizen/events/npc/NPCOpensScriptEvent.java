@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.npc;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -44,7 +45,7 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!tryLocation(location, path.eventArgLowerAt(2))) {
+        if (!tryMaterial(new MaterialTag(location.getBlock()), path.eventArgLowerAt(2))) {
             return false;
         }
         return super.matches(path);
