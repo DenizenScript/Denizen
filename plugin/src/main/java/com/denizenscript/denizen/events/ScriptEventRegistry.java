@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.block.*;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.item.*;
 import com.denizenscript.denizen.events.npc.NPCNavigationScriptEvent;
+import com.denizenscript.denizen.events.npc.NPCOpensScriptEvent;
 import com.denizenscript.denizen.events.npc.NPCSpawnScriptEvent;
 import com.denizenscript.denizen.events.npc.NPCStuckScriptEvent;
 import com.denizenscript.denizen.events.player.*;
@@ -23,6 +24,7 @@ public class ScriptEventRegistry {
 
     public static void registerCitizensEvents() {
         ScriptEvent.registerScriptEvent(NPCNavigationScriptEvent.class);
+        ScriptEvent.registerScriptEvent(NPCOpensScriptEvent.class);
         ScriptEvent.registerScriptEvent(NPCSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(NPCStuckScriptEvent.class);
     }
