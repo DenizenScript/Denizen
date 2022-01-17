@@ -22,6 +22,8 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Location true
     //
+    // @Cancellable true
+    //
     // @Triggers when an NPC opens a door or gate.
     //
     // @Context
