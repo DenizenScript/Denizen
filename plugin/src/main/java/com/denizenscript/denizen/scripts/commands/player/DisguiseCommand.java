@@ -11,8 +11,6 @@ import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -38,6 +36,7 @@ public class DisguiseCommand extends AbstractCommand {
         setSyntax("disguise [<entity>] [cancel/as:<type>] (global/players:<player>|...) (self)");
         setRequiredArguments(2, 4);
         setBooleansHandled("cancel", "global", "self");
+        setPrefixesHandled("players", "as");
         isProcedural = false;
     }
 
@@ -95,28 +94,12 @@ public class DisguiseCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("players")
-                    && arg.matchesPrefix("to", "players")) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-            else if (arg.matchesPrefix("as")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                scriptEntry.addObject("as", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("entity")
+            if (!scriptEntry.hasObject("entity")
                     && arg.matchesArgumentType(EntityTag.class)) {
                 scriptEntry.addObject("entity", arg.asType(EntityTag.class));
             }
             else {
                 arg.reportUnhandled();
-            }
-        }
-        if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
-            if (scriptEntry.hasObject("global")) {
-                scriptEntry.defaultObject("players", new ArrayList<>());
-            }
-            else {
-                scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
         if (!scriptEntry.hasObject("entity")) {
@@ -297,16 +280,22 @@ public class DisguiseCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         NetworkInterceptHelper.enable();
         EntityTag entity = scriptEntry.getObjectTag("entity");
-        EntityTag as = scriptEntry.getObjectTag("as");
+        EntityTag as = scriptEntry.argForPrefix("as", EntityTag.class, true);
         boolean cancel = scriptEntry.argAsBoolean("cancel");
         boolean global = scriptEntry.argAsBoolean("global");
         boolean self = scriptEntry.argAsBoolean("self");
-        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        if (!scriptEntry.hasObject("as") && !cancel) {
+        List<PlayerTag> players = scriptEntry.argForPrefixList("players", PlayerTag.class, true);
+        if (as == null && !cancel) {
             throw new InvalidArgumentsRuntimeException("Must specify a valid type to disguise as!");
         }
-        if (!scriptEntry.hasObject("players") && !global) {
-            throw new InvalidArgumentsRuntimeException("Must have a valid player attached, or 'global' set!");
+        if (players == null && !global) {
+            PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
+            if (player != null && player.isOnline()) {
+                players = Collections.singletonList(player);
+            }
+            else {
+                throw new InvalidArgumentsRuntimeException("Must have a valid player attached, or 'global' set!");
+            }
         }
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), entity, db("cancel", cancel), as, db("global", global), db("self", self), db("players", players));
@@ -365,12 +354,10 @@ public class DisguiseCommand extends AbstractCommand {
                 disguise.sendTo(playerSet);
             }
             else {
-                if (players != null) {
-                    for (PlayerTag player : players) {
-                        playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
-                        playerMap.put(player.getUUID(), disguise);
-                        disguise.isActive = true;
-                    }
+                for (PlayerTag player : players) {
+                    playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
+                    playerMap.put(player.getUUID(), disguise);
+                    disguise.isActive = true;
                 }
                 disguise.sendTo(players);
             }

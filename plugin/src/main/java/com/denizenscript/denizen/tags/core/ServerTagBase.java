@@ -472,6 +472,7 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.has_whitelist>
         // @returns ElementTag(Boolean)
+        // @mechanism server.has_whitelist
         // @description
         // Returns true if the server's whitelist is active, otherwise returns false.
         // -->
@@ -2357,17 +2358,6 @@ public class ServerTagBase {
         else if (attribute.startsWith("stack_trace")) {
             String trace = com.denizenscript.denizen.utilities.debugging.Debug.getFullExceptionMessage(new RuntimeException("TRACE"), false);
             event.setReplacedObject(new ElementTag(trace).getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.has_whitelist>
-        // @returns ElementTag(Boolean)
-        // @mechanism server.has_whitelist
-        // @description
-        // Returns true if the whitelist is enabled on the server.
-        // -->
-        else if (attribute.startsWith("has_whitelist")) {
-            event.setReplacedObject(new ElementTag(Bukkit.hasWhitelist()).getObjectAttribute(attribute.fulfill(1)));
         }
     }
 
