@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.blocks;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
@@ -8,6 +9,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.util.BlockVector;
@@ -16,10 +18,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -35,9 +35,29 @@ public class SpongeSchematicHelper {
         return t.toString();
     }
 
+    public static ConcurrentHashMap<String, BlockData> blockDataCache = new ConcurrentHashMap<>();
+
+    public static BlockData unstableParseMaterial(String key) {
+        BlockData data;
+        try {
+            data = NMSHandler.getBlockHelper().parseBlockData(key);
+        }
+        catch (Exception ex) {
+            Debug.echoError(ex);
+            MaterialTag material = MaterialTag.valueOf(BlockHelper.getMaterialNameFromBlockData(key), CoreUtilities.noDebugContext);
+            data = (material == null ? new MaterialTag(Material.AIR) : material).getModernData();
+        }
+        return data;
+    }
+
+    public static class BoolHolder {
+        public boolean bool;
+    }
+
     // Referenced from WorldEdit source and Sponge schematic format v2 documentation
     // Some values are custom and specific to Denizen
     public static CuboidBlockSet fromSpongeStream(InputStream is) {
+        boolean isPrimary = Bukkit.isPrimaryThread();
         CuboidBlockSet cbs = new CuboidBlockSet();
         try {
             NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(is));
@@ -74,18 +94,36 @@ public class SpongeSchematicHelper {
             cbs.blocks = new FullBlockData[width * length * height];
             Map<String, Tag> paletteMap = getChildTag(schematic, "Palette", CompoundTag.class).getValue();
             HashMap<Integer, BlockData> palette = new HashMap<>(256);
+            List<Map.Entry<Integer, String>> latePairs = isPrimary ? null : new ArrayList<>();
             for (String key : paletteMap.keySet()) {
                 int id = getChildTag(paletteMap, key, IntTag.class).getValue();
-                BlockData data;
-                try {
-                    data = NMSHandler.getBlockHelper().parseBlockData(key);
+                if (isPrimary) {
+                    palette.put(id, blockDataCache.computeIfAbsent(key, SpongeSchematicHelper::unstableParseMaterial));
                 }
-                catch (Exception ex) {
-                    Debug.echoError(ex);
-                    MaterialTag material = MaterialTag.valueOf(BlockHelper.getMaterialNameFromBlockData(key), CoreUtilities.noDebugContext);
-                    data = (material == null ? new MaterialTag(Material.AIR) : material).getModernData();
+                else {
+                    BlockData entry = blockDataCache.get(key);
+                    if (entry != null) {
+                        palette.put(id, entry);
+                    }
+                    else {
+                        latePairs.add(new AbstractMap.SimpleEntry<>(id, key));
+                    }
                 }
-                palette.put(id, data);
+            }
+            if (!isPrimary && !latePairs.isEmpty()) {
+                BoolHolder bool = new BoolHolder();
+                Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                    for (Map.Entry<Integer, String> pair : latePairs) {
+                        palette.put(pair.getKey(), blockDataCache.computeIfAbsent(pair.getValue(), SpongeSchematicHelper::unstableParseMaterial));
+                    }
+                    bool.bool = true;
+                });
+                for (int i = 0; i < 1000; i++) {
+                    Thread.sleep(50);
+                    if (bool.bool) {
+                        break;
+                    }
+                }
             }
             Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
             if (schematic.containsKey("BlockEntities")) {
