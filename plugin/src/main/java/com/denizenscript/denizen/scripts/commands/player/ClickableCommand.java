@@ -28,7 +28,7 @@ public class ClickableCommand extends AbstractCommand {
     public ClickableCommand() {
         setName("clickable");
         setSyntax("clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
-        setRequiredArguments(1, 5);
+        setRequiredArguments(1, -1);
         isProcedural = false;
         allowedDynamicPrefixes = true;
     }
@@ -37,7 +37,7 @@ public class ClickableCommand extends AbstractCommand {
     // @Name Clickable
     // @Syntax clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)
     // @Required 1
-    // @Maximum 5
+    // @Maximum -1
     // @Short Generates a clickable command for players.
     // @Group player
     //
