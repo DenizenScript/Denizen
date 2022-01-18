@@ -71,5 +71,4 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
         this.event = event;
         fire(event);
     }
-
 }
