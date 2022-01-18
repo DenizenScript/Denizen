@@ -62,5 +62,4 @@ public class MapText extends MapObject {
             Debug.echoError(ex);
         }
     }
-
 }

@@ -45,5 +45,4 @@ public final class DoubleTag extends Tag {
     public String toString() {
         return "TAG_Double(" + value + ")";
     }
-
 }

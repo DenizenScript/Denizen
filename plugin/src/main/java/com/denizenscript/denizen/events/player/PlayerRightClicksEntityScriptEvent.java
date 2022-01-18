@@ -124,5 +124,4 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         this.event = event;
         fire(event);
     }
-
 }

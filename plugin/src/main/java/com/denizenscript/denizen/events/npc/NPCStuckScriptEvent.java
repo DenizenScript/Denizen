@@ -100,5 +100,4 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
         this.event = event;
         fire(event);
     }
-
 }

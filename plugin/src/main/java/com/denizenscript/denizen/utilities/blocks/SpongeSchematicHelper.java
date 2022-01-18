@@ -228,10 +228,7 @@ public class SpongeSchematicHelper {
                         blocksBuffer.write(blockId);
                         CompoundTag rawTag = bd.tileEntityData;
                         if (rawTag != null) {
-                            HashMap<String, Tag> values = new HashMap<>();
-                            for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
-                                values.put(entry.getKey(), entry.getValue());
-                            }
+                            HashMap<String, Tag> values = new HashMap<>(rawTag.getValue());
                             values.put("Pos", new IntArrayTag(new int[] { x, y, z }));
                             CompoundTag tileEntityTag = NMSHandler.getInstance().createCompoundTag(values);
                             tileEntities.add(tileEntityTag);

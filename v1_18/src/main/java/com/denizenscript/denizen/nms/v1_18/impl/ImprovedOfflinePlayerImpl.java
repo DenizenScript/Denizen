@@ -28,7 +28,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         super(playeruuid);
     }
 
-    public class OfflinePlayerInventory extends net.minecraft.world.entity.player.Inventory {
+    public static class OfflinePlayerInventory extends net.minecraft.world.entity.player.Inventory {
 
         public OfflinePlayerInventory(net.minecraft.world.entity.player.Player entityhuman) {
             super(entityhuman);
@@ -40,7 +40,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         }
     }
 
-    public class OfflineCraftInventoryPlayer extends CraftInventoryPlayer {
+    public static class OfflineCraftInventoryPlayer extends CraftInventoryPlayer {
 
         public OfflineCraftInventoryPlayer(net.minecraft.world.entity.player.Inventory inventory) {
             super(inventory);

@@ -177,5 +177,4 @@ public class MapScriptContainer extends ScriptContainer {
         }
         DenizenMapManager.setMap(mapView, renderer);
     }
-
 }

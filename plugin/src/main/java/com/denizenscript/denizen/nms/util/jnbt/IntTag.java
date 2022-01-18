@@ -45,5 +45,4 @@ public final class IntTag extends Tag {
     public String toString() {
         return "TAG_Int(" + value + ")";
     }
-
 }

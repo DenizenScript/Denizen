@@ -242,5 +242,4 @@ public class DenizenMapManager {
         }
         return null;
     }
-
 }

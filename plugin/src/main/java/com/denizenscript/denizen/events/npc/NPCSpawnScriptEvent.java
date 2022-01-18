@@ -84,5 +84,4 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
         this.event = event;
         fire(event);
     }
-
 }

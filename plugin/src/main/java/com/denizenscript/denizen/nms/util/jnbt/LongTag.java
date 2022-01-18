@@ -45,5 +45,4 @@ public final class LongTag extends Tag {
     public String toString() {
         return "TAG_Long(" + value + ")";
     }
-
 }

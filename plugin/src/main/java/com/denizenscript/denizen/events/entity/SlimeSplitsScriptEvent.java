@@ -93,5 +93,4 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
         this.event = event;
         fire(event);
     }
-
 }

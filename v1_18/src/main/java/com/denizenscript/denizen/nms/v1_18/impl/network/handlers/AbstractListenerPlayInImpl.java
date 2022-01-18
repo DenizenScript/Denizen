@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.nms.v1_18.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.Connection;
