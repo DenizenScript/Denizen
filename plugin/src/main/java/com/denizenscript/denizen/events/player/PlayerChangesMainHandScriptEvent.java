@@ -32,7 +32,7 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
     //
     // @Context
     // <context.old_hand> returns the player's old main hand, either LEFT or RIGHT.
-    // <context.hand> returns the player's new main hand.
+    // <context.new_hand> returns the player's new main hand.
     //
     // @Player Always.
     //
@@ -69,7 +69,7 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
             case "old_hand":
                 return new ElementTag(event.getMainHand().toString());
             // workaround for spigot bug
-            case "hand":
+            case "new_hand":
                 return new ElementTag(event.getMainHand() == MainHand.LEFT ? "RIGHT" : "LEFT");
         }
         return super.getContext(name);
