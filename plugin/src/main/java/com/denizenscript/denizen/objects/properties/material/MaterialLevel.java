@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Beehive;
+import org.bukkit.block.data.type.Farmland;
 import org.bukkit.block.data.type.Snow;
 
 public class MaterialLevel implements Property {
@@ -21,6 +22,7 @@ public class MaterialLevel implements Property {
                 && (((MaterialTag) material).getModernData() instanceof Levelled
                 || ((MaterialTag) material).getModernData() instanceof Cake
                 || ((MaterialTag) material).getModernData() instanceof Snow
+                || ((MaterialTag) material).getModernData() instanceof Farmland
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData() instanceof Beehive));
     }
 
@@ -50,7 +52,7 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the maximum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
+        // Returns the maximum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, and farmland.
         // -->
         PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -61,7 +63,7 @@ public class MaterialLevel implements Property {
         // @returns ElementTag(Number)
         // @group properties
         // @description
-        // Returns the minimum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
+        // Returns the minimum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, and farmland.
         // This will return 0 for all valid materials aside from snow.
         // -->
         PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "minimum_level", (attribute, material) -> {
@@ -74,7 +76,7 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
+        // Returns the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, and farmland.
         // -->
         PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -117,6 +119,14 @@ public class MaterialLevel implements Property {
         ((Beehive) material.getModernData()).setHoneyLevel(level);
     }
 
+    public boolean isFarmland() {
+        return material.getModernData() instanceof Farmland;
+    }
+
+    public Farmland getFarmland() {
+        return (Farmland) material.getModernData();
+    }
+
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
@@ -126,6 +136,9 @@ public class MaterialLevel implements Property {
         }
         else if (isHive()) {
             return getHoneyLevel();
+        }
+        else if (isFarmland()) {
+            return getFarmland().getMoisture();
         }
         return getLevelled().getLevel();
     }
@@ -139,6 +152,9 @@ public class MaterialLevel implements Property {
         }
         else if (isHive()) {
             return getMaxHoneyLevel();
+        }
+        else if (isFarmland()) {
+            return getFarmland().getMaximumMoisture();
         }
         return getLevelled().getMaximumLevel();
     }
@@ -163,6 +179,10 @@ public class MaterialLevel implements Property {
             setHoneyLevel(level);
             return;
         }
+        else if (isFarmland()) {
+            getFarmland().setMoisture(level);
+            return;
+        }
         getLevelled().setLevel(level);
     }
 
@@ -184,7 +204,7 @@ public class MaterialLevel implements Property {
         // @name level
         // @input ElementTag(Number)
         // @description
-        // Sets the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, and snow.
+        // Sets the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, and farmland.
         // @tags
         // <MaterialTag.level>
         // <MaterialTag.maximum_level>
