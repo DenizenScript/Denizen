@@ -62,7 +62,9 @@ public class RemoveCommand extends AbstractCommand {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(EntityTag.class)) {
+                EntityTag.allowDespawnedNpcs = true;
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
+                EntityTag.allowDespawnedNpcs = false;
             }
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(WorldTag.class)) {

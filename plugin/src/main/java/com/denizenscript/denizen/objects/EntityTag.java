@@ -1226,7 +1226,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public boolean isUnique() {
-        return entity != null || uuid != null || isFake;
+        return entity != null || uuid != null || isFake || npc != null;
     }
 
     public LocationTag doLocationTag(Attribute attribute) {
