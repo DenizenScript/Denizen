@@ -153,6 +153,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerAnimatesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesMainHandScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesGamemodeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesSignScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesWorldScriptEvent.class);
