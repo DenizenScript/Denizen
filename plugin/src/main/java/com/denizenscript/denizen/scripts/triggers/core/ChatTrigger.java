@@ -406,7 +406,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
      * Contains whether the chat trigger successfully 'triggered' and any context that was
      * available while triggering or attempting to trigger.
      */
-    public class ChatContext {
+    public static class ChatContext {
 
         public ChatContext(boolean triggered) {
             this.triggered = triggered;

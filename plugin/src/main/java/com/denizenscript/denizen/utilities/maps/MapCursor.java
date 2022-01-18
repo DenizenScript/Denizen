@@ -77,5 +77,4 @@ public class MapCursor extends MapObject {
             Debug.echoError(ex);
         }
     }
-
 }

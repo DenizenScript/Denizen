@@ -45,5 +45,4 @@ public final class ByteTag extends Tag {
     public String toString() {
         return "TAG_Byte(" + value + ")";
     }
-
 }

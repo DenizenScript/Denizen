@@ -98,7 +98,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
@@ -135,5 +135,4 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         this.event = event;
         fire(event);
     }
-
 }

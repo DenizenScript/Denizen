@@ -103,5 +103,4 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         this.event = event;
         fire(event);
     }
-
 }

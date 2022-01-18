@@ -14,10 +14,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // item merges
     // <item> merges
-    //
-    // @Regex ^on [^\s]+ merges$
     //
     // @Group Item
     //
@@ -37,6 +34,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
 
     public ItemMergesScriptEvent() {
         instance = this;
+        registerCouldMatcher("<item> merges");
     }
 
     public static ItemMergesScriptEvent instance;
@@ -44,17 +42,6 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     public LocationTag location;
     public EntityTag entity;
     public ItemMergeEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("merges")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

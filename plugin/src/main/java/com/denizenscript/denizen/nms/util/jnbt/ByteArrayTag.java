@@ -53,5 +53,4 @@ public final class ByteArrayTag extends Tag {
         }
         return "TAG_Byte_Array(" + hex + ")";
     }
-
 }

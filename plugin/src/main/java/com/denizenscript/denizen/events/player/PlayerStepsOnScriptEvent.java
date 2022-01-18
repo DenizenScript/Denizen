@@ -80,7 +80,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
@@ -123,5 +123,4 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         onPlayerStepsOn(evt);
         event.setCancelled(evt.isCancelled());
     }
-
 }

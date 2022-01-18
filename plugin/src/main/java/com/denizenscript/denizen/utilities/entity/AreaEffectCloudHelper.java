@@ -165,5 +165,4 @@ public class AreaEffectCloudHelper {
     public void setSource(ProjectileSource source) {
         entity.setSource(source);
     }
-
 }

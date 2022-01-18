@@ -14,10 +14,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // item despawns
     // <item> despawns
-    //
-    // @Regex ^on [^\s]+ despawns$
     //
     // @Group Item
     //
@@ -36,6 +33,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     public ItemDespawnsScriptEvent() {
         instance = this;
+        registerCouldMatcher("<item> despawns");
     }
 
     public static ItemDespawnsScriptEvent instance;
@@ -45,28 +43,14 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     public ItemDespawnEvent event;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("despawns")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         String item_test = CoreUtilities.getXthArg(0, path.eventLower);
-
         if (!tryItem(item, item_test)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 

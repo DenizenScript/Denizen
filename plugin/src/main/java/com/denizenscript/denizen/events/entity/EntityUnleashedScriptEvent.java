@@ -77,5 +77,4 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
         this.event = event;
         fire(event);
     }
-
 }

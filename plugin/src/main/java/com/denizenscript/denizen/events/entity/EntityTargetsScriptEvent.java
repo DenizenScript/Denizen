@@ -112,5 +112,4 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         this.event = event;
         fire(event);
     }
-
 }

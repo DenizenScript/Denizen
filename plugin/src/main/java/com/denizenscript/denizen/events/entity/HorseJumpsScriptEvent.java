@@ -112,5 +112,4 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         this.event = event;
         fire(event);
     }
-
 }

@@ -241,7 +241,7 @@ public class TriggerTrait extends Trait implements Listener {
      * Contains whether the trigger successfully 'triggered' and any context that was
      * available while triggering or attempting to trigger.
      */
-    public class TriggerContext {
+    public static class TriggerContext {
 
         public TriggerContext(boolean triggered) {
             this.triggered = triggered;

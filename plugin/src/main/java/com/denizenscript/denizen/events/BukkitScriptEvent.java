@@ -1216,5 +1216,4 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
     }
-
 }
