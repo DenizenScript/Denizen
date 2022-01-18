@@ -1023,7 +1023,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     // Used to store some information about a livingEntity while it's despawned
-    private class DespawnedEntity {
+    private static class DespawnedEntity {
 
         Double health = null;
         Location location = null;

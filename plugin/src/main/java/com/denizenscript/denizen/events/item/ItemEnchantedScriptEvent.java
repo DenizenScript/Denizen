@@ -21,10 +21,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // item enchanted
     // <item> enchanted
-    //
-    // @Regex ^on [^\s]+ enchanted$
     //
     // @Group Item
     //
@@ -56,6 +53,8 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     public ItemEnchantedScriptEvent() {
         instance = this;
+        registerCouldMatcher("<item> enchanted");
+        registerSwitches("enchant");
     }
 
     public static ItemEnchantedScriptEvent instance;
@@ -66,17 +65,6 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     public ElementTag button;
     public int cost;
     public EnchantItemEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("enchanted")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

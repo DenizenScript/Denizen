@@ -45,5 +45,4 @@ public final class ShortTag extends Tag {
     public String toString() {
         return "TAG_Short(" + value + ")";
     }
-
 }

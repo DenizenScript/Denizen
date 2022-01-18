@@ -199,5 +199,4 @@ public class MapImage extends MapObject {
         double weightB = 2 + (255 - rmean) / 256.0;
         return weightR * r * r + weightG * g * g + weightB * b * b;
     }
-
 }

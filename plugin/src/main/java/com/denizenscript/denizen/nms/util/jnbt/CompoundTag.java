@@ -453,5 +453,4 @@ public abstract class CompoundTag extends Tag {
         bldr.append("}");
         return bldr.toString();
     }
-
 }

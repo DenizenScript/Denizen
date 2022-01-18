@@ -17,7 +17,6 @@ public class Velocity {
      * @param heightGain The gain in height
      * @return A vector
      */
-
     public static Vector calculate(Vector from, Vector to, double gravity, double heightGain) {
 
         // Block locations

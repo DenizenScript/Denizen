@@ -19,8 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.block.SignChangeEvent;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.UUID;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 

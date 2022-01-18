@@ -321,5 +321,4 @@ public class BStatsMetricsLite {
         gzip.close();
         return outputStream.toByteArray();
     }
-
 }

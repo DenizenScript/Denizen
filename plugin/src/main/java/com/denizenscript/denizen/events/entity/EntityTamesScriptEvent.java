@@ -102,5 +102,4 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
         this.event = event;
         fire(event);
     }
-
 }

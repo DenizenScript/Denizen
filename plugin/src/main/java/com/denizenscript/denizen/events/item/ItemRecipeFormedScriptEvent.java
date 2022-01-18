@@ -20,10 +20,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // item recipe formed
     // <item> recipe formed
-    //
-    // @Regex ^on [^\s]+ recipe formed$
     //
     // @Group Item
     //
@@ -45,26 +42,13 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     public ItemRecipeFormedScriptEvent() {
         instance = this;
+        registerCouldMatcher("<item> recipe formed");
     }
 
     public static ItemRecipeFormedScriptEvent instance;
 
     public PrepareItemCraftEvent event;
     public ItemTag result;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (path.eventArgLowerAt(1).equals("crafted")) {
-            return true;
-        }
-        if (!path.eventArgsLowEqualStartingAt(1, "recipe", "formed")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

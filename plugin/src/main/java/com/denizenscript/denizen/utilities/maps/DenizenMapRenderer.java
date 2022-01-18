@@ -115,5 +115,4 @@ public class DenizenMapRenderer extends MapRenderer {
             mapView.removeRenderer(this);
         }
     }
-
 }

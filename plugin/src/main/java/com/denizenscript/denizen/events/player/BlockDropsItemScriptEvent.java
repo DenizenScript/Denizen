@@ -94,7 +94,7 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
@@ -131,5 +131,4 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
             EntityTag.forgetEntity(item);
         }
     }
-
 }

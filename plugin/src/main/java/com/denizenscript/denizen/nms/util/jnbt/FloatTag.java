@@ -45,5 +45,4 @@ public final class FloatTag extends Tag {
     public String toString() {
         return "TAG_Float(" + value + ")";
     }
-
 }

@@ -21,7 +21,6 @@ import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_14_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers;
 import org.bukkit.event.world.PortalCreateEvent;
 
