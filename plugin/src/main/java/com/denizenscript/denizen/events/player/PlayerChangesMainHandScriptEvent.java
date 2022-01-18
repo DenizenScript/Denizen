@@ -24,8 +24,6 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
     // @Events
     // player changes main hand
     //
-    // @Regex ^on player changes main hand$
-    //
     // @Group Player
     //
     // @Triggers when a player changes their main hand.
@@ -40,18 +38,11 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
 
     public PlayerChangesMainHandScriptEvent() {
         instance = this;
+        registerCouldMatcher("player changes main hand");
     }
 
     public static PlayerChangesMainHandScriptEvent instance;
     public PlayerChangedMainHandEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player changes main hand")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public String getName() {
