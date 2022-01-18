@@ -88,8 +88,8 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("action")) {
-            return new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none");
+        switch (name) {
+            case "action": return new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none");
         }
         return super.getContext(name);
     }

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -66,6 +67,9 @@ public class SpawnCommand extends AbstractCommand {
     public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
         for (EntityType entity : EntityType.values()) {
             addOne.accept(entity.name());
+        }
+        for (String scriptName : EntityScriptHelper.scripts.keySet()) {
+            addOne.accept(scriptName);
         }
     }
 

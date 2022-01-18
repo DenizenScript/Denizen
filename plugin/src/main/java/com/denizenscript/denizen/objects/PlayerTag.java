@@ -2048,9 +2048,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @attribute <PlayerTag.time>
         // @returns ElementTag(Number)
         // @description
-        // Returns the time the player is currently experiencing. This time could differ from
-        // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'
-        // mechanism is being used on the player.
+        // Returns the time the player is currently experiencing.
+        // This time could differ from the time that the rest of the world is currently experiencing if <@link command time> is being used on the player.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "time", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getPlayerTime());

@@ -71,8 +71,8 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
+        switch (name) {
+            case "location": return location;
         }
         return super.getContext(name);
     }

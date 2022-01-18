@@ -55,7 +55,7 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "NPCDoor";
+        return "NPCOpensDoor";
     }
 
     @Override
@@ -65,8 +65,8 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("location")) {
-            return location;
+        switch (name) {
+            case "location": return location;
         }
         return super.getContext(name);
     }
