@@ -18,8 +18,6 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // npc stuck
     //
-    // @Regex ^on npc stuck$
-    //
     // @Group NPC
     //
     // @Location true
@@ -39,19 +37,12 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
 
     public NPCStuckScriptEvent() {
         instance = this;
+        registerCouldMatcher("npc stuck");
     }
 
     public static NPCStuckScriptEvent instance;
     public NavigationStuckEvent event;
     public NPCTag npc;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("npc stuck")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

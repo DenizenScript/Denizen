@@ -16,8 +16,6 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // npc spawns
     //
-    // @Regex ^on npc spawns$
-    //
     // @Group NPC
     //
     // @Location true
@@ -35,20 +33,13 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
     public NPCSpawnScriptEvent() {
         instance = this;
+        registerCouldMatcher("npc spawns");
     }
 
     public static NPCSpawnScriptEvent instance;
     public NPCTag npc;
     public LocationTag location;
     public NPCSpawnEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("npc spawns")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

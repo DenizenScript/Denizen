@@ -15,8 +15,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // @Events
     // <inventory> picks up <item>
     //
-    // @Regex ^on [^\s]+ picks up [^\s]+$
-    //
     // @Group Item
     //
     // @Location true
