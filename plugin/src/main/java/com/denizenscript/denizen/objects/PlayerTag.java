@@ -1691,6 +1691,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return null;
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.main_hand>
+        // @returns ElementTag
+        // @description
+        // Returns the player's main hand, either LEFT or RIGHT.
+        // -->
+        registerOnlineOnlyTag(ElementTag.class, "main_hand", (attribute, object) -> {
+            return new ElementTag(object.getPlayerEntity().getMainHand().toString());
+        });
+
         /////////////////////
         //   CITIZENS ATTRIBUTES
         /////////////////
