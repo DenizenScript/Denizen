@@ -87,7 +87,7 @@ public class MaterialBlockType implements Property {
     }
 
     public boolean isCaveVines() {
-        return material.getModernData() instanceof CaveVinesPlant;
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof CaveVinesPlant;
     }
 
     public Slab getSlab() {
