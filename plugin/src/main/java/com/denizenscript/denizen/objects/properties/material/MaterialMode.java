@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,6 +14,7 @@ import org.bukkit.block.data.type.BubbleColumn;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.PistonHead;
 import org.bukkit.block.data.type.StructureBlock;
+import org.bukkit.block.data.type.SculkSensor;
 
 public class MaterialMode implements Property {
 
@@ -27,7 +30,8 @@ public class MaterialMode implements Property {
         return data instanceof Comparator
                 || data instanceof PistonHead
                 || data instanceof BubbleColumn
-                || data instanceof StructureBlock;
+                || data instanceof StructureBlock
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof SculkSensor);
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -62,6 +66,7 @@ public class MaterialMode implements Property {
         // For piston_heads, output is NORMAL or SHORT.
         // For bubble-columns, output is NORMAL or DRAG.
         // For structure-blocks, output is CORNER, DATA, LOAD, or SAVE.
+        // For sculk-sensors, output is ACTIVE, COOLDOWN, or INACTIVE.
         // -->
         PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -84,6 +89,10 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof StructureBlock;
     }
 
+    public boolean isSculkSensor() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof SculkSensor;
+    }
+
     public Comparator getComparator() {
         return (Comparator) material.getModernData();
     }
@@ -100,6 +109,10 @@ public class MaterialMode implements Property {
         return (StructureBlock) material.getModernData();
     }
 
+    /*public SculkSensor getSculkSensor() { // TODO 1.17
+        return (SculkSensor) material.getModernData();
+    }*/
+
     @Override
     public String getPropertyString() {
         if (isComparator()) {
@@ -113,6 +126,9 @@ public class MaterialMode implements Property {
         }
         else if (isStructureBlock()) {
             return getStructureBlock().getMode().name();
+        }
+        else if (isSculkSensor()) {
+            return ((SculkSensor) material.getModernData()).getPhase().name(); // TODO 1.17
         }
         return null; //Unreachable
     }
@@ -132,9 +148,10 @@ public class MaterialMode implements Property {
         // @description
         // Set a block's mode.
         // For comparators, input is COMPARE or SUBTRACT.
-        // For piston_heads, input is NORMAL or SHORT.
+        // For piston-heads, input is NORMAL or SHORT.
         // For bubble-columns, input is NORMAL or DRAG.
-        // For structure blocks, input is CORNER, DATA, LOAD, or SAVE.
+        // For structure-blocks, input is CORNER, DATA, LOAD, or SAVE.
+        // For sculk-sensors, input is ACTIVE, COOLDOWN, or INACTIVE.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -150,6 +167,9 @@ public class MaterialMode implements Property {
             }
             else if (isStructureBlock() && mechanism.requireEnum(false, StructureBlock.Mode.values())) {
                 getStructureBlock().setMode(StructureBlock.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isSculkSensor() && mechanism.requireEnum(false, SculkSensor.Phase.values())) {
+                ((SculkSensor) material.getModernData()).setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase())); // TODO 1.17
             }
         }
     }
