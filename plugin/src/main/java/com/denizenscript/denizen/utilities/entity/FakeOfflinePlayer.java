@@ -40,11 +40,6 @@ public class FakeOfflinePlayer implements OfflinePlayer {
         return false;
     }
 
-    // TODO: 1.12 update removed this
-   /* @Override
-    public void setBanned(boolean b) {
-    }*/
-
     @Override
     public boolean isWhitelisted() {
         return true;

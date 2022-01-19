@@ -27,8 +27,8 @@ public class MaterialBlockType implements Property {
         return data instanceof Slab
                 || data instanceof TechnicalPiston
                 || data instanceof Campfire
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof CaveVinesPlant);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof PointedDripstone
+                                                                        || data instanceof CaveVinesPlant));
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -104,9 +104,9 @@ public class MaterialBlockType implements Property {
 
     /*public PointedDripstone getDripstone() { // TODO: 1.17
         return (PointedDripstone) material.getModernData();
-    }*/
+    }
 
-    /*public CaveVinesPlant getCaveVines() { // TODO: 1.17
+    public CaveVinesPlant getCaveVines() {
         return (CaveVinesPlant) material.getModernData();
     }*/
 
@@ -162,8 +162,11 @@ public class MaterialBlockType implements Property {
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isDripstone() || isCaveVines()) {
+            else if (isDripstone()) {
                 MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
+            }
+            else if (isCaveVines()) {
+                ((CaveVinesPlant) material.getModernData()).setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries")); // TODO: 1.17
             }
         }
     }
