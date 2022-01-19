@@ -27,7 +27,8 @@ public class MaterialMode implements Property {
                 || data instanceof PistonHead
                 || data instanceof BubbleColumn
                 || data instanceof StructureBlock
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof SculkSensor)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof SculkSensor
+                                                                        || data instanceof BigDripleaf))
                 || data instanceof DaylightDetector
                 || data instanceof CommandBlock;
     }
@@ -67,6 +68,7 @@ public class MaterialMode implements Property {
         // For sculk-sensors, output is ACTIVE, COOLDOWN, or INACTIVE.
         // For daylight-detectors, output is INVERTED or NORMAL.
         // For command-blocks, output is CONDITIONAL or NORMAL.
+        // For big-dripleafs, output is FULL, NONE, PARTIAL, or UNSTABLE.
         // -->
         PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -101,6 +103,10 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof CommandBlock;
     }
 
+    public boolean isBigDripleaf() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof BigDripleaf;
+    }
+
     public Comparator getComparator() {
         return (Comparator) material.getModernData();
     }
@@ -127,6 +133,10 @@ public class MaterialMode implements Property {
 
     /*public SculkSensor getSculkSensor() { // TODO 1.17
         return (SculkSensor) material.getModernData();
+    }
+
+    public BigDripleaf getBigDripleaf() {
+        return (BigDripleaf) material.getModernData();
     }*/
 
     @Override
@@ -152,6 +162,9 @@ public class MaterialMode implements Property {
         else if (isCommandBlock()) {
             return getCommandBlock().isConditional() ? "CONDITIONAL" : "NORMAL";
         }
+        else if (isBigDripleaf()) {
+            return ((BigDripleaf) material.getModernData()).getTilt().name(); // TODO 1.17
+        }
         return null; //Unreachable
     }
 
@@ -176,6 +189,7 @@ public class MaterialMode implements Property {
         // For sculk-sensors, input is ACTIVE, COOLDOWN, or INACTIVE.
         // For daylight-detectors, input is INVERTED or NORMAL.
         // For command-blocks, input is CONDITIONAL or NORMAL.
+        // For big-dripleafs, input is FULL, NONE, PARTIAL, or UNSTABLE.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -200,6 +214,9 @@ public class MaterialMode implements Property {
             }
             else if (isCommandBlock()) {
                 getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
+            }
+            else if (isBigDripleaf() && mechanism.requireEnum(false, BigDripleaf.Tilt.values())) {
+                ((BigDripleaf) material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
         }
     }
