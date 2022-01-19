@@ -106,9 +106,9 @@ public class MaterialBlockType implements Property {
         return (PointedDripstone) material.getModernData();
     }*/
 
-    public CaveVinesPlant getCaveVines() {
+    /*public CaveVinesPlant getCaveVines() { // TODO: 1.17
         return (CaveVinesPlant) material.getModernData();
-    }
+    }*/
 
     @Override
     public String getPropertyString() {
@@ -125,7 +125,7 @@ public class MaterialBlockType implements Property {
             return ((PointedDripstone) material.getModernData()).getThickness().name(); // TODO: 1.17
         }
         else if (isCaveVines()) {
-            return getCaveVines().isBerries() ? "BERRIES" : "NORMAL";
+            return ((CaveVinesPlant) material.getModernData()).isBerries() ? "BERRIES" : "NORMAL"; // TODO: 1.17
         }
         return null; // Unreachable.
     }
@@ -162,11 +162,8 @@ public class MaterialBlockType implements Property {
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isDripstone()) {
+            else if (isDripstone() || isCaveVines()) {
                 MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
-            }
-            else if (isCaveVines()) {
-                getCaveVines().setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries"));
             }
         }
     }
