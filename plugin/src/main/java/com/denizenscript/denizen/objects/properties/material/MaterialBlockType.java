@@ -162,7 +162,7 @@ public class MaterialBlockType implements Property {
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isDripstone()){
+            else if (isDripstone()) {
                 MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
             }
             else if (isCaveVines()) {
