@@ -10,10 +10,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.block.data.Openable;
-import org.bukkit.block.data.type.DaylightDetector;
-import org.bukkit.block.data.type.Dispenser;
-import org.bukkit.block.data.type.Piston;
-import org.bukkit.block.data.type.EndPortalFrame;
+import org.bukkit.block.data.type.*;
 
 public class MaterialSwitchable implements Property {
 
@@ -32,7 +29,8 @@ public class MaterialSwitchable implements Property {
                 || data instanceof DaylightDetector
                 || data instanceof Piston
                 || data instanceof Lightable
-                || data instanceof EndPortalFrame;
+                || data instanceof EndPortalFrame
+                || data instanceof Hopper;
     }
 
     public static MaterialSwitchable getFrom(ObjectTag _material) {
@@ -72,6 +70,7 @@ public class MaterialSwitchable implements Property {
         // - a lightable block is lit
         // - a piston block is extended
         // - an end portal frame has an ender eye in it
+        // - a hopper is NOT being powered by redstone
         // -->
         PropertyParser.<MaterialSwitchable, ElementTag>registerStaticTag(ElementTag.class, "switched", (attribute, material) -> {
             return new ElementTag(material.getState());
@@ -110,6 +109,10 @@ public class MaterialSwitchable implements Property {
         return material.getModernData() instanceof EndPortalFrame;
     }
 
+    public boolean isHopper() {
+        return material.getModernData() instanceof Hopper;
+    }
+
     public Openable getOpenable() {
         return (Openable) material.getModernData();
     }
@@ -134,6 +137,10 @@ public class MaterialSwitchable implements Property {
         return (EndPortalFrame) material.getModernData();
     }
 
+    public Hopper getHopper() {
+        return (Hopper) material.getModernData();
+    }
+
     public boolean getState() {
         if (isOpenable()) {
             return getOpenable().isOpen();
@@ -155,6 +162,9 @@ public class MaterialSwitchable implements Property {
         }
         else if (isEndFrame()) {
             return getEndFrame().hasEye();
+        }
+        else if (isHopper()) {
+            return getHopper().isEnabled();
         }
         return false; // Unreachable
     }
@@ -180,6 +190,9 @@ public class MaterialSwitchable implements Property {
         }
         else if (isEndFrame()) {
             getEndFrame().setEye(state);
+        }
+        else if (isHopper()) {
+            getHopper().setEnabled(state);
         }
     }
 

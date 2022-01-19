@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.properties.material.MaterialBlockType;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.block.data.type.CaveVinesPlant;
 import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
@@ -52,6 +53,9 @@ public class MultiVersionHelper1_17 { // TODO: 1.17
     public static void materialBlockTypeRunMech(Mechanism mechanism, MaterialBlockType object) {
         if (object.isDripstone() && mechanism.requireEnum(false, PointedDripstone.Thickness.values())) {
             ((PointedDripstone) object.material.getModernData()).setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
+        else if (object.isCaveVines()) {
+            ((CaveVinesPlant) object.material.getModernData()).setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries"));
         }
     }
 }

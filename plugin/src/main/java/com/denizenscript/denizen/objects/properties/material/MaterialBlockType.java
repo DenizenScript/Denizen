@@ -11,10 +11,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Campfire;
-import org.bukkit.block.data.type.PointedDripstone;
-import org.bukkit.block.data.type.Slab;
-import org.bukkit.block.data.type.TechnicalPiston;
+import org.bukkit.block.data.type.*;
 
 public class MaterialBlockType implements Property {
 
@@ -30,7 +27,8 @@ public class MaterialBlockType implements Property {
         return data instanceof Slab
                 || data instanceof TechnicalPiston
                 || data instanceof Campfire
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof CaveVinesPlant);
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -65,6 +63,7 @@ public class MaterialBlockType implements Property {
         // For piston_heads, output is NORMAL or STICKY.
         // For campfires, output is NORMAL or SIGNAL.
         // For pointed dripstone, output is BASE, FRUSTUM, MIDDLE, TIP, or TIP_MERGE.
+        // For cave vines, output is NORMAL or BERRIES.
         // -->
         PropertyParser.<MaterialBlockType, ElementTag>registerStaticTag(ElementTag.class, "type", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -87,6 +86,10 @@ public class MaterialBlockType implements Property {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof PointedDripstone;
     }
 
+    public boolean isCaveVines() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof CaveVinesPlant;
+    }
+
     public Slab getSlab() {
         return (Slab) material.getModernData();
     }
@@ -103,6 +106,10 @@ public class MaterialBlockType implements Property {
         return (PointedDripstone) material.getModernData();
     }*/
 
+    /*public CaveVinesPlant getCaveVines() { // TODO: 1.17
+        return (CaveVinesPlant) material.getModernData();
+    }*/
+
     @Override
     public String getPropertyString() {
         if (isSlab()) {
@@ -116,6 +123,9 @@ public class MaterialBlockType implements Property {
         }
         else if (isDripstone()) {
             return ((PointedDripstone) material.getModernData()).getThickness().name(); // TODO: 1.17
+        }
+        else if (isCaveVines()) {
+            return ((CaveVinesPlant) material.getModernData()).isBerries() ? "BERRIES" : "NORMAL"; // TODO: 1.17
         }
         return null; // Unreachable.
     }
@@ -138,6 +148,7 @@ public class MaterialBlockType implements Property {
         // For piston_heads, input is NORMAL or STICKY.
         // For campfires, input is NORMAL or SIGNAL.
         // For pointed dripstone, input is BASE, FRUSTUM, MIDDLE, TIP, or TIP_MERGE.
+        // For cave vines, input is NORMAL or BERRIES.
         // @tags
         // <MaterialTag.type>
         // -->
@@ -151,7 +162,7 @@ public class MaterialBlockType implements Property {
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else {
+            else if (isDripstone() || isCaveVines()) {
                 MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
             }
         }
