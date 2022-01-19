@@ -28,7 +28,8 @@ public class MaterialBlockType implements Property {
                 || data instanceof TechnicalPiston
                 || data instanceof Campfire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof PointedDripstone
-                                                                        || data instanceof CaveVinesPlant));
+                                                                        || data instanceof CaveVinesPlant))
+                || data instanceof Scaffolding;
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -64,6 +65,7 @@ public class MaterialBlockType implements Property {
         // For campfires, output is NORMAL or SIGNAL.
         // For pointed dripstone, output is BASE, FRUSTUM, MIDDLE, TIP, or TIP_MERGE.
         // For cave vines, output is NORMAL or BERRIES.
+        // For scaffolding, output is NORMAL or BOTTOM.
         // -->
         PropertyParser.<MaterialBlockType, ElementTag>registerStaticTag(ElementTag.class, "type", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -90,6 +92,10 @@ public class MaterialBlockType implements Property {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof CaveVinesPlant;
     }
 
+    public boolean isScaffolding() {
+        return material.getModernData() instanceof Scaffolding;
+    }
+
     public Slab getSlab() {
         return (Slab) material.getModernData();
     }
@@ -100,6 +106,10 @@ public class MaterialBlockType implements Property {
 
     public Campfire getCampfire() {
         return (Campfire) material.getModernData();
+    }
+
+    public Scaffolding getScaffolding() {
+        return (Scaffolding) material.getModernData();
     }
 
     /*public PointedDripstone getDripstone() { // TODO: 1.17
@@ -127,6 +137,9 @@ public class MaterialBlockType implements Property {
         else if (isCaveVines()) {
             return ((CaveVinesPlant) material.getModernData()).isBerries() ? "BERRIES" : "NORMAL"; // TODO: 1.17
         }
+        else if (isScaffolding()) {
+            return getScaffolding().isBottom() ? "BOTTOM" : "NORMAL";
+        }
         return null; // Unreachable.
     }
 
@@ -149,6 +162,7 @@ public class MaterialBlockType implements Property {
         // For campfires, input is NORMAL or SIGNAL.
         // For pointed dripstone, input is BASE, FRUSTUM, MIDDLE, TIP, or TIP_MERGE.
         // For cave vines, input is NORMAL or BERRIES.
+        // For scaffolding, input is NORMAL or BOTTOM.
         // @tags
         // <MaterialTag.type>
         // -->
@@ -167,6 +181,9 @@ public class MaterialBlockType implements Property {
             }
             else if (isCaveVines()) {
                 ((CaveVinesPlant) material.getModernData()).setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries")); // TODO: 1.17
+            }
+            else if (isScaffolding()) {
+                getScaffolding().setBottom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bottom"));
             }
         }
     }
