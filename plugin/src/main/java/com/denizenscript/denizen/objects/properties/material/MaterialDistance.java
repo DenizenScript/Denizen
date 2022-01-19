@@ -84,11 +84,11 @@ public class MaterialDistance implements Property {
         // -->
         if (mechanism.matches("distance") && mechanism.requireInteger()) {
             int distance = mechanism.getValue().asInt();
-            if (distance <= getMaxDistance()) {
+            if (distance >= 0 && distance <= getMaxDistance()) {
                 getScaffolding().setDistance(distance);
             }
             else {
-                mechanism.echoError("Distance must be less than or equal to " + getMaxDistance());
+                mechanism.echoError("Distance must be between 0 and " + getMaxDistance());
             }
         }
     }
