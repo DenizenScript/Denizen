@@ -11,6 +11,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.BubbleColumn;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.PistonHead;
+import org.bukkit.block.data.type.StructureBlock;
 
 public class MaterialMode implements Property {
 
@@ -25,7 +26,8 @@ public class MaterialMode implements Property {
         BlockData data = mat.getModernData();
         return data instanceof Comparator
                 || data instanceof PistonHead
-                || data instanceof BubbleColumn;
+                || data instanceof BubbleColumn
+                || data instanceof StructureBlock;
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -59,6 +61,7 @@ public class MaterialMode implements Property {
         // For comparators, output is COMPARE or SUBTRACT.
         // For piston_heads, output is NORMAL or SHORT.
         // For bubble-columns, output is NORMAL or DRAG.
+        // For structure-blocks, output is CORNER, DATA, LOAD, or SAVE.
         // -->
         PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -77,6 +80,10 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof BubbleColumn;
     }
 
+    public boolean isStructureBlock() {
+        return material.getModernData() instanceof StructureBlock;
+    }
+
     public Comparator getComparator() {
         return (Comparator) material.getModernData();
     }
@@ -89,6 +96,10 @@ public class MaterialMode implements Property {
         return (BubbleColumn) material.getModernData();
     }
 
+    public StructureBlock getStructureBlock() {
+        return (StructureBlock) material.getModernData();
+    }
+
     @Override
     public String getPropertyString() {
         if (isComparator()) {
@@ -97,9 +108,13 @@ public class MaterialMode implements Property {
         else if (isBubbleColumn()) {
             return getBubbleColumn().isDrag() ? "DRAG" : "NORMAL";
         }
-        else {
+        else if (isPistonHead()) {
             return getPistonHead().isShort() ? "SHORT" : "NORMAL";
         }
+        else if (isStructureBlock()) {
+            return getStructureBlock().getMode().name();
+        }
+        return null; //Unreachable
     }
 
     @Override
@@ -119,6 +134,7 @@ public class MaterialMode implements Property {
         // For comparators, input is COMPARE or SUBTRACT.
         // For piston_heads, input is NORMAL or SHORT.
         // For bubble-columns, input is NORMAL or DRAG.
+        // For structure blocks, input is CORNER, DATA, LOAD, or SAVE.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -131,6 +147,9 @@ public class MaterialMode implements Property {
             }
             else if (isPistonHead()) {
                 getPistonHead().setShort(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "short"));
+            }
+            else if (isStructureBlock() && mechanism.requireEnum(false, StructureBlock.Mode.values())) {
+                getStructureBlock().setMode(StructureBlock.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
         }
     }
