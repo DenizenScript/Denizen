@@ -16,7 +16,6 @@ import net.citizensnpcs.api.trait.TraitInfo;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TraitCommand extends AbstractCommand {
 
@@ -66,9 +65,9 @@ public class TraitCommand extends AbstractCommand {
     private enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
-            addOne.accept(trait.getTraitName());
+            tab.add(trait.getTraitName());
         }
     }
 

@@ -27,7 +27,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class DisguiseCommand extends AbstractCommand {
 
@@ -83,12 +82,8 @@ public class DisguiseCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        if (arg.startsWith("as:")) {
-            for (EntityType entity : EntityType.values()) {
-                addOne.accept("as:" + entity.name());
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("as:", EntityType.values());
     }
 
     @Override

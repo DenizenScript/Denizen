@@ -152,12 +152,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     }
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        if (arg.startsWith("name:")) {
-            for (String schem : schematics.keySet()) {
-                addOne.accept("name:" + schem);
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("name:", schematics.keySet());
     }
 
     private enum Type {CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE, FLIP_X, FLIP_Y, FLIP_Z}

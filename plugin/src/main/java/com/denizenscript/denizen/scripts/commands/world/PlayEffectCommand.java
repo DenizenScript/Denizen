@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class PlayEffectCommand extends AbstractCommand {
 
@@ -93,15 +92,9 @@ public class PlayEffectCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        if (arg.startsWith("effect:")) {
-            for (String particle : NMSHandler.getParticleHelper().particles.keySet()) {
-                addOne.accept("effect:" + particle);
-            }
-            for (Effect effect : Effect.values()) {
-                addOne.accept("effect:" + effect.name());
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("effect:", NMSHandler.getParticleHelper().particles.keySet());
+        tab.addWithPrefix("effect:", Effect.values());
     }
 
     @Override

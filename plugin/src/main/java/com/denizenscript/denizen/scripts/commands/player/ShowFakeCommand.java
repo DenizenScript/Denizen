@@ -18,7 +18,6 @@ import org.bukkit.Material;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ShowFakeCommand extends AbstractCommand {
 
@@ -80,10 +79,10 @@ public class ShowFakeCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (Material material : Material.values()) {
             if (material.isBlock()) {
-                addOne.accept(material.name());
+                tab.add(material.name());
             }
         }
     }

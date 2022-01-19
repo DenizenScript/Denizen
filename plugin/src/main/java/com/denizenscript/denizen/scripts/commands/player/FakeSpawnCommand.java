@@ -17,7 +17,6 @@ import org.bukkit.entity.EntityType;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class FakeSpawnCommand extends AbstractCommand {
 
@@ -58,10 +57,8 @@ public class FakeSpawnCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (EntityType entity : EntityType.values()) {
-            addOne.accept(entity.name());
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add(EntityType.values());
     }
 
     @Override

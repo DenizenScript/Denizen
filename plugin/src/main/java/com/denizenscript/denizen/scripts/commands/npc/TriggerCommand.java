@@ -11,8 +11,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.function.Consumer;
-
 public class TriggerCommand extends AbstractCommand {
 
     public TriggerCommand() {
@@ -73,11 +71,8 @@ public class TriggerCommand extends AbstractCommand {
     private enum Toggle {TOGGLE, TRUE, FALSE}
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        addOne.accept("name:click");
-        addOne.accept("name:chat");
-        addOne.accept("name:damage");
-        addOne.accept("name:proximity");
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add("name:click", "name:chat", "name:damage", "name:proximity");
     }
 
     @Override

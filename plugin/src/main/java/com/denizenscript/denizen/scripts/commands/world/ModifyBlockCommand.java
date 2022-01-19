@@ -41,7 +41,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
@@ -112,10 +111,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (Material material : Material.values()) {
             if (material.isBlock()) {
-                addOne.accept(material.name());
+                tab.add(material.name());
             }
         }
     }

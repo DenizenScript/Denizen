@@ -11,8 +11,6 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.notable.Notable;
-import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -26,7 +24,6 @@ import org.bukkit.block.data.type.TrapDoor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class SwitchCommand extends AbstractCommand {
 
@@ -90,10 +87,8 @@ public class SwitchCommand extends AbstractCommand {
     private Map<Location, Integer> taskMap = new HashMap<>(32);
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (Notable note : NoteManager.notesByType.get(LocationTag.class)) {
-            addOne.accept(NoteManager.getSavedId(note));
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addNotesOfType(LocationTag.class);
     }
 
     @Override

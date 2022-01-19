@@ -20,7 +20,6 @@ import org.bukkit.WorldType;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class CreateWorldCommand extends AbstractCommand implements Holdable {
@@ -81,17 +80,9 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        if (arg.startsWith("environment:")) {
-            for (World.Environment env : World.Environment.values()) {
-                addOne.accept("environment:" + env);
-            }
-        }
-        if (arg.startsWith("worldtype:")) {
-            for (WorldType type : WorldType.values()) {
-                addOne.accept("worldtype:" + type);
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("environment:", World.Environment.values());
+        tab.addWithPrefix("worldtype:", WorldType.values());
     }
 
     @Override

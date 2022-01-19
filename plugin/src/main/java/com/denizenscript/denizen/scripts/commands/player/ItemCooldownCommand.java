@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class ItemCooldownCommand extends AbstractCommand {
 
@@ -49,10 +48,10 @@ public class ItemCooldownCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (Material material : Material.values()) {
             if (material.isItem()) {
-                addOne.accept(material.name());
+                tab.add(material.name());
             }
         }
     }

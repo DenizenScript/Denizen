@@ -12,8 +12,6 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.notable.Notable;
-import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.Holdable;
@@ -21,7 +19,6 @@ import com.denizenscript.denizencore.scripts.commands.Holdable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class WalkCommand extends AbstractCommand implements Holdable {
 
@@ -95,10 +92,8 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (Notable note : NoteManager.notesByType.get(LocationTag.class)) {
-            addOne.accept(NoteManager.getSavedId(note));
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addNotesOfType(LocationTag.class);
     }
 
     @Override

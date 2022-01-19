@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ExCommandHandler implements CommandExecutor, TabCompleter {
 
@@ -265,39 +264,31 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
             return null;
         }
         String lowArg = CoreUtilities.toLowerCase(rawArgs[rawArgs.length - 1]);
-        ArrayList<String> output = new ArrayList<>();
+        AbstractCommand.TabCompletionsBuilder completionsBuilder = new AbstractCommand.TabCompletionsBuilder();
+        completionsBuilder.arg = lowArg;
         for (String flat : dcmd.docFlagArgs) {
-            if (flat.startsWith(lowArg)) {
-                output.add(flat);
-            }
+            completionsBuilder.add(flat);
         }
         for (String prefix : dcmd.docPrefixes) {
-            if (prefix.startsWith(lowArg)) {
-                output.add(prefix + ":");
-            }
+            completionsBuilder.add(prefix + ":");
         }
-        Consumer<String> addOne = (s) -> {
-            if (CoreUtilities.toLowerCase(s).startsWith(lowArg)) {
-                output.add(s);
-            }
-        };
-        dcmd.addCustomTabCompletions(lowArg, addOne);
+        dcmd.addCustomTabCompletions(completionsBuilder);
         if (dcmd instanceof FlagCommand) {
             if (sender instanceof Player) {
                 for (String flagName : new PlayerTag((Player) sender).getFlagTracker().listAllFlags()) {
                     if (!flagName.startsWith("__")) {
-                        addOne.accept(flagName);
+                        completionsBuilder.add(flagName);
                     }
                 }
             }
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
                 for (String flagName : new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender)).getFlagTracker().listAllFlags()) {
                     if (!flagName.startsWith("__")) {
-                        addOne.accept(flagName);
+                        completionsBuilder.add(flagName);
                     }
                 }
             }
         }
-        return output;
+        return completionsBuilder.completions;
     }
 }

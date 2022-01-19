@@ -16,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class SpawnCommand extends AbstractCommand {
 
@@ -64,13 +63,9 @@ public class SpawnCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (EntityType entity : EntityType.values()) {
-            addOne.accept(entity.name());
-        }
-        for (String scriptName : EntityScriptHelper.scripts.keySet()) {
-            addOne.accept(scriptName);
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add(EntityType.values());
+        tab.add(EntityScriptHelper.scripts.keySet());
     }
 
     @Override

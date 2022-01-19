@@ -16,7 +16,6 @@ import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class AnimateCommand extends AbstractCommand {
 
@@ -69,18 +68,10 @@ public class AnimateCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        if (arg.startsWith("animation:")) {
-            for (EntityEffect effect : EntityEffect.values()) {
-                addOne.accept("animation:" + effect.name());
-            }
-            for (PlayerAnimation anim : PlayerAnimation.values()) {
-                addOne.accept("animation:" + anim.name());
-            }
-            for (String nmsAnim : AnimationHelper.entityAnimations.keySet()) {
-                addOne.accept("animation:" + nmsAnim);
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("animation:", EntityEffect.values());
+        tab.addWithPrefix("animation:", PlayerAnimation.values());
+        tab.addWithPrefix("animation:", AnimationHelper.entityAnimations.keySet());
     }
 
     @Override

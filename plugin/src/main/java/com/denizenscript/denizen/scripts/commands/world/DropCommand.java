@@ -21,7 +21,6 @@ import org.bukkit.entity.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class DropCommand extends AbstractCommand {
 
@@ -75,15 +74,13 @@ public class DropCommand extends AbstractCommand {
     enum Action {DROP_ITEM, DROP_EXP, DROP_ENTITY}
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (Material material : Material.values()) {
             if (material.isItem()) {
-                addOne.accept(material.name());
+                tab.add(material.name());
             }
         }
-        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
-            addOne.accept(itemScript);
-        }
+        tab.add(ItemScriptHelper.item_scripts.keySet());
     }
 
     @Override

@@ -17,8 +17,6 @@ import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.function.Consumer;
-
 public class CreateCommand extends AbstractCommand {
 
     public CreateCommand() {
@@ -61,10 +59,8 @@ public class CreateCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (EntityType entity : EntityType.values()) {
-            addOne.accept(entity.name());
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add(EntityType.values());
     }
 
     @Override

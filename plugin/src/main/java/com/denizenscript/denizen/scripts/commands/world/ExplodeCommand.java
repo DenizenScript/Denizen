@@ -7,12 +7,8 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.notable.Notable;
-import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-
-import java.util.function.Consumer;
 
 public class ExplodeCommand extends AbstractCommand {
 
@@ -68,10 +64,8 @@ public class ExplodeCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (Notable note : NoteManager.notesByType.get(LocationTag.class)) {
-            addOne.accept(NoteManager.getSavedId(note));
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addNotesOfType(LocationTag.class);
     }
 
     @Override

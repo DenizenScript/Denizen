@@ -11,11 +11,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-
-import java.util.function.Consumer;
 
 public class CooldownCommand extends AbstractCommand {
 
@@ -65,12 +61,8 @@ public class CooldownCommand extends AbstractCommand {
     private enum Type {GLOBAL, PLAYER}
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
-            if (script instanceof InteractScriptContainer) {
-                addOne.accept(script.getName());
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addScriptsOfType(InteractScriptContainer.class);
     }
 
     @Override

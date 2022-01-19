@@ -10,8 +10,6 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.notable.Notable;
-import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
@@ -19,8 +17,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-
-import java.util.function.Consumer;
 
 public class SignCommand extends AbstractCommand {
 
@@ -70,10 +66,8 @@ public class SignCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (Notable note : NoteManager.notesByType.get(LocationTag.class)) {
-            addOne.accept(NoteManager.getSavedId(note));
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addNotesOfType(LocationTag.class);
     }
 
     private enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN}

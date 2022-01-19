@@ -12,14 +12,11 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.Deprecations;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class AssignmentCommand extends AbstractCommand {
 
@@ -77,16 +74,9 @@ public class AssignmentCommand extends AbstractCommand {
     private enum Action {SET, ADD, REMOVE, CLEAR}
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        addOne.accept("set");
-        addOne.accept("add");
-        addOne.accept("remove");
-        addOne.accept("clear");
-        for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
-            if (script instanceof AssignmentScriptContainer) {
-                addOne.accept(script.getName());
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add("set", "add", "remove", "clear");
+        tab.addScriptsOfType(AssignmentScriptContainer.class);
     }
 
     @Override

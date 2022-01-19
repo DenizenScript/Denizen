@@ -1,22 +1,14 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.inventory.MainHand;
-
-import java.util.Arrays;
 
 public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -57,11 +49,9 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "old_hand":
-                return new ElementTag(event.getMainHand().toString());
-            // workaround for spigot bug
-            case "new_hand":
-                return new ElementTag(event.getMainHand() == MainHand.LEFT ? "RIGHT" : "LEFT");
+            // workaround for spigot bug: getMainHand returns the old value, despite being documented as returning the new value
+            case "old_hand": return new ElementTag(event.getMainHand().toString());
+            case "new_hand": return new ElementTag(event.getMainHand() == MainHand.LEFT ? "RIGHT" : "LEFT");
         }
         return super.getContext(name);
     }

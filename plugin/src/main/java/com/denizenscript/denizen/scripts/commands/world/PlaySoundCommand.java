@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Sound;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class PlaySoundCommand extends AbstractCommand {
 
@@ -71,12 +70,8 @@ public class PlaySoundCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        if (arg.startsWith("sound:")) {
-            for (Sound sound : Sound.values()) {
-                addOne.accept("sound:" + sound.name());
-            }
-        }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("sound:", Sound.values());
     }
 
     @Override

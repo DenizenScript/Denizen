@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class FakeItemCommand extends AbstractCommand {
 
@@ -62,15 +61,13 @@ public class FakeItemCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (Material material : Material.values()) {
             if (material.isItem()) {
-                addOne.accept(material.name());
+                tab.add(material.name());
             }
         }
-        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
-            addOne.accept(itemScript);
-        }
+        tab.add(ItemScriptHelper.item_scripts.keySet());
     }
 
     @Override

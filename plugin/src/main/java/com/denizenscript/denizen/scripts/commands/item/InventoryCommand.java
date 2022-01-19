@@ -152,17 +152,15 @@ public class InventoryCommand extends AbstractCommand {
     private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (String mech : PropertyParser.propertiesByClass.get(ItemTag.class).propertiesByMechanism.keySet()) {
-            addOne.accept(mech);
-        }
-        if (arg.contains(":")) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add(PropertyParser.propertiesByClass.get(ItemTag.class).propertiesByMechanism.keySet());
+        if (tab.arg.contains(":")) {
             Consumer<String> addAll = (s) -> {
-                addOne.accept("o:" + s);
-                addOne.accept("origin:" + s);
-                addOne.accept("d:" + s);
-                addOne.accept("dest:" + s);
-                addOne.accept("destination:" + s);
+                tab.add("o:" + s);
+                tab.add("origin:" + s);
+                tab.add("d:" + s);
+                tab.add("dest:" + s);
+                tab.add("destination:" + s);
             };
             for (InventoryTag inventory : (HashSet<InventoryTag>) ((HashSet) NoteManager.notesByType.get(InventoryTag.class))) {
                 addAll.accept(inventory.noteName);

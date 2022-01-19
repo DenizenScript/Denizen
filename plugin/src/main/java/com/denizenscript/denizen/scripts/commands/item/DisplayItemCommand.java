@@ -25,7 +25,6 @@ import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class DisplayItemCommand extends AbstractCommand implements Listener {
 
@@ -74,15 +73,13 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         for (Material material : Material.values()) {
             if (material.isItem()) {
-                addOne.accept(material.name());
+                tab.add(material.name());
             }
         }
-        for (String itemScript : ItemScriptHelper.item_scripts.keySet()) {
-            addOne.accept(itemScript);
-        }
+        tab.add(ItemScriptHelper.item_scripts.keySet());
     }
 
     @Override

@@ -14,7 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class CastCommand extends AbstractCommand {
 
@@ -77,9 +76,9 @@ public class CastCommand extends AbstractCommand {
     // -->
 
     @Override
-    public void addCustomTabCompletions(String arg, Consumer<String> addOne) {
-        for (PotionEffectType effect : PotionEffectType.values()) {
-            addOne.accept(effect.getName());
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        for (PotionEffectType effect : PotionEffectType.values()) { // Not an enum for some reason
+            tab.add(effect.getName());
         }
     }
 
