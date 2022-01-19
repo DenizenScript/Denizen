@@ -102,9 +102,9 @@ public class MaterialBlockType implements Property {
         return (Campfire) material.getModernData();
     }
 
-    public PointedDripstone getDripstone() {
+    /*public PointedDripstone getDripstone() { // TODO: 1.17
         return (PointedDripstone) material.getModernData();
-    }
+    }*/
 
     public CaveVinesPlant getCaveVines() {
         return (CaveVinesPlant) material.getModernData();
@@ -122,7 +122,7 @@ public class MaterialBlockType implements Property {
             return getPistonHead().getType().name();
         }
         else if (isDripstone()) {
-            return getDripstone().getThickness().name();
+            return ((PointedDripstone) material.getModernData()).getThickness().name(); // TODO: 1.17
         }
         else if (isCaveVines()) {
             return getCaveVines().isBerries() ? "BERRIES" : "NORMAL";
