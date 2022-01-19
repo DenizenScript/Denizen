@@ -28,7 +28,8 @@ public class MaterialMode implements Property {
                 || data instanceof BubbleColumn
                 || data instanceof StructureBlock
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof SculkSensor)
-                || data instanceof DaylightDetector;
+                || data instanceof DaylightDetector
+                || data instanceof CommandBlock;
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -65,6 +66,7 @@ public class MaterialMode implements Property {
         // For structure-blocks, output is CORNER, DATA, LOAD, or SAVE.
         // For sculk-sensors, output is ACTIVE, COOLDOWN, or INACTIVE.
         // For daylight-detectors, output is INVERTED or NORMAL.
+        // For command-blocks, output is CONDITIONAL or NORMAL.
         // -->
         PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -95,6 +97,10 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof DaylightDetector;
     }
 
+    public boolean isCommandBlock() {
+        return material.getModernData() instanceof CommandBlock;
+    }
+
     public Comparator getComparator() {
         return (Comparator) material.getModernData();
     }
@@ -113,6 +119,10 @@ public class MaterialMode implements Property {
 
     public DaylightDetector getDaylightDetector() {
         return (DaylightDetector) material.getModernData();
+    }
+
+    public CommandBlock getCommandBlock() {
+        return (CommandBlock) material.getModernData();
     }
 
     /*public SculkSensor getSculkSensor() { // TODO 1.17
@@ -139,6 +149,9 @@ public class MaterialMode implements Property {
         else if (isDaylightDetector()) {
             return getDaylightDetector().isInverted() ? "INVERTED" : "NORMAL";
         }
+        else if (isCommandBlock()) {
+            return getCommandBlock().isConditional() ? "CONDITIONAL" : "NORMAL";
+        }
         return null; //Unreachable
     }
 
@@ -162,6 +175,7 @@ public class MaterialMode implements Property {
         // For structure-blocks, input is CORNER, DATA, LOAD, or SAVE.
         // For sculk-sensors, input is ACTIVE, COOLDOWN, or INACTIVE.
         // For daylight-detectors, input is INVERTED or NORMAL.
+        // For command-blocks, input is CONDITIONAL or NORMAL.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -183,6 +197,9 @@ public class MaterialMode implements Property {
             }
             else if (isDaylightDetector()) {
                 getDaylightDetector().setInverted(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "inverted"));
+            }
+            else if (isCommandBlock()) {
+                getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
             }
         }
     }
