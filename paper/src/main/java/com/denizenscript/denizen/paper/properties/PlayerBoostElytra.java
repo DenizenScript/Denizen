@@ -53,8 +53,10 @@ public class PlayerBoostElytra implements Property {
         // @object PlayerTag
         // @name firework_boost
         // @input ItemTag
+        // @Plugin Paper
         // @description
-        // Firework boosts the player with the specified firework rocket, player must be gliding.
+        // Firework boosts the player with the specified firework rocket.
+        // The player must be gliding.
         // -->
         if (mechanism.matches("firework_boost") && mechanism.hasValue()) {
             ItemTag item = mechanism.valueAsType(ItemTag.class);
