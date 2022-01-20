@@ -22,7 +22,7 @@ public class PlayerBoostElytra implements Property {
         return new PlayerBoostElytra((PlayerTag) player);
     }
 
-    public static final String[] handledTags = new String[] {
+    public static final String[] handledMechs = new String[] {
             "firework_boost"
     };
 
@@ -44,6 +44,14 @@ public class PlayerBoostElytra implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name firework_boost
+        // @input ItemTag
+        // @description
+        // Firework boosts the player with the specified firework rocket, player must be gliding.
+        // -->
         if (mechanism.matches("firework_boost") && mechanism.hasValue()) {
             ItemTag item = mechanism.valueAsType(ItemTag.class);
             if (item.getBukkitMaterial() != Material.FIREWORK_ROCKET) {
