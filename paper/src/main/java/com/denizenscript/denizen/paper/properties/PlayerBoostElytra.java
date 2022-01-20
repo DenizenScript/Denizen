@@ -42,6 +42,10 @@ public class PlayerBoostElytra implements Property {
         return "firework_boost";
     }
 
+    public static void registerTags() {
+        // None
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 
