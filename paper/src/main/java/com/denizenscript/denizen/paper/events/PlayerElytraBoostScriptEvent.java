@@ -53,7 +53,6 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     public static PlayerElytraBoostScriptEvent instance;
     public PlayerElytraBoostEvent event;
     public ItemTag firework;
-    public EntityTag fireworkEntity;
     public PlayerTag player;
 
     @Override
@@ -87,7 +86,7 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
             case "item":
                 return firework;
             case "entity":
-                return fireworkEntity;
+                return new EntityTag(event.getFirework());
             case "should_keep":
                 return new ElementTag(!event.shouldConsume());
         }
@@ -108,7 +107,6 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     @EventHandler
     public void onPlayerElytraBoost(PlayerElytraBoostEvent event) {
         firework = new ItemTag(event.getItemStack());
-        fireworkEntity = new EntityTag(event.getFirework());
         player = new PlayerTag(event.getPlayer());
         this.event = event;
         fire(event);

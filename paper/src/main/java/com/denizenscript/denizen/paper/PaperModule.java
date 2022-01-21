@@ -52,7 +52,6 @@ public class PaperModule {
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
-        PropertyParser.registerProperty(PlayerBoostElytra.class, PlayerTag.class);
 
         // Paper extension properties
         PropertyParser.registerProperty(PaperEntityProperties.class, EntityTag.class);
