@@ -36,13 +36,14 @@ public class MaterialDistance implements Property {
     MaterialTag material;
 
     public static void registerTags() {
+
         // <--[tag]
         // @attribute <MaterialTag.distance>
         // @returns ElementTag(Number)
         // @mechanism MaterialTag.distance
         // @group properties
         // @description
-        // Returns the distance between a scaffolding block and the nearest scaffolding block placed above a 'bottom' scaffold.
+        // Returns the horizontal distance between a scaffolding block and the nearest scaffolding block placed above a 'bottom' scaffold.
         // -->
         PropertyParser.<MaterialDistance, ElementTag>registerStaticTag(ElementTag.class, "distance", (attribute, material) -> {
             return new ElementTag(material.getDistance());
@@ -73,12 +74,13 @@ public class MaterialDistance implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
         // <--[mechanism]
         // @object MaterialTag
         // @name distance
         // @input ElementTag(Number)
         // @description
-        // Sets the distance between a scaffolding block and the nearest scaffolding block placed above a 'bottom' scaffold.
+        // Sets the horizontal distance between a scaffolding block and the nearest scaffolding block placed above a 'bottom' scaffold.
         // @tags
         // <MaterialTag.distance>
         // -->
