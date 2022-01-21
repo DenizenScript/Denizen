@@ -127,7 +127,7 @@ public class MobproxTrait extends Trait {
         if (range == null) {
             return 10;
         }
-        return new ElementTag(range.toString()).asInt();
+        return range.asElement().asInt();
     }
 
     public int getTimer() {
@@ -135,7 +135,7 @@ public class MobproxTrait extends Trait {
         if (range == null) {
             return 4;
         }
-        return new ElementTag(range.toString()).asInt();
+        return range.asElement().asInt();
     }
 
     public boolean acceptNpcs() {
@@ -143,7 +143,7 @@ public class MobproxTrait extends Trait {
         if (range == null) {
             return false;
         }
-        return new ElementTag(range.toString()).asBoolean();
+        return range.asElement().asBoolean();
     }
 
     @Override

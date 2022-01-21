@@ -3234,7 +3234,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Cannot run fake_entity_health - entity is invalid or not living.");
                 return;
             }
-            double max = maxObject == null ? entity.getLivingEntity().getMaxHealth() : new ElementTag(maxObject.toString()).asDouble();
+            double max = maxObject == null ? entity.getLivingEntity().getMaxHealth() : maxObject.asElement().asDouble();
             NMSHandler.getPacketHelper().showMobHealth(getPlayerEntity(), entity.getLivingEntity(), health, max);
         }
 
