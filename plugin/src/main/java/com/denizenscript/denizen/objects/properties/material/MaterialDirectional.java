@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_16;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -15,7 +16,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.block.data.type.Jigsaw;
-import org.bukkit.block.data.type.Jigsaw.Orientation;
 import org.bukkit.util.Vector;
 
 public class MaterialDirectional implements Property {
@@ -54,7 +54,7 @@ public class MaterialDirectional implements Property {
         material = _material;
     }
 
-    MaterialTag material;
+    public MaterialTag material;
 
     public static BlockFace[] rotatableValidFaces = new BlockFace[] {
             BlockFace.SOUTH, BlockFace.SOUTH_SOUTH_WEST, BlockFace.SOUTH_WEST, BlockFace.WEST_SOUTH_WEST, BlockFace.WEST,
@@ -101,7 +101,7 @@ public class MaterialDirectional implements Property {
                 }
             }
             else if (material.isJigsaw()) {
-                for (Orientation orientation : Orientation.values()) {
+                for (Jigsaw.Orientation orientation : Jigsaw.Orientation.values()) {
                     toReturn.add(orientation.name());
                 }
             }
@@ -343,8 +343,8 @@ public class MaterialDirectional implements Property {
             else if (isRail() && mechanism.requireEnum(false, Rail.Shape.values())) {
                 getRail().setShape(Rail.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isJigsaw() && mechanism.requireEnum(false, Orientation.values())) {
-                ((Jigsaw) material.getModernData()).setOrientation(Orientation.valueOf(mechanism.getValue().asString().toUpperCase())); // TODO: 1.16
+            else if (isJigsaw()) {
+                MultiVersionHelper1_16.MaterialDirectionalRunMech(mechanism, this);
             }
             else if (!isJigsaw() && mechanism.requireEnum(false, BlockFace.values())) {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
