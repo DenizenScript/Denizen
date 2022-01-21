@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -51,27 +50,6 @@ public class MaterialBrewingStand implements Property {
         PropertyParser.<MaterialBrewingStand, ListTag>registerStaticTag(ListTag.class, "bottles", (attribute, material) -> {
             return material.getBottleBooleans();
         });
-
-        // <--[tag]
-        // @attribute <MaterialTag.has_bottle[<#>]>
-        // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.bottles
-        // @group properties
-        // @description
-        // Returns whether the brewing stand has a bottle at the specified index.
-        // -->
-        PropertyParser.<MaterialBrewingStand, ElementTag>registerStaticTag(ElementTag.class, "has_bottle", (attribute, material) -> {
-            if (!attribute.hasParam() || !ArgumentHelper.matchesInteger(attribute.getParam())) {
-                attribute.echoError("Tag MaterialTag.has_bottle[...] must have a valid integer input.");
-                return null;
-            }
-            int index = attribute.getIntParam();
-            if (index <= 0 || index > material.getMaxBottles()) {
-                attribute.echoError("Index must be between 1 and " + material.getMaxBottles() + ".");
-                return null;
-            }
-            return new ElementTag(material.hasBottle(index-1));
-        });
     }
 
     public BrewingStand getBrewingStand() {
@@ -89,7 +67,7 @@ public class MaterialBrewingStand implements Property {
     public ListTag getBottleBooleans() {
         ListTag result = new ListTag();
         for (int i = 0; i < getMaxBottles(); i++) {
-            result.addObject(new ElementTag(getBottles().contains(i)));
+            result.addObject(new ElementTag(hasBottle(i)));
         }
         return result;
     }
@@ -129,7 +107,6 @@ public class MaterialBrewingStand implements Property {
         // Sets the bottles in a brewing stand. Input is a list of booleans representing whether that slot has a bottle, specifying no value counts as false.
         // @tags
         // <MaterialTag.bottles>
-        // <MaterialTag.has_bottle[<#>]>
         // -->
         if (mechanism.matches("bottles")) {
             ListTag bottles = mechanism.valueAsType(ListTag.class);
