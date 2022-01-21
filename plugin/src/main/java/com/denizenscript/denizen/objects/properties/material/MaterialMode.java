@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -50,7 +51,7 @@ public class MaterialMode implements Property {
         material = _material;
     }
 
-    MaterialTag material;
+    public MaterialTag material;
 
     public static void registerTags() {
 
@@ -63,12 +64,12 @@ public class MaterialMode implements Property {
         // Returns a block's mode.
         // For comparators, output is COMPARE or SUBTRACT.
         // For piston_heads, output is NORMAL or SHORT.
-        // For bubble-columns, output is NORMAL or DRAG.
-        // For structure-blocks, output is CORNER, DATA, LOAD, or SAVE.
-        // For sculk-sensors, output is ACTIVE, COOLDOWN, or INACTIVE.
-        // For daylight-detectors, output is INVERTED or NORMAL.
-        // For command-blocks, output is CONDITIONAL or NORMAL.
-        // For big-dripleafs, output is FULL, NONE, PARTIAL, or UNSTABLE.
+        // For bubble_columns, output is NORMAL or DRAG.
+        // For structure_blocks, output is CORNER, DATA, LOAD, or SAVE.
+        // For sculk_sensors, output is ACTIVE, COOLDOWN, or INACTIVE.
+        // For daylight_detectors, output is INVERTED or NORMAL.
+        // For command_blocks, output is CONDITIONAL or NORMAL.
+        // For big_dripleafs, output is FULL, NONE, PARTIAL, or UNSTABLE.
         // -->
         PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -183,13 +184,13 @@ public class MaterialMode implements Property {
         // @description
         // Set a block's mode.
         // For comparators, input is COMPARE or SUBTRACT.
-        // For piston-heads, input is NORMAL or SHORT.
-        // For bubble-columns, input is NORMAL or DRAG.
-        // For structure-blocks, input is CORNER, DATA, LOAD, or SAVE.
-        // For sculk-sensors, input is ACTIVE, COOLDOWN, or INACTIVE.
-        // For daylight-detectors, input is INVERTED or NORMAL.
-        // For command-blocks, input is CONDITIONAL or NORMAL.
-        // For big-dripleafs, input is FULL, NONE, PARTIAL, or UNSTABLE.
+        // For piston_heads, input is NORMAL or SHORT.
+        // For bubble_columns, input is NORMAL or DRAG.
+        // For structure_blocks, input is CORNER, DATA, LOAD, or SAVE.
+        // For sculk_sensors, input is ACTIVE, COOLDOWN, or INACTIVE.
+        // For daylight_detectors, input is INVERTED or NORMAL.
+        // For command_blocks, input is CONDITIONAL or NORMAL.
+        // For big_dripleafs, input is FULL, NONE, PARTIAL, or UNSTABLE.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -206,17 +207,14 @@ public class MaterialMode implements Property {
             else if (isStructureBlock() && mechanism.requireEnum(false, StructureBlock.Mode.values())) {
                 getStructureBlock().setMode(StructureBlock.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isSculkSensor() && mechanism.requireEnum(false, SculkSensor.Phase.values())) {
-                ((SculkSensor) material.getModernData()).setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase())); // TODO: 1.17
+            else if (isSculkSensor() || isBigDripleaf()) {
+                MultiVersionHelper1_17.materialModeRunMech(mechanism, this);
             }
             else if (isDaylightDetector()) {
                 getDaylightDetector().setInverted(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "inverted"));
             }
             else if (isCommandBlock()) {
                 getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
-            }
-            else if (isBigDripleaf() && mechanism.requireEnum(false, BigDripleaf.Tilt.values())) {
-                ((BigDripleaf) material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
         }
     }
