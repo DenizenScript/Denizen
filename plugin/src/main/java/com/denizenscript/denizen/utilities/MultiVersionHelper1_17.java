@@ -2,10 +2,13 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.material.MaterialBlockType;
+import com.denizenscript.denizen.objects.properties.material.MaterialMode;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.block.data.type.BigDripleaf;
 import org.bukkit.block.data.type.PointedDripstone;
+import org.bukkit.block.data.type.SculkSensor;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -52,6 +55,15 @@ public class MultiVersionHelper1_17 { // TODO: 1.17
     public static void materialBlockTypeRunMech(Mechanism mechanism, MaterialBlockType object) {
         if (object.isDripstone() && mechanism.requireEnum(false, PointedDripstone.Thickness.values())) {
             ((PointedDripstone) object.material.getModernData()).setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
+    }
+
+    public static void materialModeRunMech(Mechanism mechanism, MaterialMode object) {
+        if (object.isSculkSensor() && mechanism.requireEnum(false, SculkSensor.Phase.values())) {
+            ((SculkSensor) object.material.getModernData()).setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
+        else if (object.isBigDripleaf() && mechanism.requireEnum(false, BigDripleaf.Tilt.values())) {
+            ((BigDripleaf) object.material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }
