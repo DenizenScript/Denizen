@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_16;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -14,6 +15,7 @@ import org.bukkit.Axis;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.PointedDripstone;
+import org.bukkit.block.data.type.Jigsaw;
 import org.bukkit.util.Vector;
 
 public class MaterialDirectional implements Property {
@@ -27,11 +29,12 @@ public class MaterialDirectional implements Property {
             return false;
         }
         BlockData data = mat.getModernData();
-        if (!(data instanceof Directional || data instanceof Orientable || data instanceof Rotatable || data instanceof Rail
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone))) {
-            return false;
-        }
-        return true;
+        return data instanceof Directional
+                || data instanceof Orientable
+                || data instanceof Rotatable
+                || data instanceof Rail
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Jigsaw);
     }
 
     public static MaterialDirectional getFrom(ObjectTag _material) {
@@ -51,7 +54,7 @@ public class MaterialDirectional implements Property {
         material = _material;
     }
 
-    MaterialTag material;
+    public MaterialTag material;
 
     public static BlockFace[] rotatableValidFaces = new BlockFace[] {
             BlockFace.SOUTH, BlockFace.SOUTH_SOUTH_WEST, BlockFace.SOUTH_WEST, BlockFace.WEST_SOUTH_WEST, BlockFace.WEST,
@@ -95,6 +98,11 @@ public class MaterialDirectional implements Property {
             else if (material.isDripstone()) {
                 for (BlockFace face : ((PointedDripstone) material.material.getModernData()).getVerticalDirections()) { // TODO: 1.17
                     toReturn.add(face.name());
+                }
+            }
+            else if (material.isJigsaw()) {
+                for (Jigsaw.Orientation orientation : Jigsaw.Orientation.values()) {
+                    toReturn.add(orientation.name());
                 }
             }
             else { // Unreachable
@@ -162,6 +170,30 @@ public class MaterialDirectional implements Property {
         else if (isDripstone()) {
             return ((PointedDripstone) material.getModernData()).getVerticalDirection().getDirection(); // TODO: 1.17
         }
+        else if (isJigsaw()) {
+            switch (((Jigsaw) material.getModernData()).getOrientation()) { // TODO: 1.16
+                case DOWN_EAST:
+                    return new Vector(1, -1, 0);
+                case DOWN_NORTH:
+                    return new Vector(0, -1, -1);
+                case DOWN_SOUTH:
+                    return new Vector(0, -1, 1);
+                case DOWN_WEST:
+                    return new Vector(-1, -1, 0);
+                case EAST_UP:
+                case UP_EAST:
+                    return new Vector(1, 1, 0);
+                case NORTH_UP:
+                case UP_NORTH:
+                    return new Vector(0, 1, -1);
+                case SOUTH_UP:
+                case UP_SOUTH:
+                    return new Vector(0, 1, 1);
+                case WEST_UP:
+                case UP_WEST:
+                    return new Vector(-1, 1, 0);
+            }
+        }
         return null; // Unreachable.
     }
 
@@ -180,6 +212,9 @@ public class MaterialDirectional implements Property {
         }
         else if (isDripstone()) {
             return ((PointedDripstone) material.getModernData()).getVerticalDirection().name(); // TODO: 1.17
+        }
+        else if (isJigsaw()) {
+            return ((Jigsaw) material.getModernData()).getOrientation().name(); // TODO: 1.16
         }
         return null; // Unreachable
     }
@@ -204,6 +239,10 @@ public class MaterialDirectional implements Property {
         return material.getModernData() instanceof Rail;
     }
 
+    public boolean isJigsaw() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getModernData() instanceof Jigsaw;
+    }
+
     public Orientable getOrientable() {
         return (Orientable) material.getModernData();
     }
@@ -218,6 +257,10 @@ public class MaterialDirectional implements Property {
 
     /*public PointedDripstone getDripstone() { // TODO: 1.17
         return (PointedDripstone) material.getModernData();
+    }*/
+
+    /*public Jigsaw getJigsaw() { // TODO: 1.16
+        return (Jigsaw) material.getModernData();
     }*/
 
     public Rail getRail() {
@@ -300,7 +343,10 @@ public class MaterialDirectional implements Property {
             else if (isRail() && mechanism.requireEnum(false, Rail.Shape.values())) {
                 getRail().setShape(Rail.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (mechanism.requireEnum(false, BlockFace.values())) {
+            else if (isJigsaw()) {
+                MultiVersionHelper1_16.materialDirectionalRunMech(mechanism, this);
+            }
+            else if (!isJigsaw() && mechanism.requireEnum(false, BlockFace.values())) {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
