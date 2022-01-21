@@ -344,7 +344,7 @@ public class MaterialDirectional implements Property {
                 getRail().setShape(Rail.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isJigsaw()) {
-                MultiVersionHelper1_16.MaterialDirectionalRunMech(mechanism, this);
+                MultiVersionHelper1_16.materialDirectionalRunMech(mechanism, this);
             }
             else if (!isJigsaw() && mechanism.requireEnum(false, BlockFace.values())) {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));

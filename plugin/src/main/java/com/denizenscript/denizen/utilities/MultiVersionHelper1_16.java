@@ -6,7 +6,7 @@ import org.bukkit.block.data.type.Jigsaw;
 
 public class MultiVersionHelper1_16 { // TODO: 1.16
 
-    public static void MaterialDirectionalRunMech(Mechanism mechanism, MaterialDirectional object) {
+    public static void materialDirectionalRunMech(Mechanism mechanism, MaterialDirectional object) {
         if (object.isJigsaw() && mechanism.requireEnum(false, Jigsaw.Orientation.values())) {
             ((Jigsaw) object.material.getModernData()).setOrientation(Jigsaw.Orientation.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
