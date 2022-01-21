@@ -33,8 +33,8 @@ public class MaterialDirectional implements Property {
                 || data instanceof Orientable
                 || data instanceof Rotatable
                 || data instanceof Rail
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Jigsaw);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Jigsaw)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone);
     }
 
     public static MaterialDirectional getFrom(ObjectTag _material) {
@@ -118,6 +118,7 @@ public class MaterialDirectional implements Property {
         // @group properties
         // @description
         // Returns the current facing direction for a directional material (like a door or a bed).
+        // This includes materials that Spigot classifies as "directional", "orientable", or "rotatable", as well as rails, dripstone, and jigsaw blocks.
         // Output is a direction name like "NORTH", or an axis like "X", or a rail direction like "ASCENDING_NORTH".
         // -->
         PropertyParser.<MaterialDirectional, ElementTag>registerStaticTag(ElementTag.class, "direction", (attribute, material) -> {
@@ -271,10 +272,10 @@ public class MaterialDirectional implements Property {
         if (isOrientable()) {
             Axis axis;
             Vector vec = face.getDirection();
-            if (vec.getX() >= 0.5) {
+            if (Math.abs(vec.getX()) >= 0.5) {
                 axis = Axis.X;
             }
-            else if (vec.getY() >= 0.5) {
+            else if (Math.abs(vec.getY()) >= 0.5) {
                 axis = Axis.Y;
             }
             else {

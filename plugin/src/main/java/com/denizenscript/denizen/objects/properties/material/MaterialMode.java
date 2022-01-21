@@ -28,10 +28,10 @@ public class MaterialMode implements Property {
                 || data instanceof PistonHead
                 || data instanceof BubbleColumn
                 || data instanceof StructureBlock
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof SculkSensor
-                                                                        || data instanceof BigDripleaf))
                 || data instanceof DaylightDetector
-                || data instanceof CommandBlock;
+                || data instanceof CommandBlock
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof SculkSensor
+                                                                        || data instanceof BigDripleaf));
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -154,19 +154,19 @@ public class MaterialMode implements Property {
         else if (isStructureBlock()) {
             return getStructureBlock().getMode().name();
         }
-        else if (isSculkSensor()) {
-            return ((SculkSensor) material.getModernData()).getPhase().name(); // TODO: 1.17
-        }
         else if (isDaylightDetector()) {
             return getDaylightDetector().isInverted() ? "INVERTED" : "NORMAL";
         }
         else if (isCommandBlock()) {
             return getCommandBlock().isConditional() ? "CONDITIONAL" : "NORMAL";
         }
+        else if (isSculkSensor()) {
+            return ((SculkSensor) material.getModernData()).getPhase().name(); // TODO: 1.17
+        }
         else if (isBigDripleaf()) {
             return ((BigDripleaf) material.getModernData()).getTilt().name(); // TODO: 1.17
         }
-        return null; //Unreachable
+        return null; // Unreachable
     }
 
     @Override
@@ -207,14 +207,14 @@ public class MaterialMode implements Property {
             else if (isStructureBlock() && mechanism.requireEnum(false, StructureBlock.Mode.values())) {
                 getStructureBlock().setMode(StructureBlock.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isSculkSensor() || isBigDripleaf()) {
-                MultiVersionHelper1_17.materialModeRunMech(mechanism, this);
-            }
             else if (isDaylightDetector()) {
                 getDaylightDetector().setInverted(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "inverted"));
             }
             else if (isCommandBlock()) {
                 getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
+            }
+            else if (isSculkSensor() || isBigDripleaf()) {
+                MultiVersionHelper1_17.materialModeRunMech(mechanism, this);
             }
         }
     }

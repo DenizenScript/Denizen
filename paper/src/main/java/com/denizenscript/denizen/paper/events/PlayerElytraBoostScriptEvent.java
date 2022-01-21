@@ -30,7 +30,7 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     // @Switch with:<item> to only process the event if the firework item used matches the specified item.
     // @Switch elytra:<item> to only process the event if the elytra used matches the specified item.
     //
-    // @Triggers when a player boosts their elytra with a firework.
+    // @Triggers when a player boosts their elytra with a firework rocket while gliding.
     //
     // @Context
     // <context.item> returns the firework item used to boost.

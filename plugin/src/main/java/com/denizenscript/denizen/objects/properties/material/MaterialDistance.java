@@ -46,20 +46,12 @@ public class MaterialDistance implements Property {
         // Returns the horizontal distance between a scaffolding block and the nearest scaffolding block placed above a 'bottom' scaffold.
         // -->
         PropertyParser.<MaterialDistance, ElementTag>registerStaticTag(ElementTag.class, "distance", (attribute, material) -> {
-            return new ElementTag(material.getDistance());
+            return new ElementTag(material.getScaffolding().getDistance());
         });
     }
 
     public Scaffolding getScaffolding() {
         return (Scaffolding) material.getModernData();
-    }
-
-    public int getDistance() {
-        return getScaffolding().getDistance();
-    }
-
-    public int getMaxDistance() {
-        return getScaffolding().getMaximumDistance();
     }
 
     @Override
@@ -86,11 +78,11 @@ public class MaterialDistance implements Property {
         // -->
         if (mechanism.matches("distance") && mechanism.requireInteger()) {
             int distance = mechanism.getValue().asInt();
-            if (distance >= 0 && distance <= getMaxDistance()) {
+            if (distance >= 0 && distance <= getScaffolding().getMaximumDistance()) {
                 getScaffolding().setDistance(distance);
             }
             else {
-                mechanism.echoError("Distance must be between 0 and " + getMaxDistance());
+                mechanism.echoError("Distance must be between 0 and " + getScaffolding().getMaximumDistance());
             }
         }
     }

@@ -9,8 +9,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.type.BrewingStand;
 
-import java.util.Set;
-
 public class MaterialBrewingStand implements Property {
 
     public static boolean describes(ObjectTag material) {
@@ -39,13 +37,15 @@ public class MaterialBrewingStand implements Property {
     MaterialTag material;
 
     public static void registerTags() {
+
         // <--[tag]
         // @attribute <MaterialTag.bottles>
-        // @returns ListTag(ElementTag)
+        // @returns ListTag
         // @mechanism MaterialTag.bottles
         // @group properties
         // @description
         // Returns a list of booleans that represent whether a slot in a brewing stand has a bottle.
+        // Under current implementation this always returns exactly 3 values, like "true|false|true".
         // -->
         PropertyParser.<MaterialBrewingStand, ListTag>registerStaticTag(ListTag.class, "bottles", (attribute, material) -> {
             return material.getBottleBooleans();
@@ -60,30 +60,12 @@ public class MaterialBrewingStand implements Property {
         return getBrewingStand().getMaximumBottles();
     }
 
-    public Set<Integer> getBottles() {
-        return getBrewingStand().getBottles();
-    }
-
     public ListTag getBottleBooleans() {
         ListTag result = new ListTag();
         for (int i = 0; i < getMaxBottles(); i++) {
-            result.addObject(new ElementTag(hasBottle(i)));
+            result.addObject(new ElementTag(getBrewingStand().hasBottle(i)));
         }
         return result;
-    }
-
-    public boolean hasBottle(int index) {
-        return getBrewingStand().hasBottle(index);
-    }
-
-    public void setBottle(int index, boolean hasBottle) {
-        getBrewingStand().setBottle(index, hasBottle);
-    }
-
-    public void resetBottles() {
-        for (int i : getBottles()) {
-            setBottle(i, false);
-        }
     }
 
     @Override
@@ -104,7 +86,7 @@ public class MaterialBrewingStand implements Property {
         // @name bottles
         // @input ListTag
         // @description
-        // Sets the bottles in a brewing stand. Input is a list of booleans representing whether that slot has a bottle, specifying no value counts as false.
+        // Sets the bottles in a brewing stand. Input is a list of booleans representing whether that slot has a bottle.
         // @tags
         // <MaterialTag.bottles>
         // -->
@@ -114,9 +96,8 @@ public class MaterialBrewingStand implements Property {
                 mechanism.echoError("Too many values specified! Brewing stand has a maximum of " + getMaxBottles() + " bottles.");
                 return;
             }
-            resetBottles();
             for (int i = 0; i < bottles.size(); i++) {
-                setBottle(i, new ElementTag(bottles.get(i)).asBoolean());
+                getBrewingStand().setBottle(i, new ElementTag(bottles.get(i)).asBoolean());
             }
         }
     }

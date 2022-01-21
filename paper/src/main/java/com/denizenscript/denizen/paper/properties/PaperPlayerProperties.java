@@ -84,7 +84,7 @@ public class PaperPlayerProperties implements Property {
         // Firework boosts the player with the specified firework rocket.
         // The player must be gliding.
         // -->
-        if (mechanism.matches("firework_boost") && mechanism.hasValue()) {
+        if (mechanism.matches("firework_boost") && mechanism.requireObject(ItemTag.class)) {
             if (!player.getPlayerEntity().isGliding()) {
                 mechanism.echoError("Player must be gliding to use firework_boost.");
                 return;

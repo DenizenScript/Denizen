@@ -70,7 +70,6 @@ public class NPCCommandHandler {
     @Requirements(selected = true, ownership = true)
     public void pushable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         PushableTrait trait = npc.getOrAddTrait(PushableTrait.class);
-
         if (args.hasFlag('r') && !args.hasFlag('t')) {
             trait.setReturnable(!trait.isReturnable());
             Messaging.sendInfo(sender, npc.getName() + (trait.isReturnable() ? " will " : " will not ") + "return when being pushed"

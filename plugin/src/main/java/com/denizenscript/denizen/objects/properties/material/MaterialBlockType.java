@@ -27,9 +27,9 @@ public class MaterialBlockType implements Property {
         return data instanceof Slab
                 || data instanceof TechnicalPiston
                 || data instanceof Campfire
+                || data instanceof Scaffolding
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof PointedDripstone
-                                                                        || data instanceof CaveVinesPlant))
-                || data instanceof Scaffolding;
+                                                                        || data instanceof CaveVinesPlant));
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -131,14 +131,14 @@ public class MaterialBlockType implements Property {
         else if (isPistonHead()) {
             return getPistonHead().getType().name();
         }
+        else if (isScaffolding()) {
+            return getScaffolding().isBottom() ? "BOTTOM" : "NORMAL";
+        }
         else if (isDripstone()) {
             return ((PointedDripstone) material.getModernData()).getThickness().name(); // TODO: 1.17
         }
         else if (isCaveVines()) {
             return ((CaveVinesPlant) material.getModernData()).isBerries() ? "BERRIES" : "NORMAL"; // TODO: 1.17
-        }
-        else if (isScaffolding()) {
-            return getScaffolding().isBottom() ? "BOTTOM" : "NORMAL";
         }
         return null; // Unreachable.
     }
@@ -176,14 +176,14 @@ public class MaterialBlockType implements Property {
             else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
+            else if (isScaffolding()) {
+                getScaffolding().setBottom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bottom"));
+            }
             else if (isDripstone()) {
                 MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
             }
             else if (isCaveVines()) {
                 ((CaveVinesPlant) material.getModernData()).setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries")); // TODO: 1.17
-            }
-            else if (isScaffolding()) {
-                getScaffolding().setBottom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bottom"));
             }
         }
     }
