@@ -37,6 +37,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerElytraBoostScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEquipsArmorScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);

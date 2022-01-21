@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.Material;
 
 public class PaperPlayerProperties implements Property {
     public static boolean describes(ObjectTag player) {
@@ -21,7 +23,7 @@ public class PaperPlayerProperties implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "affects_monster_spawning"
+            "affects_monster_spawning", "firework_boost"
     };
 
     private PaperPlayerProperties(PlayerTag player) {
@@ -71,6 +73,28 @@ public class PaperPlayerProperties implements Property {
         // -->
         if (mechanism.matches("affects_monster_spawning") && mechanism.requireBoolean()) {
             player.getPlayerEntity().setAffectsSpawning(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name firework_boost
+        // @input ItemTag
+        // @Plugin Paper
+        // @description
+        // Firework boosts the player with the specified firework rocket.
+        // The player must be gliding.
+        // -->
+        if (mechanism.matches("firework_boost") && mechanism.hasValue()) {
+            if (!player.getPlayerEntity().isGliding()) {
+                mechanism.echoError("Player must be gliding to use firework_boost.");
+                return;
+            }
+            ItemTag item = mechanism.valueAsType(ItemTag.class);
+            if (item.getBukkitMaterial() != Material.FIREWORK_ROCKET) {
+                mechanism.echoError("Invalid input item: must be a firework rocket.");
+                return;
+            }
+            player.getPlayerEntity().boostElytra(item.getItemStack());
         }
     }
 }
