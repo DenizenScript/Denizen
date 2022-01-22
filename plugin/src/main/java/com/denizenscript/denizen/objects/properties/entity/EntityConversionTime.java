@@ -7,12 +7,15 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Zombie;
 
 public class EntityConversionTime implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Zombie;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Zombie
+                && !(((EntityTag) entity).getBukkitEntity() instanceof PigZombie);
     }
 
     public static EntityConversionTime getFrom(ObjectTag entity) {
