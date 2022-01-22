@@ -26,11 +26,11 @@ public class EntityConversionTime implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "conversion_duration", "is_converting"
+            "conversion_duration", "is_converting", "drowned_conversion_duration"
     };
 
     public static final String[] handledMechs = new String[] {
-            "conversion_duration"
+            "conversion_duration", "drowned_conversion_duration"
     };
 
     private EntityConversionTime(EntityTag ent) {
@@ -64,7 +64,7 @@ public class EntityConversionTime implements Property {
         // -->
         PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
             return object.getConversionTime();
-        });
+        }, "drowned_conversion_duration");
 
         // <--[tag]
         // @attribute <EntityTag.is_converting>
@@ -107,7 +107,7 @@ public class EntityConversionTime implements Property {
         // @tags
         // <EntityTag.conversion_duration>
         // -->
-        if (mechanism.matches("conversion_duration") && mechanism.requireObject(DurationTag.class)) {
+        if ((mechanism.matches("conversion_duration") || mechanism.matches("drowned_conversion_duration")) && mechanism.requireObject(DurationTag.class)) {
             getEntity().setConversionTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
     }
