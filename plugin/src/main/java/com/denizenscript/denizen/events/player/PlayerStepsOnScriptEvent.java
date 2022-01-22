@@ -119,8 +119,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
-        onPlayerStepsOn(evt);
-        event.setCancelled(evt.isCancelled());
+        onPlayerStepsOn(event);
     }
 }
