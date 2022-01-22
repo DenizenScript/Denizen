@@ -39,7 +39,10 @@ public class EntityConversionTime implements Property {
 
     @Override
     public String getPropertyString() {
-        return getConversionTime().identify();
+        if (getZombie().isConverting()) {
+            return getConversionTime().identify();
+        }
+        return null;
     }
 
     @Override
