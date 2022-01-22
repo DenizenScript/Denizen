@@ -27,10 +27,6 @@ public class EntityConversionTime implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "conversion_duration", "is_converting", "drowned_conversion_duration"
-    };
-
     public static final String[] handledMechs = new String[] {
             "conversion_duration", "drowned_conversion_duration"
     };
