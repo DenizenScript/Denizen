@@ -90,7 +90,7 @@ public class EntityConversionTime implements Property {
     }
 
     public DurationTag getConversionTime() {
-        return new DurationTag(getEntity().getConversionTime());
+        return new DurationTag((long) getEntity().getConversionTime());
     }
 
     @Override
