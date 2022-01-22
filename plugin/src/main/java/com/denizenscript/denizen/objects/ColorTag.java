@@ -429,4 +429,17 @@ public class ColorTag implements ObjectTag {
         float[] base = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
         return new int[] {Math.round(base[0] * 255f), Math.round(base[1] * 255f), Math.round(base[2] * 255f)};
     }
+
+    // Based on https://stackoverflow.com/questions/22607043/color-gradient-algorithm/49321304#49321304
+    public static float fromSRGB(float x) {
+        x /= 255f;
+        if (x <= 0.04045) {
+            return x / 12.92f;
+        }
+        return (float) Math.pow((x + 0.055) / 1.055, 2.4);
+    }
+
+    public static float toSRGB(float x) {
+        return 255.9999f * (x <= 0.0031308f ? 12.92f * x : (1.055f * ((float) Math.pow(x, 1f / 2.4f)) - 0.055f));
+    }
 }
