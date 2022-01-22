@@ -63,6 +63,10 @@ public class EntityConversionTime implements Property {
         // See also <@link tag EntityTag.in_water_duration>
         // -->
         PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
+            if (!object.getEntity().isConverting()) {
+                attribute.echoError("This entity is not converting!");
+                return null;
+            }
             return object.getConversionTime();
         }, "drowned_conversion_duration");
 
