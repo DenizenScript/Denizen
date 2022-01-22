@@ -62,7 +62,7 @@ public class EntityConversionTime implements Property {
         // If this value hits 0, the zombie villager will be cured, or if the entity is a zombie, it will become a Drowned.
         // See also <@link tag EntityTag.in_water_duration>
         // -->
-        PropertyParser.<EntityConversionTime, DurationTag>registerStaticTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
+        PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
             return object.getConversionTime();
         });
 
@@ -75,7 +75,7 @@ public class EntityConversionTime implements Property {
         // If the entity is a zombie mob, returns whether it is converting into a Drowned.
         // See also <@link tag EntityTag.in_water_duration>
         // -->
-        PropertyParser.<EntityConversionTime, ElementTag>registerStaticTag(ElementTag.class, "is_converting", (attribute, object) -> {
+        PropertyParser.<EntityConversionTime, ElementTag>registerTag(ElementTag.class, "is_converting", (attribute, object) -> {
             return new ElementTag(object.getEntity().isConverting());
         });
     }
