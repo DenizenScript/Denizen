@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.Zombie;
-import org.bukkit.entity.ZombieVillager;
 
 public class EntityConversionTime implements Property {
 
@@ -63,7 +62,7 @@ public class EntityConversionTime implements Property {
         // See also <@link tag EntityTag.in_water_duration>
         // -->
         PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
-            if (!object.getEntity().isConverting()) {
+            if (!object.getZombie().isConverting()) {
                 attribute.echoError("This entity is not converting!");
                 return null;
             }
@@ -80,21 +79,16 @@ public class EntityConversionTime implements Property {
         // See also <@link tag EntityTag.in_water_duration>
         // -->
         PropertyParser.<EntityConversionTime, ElementTag>registerTag(ElementTag.class, "is_converting", (attribute, object) -> {
-            return new ElementTag(object.getEntity().isConverting());
+            return new ElementTag(object.getZombie().isConverting());
         });
     }
 
-    public Zombie getEntity() {
-        if (entity.getBukkitEntity() instanceof ZombieVillager) {
-            return (ZombieVillager) entity.getBukkitEntity();
-        }
-        else {
-            return (Zombie) entity.getBukkitEntity();
-        }
+    public Zombie getZombie() {
+        return (Zombie) entity.getBukkitEntity();
     }
 
     public DurationTag getConversionTime() {
-        return new DurationTag((long) getEntity().getConversionTime());
+        return new DurationTag((long) getZombie().getConversionTime());
     }
 
     @Override
@@ -112,7 +106,7 @@ public class EntityConversionTime implements Property {
         // <EntityTag.conversion_duration>
         // -->
         if ((mechanism.matches("conversion_duration") || mechanism.matches("drowned_conversion_duration")) && mechanism.requireObject(DurationTag.class)) {
-            getEntity().setConversionTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            getZombie().setConversionTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
     }
 }
