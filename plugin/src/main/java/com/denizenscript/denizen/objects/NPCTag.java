@@ -1831,14 +1831,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // TODO
         // -->
         if (mechanism.matches("add_waypoint") && mechanism.requireObject(LocationTag.class)) {
+            Location target = mechanism.valueAsType(LocationTag.class).clone();
             Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
-            if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
-                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints())
-                        .add(new Waypoint(mechanism.valueAsType(LocationTag.class)));
+            if ((wp.getCurrentProvider() instanceof LinearWaypointProvider)) {
+                ((LinearWaypointProvider) wp.getCurrentProvider()).addWaypoint(new Waypoint(target));
+            }
+            else if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
+                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).add(new Waypoint(target));
             }
             else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
-                ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres()
-                        .add(mechanism.valueAsType(LocationTag.class));
+                ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres().add(target);
             }
         }
 

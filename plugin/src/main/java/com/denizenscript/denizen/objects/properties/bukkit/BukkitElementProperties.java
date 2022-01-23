@@ -560,13 +560,16 @@ public class BukkitElementProperties implements Property {
         // @returns ElementTag
         // @group text manipulation
         // @description
-        // Makes a chat format code (&klmno) be the end of a format, as opposed to the start.
+        // Makes a chat format code (&klmno, or &[font=...]) be the end of a format, as opposed to the start.
         // Use like '<&o.end_format>' or '<italic.end_format>'.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "end_format", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
                 return new ElementTag(ChatColor.COLOR_CHAR + "[reset=" + object.asString().charAt(1) + "]");
+            }
+            else if (object.asString().startsWith(ChatColor.COLOR_CHAR + "[font=") && object.asString().endsWith("]")) {
+                return new ElementTag(ChatColor.COLOR_CHAR + "[reset=font]");
             }
             return null;
         });
@@ -702,7 +705,7 @@ public class BukkitElementProperties implements Property {
         // @returns ElementTag
         // @group text manipulation
         // @description
-        // Makes the input text display with the input font name. Equivalent to "<&font[new-font]><ELEMENT_HERE><&font[previous-font]>"
+        // Makes the input text display with the input font name. Equivalent to "<&font[new-font]><ELEMENT_HERE><&font[new-font].end_format>"
         // The default font is "minecraft:default".
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->

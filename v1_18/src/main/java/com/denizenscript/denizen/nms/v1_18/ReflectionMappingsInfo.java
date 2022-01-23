@@ -38,7 +38,6 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.entity.monster.Zombie
     public static String Zombie_inWaterTime = "cf";
-    public static String Zombie_conversionTime = "cg";
 
     // net.minecraft.world.item.Item
     public static String Item_maxStackSize = "c";

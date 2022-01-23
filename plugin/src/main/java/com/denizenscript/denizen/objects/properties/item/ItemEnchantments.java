@@ -252,7 +252,7 @@ public class ItemEnchantments implements Property {
                 MapTag map = mechanism.valueAsType(MapTag.class);
                 for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
                     Enchantment ench = EnchantmentTag.valueOf(enchantments.getKey().low, mechanism.context).enchantment;
-                    int level = enchantments.getValue().asType(ElementTag.class, mechanism.context).asInt();
+                    int level = enchantments.getValue().asElement().asInt();
                     if (ench != null) {
                         if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();

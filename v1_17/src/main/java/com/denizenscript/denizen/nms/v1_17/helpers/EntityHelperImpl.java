@@ -872,27 +872,4 @@ public class EntityHelperImpl extends EntityHelper {
             Debug.echoError(ex);
         }
     }
-
-    public static final Field ZOMBIE_CONVERSIONTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_conversionTime);
-
-    @Override
-    public int getDrownedConversionTicks(Zombie zombie) {
-        try {
-            return ZOMBIE_CONVERSIONTIME.getInt(((CraftZombie) zombie).getHandle());
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return 0;
-        }
-    }
-
-    @Override
-    public void setDrownedConversionTicks(Zombie zombie, int ticks) {
-        try {
-            ZOMBIE_CONVERSIONTIME.setInt(((CraftZombie) zombie).getHandle(), ticks);
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
-    }
 }

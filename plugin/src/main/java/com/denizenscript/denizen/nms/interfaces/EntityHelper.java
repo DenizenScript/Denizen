@@ -393,12 +393,4 @@ public abstract class EntityHelper {
     public void setInWaterTime(Zombie zombie, int ticks) {
         throw new UnsupportedOperationException();
     }
-
-    public int getDrownedConversionTicks(Zombie zombie) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setDrownedConversionTicks(Zombie zombie, int ticks) {
-        throw new UnsupportedOperationException();
-    }
 }
