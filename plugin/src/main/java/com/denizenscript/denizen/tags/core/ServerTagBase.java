@@ -2321,10 +2321,10 @@ public class ServerTagBase {
                 context = context.killer((HumanEntity) killer.asType(EntityTag.class, attribute.context).getLivingEntity());
             }
             if (luck != null) {
-                context = context.luck(luck.asType(ElementTag.class, attribute.context).asFloat());
+                context = context.luck(luck.asElement().asFloat());
             }
             if (bonus != null) {
-                context = context.lootingModifier(bonus.asType(ElementTag.class, attribute.context).asInt());
+                context = context.lootingModifier(bonus.asElement().asInt());
             }
             Collection<ItemStack> items;
             try {
