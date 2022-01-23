@@ -726,6 +726,57 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return -1;
     }
 
+    public static double[] getRotatedAroundX(double angle, double y, double z) {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        double newY = (y * cos) - (z * sin);
+        double newZ = (y * sin) + (z * cos);
+        return new double[] { newY, newZ };
+    }
+
+    public static double[] getRotatedAroundY(double angle, double x, double z) {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        double newX = (x * cos) + (z * sin);
+        double newZ = (x * -sin) + (z * cos);
+        return new double[] { newX, newZ };
+    }
+
+    public static double[] getRotatedAroundZ(double angle, double x, double y) {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        double newX = (x * cos) - (y * sin);
+        double newY = (x * sin) + (y * cos);
+        return new double[] { newX, newY };
+    }
+
+    public static double[] parsePointsAroundArgs(Attribute attribute) {
+        if (!attribute.hasParam()) {
+            return null;
+        }
+        MapTag inputMap = attribute.paramAsType(MapTag.class);
+        if (inputMap == null) {
+            return null;
+        }
+        ObjectTag radiusObj = inputMap.getObject("radius");
+        ObjectTag pointsObj = inputMap.getObject("points");
+        if (radiusObj == null || pointsObj == null) {
+            return null;
+        }
+        ElementTag radiusElement = radiusObj.asElement();
+        ElementTag amountElement = pointsObj.asElement();
+        if (radiusElement == null || amountElement == null) {
+            return null;
+        }
+        double radius = radiusElement.asDouble();
+        int amount = amountElement.asInt();
+        if (amount < 1) {
+            attribute.echoError("Invalid amount of points! There must be at least 1 point.");
+            return null;
+        }
+        return new double[] { radius, amount };
+    }
+
     public static class FloodFiller {
 
         public Set<LocationTag> result;
@@ -2245,14 +2296,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasParam()) {
                 return null;
             }
-            double angle = attribute.getDoubleParam();
-            double cos = Math.cos(angle);
-            double sin = Math.sin(angle);
-            double y = (object.getY() * cos) - (object.getZ() * sin);
-            double z = (object.getY() * sin) + (object.getZ() * cos);
+            double[] values = getRotatedAroundX(attribute.getDoubleParam(), object.getY(), object.getZ());
             Location location = object.clone();
-            location.setY(y);
-            location.setZ(z);
+            location.setY(values[0]);
+            location.setZ(values[1]);
             return new LocationTag(location);
         });
 
@@ -2268,14 +2315,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasParam()) {
                 return null;
             }
-            double angle = attribute.getDoubleParam();
-            double cos = Math.cos(angle);
-            double sin = Math.sin(angle);
-            double x = (object.getX() * cos) + (object.getZ() * sin);
-            double z = (object.getX() * -sin) + (object.getZ() * cos);
+            double[] values = getRotatedAroundY(attribute.getDoubleParam(), object.getX(), object.getZ());
             Location location = object.clone();
-            location.setX(x);
-            location.setZ(z);
+            location.setX(values[0]);
+            location.setZ(values[1]);
             return new LocationTag(location);
         });
 
@@ -2291,15 +2334,86 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasParam()) {
                 return null;
             }
-            double angle = attribute.getDoubleParam();
-            double cos = Math.cos(angle);
-            double sin = Math.sin(angle);
-            double x = (object.getX() * cos) - (object.getY() * sin);
-            double y = (object.getX() * sin) + (object.getY() * cos);
+            double[] values = getRotatedAroundZ(attribute.getDoubleParam(), object.getX(), object.getY());
             Location location = object.clone();
-            location.setX(x);
-            location.setY(y);
+            location.setX(values[0]);
+            location.setY(values[1]);
             return new LocationTag(location);
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.points_around_x[radius=<#.#>;points=<#>]>
+        // @returns ListTag(LocationTag)
+        // @group math
+        // @description
+        // Returns a list of points in a circle around a location's x axis with the specified radius and number of points.
+        // For example: <player.location.points_around_x[radius=10;points=16]>
+        // -->
+        tagProcessor.registerTag(ListTag.class, "points_around_x", (attribute, object) -> {
+            double[] values = parsePointsAroundArgs(attribute);
+            if (values == null) {
+                return null;
+            }
+            double radius = values[0];
+            double amount = values[1];
+            double angle = 2 * Math.PI / amount;
+            ListTag points = new ListTag();
+            for (int i = 1; i <= amount; i++) {
+                double[] result = getRotatedAroundX(angle * i, radius, 0);
+                LocationTag newLocation = object.clone().add(0, result[0], result[1]);
+                points.addObject(newLocation);
+            }
+            return points;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.points_around_y[radius=<#.#>;points=<#>]>
+        // @returns ListTag(LocationTag)
+        // @group math
+        // @description
+        // Returns a list of points in a circle around a location's y axis with the specified radius and number of points.
+        // For example: <player.location.points_around_y[radius=10;points=16]>
+        // -->
+        tagProcessor.registerTag(ListTag.class, "points_around_y", (attribute, object) -> {
+            double[] values = parsePointsAroundArgs(attribute);
+            if (values == null) {
+                return null;
+            }
+            double radius = values[0];
+            double amount = values[1];
+            double angle = 2 * Math.PI / amount;
+            ListTag points = new ListTag();
+            for (int i = 1; i <= amount; i++) {
+                double[] result = getRotatedAroundY(angle * i, radius, 0);
+                LocationTag newLocation = object.clone().add(result[0], 0, result[1]);
+                points.addObject(newLocation);
+            }
+            return points;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.points_around_z[radius=<#.#>;points=<#>]>
+        // @returns ListTag(LocationTag)
+        // @group math
+        // @description
+        // Returns a list of points in a circle around a location's z axis with the specified radius and number of points.
+        // For example: <player.location.points_around_z[radius=10;points=16]>
+        // -->
+        tagProcessor.registerTag(ListTag.class, "points_around_z", (attribute, object) -> {
+            double[] values = parsePointsAroundArgs(attribute);
+            if (values == null) {
+                return null;
+            }
+            double radius = values[0];
+            double amount = values[1];
+            double angle = 2 * Math.PI / amount;
+            ListTag points = new ListTag();
+            for (int i = 1; i <= amount; i++) {
+                double[] result = getRotatedAroundZ(angle * i, 0, radius);
+                LocationTag newLocation = object.clone().add(result[0], result[1], 0);
+                points.addObject(newLocation);
+            }
+            return points;
         });
 
         // <--[tag]
