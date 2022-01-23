@@ -751,6 +751,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public static double[] parsePointsAroundArgs(Attribute attribute) {
+        if (!attribute.hasParam()) {
+            return null;
+        }
         MapTag inputMap = attribute.paramAsType(MapTag.class);
         if (inputMap == null) {
             return null;
@@ -2347,9 +2350,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // For example: <player.location.points_around_x[radius=10;points=16]>
         // -->
         tagProcessor.registerTag(ListTag.class, "points_around_x", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
             double[] values = parsePointsAroundArgs(attribute);
             if (values == null) {
                 return null;
@@ -2375,9 +2375,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // For example: <player.location.points_around_y[radius=10;points=16]>
         // -->
         tagProcessor.registerTag(ListTag.class, "points_around_y", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
             double[] values = parsePointsAroundArgs(attribute);
             if (values == null) {
                 return null;
@@ -2403,9 +2400,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // For example: <player.location.points_around_z[radius=10;points=16]>
         // -->
         tagProcessor.registerTag(ListTag.class, "points_around_z", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
             double[] values = parsePointsAroundArgs(attribute);
             if (values == null) {
                 return null;
