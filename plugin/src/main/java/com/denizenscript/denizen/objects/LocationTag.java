@@ -2354,14 +2354,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (values == null) {
                 return null;
             }
-            double radius = values[0];
-            double amount = values[1];
-            double angle = 2 * Math.PI / amount;
+            double angle = 2 * Math.PI / values[1];
             ListTag points = new ListTag();
-            for (int i = 1; i <= amount; i++) {
-                double[] result = getRotatedAroundX(angle * i, radius, 0);
-                LocationTag newLocation = object.clone().add(0, result[0], result[1]);
-                points.addObject(newLocation);
+            for (int i = 0; i < values[1]; i++) {
+                double[] result = getRotatedAroundX(angle * i, values[0], 0);
+                points.addObject(object.clone().add(0, result[0], result[1]));
             }
             return points;
         });
@@ -2379,14 +2376,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (values == null) {
                 return null;
             }
-            double radius = values[0];
-            double amount = values[1];
-            double angle = 2 * Math.PI / amount;
+            double angle = 2 * Math.PI / values[1];
             ListTag points = new ListTag();
-            for (int i = 1; i <= amount; i++) {
-                double[] result = getRotatedAroundY(angle * i, radius, 0);
-                LocationTag newLocation = object.clone().add(result[0], 0, result[1]);
-                points.addObject(newLocation);
+            for (int i = 0; i < values[1]; i++) {
+                double[] result = getRotatedAroundY(angle * i, values[0], 0);
+                points.addObject(object.clone().add(result[0], 0, result[1]));
             }
             return points;
         });
@@ -2404,14 +2398,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (values == null) {
                 return null;
             }
-            double radius = values[0];
-            double amount = values[1];
-            double angle = 2 * Math.PI / amount;
+            double angle = 2 * Math.PI / values[1];
             ListTag points = new ListTag();
-            for (int i = 1; i <= amount; i++) {
-                double[] result = getRotatedAroundZ(angle * i, 0, radius);
-                LocationTag newLocation = object.clone().add(result[0], result[1], 0);
-                points.addObject(newLocation);
+            for (int i = 0; i < values[1]; i++) {
+                double[] result = getRotatedAroundZ(angle * i, 0, values[0]);
+                points.addObject(object.clone().add(result[0], result[1], 0));
             }
             return points;
         });
