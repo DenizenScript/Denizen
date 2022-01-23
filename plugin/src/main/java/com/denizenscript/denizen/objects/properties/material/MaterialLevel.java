@@ -84,6 +84,12 @@ public class MaterialLevel implements Property {
         // @group properties
         // @description
         // Returns the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, or farmland.
+        // For water/lava this is the height of the liquid block.
+        // For cauldrons, this is the amount of liquid contained.
+        // For cake, this is the number of bites left.
+        // For beehives/bee nests, this is the amount of honey contained.
+        // For snow, this is the number of partial layers, or the height, of a snow block.
+        // For farmland, this is the moisture level.
         // -->
         PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
