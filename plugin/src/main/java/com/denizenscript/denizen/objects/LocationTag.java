@@ -2346,7 +2346,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ListTag(LocationTag)
         // @group math
         // @description
-        // Returns a list of points in a circular rotation around a location's x axis with the specified radius and number of points.
+        // Returns a list of points in a circle around a location's x axis with the specified radius and number of points.
         // For example: <player.location.points_around_x[radius=10;points=16]>
         // -->
         tagProcessor.registerTag(ListTag.class, "points_around_x", (attribute, object) -> {
@@ -2371,7 +2371,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ListTag(LocationTag)
         // @group math
         // @description
-        // Returns a list of points in a circular rotation around a location's y axis with the specified radius and number of points.
+        // Returns a list of points in a circle around a location's y axis with the specified radius and number of points.
         // For example: <player.location.points_around_y[radius=10;points=16]>
         // -->
         tagProcessor.registerTag(ListTag.class, "points_around_y", (attribute, object) -> {
@@ -2396,7 +2396,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @returns ListTag(LocationTag)
         // @group math
         // @description
-        // Returns a list of points in a circular rotation around a location's z axis with the specified radius and number of points.
+        // Returns a list of points in a circle around a location's z axis with the specified radius and number of points.
         // For example: <player.location.points_around_z[radius=10;points=16]>
         // -->
         tagProcessor.registerTag(ListTag.class, "points_around_z", (attribute, object) -> {
