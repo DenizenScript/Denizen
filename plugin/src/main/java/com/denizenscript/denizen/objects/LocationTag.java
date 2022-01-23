@@ -750,6 +750,30 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return new double[] { newX, newY };
     }
 
+    public static double[] parsePointsAroundArgs(Attribute attribute) {
+        MapTag inputMap = attribute.paramAsType(MapTag.class);
+        if (inputMap == null) {
+            return null;
+        }
+        ObjectTag radiusObj = inputMap.getObject("radius");
+        ObjectTag pointsObj = inputMap.getObject("points");
+        if (radiusObj == null || pointsObj == null) {
+            return null;
+        }
+        ElementTag radiusElement = radiusObj.asElement();
+        ElementTag amountElement = pointsObj.asElement();
+        if (radiusElement == null || amountElement == null) {
+            return null;
+        }
+        double radius = radiusElement.asDouble();
+        int amount = amountElement.asInt();
+        if (amount < 1) {
+            attribute.echoError("Invalid amount of points! There must be at least 1 point.");
+            return null;
+        }
+        return new double[] { radius, amount };
+    }
+
     public static class FloodFiller {
 
         public Set<LocationTag> result;
@@ -2326,27 +2350,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasParam()) {
                 return null;
             }
-            MapTag inputMap = attribute.paramAsType(MapTag.class);
-            if (inputMap == null) {
+            double[] values = parsePointsAroundArgs(attribute);
+            if (values == null) {
                 return null;
             }
-            ObjectTag radiusObj = inputMap.getObject("radius");
-            ObjectTag pointsObj = inputMap.getObject("points");
-            if (radiusObj == null || pointsObj == null) {
-                return null;
-            }
-            ElementTag radius = radiusObj.asType(ElementTag.class, attribute.context);
-            ElementTag amount = pointsObj.asType(ElementTag.class, attribute.context);
-            if (radius == null || amount == null) {
-                return null;
-            }
-            if (amount.asInt() < 1) {
-                attribute.echoError("Invalid amount of points! There must be at least 1 point.");
-            }
-            double angle = 2 * Math.PI / amount.asInt();
+            double radius = values[0];
+            double amount = values[1];
+            double angle = 2 * Math.PI / amount;
             ListTag points = new ListTag();
-            for (int i = 1; i <= amount.asInt(); i++) {
-                double[] result = getRotatedAroundX(angle * i, radius.asDouble(), 0);
+            for (int i = 1; i <= amount; i++) {
+                double[] result = getRotatedAroundX(angle * i, radius, 0);
                 LocationTag newLocation = object.clone();
                 newLocation.add(0, result[0], result[1]);
                 points.addObject(newLocation);
@@ -2366,29 +2379,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasParam()) {
                 return null;
             }
-            MapTag inputMap = attribute.paramAsType(MapTag.class);
-            if (inputMap == null) {
+            double[] values = parsePointsAroundArgs(attribute);
+            if (values == null) {
                 return null;
             }
-            ObjectTag radiusObj = inputMap.getObject("radius");
-            ObjectTag pointsObj = inputMap.getObject("points");
-            if (radiusObj == null || pointsObj == null) {
-                return null;
-            }
-            ElementTag radius = radiusObj.asType(ElementTag.class, attribute.context);
-            ElementTag amount = pointsObj.asType(ElementTag.class, attribute.context);
-            if (radius == null || amount == null) {
-                return null;
-            }
-            if (amount.asInt() < 1) {
-                attribute.echoError("Invalid amount of points! There must be at least 1 point.");
-            }
-            double angle = 2 * Math.PI / amount.asInt();
+            double radius = values[0];
+            double amount = values[1];
+            double angle = 2 * Math.PI / amount;
             ListTag points = new ListTag();
-            for (int i = 1; i <= amount.asInt(); i++) {
-                double[] result = getRotatedAroundY(angle * i, radius.asDouble(), 0);
-                LocationTag newLocation = object.clone();
-                newLocation.add(result[0], 0, result[1]);
+            for (int i = 1; i <= amount; i++) {
+                double[] result = getRotatedAroundY(angle * i, radius, 0);
+                LocationTag newLocation = object.clone().add(result[0], 0, result[1]);
                 points.addObject(newLocation);
             }
             return points;
@@ -2406,27 +2407,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!attribute.hasParam()) {
                 return null;
             }
-            MapTag inputMap = attribute.paramAsType(MapTag.class);
-            if (inputMap == null) {
+            double[] values = parsePointsAroundArgs(attribute);
+            if (values == null) {
                 return null;
             }
-            ObjectTag radiusObj = inputMap.getObject("radius");
-            ObjectTag pointsObj = inputMap.getObject("points");
-            if (radiusObj == null || pointsObj == null) {
-                return null;
-            }
-            ElementTag radius = radiusObj.asType(ElementTag.class, attribute.context);
-            ElementTag amount = pointsObj.asType(ElementTag.class, attribute.context);
-            if (radius == null || amount == null) {
-                return null;
-            }
-            if (amount.asInt() < 1) {
-                attribute.echoError("Invalid amount of points! There must be at least 1 point.");
-            }
-            double angle = 2 * Math.PI / amount.asInt();
+            double radius = values[0];
+            double amount = values[1];
+            double angle = 2 * Math.PI / amount;
             ListTag points = new ListTag();
-            for (int i = 1; i <= amount.asInt(); i++) {
-                double[] result = getRotatedAroundZ(angle * i, 0, radius.asDouble());
+            for (int i = 1; i <= amount; i++) {
+                double[] result = getRotatedAroundZ(angle * i, 0, radius);
                 LocationTag newLocation = object.clone();
                 newLocation.add(result[0], result[1], 0);
                 points.addObject(newLocation);
