@@ -2315,6 +2315,126 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.points_around_x[radius=<#.#>;points=<#>]>
+        // @returns ListTag(LocationTag)
+        // @group math
+        // @description
+        // Returns a list of points in a circular rotation around a location's x axis with the specified radius and number of points.
+        // For example: <player.location.points_around_x[radius=10;points=16]>
+        // -->
+        tagProcessor.registerTag(ListTag.class, "points_around_x", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            MapTag inputMap = attribute.paramAsType(MapTag.class);
+            if (inputMap == null) {
+                return null;
+            }
+            ObjectTag radiusObj = inputMap.getObject("radius");
+            ObjectTag pointsObj = inputMap.getObject("points");
+            if (radiusObj == null || pointsObj == null) {
+                return null;
+            }
+            ElementTag radius = radiusObj.asType(ElementTag.class, attribute.context);
+            ElementTag amount = pointsObj.asType(ElementTag.class, attribute.context);
+            if (radius == null || amount == null) {
+                return null;
+            }
+            if (amount.asInt() < 1) {
+                attribute.echoError("Invalid amount of points! There must be at least 1 point.");
+            }
+            double angle = 2 * Math.PI / amount.asInt();
+            ListTag points = new ListTag();
+            for (int i = 1; i <= amount.asInt(); i++) {
+                double[] result = getRotatedAroundX(angle * i, radius.asDouble(), 0);
+                LocationTag newLocation = object.clone();
+                newLocation.add(0, result[0], result[1]);
+                points.addObject(newLocation);
+            }
+            return points;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.points_around_y[radius=<#.#>;points=<#>]>
+        // @returns ListTag(LocationTag)
+        // @group math
+        // @description
+        // Returns a list of points in a circular rotation around a location's y axis with the specified radius and number of points.
+        // For example: <player.location.points_around_y[radius=10;points=16]>
+        // -->
+        tagProcessor.registerTag(ListTag.class, "points_around_y", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            MapTag inputMap = attribute.paramAsType(MapTag.class);
+            if (inputMap == null) {
+                return null;
+            }
+            ObjectTag radiusObj = inputMap.getObject("radius");
+            ObjectTag pointsObj = inputMap.getObject("points");
+            if (radiusObj == null || pointsObj == null) {
+                return null;
+            }
+            ElementTag radius = radiusObj.asType(ElementTag.class, attribute.context);
+            ElementTag amount = pointsObj.asType(ElementTag.class, attribute.context);
+            if (radius == null || amount == null) {
+                return null;
+            }
+            if (amount.asInt() < 1) {
+                attribute.echoError("Invalid amount of points! There must be at least 1 point.");
+            }
+            double angle = 2 * Math.PI / amount.asInt();
+            ListTag points = new ListTag();
+            for (int i = 1; i <= amount.asInt(); i++) {
+                double[] result = getRotatedAroundY(angle * i, radius.asDouble(), 0);
+                LocationTag newLocation = object.clone();
+                newLocation.add(result[0], 0, result[1]);
+                points.addObject(newLocation);
+            }
+            return points;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.points_around_z[radius=<#.#>;points=<#>]>
+        // @returns ListTag(LocationTag)
+        // @group math
+        // @description
+        // Returns a list of points in a circular rotation around a location's z axis with the specified radius and number of points.
+        // For example: <player.location.points_around_z[radius=10;points=16]>
+        // -->
+        tagProcessor.registerTag(ListTag.class, "points_around_z", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            MapTag inputMap = attribute.paramAsType(MapTag.class);
+            if (inputMap == null) {
+                return null;
+            }
+            ObjectTag radiusObj = inputMap.getObject("radius");
+            ObjectTag pointsObj = inputMap.getObject("points");
+            if (radiusObj == null || pointsObj == null) {
+                return null;
+            }
+            ElementTag radius = radiusObj.asType(ElementTag.class, attribute.context);
+            ElementTag amount = pointsObj.asType(ElementTag.class, attribute.context);
+            if (radius == null || amount == null) {
+                return null;
+            }
+            if (amount.asInt() < 1) {
+                attribute.echoError("Invalid amount of points! There must be at least 1 point.");
+            }
+            double angle = 2 * Math.PI / amount.asInt();
+            ListTag points = new ListTag();
+            for (int i = 1; i <= amount.asInt(); i++) {
+                double[] result = getRotatedAroundZ(angle * i, 0, radius.asDouble());
+                LocationTag newLocation = object.clone();
+                newLocation.add(result[0], result[1], 0);
+                points.addObject(newLocation);
+            }
+            return points;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.flood_fill[<limit>]>
         // @returns ListTag(LocationTag)
         // @group world
