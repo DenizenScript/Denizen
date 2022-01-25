@@ -160,7 +160,7 @@ public class ItemFirework implements Property {
         // For example: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
         // Optionally add a list entry that's just a single number to set the power.
         // Can take MapTag input: an optional key for power and indexed keys for each effect,
-        // with "type", "color", "fadeColor", "trail", and "flicker" keys. All but "color" are optional.
+        // with "type", "color", "fadeColor", "trail", and "flicker" keys.
         // Types: ball, ball_large, star, burst, or creeper
         // Notice that this is an ADD operation, provide no input to clear all effects.
         // @tags
