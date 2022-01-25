@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.*;
@@ -25,15 +26,16 @@ public class ClickableCommand extends AbstractCommand {
 
     public ClickableCommand() {
         setName("clickable");
-        setSyntax("clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
+        setSyntax("clickable [<script>/cancel:<id>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
         setRequiredArguments(1, -1);
         isProcedural = false;
         allowedDynamicPrefixes = true;
+        setPrefixesHandled("usages", "until", "for", "cancel", "def");
     }
 
     // <--[command]
     // @Name Clickable
-    // @Syntax clickable [<script>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)
+    // @Syntax clickable [<script>/cancel:<id>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)
     // @Required 1
     // @Maximum -1
     // @Short Generates a clickable command for players.
@@ -50,8 +52,11 @@ public class ClickableCommand extends AbstractCommand {
     //
     // Players will need the permission "denizen.clickable" to be able to use this.
     //
+    // You can cancel a clickable at any time via "cancel:<id>", where ID is the generated ID from saving the initial generated command.
+    //
     // @Tags
-    // <entry[saveName].command> returns the command to use in "on_click"
+    // <entry[saveName].command> returns the command to use in "on_click".
+    // <entry[saveName].id> returns the generate command's ID.
     // <ElementTag.on_click[<command>]>
     //
     // @Usage
@@ -68,6 +73,13 @@ public class ClickableCommand extends AbstractCommand {
     // Use to generate a clickable message exclusively for the linked player, that must be used within a minute.
     // - clickable your_secret def:quest3 for:<player> until:1m save:secretmessage
     // - narrate "Do you want to know the secret? <blue><element[Yes].on_click[<entry[secretmessage].command>]><reset> / No."
+    // @Usage
+    // Use to generate a clickable message and cancel it manually later.
+    // - clickable test_script save:my_clickable save:myclickable
+    // - narrate "Click <blue><element[here].on_click[<entry[my_clickable].command>]><reset> before you land!"
+    // - waituntil rate:1s max:30s <player.is_on_ground>
+    // - clickable cancel:<entry[myclickable].id>
+    //
     // -->
 
     @Override
@@ -122,28 +134,9 @@ public class ClickableCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         MapTag defMap = new MapTag();
         for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("definitions")
-                    && arg.matchesPrefix("def")) {
-                scriptEntry.addObject("definitions", arg.asType(ListTag.class));
-            }
-            else if (arg.matchesPrefix("defmap")
+            if (arg.matchesPrefix("defmap")
                     && arg.matchesArgumentType(MapTag.class)) {
                 defMap.map.putAll(arg.asType(MapTag.class).map);
-            }
-            else if (!scriptEntry.hasObject("usages")
-                    && arg.matchesPrefix("usages")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("usages", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("until")
-                    && arg.matchesPrefix("until")
-                    && arg.matchesArgumentType(DurationTag.class)) {
-                scriptEntry.addObject("until", arg.asType(DurationTag.class));
-            }
-            else if (!scriptEntry.hasObject("for_players")
-                    && arg.matchesPrefix("for")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("for_players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else if (arg.hasPrefix()
                     && arg.getPrefix().getRawValue().startsWith("def.")) {
@@ -168,9 +161,6 @@ public class ClickableCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        if (!scriptEntry.hasObject("script")) {
-            throw new InvalidArgumentsException("Missing script argument!");
-        }
         if (!defMap.map.isEmpty()) {
             scriptEntry.addObject("def_map", defMap);
         }
@@ -180,13 +170,35 @@ public class ClickableCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         ScriptTag script = scriptEntry.getObjectTag("script");
         ElementTag path = scriptEntry.getElement("path");
-        List<PlayerTag> forPlayers = (List<PlayerTag>) scriptEntry.getObject("for_players");
-        ElementTag usages = scriptEntry.getElement("usages");
-        ListTag definitions = scriptEntry.getObjectTag("definitions");
-        DurationTag until = scriptEntry.getObjectTag("until");
+        ElementTag cancel = scriptEntry.argForPrefixAsElement("cancel", null);
+        List<PlayerTag> forPlayers = scriptEntry.argForPrefixList("for", PlayerTag.class, true);
+        ElementTag usages = scriptEntry.argForPrefixAsElement("usages", null);
+        ListTag definitions = scriptEntry.argForPrefix("definitions", ListTag.class, true);
+        DurationTag until = scriptEntry.argForPrefix("until", DurationTag.class, true);
         MapTag defMap = scriptEntry.getObjectTag("def_map");
+        if (script == null && cancel == null) {
+            throw new InvalidArgumentsRuntimeException("Missing script argument!");
+        }
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), script, path, usages, definitions, defMap, until, db("for", forPlayers));
+            Debug.report(scriptEntry, getName(), script, cancel, path, usages, definitions, defMap, until, db("for", forPlayers));
+        }
+        if (cancel != null) {
+            UUID id;
+            try {
+                id = UUID.fromString(cancel.asString());
+            }
+            catch (IllegalArgumentException ex) {
+                Debug.echoError("Invalid cancel ID: " + ex.getMessage());
+                return;
+            }
+            Clickable clicky = clickables.remove(id);
+            if (clicky == null) {
+                Debug.echoDebug(scriptEntry, "Cancelled ID didn't exist, nothing to cancel.");
+            }
+            else {
+                Debug.echoDebug(scriptEntry, "Cancelled.");
+            }
+            return;
         }
         UUID id = UUID.randomUUID();
         Clickable newClickable = new Clickable();
@@ -206,5 +218,6 @@ public class ClickableCommand extends AbstractCommand {
         }
         clickables.put(id, newClickable);
         scriptEntry.addObject("command", new ElementTag("/denizenclickable " + id));
+        scriptEntry.addObject("id", new ElementTag(id.toString()));
     }
 }

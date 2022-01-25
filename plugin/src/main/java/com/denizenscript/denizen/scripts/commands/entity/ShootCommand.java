@@ -79,6 +79,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
     // specify the "spread" argument with a decimal number indicating how wide to spread the entities.
     //
+    // Optionally, add "no_rotate" to prevent the shoot command from rotating launched entities.
+    //
     // Use the "script:<name>" argument to run a task script when the projectiles land.
     // When that script runs, the following definitions will be available:
     // <[shot_entities]> for all shot entities (as in, the projectiles),
@@ -86,9 +88,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // <[location]> for the last known location of the last shot entity, and
     // <[hit_entities]> for a list of any entities that were hit by fired projectiles.
     //
-    // Optionally, add "no_rotate" to prevent the shoot command from rotating launched entities.
-    //
     // The shoot command is ~waitable. Refer to <@link language ~waitable>.
+    //
+    // Note that for ~waiting or the "script" arg, tracking is only accurate for projectile entities (such as arrows). This will be inaccurately estimated for other entity types.
     //
     // @Tags
     // <entry[saveName].shot_entity> returns the single entity that was shot (as in, the projectile) (if you only shot one).

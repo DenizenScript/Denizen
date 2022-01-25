@@ -54,7 +54,7 @@ public class EntityInWaterTime implements Property {
         // @description
         // If the entity is a zombie mob, returns the duration of time the zombie has been in water for.
         // If this value exceeds 600 ticks, the zombie will begin converted to a Drowned mob.
-        // See also <@link tag EntityTag.drowned_conversion_duration>
+        // See also <@link tag EntityTag.conversion_duration>
         // -->
         PropertyParser.<EntityInWaterTime, DurationTag>registerTag(DurationTag.class, "in_water_duration", (attribute, object) -> {
             return new DurationTag((long) NMSHandler.getEntityHelper().getInWaterTime((Zombie) object.entity.getBukkitEntity()));
@@ -71,7 +71,7 @@ public class EntityInWaterTime implements Property {
         // @description
         // If the entity is a zombie mob, sets the duration of time the zombie has been in water for.
         // If this value exceeds 600 ticks, the zombie will begin converted to a Drowned mob.
-        // See also <@link mechanism EntityTag.drowned_conversion_duration>
+        // See also <@link mechanism EntityTag.conversion_duration>
         // @tags
         // <EntityTag.in_water_duration>
         // -->
