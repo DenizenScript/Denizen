@@ -9,13 +9,16 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +40,7 @@ public class ItemFirework implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "firework"
+            "firework", "firework_power"
     };
 
     private ItemFirework(ItemTag _item) {
@@ -74,24 +77,17 @@ public class ItemFirework implements Property {
         return list;
     }
 
-    public MapTag getFireworkDataMap(){
+    public ListTag getFireworkDataMap() {
         List<FireworkEffect> effects;
-        MapTag map = new MapTag();
+        ListTag list = new ListTag();
         if (item.getItemMeta() instanceof FireworkMeta) {
-            FireworkMeta meta = (FireworkMeta) item.getItemMeta();
-            effects = meta.getEffects();
-            int power = meta.getPower();
-            if (power != 0) {
-                map.putObject("power", new ElementTag(power));
-            }
+            effects = ((FireworkMeta) item.getItemMeta()).getEffects();
         }
         else {
             effects = Collections.singletonList(((FireworkEffectMeta) item.getItemMeta()).getEffect());
         }
         if (effects != null) {
-            int size = effects.size();
-            for (int i = 0; i < size; i++) {
-                FireworkEffect effect = effects.get(i);
+            for (FireworkEffect effect : effects) {
                 if (effect == null) {
                     continue;
                 }
@@ -102,14 +98,18 @@ public class ItemFirework implements Property {
                 effectMap.putObject("flicker", new ElementTag(effect.hasFlicker()));
                 effectMap.putObject("type", new ElementTag(effect.getType().name()));
                 effectMap.putObject("color", new ColorTag(ColOne));
-                effectMap.putObject("fadeColor", new ColorTag(ColTwo));
-                map.putObject(String.valueOf(i+1), effectMap);
+                effectMap.putObject("fade_color", new ColorTag(ColTwo));
+                list.addObject(effectMap);
             }
         }
-        return map;
+        return list;
     }
 
-    public static void registerTags(){
+    public int getPower() {
+        return item.getItemMeta() instanceof FireworkMeta ? ((FireworkMeta) item.getItemMeta()).getPower() : 0;
+    }
+
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ItemTag.firework>
@@ -129,10 +129,23 @@ public class ItemFirework implements Property {
         // @group properties
         // @mechanism ItemTag.firework
         // @description
-        // Returns the firework's property value as a map, matching the MapTag format of the mechanism.
+        // Returns the firework's property value as a list, matching the MapTag format of the mechanism.
         // -->
-        PropertyParser.<ItemFirework, MapTag>registerTag(MapTag.class, "firework_map", (attribute, object) -> {
+        PropertyParser.<ItemFirework, ListTag>registerTag(ListTag.class, "firework_map", (attribute, object) -> {
             return object.getFireworkDataMap();
+        });
+
+        // <--[tag]
+        // @attribute <ItemTag.firework_power>
+        // @returns ElementTag(Number)
+        // @group properties
+        // @mechanism ItemTag.firework_power
+        // @description
+        // Returns the firework's power.
+        // -->
+        PropertyParser.<ItemFirework, ElementTag>registerTag(ElementTag.class, "firework_power", (attribute, object) -> {
+            ItemMeta meta = object.item.getItemMeta();
+            return meta instanceof FireworkMeta ? new ElementTag(((FireworkMeta) meta).getPower()) : null;
         });
     }
 
@@ -152,15 +165,35 @@ public class ItemFirework implements Property {
 
         // <--[mechanism]
         // @object ItemTag
+        // @name firework_power
+        // @input ElementTag(Number)
+        // @description
+        // Sets the power of a firework.
+        // @tags
+        // <ItemTag.firework_power>
+        // -->
+        if (mechanism.matches("firework_power") && mechanism.requireInteger()) {
+            if (item.getItemMeta() instanceof FireworkMeta) {
+                ItemMeta meta = item.getItemMeta();
+                ((FireworkMeta) meta).setPower(mechanism.getValue().asInt());
+                item.setItemMeta(meta);
+            }
+            else {
+                mechanism.echoError("Cannot set the power of a firework effect!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object ItemTag
         // @name firework
         // @input ListTag
         // @description
         // Sets the firework's settings.
-        // Each item in the list is formatted as: TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE
+        // Each item in the list is formatted as:
+        // A list of comma-separated values, in TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE format.
         // For example: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
-        // Optionally add a list entry that's just a single number to set the power.
-        // Can take MapTag input: an optional key for power and indexed keys for each effect,
-        // with "type", "color", "fadeColor", "trail", and "flicker" keys.
+        // A list of MapTags, with "type", "color", "fade_color", "trail", and "flicker" keys.
+        // Can optionally input a MapTag, with each key/value pair being equivalent to a value in the list.
         // Types: ball, ball_large, star, burst, or creeper
         // Notice that this is an ADD operation, provide no input to clear all effects.
         // @tags
@@ -172,93 +205,50 @@ public class ItemFirework implements Property {
             if (!mechanism.hasValue()) {
                 if (meta instanceof FireworkMeta) {
                     ((FireworkMeta) meta).clearEffects();
-                    ((FireworkMeta) meta).setPower(0);
                 }
                 else {
                     ((FireworkEffectMeta) meta).setEffect(null);
                 }
             }
-            else if (mechanism.getValue().asString().startsWith("map@")) {
-                MapTag map = mechanism.valueAsType(MapTag.class);
-                if (meta instanceof FireworkMeta && map.getObject("power") != null) {
-                    ((FireworkMeta) meta).setPower(map.getObject("power").asElement().asInt());
-                }
-                else if (!(meta instanceof FireworkMeta)) {
-                    mechanism.echoError("Cannot set the power of a firework effect!");
-                }
-                map.map.remove(new StringHolder("power"));
-                ListTag keys = map.keys();
-                int keysSize = keys.size();
-                for (int i = 1; i <= keysSize; i++) {
-                    if (map.getObject(String.valueOf(i)) == null) {
-                        mechanism.echoError("Invalid effect key '" + keys.get(i - 1) + "', keys must be ordered integers.");
-                        continue;
-                    }
-                    MapTag effectMap = map.getObject(String.valueOf(i)).asType(MapTag.class, mechanism.context);
-                    FireworkEffect.Builder builder = FireworkEffect.builder();
-                    ObjectTag type = effectMap.getObject("type");
-                    ObjectTag color = effectMap.getObject("color");
-                    ObjectTag fadeColor = effectMap.getObject("fadeColor");
-                    ObjectTag trail = effectMap.getObject("trail");
-                    ObjectTag flicker = effectMap.getObject("flicker");
-                    builder.trail(trail != null && trail.asElement().asBoolean());
-                    builder.flicker(flicker != null && flicker.asElement().asBoolean());
-                    if (type != null) {
-                        ElementTag effectType = type.asElement();
-                        if (effectType.matchesEnum(FireworkEffect.Type.values())) {
-                            builder.with(FireworkEffect.Type.valueOf(effectType.asString().toUpperCase()));
-                        }
-                        else {
-                            mechanism.echoError("Invalid firework type '" + effectType.asString() + "' for effect " + i);
-                        }
-                    }
-                    ColorTag co = new ColorTag(Color.BLACK);
-                    if (color != null && ColorTag.matches(color.toString())) {
-                        co = ColorTag.valueOf(color.toString(), mechanism.context);
-                    }
-                    else if (color != null) {
-                        mechanism.echoError("Invalid color '" + color + "' for effect " + i);
-                    }
-                    builder.withColor(co.getColor());
-                    if (fadeColor != null) {
-                        ColorTag fadeCo = ColorTag.valueOf(fadeColor.toString(), mechanism.context);
-                        if (fadeCo != null) {
-                            builder.withFade(fadeCo.getColor());
-                        }
-                        else {
-                            mechanism.echoError("Invalid fade color '" + fadeColor + "' for effect " + i);
-                        }
-                    }
-                    FireworkEffect built = builder.build();
-                    if (meta instanceof FireworkMeta) {
-                        ((FireworkMeta) meta).addEffect(built);
-                    }
-                    else {
-                        ((FireworkEffectMeta) meta).setEffect(built);
-                    }
-                }
-            }
             else {
-                ListTag fireworks = mechanism.valueAsType(ListTag.class);
-                for (String effect : fireworks) {
-                    String[] data = effect.split(",");
-                    if (data.length == 9) {
+                Collection<ObjectTag> list = CoreUtilities.objectToList(mechanism.getValue(), mechanism.context);
+                for (ObjectTag object : list) {
+                    if (object instanceof MapTag) {
+                        MapTag effectMap = object.asType(MapTag.class, mechanism.context);
                         FireworkEffect.Builder builder = FireworkEffect.builder();
-                        builder.trail(new ElementTag(data[0]).asBoolean());
-                        builder.flicker(new ElementTag(data[1]).asBoolean());
-                        if (new ElementTag(data[2]).matchesEnum(FireworkEffect.Type.values())) {
-                            builder.with(FireworkEffect.Type.valueOf(data[2].toUpperCase()));
+                        ObjectTag type = effectMap.getObject("type");
+                        ObjectTag color = effectMap.getObject("color");
+                        ObjectTag fadeColor = effectMap.getObject("fade_color");
+                        ObjectTag trail = effectMap.getObject("trail");
+                        ObjectTag flicker = effectMap.getObject("flicker");
+                        builder.trail(trail != null && trail.asElement().asBoolean());
+                        builder.flicker(flicker != null && flicker.asElement().asBoolean());
+                        if (type != null) {
+                            ElementTag effectType = type.asElement();
+                            if (effectType.matchesEnum(FireworkEffect.Type.values())) {
+                                builder.with(FireworkEffect.Type.valueOf(effectType.asString().toUpperCase()));
+                            }
+                            else {
+                                mechanism.echoError("Invalid firework type '" + effectType.asString() + "'");
+                            }
                         }
-                        else {
-                            mechanism.echoError("Invalid firework type '" + data[2] + "'");
+                        ColorTag co = new ColorTag(Color.BLACK);
+                        if (color != null && ColorTag.matches(color.toString())) {
+                            co = ColorTag.valueOf(color.toString(), mechanism.context);
                         }
-                        builder.withColor(Color.fromRGB(new ElementTag(data[3]).asInt(),
-                                new ElementTag(data[4]).asInt(),
-                                new ElementTag(data[5]).asInt()));
-                        builder.withFade(Color.fromRGB(new ElementTag(data[6]).asInt(),
-                                new ElementTag(data[7]).asInt(),
-                                new ElementTag(data[8]).asInt()));
-
+                        else if (color != null) {
+                            mechanism.echoError("Invalid color '" + color + "'");
+                        }
+                        builder.withColor(co.getColor());
+                        if (fadeColor != null) {
+                            ColorTag fadeCo = ColorTag.valueOf(fadeColor.toString(), mechanism.context);
+                            if (fadeCo != null) {
+                                builder.withFade(fadeCo.getColor());
+                            }
+                            else {
+                                mechanism.echoError("Invalid fade color '" + fadeColor + "'");
+                            }
+                        }
                         FireworkEffect built = builder.build();
                         if (meta instanceof FireworkMeta) {
                             ((FireworkMeta) meta).addEffect(built);
@@ -267,16 +257,45 @@ public class ItemFirework implements Property {
                             ((FireworkEffectMeta) meta).setEffect(built);
                         }
                     }
-                    else if (data.length == 1) {
-                        if (meta instanceof FireworkMeta) {
-                            ((FireworkMeta) meta).setPower(new ElementTag(data[0]).asInt());
+                    else {
+                        String effect = object.toString();
+                        String[] data = effect.split(",");
+                        if (data.length == 9) {
+                            FireworkEffect.Builder builder = FireworkEffect.builder();
+                            builder.trail(new ElementTag(data[0]).asBoolean());
+                            builder.flicker(new ElementTag(data[1]).asBoolean());
+                            if (new ElementTag(data[2]).matchesEnum(FireworkEffect.Type.values())) {
+                                builder.with(FireworkEffect.Type.valueOf(data[2].toUpperCase()));
+                            }
+                            else {
+                                mechanism.echoError("Invalid firework type '" + data[2] + "'");
+                            }
+                            builder.withColor(Color.fromRGB(new ElementTag(data[3]).asInt(),
+                                    new ElementTag(data[4]).asInt(),
+                                    new ElementTag(data[5]).asInt()));
+                            builder.withFade(Color.fromRGB(new ElementTag(data[6]).asInt(),
+                                    new ElementTag(data[7]).asInt(),
+                                    new ElementTag(data[8]).asInt()));
+
+                            FireworkEffect built = builder.build();
+                            if (meta instanceof FireworkMeta) {
+                                ((FireworkMeta) meta).addEffect(built);
+                            }
+                            else {
+                                ((FireworkEffectMeta) meta).setEffect(built);
+                            }
+                        }
+                        else if (data.length == 1) {
+                            if (meta instanceof FireworkMeta) {
+                                ((FireworkMeta) meta).setPower(new ElementTag(data[0]).asInt());
+                            }
+                            else {
+                                mechanism.echoError("Cannot set the power of a firework effect!");
+                            }
                         }
                         else {
-                            mechanism.echoError("Cannot set the power of a firework effect!");
+                            mechanism.echoError("Invalid firework data '" + effect + "'");
                         }
-                    }
-                    else {
-                        mechanism.echoError("Invalid firework data '" + effect + "'");
                     }
                 }
             }
