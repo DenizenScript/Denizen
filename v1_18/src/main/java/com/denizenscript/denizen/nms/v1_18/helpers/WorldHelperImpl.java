@@ -24,7 +24,7 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public void setStatic(World world, boolean isStatic) {
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
-        ReflectionHelper.setFieldValue(net.minecraft.world.level.Level.class, ReflectionMappingsInfo.Level_isClientSide, worldServer, isStatic);
+        ReflectionHelper.setFieldValue(Level.class, ReflectionMappingsInfo.Level_isClientSide, worldServer, isStatic);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class WorldHelperImpl implements WorldHelper {
         }
         if (dimension != null) {
             ServerLevel worldServer = ((CraftWorld) world).getHandle();
-            ReflectionHelper.setFieldValue(net.minecraft.world.level.Level.class, ReflectionMappingsInfo.Level_dimension, worldServer, dimension);
+            ReflectionHelper.setFieldValue(Level.class, ReflectionMappingsInfo.Level_dimension, worldServer, dimension);
         }
     }
 
