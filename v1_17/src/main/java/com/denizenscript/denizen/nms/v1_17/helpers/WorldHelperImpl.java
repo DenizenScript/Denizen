@@ -6,8 +6,10 @@ import com.denizenscript.denizen.nms.v1_17.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.level.Level;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
@@ -22,7 +24,27 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public void setStatic(World world, boolean isStatic) {
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
-        ReflectionHelper.setFieldValue(net.minecraft.world.level.Level.class, ReflectionMappingsInfo.Level_isClientSide, worldServer, isStatic);
+        ReflectionHelper.setFieldValue(Level.class, ReflectionMappingsInfo.Level_isClientSide, worldServer, isStatic);
+    }
+
+    @Override
+    public void setDimension(World world, World.Environment environment) {
+        ResourceKey<Level> dimension = null;
+        switch (environment) {
+            case NORMAL:
+                dimension = Level.OVERWORLD;
+                break;
+            case NETHER:
+                dimension = Level.NETHER;
+                break;
+            case THE_END:
+                dimension = Level.END;
+                break;
+        }
+        if (dimension != null) {
+            ServerLevel worldServer = ((CraftWorld) world).getHandle();
+            ReflectionHelper.setFieldValue(Level.class, ReflectionMappingsInfo.Level_dimension, worldServer, dimension);
+        }
     }
 
     @Override

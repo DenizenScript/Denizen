@@ -44,6 +44,7 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.level.Level
     public static String Level_isClientSide = "y";
+    public static String Level_dimension = "G";
 
     // net.minecraft.server.level.ThreadedLevelLightEngine
     public static String ThreadedLevelLightEngine_addTask = "a";
