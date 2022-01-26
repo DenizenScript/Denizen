@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -224,6 +225,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 Debug.echoError("World is null, something went wrong in creation!");
             }
             else {
+                NMSHandler.getWorldHelper().setDimension(world, World.Environment.valueOf(environment.asString().toUpperCase()));
                 Debug.echoDebug(scriptEntry, "Created new world " + world.getName());
             }
             scriptEntry.setFinished(true);

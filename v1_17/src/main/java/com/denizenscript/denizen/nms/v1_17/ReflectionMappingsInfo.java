@@ -30,6 +30,7 @@ public class ReflectionMappingsInfo {
     public static String Item_maxStackSize = "c";
 
     public static String Level_isClientSide = "y";
+    public static String Level_dimension = "G";
 
     public static String ThreadedLevelLightEngine_addTask = "a";
 
