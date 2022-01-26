@@ -115,21 +115,22 @@ public class ItemFirework implements Property {
         // @group properties
         // @mechanism ItemTag.firework
         // @description
-        // Returns the firework's property value as a list, matching the format of the mechanism.
+        // Returns the firework's property value as a list, matching the non-MapTag format of the mechanism.
+        // Consider instead using <@link tag ItemTag.firework_data>
         // -->
         PropertyParser.<ItemFirework, ListTag>registerTag(ListTag.class, "firework", (attribute, object) -> {
             return object.getFireworkData();
         });
 
         // <--[tag]
-        // @attribute <ItemTag.firework_map>
-        // @returns MapTag
+        // @attribute <ItemTag.firework_data>
+        // @returns ListTag
         // @group properties
         // @mechanism ItemTag.firework
         // @description
-        // Returns the firework's property value as a list, matching the MapTag format of the mechanism.
+        // Returns the firework's property value as a ListTag of MapTags, matching the MapTag format of the mechanism.
         // -->
-        PropertyParser.<ItemFirework, ListTag>registerTag(ListTag.class, "firework_map", (attribute, object) -> {
+        PropertyParser.<ItemFirework, ListTag>registerTag(ListTag.class, "firework_data", (attribute, object) -> {
             return object.getFireworkDataMap();
         });
 
@@ -140,6 +141,7 @@ public class ItemFirework implements Property {
         // @mechanism ItemTag.firework_power
         // @description
         // Returns the firework's power.
+        // Power primarily affects how high the firework flies, with each level of power corresponding to approximately half a second of additional flight them.
         // -->
         PropertyParser.<ItemFirework, ElementTag>registerTag(ElementTag.class, "firework_power", (attribute, object) -> {
             ItemMeta meta = object.item.getItemMeta();
@@ -187,16 +189,17 @@ public class ItemFirework implements Property {
         // @input ListTag
         // @description
         // Sets the firework's settings.
-        // Each item in the list is formatted as:
-        // A list of comma-separated values, in TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE format.
+        // Each item in the list can be any of the following:
+        // 1: Comma-separated effect data in the format: TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE
         // For example: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
-        // A list of MapTags, with "type", "color", "fade_color", "trail", and "flicker" keys.
-        // Can optionally input a MapTag, with each key/value pair being equivalent to a value in the list.
+        // 2: A MapTag, with "type", "color", "fade_color", "trail", and "flicker" keys.
+        // For example: [type=ball;color=red;fade_color=green;trail=true;flicker=false]
+        // 3: A single number, to set the power.
         // Types: ball, ball_large, star, burst, or creeper
-        // Notice that this is an ADD operation, provide no input to clear all effects.
+        // Note that this is an add operation, provide no input to clear all effects.
         // @tags
         // <ItemTag.firework>
-        // <ItemTag.firework_map>
+        // <ItemTag.firework_data>
         // -->
         if (mechanism.matches("firework")) {
             ItemMeta meta = item.getItemMeta();
@@ -211,7 +214,7 @@ public class ItemFirework implements Property {
             else {
                 Collection<ObjectTag> list = CoreUtilities.objectToList(mechanism.getValue(), mechanism.context);
                 for (ObjectTag object : list) {
-                    if (object instanceof MapTag) {
+                    if (object.canBeType(MapTag.class)) {
                         MapTag effectMap = object.asType(MapTag.class, mechanism.context);
                         FireworkEffect.Builder builder = FireworkEffect.builder();
                         ObjectTag type = effectMap.getObject("type");

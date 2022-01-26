@@ -208,7 +208,7 @@ public class DisguiseCommand extends AbstractCommand {
                 return;
             }
             if (toOthers == null) {
-                toOthers = NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getEntityType(), entity.getLocation(), as.getWaitingMechanisms(), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
+                toOthers = NMSHandler.getPlayerHelper().sendEntitySpawn(players, as.getEntityType(), entity.getLocation(), as.mechanisms == null ? null : new ArrayList<>(as.mechanisms), entity.getBukkitEntity().getEntityId(), entity.getUUID(), false);
                 toOthers.overrideUUID = UUID.randomUUID();
                 toOthers.entity.uuid = toOthers.overrideUUID;
                 FakeEntity.idsToEntities.put(toOthers.overrideUUID, toOthers);
@@ -335,7 +335,7 @@ public class DisguiseCommand extends AbstractCommand {
         }
         if (!cancel) {
             TrackedDisguise disguise = new TrackedDisguise(entity, as);
-            disguise.as.entity = NMSHandler.getPlayerHelper().sendEntitySpawn(new ArrayList<>(), as.getEntityType(), entity.getLocation(), as.getWaitingMechanisms(), -1, null, false).entity.getBukkitEntity();
+            disguise.as.entity = NMSHandler.getPlayerHelper().sendEntitySpawn(new ArrayList<>(), as.getEntityType(), entity.getLocation(), as.mechanisms == null ? null : new ArrayList<>(as.mechanisms), -1, null, false).entity.getBukkitEntity();
             if (global) {
                 playerMap = disguises.computeIfAbsent(entity.getUUID(), k -> new HashMap<>());
                 playerMap.put(null, disguise);

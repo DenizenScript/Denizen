@@ -56,6 +56,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         String prefix = null;
         String suffix = null;
         if (name == null) {
+            Debug.echoError("FAKE_PLAYER: null name, cannot spawn");
             return null;
         }
         else if (fullName.length() > 16) {
