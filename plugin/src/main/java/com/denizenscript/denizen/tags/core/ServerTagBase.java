@@ -2317,6 +2317,10 @@ public class ServerTagBase {
             ObjectTag killer = map.getObject("killer");
             ObjectTag luck = map.getObject("luck");
             ObjectTag bonus = map.getObject("loot_bonus");
+            ObjectTag entity = map.getObject("entity");
+            if (entity != null) {
+                context = context.lootedEntity(entity.asType(EntityTag.class, attribute.context).getBukkitEntity());
+            }
             if (killer != null) {
                 context = context.killer((HumanEntity) killer.asType(EntityTag.class, attribute.context).getLivingEntity());
             }

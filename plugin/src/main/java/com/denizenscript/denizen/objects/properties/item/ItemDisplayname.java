@@ -57,6 +57,7 @@ public class ItemDisplayname implements Property {
         // @attribute <ItemTag.display>
         // @returns ElementTag
         // @mechanism ItemTag.display
+        // @synonyms ItemTag.display_name
         // @group properties
         // @description
         // Returns the display name of the item, as set by plugin or an anvil.
@@ -106,6 +107,7 @@ public class ItemDisplayname implements Property {
         // @object ItemTag
         // @name display
         // @input ElementTag
+        // @synonyms ItemTag.display_name
         // @description
         // Changes the item's display name.
         // Give no input to remove the item's display name.
