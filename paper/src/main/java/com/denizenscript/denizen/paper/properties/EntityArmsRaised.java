@@ -74,6 +74,7 @@ public class EntityArmsRaised implements Property {
         // @Plugin Paper
         // @description
         // Sets whether a ranged entity is "charging" up an attack (it's arms are raised).
+        // Some entities may require <@link mechanism EntityTag.is_aware> to be set to false.
         // @tags
         // <EntityTag.arms_raised>
         // -->
