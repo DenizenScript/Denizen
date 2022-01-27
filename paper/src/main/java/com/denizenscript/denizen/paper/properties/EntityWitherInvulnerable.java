@@ -41,6 +41,7 @@ public class EntityWitherInvulnerable implements Property {
         // @returns DurationTag
         // @mechanism EntityTag.invulnerable_duration
         // @group properties
+        // @Plugin Paper
         // @description
         // Returns the duration remaining until the wither becomes vulnerable.
         // -->
@@ -74,6 +75,7 @@ public class EntityWitherInvulnerable implements Property {
         // @object EntityTag
         // @name invulnerable_duration
         // @input DurationTag
+        // @Plugin Paper
         // @description
         // Sets the duration remaining until the wither becomes vulnerable.
         // @tags
