@@ -51,6 +51,7 @@ public class PaperModule {
 
         // Properties
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
         // Paper extension properties
