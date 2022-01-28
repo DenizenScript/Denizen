@@ -43,7 +43,7 @@ public class EntityArmsRaised implements Property {
         // @group properties
         // @Plugin Paper
         // @description
-        // Returns whether a ranged entity is "charging" up an attack (it's arms are raised).
+        // Returns whether a skeleton, stray, wither skeleton, drowned, illusioner, or piglin is "charging" up an attack (its arms are raised).
         // -->
         PropertyParser.<EntityArmsRaised, ElementTag>registerTag(ElementTag.class, "arms_raised", (attribute, object) -> {
             return new ElementTag(object.getRanged().isChargingAttack());
@@ -73,7 +73,7 @@ public class EntityArmsRaised implements Property {
         // @input ElementTag(Boolean)
         // @Plugin Paper
         // @description
-        // Sets whether a ranged entity is "charging" up an attack (it's arms are raised).
+        // Sets whether a skeleton, stray, wither skeleton, drowned, illusioner, or piglin is "charging" up an attack (its arms are raised).
         // Some entities may require <@link mechanism EntityTag.is_aware> to be set to false.
         // @tags
         // <EntityTag.arms_raised>
