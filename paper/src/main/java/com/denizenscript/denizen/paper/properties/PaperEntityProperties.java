@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -167,6 +169,7 @@ public class PaperEntityProperties implements Property {
         // Causes a goat to ram the specified entity.
         // -->
         if (mechanism.matches("goat_ram") && mechanism.requireObject(EntityTag.class)
+                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
                 && entity.getBukkitEntity() instanceof Goat) {
             ((Goat) entity.getBukkitEntity()).ram(mechanism.valueAsType(EntityTag.class).getLivingEntity());
         }
