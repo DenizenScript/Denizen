@@ -171,18 +171,18 @@ public class EntityItem implements Property {
             if (isDroppedItem()) {
                 getDroppedItem().setItemStack(itemStack);
             }
-            else if (isThrowableProjectile()) {
-                ((ThrowableProjectile) item.getBukkitEntity()).setItem(itemStack); // TODO: 1.15
+            else if (isEnderman()) {
+                getEnderman().setCarriedBlock(itemStack.getType().createBlockData());
             }
             else if (isTrident()) {
                 // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
                 NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), itemStack);
             }
+            else if (isThrowableProjectile()) {
+                ((ThrowableProjectile) item.getBukkitEntity()).setItem(itemStack); // TODO: 1.15
+            }
             else if (isEnderSignal()) {
                 getEnderSignal().setItem(itemStack);
-            }
-            else if (isEnderman()) {
-                getEnderman().setCarriedBlock(itemStack.getType().createBlockData());
             }
         }
     }
