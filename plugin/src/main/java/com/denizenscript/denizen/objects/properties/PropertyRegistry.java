@@ -106,6 +106,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityJumpStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityKnockback.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPainting.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolLeader.class, EntityTag.class);
