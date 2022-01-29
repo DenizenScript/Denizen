@@ -104,7 +104,7 @@ public class EntityWitch implements Property {
                 mechanism.echoError("Invalid item input '" + potion + "': item must be a potion");
                 return;
             }
-            getWitch().setDrinkingPotion(mechanism.valueAsType(ItemTag.class).getItemStack());
+            getWitch().setDrinkingPotion(potion.getItemStack());
         }
 
         // <--[mechanism]
