@@ -7,7 +7,6 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
@@ -96,8 +95,12 @@ public class EntityItem implements Property {
         return "item";
     }
 
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
 
-    public static void registerTags() {
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <EntityTag.item>
@@ -106,12 +109,15 @@ public class EntityItem implements Property {
         // @group properties
         // @description
         // If the entity is a dropped item, returns the item represented by the entity.
+        // If the entity is an enderman, returns the item that the enderman is holding.
         // If the entity is a trident, returns the trident item represented by the entity.
-        // If the item is a throwable projectile, returns the display item for that projectile.
+        // If the item is a throwable projectile, returns the item that was thrown.
         // -->
-        PropertyParser.<EntityItem, ItemTag>registerTag(ItemTag.class, "item", (attribute, object) -> {
-            return object.getItem();
-        });
+        if (attribute.startsWith("item")) {
+            return getItem().getObjectAttribute(attribute.fulfill(1));
+        }
+
+        return null;
     }
 
     @Override
@@ -122,9 +128,7 @@ public class EntityItem implements Property {
         // @name item
         // @input ItemTag
         // @description
-        // If the entity is a dropped item, sets the item represented by the entity.
-        // If the entity is a trident, sets the trident item represented by the entity.
-        // If the item is a throwable projectile, sets the display item for that projectile.
+        // Changes what item a dropped item, trident, or thrown projectile represents, or that an Enderman holds.
         // @tags
         // <EntityTag.item>
         // -->
