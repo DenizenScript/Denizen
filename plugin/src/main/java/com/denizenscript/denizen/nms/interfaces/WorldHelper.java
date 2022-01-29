@@ -10,10 +10,6 @@ public interface WorldHelper {
 
     void setStatic(World world, boolean isStatic);
 
-    default void setDimension(World world, World.Environment environment) {
-        // Pre-1.17 do nothing
-    }
-
     float getLocalDifficulty(Location location);
 
     default Location getNearestBiomeLocation(Location start, BiomeTag biome) {
