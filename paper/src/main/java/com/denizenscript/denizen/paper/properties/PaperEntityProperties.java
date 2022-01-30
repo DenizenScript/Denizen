@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.SizedFireball;
+import org.bukkit.entity.Turtle;
 
 import java.util.UUID;
 
@@ -165,11 +166,28 @@ public class PaperEntityProperties implements Property {
         // -->
         PropertyParser.<PaperEntityProperties, ItemTag>registerTag(ItemTag.class, "fireball_display_item", (attribute, entity) -> {
             if (!(entity.entity.getBukkitEntity() instanceof SizedFireball)) {
-                attribute.echoError("Entity " + entity + " is not a fireball.");
+                attribute.echoError("Entity " + entity.entity + " is not a fireball.");
                 return null;
             }
             SizedFireball fireball = (SizedFireball) entity.entity.getBukkitEntity();
             return new ItemTag(fireball.getDisplayItem());
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.carrying_egg>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @Plugin Paper
+        // @description
+        // If the entity is a turtle, returns whether it is carrying an egg.
+        // -->
+        PropertyParser.<PaperEntityProperties, ElementTag>registerTag(ElementTag.class, "carrying_egg", (attribute, entity) -> {
+            if (!(entity.entity.getBukkitEntity() instanceof Turtle)) {
+                attribute.echoError("Entity " + entity.entity + " is not a turtle.");
+                return null;
+            }
+            Turtle turtle = (Turtle) entity.entity.getBukkitEntity();
+            return new ElementTag(turtle.hasEgg());
         });
     }
 
@@ -177,7 +195,7 @@ public class PaperEntityProperties implements Property {
     public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
-        // @object PlayerTag
+        // @object EntityTag
         // @name fireball_display_item
         // @input ItemTag
         // @Plugin Paper
@@ -193,6 +211,25 @@ public class PaperEntityProperties implements Property {
             }
             SizedFireball fireball = (SizedFireball) entity.getBukkitEntity();
             fireball.setDisplayItem(mechanism.valueAsType(ItemTag.class).getItemStack());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name carrying_egg
+        // @input ElementTag(Boolean)
+        // @Plugin Paper
+        // @description
+        // If the entity is a turtle, sets whether it is carrying an egg.
+        // @tags
+        // <EntityTag.carrying_egg>
+        // -->
+        if (mechanism.matches("carrying_egg") && mechanism.requireBoolean()) {
+            if (!(entity.getBukkitEntity() instanceof Turtle)) {
+                mechanism.echoError("Entity " + entity.entity + " is not a turtle.");
+                return;
+            }
+            Turtle turtle = (Turtle) entity.getBukkitEntity();
+            turtle.setHasEgg(mechanism.getValue().asBoolean());
         }
     }
 }
