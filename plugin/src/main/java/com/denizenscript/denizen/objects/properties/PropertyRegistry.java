@@ -54,6 +54,7 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(EntityCannotEnterHive.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityCharging.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
         PropertyParser.registerProperty(EntityColor.class, EntityTag.class);
         PropertyParser.registerProperty(EntityConversionTime.class, EntityTag.class);
