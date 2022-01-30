@@ -56,7 +56,7 @@ public class EntityCharging implements Property {
 
     @Override
     public String getPropertyId() {
-        return "EntityCharging";
+        return "charging";
     }
 
 
