@@ -23,7 +23,7 @@ public class EntityCharging implements Property {
         }
     }
 
-    public static final String[] handledMechs = new String[]{
+    public static final String[] handledMechs = new String[] {
         "charging"
     };
 
