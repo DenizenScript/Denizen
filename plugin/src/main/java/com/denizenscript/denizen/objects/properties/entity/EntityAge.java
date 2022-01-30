@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Age;
@@ -119,13 +120,7 @@ public class EntityAge implements Property {
         return "age";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
+    public static void registerTags() {
         // <--[tag]
         // @attribute <EntityTag.age>
         // @returns ElementTag(Number)
@@ -138,10 +133,9 @@ public class EntityAge implements Property {
         // A standard adult is 0.
         // An adult that just bred is 6000.
         // -->
-        if (attribute.startsWith("age")) {
-            return new ElementTag(getAge())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "age", (attribute, object) -> {
+            return new ElementTag(object.getAge());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_age_locked>
@@ -151,10 +145,9 @@ public class EntityAge implements Property {
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
         // -->
-        if (attribute.startsWith("is_age_locked")) {
-            return new ElementTag(getLock())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "is_age_locked", (attribute, object) -> {
+            return new ElementTag(object.getLock());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_baby>
@@ -164,12 +157,9 @@ public class EntityAge implements Property {
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
         // -->
-        if (attribute.startsWith("is_baby")) {
-            return new ElementTag(isBaby())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "is_baby", (attribute, object) -> {
+            return new ElementTag(object.isBaby());
+        });
     }
 
     @Override
