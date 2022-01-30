@@ -106,6 +106,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityJumpStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityKnockback.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPainting.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolLeader.class, EntityTag.class);
@@ -121,6 +122,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            PropertyParser.registerProperty(EntityShivering.class, EntityTag.class);
             PropertyParser.registerProperty(EntityShulkerPeek.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntitySilent.class, EntityTag.class);

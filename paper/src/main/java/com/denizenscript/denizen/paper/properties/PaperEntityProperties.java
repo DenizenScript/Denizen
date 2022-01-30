@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -9,10 +11,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.SizedFireball;
-import org.bukkit.entity.Turtle;
+import org.bukkit.entity.*;
 
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ public class PaperEntityProperties implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "fireball_display_item", "carrying_egg"
+            "fireball_display_item", "carrying_egg", "goat_ram"
     };
 
     public static PaperEntityProperties getFrom(ObjectTag entity) {
@@ -193,7 +192,21 @@ public class PaperEntityProperties implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
+      
+        // <--[mechanism]
+        // @object EntityTag
+        // @name goat_ram
+        // @input EntityTag
+        // @Plugin Paper
+        // @description
+        // Causes a goat to ram the specified entity.
+        // -->
+        if (mechanism.matches("goat_ram") && mechanism.requireObject(EntityTag.class)
+                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
+                && entity.getBukkitEntity() instanceof Goat) {
+            ((Goat) entity.getBukkitEntity()).ram(mechanism.valueAsType(EntityTag.class).getLivingEntity());
+        }
+      
         // <--[mechanism]
         // @object EntityTag
         // @name fireball_display_item
