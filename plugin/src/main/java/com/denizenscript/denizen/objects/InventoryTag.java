@@ -2314,10 +2314,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         tagProcessor.registerTag(ListTag.class, "viewers", (attribute, object) -> {
             ListTag list = new ListTag();
             for (HumanEntity viewer : object.getInventory().getViewers()) {
-                if (EntityTag.isNPC(viewer)) {
-                    continue;
+                if (!EntityTag.isNPC(viewer)) {
+                    list.addObject(new PlayerTag((Player) viewer));
                 }
-                list.addObject(new PlayerTag((Player) viewer));
             }
             return list;
         });
