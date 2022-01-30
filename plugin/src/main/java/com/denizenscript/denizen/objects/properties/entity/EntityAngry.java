@@ -98,7 +98,7 @@ public class EntityAngry implements Property {
     }
 
     public boolean isVindicator() {
-        return entity.getBukkitEntity() instanceof Vindicator;
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && entity.getBukkitEntity() instanceof Vindicator;
     }
 
     public Wolf getWolf() {
