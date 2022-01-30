@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Age;
 import org.bukkit.entity.Ageable;

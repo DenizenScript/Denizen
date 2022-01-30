@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class EntityAI implements Property {
 
@@ -47,13 +47,7 @@ public class EntityAI implements Property {
         return "has_ai";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
+    public static void registerTags() {
         // <--[tag]
         // @attribute <EntityTag.has_ai>
         // @returns ElementTag(Boolean)
@@ -65,12 +59,9 @@ public class EntityAI implements Property {
         // This generally shouldn't be used with NPCs. NPCs do not have vanilla AI, regardless of what this tag returns.
         // Other programmatic methods of blocking AI might also not be accounted for by this tag.
         // -->
-        if (attribute.startsWith("has_ai")) {
-            return new ElementTag(entity.getLivingEntity().hasAI())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityAI, ElementTag>registerTag(ElementTag.class, "has_ai", (attribute, object) -> {
+            return new ElementTag(object.entity.getLivingEntity().hasAI());
+        });
     }
 
     @Override
