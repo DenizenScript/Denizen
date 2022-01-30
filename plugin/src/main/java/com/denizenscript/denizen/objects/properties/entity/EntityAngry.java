@@ -9,16 +9,21 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Vindicator;
 import org.bukkit.entity.Wolf;
 
 public class EntityAngry implements Property {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && (((EntityTag) entity).getBukkitEntity() instanceof Wolf
-                || ((EntityTag) entity).getBukkitEntity() instanceof PigZombie
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && ((EntityTag) entity).getBukkitEntity() instanceof Vindicator));
+    public static boolean describes(ObjectTag object) {
+        if (!(object instanceof EntityTag)) {
+            return false;
+        }
+        Entity entity = ((EntityTag) object).getBukkitEntity();
+        return entity instanceof Wolf
+                || entity instanceof PigZombie
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && entity instanceof Vindicator);
     }
 
     public static EntityAngry getFrom(ObjectTag entity) {
