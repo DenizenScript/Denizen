@@ -23,7 +23,7 @@ public class PaperEntityProperties implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "fireball_display_item"
+            "fireball_display_item", "carrying_egg"
     };
 
     public static PaperEntityProperties getFrom(ObjectTag entity) {
