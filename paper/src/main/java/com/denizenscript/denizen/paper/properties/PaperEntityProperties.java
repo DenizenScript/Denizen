@@ -22,7 +22,7 @@ public class PaperEntityProperties implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "goat_ram", "fireball_display_item", "carrying_egg"
+            "goat_ram"
     };
 
     public static PaperEntityProperties getFrom(ObjectTag entity) {
@@ -154,40 +154,6 @@ public class PaperEntityProperties implements Property {
         PropertyParser.<PaperEntityProperties, ElementTag>registerTag(ElementTag.class, "from_spawner", (attribute, entity) -> {
             return new ElementTag(entity.entity.getBukkitEntity().fromMobSpawner());
         });
-
-        // <--[tag]
-        // @attribute <EntityTag.fireball_display_item>
-        // @returns ItemTag
-        // @group properties
-        // @Plugin Paper
-        // @description
-        // If the entity is a fireball, returns its display item.
-        // -->
-        PropertyParser.<PaperEntityProperties, ItemTag>registerTag(ItemTag.class, "fireball_display_item", (attribute, entity) -> {
-            if (!(entity.entity.getBukkitEntity() instanceof SizedFireball)) {
-                attribute.echoError("Entity " + entity.entity + " is not a fireball.");
-                return null;
-            }
-            SizedFireball fireball = (SizedFireball) entity.entity.getBukkitEntity();
-            return new ItemTag(fireball.getDisplayItem());
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.carrying_egg>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @Plugin Paper
-        // @description
-        // If the entity is a turtle, returns whether it is carrying an egg.
-        // -->
-        PropertyParser.<PaperEntityProperties, ElementTag>registerTag(ElementTag.class, "carrying_egg", (attribute, entity) -> {
-            if (!(entity.entity.getBukkitEntity() instanceof Turtle)) {
-                attribute.echoError("Entity " + entity.entity + " is not a turtle.");
-                return null;
-            }
-            Turtle turtle = (Turtle) entity.entity.getBukkitEntity();
-            return new ElementTag(turtle.hasEgg());
-        });
     }
 
     @Override
@@ -205,44 +171,6 @@ public class PaperEntityProperties implements Property {
                 && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
                 && entity.getBukkitEntity() instanceof Goat) {
             ((Goat) entity.getBukkitEntity()).ram(mechanism.valueAsType(EntityTag.class).getLivingEntity());
-        }
-      
-        // <--[mechanism]
-        // @object EntityTag
-        // @name fireball_display_item
-        // @input ItemTag
-        // @Plugin Paper
-        // @description
-        // If the entity is a fireball, sets its display item.
-        // @tags
-        // <EntityTag.fireball_display_item>
-        // -->
-        if (mechanism.matches("fireball_display_item") && mechanism.requireObject(ItemTag.class)) {
-            if (!(entity.getBukkitEntity() instanceof SizedFireball)) {
-                mechanism.echoError("Entity " + entity + " is not a fireball.");
-                return;
-            }
-            SizedFireball fireball = (SizedFireball) entity.getBukkitEntity();
-            fireball.setDisplayItem(mechanism.valueAsType(ItemTag.class).getItemStack());
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name carrying_egg
-        // @input ElementTag(Boolean)
-        // @Plugin Paper
-        // @description
-        // If the entity is a turtle, sets whether it is carrying an egg.
-        // @tags
-        // <EntityTag.carrying_egg>
-        // -->
-        if (mechanism.matches("carrying_egg") && mechanism.requireBoolean()) {
-            if (!(entity.getBukkitEntity() instanceof Turtle)) {
-                mechanism.echoError("Entity " + entity.entity + " is not a turtle.");
-                return;
-            }
-            Turtle turtle = (Turtle) entity.getBukkitEntity();
-            turtle.setHasEgg(mechanism.getValue().asBoolean());
         }
     }
 }
