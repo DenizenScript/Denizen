@@ -116,7 +116,8 @@ public class EntityAngry implements Property {
         // @name angry
         // @input ElementTag(Boolean)
         // @description
-        // Changes the anger state of a Wolf or PigZombie.
+        // If the entity is wolf or PigZombie, sets whether the entity is angry.
+        // If the entity is a Vindicator, returns whether it is in "Johnny" mode.
         // @tags
         // <EntityTag.angry>
         // -->
