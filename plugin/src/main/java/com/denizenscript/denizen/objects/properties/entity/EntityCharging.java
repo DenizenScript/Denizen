@@ -18,7 +18,8 @@ public class EntityCharging implements Property {
     public static EntityCharging getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
-        } else {
+        }
+        else {
             return new EntityCharging((EntityTag) entity);
         }
     }
