@@ -42,21 +42,14 @@ public class EntityAngry implements Property {
 
     @Override
     public String getPropertyString() {
-        if (entity.getBukkitEntity() instanceof Wolf) {
-            if (!((Wolf) entity.getLivingEntity()).isAngry()) {
-                return null;
-            }
-            else {
-                return "true";
-            }
+        if (isWolf()) {
+            return getWolf().isAngry() ? "true" : null;
         }
-        else if (entity.getBukkitEntity() instanceof PigZombie) {
-            if (!((PigZombie) entity.getLivingEntity()).isAngry()) {
-                return null;
-            }
-            else {
-                return "true";
-            }
+        else if (isPigZombie()) {
+            return getPigZombie().isAngry() ? "true" : null;
+        }
+        else if (isVindicator()) {
+            return getVindicator().isJohnny() ? "true" : null;
         }
         return null;
     }
@@ -65,35 +58,6 @@ public class EntityAngry implements Property {
     public String getPropertyId() {
         return "angry";
     }
-
-    /*@Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
-        // <--[tag]
-        // @attribute <EntityTag.angry>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.angry
-        // @group properties
-        // @description
-        // If the entity is a wolf or PigZombie, returns whether the entity is angry.
-        // -->
-        if (attribute.startsWith("angry")) {
-            if (entity.getBukkitEntity() instanceof Wolf) {
-                return new ElementTag(((Wolf) entity.getBukkitEntity()).isAngry())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
-            else if (entity.getBukkitEntity() instanceof PigZombie) {
-                return new ElementTag(((PigZombie) entity.getBukkitEntity()).isAngry())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
-        }
-
-        return null;
-    }*/
 
     public static void registerTags() {
 
