@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.PigZombie;
@@ -31,10 +31,6 @@ public class EntityAnger implements Property {
             return new EntityAnger((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "anger"
-    };
 
     public static final String[] handledMechs = new String[] {
             "anger"
@@ -65,13 +61,7 @@ public class EntityAnger implements Property {
         }
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
+    public static void registerTags() {
         // <--[tag]
         // @attribute <EntityTag.anger>
         // @returns DurationTag
@@ -80,12 +70,9 @@ public class EntityAnger implements Property {
         // @description
         // Returns the remaining anger time of a PigZombie or Bee.
         // -->
-        if (attribute.startsWith("anger")) {
-            return new DurationTag((long) getAnger())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityAnger, DurationTag>registerTag(DurationTag.class, "anger", (attribute, object) -> {
+            return new DurationTag((long) object.getAnger());
+        });
     }
 
     @Override
