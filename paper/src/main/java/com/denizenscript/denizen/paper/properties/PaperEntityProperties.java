@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.paper.properties;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -10,6 +11,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.SizedFireball;
 
 import java.util.UUID;
 
@@ -20,7 +22,8 @@ public class PaperEntityProperties implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-    }; // None
+            "fireball_display_item"
+    };
 
     public static PaperEntityProperties getFrom(ObjectTag entity) {
         if (!describes(entity)) {
@@ -151,9 +154,45 @@ public class PaperEntityProperties implements Property {
         PropertyParser.<PaperEntityProperties, ElementTag>registerTag(ElementTag.class, "from_spawner", (attribute, entity) -> {
             return new ElementTag(entity.entity.getBukkitEntity().fromMobSpawner());
         });
+
+        // <--[tag]
+        // @attribute <EntityTag.fireball_display_item>
+        // @returns ItemTag
+        // @group properties
+        // @Plugin Paper
+        // @description
+        // If the entity is a fireball, returns its display item.
+        // -->
+        PropertyParser.<PaperEntityProperties, ItemTag>registerTag(ItemTag.class, "fireball_display_item", (attribute, entity) -> {
+            if (!(entity.entity.getBukkitEntity() instanceof SizedFireball)) {
+                attribute.echoError("Entity " + entity + " is not a fireball.");
+                return null;
+            }
+            SizedFireball fireball = (SizedFireball) entity.entity.getBukkitEntity();
+            return new ItemTag(fireball.getDisplayItem());
+        });
     }
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name fireball_display_item
+        // @input ItemTag
+        // @Plugin Paper
+        // @description
+        // If the entity is a fireball, sets its display item.
+        // @tags
+        // <EntityTag.fireball_display_item>
+        // -->
+        if (mechanism.matches("fireball_display_item") && mechanism.requireObject(ItemTag.class)) {
+            if (!(entity.getBukkitEntity() instanceof SizedFireball)) {
+                mechanism.echoError("Entity " + entity + " is not a fireball.");
+                return;
+            }
+            SizedFireball fireball = (SizedFireball) entity.getBukkitEntity();
+            fireball.setDisplayItem(mechanism.valueAsType(ItemTag.class).getItemStack());
+        }
     }
 }
