@@ -114,8 +114,7 @@ public class EntityAngry implements Property {
                 return new ElementTag(entity.getPigZombie().isAngry());
             }
             else if (entity.isVindicator()) {
-                // idk
-                return new ElementTag(false);
+                return new ElementTag(entity.getVindicator().isJohnny());
             }
             return null;
         });
@@ -165,7 +164,7 @@ public class EntityAngry implements Property {
                 getPigZombie().setAngry(mechanism.getValue().asBoolean());
             }
             else if (isVindicator()) {
-
+                getVindicator().setJohnny(mechanism.getValue().asBoolean());
             }
         }
     }
