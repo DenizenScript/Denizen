@@ -33,10 +33,6 @@ public class EntityAge implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "age", "is_age_locked", "is_baby"
-    };
-
     public static final String[] handledMechs = new String[] {
             "age_lock", "age"
     };
