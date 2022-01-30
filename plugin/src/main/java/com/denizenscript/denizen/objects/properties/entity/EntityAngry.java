@@ -18,7 +18,7 @@ public class EntityAngry implements Property {
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag && (((EntityTag) entity).getBukkitEntity() instanceof Wolf
                 || ((EntityTag) entity).getBukkitEntity() instanceof PigZombie
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ((EntityTag) entity).getBukkitEntity() instanceof Vindicator));
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && ((EntityTag) entity).getBukkitEntity() instanceof Vindicator));
     }
 
     public static EntityAngry getFrom(ObjectTag entity) {
