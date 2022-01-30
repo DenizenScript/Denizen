@@ -50,7 +50,7 @@ public class EntityPlayingDead implements Property {
 
     @Override
     public String getPropertyId() {
-        return "EntityPlayingDead";
+        return "playing_dead";
     }
 
     @Override
