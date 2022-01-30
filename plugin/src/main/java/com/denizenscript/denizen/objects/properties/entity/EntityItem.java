@@ -56,22 +56,22 @@ public class EntityItem implements Property {
         if (isDroppedItem()) {
             return new ItemTag(getDroppedItem().getItemStack());
         }
-        else if (isThrowableProjectile()) {
-            return new ItemTag(((ThrowableProjectile) item.getBukkitEntity()).getItem()); // TODO: 1.15
-        }
-        else if (isTrident()) {
-            // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
-            return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
-        }
-        else if (isEnderSignal()) {
-            return new ItemTag(getEnderSignal().getItem());
-        }
         else if (isEnderman()) {
             BlockData data = getEnderman().getCarriedBlock();
             if (data == null) {
                 return new ItemTag(Material.AIR);
             }
             return new ItemTag(data.getMaterial());
+        }
+        else if (isTrident()) {
+            // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
+            return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
+        }
+        else if (isThrowableProjectile()) {
+            return new ItemTag(((ThrowableProjectile) item.getBukkitEntity()).getItem()); // TODO: 1.15
+        }
+        else if (isEnderSignal()) {
+            return new ItemTag(getEnderSignal().getItem());
         }
         return null; // Unreachable
     }
