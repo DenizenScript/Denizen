@@ -19,11 +19,11 @@ public class EntityPlayingDead implements Property {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ((EntityTag) entity).getBukkitEntity() instanceof Axolotl;
     }
 
-    public static EntityPlayingDead getFrom(ObjectTag _entity) {
-        if (!describes(_entity)) {
+    public static EntityPlayingDead getFrom(ObjectTag entity) {
+        if (!describes(entity)) {
             return null;
         } else {
-            return new EntityPlayingDead((EntityTag) _entity);
+            return new EntityPlayingDead((EntityTag) entity);
         }
     }
 
@@ -45,7 +45,7 @@ public class EntityPlayingDead implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Axolotl) entity.getBukkitEntity()).isPlayingDead() ? "true" : "false";
+        return ((Axolotl) entity.getBukkitEntity()).isPlayingDead() ? "true" : null;
     }
 
     @Override
@@ -61,8 +61,8 @@ public class EntityPlayingDead implements Property {
         // @name playing_dead
         // @input ElementTag(Boolean)
         // @description
-        // If the entity is an axolotl, changes whether the entity is playing dead.
-        // This won't be successful unless the entity is unaware of its surroundings. See <@mech
+        // If the entity is an axolotl, sets whether the entity is playing dead.
+        // This won't be successful unless the entity is unaware of its surroundings. See <@link mechanism EntityTag.is_aware>.
         // @tags
         // <EntityTag.playing_dead>
         // -->
