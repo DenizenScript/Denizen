@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.paper;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -50,7 +52,12 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
 
         // Properties
+        PropertyParser.registerProperty(EntityArmsRaised.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+            PropertyParser.registerProperty(EntityWitch.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
         // Paper extension properties
