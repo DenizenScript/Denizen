@@ -9,29 +9,28 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Material;
 import org.bukkit.entity.Witch;
-import org.bukkit.inventory.ItemStack;
 
-public class EntityWitch implements Property {
+public class EntityDrinkingPotion implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
                 && ((EntityTag) entity).getBukkitEntity() instanceof Witch;
     }
 
-    public static EntityWitch getFrom(ObjectTag _entity) {
+    public static EntityDrinkingPotion getFrom(ObjectTag _entity) {
         if (!describes(_entity)) {
             return null;
         }
         else {
-            return new EntityWitch((EntityTag) _entity);
+            return new EntityDrinkingPotion((EntityTag) _entity);
         }
     }
 
     public static final String[] handledMechs = new String[] {
-            "held_potion", "potion_drink_duration"
+            "drinking_potion", "potion_drink_duration"
     };
 
-    private EntityWitch(EntityTag _entity) {
+    private EntityDrinkingPotion(EntityTag _entity) {
         entity = _entity;
     }
 
@@ -40,19 +39,15 @@ public class EntityWitch implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <EntityTag.held_potion>
+        // @attribute <EntityTag.drinking_potion>
         // @returns ItemTag
-        // @mechanism EntityTag.held_potion
+        // @mechanism EntityTag.drinking_potion
         // @group properties
         // @Plugin Paper
         // @description
-        // Returns the potion item a witch is holding, or air if none.
+        // Returns the potion item a witch is drinking, or air if none.
         // -->
-        PropertyParser.<EntityWitch, ItemTag>registerTag(ItemTag.class, "held_potion", (attribute, object) -> {
-            ItemStack potion = object.getWitch().getDrinkingPotion();
-            if (potion == null) {
-                return new ItemTag(Material.AIR);
-            }
+        PropertyParser.<EntityDrinkingPotion, ItemTag>registerTag(ItemTag.class, "drinking_potion", (attribute, object) -> {
             return new ItemTag(object.getWitch().getDrinkingPotion());
         });
 
@@ -65,7 +60,7 @@ public class EntityWitch implements Property {
         // @description
         // Returns the duration remaining until a witch is done drinking a potion.
         // -->
-        PropertyParser.<EntityWitch, DurationTag>registerTag(DurationTag.class, "potion_drink_duration", (attribute, object) -> {
+        PropertyParser.<EntityDrinkingPotion, DurationTag>registerTag(DurationTag.class, "potion_drink_duration", (attribute, object) -> {
             return new DurationTag((long) object.getWitch().getPotionUseTimeLeft());
         });
     }
@@ -81,7 +76,7 @@ public class EntityWitch implements Property {
 
     @Override
     public String getPropertyId() {
-        return "held_potion";
+        return "drinking_potion";
     }
 
 
@@ -90,15 +85,15 @@ public class EntityWitch implements Property {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name held_potion
+        // @name drinking_potion
         // @input ItemTag
         // @Plugin Paper
         // @description
-        // Sets the potion item a witch is holding.
+        // Sets the potion item a witch is drinking.
         // @tags
-        // <EntityTag.held_potion>
+        // <EntityTag.drinking_potion>
         // -->
-        if (mechanism.matches("held_potion") && mechanism.requireObject(ItemTag.class)) {
+        if (mechanism.matches("drinking_potion") && mechanism.requireObject(ItemTag.class)) {
             ItemTag potion = mechanism.valueAsType(ItemTag.class);
             if (potion.getBukkitMaterial() != Material.POTION) {
                 mechanism.echoError("Invalid item input '" + potion + "': item must be a potion");

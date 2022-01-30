@@ -50,8 +50,8 @@ public class EntityMaterial implements Property {
         // @mechanism EntityTag.material
         // @group properties
         // @description
-        // Returns the material associated with the entity.
-        // For enderman, returns the material the enderman is holding.
+        // Returns the block material associated with the entity.
+        // For endermen, returns the material the enderman is holding.
         // For minecarts, returns the material the minecart is carrying.
         // -->
         PropertyParser.<EntityMaterial, MaterialTag>registerTag(MaterialTag.class, "material", (attribute, object) -> {
@@ -112,8 +112,8 @@ public class EntityMaterial implements Property {
         // @name material
         // @input MaterialTag
         // @description
-        // Sets the material associated with the entity.
-        // For enderman, sets the material the enderman is holding.
+        // Sets the block material associated with the entity.
+        // For endermen, sets the material the enderman is holding.
         // For minecarts, sets the material the minecart is carrying.
         // @tags
         // <EntityTag.material>

@@ -8,7 +8,8 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -38,10 +39,6 @@ public class EntityItem implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "item"
-    };
-
     public static final String[] handledMechs = new String[] {
             "item"
     };
@@ -52,11 +49,12 @@ public class EntityItem implements Property {
 
     EntityTag item;
 
-    public ItemTag getItem() {
+    public ItemTag getItem(boolean includeDeprecated, TagContext context) {
         if (isDroppedItem()) {
             return new ItemTag(getDroppedItem().getItemStack());
         }
-        else if (isEnderman()) {
+        else if (includeDeprecated && isEnderman()) {
+            Deprecations.entityItemEnderman.warn(context);
             BlockData data = getEnderman().getCarriedBlock();
             if (data == null) {
                 return new ItemTag(Material.AIR);
@@ -73,7 +71,7 @@ public class EntityItem implements Property {
         else if (isEnderSignal()) {
             return new ItemTag(getEnderSignal().getItem());
         }
-        return null; // Unreachable
+        return null;
     }
 
     public boolean isDroppedItem() {
@@ -118,7 +116,7 @@ public class EntityItem implements Property {
 
     @Override
     public String getPropertyString() {
-        ItemTag item = getItem();
+        ItemTag item = getItem(false, null);
         if (item.getBukkitMaterial() != Material.AIR) {
             return item.identify();
         }
@@ -144,7 +142,7 @@ public class EntityItem implements Property {
         // If the entity is an ender signal, returns the item to be displayed and dropped by it.
         // -->
         PropertyParser.<EntityItem, ItemTag>registerTag(ItemTag.class, "item", (attribute, object) -> {
-            return object.getItem();
+            return object.getItem(true, attribute.context);
         });
     }
 
@@ -172,6 +170,7 @@ public class EntityItem implements Property {
                 getDroppedItem().setItemStack(itemStack);
             }
             else if (isEnderman()) {
+                Deprecations.entityItemEnderman.warn(mechanism.context);
                 getEnderman().setCarriedBlock(itemStack.getType().createBlockData());
             }
             else if (isTrident()) {
