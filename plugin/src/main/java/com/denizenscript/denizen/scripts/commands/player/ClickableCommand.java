@@ -173,7 +173,7 @@ public class ClickableCommand extends AbstractCommand {
         ElementTag cancel = scriptEntry.argForPrefixAsElement("cancel", null);
         List<PlayerTag> forPlayers = scriptEntry.argForPrefixList("for", PlayerTag.class, true);
         ElementTag usages = scriptEntry.argForPrefixAsElement("usages", null);
-        ListTag definitions = scriptEntry.argForPrefix("definitions", ListTag.class, true);
+        ListTag definitions = scriptEntry.argForPrefix("def", ListTag.class, true);
         DurationTag until = scriptEntry.argForPrefix("until", DurationTag.class, true);
         MapTag defMap = scriptEntry.getObjectTag("def_map");
         if (script == null && cancel == null) {
