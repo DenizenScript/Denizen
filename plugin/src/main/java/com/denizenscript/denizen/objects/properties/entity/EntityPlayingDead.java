@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -16,7 +14,7 @@ public class EntityPlayingDead implements Property {
         if (!(entity instanceof EntityTag)) {
             return false;
         }
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && ((EntityTag) entity).getBukkitEntity() instanceof Axolotl;
+        return ((EntityTag) entity).getBukkitEntity() instanceof Axolotl;
     }
 
     public static EntityPlayingDead getFrom(ObjectTag entity) {
@@ -38,6 +36,15 @@ public class EntityPlayingDead implements Property {
     EntityTag entity;
 
     public static void registerTags() {
+
+        // <--[tag]
+        // @attribute <EntityTag.playing_dead>
+        // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.playing_dead
+        // @group properties
+        // @description
+        // If the entity is an axolotl, returns whether the entity is playing dead.
+        // -->
         PropertyParser.<EntityPlayingDead, ElementTag>registerTag(ElementTag.class, "playing_dead", (attribute, entity) -> {
             return new ElementTag(((Axolotl) entity.entity.getBukkitEntity()).isPlayingDead());
         });

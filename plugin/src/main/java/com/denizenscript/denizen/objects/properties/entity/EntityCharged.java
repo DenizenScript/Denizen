@@ -97,6 +97,7 @@ public class EntityCharged implements Property {
         // @input ElementTag(Boolean)
         // @description
         // If the entity is wither_skull, changes whether the skull is charged. Charged skulls are blue.
+        // If the entity is a vex, changes whether the vex is charging. Charging vexes have red lines. This is a visual effect, and does not cause the vex to actually charge at anyone.
         // @tags
         // <EntityTag.charged>
         // -->

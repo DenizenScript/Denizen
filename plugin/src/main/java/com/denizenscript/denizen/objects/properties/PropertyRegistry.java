@@ -113,7 +113,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityPatrolTarget.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPickupStatus.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPlayerCreated.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityPlayingDead.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            PropertyParser.registerProperty(EntityPlayingDead.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
