@@ -26,6 +26,7 @@ public class EntityItem implements Property {
         return entity instanceof Item
                 || entity instanceof Enderman
                 || entity instanceof Trident // TODO: 1.15: supported in ThrowableProjectile now, remove this part when 1.14 is dropped
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && entity instanceof SizedFireball)
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && entity instanceof ThrowableProjectile)
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && entity instanceof EnderSignal);
     }
@@ -65,6 +66,9 @@ public class EntityItem implements Property {
             // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
             return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
         }
+        else if (isFireball()) {
+            return new ItemTag(((SizedFireball) item.getBukkitEntity()).getDisplayItem()); // TODO: 1.15
+        }
         else if (isThrowableProjectile()) {
             return new ItemTag(((ThrowableProjectile) item.getBukkitEntity()).getItem()); // TODO: 1.15
         }
@@ -84,6 +88,10 @@ public class EntityItem implements Property {
 
     public boolean isTrident() {
         return item.getBukkitEntity() instanceof Trident;
+    }
+
+    public boolean isFireball() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && item.getBukkitEntity() instanceof SizedFireball;
     }
 
     public boolean isThrowableProjectile() {
@@ -112,6 +120,10 @@ public class EntityItem implements Property {
 
     /*public ThrowableProjectile getThrowableProjectile() { // TODO: 1.15
         return (ThrowableProjectile) item.getBukkitEntity();
+    }
+
+    public SizedFireball getFireball() {
+        return (SizedFireball) item.getBukkitEntity();
     }*/
 
     @Override
@@ -140,6 +152,7 @@ public class EntityItem implements Property {
         // If the entity is a trident, returns the trident item represented by the entity.
         // If the entity is a throwable projectile, returns the display item for that projectile.
         // If the entity is an eye-of-ender, returns the item to be displayed and dropped by it.
+        // If the entity is a fireball, returns the fireball's display item.
         // -->
         PropertyParser.<EntityItem, ItemTag>registerTag(ItemTag.class, "item", (attribute, object) -> {
             return object.getItem(true, attribute.context);
@@ -158,6 +171,7 @@ public class EntityItem implements Property {
         // If the entity is a trident, sets the trident item represented by the entity.
         // If the item is a throwable projectile, sets the display item for that projectile.
         // If the entity is an eye-of-ender, sets the item to be displayed and dropped by it.
+        // If the entity is a fireball, sets the fireball's display item.
         // @tags
         // <EntityTag.item>
         // -->
@@ -176,6 +190,9 @@ public class EntityItem implements Property {
             else if (isTrident()) {
                 // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
                 NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), itemStack);
+            }
+            else if (isFireball()) {
+                ((SizedFireball) item.getBukkitEntity()).setDisplayItem(itemStack); // TODO: 1.15
             }
             else if (isThrowableProjectile()) {
                 ((ThrowableProjectile) item.getBukkitEntity()).setItem(itemStack); // TODO: 1.15
