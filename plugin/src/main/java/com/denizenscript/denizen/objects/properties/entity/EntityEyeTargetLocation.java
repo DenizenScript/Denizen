@@ -8,27 +8,27 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.EnderSignal;
 
-public class EntityTargetLocation implements Property {
+public class EntityEyeTargetLocation implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
                 && ((EntityTag) entity).getBukkitEntity() instanceof EnderSignal;
     }
 
-    public static EntityTargetLocation getFrom(ObjectTag entity) {
+    public static EntityEyeTargetLocation getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
         else {
-            return new EntityTargetLocation((EntityTag) entity);
+            return new EntityEyeTargetLocation((EntityTag) entity);
         }
     }
 
     public static final String[] handledMechs = new String[] {
-            "target_location"
+            "eye_target_location"
     };
 
-    private EntityTargetLocation(EntityTag _entity) {
+    private EntityEyeTargetLocation(EntityTag _entity) {
         entity = _entity;
     }
 
@@ -37,14 +37,14 @@ public class EntityTargetLocation implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <EntityTag.target_location>
+        // @attribute <EntityTag.eye_target_location>
         // @returns LocationTag
-        // @mechanism EntityTag.target_location
+        // @mechanism EntityTag.eye_target_location
         // @group properties
         // @description
-        // Returns a thrown eye of ender's target location.
+        // Returns a thrown eye of ender's target location - the location it's moving towards, which in vanilla is a stronghold location.
         // -->
-        PropertyParser.<EntityTargetLocation, LocationTag>registerTag(LocationTag.class, "target_location", (attribute, entity) -> {
+        PropertyParser.<EntityEyeTargetLocation, LocationTag>registerTag(LocationTag.class, "eye_target_location", (attribute, entity) -> {
             return new LocationTag(((EnderSignal) entity.entity.getBukkitEntity()).getTargetLocation());
         });
     }
@@ -56,7 +56,7 @@ public class EntityTargetLocation implements Property {
 
     @Override
     public String getPropertyId() {
-        return "target_location";
+        return "eye_target_location";
     }
 
     @Override
@@ -64,14 +64,14 @@ public class EntityTargetLocation implements Property {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name target_location
+        // @name eye_target_location
         // @input LocationTag
         // @description
-        // Sets a thrown eye of ender's target location.
+        // Sets a thrown eye of ender's target location - the location it's moving towards.
         // @tags
-        // <EntityTag.target_location>
+        // <EntityTag.eye_target_location>
         // -->
-        if (mechanism.matches("target_location") && mechanism.requireObject(LocationTag.class)) {
+        if (mechanism.matches("eye_target_location") && mechanism.requireObject(LocationTag.class)) {
             ((EnderSignal) entity.getBukkitEntity()).setTargetLocation(mechanism.valueAsType(LocationTag.class));
         }
     }

@@ -139,7 +139,7 @@ public class EntityItem implements Property {
         // If the entity is a dropped item, returns the item represented by the entity.
         // If the entity is a trident, returns the trident item represented by the entity.
         // If the entity is a throwable projectile, returns the display item for that projectile.
-        // If the entity is an ender signal, returns the item to be displayed and dropped by it.
+        // If the entity is an eye-of-ender, returns the item to be displayed and dropped by it.
         // -->
         PropertyParser.<EntityItem, ItemTag>registerTag(ItemTag.class, "item", (attribute, object) -> {
             return object.getItem(true, attribute.context);
@@ -157,7 +157,7 @@ public class EntityItem implements Property {
         // If the entity is a dropped item, sets the item represented by the entity.
         // If the entity is a trident, sets the trident item represented by the entity.
         // If the item is a throwable projectile, sets the display item for that projectile.
-        // If the entity is an ender signal, sets the item to be displayed and dropped by it.
+        // If the entity is an eye-of-ender, sets the item to be displayed and dropped by it.
         // @tags
         // <EntityTag.item>
         // -->

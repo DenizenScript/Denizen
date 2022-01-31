@@ -60,9 +60,8 @@ public class EntityConversionTime implements Property {
         // @mechanism EntityTag.conversion_duration
         // @group properties
         // @description
-        // If the entity is a zombie villager, returns the duration of time until it will be cured.
-        // If the entity is a zombie, husk, or skeleton, returns the duration of time the entity will be converting into a drowned, zombie, or stray for, respectively.
-        // If this value hits 0, the conversion completes.
+        // Returns the duration of time until an entity completes a conversion. See <@link tag EntityTag.is_converting> for examples of conversions.
+        // When this value hits 0, the conversion completes.
         // See also <@link tag EntityTag.in_water_duration>
         // -->
         PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
@@ -78,9 +77,11 @@ public class EntityConversionTime implements Property {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // If the entity is a zombie villager, returns whether it is being cured.
-        // If the entity is a zombie, husk, or skeleton, returns whether it is converting into a drowned, zombie, or stray, respectively.
-        // See also <@link tag EntityTag.in_water_duration>
+        // Returns whether an entity is currently underoing a conversion process. This can be:
+        // A zombie villager being cured,
+        // A zombie becoming a drowned (See also <@link tag EntityTag.in_water_duration>),
+        // A husk becoming a zombie, or
+        // A skeleton becoming a stray.
         // -->
         PropertyParser.<EntityConversionTime, ElementTag>registerTag(ElementTag.class, "is_converting", (attribute, object) -> {
             return new ElementTag(object.isConverting());
@@ -131,9 +132,8 @@ public class EntityConversionTime implements Property {
         // @name conversion_duration
         // @input DurationTag
         // @description
-        // If the entity is a zombie villager, sets the duration of time until it will be cured.
-        // If the entity is a zombie, husk, or skeleton, sets the duration of time the entity will be converting into a drowned, zombie, or stray for, respectively.
-        // If this value hits 0, the conversion completes.
+        // Sets the duration of time until an entity completes a conversion. See <@link tag EntityTag.is_converting> for examples of conversions.
+        // When this value hits 0, the conversion completes.
         // @tags
         // <EntityTag.conversion_duration>
         // -->
@@ -147,4 +147,3 @@ public class EntityConversionTime implements Property {
         }
     }
 }
-
