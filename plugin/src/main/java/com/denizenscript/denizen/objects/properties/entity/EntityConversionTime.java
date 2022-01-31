@@ -7,15 +7,17 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 
 public class EntityConversionTime implements Property {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag
-                && ((EntityTag) entity).getBukkitEntity() instanceof Zombie
-                && !(((EntityTag) entity).getBukkitEntity() instanceof PigZombie);
+    public static boolean describes(ObjectTag object) {
+        if (!(object instanceof EntityTag)) {
+            return false;
+        }
+        Entity entity = ((EntityTag) object).getBukkitEntity();
+        return (entity instanceof Zombie && !(entity instanceof PigZombie))
+                || entity instanceof Skeleton;
     }
 
     public static EntityConversionTime getFrom(ObjectTag entity) {
@@ -58,13 +60,12 @@ public class EntityConversionTime implements Property {
         // @mechanism EntityTag.conversion_duration
         // @group properties
         // @description
-        // If the entity is a zombie villager, returns the duration of time until it will be cured.
-        // If the entity is a zombie mob, returns the duration of time the zombie will be converting to a Drowned for.
-        // If this value hits 0, the zombie villager will be cured, or if the entity is a zombie, it will become a Drowned.
+        // Returns the duration of time until an entity completes a conversion. See <@link tag EntityTag.is_converting> for examples of conversions.
+        // When this value hits 0, the conversion completes.
         // See also <@link tag EntityTag.in_water_duration>
         // -->
         PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
-            if (!object.getZombie().isConverting()) {
+            if (!object.isConverting()) {
                 attribute.echoError("This entity is not converting!");
                 return null;
             }
@@ -76,21 +77,51 @@ public class EntityConversionTime implements Property {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // If the entity is a zombie villager, returns whether it is being cured.
-        // If the entity is a zombie mob, returns whether it is converting into a Drowned.
-        // See also <@link tag EntityTag.in_water_duration>
+        // Returns whether an entity is currently underoing a conversion process. This can be:
+        // A zombie villager being cured,
+        // A zombie becoming a drowned (See also <@link tag EntityTag.in_water_duration>),
+        // A husk becoming a zombie, or
+        // A skeleton becoming a stray.
         // -->
         PropertyParser.<EntityConversionTime, ElementTag>registerTag(ElementTag.class, "is_converting", (attribute, object) -> {
-            return new ElementTag(object.getZombie().isConverting());
+            return new ElementTag(object.isConverting());
         });
+    }
+
+    public boolean isZombie() {
+        return entity.getBukkitEntity() instanceof Zombie;
+    }
+
+    public boolean isSkeleton() {
+        return entity.getBukkitEntity() instanceof Skeleton;
     }
 
     public Zombie getZombie() {
         return (Zombie) entity.getBukkitEntity();
     }
 
+    public Skeleton getSkeleton() {
+        return (Skeleton) entity.getBukkitEntity();
+    }
+
+    public boolean isConverting() {
+        if (isZombie()) {
+            return getZombie().isConverting();
+        }
+        else if (isSkeleton()) {
+            return getSkeleton().isConverting();
+        }
+        return false;
+    }
+
     public DurationTag getConversionTime() {
-        return new DurationTag((long) getZombie().getConversionTime());
+        if (isZombie()) {
+            return new DurationTag((long) getZombie().getConversionTime());
+        }
+        else if (isSkeleton()) {
+            return new DurationTag((long) getSkeleton().getConversionTime());
+        }
+        return null;
     }
 
     @Override
@@ -101,15 +132,18 @@ public class EntityConversionTime implements Property {
         // @name conversion_duration
         // @input DurationTag
         // @description
-        // If the entity is a zombie villager, sets the amount of time until it will be cured.
-        // If the entity is a zombie mob, sets the duration of time the zombie will be converting to a Drowned for.
-        // If this value hits 0, the zombie villager will be cured, or if the entity is a zombie, it will become a Drowned.
+        // Sets the duration of time until an entity completes a conversion. See <@link tag EntityTag.is_converting> for examples of conversions.
+        // When this value hits 0, the conversion completes.
         // @tags
         // <EntityTag.conversion_duration>
         // -->
         if ((mechanism.matches("conversion_duration") || mechanism.matches("drowned_conversion_duration")) && mechanism.requireObject(DurationTag.class)) {
-            getZombie().setConversionTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            if (isZombie()) {
+                getZombie().setConversionTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            }
+            else if (isSkeleton()) {
+                getSkeleton().setConversionTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            }
         }
     }
 }
-

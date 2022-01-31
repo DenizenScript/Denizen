@@ -560,7 +560,6 @@ public class ServerTagBase {
 
         // <--[tag]
         // @attribute <server.gamerules>
-        // @Plugin Citizens
         // @returns ListTag
         // @description
         // Returns a list of all available gamerules on the server.
@@ -615,6 +614,22 @@ public class ServerTagBase {
             if (cmd != null) {
                 event.setReplacedObject(new PluginTag(cmd.getPlugin()).getObjectAttribute(attribute.fulfill(1)));
             }
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.color_names>
+        // @returns ListTag
+        // @description
+        // Returns a list of all available color names that would be accepted by <@link objecttype ColorTag>.
+        // This is only their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>.
+        // -->
+        if (attribute.startsWith("color_names")) {
+            ListTag list = new ListTag();
+            for (String color : ColorTag.colorsByName.keySet()) {
+                list.add(color);
+            }
+            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 

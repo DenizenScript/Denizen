@@ -71,7 +71,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
             event.setYield(Float.parseFloat(determination));
             return true;
         }
-        if (ListTag.matches(determination)) {
+        if (determination.contains(",")) { // Loose "contains any location-like value" check
             event.blockList().clear();
             for (String loc : ListTag.valueOf(determination, getTagContext(path))) {
                 LocationTag location = LocationTag.valueOf(loc, getTagContext(path));

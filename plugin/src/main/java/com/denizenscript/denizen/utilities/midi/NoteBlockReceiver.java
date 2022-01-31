@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 
 import javax.sound.midi.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,14 +29,14 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
     public Sequencer sequencer;
     public boolean closing = false;
 
-    public NoteBlockReceiver(List<EntityTag> entities, String _Key) throws InvalidMidiDataException, IOException {
+    public NoteBlockReceiver(List<EntityTag> entities, String _Key) {
         this.entities = entities;
         this.location = null;
         this.channelPatches = Maps.newHashMap();
         this.key = _Key;
     }
 
-    public NoteBlockReceiver(LocationTag location, String _Key) throws InvalidMidiDataException, IOException {
+    public NoteBlockReceiver(LocationTag location, String _Key) {
         this.entities = null;
         this.location = location;
         this.channelPatches = Maps.newHashMap();
@@ -150,17 +149,22 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         }
         closing = true;
         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
-            MidiUtil.receivers.remove(key);
-            if (sequencer != null) {
-                sequencer.close();
-                sequencer = null;
+            try {
+                MidiUtil.receivers.remove(key);
+                if (sequencer != null) {
+                    sequencer.close();
+                    sequencer = null;
+                }
+                channelPatches.clear();
+                channelPatches = null;
+                entities = null;
+                location = null;
+                if (onFinish != null) {
+                    onFinish.run();
+                }
             }
-            channelPatches.clear();
-            channelPatches = null;
-            entities = null;
-            location = null;
-            if (onFinish != null) {
-                onFinish.run();
+            catch (Throwable ex) {
+                Debug.echoError(ex);
             }
         }, 1);
     }

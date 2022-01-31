@@ -48,13 +48,13 @@ public abstract class EntityHelper {
         Debug.echoError("Riptide control not available on this server version.");
     }
 
-    public void setCarriedItem(Enderman entity, ItemStack item) {
-        entity.setCarriedMaterial(item.getData());
+    public int getBodyArrows(Entity entity) {
+        return ((LivingEntity) entity).getArrowsInBody();
     }
 
-    public abstract int getBodyArrows(Entity entity);
-
-    public abstract void setBodyArrows(Entity entity, int numArrows);
+    public void setBodyArrows(Entity entity, int numArrows) {
+        ((LivingEntity) entity).setArrowsInBody(numArrows);
+    }
 
     public abstract double getArrowDamage(Entity arrow);
 

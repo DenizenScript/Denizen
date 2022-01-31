@@ -40,6 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
@@ -2302,6 +2303,22 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return null;
             }
             return new ElementTag(BukkitScriptEvent.tryInventory(object, attribute.getParam()));
+        });
+
+        // <--[tag]
+        // @attribute <InventoryTag.viewers>
+        // @returns ListTag(PlayerTag)
+        // @description
+        // Returns a list of players viewing the inventory.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "viewers", (attribute, object) -> {
+            ListTag list = new ListTag();
+            for (HumanEntity viewer : object.getInventory().getViewers()) {
+                if (!EntityTag.isNPC(viewer) && viewer instanceof Player) {
+                    list.addObject(new PlayerTag((Player) viewer));
+                }
+            }
+            return list;
         });
     }
 

@@ -26,7 +26,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
 
     public CreateWorldCommand() {
         setName("createworld");
-        setSyntax("createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:<true/false>)");
+        setSyntax("createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:true/false)");
         setRequiredArguments(1, 8);
         setPrefixesHandled("generator", "worldtype", "environment", "copy_from", "seed", "settings", "generate_structures");
         isProcedural = false;
@@ -34,7 +34,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
 
     // <--[command]
     // @Name CreateWorld
-    // @Syntax createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:<true/false>)
+    // @Syntax createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:true/false)
     // @Required 1
     // @Maximum 8
     // @Short Creates a new world, or loads an existing world.

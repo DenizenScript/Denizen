@@ -236,17 +236,6 @@ public abstract class ImprovedOfflinePlayer {
         }
     }
 
-    public int getFoodTickTimer() {
-        return this.compound.getInt("foodTickTimer");
-    }
-
-    public void setFoodTickTimer(int input) {
-        this.compound = compound.createBuilder().putInt("foodTickTimer", input).build();
-        if (this.autosave) {
-            savePlayerData();
-        }
-    }
-
     public GameMode getGameMode() {
         return GameMode.getByValue(this.compound.getInt("playerGameType"));
     }
@@ -259,45 +248,12 @@ public abstract class ImprovedOfflinePlayer {
         }
     }
 
-    public int getHealthInt() {
-        return this.compound.getShort("Health");
-    }
-
-    public void setHealthInt(int input) {
-        this.compound = compound.createBuilder().putShort("Health", (short) input).build();
-        if (this.autosave) {
-            savePlayerData();
-        }
-    }
-
-    public boolean getIsInvulnerable() {
-        return compound.getBoolean("Invulnerable");
-    }
-
-    public void setIsInvulnerable(boolean input) {
-        this.compound = compound.createBuilder().putBoolean("Invulnerable", input).build();
-        if (this.autosave) {
-            savePlayerData();
-        }
-    }
-
     public boolean getIsOnGround() {
         return compound.getBoolean("OnGround");
     }
 
     public void setIsOnGround(boolean input) {
         this.compound = compound.createBuilder().putBoolean("OnGround", input).build();
-        if (this.autosave) {
-            savePlayerData();
-        }
-    }
-
-    public boolean getIsSleeping() {
-        return this.compound.getBoolean("Sleeping");
-    }
-
-    public void setIsSleeping(boolean input) {
-        this.compound = compound.createBuilder().putBoolean("Sleeping", input).build();
         if (this.autosave) {
             savePlayerData();
         }
@@ -327,17 +283,6 @@ public abstract class ImprovedOfflinePlayer {
 
     public UUID getUniqueId() {
         return this.player;
-    }
-
-    public int getPortalCooldown() {
-        return this.compound.getInt("PortalCooldown");
-    }
-
-    public void setPortalCooldown(int input) {
-        this.compound = compound.createBuilder().putInt("PortalCooldown", input).build();
-        if (this.autosave) {
-            savePlayerData();
-        }
     }
 
     public int getRemainingAir() {
@@ -451,6 +396,19 @@ public abstract class ImprovedOfflinePlayer {
     public void setWalkSpeed(float speed) {
         CompoundTag compoundTag = (CompoundTag) this.compound.getValue().get("abilities");
         compoundTag = compoundTag.createBuilder().putFloat("walkSpeed", speed).build();
+        this.compound = compound.createBuilder().put("abilities", compoundTag).build();
+        if (this.autosave) {
+            savePlayerData();
+        }
+    }
+
+    public boolean getAllowFlight() {
+        return ((CompoundTag) this.compound.getValue().get("abilities")).getBoolean("mayfly");
+    }
+
+    public void setAllowFlight(boolean allow) {
+        CompoundTag compoundTag = (CompoundTag) this.compound.getValue().get("abilities");
+        compoundTag = compoundTag.createBuilder().putBoolean("mayfly", allow).build();
         this.compound = compound.createBuilder().put("abilities", compoundTag).build();
         if (this.autosave) {
             savePlayerData();

@@ -132,6 +132,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntitySpell.class, EntityTag.class);
         PropertyParser.registerProperty(EntityStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTame.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTrades.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVillagerExperience.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVillagerLevel.class, EntityTag.class);

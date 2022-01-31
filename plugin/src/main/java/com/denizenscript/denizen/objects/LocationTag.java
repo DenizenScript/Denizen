@@ -4930,8 +4930,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @input None
         // @description
         // Causes the bell to ring.
-        // @tags
-        // <LocationTag.campfire_items>
         // -->
         if (mechanism.matches("ring_bell")) {
             BlockState state = getBlockState();
