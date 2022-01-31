@@ -25,7 +25,7 @@ public class EntityEyeTargetLocation implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "eye_target_location"
+            "ender_eye_target_location"
     };
 
     private EntityEyeTargetLocation(EntityTag _entity) {
@@ -37,14 +37,14 @@ public class EntityEyeTargetLocation implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <EntityTag.eye_target_location>
+        // @attribute <EntityTag.ender_eye_target_location>
         // @returns LocationTag
-        // @mechanism EntityTag.eye_target_location
+        // @mechanism EntityTag.ender_eye_target_location
         // @group properties
         // @description
         // Returns a thrown eye of ender's target location - the location it's moving towards, which in vanilla is a stronghold location.
         // -->
-        PropertyParser.<EntityEyeTargetLocation, LocationTag>registerTag(LocationTag.class, "eye_target_location", (attribute, entity) -> {
+        PropertyParser.<EntityEyeTargetLocation, LocationTag>registerTag(LocationTag.class, "ender_eye_target_location", (attribute, entity) -> {
             return new LocationTag(((EnderSignal) entity.entity.getBukkitEntity()).getTargetLocation());
         });
     }
@@ -56,7 +56,7 @@ public class EntityEyeTargetLocation implements Property {
 
     @Override
     public String getPropertyId() {
-        return "eye_target_location";
+        return "ender_eye_target_location";
     }
 
     @Override
@@ -64,14 +64,14 @@ public class EntityEyeTargetLocation implements Property {
 
         // <--[mechanism]
         // @object EntityTag
-        // @name eye_target_location
+        // @name ender_eye_target_location
         // @input LocationTag
         // @description
         // Sets a thrown eye of ender's target location - the location it's moving towards.
         // @tags
-        // <EntityTag.eye_target_location>
+        // <EntityTag.ender_eye_target_location>
         // -->
-        if (mechanism.matches("eye_target_location") && mechanism.requireObject(LocationTag.class)) {
+        if (mechanism.matches("ender_eye_target_location") && mechanism.requireObject(LocationTag.class)) {
             ((EnderSignal) entity.getBukkitEntity()).setTargetLocation(mechanism.valueAsType(LocationTag.class));
         }
     }
