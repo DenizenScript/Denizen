@@ -160,11 +160,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void setCarriedItem(Enderman entity, ItemStack item) {
-        entity.setCarriedBlock(Bukkit.createBlockData(item.getType()));
-    }
-
-    @Override
     public void setRiptide(Entity entity, boolean state) {
         ((CraftLivingEntity) entity).getHandle().q(state ? 0 : 1);
     }
