@@ -827,7 +827,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the cooldown duration remaining on player's material.
         // -->
-        tagProcessor.registerTag(DurationTag.class, "item_cooldown", (attribute, object) -> {
+        registerOnlineOnlyTag(DurationTag.class, "item_cooldown", (attribute, object) -> {
             MaterialTag mat = new ElementTag(attribute.getParam()).asType(MaterialTag.class, attribute.context);
             if (mat != null) {
                 return new DurationTag((long) object.getPlayerEntity().getCooldown(mat.getMaterial()));
@@ -869,9 +869,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the player's exhaustion value. Exhaustion is increased in vanilla when a player sprints or jumps, and is used to reduce food saturation over time.
         // This can reach a maximum value of 40, and decreases by 4 every tick.
+        // Works with offline players.
         // -->
         tagProcessor.registerTag(ElementTag.class, "exhaustion", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getExhaustion());
+            if (object.isOnline()) {
+                return new ElementTag(object.getPlayerEntity().getExhaustion());
+            }
+            else {
+                return new ElementTag(object.getNBTEditor().getExhaustion());
+            }
         });
 
         // Handle EntityTag oxygen tags here to allow getting them when the player is offline
@@ -1835,9 +1841,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism PlayerTag.can_fly
         // @description
         // Returns whether the player is allowed to fly.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "can_fly", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getAllowFlight());
+        tagProcessor.registerTag(ElementTag.class, "can_fly", (attribute, object) -> {
+            if (object.isOnline()) {
+                return new ElementTag(object.getPlayerEntity().getAllowFlight());
+            }
+            else {
+                return new ElementTag(object.getNBTEditor().getAllowFlight());
+            }
         }, "allowed_flight");
 
         // <--[tag]
@@ -1847,9 +1859,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the speed the player can fly at.
         // Default value is '0.2'.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "fly_speed", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getFlySpeed());
+        tagProcessor.registerTag(ElementTag.class, "fly_speed", (attribute, object) -> {
+            if (object.isOnline()) {
+                return new ElementTag(object.getPlayerEntity().getFlySpeed());
+            }
+            else {
+                return new ElementTag(object.getNBTEditor().getFlySpeed());
+            }
         });
 
         // <--[tag]
@@ -1858,9 +1876,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism PlayerTag.walk_speed
         // @description
         // Returns the speed the player can walk at.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "walk_speed", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getWalkSpeed());
+        tagProcessor.registerTag(ElementTag.class, "walk_speed", (attribute, object) -> {
+            if (object.isOnline()) {
+                return new ElementTag(object.getPlayerEntity().getWalkSpeed());
+            }
+            else {
+                return new ElementTag(object.getNBTEditor().getWalkSpeed());
+            }
         });
 
         // <--[tag]
@@ -1869,9 +1893,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism PlayerTag.saturation
         // @description
         // Returns the current food saturation of the player.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "saturation", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getSaturation());
+        tagProcessor.registerTag(ElementTag.class, "saturation", (attribute, object) -> {
+            if (object.isOnline()) {
+                return new ElementTag(object.getPlayerEntity().getSaturation());
+            }
+            else {
+                return new ElementTag(object.getNBTEditor().getSaturation());
+            }
         });
 
         // <--[tag]
@@ -2733,11 +2763,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Decimal)
         // @description
         // Sets the current food saturation level of a player.
+        // Works with offline players.
         // @tags
         // <PlayerTag.saturation>
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
-            getPlayerEntity().setSaturation(mechanism.getValue().asFloat());
+            if (isOnline()) {
+                getPlayerEntity().setSaturation(mechanism.getValue().asFloat());
+            }
+            else {
+                getNBTEditor().setSaturation(mechanism.getValue().asFloat());
+            }
         }
 
         // <--[mechanism]
@@ -2809,11 +2845,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Boolean)
         // @description
         // Sets whether the player is allowed to fly.
+        // Works with offline players.
         // @tags
         // <PlayerTag.can_fly>
         // -->
         if (mechanism.matches("can_fly") && mechanism.requireBoolean()) {
-            getPlayerEntity().setAllowFlight(mechanism.getValue().asBoolean());
+            if (isOnline()) {
+                getPlayerEntity().setAllowFlight(mechanism.getValue().asBoolean());
+            }
+            else {
+                getNBTEditor().setAllowFlight(mechanism.getValue().asBoolean());
+            }
         }
 
         // <--[mechanism]
@@ -2822,6 +2864,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Decimal)
         // @description
         // Sets the fly speed of the player. Valid range is 0.0 to 1.0
+        // Works with offline players.
         // @tags
         // <PlayerTag.fly_speed>
         // -->
@@ -2965,11 +3008,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Decimal)
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
+        // Works with offline players.
         // @tags
         // <PlayerTag.walk_speed>
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
-            getPlayerEntity().setWalkSpeed(mechanism.getValue().asFloat());
+            if (isOnline()) {
+                getPlayerEntity().setWalkSpeed(mechanism.getValue().asFloat());
+            }
+            else {
+                getNBTEditor().setWalkSpeed(mechanism.getValue().asFloat());
+            }
         }
 
         // <--[mechanism]
@@ -2978,11 +3027,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input ElementTag(Decimal)
         // @description
         // Sets the exhaustion level of a player.
+        // Works with offline players.
         // @tags
         // <PlayerTag.exhaustion>
         // -->
         if (mechanism.matches("exhaustion") && mechanism.requireFloat()) {
-            getPlayerEntity().setExhaustion(mechanism.getValue().asFloat());
+            if (isOnline()) {
+                getPlayerEntity().setExhaustion(mechanism.getValue().asFloat());
+            }
+            else {
+                getNBTEditor().setExhaustion(mechanism.getValue().asFloat());
+            }
         }
 
         // <--[mechanism]
