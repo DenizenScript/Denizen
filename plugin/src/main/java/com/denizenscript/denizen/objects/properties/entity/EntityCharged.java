@@ -6,12 +6,15 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.entity.Vex;
 import org.bukkit.entity.WitherSkull;
 
 public class EntityCharged implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof WitherSkull;
+        return entity instanceof EntityTag
+                && (((EntityTag) entity).getBukkitEntity() instanceof WitherSkull
+                || ((EntityTag) entity).getBukkitEntity() instanceof Vex);
     }
 
     public static EntityCharged getFrom(ObjectTag entity) {
@@ -35,7 +38,7 @@ public class EntityCharged implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((WitherSkull) entity.getBukkitEntity()).isCharged() ? "true" : "false";
+        return isCharged() ? "true" : "false";
     }
 
     @Override
@@ -52,10 +55,37 @@ public class EntityCharged implements Property {
         // @group properties
         // @description
         // If the entity is wither_skull, returns whether the skull is charged. Charged skulls are blue.
+        // If the entity is a vex, returns whether the vex is charging. Charging vexes have red lines.
         // -->
         PropertyParser.<EntityCharged, ElementTag>registerTag(ElementTag.class, "charged", (attribute, object) -> {
-            return new ElementTag(((WitherSkull) object.entity.getBukkitEntity()).isCharged());
+            return new ElementTag(object.isCharged());
         });
+    }
+
+    public boolean isWitherSkull() {
+        return entity.getBukkitEntity() instanceof WitherSkull;
+    }
+
+    public boolean isVex() {
+        return entity.getBukkitEntity() instanceof Vex;
+    }
+
+    public WitherSkull getWitherSkull() {
+        return (WitherSkull) entity.getBukkitEntity();
+    }
+
+    public Vex getVex() {
+        return (Vex) entity.getBukkitEntity();
+    }
+
+    public boolean isCharged() {
+        if (isWitherSkull()) {
+            return getWitherSkull().isCharged();
+        }
+        else if (isVex()) {
+            return getVex().isCharging();
+        }
+        return false;
     }
 
     @Override
@@ -71,7 +101,12 @@ public class EntityCharged implements Property {
         // <EntityTag.charged>
         // -->
         if (mechanism.matches("charged") && mechanism.requireBoolean()) {
-            ((WitherSkull) entity.getBukkitEntity()).setCharged(mechanism.getValue().asBoolean());
+            if (isWitherSkull()) {
+                getWitherSkull().setCharged(mechanism.getValue().asBoolean());
+            }
+            else if (isVex()) {
+                getVex().setCharging(mechanism.getValue().asBoolean());
+            }
         }
     }
 }
