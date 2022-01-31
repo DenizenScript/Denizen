@@ -38,7 +38,7 @@ public class EntityCharged implements Property {
 
     @Override
     public String getPropertyString() {
-        return isCharged() ? "true" : null;
+        return isCharged() ? "true" : "false";
     }
 
     @Override
