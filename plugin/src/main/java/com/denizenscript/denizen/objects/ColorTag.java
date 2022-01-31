@@ -33,8 +33,7 @@ public class ColorTag implements ObjectTag {
     //
     // Constructing a ColorTag also accepts 'random' to pick a random RGB color, or hex code like '#FF00FF', or valid minecraft chat color codes (hex or historical codes).
     //
-    // A list of accepted color names can be found at
-    // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>
+    // A list of accepted color names can be found at <@link tag server.color_names>.
     //
     // Red/green/blue values are each from 0 to 255.
     //
