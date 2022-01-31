@@ -158,7 +158,7 @@ public class PaperEntityProperties implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        
+
         // <--[mechanism]
         // @object EntityTag
         // @name goat_ram
