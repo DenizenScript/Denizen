@@ -56,10 +56,6 @@ public abstract class EntityHelper {
         ((LivingEntity) entity).setArrowsInBody(numArrows);
     }
 
-    public abstract double getArrowDamage(Entity arrow);
-
-    public abstract void setArrowDamage(Entity arrow, double damage);
-
     public abstract String getArrowPickupStatus(Entity entity);
 
     public abstract void setArrowPickupStatus(Entity entity, String status);

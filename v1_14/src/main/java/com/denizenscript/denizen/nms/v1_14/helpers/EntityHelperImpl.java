@@ -150,16 +150,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public double getArrowDamage(Entity arrow) {
-        return ((Arrow) arrow).getDamage();
-    }
-
-    @Override
-    public void setArrowDamage(Entity arrow, double damage) {
-        ((Arrow) arrow).setDamage(damage);
-    }
-
-    @Override
     public void setRiptide(Entity entity, boolean state) {
         ((CraftLivingEntity) entity).getHandle().q(state ? 0 : 1);
     }

@@ -1,18 +1,18 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.Arrow;
 
 public class EntityArrowDamage implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityArrowDamage getFrom(ObjectTag entity) {
@@ -21,10 +21,6 @@ public class EntityArrowDamage implements Property {
         }
         return new EntityArrowDamage((EntityTag) entity);
     }
-
-    public static final String[] handledTags = {
-            "damage"
-    };
 
     public static final String[] handledMechs = {
             "damage"
@@ -38,7 +34,7 @@ public class EntityArrowDamage implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(NMSHandler.getEntityHelper().getArrowDamage(dentity.getBukkitEntity()));
+        return String.valueOf(getArrow().getDamage());
     }
 
     @Override
@@ -46,12 +42,11 @@ public class EntityArrowDamage implements Property {
         return "damage";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public Arrow getArrow() {
+        return (Arrow) dentity.getBukkitEntity();
+    }
 
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.damage>
@@ -62,12 +57,9 @@ public class EntityArrowDamage implements Property {
         // Returns the damage that the arrow/trident will inflict.
         // NOTE: The actual damage dealt by the arrow/trident may be different depending on the projectile's flight speed.
         // -->
-        if (attribute.startsWith("damage")) {
-            return new ElementTag(NMSHandler.getEntityHelper().getArrowDamage(dentity.getBukkitEntity()))
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityArrowDamage, ElementTag>registerTag(ElementTag.class, "damage", (attribute, object) -> {
+            return new ElementTag(object.getArrow().getDamage());
+        });
     }
 
     @Override
@@ -83,7 +75,7 @@ public class EntityArrowDamage implements Property {
         // <EntityTag.damage>
         // -->
         if (mechanism.matches("damage") && mechanism.requireDouble()) {
-            NMSHandler.getEntityHelper().setArrowDamage(dentity.getBukkitEntity(), mechanism.getValue().asDouble());
+            getArrow().setDamage(mechanism.getValue().asDouble());
         }
     }
 }
