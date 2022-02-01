@@ -116,6 +116,7 @@ public class EntityAge implements Property {
     }
 
     public static void registerTags() {
+
         // <--[tag]
         // @attribute <EntityTag.age>
         // @returns ElementTag(Number)

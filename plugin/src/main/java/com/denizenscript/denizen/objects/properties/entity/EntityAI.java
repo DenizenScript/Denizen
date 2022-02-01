@@ -44,6 +44,7 @@ public class EntityAI implements Property {
     }
 
     public static void registerTags() {
+
         // <--[tag]
         // @attribute <EntityTag.has_ai>
         // @returns ElementTag(Boolean)
