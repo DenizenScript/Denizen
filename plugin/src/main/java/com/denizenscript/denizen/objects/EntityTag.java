@@ -178,6 +178,30 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (string == null) {
             return null;
         }
+        UUID id = null;
+        if (string.startsWith("e@") && !string.startsWith("e@fake")) {
+            int slash = string.indexOf('/');
+            if (slash != -1) {
+                try {
+                    id = UUID.fromString(string.substring(2, slash));
+                    string = string.substring(slash + 1);
+                    Entity entity = getEntityForID(id);
+                    if (entity != null) {
+                        EntityTag result = new EntityTag(entity);
+                        if (string.equalsIgnoreCase(result.getEntityScript())
+                                || string.equalsIgnoreCase(result.getBukkitEntityType().name())) {
+                            return result;
+                        }
+                        else if (context == null || context.showErrors()) {
+                            Debug.echoError("Invalid EntityTag! ID '" + id + "' is valid, but '" + string + "' does not match its type data.");
+                        }
+                    }
+                }
+                catch (Exception ex) {
+                    // DO NOTHING
+                }
+            }
+        }
         if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFromWithProperties(EntityTag.class, string, context);
         }
@@ -239,28 +263,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else if (context == null || context.showErrors()) {
                 Debug.echoError("Invalid Player! '" + string + "' could not be found. Has the player logged off?");
-            }
-        }
-        UUID id = null;
-        int slash = string.indexOf('/');
-        if (slash != -1) {
-            try {
-                id = UUID.fromString(string.substring(0, slash));
-                string = string.substring(slash + 1);
-                Entity entity = getEntityForID(id);
-                if (entity != null) {
-                    EntityTag result = new EntityTag(entity);
-                    if (string.equalsIgnoreCase(result.getEntityScript())
-                        || string.equalsIgnoreCase(result.getBukkitEntityType().name())) {
-                        return result;
-                    }
-                    else if (context == null || context.showErrors()) {
-                        Debug.echoError("Invalid EntityTag! ID '" + id + "' is valid, but '" + string + "' does not match its type data.");
-                    }
-                }
-            }
-            catch (Exception ex) {
-                // DO NOTHING
             }
         }
         if (ScriptRegistry.containsScript(string, EntityScriptContainer.class)) {
