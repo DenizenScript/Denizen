@@ -5,29 +5,23 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Location;
 import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.EntityType;
 
 public class EntityBeamTarget implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDER_CRYSTAL;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof EnderCrystal;
     }
 
     public static EntityBeamTarget getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        else {
-            return new EntityBeamTarget((EntityTag) entity);
-        }
+        return new EntityBeamTarget((EntityTag) entity);
     }
-
-    public static final String[] handledTags = new String[] {
-            "beam_target"
-    };
 
     public static final String[] handledMechs = new String[] {
             "beam_target"
@@ -41,7 +35,11 @@ public class EntityBeamTarget implements Property {
 
     @Override
     public String getPropertyString() {
-        return new LocationTag(((EnderCrystal) dentity.getBukkitEntity()).getBeamTarget()).identify();
+        Location beamTarget = getCrystal().getBeamTarget();
+        if (beamTarget != null) {
+            return new LocationTag(beamTarget).identify();
+        }
+        return null;
     }
 
     @Override
@@ -49,12 +47,11 @@ public class EntityBeamTarget implements Property {
         return "beam_target";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public EnderCrystal getCrystal() {
+        return (EnderCrystal) dentity.getBukkitEntity();
+    }
 
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.beam_target>
@@ -64,14 +61,13 @@ public class EntityBeamTarget implements Property {
         // @description
         // Returns the target location of the ender crystal's beam, if any.
         // -->
-        if (attribute.startsWith("beam_target")) {
-            Location beamTarget = ((EnderCrystal) dentity.getBukkitEntity()).getBeamTarget();
+        PropertyParser.<EntityBeamTarget, LocationTag>registerTag(LocationTag.class, "beam_target", (attribute, object) -> {
+            Location beamTarget = object.getCrystal().getBeamTarget();
             if (beamTarget != null) {
-                return new LocationTag(beamTarget).getObjectAttribute(attribute.fulfill(1));
+                return new LocationTag(beamTarget);
             }
-        }
-
-        return null;
+            return null;
+        });
     }
 
     @Override
@@ -90,11 +86,11 @@ public class EntityBeamTarget implements Property {
         if (mechanism.matches("beam_target")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(LocationTag.class)) {
-                    ((EnderCrystal) dentity.getBukkitEntity()).setBeamTarget(mechanism.valueAsType(LocationTag.class));
+                    getCrystal().setBeamTarget(mechanism.valueAsType(LocationTag.class));
                 }
             }
             else {
-                ((EnderCrystal) dentity.getBukkitEntity()).setBeamTarget(null);
+                getCrystal().setBeamTarget(null);
             }
         }
     }
