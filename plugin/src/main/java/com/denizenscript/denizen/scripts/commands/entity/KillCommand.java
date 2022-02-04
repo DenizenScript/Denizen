@@ -8,8 +8,8 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.entity.LivingEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class KillCommand extends AbstractCommand {
@@ -47,7 +47,7 @@ public class KillCommand extends AbstractCommand {
     // - kill <npc>
     //
     // @Usage
-    // Use to kill all monsters within 10 blocks of the player
+    // Use to kill all monsters within 10 blocks of the linked player
     // - kill <player.location.find_entities[monster].within[10]>
     // -->
 
@@ -62,20 +62,7 @@ public class KillCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        if (!scriptEntry.hasObject("entities")) {
-            List<EntityTag> entities = new ArrayList<>();
-            if (Utilities.entryHasPlayer(scriptEntry)) {
-                entities.add(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
-            }
-            else if (Utilities.entryHasNPC(scriptEntry)) {
-                entities.add(Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
-            }
-            else {
-                throw new InvalidArgumentsException("No valid target entities found.");
-            }
-            scriptEntry.addObject("entities", entities);
-        }
-
+        scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, true));
     }
 
     @Override
@@ -89,7 +76,11 @@ public class KillCommand extends AbstractCommand {
                 Debug.echoError(scriptEntry.getResidingQueue(), entity + " is not a living entity!");
                 continue;
             }
-            entity.getLivingEntity().setHealth(0);
+            LivingEntity livingEntity = entity.getLivingEntity();
+            livingEntity.damage(livingEntity.getHealth());
+            if (livingEntity.getHealth() > 0) {
+                livingEntity.setHealth(0);
+            }
         }
     }
 }
