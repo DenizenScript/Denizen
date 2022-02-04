@@ -5,29 +5,23 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
-import org.bukkit.entity.EntityType;
 
 public class EntityBoatType implements Property {
 
     public static boolean describes(ObjectTag object) {
-        return object instanceof EntityTag && ((EntityTag) object).getBukkitEntityType() == EntityType.BOAT;
+        return object instanceof EntityTag
+                && ((EntityTag) object).getBukkitEntity() instanceof Boat;
     }
 
     public static EntityBoatType getFrom(ObjectTag object) {
         if (!describes(object)) {
             return null;
         }
-        else {
-            return new EntityBoatType((EntityTag) object);
-        }
+        return new EntityBoatType((EntityTag) object);
     }
-
-    public static final String[] handledTags = new String[] {
-            "boat_type"
-    };
 
     public static final String[] handledMechs = new String[] {
             "boat_type"
@@ -41,7 +35,7 @@ public class EntityBoatType implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Boat) entity.getBukkitEntity()).getWoodType().name();
+        return getBoat().getWoodType().name();
     }
 
     @Override
@@ -49,11 +43,11 @@ public class EntityBoatType implements Property {
         return "boat_type";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
+    public Boat getBoat() {
+        return (Boat) entity.getBukkitEntity();
+    }
+
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.boat_type>
@@ -64,16 +58,14 @@ public class EntityBoatType implements Property {
         // Returns the wood type of the boat.
         // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.
         // -->
-        if (attribute.startsWith("boat_type")) {
-            return new ElementTag(((Boat) entity.getBukkitEntity()).getWoodType().name())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityBoatType, ElementTag>registerTag(ElementTag.class, "boat_type", (attribute, object) -> {
+            return new ElementTag(object.getBoat().getWoodType().name());
+        });
     }
 
     @Override
     public void adjust(Mechanism mechanism) {
+
         // <--[mechanism]
         // @object EntityTag
         // @name boat_type
@@ -84,11 +76,8 @@ public class EntityBoatType implements Property {
         // @tags
         // <EntityTag.boat_type>
         // -->
-        if (mechanism.matches("boat_type")) {
-            TreeSpecies type = TreeSpecies.valueOf(mechanism.getValue().asString().toUpperCase());
-            if (type != null) {
-                ((Boat) entity.getBukkitEntity()).setWoodType(type);
-            }
+        if (mechanism.matches("boat_type") && mechanism.requireEnum(false, TreeSpecies.values())) {
+            getBoat().setWoodType(TreeSpecies.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }
