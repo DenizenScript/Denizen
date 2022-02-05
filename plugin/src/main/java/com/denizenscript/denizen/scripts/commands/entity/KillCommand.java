@@ -32,22 +32,23 @@ public class KillCommand extends AbstractCommand {
     // @Description
     // Kills a list of entities, or a single entity.
     //
-    // If no entities are specified, the command targets the linked player. If there is no linked
-    // player, the command targets the linked NPC. If neither is available, the command errors.
+    // If no entities are specified, the command targets the linked player.
+    // If there is no linked player, the command targets the linked NPC.
+    // If neither is available, the command errors.
     //
     // @Tags
     // <EntityTag.is_spawned>
     //
     // @Usage
-    // Use to kill the linked player
+    // Use to kill the linked player.
     // - kill
     //
     // @Usage
-    // Use to kill the linked NPC
+    // Use to kill the linked NPC.
     // - kill <npc>
     //
     // @Usage
-    // Use to kill all monsters within 10 blocks of the linked player
+    // Use to kill all monsters within 10 blocks of the linked player.
     // - kill <player.location.find_entities[monster].within[10]>
     // -->
 
@@ -77,7 +78,9 @@ public class KillCommand extends AbstractCommand {
                 continue;
             }
             LivingEntity livingEntity = entity.getLivingEntity();
-            livingEntity.damage(livingEntity.getHealth());
+            if (!livingEntity.isInvulnerable()) {
+                livingEntity.damage(Math.max(livingEntity.getHealth(), 9999));
+            }
             if (livingEntity.getHealth() > 0) {
                 livingEntity.setHealth(0);
             }

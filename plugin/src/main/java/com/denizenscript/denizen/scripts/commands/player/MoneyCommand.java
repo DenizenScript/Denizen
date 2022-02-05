@@ -49,11 +49,11 @@ public class MoneyCommand extends AbstractCommand {
     //
     // @Usage
     // Use to take 10 money from a player.
-    // - money take quantity:10 from:<[player]>
+    // - money take quantity:10 players:<[player]>
     //
     // @Usage
     // Use to give all players on the server 100 money.
-    // - money give quantity:100 to:<server.players>
+    // - money give quantity:100 players:<server.players>
     //
     // @Usage
     // Use to set the money of all online players to 250.

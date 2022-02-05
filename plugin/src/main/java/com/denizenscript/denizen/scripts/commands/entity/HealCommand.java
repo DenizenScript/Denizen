@@ -32,8 +32,9 @@ public class HealCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // This command heals a player, list of players, entity or list of entities. If no amount is specified it will
-    // heal the specified player(s)/entity(s) fully.
+    // This command heals a player, list of players, entity or list of entities.
+    //
+    // If no amount is specified it will heal the specified player(s)/entity(s) fully.
     //
     // @Tags
     // <EntityTag.health>
