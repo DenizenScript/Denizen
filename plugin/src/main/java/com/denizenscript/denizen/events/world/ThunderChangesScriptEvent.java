@@ -12,7 +12,9 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // thunder changes|begins|clears (in <world>)
+    // thunder changes|begins|clears
+    //
+    // @Switch in:<world> to only run the event if it applies to a specific world.
     //
     // @Group World
     //
@@ -22,13 +24,14 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.world> returns the WorldTag the thunder changed in.
-    // <context.thunder> returns an ElementTag(Boolean) with the new state of thunder.
+    // <context.thunder> returns true if thunder is starting, or false if thunder is stopping.
     //
     // -->
 
     public ThunderChangesScriptEvent() {
         instance = this;
-        registerCouldMatcher("thunder changes|begins|clears (in <world>)");
+        registerCouldMatcher("thunder changes|begins|clears");
+        registerSwitches("in");
     }
 
     public static ThunderChangesScriptEvent instance;
@@ -50,7 +53,7 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
         else if (!changeType.equals("changes")) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("in") && !tryWorld(new WorldTag(event.getWorld()), path.eventArgLowerAt(3))) {
+        if (path.switches.containsKey("in") && !tryWorld(new WorldTag(event.getWorld()), path.switches.get("in"))) {
             return false;
         }
         return super.matches(path);
