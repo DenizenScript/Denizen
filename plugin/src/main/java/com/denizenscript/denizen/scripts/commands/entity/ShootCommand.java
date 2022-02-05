@@ -4,7 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.entity.Velocity;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.Position;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -255,7 +255,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 if (shooter != null || originEntity != null) {
                     entity.setShooter(shooter != null ? shooter : originEntity);
                 }
-                if (script != null) {
+                if (script != null || scriptEntry.shouldWaitFor()) {
                     arrows.put(entity.getUUID(), null);
                 }
             }
@@ -319,6 +319,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             public void run() {
                 // If the entity is no longer spawned, stop the task
                 if (!lastEntity.isSpawned()) {
+                    if (Debug.verbose) {
+                        Debug.log("Shoot ended because entity not spawned");
+                    }
                     flying = false;
                 }
                 // Otherwise, if the entity is no longer traveling through
@@ -327,10 +330,17 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     if (lastLocation.getWorld() != lastEntity.getBukkitEntity().getWorld()
                             || (lastLocation.distanceSquared(lastEntity.getBukkitEntity().getLocation()) < 0.1
                             && lastVelocity.distanceSquared(lastEntity.getBukkitEntity().getVelocity()) < 0.1)) {
+                        if (Debug.verbose) {
+                            Debug.log("Shoot ended because distances short - locations: " + (lastLocation.distanceSquared(lastEntity.getBukkitEntity().getLocation()))
+                                    + ", velocity: " + (lastVelocity.distanceSquared(lastEntity.getBukkitEntity().getVelocity()) < 0.1));
+                        }
                         flying = false;
                     }
                 }
                 if (!arrows.containsKey(lastEntity.getUUID()) || arrows.get(lastEntity.getUUID()) != null) {
+                    if (Debug.verbose) {
+                        Debug.log("Shoot ended because uuid was updated (hit entity?)");
+                    }
                     flying = false;
                 }
                 // Stop the task and run the script if conditions
@@ -380,6 +390,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         if (!arrows.containsKey(event.getEntity().getUniqueId())) {
             return;
         }
+        if (Debug.verbose) {
+            Debug.log("Shoot ending because hit");
+        }
         if (event.getHitEntity() != null) {
             arrows.put(event.getEntity().getUniqueId(), new EntityTag(event.getHitEntity()));
         }
@@ -396,6 +409,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
         if (!arrows.containsKey(arrow.getUniqueId())) {
             return;
+        }
+        if (Debug.verbose) {
+            Debug.log("Shoot ending because damage");
         }
         arrows.put(arrow.getUniqueId(), new EntityTag(event.getEntity()));
     }
