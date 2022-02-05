@@ -423,7 +423,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
 
-    public boolean tryExactMatcher(String text) {
+    public final boolean tryExactMatcher(String text) {
         if (specialEntityMatchables.contains(text)) {
             switch (text) {
                 case "entity":
@@ -464,8 +464,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return false;
     }
 
-    public boolean tryAdvancedMatcher(String text) {
+    public final boolean tryAdvancedMatcher(String text) {
         ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(CoreUtilities.toLowerCase(text));
+        if (isCitizensNPC()) {
+            return matcher.doesMatch("npc", this::tryExactMatcher);
+        }
         if (getEntityScript() != null && matcher.doesMatch(getEntityScript(), this::tryExactMatcher)) {
             return true;
         }
