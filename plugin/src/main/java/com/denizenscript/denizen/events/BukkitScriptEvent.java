@@ -261,7 +261,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean exactMatchEntity(String text) {
-        if (specialEntityMatchables.contains(text)) {
+        if (EntityTag.specialEntityMatchables.contains(text)) {
             return true;
         }
         if (text.startsWith("entity_flagged:") || text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
@@ -278,7 +278,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (text.equals("vehicle")) {
             return true;
         }
-        if (specialEntityMatchables.contains(text)) {
+        if (EntityTag.specialEntityMatchables.contains(text)) {
             return false;
         }
         if (text.startsWith("entity_flagged:")) {
@@ -1150,70 +1150,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
-
     public static boolean tryEntity(EntityTag entity, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || entity == null) {
             return false;
         }
-        Entity bEntity = entity.getBukkitEntity();
-        comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (specialEntityMatchables.contains(comparedto)) {
-            switch (comparedto) {
-                case "entity":
-                    return true;
-                case "npc":
-                    return entity.isCitizensNPC();
-                case "player":
-                    return entity.isPlayer();
-                case "living":
-                    return entity.isLivingEntityType();
-                case "vehicle":
-                    return bEntity instanceof Vehicle;
-                case "fish":
-                    return bEntity instanceof Fish;
-                case "projectile":
-                    return bEntity instanceof Projectile;
-                case "hanging":
-                    return bEntity instanceof Hanging;
-                case "monster":
-                    return entity.isMonsterType();
-                case "mob":
-                    return entity.isMobType();
-                case "animal":
-                    return entity.isAnimalType();
-            }
-        }
-        if (comparedto.contains(":")) {
-            if (comparedto.startsWith("entity_flagged:")) {
-                return coreFlaggedCheck(comparedto.substring("entity_flagged:".length()), entity.getFlagTracker());
-            }
-            else if (comparedto.startsWith("player_flagged:")) {
-                return entity.isPlayer() && coreFlaggedCheck(comparedto.substring("player_flagged:".length()), entity.getFlagTracker());
-            }
-            else if (comparedto.startsWith("npc_flagged:")) {
-                return entity.isCitizensNPC() && coreFlaggedCheck(comparedto.substring("npc_flagged:".length()), entity.getFlagTracker());
-            }
-        }
-        MatchHelper matcher = createMatcher(comparedto);
-        if (matcher instanceof InverseMatchHelper) {
-            matcher = ((InverseMatchHelper) matcher).matcher;
-            if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {
-                return false;
-            }
-            else if (matcher.doesMatch(entity.getEntityType().getLowercaseName())) {
-                return false;
-            }
-            return true;
-        }
-        else {
-            if (entity.getEntityScript() != null && matcher.doesMatch(entity.getEntityScript())) {
-                return true;
-            }
-            else if (matcher.doesMatch(entity.getEntityType().getLowercaseName())) {
-                return true;
-            }
-            return false;
-        }
+        return entity.tryAdvancedMatcher(comparedto);
     }
 }

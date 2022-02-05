@@ -15,6 +15,7 @@ import com.denizenscript.denizen.utilities.entity.*;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
@@ -418,6 +419,60 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         else {
             Debug.echoError("NPC referenced is null!");
         }
+    }
+
+    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
+
+    public boolean tryExactMatcher(String text) {
+        if (specialEntityMatchables.contains(text)) {
+            switch (text) {
+                case "entity":
+                    return true;
+                case "npc":
+                    return isCitizensNPC();
+                case "player":
+                    return isPlayer();
+                case "living":
+                    return isLivingEntityType();
+                case "vehicle":
+                    return getBukkitEntity() instanceof Vehicle;
+                case "fish":
+                    return getBukkitEntity() instanceof Fish;
+                case "projectile":
+                    return getBukkitEntity() instanceof Projectile;
+                case "hanging":
+                    return getBukkitEntity() instanceof Hanging;
+                case "monster":
+                    return isMonsterType();
+                case "mob":
+                    return isMobType();
+                case "animal":
+                    return isAnimalType();
+            }
+        }
+        if (text.contains(":")) {
+            if (text.startsWith("entity_flagged:")) {
+                return ScriptEvent.coreFlaggedCheck(text.substring("entity_flagged:".length()), getFlagTracker());
+            }
+            else if (text.startsWith("player_flagged:")) {
+                return isPlayer() && ScriptEvent.coreFlaggedCheck(text.substring("player_flagged:".length()), getFlagTracker());
+            }
+            else if (text.startsWith("npc_flagged:")) {
+                return isCitizensNPC() && ScriptEvent.coreFlaggedCheck(text.substring("npc_flagged:".length()), getFlagTracker());
+            }
+        }
+        return false;
+    }
+
+    public boolean tryAdvancedMatcher(String text) {
+        ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(CoreUtilities.toLowerCase(text));
+        if (getEntityScript() != null && matcher.doesMatch(getEntityScript(), this::tryExactMatcher)) {
+            return true;
+        }
+        else if (matcher.doesMatch(getEntityType().getLowercaseName(), this::tryExactMatcher)) {
+            return true;
+        }
+        return false;
     }
 
     /////////////////////
