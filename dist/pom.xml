@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.denizenscript</groupId>
         <artifactId>denizen-parent</artifactId>
-        <version>1.2.3-SNAPSHOT</version>
+        <version>1.2.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,18 +25,6 @@
             <version>${project.parent.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.denizenscript</groupId>
-            <artifactId>denizen-v1_14</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.denizenscript</groupId>
-            <artifactId>denizen-v1_15</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
