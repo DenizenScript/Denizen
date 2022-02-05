@@ -100,6 +100,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(HealthCommand.class);
         registerCommand(HurtCommand.class);
         registerCommand(InvisibleCommand.class);
+        registerCommand(KillCommand.class);
         registerCommand(LeashCommand.class);
         registerCommand(LookCommand.class);
         registerCommand(MountCommand.class);
