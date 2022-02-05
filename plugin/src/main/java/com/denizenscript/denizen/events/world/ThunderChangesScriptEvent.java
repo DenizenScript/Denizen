@@ -32,8 +32,6 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static ThunderChangesScriptEvent instance;
-    public WorldTag world;
-    public ElementTag thunder;
     public ThunderChangeEvent event;
 
     @Override
@@ -52,6 +50,9 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
         else if (!changeType.equals("changes")) {
             return false;
         }
+        if (path.eventArgLowerAt(2).equals("in") && !tryWorld(new WorldTag(event.getWorld()), path.eventArgLowerAt(3))) {
+            return false;
+        }
         return super.matches(path);
     }
 
@@ -62,19 +63,17 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("world")) {
-            return world;
-        }
-        else if (name.equals("thunder")) {
-            return thunder;
+        switch(name) {
+            case "world":
+                return new WorldTag(event.getWorld());
+            case "thunder":
+                return new ElementTag(event.toThunderState());
         }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onThunderChanges(ThunderChangeEvent event) {
-        world = new WorldTag(event.getWorld());
-        thunder = new ElementTag(event.toThunderState());
         this.event = event;
         fire(event);
     }
