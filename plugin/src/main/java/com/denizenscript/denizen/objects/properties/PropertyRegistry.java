@@ -39,20 +39,13 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAttributeModifiers.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArms.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            PropertyParser.registerProperty(EntityAware.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityAware.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBasePlate.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBeamTarget.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBoatType.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBodyArrows.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBoundingBox.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            PropertyParser.registerProperty(EntityCanJoinRaid.class, EntityTag.class);
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            PropertyParser.registerProperty(EntityCannotEnterHive.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityCanJoinRaid.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
         PropertyParser.registerProperty(EntityColor.class, EntityTag.class);
@@ -75,25 +68,17 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityFixed.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFlags.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
             PropertyParser.registerProperty(EntityFreezeDuration.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            PropertyParser.registerProperty(EntityHasNectar.class, EntityTag.class);
-            PropertyParser.registerProperty(EntityHasStung.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityHasNectar.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityHasStung.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHealth.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInventory.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInvulnerable.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
@@ -124,10 +109,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityRotation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            PropertyParser.registerProperty(EntityShivering.class, EntityTag.class);
-            PropertyParser.registerProperty(EntityShulkerPeek.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityShivering.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityShulkerPeek.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySilent.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySitting.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySize.class, EntityTag.class);
@@ -172,10 +155,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemInventory.class, ItemTag.class);
         PropertyParser.registerProperty(ItemKnowledgeBookRecipes.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLock.class, ItemTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            PropertyParser.registerProperty(ItemLodestoneLocation.class, ItemTag.class);
-            PropertyParser.registerProperty(ItemLodestoneTracked.class, ItemTag.class);
-        }
+        PropertyParser.registerProperty(ItemLodestoneLocation.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemLodestoneTracked.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLore.class, ItemTag.class);
         PropertyParser.registerProperty(ItemMap.class, ItemTag.class);
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);
@@ -218,9 +199,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialPersistent.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialPower.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialShape.class, MaterialTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            PropertyParser.registerProperty(MaterialSides.class, MaterialTag.class);
-        }
+        PropertyParser.registerProperty(MaterialSides.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSnowable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSwitchable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSwitchFace.class, MaterialTag.class);

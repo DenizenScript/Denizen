@@ -3,12 +3,12 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -317,7 +317,7 @@ public class Utilities {
         for (BlockFace blockFace : blockFaces) {
             Block block = signBlock.getRelative(blockFace);
             Material material = block.getType();
-            if (material != Material.AIR && !MaterialCompat.isAnySign(material)) {
+            if (material != Material.AIR && !SignCommand.isAnySign(material)) {
                 return blockFace.getOppositeFace();
             }
         }

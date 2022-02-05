@@ -116,9 +116,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(FireworkBurstsScriptEvent.class);
         ScriptEvent.registerScriptEvent(HangingBreaksScriptEvent.class);
         ScriptEvent.registerScriptEvent(HorseJumpsScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            ScriptEvent.registerScriptEvent(PiglinBarterScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(PiglinBarterScriptEvent.class);
         ScriptEvent.registerScriptEvent(PigZappedScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileHitsBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileHitsEntityScriptEvent.class);
@@ -200,10 +198,8 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerRightClicksEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRiptideScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
-            ScriptEvent.registerScriptEvent(PlayersPrepareSmithingTableScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayersPrepareSmithingTableScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSneakScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSprintScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStandsOnScriptEvent.class);
@@ -242,9 +238,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(ChunkUnloadScriptEvent.class);
         ScriptEvent.registerScriptEvent(LightningStrikesScriptEvent.class);
         ScriptEvent.registerScriptEvent(LingeringPotionSplashScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15)) {
-            ScriptEvent.registerScriptEvent(LootGenerateScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(LootGenerateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PortalCreateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PotionSplashScriptEvent.class);
         ScriptEvent.registerScriptEvent(SpawnChangeScriptEvent.class);

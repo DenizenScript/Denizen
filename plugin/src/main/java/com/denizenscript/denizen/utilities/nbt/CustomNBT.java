@@ -63,7 +63,7 @@ public class CustomNBT {
         for (int i = 0; i < attribs.size(); i++) {
             CompoundTag ct = attribs.get(i);
             AttributeReturn atr = new AttributeReturn();
-            atr.attr = (String) ct.getValue().get(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) ? "Name" : "AttributeName").getValue();
+            atr.attr = (String) ct.getValue().get("Name").getValue();
             atr.slot = ct.getValue().get("Slot") == null ? "mainhand" : (String) ct.getValue().get("Slot").getValue();
             atr.op = (Integer) ct.getValue().get("Operation").getValue();
             Tag t = ct.getValue().get("Amount");
@@ -80,7 +80,7 @@ public class CustomNBT {
                 /// ????
                 atr.amt = 0;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ct.getValue().containsKey("UUID")) {
+            if (ct.getValue().containsKey("UUID")) {
                 UUID id = NMSHandler.getItemHelper().convertNbtToUuid((IntArrayTag) ct.getValue().get("UUID"));
                 atr.uuidLeast = id.getLeastSignificantBits();
                 atr.uuidMost = id.getMostSignificantBits();
@@ -165,9 +165,7 @@ public class CustomNBT {
             }
         }
         HashMap<String, Tag> tmap = new HashMap<>();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            attr = fixAttributeName1_16(attr);
-        }
+        attr = fixAttributeName1_16(attr);
         tmap.put("AttributeName", new StringTag(attr));
         tmap.put("Name", new StringTag(attr));
         tmap.put("Slot", new StringTag(slot));
@@ -175,13 +173,7 @@ public class CustomNBT {
         tmap.put("Amount", new DoubleTag(amt));
         long uuidhelp = uuidChoice(itemStack);
         UUID fullUuid = new UUID(uuidhelp + 88512 + attribs.size(), uuidhelp * 2 + 1250025L + attribs.size());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            tmap.put("UUID", NMSHandler.getItemHelper().convertUuidToNbt(fullUuid));
-        }
-        else {
-            tmap.put("UUIDMost", new LongTag(fullUuid.getMostSignificantBits()));
-            tmap.put("UUIDLeast", new LongTag(fullUuid.getLeastSignificantBits()));
-        }
+        tmap.put("UUID", NMSHandler.getItemHelper().convertUuidToNbt(fullUuid));
         CompoundTag ct = NMSHandler.getInstance().createCompoundTag(tmap);
         attribs.add(ct);
         JNBTListTag lt = new JNBTListTag(CompoundTag.class, attribs);
@@ -418,4 +410,3 @@ public class CustomNBT {
         return map;
     }
 }
-

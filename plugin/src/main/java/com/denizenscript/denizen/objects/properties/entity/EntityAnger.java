@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -19,8 +17,7 @@ public class EntityAnger implements Property {
             return false;
         }
         Entity bukkitEntity = ((EntityTag) entity).getBukkitEntity();
-        return bukkitEntity instanceof PigZombie ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && bukkitEntity instanceof Bee);
+        return bukkitEntity instanceof PigZombie || bukkitEntity instanceof Bee;
     }
 
     public static EntityAnger getFrom(ObjectTag entity) {

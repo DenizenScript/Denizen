@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -30,7 +28,7 @@ public class MaterialLevel implements Property {
                 || data instanceof Cake
                 || data instanceof Snow
                 || data instanceof Farmland
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && data instanceof Beehive);
+                || data instanceof Beehive;
     }
 
     public static MaterialLevel getFrom(ObjectTag _material) {
@@ -117,19 +115,11 @@ public class MaterialLevel implements Property {
     }
 
     public boolean isHive() {
-        return (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && material.getModernData() instanceof Beehive);
+        return material.getModernData() instanceof Beehive;
     }
 
-    public int getHoneyLevel() { // TODO: 1.15
-        return ((Beehive) material.getModernData()).getHoneyLevel();
-    }
-
-    public int getMaxHoneyLevel() { // TODO: 1.15
-        return ((Beehive) material.getModernData()).getMaximumHoneyLevel();
-    }
-
-    public void setHoneyLevel(int level) { // TODO: 1.15
-        ((Beehive) material.getModernData()).setHoneyLevel(level);
+    public Beehive getHive() {
+        return (Beehive) material.getModernData();
     }
 
     public boolean isFarmland() {
@@ -148,7 +138,7 @@ public class MaterialLevel implements Property {
             return getSnow().getLayers();
         }
         else if (isHive()) {
-            return getHoneyLevel();
+            return getHive().getHoneyLevel();
         }
         else if (isFarmland()) {
             return getFarmland().getMoisture();
@@ -164,7 +154,7 @@ public class MaterialLevel implements Property {
             return getSnow().getMaximumLayers();
         }
         else if (isHive()) {
-            return getMaxHoneyLevel();
+            return getHive().getMaximumHoneyLevel();
         }
         else if (isFarmland()) {
             return getFarmland().getMaximumMoisture();
@@ -189,7 +179,7 @@ public class MaterialLevel implements Property {
             return;
         }
         else if (isHive()) {
-            setHoneyLevel(level);
+            getHive().setHoneyLevel(level);
             return;
         }
         else if (isFarmland()) {

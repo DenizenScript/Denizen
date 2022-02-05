@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -23,10 +22,14 @@ import java.util.List;
 
 public class ItemPatterns implements Property {
 
+    public static boolean isBannerOrShield(Material material) {
+        return material == Material.SHIELD || material.name().endsWith("_BANNER");
+    }
+
     public static boolean describes(ObjectTag item) {
         if (item instanceof ItemTag) {
             Material material = ((ItemTag) item).getBukkitMaterial();
-            return MaterialCompat.isBannerOrShield(material);
+            return isBannerOrShield(material);
         }
         return false;
     }

@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
-import com.denizenscript.denizen.utilities.blocks.MaterialCompat;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -115,6 +114,42 @@ public class SignCommand extends AbstractCommand {
         sign.setBlockData(signMaterial.getModernData());
     }
 
+    public static boolean isStandingSign(Material material) {
+        switch (material) {
+            case CRIMSON_SIGN:
+            case WARPED_SIGN:
+            case ACACIA_SIGN:
+            case BIRCH_SIGN:
+            case DARK_OAK_SIGN:
+            case JUNGLE_SIGN:
+            case OAK_SIGN:
+            case SPRUCE_SIGN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isWallSign(Material material) {
+        switch (material) {
+            case CRIMSON_WALL_SIGN:
+            case WARPED_WALL_SIGN:
+            case ACACIA_WALL_SIGN:
+            case BIRCH_WALL_SIGN:
+            case DARK_OAK_WALL_SIGN:
+            case JUNGLE_WALL_SIGN:
+            case OAK_WALL_SIGN:
+            case SPRUCE_WALL_SIGN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isAnySign(Material material) {
+        return isStandingSign(material) || isWallSign(material);
+    }
+
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         String direction = scriptEntry.hasObject("direction") ? ((ElementTag) scriptEntry.getObject("direction")).asString() : null;
@@ -127,8 +162,7 @@ public class SignCommand extends AbstractCommand {
         }
         Type type = Type.valueOf(typeElement.asString().toUpperCase());
         Block sign = location.getBlock();
-        if (type != Type.AUTOMATIC
-                || !MaterialCompat.isAnySign(sign.getType())) {
+        if (type != Type.AUTOMATIC || !isAnySign(sign.getType())) {
             if (type == Type.WALL_SIGN) {
                 BlockFace bf;
                 if (direction != null) {
@@ -146,7 +180,7 @@ public class SignCommand extends AbstractCommand {
                 }
             }
         }
-        else if (!MaterialCompat.isAnySign(sign.getType())) {
+        else if (!isAnySign(sign.getType())) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
                 sign.setType(material == null ? Material.OAK_SIGN : material.getMaterial(), false);
             }

@@ -550,10 +550,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            Debug.echoError("Location flags are only available in 1.16+");
-            return null;
-        }
         if (getWorld() == null) {
             return null;
         }
@@ -1217,9 +1213,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(LocationTag.class, "highest", (attribute, object) -> {
             Location result = object.getHighestBlockForTag(attribute);
-            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_14)) {
-                result = result.subtract(0, 1, 0);
-            }
             return new LocationTag(result);
         });
 
@@ -3884,10 +3877,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(LocationTag.class, "attached_to", (attribute, object) -> {
             BlockFace face = BlockFace.SELF;
             MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
-            if (material.getMaterial() == Material.TORCH || material.getMaterial() == Material.REDSTONE_TORCH || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getMaterial() == Material.SOUL_TORCH)) {
+            if (material.getMaterial() == Material.TORCH || material.getMaterial() == Material.REDSTONE_TORCH || material.getMaterial() == Material.SOUL_TORCH) {
                 face = BlockFace.DOWN;
             }
-            else if (material.getMaterial() == Material.WALL_TORCH || material.getMaterial() == Material.REDSTONE_WALL_TORCH || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getMaterial() == Material.SOUL_WALL_TORCH)) {
+            else if (material.getMaterial() == Material.WALL_TORCH || material.getMaterial() == Material.REDSTONE_WALL_TORCH || material.getMaterial() == Material.SOUL_WALL_TORCH) {
                 face = ((Directional) material.getModernData()).getFacing().getOppositeFace();
             }
             else if (MaterialSwitchFace.describes(material)) {

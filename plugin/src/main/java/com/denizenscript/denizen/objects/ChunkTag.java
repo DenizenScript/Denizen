@@ -253,10 +253,6 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            Debug.echoError("Chunk flags are only available in 1.16+");
-            return null;
-        }
         return new DataPersistenceFlagTracker(getChunk(), "flag_chunk_");
     }
 

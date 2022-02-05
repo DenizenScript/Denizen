@@ -25,10 +25,9 @@ public class EntityItem implements Property {
         Entity entity = ((EntityTag) object).getBukkitEntity();
         return entity instanceof Item
                 || entity instanceof Enderman
-                || entity instanceof Trident // TODO: 1.15: supported in ThrowableProjectile now, remove this part when 1.14 is dropped
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && entity instanceof SizedFireball)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && entity instanceof ThrowableProjectile)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && entity instanceof EnderSignal);
+                || entity instanceof SizedFireball
+                || entity instanceof ThrowableProjectile
+                || entity instanceof EnderSignal;
     }
 
     public static EntityItem getFrom(ObjectTag entity) {
@@ -62,15 +61,11 @@ public class EntityItem implements Property {
             }
             return new ItemTag(data.getMaterial());
         }
-        else if (isTrident()) {
-            // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
-            return new ItemTag(NMSHandler.getEntityHelper().getItemFromTrident(item.getBukkitEntity()));
-        }
         else if (isFireball()) {
-            return new ItemTag(((SizedFireball) item.getBukkitEntity()).getDisplayItem()); // TODO: 1.15
+            return new ItemTag(getFireball().getDisplayItem());
         }
         else if (isThrowableProjectile()) {
-            return new ItemTag(((ThrowableProjectile) item.getBukkitEntity()).getItem()); // TODO: 1.15
+            return new ItemTag(getThrowableProjectile().getItem());
         }
         else if (isEnderSignal()) {
             return new ItemTag(getEnderSignal().getItem());
@@ -86,20 +81,16 @@ public class EntityItem implements Property {
         return item.getBukkitEntity() instanceof Enderman;
     }
 
-    public boolean isTrident() {
-        return item.getBukkitEntity() instanceof Trident;
-    }
-
     public boolean isFireball() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && item.getBukkitEntity() instanceof SizedFireball;
+        return item.getBukkitEntity() instanceof SizedFireball;
     }
 
     public boolean isThrowableProjectile() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && item.getBukkitEntity() instanceof ThrowableProjectile;
+        return item.getBukkitEntity() instanceof ThrowableProjectile;
     }
 
     public boolean isEnderSignal() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && item.getBukkitEntity() instanceof EnderSignal;
+        return item.getBukkitEntity() instanceof EnderSignal;
     }
 
     public Item getDroppedItem() {
@@ -110,21 +101,17 @@ public class EntityItem implements Property {
         return (Enderman) item.getBukkitEntity();
     }
 
-    public Trident getTrident() {
-        return (Trident) item.getBukkitEntity();
-    }
-
     public EnderSignal getEnderSignal() {
         return (EnderSignal) item.getBukkitEntity();
     }
 
-    /*public ThrowableProjectile getThrowableProjectile() { // TODO: 1.15
+    public ThrowableProjectile getThrowableProjectile() {
         return (ThrowableProjectile) item.getBukkitEntity();
     }
 
     public SizedFireball getFireball() {
         return (SizedFireball) item.getBukkitEntity();
-    }*/
+    }
 
     @Override
     public String getPropertyString() {
@@ -187,15 +174,11 @@ public class EntityItem implements Property {
                 Deprecations.entityItemEnderman.warn(mechanism.context);
                 getEnderman().setCarriedBlock(itemStack.getType().createBlockData());
             }
-            else if (isTrident()) {
-                // TODO: 1.15: supported by ThrowableProjectile now, remove this part when 1.14 is dropped
-                NMSHandler.getEntityHelper().setItemForTrident(item.getBukkitEntity(), itemStack);
-            }
             else if (isFireball()) {
-                ((SizedFireball) item.getBukkitEntity()).setDisplayItem(itemStack); // TODO: 1.15
+                getFireball().setDisplayItem(itemStack);
             }
             else if (isThrowableProjectile()) {
-                ((ThrowableProjectile) item.getBukkitEntity()).setItem(itemStack); // TODO: 1.15
+                getThrowableProjectile().setItem(itemStack);
             }
             else if (isEnderSignal()) {
                 getEnderSignal().setItem(itemStack);

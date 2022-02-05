@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -25,7 +23,7 @@ public class ItemColor implements Property {
                 || mat == Material.LEATHER_CHESTPLATE
                 || mat == Material.LEATHER_HELMET
                 || mat == Material.LEATHER_LEGGINGS
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14) && mat == Material.LEATHER_HORSE_ARMOR)
+                || mat == Material.LEATHER_HORSE_ARMOR
                 || mat == Material.POTION
                 || mat == Material.SPLASH_POTION
                 || mat == Material.LINGERING_POTION;

@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -49,9 +48,6 @@ public class ItemScriptHelper implements Listener {
 
     public ItemScriptHelper() {
         Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            Denizen.getInstance().getServer().getPluginManager().registerEvents(new Events_1_16(), Denizen.getInstance());
-        }
     }
 
     public static void removeDenizenRecipes() {
@@ -573,70 +569,67 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
-    public static class Events_1_16 implements Listener {
-
-        @EventHandler(priority = EventPriority.LOW)
-        public void onItemSmithing(PrepareSmithingEvent event) {
-            if (!isItemscript(event.getInventory().getItem(0))) {
-                return;
-            }
-            Recipe recipe = event.getInventory().getRecipe();
-            SmithingRecipe smithRecipe = (SmithingRecipe) recipe;
-            if (smithRecipe == null || !(smithRecipe.getKey().getNamespace().equals("denizen"))) {
-                if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
-                    event.setResult(new ItemStack(Material.AIR));
-                }
-                return;
-            }
-            ItemScriptContainer realResult = recipeIdToItemScript.get(smithRecipe.getKey().toString());
-            if (realResult == null) {
-                if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
-                    event.setResult(new ItemStack(Material.AIR));
-                }
-                return;
-            }
-            String[] retain = smithingRetain.get(smithRecipe.getKey().getKey());
-            if (retain == null) {
-                Debug.echoError("Smithing recipe mis-registered for script item: " + realResult.getName());
-                if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
-                    event.setResult(new ItemStack(Material.AIR));
-                }
-                return;
-            }
-            PlayerTag player = null;
-            if (!event.getInventory().getViewers().isEmpty()) {
-                HumanEntity human = event.getInventory().getViewers().get(0);
-                if (!EntityTag.isNPC(human) && human instanceof Player) {
-                    player = new PlayerTag((Player) human);
-                }
-            }
-            ItemTag got = realResult.getItemFrom(new BukkitTagContext(player, null, new ScriptTag(realResult)));
-            if (got == null) {
-                return;
-            }
-            if (retain.length > 0) {
-                ItemMeta originalMeta = event.getInventory().getItem(0).getItemMeta();
-                ItemMeta newMeta = got.getItemMeta();
-                for (String retainable : retain) {
-                    switch (retainable) {
-                        case "display": newMeta.setDisplayName(originalMeta.hasDisplayName() ? originalMeta.getDisplayName() : null); break;
-                        case "enchantments":
-                            if (newMeta.hasEnchants()) {
-                                for (Enchantment enchant : new ArrayList<>(newMeta.getEnchants().keySet())) {
-                                    newMeta.removeEnchant(enchant);
-                                }
-                            }
-                            if (originalMeta.hasEnchants()) {
-                                for (Map.Entry<Enchantment, Integer> enchant : originalMeta.getEnchants().entrySet()) {
-                                    newMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
-                                }
-                            }
-                            break;
-                    }
-                }
-                got.setItemMeta(newMeta);
-            }
-            event.setResult(got.getItemStack());
+    @EventHandler(priority = EventPriority.LOW)
+    public void onItemSmithing(PrepareSmithingEvent event) {
+        if (!isItemscript(event.getInventory().getItem(0))) {
+            return;
         }
+        Recipe recipe = event.getInventory().getRecipe();
+        SmithingRecipe smithRecipe = (SmithingRecipe) recipe;
+        if (smithRecipe == null || !(smithRecipe.getKey().getNamespace().equals("denizen"))) {
+            if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
+                event.setResult(new ItemStack(Material.AIR));
+            }
+            return;
+        }
+        ItemScriptContainer realResult = recipeIdToItemScript.get(smithRecipe.getKey().toString());
+        if (realResult == null) {
+            if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
+                event.setResult(new ItemStack(Material.AIR));
+            }
+            return;
+        }
+        String[] retain = smithingRetain.get(smithRecipe.getKey().getKey());
+        if (retain == null) {
+            Debug.echoError("Smithing recipe mis-registered for script item: " + realResult.getName());
+            if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
+                event.setResult(new ItemStack(Material.AIR));
+            }
+            return;
+        }
+        PlayerTag player = null;
+        if (!event.getInventory().getViewers().isEmpty()) {
+            HumanEntity human = event.getInventory().getViewers().get(0);
+            if (!EntityTag.isNPC(human) && human instanceof Player) {
+                player = new PlayerTag((Player) human);
+            }
+        }
+        ItemTag got = realResult.getItemFrom(new BukkitTagContext(player, null, new ScriptTag(realResult)));
+        if (got == null) {
+            return;
+        }
+        if (retain.length > 0) {
+            ItemMeta originalMeta = event.getInventory().getItem(0).getItemMeta();
+            ItemMeta newMeta = got.getItemMeta();
+            for (String retainable : retain) {
+                switch (retainable) {
+                    case "display": newMeta.setDisplayName(originalMeta.hasDisplayName() ? originalMeta.getDisplayName() : null); break;
+                    case "enchantments":
+                        if (newMeta.hasEnchants()) {
+                            for (Enchantment enchant : new ArrayList<>(newMeta.getEnchants().keySet())) {
+                                newMeta.removeEnchant(enchant);
+                            }
+                        }
+                        if (originalMeta.hasEnchants()) {
+                            for (Map.Entry<Enchantment, Integer> enchant : originalMeta.getEnchants().entrySet()) {
+                                newMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
+                            }
+                        }
+                        break;
+                }
+            }
+            got.setItemMeta(newMeta);
+        }
+        event.setResult(got.getItemStack());
     }
 }

@@ -3,7 +3,6 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_16;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -33,7 +32,7 @@ public class MaterialDirectional implements Property {
                 || data instanceof Orientable
                 || data instanceof Rotatable
                 || data instanceof Rail
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Jigsaw)
+                || data instanceof Jigsaw
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone);
     }
 
@@ -172,7 +171,7 @@ public class MaterialDirectional implements Property {
             return ((PointedDripstone) material.getModernData()).getVerticalDirection().getDirection(); // TODO: 1.17
         }
         else if (isJigsaw()) {
-            switch (((Jigsaw) material.getModernData()).getOrientation()) { // TODO: 1.16
+            switch (getJigsaw().getOrientation()) {
                 case DOWN_EAST:
                     return new Vector(1, -1, 0);
                 case DOWN_NORTH:
@@ -215,7 +214,7 @@ public class MaterialDirectional implements Property {
             return ((PointedDripstone) material.getModernData()).getVerticalDirection().name(); // TODO: 1.17
         }
         else if (isJigsaw()) {
-            return ((Jigsaw) material.getModernData()).getOrientation().name(); // TODO: 1.16
+            return getJigsaw().getOrientation().name();
         }
         return null; // Unreachable
     }
@@ -241,7 +240,7 @@ public class MaterialDirectional implements Property {
     }
 
     public boolean isJigsaw() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getModernData() instanceof Jigsaw;
+        return material.getModernData() instanceof Jigsaw;
     }
 
     public Orientable getOrientable() {
@@ -256,12 +255,12 @@ public class MaterialDirectional implements Property {
         return (Directional) material.getModernData();
     }
 
+    public Jigsaw getJigsaw() {
+        return (Jigsaw) material.getModernData();
+    }
+
     /*public PointedDripstone getDripstone() { // TODO: 1.17
         return (PointedDripstone) material.getModernData();
-    }*/
-
-    /*public Jigsaw getJigsaw() { // TODO: 1.16
-        return (Jigsaw) material.getModernData();
     }*/
 
     public Rail getRail() {
@@ -344,8 +343,8 @@ public class MaterialDirectional implements Property {
             else if (isRail() && mechanism.requireEnum(false, Rail.Shape.values())) {
                 getRail().setShape(Rail.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isJigsaw()) {
-                MultiVersionHelper1_16.materialDirectionalRunMech(mechanism, this);
+            else if (isJigsaw() && mechanism.requireEnum(false, Jigsaw.Orientation.values())) {
+                getJigsaw().setOrientation(Jigsaw.Orientation.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (!isJigsaw() && mechanism.requireEnum(false, BlockFace.values())) {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));

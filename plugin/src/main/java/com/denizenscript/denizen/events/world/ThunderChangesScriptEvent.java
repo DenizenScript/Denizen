@@ -20,7 +20,7 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when thunder changes in a world.
+    // @Triggers when thunder starts or stops in a world.
     //
     // @Context
     // <context.world> returns the WorldTag the thunder changed in.

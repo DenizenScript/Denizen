@@ -1402,10 +1402,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (object.getLivingEntity() instanceof AbstractHorse) {
                 return new ItemTag(((AbstractHorse) object.getLivingEntity()).getInventory().getSaddle());
             }
-            else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_15) && object.getLivingEntity() instanceof Pig) {
-                return new ItemTag(((Pig) object.getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR);
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && object.getLivingEntity() instanceof Steerable) {
+            else if (object.getLivingEntity() instanceof Steerable) {
                 return new ItemTag(((Steerable) object.getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR);
             }
             return null;
@@ -1436,10 +1433,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (object.getLivingEntity() instanceof AbstractHorse) {
                 return new ElementTag(((AbstractHorse) object.getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE);
             }
-            else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_15) && object.getLivingEntity() instanceof Pig) {
-                return new ElementTag(((Pig) object.getLivingEntity()).hasSaddle());
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && object.getLivingEntity() instanceof Steerable) {
+            else if (object.getLivingEntity() instanceof Steerable) {
                 return new ElementTag(((Steerable) object.getLivingEntity()).hasSaddle());
             }
             return null;

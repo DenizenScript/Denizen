@@ -423,7 +423,7 @@ public class Denizen extends JavaPlugin {
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();
-                if (!MapTagBasedFlagTracker.skipAllCleanings && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
+                if (!MapTagBasedFlagTracker.skipAllCleanings) {
                     BukkitWorldScriptHelper.cleanAllWorldChunkFlags();
                 }
                 Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);
@@ -596,9 +596,7 @@ public class Denizen extends JavaPlugin {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
                 return new VoidGenerator1_17();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-                return new VoidGenerator();
-            }
+            return new VoidGenerator();
         }
         return null;
     }

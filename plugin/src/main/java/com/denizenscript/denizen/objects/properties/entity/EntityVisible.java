@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -19,7 +17,7 @@ public class EntityVisible implements Property {
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 (((EntityTag) entity).getBukkitEntity() instanceof ArmorStand
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && ((EntityTag) entity).getBukkitEntity() instanceof ItemFrame));
+                || ((EntityTag) entity).getBukkitEntity() instanceof ItemFrame);
     }
 
     public static EntityVisible getFrom(ObjectTag entity) {

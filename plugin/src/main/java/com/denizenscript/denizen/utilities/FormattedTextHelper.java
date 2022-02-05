@@ -482,31 +482,8 @@ public class FormattedTextHelper {
                             }
                             TextComponent hoverableText = new TextComponent();
                             HoverEvent.Action action = HoverEvent.Action.valueOf(innardBase.get(1).toUpperCase());
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-                                if (HoverFormatHelper.processHoverInput(action, hoverableText, innardParts.get(0))) {
-                                    continue;
-                                }
-                            }
-                            else {
-                                BaseComponent[] hoverValue;
-                                if (action == HoverEvent.Action.SHOW_ITEM) {
-                                    ItemTag item = ItemTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.noDebugContext);
-                                    if (item == null) {
-                                        continue;
-                                    }
-                                    hoverValue = new BaseComponent[] {new TextComponent(NMSHandler.getItemHelper().getRawHoverText(item.getItemStack()))};
-                                }
-                                else if (action == HoverEvent.Action.SHOW_ENTITY) {
-                                    EntityTag entity = EntityTag.valueOf(unescape(innardParts.get(0)), CoreUtilities.basicContext);
-                                    if (entity == null) {
-                                        continue;
-                                    }
-                                    hoverValue = new BaseComponent[] {new TextComponent(NMSHandler.getEntityHelper().getRawHoverText(entity.getBukkitEntity()))};
-                                }
-                                else {
-                                    hoverValue = parse(unescape(innardParts.get(0)), baseColor, false);
-                                }
-                                hoverableText.setHoverEvent(new HoverEvent(action, hoverValue));
+                            if (HoverFormatHelper.processHoverInput(action, hoverableText, innardParts.get(0))) {
+                                continue;
                             }
                             for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
                                 hoverableText.addExtra(subComponent);

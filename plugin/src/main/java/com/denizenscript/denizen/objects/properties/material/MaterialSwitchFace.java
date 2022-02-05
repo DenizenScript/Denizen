@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -11,16 +9,13 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.FaceAttachable;
-import org.bukkit.block.data.type.Switch;
 
 public class MaterialSwitchFace implements Property {
 
     public static boolean describes(ObjectTag material) {
-        // TODO: After 1.14 is dropped, remove Switch entirely
         return material instanceof MaterialTag
                 && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData() instanceof Switch
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_15) && ((MaterialTag) material).getModernData() instanceof FaceAttachable));
+                && ((MaterialTag) material).getModernData() instanceof FaceAttachable;
     }
 
     public static MaterialSwitchFace getFrom(ObjectTag _material) {
@@ -54,21 +49,8 @@ public class MaterialSwitchFace implements Property {
         // Output is "CEILING", "FLOOR", or "WALL".
         // -->
         PropertyParser.<MaterialSwitchFace, ElementTag>registerStaticTag(ElementTag.class, "switch_face", (attribute, material) -> {
-            if (material.isSwitch()) {
-                return new ElementTag(material.getSwitch().getFace().name());
-            }
-            else {
-                return new ElementTag(material.getFaceAttachable().getAttachedFace().name());
-            }
+            return new ElementTag(material.getFaceAttachable().getAttachedFace().name());
         });
-    }
-
-    public boolean isSwitch() {
-        return material.getModernData() instanceof Switch;
-    }
-
-    public Switch getSwitch() {
-        return (Switch) material.getModernData();
     }
 
     public FaceAttachable getFaceAttachable() {
@@ -77,40 +59,21 @@ public class MaterialSwitchFace implements Property {
 
     @Override
     public String getPropertyString() {
-        if (isSwitch()) {
-            return getSwitch().getFace().name();
-        }
-        else {
-            return getFaceAttachable().getAttachedFace().name();
-        }
+        return getFaceAttachable().getAttachedFace().name();
     }
 
     public BlockFace getAttachedTo() {
-        if (isSwitch()) {
-            switch (getSwitch().getFace()) {
-                case WALL:
-                    return getSwitch().getFacing().getOppositeFace();
-                case FLOOR:
-                    return BlockFace.DOWN;
-                case CEILING:
-                    return BlockFace.UP;
-                default:
-                    return BlockFace.SELF;
-            }
-        }
-        else {
-            switch (getFaceAttachable().getAttachedFace()) {
-                case WALL:
-                    if (material.getModernData() instanceof Directional) {
-                        return ((Directional) material.getModernData()).getFacing().getOppositeFace();
-                    }
-                case FLOOR:
-                    return BlockFace.DOWN;
-                case CEILING:
-                    return BlockFace.UP;
-                default:
-                    return BlockFace.SELF;
-            }
+        switch (getFaceAttachable().getAttachedFace()) {
+            case WALL:
+                if (material.getModernData() instanceof Directional) {
+                    return ((Directional) material.getModernData()).getFacing().getOppositeFace();
+                }
+            case FLOOR:
+                return BlockFace.DOWN;
+            case CEILING:
+                return BlockFace.UP;
+            default:
+                return BlockFace.SELF;
         }
     }
 
@@ -131,13 +94,8 @@ public class MaterialSwitchFace implements Property {
         // @tags
         // <MaterialTag.switch_face>
         // -->
-        if (mechanism.matches("switch_face") && mechanism.requireEnum(false, Switch.Face.values())) {
-            if (isSwitch()) {
-                getSwitch().setFace(Switch.Face.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else {
-                getFaceAttachable().setAttachedFace(FaceAttachable.AttachedFace.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
+        if (mechanism.matches("switch_face") && mechanism.requireEnum(false, FaceAttachable.AttachedFace.values())) {
+            getFaceAttachable().setAttachedFace(FaceAttachable.AttachedFace.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }

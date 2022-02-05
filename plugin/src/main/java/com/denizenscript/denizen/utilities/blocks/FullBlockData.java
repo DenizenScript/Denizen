@@ -160,7 +160,7 @@ public class FullBlockData {
             newData.setFace(BlockFace.SOUTH, ((RedstoneWire) data).getFace(BlockFace.WEST));
             return new FullBlockData(newData, tileEntityData, flags);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof Wall) {
+        else if (data instanceof Wall) {
             Wall newData = (Wall) data.clone();
             newData.setHeight(BlockFace.NORTH, ((Wall) data).getHeight(BlockFace.EAST));
             newData.setHeight(BlockFace.WEST, ((Wall) data).getHeight(BlockFace.NORTH));

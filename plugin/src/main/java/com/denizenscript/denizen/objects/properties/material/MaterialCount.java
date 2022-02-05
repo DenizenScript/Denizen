@@ -27,7 +27,7 @@ public class MaterialCount implements Property {
         BlockData data = mat.getModernData();
         return data instanceof SeaPickle
                 || data instanceof TurtleEgg
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && data instanceof RespawnAnchor)
+                || data instanceof RespawnAnchor
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof Candle);
     }
 
@@ -98,7 +98,7 @@ public class MaterialCount implements Property {
     }
 
     public boolean isRespawnAnchor() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16) && material.getModernData() instanceof RespawnAnchor;
+        return material.getModernData() instanceof RespawnAnchor;
     }
 
     public boolean isCandle() {

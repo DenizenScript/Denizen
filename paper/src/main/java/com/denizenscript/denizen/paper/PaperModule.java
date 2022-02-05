@@ -55,10 +55,8 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityArmsRaised.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCarryingEgg.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_16)) {
-            PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
-            PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
         // Paper extension properties
