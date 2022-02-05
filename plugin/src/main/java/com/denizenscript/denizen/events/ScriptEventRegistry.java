@@ -249,6 +249,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PotionSplashScriptEvent.class);
         ScriptEvent.registerScriptEvent(SpawnChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(StructureGrowsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ThunderChangesScriptEvent.class);
         ScriptEvent.registerScriptEvent(TimeChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(WeatherChangesScriptEvent.class);
         ScriptEvent.registerScriptEvent(WorldInitsScriptEvent.class);
