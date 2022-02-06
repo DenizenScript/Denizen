@@ -52,6 +52,7 @@ public class ItemScriptHelper implements Listener {
 
     public static void removeDenizenRecipes() {
         smithingRetain.clear();
+        recipeCache.clear();
         recipeIdToItemScript.clear();
         NMSHandler.getItemHelper().clearDenizenRecipes();
     }
@@ -488,12 +489,20 @@ public class ItemScriptHelper implements Listener {
         return DenyCraftReason.ALLOWED;
     }
 
+    public static HashMap<Material, Collection<Recipe>> recipeCache = new HashMap<>();
+
+    public static Collection<Recipe> getRecipesFor(Material item) {
+        return recipeCache.computeIfAbsent(item, (i) -> {
+            return Bukkit.getRecipesFor(new ItemStack(i));
+        });
+    }
+
     public static boolean hasAlternateValidRecipe(Recipe recipe, ItemStack[] items) {
         // Workaround for Spigot bug with the wrong recipe ID getting grabbed
         if (recipe instanceof ShapedRecipe) {
             ItemStack result = recipe.getResult();
             if (isItemscript(result)) {
-                for (Recipe altRecipe : Bukkit.getRecipesFor(result)) {
+                for (Recipe altRecipe : getRecipesFor(result.getType())) {
                     if (altRecipe instanceof ShapedRecipe) {
                         if (shouldDenyCraft(items, altRecipe) == DenyCraftReason.ALLOWED) {
                             return true;
@@ -533,7 +542,7 @@ public class ItemScriptHelper implements Listener {
             return;
         }
         ItemStack[] stacks = new ItemStack[] { event.getSource() };
-        for (Recipe recipe : Bukkit.getRecipesFor(event.getResult())) {
+        for (Recipe recipe : getRecipesFor(event.getResult().getType())) {
             if (recipe instanceof CookingRecipe && shouldDenyCraft(stacks, recipe) == DenyCraftReason.ALLOWED) {
                 return;
             }

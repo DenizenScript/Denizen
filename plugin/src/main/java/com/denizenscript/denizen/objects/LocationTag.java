@@ -3295,6 +3295,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.vector_length>
         // @returns ElementTag(Decimal)
+        // @synonyms LocationTag.magnitude
         // @group math
         // @description
         // Returns the 3D length of the vector/location.

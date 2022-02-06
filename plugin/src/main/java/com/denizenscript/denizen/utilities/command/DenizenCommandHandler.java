@@ -269,8 +269,8 @@ public class DenizenCommandHandler {
      */
     @Command(
             aliases = {"denizen"}, usage = "save",
-            desc = "Saves the current state of Denizen/saves.yml.", modifiers = {"save"},
-            min = 1, max = 3, permission = "denizen.basic", flags = "s")
+            desc = "Saves the current Denizen save data to file as needed.", modifiers = {"save"},
+            min = 1, max = 3, permission = "denizen.basic")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
         DenizenCore.saveAll();
         Denizen.getInstance().saveSaves(true);
