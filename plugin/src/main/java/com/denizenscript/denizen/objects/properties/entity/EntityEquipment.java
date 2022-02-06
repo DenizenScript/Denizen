@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -158,33 +159,56 @@ public class EntityEquipment implements Property {
         // @description
         // Sets the entity's worn equipment.
         // Input keys are boots, leggings, chestplate, and helmet.
-        // Also accepts as ListTag as input, in order boots|leggings|chestplate|helmet
         // @tags
         // <EntityTag.equipment>
         // <EntityTag.equipment_map>
         // -->
-        if (mechanism.matches("equipment")) {
+        if (mechanism.matches("equipment") && mechanism.hasValue()) {
             org.bukkit.inventory.EntityEquipment equip = entity.getLivingEntity().getEquipment();
-            if (mechanism.getValue().asString().startsWith("map@")) {
+            if (mechanism.value.canBeType(MapTag.class)) {
                 MapTag map = mechanism.valueAsType(MapTag.class);
                 ObjectTag boots = map.getObject("boots");
                 if (boots != null) {
-                    equip.setBoots(boots.asType(ItemTag.class, mechanism.context).getItemStack());
+                    ItemStack bootsItem = boots.asType(ItemTag.class, mechanism.context).getItemStack();
+                    if (entity.isCitizensNPC()) {
+                        entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.BOOTS, bootsItem);
+                    }
+                    else {
+                        equip.setBoots(bootsItem);
+                    }
                 }
                 ObjectTag leggings = map.getObject("leggings");
                 if (leggings != null) {
-                    equip.setLeggings(leggings.asType(ItemTag.class, mechanism.context).getItemStack());
+                    ItemStack leggingsItem = leggings.asType(ItemTag.class, mechanism.context).getItemStack();
+                    if (entity.isCitizensNPC()) {
+                        entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.LEGGINGS, leggingsItem);
+                    }
+                    else {
+                        equip.setLeggings(leggingsItem);
+                    }
                 }
                 ObjectTag chestplate = map.getObject("chestplate");
                 if (chestplate != null) {
-                    equip.setChestplate(chestplate.asType(ItemTag.class, mechanism.context).getItemStack());
+                    ItemStack chestplateItem = chestplate.asType(ItemTag.class, mechanism.context).getItemStack();
+                    if (entity.isCitizensNPC()) {
+                        entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.CHESTPLATE, chestplateItem);
+                    }
+                    else {
+                        equip.setChestplate(chestplateItem);
+                    }
                 }
                 ObjectTag helmet = map.getObject("helmet");
                 if (helmet != null) {
-                    equip.setHelmet(helmet.asType(ItemTag.class, mechanism.context).getItemStack());
+                    ItemStack helmetItem = helmet.asType(ItemTag.class, mechanism.context).getItemStack();
+                    if (entity.isCitizensNPC()) {
+                        entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.HELMET, helmetItem);
+                    }
+                    else {
+                        equip.setHelmet(helmetItem);
+                    }
                 }
             }
-            else {
+            else { // Soft-deprecate: no warn, but long term back-support
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 ItemStack[] stacks = new ItemStack[list.size()];
                 for (int i = 0; i < list.size(); i++) {
