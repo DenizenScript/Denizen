@@ -19,7 +19,9 @@ public class EntityArrowDamage implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityArrowDamage((EntityTag) entity);
+        else {
+            return new EntityArrowDamage((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = {

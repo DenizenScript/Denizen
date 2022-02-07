@@ -19,7 +19,9 @@ public class EntityBasePlate implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityBasePlate((EntityTag) entity);
+        else {
+            return new EntityBasePlate((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = new String[] {
@@ -38,10 +40,7 @@ public class EntityBasePlate implements Property {
 
     @Override
     public String getPropertyString() {
-        if (getStand().hasBasePlate()) {
-            return null;
-        }
-        return "false";
+        return getStand().hasBasePlate() ? null : "false";
     }
 
     @Override

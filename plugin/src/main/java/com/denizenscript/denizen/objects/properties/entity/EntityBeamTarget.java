@@ -20,7 +20,9 @@ public class EntityBeamTarget implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityBeamTarget((EntityTag) entity);
+        else {
+            return new EntityBeamTarget((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = new String[] {
@@ -36,10 +38,7 @@ public class EntityBeamTarget implements Property {
     @Override
     public String getPropertyString() {
         Location beamTarget = getCrystal().getBeamTarget();
-        if (beamTarget != null) {
-            return new LocationTag(beamTarget).identify();
-        }
-        return null;
+        return beamTarget != null ? new LocationTag(beamTarget).identify() : null;
     }
 
     @Override

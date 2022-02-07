@@ -25,7 +25,9 @@ public class EntityAttributeBaseValues implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityAttributeBaseValues((EntityTag) entity);
+        else {
+            return new EntityAttributeBaseValues((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = new String[] {
@@ -57,10 +59,7 @@ public class EntityAttributeBaseValues implements Property {
     @Override
     public String getPropertyString() {
         MapTag map = attributeBaseValues();
-        if (map.map.isEmpty()) {
-            return null;
-        }
-        return map.savable();
+        return map.map.isEmpty() ? null : map.savable();
     }
 
     @Override

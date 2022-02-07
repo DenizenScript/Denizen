@@ -20,7 +20,9 @@ public class EntityArmorBonus implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityArmorBonus((EntityTag) entity);
+        else {
+            return new EntityArmorBonus((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = new String[] {
@@ -35,19 +37,13 @@ public class EntityArmorBonus implements Property {
 
     @Override
     public String getPropertyString() {
-        if (getAttribute().getValue() > 0.0) {
-            return getArmorBonus().asString();
-        }
-        return null;
+        double value = getAttribute().getValue();
+        return value > 0 ? String.valueOf(value) : null;
     }
 
     @Override
     public String getPropertyId() {
         return "armor_bonus";
-    }
-
-    public ElementTag getArmorBonus() {
-        return new ElementTag(getAttribute().getValue());
     }
 
     public AttributeInstance getAttribute() {
@@ -65,7 +61,7 @@ public class EntityArmorBonus implements Property {
         // Returns the entity's base armor bonus.
         // -->
         PropertyParser.<EntityArmorBonus, ElementTag>registerTag(ElementTag.class, "armor_bonus", (attribute, object) -> {
-            return object.getArmorBonus();
+            return new ElementTag(object.getAttribute().getValue());
         });
     }
 

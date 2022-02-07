@@ -19,7 +19,9 @@ public class EntityBodyArrows implements Property {
         if (!describes(object)) {
             return null;
         }
-        return new EntityBodyArrows((EntityTag) object);
+        else {
+            return new EntityBodyArrows((EntityTag) object);
+        }
     }
 
     public static final String[] handledMechs = new String[] {

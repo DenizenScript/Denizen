@@ -37,10 +37,7 @@ public class EntityArms implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!getStand().hasArms()) {
-            return null;
-        }
-        return "true";
+        return getStand().hasArms() ? "true" : null;
     }
 
     @Override

@@ -20,7 +20,9 @@ public class EntityBoatType implements Property {
         if (!describes(object)) {
             return null;
         }
-        return new EntityBoatType((EntityTag) object);
+        else {
+            return new EntityBoatType((EntityTag) object);
+        }
     }
 
     public static final String[] handledMechs = new String[] {

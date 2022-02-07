@@ -25,7 +25,9 @@ public class EntityBoundingBox implements Property {
         if (!describes(object)) {
             return null;
         }
-        return new EntityBoundingBox((EntityTag) object);
+        else {
+            return new EntityBoundingBox((EntityTag) object);
+        }
     }
 
     public static final String[] handledMechs = new String[] {

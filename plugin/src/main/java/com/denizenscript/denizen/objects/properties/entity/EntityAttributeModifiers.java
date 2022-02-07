@@ -35,7 +35,9 @@ public class EntityAttributeModifiers implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityAttributeModifiers((EntityTag) entity);
+        else {
+            return new EntityAttributeModifiers((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = new String[] {
@@ -154,10 +156,7 @@ public class EntityAttributeModifiers implements Property {
     @Override
     public String getPropertyString() {
         MapTag map = getAttributeModifiers();
-        if (map.map.isEmpty()) {
-            return null;
-        }
-        return map.savable();
+        return map.map.isEmpty() ? null : map.savable();
     }
 
     @Override
