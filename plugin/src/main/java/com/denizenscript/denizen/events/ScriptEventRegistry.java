@@ -48,6 +48,7 @@ public class ScriptEventRegistry {
         // Block events
         ScriptEvent.registerScriptEvent(BlockBuiltScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDestroyedByExplosionEvent.class);
         ScriptEvent.registerScriptEvent(BlockDispensesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockExplodesScriptEvent.class);
@@ -62,7 +63,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
