@@ -4,15 +4,17 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.event.block.BlockCookEvent;
 
-public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements Listener {
+public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // furnace smelts <item> (into <item>)
+    // <block> smelts <item> (into <item>)
+    // <block> cooks <item> (into <item>)
     //
     // @Cancellable true
     //
@@ -20,41 +22,43 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     //
     // @Location true
     //
-    // @Triggers when a furnace smelts an item.
+    // @Triggers when an item is smelted/cooked by a block.
     //
     // @Context
-    // <context.location> returns the LocationTag of the furnace.
-    // <context.source_item> returns the ItemTag that is being smelted.
-    // <context.result_item> returns the ItemTag that is the result of the smelting.
+    // <context.location> returns the LocationTag of the block smelting/cooking.
+    // <context.source_item> returns the ItemTag that is being smelted/cooked.
+    // <context.result_item> returns the ItemTag that is the result of the smelting/cooking.
     //
     // @Determine
-    // ItemTag to set the item that is the result of the smelting.
+    // ItemTag to set the item that is the result of the smelting/cooking.
     //
     // -->
 
-    public FurnaceSmeltsItemScriptEvent() {
+    public BlockCooksSmeltsItemScriptEvent() {
         instance = this;
-        registerCouldMatcher("furnace smelts <item> (into <item>)");
+        registerCouldMatcher("<block> cooks|smelts <item> (into <item>)");
     }
 
-    public static FurnaceSmeltsItemScriptEvent instance;
+    public static BlockCooksSmeltsItemScriptEvent instance;
     public ItemTag source_item;
     public ItemTag result_item;
-    public LocationTag location;
-    public FurnaceSmeltEvent event;
+    public Block block;
+    public BlockCookEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!tryMaterial(block.getType(), path.eventArgLowerAt(0))) {
+            return false;
+        }
         if (!tryItem(source_item, path.eventArgLowerAt(2))) {
             return false;
         }
-
         if (path.eventArgLowerAt(3).equals("into")) {
             if (!tryItem(result_item, path.eventArgLowerAt(4))) {
                 return false;
             }
         }
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, block.getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -62,7 +66,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public String getName() {
-        return "FurnaceSmelts";
+        return "BlockCooksSmelts";
     }
 
     @Override
@@ -78,7 +82,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location": return location;
+            case "location": return new LocationTag(block.getLocation());
             case "source_item": return source_item;
             case "result_item": return result_item;
         }
@@ -86,8 +90,8 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     @EventHandler
-    public void onFurnaceSmelts(FurnaceSmeltEvent event) {
-        location = new LocationTag(event.getBlock().getLocation());
+    public void onBlockCooks(BlockCookEvent event) {
+        block = event.getBlock();
         source_item = new ItemTag(event.getSource());
         result_item = new ItemTag(event.getResult());
         this.event = event;
