@@ -10,7 +10,6 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.server.v1_16_R3.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -601,23 +600,6 @@ public class EntityHelperImpl extends EntityHelper {
         Vector low = boundingBox.getLow();
         Vector high = boundingBox.getHigh();
         ((CraftEntity) entity).getHandle().a(new AxisAlignedBB(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ()));
-    }
-
-    @Override
-    public boolean isChestedHorse(Entity horse) {
-        return horse instanceof ChestedHorse;
-    }
-
-    @Override
-    public boolean isCarryingChest(Entity horse) {
-        return horse instanceof ChestedHorse && ((ChestedHorse) horse).isCarryingChest();
-    }
-
-    @Override
-    public void setCarryingChest(Entity horse, boolean carrying) {
-        if (horse instanceof ChestedHorse) {
-            ((ChestedHorse) horse).setCarryingChest(carrying);
-        }
     }
 
     @Override

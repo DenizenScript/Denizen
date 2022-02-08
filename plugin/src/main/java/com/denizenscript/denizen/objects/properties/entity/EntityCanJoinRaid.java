@@ -36,7 +36,7 @@ public class EntityCanJoinRaid implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getRaider().isCanJoinRaid());
+        return getRaider().isCanJoinRaid() ? "true" : "false";
     }
 
     @Override
