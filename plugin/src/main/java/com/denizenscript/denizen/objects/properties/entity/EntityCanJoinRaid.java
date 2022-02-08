@@ -11,7 +11,8 @@ import org.bukkit.entity.Raider;
 public class EntityCanJoinRaid implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Raider;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Raider;
     }
 
     public static EntityCanJoinRaid getFrom(ObjectTag entity) {
@@ -35,12 +36,16 @@ public class EntityCanJoinRaid implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Raider) entity.getBukkitEntity()).isCanJoinRaid() ? "true" : "false";
+        return String.valueOf(getRaider().isCanJoinRaid());
     }
 
     @Override
     public String getPropertyId() {
         return "can_join_raid";
+    }
+    
+    public Raider getRaider() {
+        return (Raider) entity.getBukkitEntity();
     }
 
     public static void registerTags() {
@@ -54,7 +59,7 @@ public class EntityCanJoinRaid implements Property {
         // If the entity is raider mob (like a pillager), returns whether the entity is allowed to join active raids.
         // -->
         PropertyParser.<EntityCanJoinRaid, ElementTag>registerTag(ElementTag.class, "can_join_raid", (attribute, object) -> {
-            return new ElementTag(((Raider) object.entity.getBukkitEntity()).isCanJoinRaid());
+            return new ElementTag(object.getRaider().isCanJoinRaid());
         });
     }
 
@@ -71,7 +76,7 @@ public class EntityCanJoinRaid implements Property {
         // <EntityTag.can_join_raid>
         // -->
         if (mechanism.matches("can_join_raid") && mechanism.requireBoolean()) {
-            ((Raider) entity.getBukkitEntity()).setCanJoinRaid(mechanism.getValue().asBoolean());
+            getRaider().setCanJoinRaid(mechanism.getValue().asBoolean());
         }
     }
 }
