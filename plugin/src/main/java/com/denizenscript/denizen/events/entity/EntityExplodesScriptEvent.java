@@ -88,7 +88,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
             event.setYield(Float.parseFloat(determination));
             return true;
         }
-        if (determination.contains(",")) { // Loose "contains any location-like value" check
+        if (determination.contains(",") || determination.startsWith("li@")) { // Loose "contains any location-like value" check
             event.blockList().clear();
             for (String loc : ListTag.valueOf(determination, getTagContext(path))) {
                 LocationTag location = LocationTag.valueOf(loc, getTagContext(path));
