@@ -8,18 +8,17 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 public class EntityEquipment implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
-                && ((EntityTag) entity).getBukkitEntity() instanceof LivingEntity;
+                && ((EntityTag) entity).isLivingEntity();
     }
 
     public static EntityEquipment getFrom(ObjectTag entity) {
@@ -30,10 +29,6 @@ public class EntityEquipment implements Property {
             return new EntityEquipment((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "equipment", "equipment_map"
-    };
 
     public static final String[] handledMechs = new String[] {
             "equipment"
@@ -55,63 +50,7 @@ public class EntityEquipment implements Property {
         return "equipment";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
-        if (attribute.startsWith("equipment.boots")) {
-            Deprecations.entityEquipmentSubtags.warn(attribute.context);
-            if (entity.getLivingEntity().getEquipment().getBoots() != null) {
-                return new ItemTag(entity.getLivingEntity().getEquipment().getBoots())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-            else {
-                return new ItemTag(Material.AIR)
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        }
-
-        else if (attribute.startsWith("equipment.chestplate") ||
-                attribute.startsWith("equipment.chest")) {
-            Deprecations.entityEquipmentSubtags.warn(attribute.context);
-            if (entity.getLivingEntity().getEquipment().getChestplate() != null) {
-                return new ItemTag(entity.getLivingEntity().getEquipment().getChestplate())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-            else {
-                return new ItemTag(Material.AIR)
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        }
-
-        else if (attribute.startsWith("equipment.helmet") ||
-                attribute.startsWith("equipment.head")) {
-            Deprecations.entityEquipmentSubtags.warn(attribute.context);
-            if (entity.getLivingEntity().getEquipment().getHelmet() != null) {
-                return new ItemTag(entity.getLivingEntity().getEquipment().getHelmet())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-            else {
-                return new ItemTag(Material.AIR)
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        }
-
-        else if (attribute.startsWith("equipment.leggings") ||
-                attribute.startsWith("equipment.legs")) {
-            Deprecations.entityEquipmentSubtags.warn(attribute.context);
-            if (entity.getLivingEntity().getEquipment().getLeggings() != null) {
-                return new ItemTag(entity.getLivingEntity().getEquipment().getLeggings())
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-            else {
-                return new ItemTag(Material.AIR)
-                        .getObjectAttribute(attribute.fulfill(2));
-            }
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.equipment>
@@ -122,9 +61,34 @@ public class EntityEquipment implements Property {
         // Returns a ListTag containing the entity's equipment.
         // Output list is boots|leggings|chestplate|helmet
         // -->
-        else if (attribute.startsWith("equipment")) {
-            return entity.getEquipment().getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityEquipment, ObjectTag>registerTag(ObjectTag.class, "equipment", (attribute, object) -> {
+            org.bukkit.inventory.EntityEquipment equipment = object.entity.getLivingEntity().getEquipment();
+            if (attribute.startsWith("equipment.boots")) {
+                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                attribute.fulfill(1);
+                ItemStack boots = equipment.getBoots();
+                return new ItemTag(boots != null ? boots : new ItemStack(Material.AIR));
+            }
+            else if (attribute.startsWith("equipment.chestplate") || attribute.startsWith("equipment.chest")) {
+                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                attribute.fulfill(1);
+                ItemStack chestplate = equipment.getChestplate();
+                return new ItemTag(chestplate != null ? chestplate : new ItemStack(Material.AIR));
+            }
+            else if (attribute.startsWith("equipment.helmet") || attribute.startsWith("equipment.head")) {
+                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                attribute.fulfill(1);
+                ItemStack helmet = equipment.getHelmet();
+                return new ItemTag(helmet != null ? helmet : new ItemStack(Material.AIR));
+            }
+            else if (attribute.startsWith("equipment.leggings") || attribute.startsWith("equipment.legs")) {
+                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                attribute.fulfill(1);
+                ItemStack leggings = equipment.getLeggings();
+                return new ItemTag(leggings != null ? leggings : new ItemStack(Material.AIR));
+            }
+            return object.entity.getEquipment();
+        });
 
         // <--[tag]
         // @attribute <EntityTag.equipment_map>
@@ -136,17 +100,15 @@ public class EntityEquipment implements Property {
         // Output keys are boots, leggings, chestplate, helmet.
         // Air items will be left out of the map.
         // -->
-        else if (attribute.startsWith("equipment_map")) {
+        PropertyParser.<EntityEquipment, MapTag>registerTag(MapTag.class, "equipment_map", (attribute, object) -> {
             MapTag output = new MapTag();
-            org.bukkit.inventory.EntityEquipment equip = entity.getLivingEntity().getEquipment();
+            org.bukkit.inventory.EntityEquipment equip = object.entity.getLivingEntity().getEquipment();
             InventoryTag.addToMapIfNonAir(output, "boots", equip.getBoots());
             InventoryTag.addToMapIfNonAir(output, "leggings", equip.getLeggings());
             InventoryTag.addToMapIfNonAir(output, "chestplate", equip.getChestplate());
             InventoryTag.addToMapIfNonAir(output, "helmet", equip.getHelmet());
-            return output.getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+            return output;
+        });
     }
 
     @Override

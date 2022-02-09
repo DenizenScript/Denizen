@@ -5,14 +5,14 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 
 public class EntityBasePlate implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof ArmorStand;
     }
 
     public static EntityBasePlate getFrom(ObjectTag entity) {
@@ -24,10 +24,6 @@ public class EntityBasePlate implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "base_plate"
-    };
-
     public static final String[] handledMechs = new String[] {
             "base_plate"
     };
@@ -38,14 +34,13 @@ public class EntityBasePlate implements Property {
 
     EntityTag dentity;
 
+    public ArmorStand getStand() {
+        return (ArmorStand) dentity.getBukkitEntity();
+    }
+
     @Override
     public String getPropertyString() {
-        if (((ArmorStand) dentity.getBukkitEntity()).hasBasePlate()) {
-            return null;
-        }
-        else {
-            return "false";
-        }
+        return getStand().hasBasePlate() ? null : "false";
     }
 
     @Override
@@ -53,12 +48,7 @@ public class EntityBasePlate implements Property {
         return "base_plate";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.base_plate>
@@ -68,12 +58,9 @@ public class EntityBasePlate implements Property {
         // @description
         // If the entity is an armor stand, returns whether the armor stand has a base plate.
         // -->
-        if (attribute.startsWith("base_plate")) {
-            return new ElementTag(((ArmorStand) dentity.getBukkitEntity()).hasBasePlate())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityBasePlate, ElementTag>registerTag(ElementTag.class, "base_plate", (attribute, object) -> {
+            return new ElementTag(object.getStand().hasBasePlate());
+        });
     }
 
     @Override
@@ -89,7 +76,7 @@ public class EntityBasePlate implements Property {
         // <EntityTag.base_plate>
         // -->
         if (mechanism.matches("base_plate") && mechanism.requireBoolean()) {
-            ((ArmorStand) dentity.getBukkitEntity()).setBasePlate(mechanism.getValue().asBoolean());
+            getStand().setBasePlate(mechanism.getValue().asBoolean());
         }
     }
 }

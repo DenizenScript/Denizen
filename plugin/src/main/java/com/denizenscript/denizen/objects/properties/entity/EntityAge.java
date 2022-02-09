@@ -1,27 +1,22 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
-import net.citizensnpcs.api.npc.NPC;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import net.citizensnpcs.trait.Age;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Breedable;
-import org.bukkit.entity.Zombie;
 
 public class EntityAge implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof EntityTag)) {
-            return false;
-        }
-        // Check if entity is Ageable, or a Zombie
-        return (((EntityTag) entity).getBukkitEntity() instanceof Ageable)
-                || (((EntityTag) entity).getBukkitEntity() instanceof Zombie);
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Ageable;
     }
 
     public static EntityAge getFrom(ObjectTag entity) {
@@ -33,10 +28,6 @@ public class EntityAge implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "age", "is_age_locked", "is_baby"
-    };
-
     public static final String[] handledMechs = new String[] {
             "age_lock", "age"
     };
@@ -47,71 +38,40 @@ public class EntityAge implements Property {
 
     EntityTag ageable;
 
-    public boolean isBaby() {
-        return !((Ageable) ageable.getBukkitEntity()).isAdult();
-    }
-
-    public void setBaby(boolean bool) {
-        if (ageable.isCitizensNPC()) {
-            NPC ageable_npc = ageable.getDenizenNPC().getCitizen();
-            if (!ageable_npc.hasTrait(Age.class)) {
-                ageable_npc.addTrait(Age.class);
-            }
-            ageable_npc.getOrAddTrait(Age.class).setAge(bool ? -24000 : 0);
-        }
-        else {
-            if (bool) {
-                ((Ageable) ageable.getBukkitEntity()).setBaby();
-            }
-            else {
-                ((Ageable) ageable.getBukkitEntity()).setAdult();
-            }
-        }
-    }
-
     public void setAge(int val) {
         if (ageable.isCitizensNPC()) {
-            NPC ageable_npc = ageable.getDenizenNPC().getCitizen();
-            ageable_npc.getOrAddTrait(Age.class).setAge(val);
+            ageable.getDenizenNPC().getCitizen().getOrAddTrait(Age.class).setAge(val);
         }
         else {
-            if (ageable.getBukkitEntity() instanceof Zombie) {
-                setBaby(val < 0);
-            }
-            else {
-                ((Ageable) ageable.getBukkitEntity()).setAge(val);
-            }
-        }
-    }
-
-    public int getAge() {
-        if (ageable.getBukkitEntity() instanceof Zombie) {
-            return ((Zombie) ageable.getBukkitEntity()).isAdult() ? 0 : -24000;
-        }
-        else {
-            return ((Ageable) ageable.getBukkitEntity()).getAge();
+            getAgeable().setAge(val);
         }
     }
 
     public void setLock(boolean bool) {
-        if (ageable.getBukkitEntity() instanceof Breedable) {
-            ((Breedable) ageable.getBukkitEntity()).setAgeLock(bool);
+        if (isBreedable()) {
+            getBreedable().setAgeLock(bool);
         }
     }
 
     public boolean getLock() {
-        if (ageable.getBukkitEntity() instanceof Breedable) {
-            return ((Breedable) ageable.getBukkitEntity()).getAgeLock();
-        }
-        return true;
+        return !isBreedable() || getBreedable().getAgeLock();
+    }
+
+    public boolean isBreedable() {
+        return ageable.getBukkitEntity() instanceof Breedable;
+    }
+
+    public Ageable getAgeable() {
+        return (Ageable) ageable.getBukkitEntity();
+    }
+
+    public Breedable getBreedable() {
+        return (Breedable) ageable.getBukkitEntity();
     }
 
     @Override
     public String getPropertyString() {
-        if (ageable.getBukkitEntity() instanceof Zombie) {
-            return ((Zombie) ageable.getBukkitEntity()).isAdult() ? "adult" : "baby";
-        }
-        return getAge() + (getLock() ? "|locked" : "");
+        return getAgeable().getAge() + (getLock() ? "|locked" : "");
     }
 
     @Override
@@ -119,12 +79,7 @@ public class EntityAge implements Property {
         return "age";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.age>
@@ -138,10 +93,9 @@ public class EntityAge implements Property {
         // A standard adult is 0.
         // An adult that just bred is 6000.
         // -->
-        if (attribute.startsWith("age")) {
-            return new ElementTag(getAge())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "age", (attribute, object) -> {
+            return new ElementTag(object.getAgeable().getAge());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_age_locked>
@@ -151,10 +105,9 @@ public class EntityAge implements Property {
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
         // -->
-        if (attribute.startsWith("is_age_locked")) {
-            return new ElementTag(getLock())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "is_age_locked", (attribute, object) -> {
+            return new ElementTag(object.getLock());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_baby>
@@ -164,12 +117,9 @@ public class EntityAge implements Property {
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
         // -->
-        if (attribute.startsWith("is_baby")) {
-            return new ElementTag(isBaby())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "is_baby", (attribute, object) -> {
+            return new ElementTag(!object.getAgeable().isAdult());
+        });
     }
 
     @Override
@@ -188,8 +138,7 @@ public class EntityAge implements Property {
         // <EntityTag.is_age_locked>
         // <EntityTag.ageable>
         // -->
-        if (mechanism.matches("age_lock")
-                && mechanism.requireBoolean()) {
+        if (mechanism.matches("age_lock") && mechanism.requireBoolean()) {
             setLock(mechanism.getValue().asBoolean());
         }
 
@@ -209,26 +158,36 @@ public class EntityAge implements Property {
         // <EntityTag.is_age_locked>
         // <EntityTag.ageable>
         // -->
-        if (mechanism.matches("age")) {
+        if (mechanism.matches("age") && mechanism.requireObject(ListTag.class)) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             if (list.isEmpty()) {
                 mechanism.echoError("Missing value for 'age' mechanism!");
                 return;
             }
-            if (list.get(0).equalsIgnoreCase("baby")) {
-                setBaby(true);
+            String input = list.get(0);
+            if (input.equalsIgnoreCase("baby")) {
+                setAge(-24000);
             }
-            else if (list.get(0).equalsIgnoreCase("adult")) {
-                setBaby(false);
+            else if (input.equalsIgnoreCase("adult")) {
+                setAge(0);
             }
-            else if (new ElementTag(list.get(0)).isInt()) {
-                setAge(new ElementTag(list.get(0)).asInt());
+            else if (ArgumentHelper.matchesInteger(input)) {
+                setAge(new ElementTag(input).asInt());
             }
-            if (list.size() > 1 && list.get(1).equalsIgnoreCase("locked")) {
-                setLock(true);
+            else {
+                mechanism.echoError("Invalid age '" + input + "': must be 'baby', 'adult', or a valid age number.");
             }
-            else if (list.size() > 1 && list.get(1).equalsIgnoreCase("unlocked")) {
-                setLock(false);
+            if (list.size() > 1) {
+                input = list.get(1);
+                if (input.equalsIgnoreCase("locked")) {
+                    setLock(true);
+                }
+                else if (input.equalsIgnoreCase("unlocked")) {
+                    setLock(false);
+                }
+                else {
+                    mechanism.echoError("Invalid lock state '" + input + "': must be 'locked' or 'unlocked'.");
+                }
             }
         }
 

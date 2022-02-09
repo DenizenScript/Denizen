@@ -11,14 +11,17 @@ import org.bukkit.entity.Mob;
 public class EntityAware implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Mob;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).isMobType();
     }
 
     public static EntityAware getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityAware((EntityTag) entity);
+        else {
+            return new EntityAware((EntityTag) entity);
+        }
     }
 
     public static final String[] handledMechs = new String[] {
@@ -33,12 +36,16 @@ public class EntityAware implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((Mob) entity.getBukkitEntity()).isAware());
+        return String.valueOf(getMob().isAware());
     }
 
     @Override
     public String getPropertyId() {
         return "is_aware";
+    }
+
+    public Mob getMob() {
+        return (Mob) entity.getBukkitEntity();
     }
 
     public static void registerTags() {
@@ -54,7 +61,7 @@ public class EntityAware implements Property {
         // Similar to <@link tag EntityTag.has_ai>, except allows the entity to be moved by gravity, being pushed or attacked, etc.
         // -->
         PropertyParser.<EntityAware, ElementTag>registerTag(ElementTag.class, "is_aware", (attribute, entity) -> {
-            return new ElementTag(((Mob) entity.entity.getBukkitEntity()).isAware());
+            return new ElementTag(entity.getMob().isAware());
         });
     }
 
@@ -73,7 +80,7 @@ public class EntityAware implements Property {
         // <EntityTag.is_aware>
         // -->
         if (mechanism.matches("is_aware") && mechanism.requireBoolean()) {
-            ((Mob) entity.getBukkitEntity()).setAware(mechanism.getValue().asBoolean());
+            getMob().setAware(mechanism.getValue().asBoolean());
         }
     }
 }

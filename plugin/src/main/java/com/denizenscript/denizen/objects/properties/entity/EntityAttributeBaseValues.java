@@ -6,9 +6,10 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 
 import java.util.Map;
@@ -16,7 +17,8 @@ import java.util.Map;
 public class EntityAttributeBaseValues implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Attributable;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Attributable;
     }
 
     public static EntityAttributeBaseValues getFrom(ObjectTag entity) {
@@ -27,10 +29,6 @@ public class EntityAttributeBaseValues implements Property {
             return new EntityAttributeBaseValues((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "has_attribute", "attribute_value", "attribute_base_value", "attribute_default_value"
-    };
 
     public static final String[] handledMechs = new String[] {
             "attribute_base_values"
@@ -44,8 +42,8 @@ public class EntityAttributeBaseValues implements Property {
 
     public MapTag attributeBaseValues() {
         MapTag result = new MapTag();
-        Attributable ent = (Attributable) entity.getBukkitEntity();
-        for (org.bukkit.attribute.Attribute attr : org.bukkit.attribute.Attribute.values()) {
+        Attributable ent = getAttributable();
+        for (Attribute attr : Attribute.values()) {
             AttributeInstance instance = ent.getAttribute(attr);
             if (instance != null) {
                 result.putObject(attr.name(), new ElementTag(instance.getBaseValue()));
@@ -54,13 +52,14 @@ public class EntityAttributeBaseValues implements Property {
         return result;
     }
 
+    public Attributable getAttributable() {
+        return (Attributable) entity.getBukkitEntity();
+    }
+
     @Override
     public String getPropertyString() {
         MapTag map = attributeBaseValues();
-        if (map.map.isEmpty()) {
-            return null;
-        }
-        return map.savable();
+        return map.map.isEmpty() ? null : map.savable();
     }
 
     @Override
@@ -68,12 +67,7 @@ public class EntityAttributeBaseValues implements Property {
         return "attribute_base_values";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.has_attribute[<attribute>]>
@@ -84,11 +78,14 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("has_attribute") && attribute.hasParam()) {
-            AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(
-                    org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase()));
-            return new ElementTag(instance != null).getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "has_attribute", (attribute, object) -> {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+                attribute.echoError("Invalid entity.has_attribute[...] input: must be a valid attribute name.");
+                return null;
+            }
+            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            return new ElementTag(object.getAttributable().getAttribute(attr) != null);
+        });
 
         // <--[tag]
         // @attribute <EntityTag.attribute_value[<attribute>]>
@@ -101,15 +98,19 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_value") && attribute.hasParam()) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase());
-            AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
-            if (instance == null) {
-                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+        PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "attribute_value", (attribute, object) -> {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+                attribute.echoError("Invalid entity.attribute_value[...] input: must be a valid attribute name.");
                 return null;
             }
-            return new ElementTag(instance.getValue()).getObjectAttribute(attribute.fulfill(1));
-        }
+            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            AttributeInstance instance = object.getAttributable().getAttribute(attr);
+            if (instance == null) {
+                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
+                return null;
+            }
+            return new ElementTag(instance.getValue());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.attribute_base_value[<attribute>]>
@@ -122,15 +123,19 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_base_value") && attribute.hasParam()) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase());
-            AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
-            if (instance == null) {
-                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+        PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "attribute_base_value", (attribute, object) -> {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+                attribute.echoError("Invalid entity.attribute_base_value[...] input: must be a valid attribute name.");
                 return null;
             }
-            return new ElementTag(instance.getBaseValue()).getObjectAttribute(attribute.fulfill(1));
-        }
+            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            AttributeInstance instance = object.getAttributable().getAttribute(attr);
+            if (instance == null) {
+                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
+                return null;
+            }
+            return new ElementTag(instance.getBaseValue());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.attribute_default_value[<attribute>]>
@@ -143,17 +148,19 @@ public class EntityAttributeBaseValues implements Property {
         // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_default_value") && attribute.hasParam()) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(attribute.getParam().toUpperCase());
-            AttributeInstance instance = ((Attributable) entity.getBukkitEntity()).getAttribute(attr);
-            if (instance == null) {
-                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+        PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "attribute_default_value", (attribute, object) -> {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+                attribute.echoError("Invalid entity.attribute_default_value[...] input: must be a valid attribute name.");
                 return null;
             }
-            return new ElementTag(instance.getDefaultValue()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            AttributeInstance instance = object.getAttributable().getAttribute(attr);
+            if (instance == null) {
+                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
+                return null;
+            }
+            return new ElementTag(instance.getDefaultValue());
+        });
     }
 
     @Override
@@ -176,15 +183,20 @@ public class EntityAttributeBaseValues implements Property {
         // -->
         if (mechanism.matches("attribute_base_values") && mechanism.requireObject(MapTag.class)) {
             MapTag input = mechanism.valueAsType(MapTag.class);
-            Attributable ent = (Attributable) entity.getBukkitEntity();
+            Attributable ent = getAttributable();
             for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
+                Attribute attr = Attribute.valueOf(subValue.getKey().str.toUpperCase());
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {
-                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntity().getType().name());
+                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
                     continue;
                 }
-                instance.setBaseValue(Double.parseDouble(subValue.getValue().toString()));
+                ElementTag value = subValue.getValue().asElement();
+                if (!value.isDouble()) {
+                    mechanism.echoError("Invalid input '" + value + "': must be a decimal number.");
+                    continue;
+                }
+                instance.setBaseValue(value.asDouble());
             }
         }
     }
