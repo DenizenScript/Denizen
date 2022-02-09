@@ -19,11 +19,11 @@ import java.util.Arrays;
 
 public class EntityColor implements Property {
 
-    public static boolean describes(ObjectTag object) {
-        if (!(object instanceof EntityTag)) {
+    public static boolean describes(ObjectTag entity) {
+        if (!(entity instanceof EntityTag)) {
             return false;
         }
-        EntityType type = ((EntityTag) object).getBukkitEntityType();
+        EntityType type = ((EntityTag) entity).getBukkitEntityType();
         return type == EntityType.SHEEP ||
                 type == EntityType.HORSE ||
                 type == EntityType.WOLF ||
