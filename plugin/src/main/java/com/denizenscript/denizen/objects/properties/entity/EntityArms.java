@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.ArmorStand;
 
-
 public class EntityArms implements Property {
 
     public static boolean describes(ObjectTag entity) {
