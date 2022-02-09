@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Pig;
+import org.bukkit.entity.Steerable;
 
 import java.util.*;
 
@@ -165,14 +165,14 @@ public class EquipCommand extends AbstractCommand {
                                 ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
                             }
                         }
-                        else if (livingEntity.getType() == EntityType.PIG) {
+                        else if (livingEntity instanceof Steerable) {
                             if (equipment.get("saddle") != null) {
                                 ItemTag saddle = equipment.get("saddle");
                                 if (saddle.getBukkitMaterial() == Material.SADDLE) {
-                                    ((Pig) livingEntity).setSaddle(true);
+                                    ((Steerable) livingEntity).setSaddle(true);
                                 }
                                 else {
-                                    ((Pig) livingEntity).setSaddle(false);
+                                    ((Steerable) livingEntity).setSaddle(false);
                                 }
                             }
                         }
@@ -190,14 +190,14 @@ public class EquipCommand extends AbstractCommand {
                             ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
                         }
                     }
-                    else if (livingEntity.getType() == EntityType.PIG) {
+                    else if (livingEntity instanceof Steerable) {
                         if (equipment.get("saddle") != null) {
                             ItemTag saddle = equipment.get("saddle");
                             if (saddle.getBukkitMaterial() == Material.SADDLE) {
-                                ((Pig) livingEntity).setSaddle(true);
+                                ((Steerable) livingEntity).setSaddle(true);
                             }
                             else {
-                                ((Pig) livingEntity).setSaddle(false);
+                                ((Steerable) livingEntity).setSaddle(false);
                             }
                         }
                     }
