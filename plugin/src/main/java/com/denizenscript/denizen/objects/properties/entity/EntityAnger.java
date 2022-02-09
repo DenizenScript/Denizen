@@ -100,7 +100,7 @@ public class EntityAnger implements Property {
         // -->
         if (mechanism.matches("anger") && mechanism.requireObject(DurationTag.class)) {
             DurationTag duration;
-            if (mechanism.getValue().isInt()) {
+            if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
                 duration = new DurationTag(mechanism.getValue().asLong());
             }
             else {

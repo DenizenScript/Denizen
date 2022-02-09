@@ -294,6 +294,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             || processMetadataChangesForPacket(packet, genericfuturelistener)
             || processEquipmentForPacket(packet, genericfuturelistener)
             || processShowFakeForPacket(packet, genericfuturelistener)) {
+            if (NMSHandler.debugPackets) {
+                doPacketOutput("DENIED PACKET " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName());
+            }
             return;
         }
         processBlockLightForPacket(packet);

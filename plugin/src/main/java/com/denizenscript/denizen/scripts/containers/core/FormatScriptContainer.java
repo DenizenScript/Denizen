@@ -30,6 +30,7 @@ public class FormatScriptContainer extends ScriptContainer {
     //     # The only key is the format. The format can use '<[text]>' as a special def to contain the message being sent.
     //     # '<[name]>' is available as a special def as well for use with the 'on player chats' event to fill the player's name properly.
     //     # Note that 'special' means special: these tags behave a little funny in certain circumstances.
+    //     # In particular, these can't be used as real tags in some cases, including for example when using a format script as a determine in the 'player chats' event.
     //     # | All format scripts MUST have this key!
     //     format: <[name]> says <[text]>
     // </code>
