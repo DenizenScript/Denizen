@@ -381,11 +381,9 @@ public class EntityColor implements Property {
             else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
+                    && MultiVersionHelper1_17.colorIsApplicable(type)) {
                 MultiVersionHelper1_17.setColor(colored.getBukkitEntity(), mechanism);
-            }
-            else { // Should never happen
-                mechanism.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
             }
         }
     }
