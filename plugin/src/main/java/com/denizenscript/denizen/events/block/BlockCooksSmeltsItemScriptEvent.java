@@ -13,8 +13,7 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
 
     // <--[event]
     // @Events
-    // <block> smelts <item> (into <item>)
-    // <block> cooks <item> (into <item>)
+    // <block> cooks|smelts <item> (into <item>)
     //
     // @Cancellable true
     //
