@@ -62,13 +62,21 @@ public class MaterialAttachedToWall implements Property {
         });
     }
 
-    public boolean isGate() { return material.getModernData() instanceof Gate; }
+    public boolean isGate() {
+        return material.getModernData() instanceof Gate;
+    }
 
-    public boolean isLantern() { return material.getModernData() instanceof Lantern; }
+    public boolean isLantern() {
+        return material.getModernData() instanceof Lantern;
+    }
 
-    public Gate getGate() { return (Gate) material.getModernData(); }
+    public Gate getGate() {
+        return (Gate) material.getModernData();
+    }
 
-    public Lantern getLantern() { return (Lantern) material.getModernData(); }
+    public Lantern getLantern() {
+        return (Lantern) material.getModernData();
+    }
 
     public boolean getAttachment() {
         if (isGate()) {
