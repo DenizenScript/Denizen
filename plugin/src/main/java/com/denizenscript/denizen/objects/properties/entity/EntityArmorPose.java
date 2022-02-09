@@ -12,7 +12,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
 
 import java.util.Iterator;
@@ -22,7 +21,7 @@ public class EntityArmorPose implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
-                && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+                && ((EntityTag) entity).getBukkitEntity() instanceof ArmorStand;
     }
 
     public static EntityArmorPose getFrom(ObjectTag entity) {
@@ -147,7 +146,7 @@ public class EntityArmorPose implements Property {
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
-            if (mechanism.getValue().asString().contains("=")) {
+            if (mechanism.value.canBeType(MapTag.class)) {
                 MapTag map = mechanism.valueAsType(MapTag.class);
                 for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
                     PosePart posePart = PosePart.fromName(entry.getKey().str);

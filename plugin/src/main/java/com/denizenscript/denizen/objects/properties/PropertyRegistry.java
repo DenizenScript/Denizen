@@ -178,6 +178,7 @@ public class PropertyRegistry {
 
         // register core MaterialTag properties
         PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
+        PropertyParser.registerProperty(MaterialAttachedToWall.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBlockType.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBrewingStand.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);

@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities.nbt;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.properties.entity.EntityDisabledSlots.Action;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;

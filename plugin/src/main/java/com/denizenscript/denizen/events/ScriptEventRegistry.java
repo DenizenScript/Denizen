@@ -13,8 +13,6 @@ import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
 import com.denizenscript.denizen.events.world.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
 
@@ -50,6 +48,7 @@ public class ScriptEventRegistry {
         // Block events
         ScriptEvent.registerScriptEvent(BlockBuiltScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDestroyedByExplosionEvent.class);
         ScriptEvent.registerScriptEvent(BlockDispensesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockExplodesScriptEvent.class);
@@ -64,7 +63,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(FurnaceSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);

@@ -44,6 +44,22 @@ public class EntityAttachmentHelper {
             }
         }
 
+        public void doServerSync() {
+            Location goal = to.getLocation();
+            if (positionalOffset != null) {
+                goal = fixedForOffset(goal.toVector(), goal.getYaw(), goal.getPitch()).toLocation(goal.getWorld());
+            }
+            if (noRotate) {
+                Location attachLoc = attached.getLocation();
+                goal.setYaw(attachLoc.getYaw());
+                goal.setPitch(attachLoc.getPitch());
+            }
+            else if (noPitch) {
+                goal.setPitch(attached.getLocation().getPitch());
+            }
+            attached.teleport(goal);
+        }
+
         public void startTask() {
             if (checkTask != null) {
                 checkTask.cancel();
@@ -61,19 +77,7 @@ public class EntityAttachmentHelper {
                         ticks = 0;
                     }
                     if (syncServer) {
-                        Location goal = to.getLocation();
-                        if (positionalOffset != null) {
-                            goal = fixedForOffset(goal.toVector(), goal.getYaw(), goal.getPitch()).toLocation(goal.getWorld());
-                        }
-                        if (noRotate) {
-                            Location attachLoc = attached.getLocation();
-                            goal.setYaw(attachLoc.getYaw());
-                            goal.setPitch(attachLoc.getPitch());
-                        }
-                        else if (noPitch) {
-                            goal.setPitch(attached.getLocation().getPitch());
-                        }
-                        attached.teleport(goal);
+                        doServerSync();
                     }
                 }
             };
@@ -261,6 +265,9 @@ public class EntityAttachmentHelper {
             toEntityToData.put(attachment.to.getUUID(), toMap);
         }
         toMap.attachedToMap.put(attachment.attached.getUUID(), map);
+        if (attachment.syncServer) {
+            attachment.doServerSync();
+        }
     }
 
     public static void forceAttachMove(EntityTag attached, EntityTag to, Vector offset, boolean matchRotation) {

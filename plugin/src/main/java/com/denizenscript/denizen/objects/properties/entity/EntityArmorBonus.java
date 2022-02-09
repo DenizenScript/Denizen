@@ -5,27 +5,25 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 
 public class EntityArmorBonus implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof EntityTag)) {
-            return false;
-        }
-        return ((EntityTag) entity).isLivingEntity();
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).isLivingEntity();
     }
 
     public static EntityArmorBonus getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityArmorBonus((EntityTag) entity);
+        else {
+            return new EntityArmorBonus((EntityTag) entity);
+        }
     }
-
-    public static final String[] handledTags = new String[] {
-            "armor_bonus"
-    };
 
     public static final String[] handledMechs = new String[] {
             "armor_bonus"
@@ -39,10 +37,8 @@ public class EntityArmorBonus implements Property {
 
     @Override
     public String getPropertyString() {
-        if (entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR).getValue() > 0.0) {
-            return getArmorBonus().asString();
-        }
-        return null;
+        double value = getAttribute().getValue();
+        return value > 0 ? String.valueOf(value) : null;
     }
 
     @Override
@@ -50,16 +46,11 @@ public class EntityArmorBonus implements Property {
         return "armor_bonus";
     }
 
-    public ElementTag getArmorBonus() {
-        return new ElementTag(entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR).getValue());
+    public AttributeInstance getAttribute() {
+        return entity.getLivingEntity().getAttribute(Attribute.GENERIC_ARMOR);
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.armor_bonus>
@@ -69,11 +60,9 @@ public class EntityArmorBonus implements Property {
         // @description
         // Returns the entity's base armor bonus.
         // -->
-        if (attribute.startsWith("armor_bonus")) {
-            return getArmorBonus().getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityArmorBonus, ElementTag>registerTag(ElementTag.class, "armor_bonus", (attribute, object) -> {
+            return new ElementTag(object.getAttribute().getValue());
+        });
     }
 
     @Override
@@ -89,8 +78,7 @@ public class EntityArmorBonus implements Property {
         // <EntityTag.armor_bonus>
         // -->
         if (mechanism.matches("armor_bonus") && mechanism.requireDouble()) {
-            entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR)
-                    .setBaseValue(mechanism.getValue().asDouble());
+            getAttribute().setBaseValue(mechanism.getValue().asDouble());
         }
 
     }

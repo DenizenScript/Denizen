@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;

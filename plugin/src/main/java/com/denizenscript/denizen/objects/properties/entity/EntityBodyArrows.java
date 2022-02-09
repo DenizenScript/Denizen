@@ -6,11 +6,13 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class EntityBodyArrows implements Property {
+
     public static boolean describes(ObjectTag object) {
-        return object instanceof EntityTag && ((EntityTag) object).isLivingEntity();
+        return object instanceof EntityTag
+                && ((EntityTag) object).isLivingEntity();
     }
 
     public static EntityBodyArrows getFrom(ObjectTag object) {
@@ -21,10 +23,6 @@ public class EntityBodyArrows implements Property {
             return new EntityBodyArrows((EntityTag) object);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "body_arrows"
-    };
 
     public static final String[] handledMechs = new String[] {
             "body_arrows", "clear_body_arrows"
@@ -55,12 +53,7 @@ public class EntityBodyArrows implements Property {
         return "body_arrows";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.body_arrows>
@@ -71,12 +64,9 @@ public class EntityBodyArrows implements Property {
         // Returns the number of arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.
         // -->
-        if (attribute.startsWith("body_arrows")) {
-            return new ElementTag(getBodyArrows())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityBodyArrows, ElementTag>registerTag(ElementTag.class, "body_arrows", (attribute, object) -> {
+            return new ElementTag(object.getBodyArrows());
+        });
     }
 
     @Override
