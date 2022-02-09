@@ -1,18 +1,18 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.entity.ChestedHorse;
 
 public class EntityChestCarrier implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
-                && NMSHandler.getEntityHelper().isChestedHorse(((EntityTag) entity).getBukkitEntity());
+                && ((EntityTag) entity).getBukkitEntity() instanceof ChestedHorse;
     }
 
     public static EntityChestCarrier getFrom(ObjectTag entity) {
@@ -23,10 +23,6 @@ public class EntityChestCarrier implements Property {
             return new EntityChestCarrier((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "carries_chest"
-    };
 
     public static final String[] handledMechs = new String[] {
             "carries_chest"
@@ -40,7 +36,7 @@ public class EntityChestCarrier implements Property {
 
     @Override
     public String getPropertyString() {
-        return NMSHandler.getEntityHelper().isCarryingChest(entity.getBukkitEntity()) ? "true" : "false";
+        return String.valueOf(getChestedHorse().isCarryingChest());
     }
 
     @Override
@@ -48,12 +44,11 @@ public class EntityChestCarrier implements Property {
         return "carries_chest";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public ChestedHorse getChestedHorse() {
+        return (ChestedHorse) entity.getBukkitEntity();
+    }
 
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.carries_chest>
@@ -61,14 +56,11 @@ public class EntityChestCarrier implements Property {
         // @mechanism EntityTag.carries_chest
         // @group properties
         // @description
-        // If the entity is a horse, returns whether it is carrying a chest.
+        // Returns whether a horse-like entity is carrying a chest.
         // -->
-        if (attribute.startsWith("carries_chest")) {
-            return new ElementTag(NMSHandler.getEntityHelper().isCarryingChest(entity.getBukkitEntity()))
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityChestCarrier, ElementTag>registerTag(ElementTag.class, "carries_chest", (attribute, object) -> {
+            return new ElementTag(object.getChestedHorse().isCarryingChest());
+        });
     }
 
     @Override
@@ -79,12 +71,12 @@ public class EntityChestCarrier implements Property {
         // @name carries_chest
         // @input ElementTag(Boolean)
         // @description
-        // Changes whether a Horse carries a chest.
+        // Sets whether a horse-like entity is carrying a chest.
         // @tags
         // <EntityTag.carries_chest>
         // -->
         if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {
-            NMSHandler.getEntityHelper().setCarryingChest(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            getChestedHorse().setCarryingChest(mechanism.getValue().asBoolean());
         }
     }
 }

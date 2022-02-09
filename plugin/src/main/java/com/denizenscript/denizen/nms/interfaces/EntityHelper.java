@@ -298,12 +298,6 @@ public abstract class EntityHelper {
 
     public abstract void setBoundingBox(Entity entity, BoundingBox boundingBox);
 
-    public abstract boolean isChestedHorse(Entity horse);
-
-    public abstract boolean isCarryingChest(Entity horse);
-
-    public abstract void setCarryingChest(Entity horse, boolean carrying);
-
     public List<Player> getPlayersThatSee(Entity entity) {
         throw new UnsupportedOperationException();
     }

@@ -593,23 +593,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public boolean isChestedHorse(Entity horse) {
-        return horse instanceof ChestedHorse;
-    }
-
-    @Override
-    public boolean isCarryingChest(Entity horse) {
-        return horse instanceof ChestedHorse && ((ChestedHorse) horse).isCarryingChest();
-    }
-
-    @Override
-    public void setCarryingChest(Entity horse, boolean carrying) {
-        if (horse instanceof ChestedHorse) {
-            ((ChestedHorse) horse).setCarryingChest(carrying);
-        }
-    }
-
-    @Override
     public void setTicksLived(Entity entity, int ticks) {
         // Bypass Spigot's must-be-at-least-1-tick requirement, as negative tick counts are useful
         ((CraftEntity) entity).getHandle().ticksLived = ticks;
