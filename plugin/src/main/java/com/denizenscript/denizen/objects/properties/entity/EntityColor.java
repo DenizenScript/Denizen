@@ -110,8 +110,7 @@ public class EntityColor implements Property {
                     return null;
                 }
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
-                && MultiVersionHelper1_17.colorIsApplicable(type)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
             return MultiVersionHelper1_17.getColor(colored.getBukkitEntity());
         }
         return null;
@@ -158,8 +157,7 @@ public class EntityColor implements Property {
             case VILLAGER:
                 return listForEnum(Villager.Type.values());
             }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
-                && MultiVersionHelper1_17.colorIsApplicable(type)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
             return MultiVersionHelper1_17.getAllowedColors(type);
         }
         return null; // includes Ocelot (deprecated) and arrow (ColorTag)
@@ -257,7 +255,6 @@ public class EntityColor implements Property {
         // -->
         if (mechanism.matches("color")) {
             EntityType type = colored.getBukkitEntityType();
-
             if (type == EntityType.HORSE && mechanism.requireObject(ListTag.class)) {
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 Horse horse = (Horse) colored.getBukkitEntity();
@@ -290,8 +287,7 @@ public class EntityColor implements Property {
             else if (type == EntityType.RABBIT && mechanism.requireEnum(false, Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA)
-                    && mechanism.requireEnum(false, Llama.Color.values())) {
+            else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA) && mechanism.requireEnum(false, Llama.Color.values())) {
                 ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.PARROT && mechanism.requireEnum(false, Parrot.Variant.values())) {
@@ -381,8 +377,7 @@ public class EntityColor implements Property {
             else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)
-                    && MultiVersionHelper1_17.colorIsApplicable(type)) {
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
                 MultiVersionHelper1_17.setColor(colored.getBukkitEntity(), mechanism);
             }
         }

@@ -183,7 +183,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 UUID uuid = UUID.fromString(arg);
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                    if (player != null && player.hasPlayedBefore()) {
+                    if (player != null && (player.isOnline() || player.hasPlayedBefore())) {
                         return true;
                     }
                 }

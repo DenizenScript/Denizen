@@ -467,9 +467,6 @@ public class Utilities {
     }
 
     public static boolean isLocationYSafe(double y, World world) {
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_16)) {
-            return y >= 0 && y <= 255;
-        }
         if (world == null) {
             return true;
         }

@@ -822,7 +822,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
-            if (player.hasPlayedBefore()) {
+            if (player.isOnline() || player.hasPlayedBefore()) {
                 return new PlayerTag(player);
             }
             return null;

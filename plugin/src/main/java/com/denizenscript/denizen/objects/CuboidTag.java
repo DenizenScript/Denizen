@@ -519,6 +519,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if (test == null) {
             return getBlockLocationsUnfiltered(true);
         }
+        int yMin = getWorld().getWorld().getMinHeight(), yMax = getWorld().getWorld().getMaxHeight();
         int max = Settings.blockTagsMaxBlocks();
         LocationTag loc;
         List<LocationTag> list = new ArrayList<>();
@@ -530,17 +531,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             int x_distance = pair.xDistance();
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int y = 0; y != y_distance + 1; y++) {
+                    if (loc_1.getY() + y < yMin || loc_1.getY() + y > yMax) {
+                        continue;
+                    }
                     for (int z = 0; z != z_distance + 1; z++) {
                         loc = new LocationTag(loc_1.clone().add(x, y, z));
-                        if (!Utilities.isLocationYSafe(loc)) {
-                            continue;
+                        if (index++ > max) {
+                            return list;
                         }
                         if (test.test(loc)) {
                             list.add(loc);
-                        }
-                        index++;
-                        if (index > max) {
-                            return list;
                         }
                     }
                 }
@@ -559,12 +559,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
             for (int x = 0; x <= x_distance; x++) {
-                for (int z = 0; z <= z_distance; z++) {
-                    for (int y = 0; y <= y_distance; y++) {
+                for (int y = 0; y <= y_distance; y++) {
+                    for (int z = 0; z <= z_distance; z++) {
                         LocationTag loc = new LocationTag(loc_1.clone().add(x, y, z));
                         list.add(loc);
-                        index++;
-                        if (index > max) {
+                        if (index++ > max) {
                             return list;
                         }
                     }
