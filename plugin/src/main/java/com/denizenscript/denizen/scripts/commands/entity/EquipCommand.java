@@ -12,10 +12,10 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Steerable;
+import org.bukkit.inventory.HorseInventory;
 
 import java.util.*;
 
@@ -157,12 +157,14 @@ public class EquipCommand extends AbstractCommand {
                     if (npc.isSpawned()) {
                         LivingEntity livingEntity = npc.getLivingEntity();
                         // TODO: Citizens API for this blob?
-                        if (livingEntity.getType() == EntityType.HORSE) {
+                        if (livingEntity instanceof AbstractHorse) {
                             if (equipment.get("saddle") != null) {
-                                ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
+                                ((AbstractHorse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
                             }
                             if (equipment.get("horse_armor") != null) {
-                                ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
+                                if(((AbstractHorse) livingEntity).getInventory() instanceof HorseInventory) {
+                                    ((HorseInventory) ((AbstractHorse) livingEntity).getInventory()).setArmor(equipment.get("horse_armor").getItemStack());
+                                }
                             }
                         }
                         else if (livingEntity instanceof Steerable) {
@@ -182,12 +184,14 @@ public class EquipCommand extends AbstractCommand {
             else {
                 LivingEntity livingEntity = entity.getLivingEntity();
                 if (livingEntity != null) {
-                    if (livingEntity.getType() == EntityType.HORSE) {
+                    if (livingEntity instanceof AbstractHorse) {
                         if (equipment.get("saddle") != null) {
-                            ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
+                            ((AbstractHorse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
                         }
                         if (equipment.get("horse_armor") != null) {
-                            ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
+                            if(((AbstractHorse) livingEntity).getInventory() instanceof HorseInventory) {
+                                ((HorseInventory) ((AbstractHorse) livingEntity).getInventory()).setArmor(equipment.get("horse_armor").getItemStack());
+                            }
                         }
                     }
                     else if (livingEntity instanceof Steerable) {
