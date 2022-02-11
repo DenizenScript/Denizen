@@ -201,6 +201,13 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     //
     // These arguments will also affect tags (mainly "<player>" and "<npc>") in the same command line (regardless of argument order).
     // If you need to use the original player/NPC in a tag on the same line, use the define command to track it.
+    //
+    // You can also modify the linked player or NPC for an entire queue using the fake-definitions '__player' and '__npc', for example:
+    // <code>
+    // - foreach <server.players> as:__player:
+    //     - narrate "Hi <player.name> isn't it nice how the player is linked here"
+    // </code>
+    //
     // -->
 
     public static StrongWarning invalidPlayerArg = new StrongWarning("The 'player:' arg should not be used in commands like define/flag/yaml/... just input the player directly instead.");
