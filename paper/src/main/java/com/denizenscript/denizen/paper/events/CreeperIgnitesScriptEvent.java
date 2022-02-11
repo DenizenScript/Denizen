@@ -22,7 +22,7 @@ public class CreeperIgnitesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when a creeper is ignited by flint and steel.
+    // @Triggers when a creeper is ignited by flint and steel, or by certain plugin-based activations.
     //
     // @Context
     // <context.entity> returns the EntityTag of the creeper.

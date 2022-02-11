@@ -15,11 +15,11 @@ For pull requests:
 - Any and all code you submit is subject to the mini-license below.
 - In general, you should confirm your PR is functional in any ways that it may vary.
 	- EG if your code adds an NMS call, it should be tested across multiple game versions.
-- USUALLY, your pull request should fix an open issue.
-	- If there is no issue for it, please open one.
-	- If issues for it have been closed with a refusal statement, ensure you want to be making a PR at all before bothering with it. Generally, refused issues means PRs are also refused.
+- USUALLY, your pull request should fix an open issue or feature request made in a Discord thread.
+	- If there is no issue or thread for it, please open a thread.
+	- If issues or threads for it have been closed with a refusal statement, ensure you want to be making a PR at all before bothering with it. Generally, refused requests means PRs are also refused.
 		- The exception to this is when an issue is only partially related to what you're doing, or you believe in good faith that the issue was refused on grounds made irrelevant by your adaptation of it.
-			- In these cases, please open a new issue.
+			- In these cases, please open a new issue or thread.
 
 ## Code Style / Formatting
 

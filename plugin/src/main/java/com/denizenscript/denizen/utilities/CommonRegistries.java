@@ -151,80 +151,71 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(CuboidTag.class, "cu");
         CoreUtilities.registerTypeAsNoOtherTypeCode(EllipsoidTag.class, "ellipsoid");
         CoreUtilities.registerTypeAsNoOtherTypeCode(EnchantmentTag.class, "enchantment");
-        CoreUtilities.typeCheckers.put(EntityTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but for e@, p@, and n@
-            @Override
-            public boolean canBecome(ObjectTag inp) {
-                if (inp == null) {
-                    return false;
-                }
-                if (inp instanceof PlayerTag || inp instanceof EntityTag || inp instanceof NPCTag) {
-                    return true;
-                }
-                if (inp instanceof ElementTag) {
-                    String simple = inp.identifySimple();
-                    int atIndex = simple.indexOf('@');
-                    if (atIndex != -1) {
-                        String code = simple.substring(0, atIndex);
-                        if (!code.equals("e") && !code.equals("p") && !code.equals("n") && !code.equals("el")) {
-                            if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
+        CoreUtilities.typeCheckers.put(EntityTag.class, (inp) -> { // This is adapted 'no other type code' but for e@, p@, and n@
+            if (inp == null) {
                 return false;
             }
+            if (inp instanceof PlayerTag || inp instanceof EntityTag || inp instanceof NPCTag) {
+                return true;
+            }
+            if (inp instanceof ElementTag) {
+                String simple = inp.identifySimple();
+                int atIndex = simple.indexOf('@');
+                if (atIndex != -1) {
+                    String code = simple.substring(0, atIndex);
+                    if (!code.equals("e") && !code.equals("p") && !code.equals("n") && !code.equals("el")) {
+                        if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
         });
-        CoreUtilities.typeCheckers.put(PlayerTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but allows instanceof EntityTag
-            @Override
-            public boolean canBecome(ObjectTag inp) {
-                if (inp == null) {
-                    return false;
-                }
-                if (inp instanceof PlayerTag || inp instanceof EntityTag) {
-                    return true;
-                }
-                if (inp instanceof ElementTag) {
-                    String simple = inp.identifySimple();
-                    int atIndex = simple.indexOf('@');
-                    if (atIndex != -1) {
-                        String code = simple.substring(0, atIndex);
-                        if (!code.equals("p") && !code.equals("el")) {
-                            if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
+        CoreUtilities.typeCheckers.put(PlayerTag.class, (inp) -> { // This is adapted 'no other type code' but allows instanceof EntityTag
+            if (inp == null) {
                 return false;
             }
+            if (inp instanceof PlayerTag || inp instanceof EntityTag) {
+                return true;
+            }
+            if (inp instanceof ElementTag) {
+                String simple = inp.identifySimple();
+                int atIndex = simple.indexOf('@');
+                if (atIndex != -1) {
+                    String code = simple.substring(0, atIndex);
+                    if (!code.equals("p") && !code.equals("el")) {
+                        if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
         });
-        CoreUtilities.typeCheckers.put(NPCTag.class, new CoreUtilities.TypeComparisonRunnable() { // This is adapted 'no other type code' but allows instanceof EntityTag
-            @Override
-            public boolean canBecome(ObjectTag inp) {
-                if (inp == null) {
-                    return false;
-                }
-                if (inp instanceof NPCTag || inp instanceof EntityTag) {
-                    return true;
-                }
-                if (inp instanceof ElementTag) {
-                    String simple = inp.identifySimple();
-                    int atIndex = simple.indexOf('@');
-                    if (atIndex != -1) {
-                        String code = simple.substring(0, atIndex);
-                        if (!code.equals("n") && !code.equals("el")) {
-                            if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
+        CoreUtilities.typeCheckers.put(NPCTag.class, (inp) -> { // This is adapted 'no other type code' but allows instanceof EntityTag
+            if (inp == null) {
                 return false;
             }
+            if (inp instanceof NPCTag || inp instanceof EntityTag) {
+                return true;
+            }
+            if (inp instanceof ElementTag) {
+                String simple = inp.identifySimple();
+                int atIndex = simple.indexOf('@');
+                if (atIndex != -1) {
+                    String code = simple.substring(0, atIndex);
+                    if (!code.equals("n") && !code.equals("el")) {
+                        if (ObjectFetcher.objectsByPrefix.containsKey(code)) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
         });
         CoreUtilities.typeConverters.put(EntityTag.class, (obj, context) -> {
             if (obj instanceof PlayerTag) {
@@ -258,6 +249,16 @@ public class CommonRegistries {
                 return ((EntityTag) obj).getDenizenPlayer();
             }
             return PlayerTag.valueOf(obj.toString(), context);
+        });
+        CoreUtilities.typeShouldBeCheckers.put(EntityTag.class, (obj) -> {
+            if (obj instanceof EntityFormObject) {
+                return true;
+            }
+            String raw = obj.toString();
+            if (raw.startsWith("p@") || raw.startsWith("e@") || raw.startsWith("n@")) {
+                return true;
+            }
+            return false;
         });
         CoreUtilities.registerTypeAsNoOtherTypeCode(InventoryTag.class, "in");
         CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
