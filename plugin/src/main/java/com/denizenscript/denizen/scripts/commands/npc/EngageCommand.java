@@ -1,10 +1,12 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -19,33 +21,33 @@ public class EngageCommand extends AbstractCommand {
 
     public EngageCommand() {
         setName("engage");
-        setSyntax("engage (<duration>)");
-        setRequiredArguments(0, 1);
+        setSyntax("engage (<duration>) (player)");
+        setRequiredArguments(0, 2);
         isProcedural = false;
+        setBooleansHandled("player");
     }
 
     // <--[command]
     // @Name Engage
-    // @Syntax engage (<duration>)
+    // @Syntax engage (<duration>) (player)
     // @Required 0
-    // @Maximum 1
+    // @Maximum 2
     // @Plugin Citizens
     // @Short Temporarily disables an NPCs toggled interact script-container triggers.
     // @Group npc
     //
     // @Description
-    // Engaging an NPC will temporarily disable any interact script-container triggers. To reverse
-    // this behavior, use either the disengage command, or specify a duration in which the engage
-    // should timeout. Specifying an engage without a duration will render the NPC engaged until
-    // a disengage is used on the NPC. Engaging an NPC affects all players attempting to interact
-    // with the NPC.
+    // Engaging an NPC will temporarily disable any interact script-container triggers.
+    // To reverse this behavior, use either the disengage command, or specify a duration in which the engage should timeout.
+    // Specifying an engage without a duration will render the NPC engaged until a disengage is used on the NPC.
     //
-    // While engaged, all triggers and actions associated with triggers will not 'fire', except
-    // the 'on unavailable' assignment script-container action, which will fire for triggers that
-    // were enabled previous to the engage command.
+    // Engaging an NPC by default affects all players attempting to interact with the NPC.
+    // You can optionally specify 'player' to only affect the linked player.
     //
-    // Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or
-    // to provide a good way to avoid accidental 'retrigger'.
+    // While engaged, all triggers and actions associated with triggers will not 'fire',
+    // except the 'on unavailable' assignment script-container action, which will fire for triggers that were enabled previous to the engage command.
+    //
+    // Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or to provide a good way to avoid accidental 'retrigger'.
     //
     // See <@link command Disengage>
     //
@@ -72,14 +74,7 @@ public class EngageCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-        // Check for NPC
-        if (!Utilities.entryHasNPC(scriptEntry)) {
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
-        }
-
         for (Argument arg : scriptEntry) {
-
             if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(DurationTag.class)) {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
@@ -87,32 +82,40 @@ public class EngageCommand extends AbstractCommand {
             else {
                 arg.reportUnhandled();
             }
-
         }
-
         scriptEntry.defaultObject("duration", new DurationTag(0));
-
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        if (!Utilities.entryHasNPC(scriptEntry)) {
+            throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
+        }
         DurationTag duration = scriptEntry.getObjectTag("duration");
+        boolean linkedPlayer = scriptEntry.argAsBoolean("player");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), npc, duration);
+            Debug.report(scriptEntry, getName(), npc, duration, db("player", linkedPlayer));
         }
         if (duration.getSecondsAsInt() > 0) {
-            setEngaged(npc.getCitizen(), duration.getSecondsAsInt());
+            setEngaged(npc.getCitizen(), linkedPlayer ? Utilities.getEntryPlayer(scriptEntry) : null, duration.getSecondsAsInt());
         }
         else {
-            setEngaged(npc.getCitizen(), true);
+            setEngaged(npc.getCitizen(), linkedPlayer ? Utilities.getEntryPlayer(scriptEntry) : null, true);
         }
     }
 
     /*
      * Engaged NPCs cannot interact with Players
      */
-    private static Map<NPC, Long> currentlyEngaged = new HashMap<>();
+    private static Map<String, Long> currentlyEngaged = new HashMap<>();
+
+    public static String getID(NPC npc, PlayerTag player) {
+        if (player == null) {
+            return npc.getUniqueId().toString();
+        }
+        return npc.getUniqueId().toString() + "_" + player.getUUID().toString();
+    }
 
     /**
      * Checks if the NPCTag is ENGAGED. Engaged NPCs do not respond to
@@ -121,11 +124,15 @@ public class EngageCommand extends AbstractCommand {
      * @param npc the Denizen NPC being checked
      * @return if the NPCTag is currently engaged
      */
-    public static boolean getEngaged(NPC npc) {
-        if (currentlyEngaged.containsKey(npc)) {
-            if (currentlyEngaged.get(npc) > System.currentTimeMillis()) {
+    public static boolean getEngaged(NPC npc, PlayerTag player) {
+        String id = getID(npc, player);
+        if (currentlyEngaged.containsKey(id)) {
+            if (currentlyEngaged.get(id) > System.currentTimeMillis()) {
                 return true;
             }
+        }
+        if (player != null) {
+            return getEngaged(npc, null);
         }
         return false;
     }
@@ -138,13 +145,12 @@ public class EngageCommand extends AbstractCommand {
      * @param npc     the NPCTag affected
      * @param engaged true sets the NPCTag engaged, false sets the NPCTag as disengaged
      */
-    public static void setEngaged(NPC npc, boolean engaged) {
+    public static void setEngaged(NPC npc, PlayerTag player, boolean engaged) {
         if (engaged) {
-            currentlyEngaged.put(npc, System.currentTimeMillis()
-                    + (long) (DurationTag.valueOf(Settings.engageTimeoutInSeconds(), CoreUtilities.basicContext).getSeconds()) * 1000);
+            setEngaged(npc, player, (int) DurationTag.valueOf(Settings.engageTimeoutInSeconds(), CoreUtilities.basicContext).getSeconds());
         }
         if (!engaged) {
-            currentlyEngaged.remove(npc);
+            currentlyEngaged.remove(getID(npc, player));
         }
     }
 
@@ -156,7 +162,7 @@ public class EngageCommand extends AbstractCommand {
      * @param npc      the NPCTag to set as engaged
      * @param duration the number of seconds to engage the NPCTag
      */
-    public static void setEngaged(NPC npc, int duration) {
-        currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000);
+    public static void setEngaged(NPC npc, PlayerTag player, int duration) {
+        currentlyEngaged.put(getID(npc, player), System.currentTimeMillis() + duration * 1000);
     }
 }

@@ -174,7 +174,7 @@ public class TriggerTrait extends Trait implements Listener {
             return false;
         }
         // Check engaged
-        if (EngageCommand.getEngaged(npc)) {
+        if (EngageCommand.getEngaged(npc, player)) {
             return false;
         }
         // Set cool down
@@ -197,27 +197,15 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public TriggerContext trigger(AbstractTrigger triggerClass, PlayerTag player, Map<String, ObjectTag> context) {
-
         String trigger_type = triggerClass.getName();
-
-        // Check cool down, return false if not yet met
         if (!Denizen.getInstance().triggerRegistry.checkCooldown(npc, player, triggerClass)) {
             return new TriggerContext(false);
         }
-
         if (context == null) {
             context = new HashMap<>();
         }
-
-        // Check engaged
-        if (EngageCommand.getEngaged(npc)) {
-
-            // Put the trigger_type into context
+        if (EngageCommand.getEngaged(npc, player)) {
             context.put("trigger_type", new ElementTag(trigger_type));
-
-            //
-            // On Unavailable Action
-
             // TODO: Should this be refactored?
             if (new NPCTag(npc).action("unavailable", player, context).containsCaseInsensitive("available")) {
                 // If determined available, continue on...
@@ -227,13 +215,8 @@ public class TriggerTrait extends Trait implements Listener {
                 return new TriggerContext(false);
             }
         }
-
-        // Set cool down
         Denizen.getInstance().triggerRegistry.setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type));
-
-        // Grab the determination of the action
         ListTag determination = new NPCTag(npc).action(trigger_type, player, context);
-
         return new TriggerContext(determination, true);
     }
 
