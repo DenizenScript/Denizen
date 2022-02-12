@@ -6,8 +6,10 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Arrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -34,10 +36,6 @@ public class EntityPotionEffects implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "list_effects", "has_effect"
-    };
-
     public static final String[] handledMechs = new String[] {
             "potion_effects"
     };
@@ -52,33 +50,46 @@ public class EntityPotionEffects implements Property {
         if (entity.isLivingEntity()) {
             return entity.getLivingEntity().getActivePotionEffects();
         }
-        else if (entity.getBukkitEntity() instanceof Arrow) {
-            return ((Arrow) entity.getBukkitEntity()).getCustomEffects();
+        else if (isArrow()) {
+            return getArrow().getCustomEffects();
         }
         return new ArrayList<>();
     }
 
+    public ListTag getEffectsListTag() {
+        ListTag result = new ListTag();
+        for (PotionEffect effect : getEffectsList()) {
+            result.add(ItemPotion.stringifyEffect(effect));
+        }
+        return result;
+    }
+
+    public ListTag getEffectsMapTag() {
+        ListTag result = new ListTag();
+        for (PotionEffect effect : getEffectsList()) {
+            result.addObject(ItemPotion.effectToMap(effect));
+        }
+        return result;
+    }
+
+    public boolean isArrow() {
+        return entity.getBukkitEntity() instanceof Arrow;
+    }
+
+    public Arrow getArrow() {
+        return (Arrow) entity.getBukkitEntity();
+    }
+
     public String getPropertyString() {
-        Collection<PotionEffect> effects = getEffectsList();
-        if (effects.isEmpty()) {
-            return null;
-        }
-        ListTag returnable = new ListTag();
-        for (PotionEffect effect : effects) {
-            returnable.add(ItemPotion.stringifyEffect(effect));
-        }
-        return returnable.identify();
+        ListTag effects = getEffectsListTag();
+        return effects.isEmpty() ? null : effects.identify();
     }
 
     public String getPropertyId() {
         return "potion_effects";
     }
 
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.list_effects>
@@ -91,13 +102,21 @@ public class EntityPotionEffects implements Property {
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
         // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
-        if (attribute.startsWith("list_effects")) {
-            ListTag effects = new ListTag();
-            for (PotionEffect effect : getEffectsList()) {
-                effects.add(ItemPotion.stringifyEffect(effect));
-            }
-            return effects.getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "list_effects", (attribute, object) -> {
+            return object.getEffectsListTag();
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.effects_map>
+        // @returns ListTag(MapTag)
+        // @group attribute
+        // @mechanism EntityTag.potion_effects
+        // @description
+        // Returns the list of active potion effects on the entity, in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
+        // -->
+        PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "effects_map", (attribute, object) -> {
+            return object.getEffectsMapTag();
+        });
 
         // <--[tag]
         // @attribute <EntityTag.has_effect[<effect>]>
@@ -109,23 +128,26 @@ public class EntityPotionEffects implements Property {
         // If no effect is specified, returns whether the entity has any effect.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
-        if (attribute.startsWith("has_effect")) {
+        PropertyParser.<EntityPotionEffects, ElementTag>registerTag(ElementTag.class, "has_effect", (attribute, object) -> {
             boolean returnElement = false;
             if (attribute.hasParam()) {
                 PotionEffectType effectType = PotionEffectType.getByName(attribute.getParam());
-                for (org.bukkit.potion.PotionEffect effect : getEffectsList()) {
-                    if (effect.getType().equals(effectType)) {
-                        returnElement = true;
-                    }
+                if (effectType == null) {
+                    attribute.echoError("Invalid effect type specified: " + attribute.getParam());
+                    return null;
+                }
+                if (object.entity.isLivingEntity()) {
+                    returnElement = object.entity.getLivingEntity().hasPotionEffect(effectType);
+                }
+                else if (object.isArrow()) {
+                    returnElement = object.getArrow().hasCustomEffect(effectType);
                 }
             }
-            else if (!getEffectsList().isEmpty()) {
+            else if (!object.getEffectsList().isEmpty()) {
                 returnElement = true;
             }
-            return new ElementTag(returnElement).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+            return new ElementTag(returnElement);
+        });
     }
 
     public void adjust(Mechanism mechanism) {
@@ -142,22 +164,35 @@ public class EntityPotionEffects implements Property {
         // For example: SPEED,0,120,false,true,true would give the entity a swiftness potion for 120 ticks.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
+        // <EntityTag.effect_map>
         // <EntityTag.list_effects>
         // <EntityTag.has_effect[<effect>]>
         // -->
         if (mechanism.matches("potion_effects")) {
-            ListTag effects = ListTag.valueOf(mechanism.getValue().asString(), mechanism.context);
-            for (String effectStr : effects) {
-                PotionEffect effect = ItemPotion.parseEffect(effectStr, mechanism.context);
-                if (effect == null) {
-                    mechanism.echoError("Invalid potion effect '" + effectStr + "'");
-                    continue;
+            Collection<ObjectTag> effects = CoreUtilities.objectToList(mechanism.value, mechanism.context);
+            for (ObjectTag effectObj : effects) {
+                PotionEffect effect;
+                if (effectObj.canBeType(MapTag.class)) {
+                    MapTag effectMap = effectObj.asType(MapTag.class, mechanism.context);
+                    effect = ItemPotion.parseEffect(effectMap, mechanism.context);
+                    if (effect == null) {
+                        mechanism.echoError("Invalid potion effect '" + effectMap + "'");
+                        continue;
+                    }
+                }
+                else {
+                    String effectStr = effectObj.toString();
+                    effect = ItemPotion.parseEffect(effectStr, mechanism.context);
+                    if (effect == null) {
+                        mechanism.echoError("Invalid potion effect '" + effectStr + "'");
+                        continue;
+                    }
                 }
                 if (entity.isLivingEntity()) {
                     entity.getLivingEntity().addPotionEffect(effect);
                 }
-                else if (entity.getBukkitEntity() instanceof Arrow) {
-                    ((Arrow) entity.getBukkitEntity()).addCustomEffect(effect, true);
+                else if (isArrow()) {
+                    getArrow().addCustomEffect(effect, true);
                 }
             }
         }

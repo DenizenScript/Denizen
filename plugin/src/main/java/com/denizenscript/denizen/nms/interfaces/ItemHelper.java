@@ -60,8 +60,6 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
-    public abstract PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, boolean icon);
-
     public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
         throw new UnsupportedOperationException();
     }
