@@ -12,6 +12,8 @@ import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
 import com.denizenscript.denizen.events.world.*;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
@@ -234,6 +236,9 @@ public class ScriptEventRegistry {
         // World events
         ScriptEvent.registerScriptEvent(ChunkLoadScriptEvent.class);
         ScriptEvent.registerScriptEvent(ChunkUnloadScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            ScriptEvent.registerScriptEvent(GenericGameEventScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(LightningStrikesScriptEvent.class);
         ScriptEvent.registerScriptEvent(LingeringPotionSplashScriptEvent.class);
         ScriptEvent.registerScriptEvent(LootGenerateScriptEvent.class);
