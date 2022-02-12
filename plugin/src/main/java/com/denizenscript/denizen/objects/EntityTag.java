@@ -1635,7 +1635,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Optionally, specify a maximum range to find the location from (defaults to 200).
         // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
         // Note that this will return null if there is no block in range.
-        // This uses all blocks, ie it includes passable blocks like tall-grass and water. Use <@link tag EntityTag.cursor_on_solid> to include passable blocks.
+        // This uses all blocks, ie it includes passable blocks like tall-grass and water. Use <@link tag EntityTag.cursor_on_solid> to exclude passable blocks.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "cursor_on", (attribute, object) -> {
             double range = attribute.getDoubleParam();

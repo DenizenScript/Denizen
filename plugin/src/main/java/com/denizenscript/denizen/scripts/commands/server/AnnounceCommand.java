@@ -98,7 +98,7 @@ public class AnnounceCommand extends AbstractCommand {
                 scriptEntry.addObject("format", format);
             }
             else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", new ElementTag(arg.getRawValue()));
+                scriptEntry.addObject("text", arg.getRawElement());
             }
             else {
                 arg.reportUnhandled();
@@ -154,4 +154,3 @@ public class AnnounceCommand extends AbstractCommand {
         }
     }
 }
-

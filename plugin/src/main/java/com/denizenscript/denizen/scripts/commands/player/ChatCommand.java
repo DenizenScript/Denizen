@@ -93,7 +93,7 @@ public class ChatCommand extends AbstractCommand {
                 }
             }
             else if (!scriptEntry.hasObject("message")) {
-                scriptEntry.addObject("message", new ElementTag(arg.getRawValue()));
+                scriptEntry.addObject("message", arg.getRawElement());
             }
             else {
                 arg.reportUnhandled();

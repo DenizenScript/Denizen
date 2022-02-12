@@ -154,14 +154,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     @Override
     public ListTag getBlocks(Predicate<Location> test) {
-        List<LocationTag> initial = getCuboidBoundary().getBlocks_internal(test);
-        ListTag list = new ListTag();
-        for (LocationTag loc : initial) {
-            if (contains(loc)) {
-                list.addObject(loc);
-            }
-        }
-        return list;
+        return getCuboidBoundary().getBlocks(test == null ? this::contains : (l) -> (test.test(l) && contains(l)));
     }
 
     public List<LocationTag> getBlockLocationsUnfiltered(boolean doMax) {

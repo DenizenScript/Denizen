@@ -105,7 +105,7 @@ public class RenameCommand extends AbstractCommand {
                 scriptEntry.addObject("list_name_only", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("name")) {
-                scriptEntry.addObject("name", new ElementTag(arg.getRawValue()));
+                scriptEntry.addObject("name", arg.getRawElement());
             }
             else {
                 arg.reportUnhandled();

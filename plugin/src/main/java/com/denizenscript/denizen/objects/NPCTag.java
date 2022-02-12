@@ -294,10 +294,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return identify();
     }
 
-    public boolean isEngaged() {
-        return EngageCommand.getEngaged(getCitizen());
-    }
-
     public boolean isSpawned() {
         return npc.isSpawned();
     }
@@ -778,14 +774,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
-        // @attribute <NPCTag.engaged>
+        // @attribute <NPCTag.engaged[(<player>)]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the NPC is currently engaged.
         // See <@link command engage>
         // -->
         tagProcessor.registerTag(ElementTag.class, "engaged", (attribute, object) -> {
-            return new ElementTag(object.isEngaged());
+            return new ElementTag(EngageCommand.getEngaged(object.getCitizen(), attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : null));
         }, "is_engaged");
 
         // <--[tag]
@@ -822,7 +818,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
-            if (player.hasPlayedBefore()) {
+            if (player.isOnline() || player.hasPlayedBefore()) {
                 return new PlayerTag(player);
             }
             return null;
