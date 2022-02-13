@@ -149,7 +149,7 @@ public class CreateCommand extends AbstractCommand {
                     created.getCitizen().addTrait(trait);
                 }
                 else {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Could not add trait to NPC: " + trait_name);
+                    Debug.echoError(scriptEntry, "Could not add trait to NPC: " + trait_name);
                 }
             }
         }

@@ -120,7 +120,7 @@ public class HealthCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), quantity, action, heal, db("target", targets));
         }
         if (quantity == null && action == null) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
+            Debug.echoError(scriptEntry, "Null quantity!");
         }
         if (action == null) {
             action = new ElementTag(true);
@@ -150,7 +150,7 @@ public class HealthCommand extends AbstractCommand {
                         }
                     }
                     else {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
+                        Debug.echoError(scriptEntry, "NPC doesn't have health trait!");
                     }
                 }
                 else if (target.isLivingEntity()) {
@@ -160,7 +160,7 @@ public class HealthCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Entity '" + target.identify() + "'is not alive!");
+                    Debug.echoError(scriptEntry, "Entity '" + target.identify() + "'is not alive!");
                 }
             }
         }

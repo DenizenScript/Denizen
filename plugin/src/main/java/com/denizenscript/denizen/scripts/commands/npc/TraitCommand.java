@@ -112,7 +112,7 @@ public class TraitCommand extends AbstractCommand {
         }
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
         if (trait == null) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Trait not found: " + traitName.asString());
+            Debug.echoError(scriptEntry, "Trait not found: " + traitName.asString());
             return;
         }
         for (NPCTag npcTag : npcs) {
@@ -121,7 +121,7 @@ public class TraitCommand extends AbstractCommand {
                 case TRUE:
                 case ON:
                     if (npc.hasTrait(trait)) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "NPC already has trait '" + traitName.asString() + "'");
+                        Debug.echoError(scriptEntry, "NPC already has trait '" + traitName.asString() + "'");
                     }
                     else {
                         npc.addTrait(trait);
@@ -130,7 +130,7 @@ public class TraitCommand extends AbstractCommand {
                 case FALSE:
                 case OFF:
                     if (!npc.hasTrait(trait)) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "NPC does not have trait '" + traitName.asString() + "'");
+                        Debug.echoError(scriptEntry, "NPC does not have trait '" + traitName.asString() + "'");
                     }
                     else {
                         npc.removeTrait(trait);

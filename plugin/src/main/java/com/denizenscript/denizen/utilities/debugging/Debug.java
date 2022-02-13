@@ -146,7 +146,7 @@ public class Debug {
         if (!showDebug || !shouldDebug(caller)) {
             return;
         }
-        echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
+        echo(ChatColor.WHITE + trimMessage(message), caller);
         if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && caller != null) {
             echo(ChatColor.GRAY + "(Verbose) Caller = " + caller, caller);
         }
@@ -166,46 +166,39 @@ public class Debug {
         if (!showDebug) {
             return;
         }
-        finalOutputDebugText(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
-                + ChatColor.WHITE + message, null);
+        finalOutputDebugText(ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message, null);
     }
 
     public static void echoError(String message) {
         echoError(null, null, message, true);
     }
 
-    public static void echoError(ScriptQueue sourceQueue, String message) {
-        echoError(sourceQueue, null, message, true);
+    public static void echoError(ScriptEntry source, String message) {
+        echoError(source, null, message, true);
     }
 
     public static boolean errorDuplicatePrevention = false;
 
-    public static void echoError(ScriptQueue sourceQueue, String addedContext, String message, boolean reformat) {
+    public static void echoError(ScriptEntry source, String addedContext, String message, boolean reformat) {
         message = cleanTextForDebugOutput(message);
         if (errorDuplicatePrevention) {
             if (!com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
-                finalOutputDebugText("Error within error (??!!!! SOMETHING WENT SUPER WRONG!): " + message, sourceQueue, reformat);
+                finalOutputDebugText("Error within error (??!!!! SOMETHING WENT SUPER WRONG!): " + message, source, reformat);
             }
             return;
         }
         errorDuplicatePrevention = true;
-        if (sourceQueue == null) {
-            sourceQueue = CommandExecutor.currentQueue;
-        }
-        ScriptEntry sourceEntry = null;
-        if (sourceQueue != null && sourceQueue.getLastEntryExecuted() != null) {
-            sourceEntry = sourceQueue.getLastEntryExecuted();
-        }
-        else if (sourceQueue != null && sourceQueue.getEntries().size() > 0) {
-            sourceEntry = sourceQueue.getEntries().get(0);
+        ScriptQueue sourceQueue = CommandExecutor.currentQueue;
+        if (source != null && source.queue != null) {
+            sourceQueue = source.queue;
         }
         ScriptTag sourceScript = null;
-        if (sourceEntry != null) {
-            sourceScript = sourceEntry.getScript();
+        if (source != null) {
+            sourceScript = source.getScript();
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            boolean cancel = ScriptGeneratesErrorScriptEvent.instance.handle(message, sourceQueue, sourceScript, sourceEntry == null ? -1 : sourceEntry.internal.lineNumber);
+            boolean cancel = ScriptGeneratesErrorScriptEvent.instance.handle(message, sourceQueue, sourceScript, source == null ? -1 : source.internal.lineNumber);
             throwErrorEvent = true;
             if (cancel) {
                 errorDuplicatePrevention = false;
@@ -224,13 +217,13 @@ public class Debug {
         if (sourceQueue != null) {
             headerBuilder.append(" in queue '").append(sourceQueue.debugId).append(ChatColor.RED).append("'");
         }
-        if (sourceEntry != null) {
-            headerBuilder.append(" while executing command '").append(ChatColor.AQUA).append(sourceEntry.getCommandName()).append(ChatColor.RED).append("'");
+        if (source != null) {
+            headerBuilder.append(" while executing command '").append(ChatColor.AQUA).append(source.getCommandName()).append(ChatColor.RED).append("'");
             if (sourceScript != null) {
                 headerBuilder.append(" in file '").append(ChatColor.AQUA).append(sourceScript.getContainer().getRelativeFileName()).append(ChatColor.RED)
-                        .append("' on line '").append(ChatColor.AQUA).append(sourceEntry.internal.lineNumber).append(ChatColor.RED).append("'");
+                        .append("' on line '").append(ChatColor.AQUA).append(source.internal.lineNumber).append(ChatColor.RED).append("'");
             }
-            BukkitScriptEntryData data = Utilities.getEntryData(sourceEntry);
+            BukkitScriptEntryData data = Utilities.getEntryData(source);
             if (data.hasPlayer()) {
                 headerBuilder.append(" with player '").append(ChatColor.AQUA).append(data.getPlayer().getName()).append(ChatColor.RED).append("'");
             }
@@ -239,7 +232,7 @@ public class Debug {
             }
         }
         if (addedContext != null) {
-            headerBuilder.append("\n     ").append(addedContext);
+            headerBuilder.append("\n<FORCE_ALIGN>").append(addedContext);
         }
         headerBuilder.append(ERROR_HEADER_END);
         String header = headerBuilder.toString();
@@ -257,7 +250,7 @@ public class Debug {
                 throw new RuntimeException("Verbose info for above error");
             }
             catch (Throwable e) {
-                echoError(sourceQueue, e);
+                echoError(source, e);
             }
             depthCorrectError--;
         }
@@ -267,7 +260,7 @@ public class Debug {
     public static String lastErrorHeader = "";
     public static String ENABLE_DEBUG_MESSAGE = ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.",
             ERROR_HEADER_START = ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR",
-            ERROR_HEADER_END = "!\n" + ChatColor.GRAY + "     Error Message: " + ChatColor.WHITE,
+            ERROR_HEADER_END = "!\n" + ChatColor.GRAY + "<FORCE_ALIGN>Error Message: " + ChatColor.WHITE,
             ADDITIONAL_ERROR_HEADER = ChatColor.GRAY + "Additional Error Info: " + ChatColor.WHITE;
 
     static long depthCorrectError = 0;
@@ -278,10 +271,7 @@ public class Debug {
         echoError(null, ex);
     }
 
-    public static void echoError(ScriptQueue source, Throwable ex) {
-        if (source == null) {
-            source = CommandExecutor.currentQueue;
-        }
+    public static void echoError(ScriptEntry source, Throwable ex) {
         String errorMessage = getFullExceptionMessage(ex, true);
         if (throwErrorEvent) {
             throwErrorEvent = false;
@@ -289,7 +279,7 @@ public class Debug {
             while (thrown.getCause() != null) {
                 thrown = thrown.getCause();
             }
-            boolean cancel = ServerGeneratesExceptionScriptEvent.instance.handle(thrown, errorMessage, source);
+            boolean cancel = ServerGeneratesExceptionScriptEvent.instance.handle(thrown, errorMessage, source == null || source.queue == null ? CommandExecutor.currentQueue : source.queue);
             throwErrorEvent = true;
             if (cancel) {
                 return;
@@ -509,8 +499,6 @@ public class Debug {
             }
             return;
         }
-        // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
-        // than having a bunch of ChatColor.XXXX
         message = cleanTextForDebugOutput(message);
         ConsoleSender.sendMessage(message, reformat);
         Consumer<String> additional = getDebugSender(caller);
@@ -562,8 +550,8 @@ public class Debug {
                         // Increase # of lines to account for
                         length = strippedLength;
                         // Leave spaces to account for timestamp and indent
-                        buffer.append("\n                   ").append(word).append(" ");
-                    }                 // [01:02:03 INFO]:
+                        buffer.append("\n<FORCE_ALIGN>").append(word).append(" ");
+                    }
                     if (word.contains("\n")) {
                         length = 0;
                     }
@@ -574,13 +562,16 @@ public class Debug {
             // Record current buffer to the to-be-submitted buffer
             if (Debug.record) {
                 try {
-                    Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date()) + string + "\n", "UTF-8"));
+                    //                                                                  "HH:mm:ss"
+                    String toRecord = " " + (reformat ? string.replace("<FORCE_ALIGN>", "        ") : string) + "\n";
+                    Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date()) + toRecord, "UTF-8"));
                 }
                 catch (Throwable ex) {
                     Debug.echoError(ex);
                 }
             }
-            string = Settings.debugPrefix() + string;
+            //                                                                            "[HH:mm:ss INFO]: "
+            string = Settings.debugPrefix() + (reformat ? string.replace("<FORCE_ALIGN>", "                 ") : string);
             if (DenizenCore.logInterceptor.redirected) {
                 if (!DenizenCore.logInterceptor.antiLoop) {
                     DenizenCore.logInterceptor.antiLoop = true;

@@ -191,7 +191,7 @@ public class GiveCommand extends AbstractCommand {
                     }
                     int slotId = SlotHelper.nameToIndexFor(slot.asString(), inventory.getInventory().getHolder());
                     if (slotId == -1) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+                        Debug.echoError(scriptEntry, "The input '" + slot.asString() + "' is not a valid slot!");
                         return;
                     }
                     List<ItemStack> leftovers = inventory.addWithLeftovers(slotId, limited, is);

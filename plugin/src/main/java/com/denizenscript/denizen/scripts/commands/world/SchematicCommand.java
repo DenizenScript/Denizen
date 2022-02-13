@@ -243,17 +243,17 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         switch (ttype) {
             case CREATE: {
                 if (schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is already loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
                 if (cuboid == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Missing cuboid argument!");
+                    Debug.echoError(scriptEntry, "Missing cuboid argument!");
                     scriptEntry.setFinished(true);
                     return;
                 }
                 if (location == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin location argument!");
+                    Debug.echoError(scriptEntry, "Missing origin location argument!");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -278,8 +278,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                 }
                 catch (Exception ex) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Error creating schematic object " + name.asString() + ".");
-                    Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                    Debug.echoError(scriptEntry, "Error creating schematic object " + name.asString() + ".");
+                    Debug.echoError(scriptEntry, ex);
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -287,7 +287,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case LOAD: {
                 if (schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is already loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -326,8 +326,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                     catch (Exception ex) {
                         Runnable showError = () -> {
-                            Debug.echoError(scriptEntry.getResidingQueue(), "Error loading schematic file " + name.asString() + ".");
-                            Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                            Debug.echoError(scriptEntry, "Error loading schematic file " + name.asString() + ".");
+                            Debug.echoError(scriptEntry, ex);
                         };
                         if (delayed) {
                             Bukkit.getScheduler().runTask(Denizen.getInstance(), showError);
@@ -350,7 +350,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case UNLOAD: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -360,12 +360,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case ROTATE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
                 if (angle == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Missing angle argument!");
+                    Debug.echoError(scriptEntry, "Missing angle argument!");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -375,7 +375,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case FLIP_X: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -385,7 +385,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case FLIP_Y: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -395,7 +395,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case FLIP_Z: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -405,12 +405,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case PASTE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     scriptEntry.setFinished(true);
                     return;
                 }
                 if (location == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Missing location argument!");
+                    Debug.echoError(scriptEntry, "Missing location argument!");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -420,7 +420,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     input.noAir = noair;
                     input.fakeTo = fakeTo;
                     if (fakeTo != null && copyEntities) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Cannot fake paste entities currently.");
+                        Debug.echoError(scriptEntry, "Cannot fake paste entities currently.");
                         scriptEntry.setFinished(true);
                         return;
                     }
@@ -471,8 +471,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                 }
                 catch (Exception ex) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Exception pasting schematic file " + name.asString() + ".");
-                    Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                    Debug.echoError(scriptEntry, "Exception pasting schematic file " + name.asString() + ".");
+                    Debug.echoError(scriptEntry, ex);
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -480,7 +480,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
             case SAVE: {
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    Debug.echoError(scriptEntry, "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 set = schematics.get(name.asString().toUpperCase());
@@ -503,8 +503,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                     catch (Exception ex) {
                         Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                            Debug.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + fname + ".");
-                            Debug.echoError(scriptEntry.getResidingQueue(), ex);
+                            Debug.echoError(scriptEntry, "Error saving schematic file " + fname + ".");
+                            Debug.echoError(scriptEntry, ex);
                         });
                         scriptEntry.setFinished(true);
                         return;
@@ -549,7 +549,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
-            Debug.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null, "Schematic file " + id + " is not loaded.");
+            Debug.echoError(attribute.getScriptEntry(), "Schematic file " + id + " is not loaded.");
             return;
         }
         CuboidBlockSet set = schematics.get(id);

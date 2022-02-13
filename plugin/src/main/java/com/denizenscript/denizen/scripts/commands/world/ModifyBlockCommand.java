@@ -224,11 +224,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     public static boolean isLocationBad(ScriptEntry entry, LocationTag loc) {
         if (loc == null) {
-            Debug.echoError(entry.getResidingQueue(), "Input is not a valid LocationTag");
+            Debug.echoError(entry, "Input is not a valid LocationTag");
             return true;
         }
         if (loc.getWorld() == null) {
-            Debug.echoError(entry.getResidingQueue(), "Input '" + loc + "' is missing a world value");
+            Debug.echoError(entry, "Input '" + loc + "' is missing a world value");
             return true;
         }
         return false;
@@ -250,7 +250,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final PlayerTag source = scriptEntry.getObjectTag("source");
         ListTag percents = scriptEntry.getObjectTag("percents");
         if (percents != null && percents.size() != materials.size()) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");
+            Debug.echoError(scriptEntry, "Percents length != materials length");
             percents = null;
         }
         final List<MaterialTag> materialList = materials.filter(MaterialTag.class, scriptEntry);

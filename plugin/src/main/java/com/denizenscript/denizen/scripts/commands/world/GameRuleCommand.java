@@ -78,7 +78,7 @@ public class GameRuleCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), world, gamerule, value);
         }
         if (!world.getWorld().setGameRuleValue(gamerule.asString(), value.asString())) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid gamerule!");
+            Debug.echoError(scriptEntry, "Invalid gamerule!");
         }
     }
 }

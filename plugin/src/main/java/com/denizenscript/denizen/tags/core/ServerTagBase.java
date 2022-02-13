@@ -1490,7 +1490,7 @@ public class ServerTagBase {
                     }
                 }
                 catch (SQLException e) {
-                    Debug.echoError(attribute.getScriptEntry().getResidingQueue(), e);
+                    Debug.echoError(attribute.getScriptEntry(), e);
                 }
             }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));

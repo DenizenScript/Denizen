@@ -317,7 +317,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case MONEY: {
                 if (Depends.economy == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    Debug.echoError(scriptEntry, "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                     return;
                 }
                 Depends.economy.withdrawPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), quantity.asDouble());
@@ -329,7 +329,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case RAWEXACT: {
                 if (items == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify item/items!");
+                    Debug.echoError(scriptEntry, "Must specify item/items!");
                     return;
                 }
                 for (ItemTag targetItem : items) {
@@ -339,7 +339,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case ITEM: {
                 if (items == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify item/items!");
+                    Debug.echoError(scriptEntry, "Must specify item/items!");
                     return;
                 }
                 for (ItemTag item : items) {
@@ -353,7 +353,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case BYDISPLAY: {
                 if (displayNameList == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a displayname!");
+                    Debug.echoError(scriptEntry, "Must specify a displayname!");
                     return;
                 }
                 for (String name : displayNameList) {
@@ -364,7 +364,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case BYCOVER: {
                 if (titleAuthor == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a cover!");
+                    Debug.echoError(scriptEntry, "Must specify a cover!");
                     return;
                 }
                 takeByMatcher(inventory, (item) -> item.hasItemMeta() && item.getItemMeta() instanceof BookMeta
@@ -374,7 +374,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case FLAGGED: {
                 if (flagList == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a flag name!");
+                    Debug.echoError(scriptEntry, "Must specify a flag name!");
                     return;
                 }
                 for (String flag : flagList) {
@@ -384,7 +384,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case NBT: {
                 if (nbtKey == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify an NBT key!");
+                    Debug.echoError(scriptEntry, "Must specify an NBT key!");
                     return;
                 }
                 takeByMatcher(inventory, (item) -> CustomNBT.hasCustomNBT(item, nbtKey.asString(), CustomNBT.KEY_DENIZEN), quantity.asInt());
@@ -392,13 +392,13 @@ public class TakeCommand extends AbstractCommand {
             }
             case SCRIPTNAME: {
                 if (scriptItemList == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
+                    Debug.echoError(scriptEntry, "Must specify a valid script name!");
                     return;
                 }
                 for (ItemTag scriptedItem : scriptItemList) {
                     String script = scriptedItem.getScriptName();
                     if (script == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Item '" + scriptedItem.debuggable() + "' is not a scripted item, cannot take by scriptname.");
+                        Debug.echoError(scriptEntry, "Item '" + scriptedItem.debuggable() + "' is not a scripted item, cannot take by scriptname.");
                         continue;
                     }
                     takeByMatcher(inventory, (item) -> script.equalsIgnoreCase(new ItemTag(item).getScriptName()), quantity.asInt());
@@ -407,7 +407,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case MATERIAL: {
                 if (materialList == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify a valid material!");
+                    Debug.echoError(scriptEntry, "Must specify a valid material!");
                     return;
                 }
                 for (MaterialTag material : materialList) {
@@ -417,7 +417,7 @@ public class TakeCommand extends AbstractCommand {
             }
             case MATCHER: {
                 if (matcherText == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Must specify an item matcher!");
+                    Debug.echoError(scriptEntry, "Must specify an item matcher!");
                     return;
                 }
                 takeByMatcher(inventory, (item) -> BukkitScriptEvent.tryItem(new ItemTag(item), matcherText.asString()), quantity.asInt());
@@ -427,7 +427,7 @@ public class TakeCommand extends AbstractCommand {
                 for (String slot : slotList) {
                     int slotId = SlotHelper.nameToIndexFor(slot, inventory.getInventory().getHolder());
                     if (slotId == -1 || slotId >= inventory.getSize()) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot + "' is not a valid slot!");
+                        Debug.echoError(scriptEntry, "The input '" + slot + "' is not a valid slot!");
                         return;
                     }
                     ItemStack original = inventory.getInventory().getItem(slotId);

@@ -133,8 +133,8 @@ public class PauseCommand extends AbstractCommand {
                     Denizen.getInstance().getServer().getScheduler().cancelTask(durations.get(npc.getCitizen().getId() + pauseType.name()));
                 }
                 catch (Exception e) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
-                    Debug.echoError(scriptEntry.getResidingQueue(), e);
+                    Debug.echoError(scriptEntry, "There was an error pausing that!");
+                    Debug.echoError(scriptEntry, e);
                 }
             }
             Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
