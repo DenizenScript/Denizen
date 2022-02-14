@@ -74,7 +74,7 @@ public class KillCommand extends AbstractCommand {
         }
         for (EntityTag entity : entities) {
             if (!entity.isLivingEntity()) {
-                Debug.echoError(scriptEntry.getResidingQueue(), entity + " is not a living entity!");
+                Debug.echoError(scriptEntry, entity + " is not a living entity!");
                 continue;
             }
             LivingEntity livingEntity = entity.getLivingEntity();

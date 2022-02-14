@@ -235,7 +235,7 @@ public class ScoreboardCommand extends AbstractCommand {
         }
         // Don't progress if we ended up with a null board
         if (board == null) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Scoreboard " + id.asString() + " does not exist!");
+            Debug.echoError(scriptEntry, "Scoreboard " + id.asString() + " does not exist!");
             return;
         }
         Objective obj;
@@ -303,7 +303,7 @@ public class ScoreboardCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Objective " + objective.asString() +
+                    Debug.echoError(scriptEntry, "Objective " + objective.asString() +
                             " does not exist in scoreboard " + id.asString());
                 }
             }

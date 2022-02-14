@@ -97,7 +97,7 @@ public class LightCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), location, reset, light, duration);
         }
         if (!Utilities.isLocationYSafe(location)) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");
+            Debug.echoError(scriptEntry, "Invalid light location!");
             return;
         }
         for (int x = -1; x <= 1; x++) {

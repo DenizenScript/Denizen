@@ -268,10 +268,10 @@ public class InventoryCommand extends AbstractCommand {
         int slotId = SlotHelper.nameToIndexFor(slot.asString(), destination.getInventory().getHolder());
         if (slotId < 0) {
             if (slotId == -1) {
-                Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot (unrecognized)!");
+                Debug.echoError(scriptEntry, "The input '" + slot.asString() + "' is not a valid slot (unrecognized)!");
             }
             else {
-                Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot (negative values are invalid)!");
+                Debug.echoError(scriptEntry, "The input '" + slot.asString() + "' is not a valid slot (negative values are invalid)!");
             }
             return;
         }
@@ -300,7 +300,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Turn destination's contents into a copy of origin's
                 case COPY:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     replace(origin, destination);
@@ -308,7 +308,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Copy origin's contents to destination, then empty origin
                 case MOVE:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     replace(origin, destination);
@@ -317,7 +317,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Swap the contents of the two inventories
                 case SWAP:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     InventoryTag temp = new InventoryTag(destination.getInventory().getContents());
@@ -328,7 +328,7 @@ public class InventoryCommand extends AbstractCommand {
                 case ADD:
                     Deprecations.oldInventoryCommands.warn(scriptEntry);
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     destination.add(slotId, origin.getContents());
@@ -337,7 +337,7 @@ public class InventoryCommand extends AbstractCommand {
                 case REMOVE:
                     Deprecations.oldInventoryCommands.warn(scriptEntry);
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     remove(destination.getInventory(), origin.getContents());
@@ -345,7 +345,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Set items by slot
                 case SET:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     destination.setSlots(slotId, origin.getContents(), originentry.getKey());
@@ -354,7 +354,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Keep only items from the origin's contents in the destination
                 case KEEP: {
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     ItemStack[] items = origin.getContents();
@@ -382,7 +382,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Exclude all items from the origin's contents in the destination
                 case EXCLUDE: {
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     int oldCount = destination.count(null, false);
@@ -397,7 +397,7 @@ public class InventoryCommand extends AbstractCommand {
                 // Add origin's contents over and over to destination until it is full
                 case FILL: {
                     if (origin == null) {
-                        Debug.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
                     }
                     int oldCount = destination.count(null, false);

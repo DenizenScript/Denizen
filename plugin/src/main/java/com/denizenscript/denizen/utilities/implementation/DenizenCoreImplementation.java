@@ -80,13 +80,13 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void debugError(ScriptQueue scriptQueue, String addedContext, String s) {
-        Debug.echoError(scriptQueue, addedContext, s, true);
+    public void debugError(ScriptEntry entry, String addedContext, String error) {
+        Debug.echoError(entry, addedContext, error, true);
     }
 
     @Override
-    public void debugError(ScriptQueue scriptQueue, Throwable throwable) {
-        Debug.echoError(scriptQueue, throwable);
+    public void debugError(ScriptEntry entry, Throwable throwable) {
+        Debug.echoError(entry, throwable);
     }
 
     @Override
@@ -225,7 +225,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
             PlayerTag player = PlayerTag.valueOf(value, scriptEntry.context);
             if (player == null || !player.isValid()) {
-                Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
+                Debug.echoError(scriptEntry, value + " is an invalid player!");
             }
             ((BukkitScriptEntryData) scriptEntry.entryData).setPlayer(player);
             ((BukkitTagContext) scriptEntry.context).player = player;
@@ -241,7 +241,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             String value = TagManager.tag(arg.getValue(), scriptEntry.getContext());
             NPCTag npc = NPCTag.valueOf(value, scriptEntry.context);
             if (npc == null || !npc.isValid()) {
-                Debug.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
+                Debug.echoError(scriptEntry, value + " is an invalid NPC!");
                 return false;
             }
             ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(npc);

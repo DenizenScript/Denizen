@@ -170,7 +170,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
             step = ((InteractScriptContainer) script.getContainer()).getDefaultStepName();
         }
         if (step.equalsIgnoreCase(currentStep)) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "Zapping to own current step!");
+            Debug.echoError(scriptEntry, "Zapping to own current step!");
             return;
         }
         TimeTag expiration = null;

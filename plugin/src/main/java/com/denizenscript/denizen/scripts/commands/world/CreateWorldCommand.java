@@ -165,7 +165,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                     return false;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
+                    Debug.echoError(scriptEntry, "Invalid copy from world folder - does not exist!");
                     return false;
                 }
                 if (newFolder.exists()) {

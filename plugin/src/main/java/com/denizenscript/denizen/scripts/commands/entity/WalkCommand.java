@@ -170,7 +170,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 NPCTag npc = entity.getDenizenNPC();
                 npcs.add(npc);
                 if (!npc.isSpawned()) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
+                    Debug.echoError(scriptEntry, "NPC " + npc.identify() + " is not spawned!");
                     continue;
                 }
                 if (shouldStop) {

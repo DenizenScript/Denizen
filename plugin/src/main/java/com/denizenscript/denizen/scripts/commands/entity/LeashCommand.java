@@ -108,7 +108,7 @@ public class LeashCommand extends AbstractCommand {
                 Holder = holderLoc.getWorld().spawn(holderLoc, LeashHitch.class);
             }
             else {
-                Debug.echoError(scriptEntry.getResidingQueue(), "Bad holder location specified - only fences are permitted!");
+                Debug.echoError(scriptEntry, "Bad holder location specified - only fences are permitted!");
                 return;
             }
         }

@@ -143,6 +143,7 @@ public class TextTagBase {
         // <--[tag]
         // @attribute <&dq>
         // @returns ElementTag
+        // @synonyms &quote
         // @description
         // Returns a double-quote symbol: "
         // -->

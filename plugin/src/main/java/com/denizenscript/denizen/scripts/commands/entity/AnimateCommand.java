@@ -147,7 +147,7 @@ public class AnimateCommand extends AbstractCommand {
                     }
                 }
                 catch (Exception e) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
+                    Debug.echoError(scriptEntry, "Error playing that animation!");
                     Debug.echoError(e);
                 }
             }

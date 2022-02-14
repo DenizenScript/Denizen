@@ -127,7 +127,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 return;
             }
             if (!file.exists()) {
-                Debug.echoError(scriptEntry.getResidingQueue(), "Invalid file " + filePath.asString());
+                Debug.echoError(scriptEntry, "Invalid file " + filePath.asString());
                 return;
             }
             NoteBlockReceiver rec;
@@ -138,7 +138,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                 rec = MidiUtil.playMidi(file, tempo, volume, entities);
             }
             if (rec == null) {
-                Debug.echoError(scriptEntry.getResidingQueue(), "Something went wrong playing a midi!");
+                Debug.echoError(scriptEntry, "Something went wrong playing a midi!");
                 scriptEntry.setFinished(true);
             }
             else {

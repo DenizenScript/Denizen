@@ -115,7 +115,7 @@ public class AnchorCommand extends AbstractCommand {
             case REMOVE: {
                 Anchor n = anchors.getAnchor(id.asString());
                 if (n == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
+                    Debug.echoError(scriptEntry, "Invalid anchor name '" + id.asString() + "'");
                 }
                 else {
                     anchors.removeAnchor(n);

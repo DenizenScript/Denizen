@@ -197,12 +197,12 @@ public class FakeEquipCommand extends AbstractCommand {
             HashMap<UUID, EquipmentOverride> playersMap = overrides.computeIfAbsent(player.getUUID(), (k) -> new HashMap<>());
             for (EntityTag entity : entities) {
                 if (entity.isGeneric()) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
+                    Debug.echoError(scriptEntry, "Cannot equip generic entity " + entity.identify() + "!");
                     continue;
                 }
                 LivingEntity livingEntity = entity.getLivingEntity();
                 if (livingEntity == null) {
-                    Debug.echoError(scriptEntry.getResidingQueue(), "Cannot equip invalid/non-living entity " + entity.identify() + "!");
+                    Debug.echoError(scriptEntry, "Cannot equip invalid/non-living entity " + entity.identify() + "!");
                     continue;
                 }
                 EquipmentOverride entityData;

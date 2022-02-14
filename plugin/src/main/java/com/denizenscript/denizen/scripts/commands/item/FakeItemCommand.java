@@ -124,7 +124,7 @@ public class FakeItemCommand extends AbstractCommand {
         }
         int slot = SlotHelper.nameToIndex(elSlot.asString(), players.get(0).getPlayerEntity());
         if (slot == -1) {
-            Debug.echoError(scriptEntry.getResidingQueue(), "The input '" + elSlot.asString() + "' is not a valid slot!");
+            Debug.echoError(scriptEntry, "The input '" + elSlot.asString() + "' is not a valid slot!");
             return;
         }
         final boolean playerOnly = player_only.asBoolean();
