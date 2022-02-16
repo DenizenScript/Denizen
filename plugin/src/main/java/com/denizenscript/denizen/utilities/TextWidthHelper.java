@@ -1,5 +1,8 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
+import org.bukkit.ChatColor;
+
 public class TextWidthHelper {
 
     public static int[] characterWidthMap = new int[128];
@@ -26,15 +29,59 @@ public class TextWidthHelper {
         return c > 127 ? 6 : characterWidthMap[c];
     }
 
+    public static AsciiMatcher formatCharCodeMatcher = new AsciiMatcher("klmnoKLMNO");
+
     public static int getWidth(String str) {
+        int maxWidth = 0;
         int total = 0;
-        for (char c : str.toCharArray()) {
-            total += getWidth(c);
+        boolean bold = false;
+        char[] rawChars = str.toCharArray();
+        for (int i = 0; i < rawChars.length; i++) {
+            char c = rawChars[i];
+            if (c == ChatColor.COLOR_CHAR && (i + 1) < rawChars.length) {
+                char c2 = rawChars[i + 1];
+                if (c2 == '[') {
+                    while (i < rawChars.length && rawChars[i] != ']') {
+                        i++;
+                    }
+                    continue;
+                }
+                else if (c2 == 'l' || c2 == 'L') {
+                    bold = true;
+                }
+                else if (!formatCharCodeMatcher.isMatch(c2)) {
+                    bold = false;
+                }
+                i++;
+                continue;
+            }
+            total += getWidth(c) + (bold ? 2 : 0);
             if (c == '\n') {
+                if (total > maxWidth) {
+                    maxWidth = total;
+                }
                 total = 0;
             }
         }
-        return total;
+        return Math.max(total, maxWidth);
+    }
+
+    public static boolean isBold(boolean wasBold, String str) {
+        boolean bold = wasBold;
+        char[] rawChars = str.toCharArray();
+        for (int i = 0; i < rawChars.length; i++) {
+            char c = rawChars[i];
+            if (c == ChatColor.COLOR_CHAR && (i + 1) < rawChars.length) {
+                char c2 = rawChars[i + 1];
+                if (c2 == 'l' || c2 == 'L') {
+                    bold = true;
+                }
+                else if (!formatCharCodeMatcher.isMatch(c2)) {
+                    bold = false;
+                }
+            }
+        }
+        return bold;
     }
 
     public static String splitLines(String str, int width) {
@@ -42,31 +89,33 @@ public class TextWidthHelper {
             return str;
         }
         StringBuilder output = new StringBuilder(str.length() * 2);
-        int curLineWidth = 0;
         int lineStart = 0;
+        boolean bold = false;
         mainloop:
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             if (c == '\n') {
-                output.append(str, lineStart, i + 1);
-                curLineWidth = 0;
+                String lastLine = str.substring(lineStart, i + 1);
+                bold = isBold(bold, lastLine);
+                output.append(lastLine);
                 lineStart = i + 1;
                 continue;
             }
-            curLineWidth += getWidth(c);
-            if (curLineWidth > width) {
+            if (getWidth(((bold ? ChatColor.BOLD.toString() : "") + str.substring(lineStart, i))) > width) {
                 for (int x = i - 1; x > lineStart; x--) {
                     char xc = str.charAt(x);
                     if (xc == ' ') {
-                        output.append(str, lineStart, x).append("\n");
-                        curLineWidth = 0;
+                        String lastLine = str.substring(lineStart, x);
+                        bold = isBold(bold, lastLine);
+                        output.append(lastLine).append("\n");
                         lineStart = x + 1;
                         i = x;
                         continue mainloop;
                     }
                 }
-                output.append(str, lineStart, i).append("\n");
-                curLineWidth = 0;
+                String lastLine = str.substring(lineStart, i);
+                bold = isBold(bold, lastLine);
+                output.append(lastLine).append("\n");
                 lineStart = i;
             }
         }
