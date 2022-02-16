@@ -4,8 +4,10 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
@@ -61,7 +63,14 @@ public class ItemBaseColor implements Property {
         }
     }
 
-    private void setBaseColor(DyeColor color) {
+    private void setBaseColor(DyeColor color, TagContext context) {
+        if (color == null && item.getBukkitMaterial() == Material.SHIELD) {
+            ItemRawNBT property = ItemRawNBT.getFrom(item);
+            MapTag nbt = property.getFullNBTMap();
+            nbt.putObject("BlockEntityTag", null);
+            property.setFullNBT(item, nbt, context, false);
+            return;
+        }
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BlockStateMeta) {
             Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
@@ -126,11 +135,12 @@ public class ItemBaseColor implements Property {
         // @description
         // Changes the base color of a shield.
         // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+        // Give no input with a shield to remove the base color (and any patterns).
         // @tags
         // <ItemTag.base_color>
         // -->
         if (mechanism.matches("base_color")) {
-            setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+            setBaseColor(mechanism.hasValue() ? DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()) : null, mechanism.context);
         }
     }
 }

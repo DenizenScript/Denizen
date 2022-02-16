@@ -346,6 +346,26 @@ public class ItemRawNBT implements Property {
         return "raw_nbt";
     }
 
+    public void setFullNBT(ItemTag item, MapTag input, TagContext context, boolean retainOld) {
+        CompoundTag compoundTag = retainOld ? NMSHandler.getItemHelper().getNbtData(item.getItemStack()) : null;
+        Map<String, Tag> result = compoundTag == null ? new LinkedHashMap<>() : new LinkedHashMap<>(compoundTag.getValue());
+        for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
+            try {
+                Tag tag = convertObjectToNbt(entry.getValue().toString(), context, "(item).");
+                if (tag != null) {
+                    result.put(entry.getKey().str, tag);
+                }
+            }
+            catch (Exception ex) {
+                Debug.echoError("Raw_Nbt input failed for root key '" + entry.getKey().str + "'.");
+                Debug.echoError(ex);
+                return;
+            }
+        }
+        compoundTag = NMSHandler.getInstance().createCompoundTag(result);
+        item.setItemStack(NMSHandler.getItemHelper().setNbtData(item.getItemStack(), compoundTag));
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 
@@ -362,24 +382,8 @@ public class ItemRawNBT implements Property {
         // <ItemTag.all_raw_nbt>
         // -->
         if (mechanism.matches("raw_nbt") && mechanism.requireObject(MapTag.class)) {
-            CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
             MapTag input = mechanism.valueAsType(MapTag.class);
-            Map<String, Tag> result = new LinkedHashMap<>(compoundTag.getValue());
-            for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
-                try {
-                    Tag tag = convertObjectToNbt(entry.getValue().toString(), mechanism.context, "(item).");
-                    if (tag != null) {
-                        result.put(entry.getKey().str, tag);
-                    }
-                }
-                catch (Exception ex) {
-                    mechanism.echoError("Raw_Nbt input failed for root key '" + entry.getKey().str + "'.");
-                    Debug.echoError(ex);
-                    return;
-                }
-            }
-            compoundTag = NMSHandler.getInstance().createCompoundTag(result);
-            item.setItemStack(NMSHandler.getItemHelper().setNbtData(item.getItemStack(), compoundTag));
+            setFullNBT(item, input, mechanism.context, true);
         }
     }
 }
