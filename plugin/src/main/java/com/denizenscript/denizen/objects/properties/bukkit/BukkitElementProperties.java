@@ -306,7 +306,6 @@ public class BukkitElementProperties implements Property {
         // The width used is based on the vanilla minecraft font. This will not be accurate for other fonts.
         // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
         // Spaces will be preferred to become newlines, unless a line does not contain any spaces.
-        // This will transfer colors over to new lines as well.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "split_lines_by_width", (attribute, object) -> {
             int width = attribute.getIntParam();
@@ -321,7 +320,7 @@ public class BukkitElementProperties implements Property {
         // Returns the width, in pixels, of the text.
         // The width used is based on the vanilla minecraft font. This will not be accurate for other fonts.
         // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
-        // This will not work well with elements that contain newlines.
+        // If the element contains newlines, will return the widest line width.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "text_width", (attribute, object) -> {
             return new ElementTag(TextWidthHelper.getWidth(object.asString()));
