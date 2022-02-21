@@ -4099,6 +4099,41 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(ElementTag.class, "is_spawnable", (attribute, object) -> {
             return new ElementTag(SpawnableHelper.isSpawnable(object));
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.sign_glowing>
+        // @returns ElementTag(Boolean)
+        // @mechanism LocationTag.sign_glowing
+        // @group world
+        // @description
+        // Returns whether the location is a Sign block that is glowing.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "sign_glowing", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Sign)) {
+                attribute.echoError("Location is not a valid Sign block.");
+                return null;
+            }
+            return new ElementTag(((Sign) state).isGlowingText());
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.sign_glow_color>
+        // @returns ElementTag
+        // @mechanism LocationTag.sign_glow_color
+        // @group world
+        // @description
+        // Returns the name of the glow-color of the sign at the location.
+        // See also <@link tag LocationTag.sign_glowing>
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "sign_glow_color", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Sign)) {
+                attribute.echoError("Location is not a valid Sign block.");
+                return null;
+            }
+            return new ElementTag(((Sign) state).getColor().name());
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -4649,7 +4684,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @tags
         // <server.tree_types>
         // -->
-        if (mechanism.matches("generate_tree") && mechanism.requireEnum(false, TreeType.values())) {
+        if (mechanism.matches("generate_tree") && mechanism.requireEnum(TreeType.class)) {
             boolean generated = getWorld().generateTree(this, TreeType.valueOf(mechanism.getValue().asString().toUpperCase()));
             if (!generated) {
                 Debug.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
@@ -4931,6 +4966,53 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 NMSHandler.getBlockHelper().ringBell((Bell) state);
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_glowing
+        // @input ElementTag(Boolean)
+        // @description
+        // Changes whether the sign at the location is glowing.
+        // @tags
+        // <LocationTag.sign_glow_color>
+        // <LocationTag.sign_glowing>
+        // -->
+        if (mechanism.matches("sign_glowing") && mechanism.requireBoolean()) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Sign)) {
+                Debug.echoError("'sign_glowing' mechanism can only be called on Sign blocks.");
+            }
+            else {
+                Sign sign = (Sign) state;
+                sign.setGlowingText(mechanism.getValue().asBoolean());
+                sign.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_glow_color
+        // @input ElementTag
+        // @description
+        // Changes the glow color of a sign.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+        // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
+        // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the sign is glowing.
+        // @tags
+        // <LocationTag.sign_glow_color>
+        // <LocationTag.sign_glowing>
+        // -->
+        if (mechanism.matches("sign_glow_color") && mechanism.requireEnum(DyeColor.class)) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Sign)) {
+                Debug.echoError("'sign_glow_color' mechanism can only be called on Sign blocks.");
+            }
+            else {
+                Sign sign = (Sign) state;
+                sign.setColor(mechanism.getValue().asEnum(DyeColor.class));
+                sign.update();
             }
         }
 
