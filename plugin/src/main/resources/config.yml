@@ -54,9 +54,6 @@ Scripts:
     Queue speed: instant
   # Default speed for new queues (via run command usually)
   Queue speed: instant
-  Scripts location:
-    Use default script folder: true
-    Alternative folder path: 'plugins/Denizen'
   # What character encoding to use. 'default' indicates system default, 'utf8' is suggested as a preferred encoding in most cases.
   Encoding: utf8
   Command:

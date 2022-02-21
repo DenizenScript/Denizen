@@ -32,9 +32,13 @@ public class TextWidthHelper {
     public static AsciiMatcher formatCharCodeMatcher = new AsciiMatcher("klmnoKLMNO");
 
     public static int getWidth(String str) {
+        return getWidth(false, str);
+    }
+
+    public static int getWidth(boolean wasBold, String str) {
         int maxWidth = 0;
         int total = 0;
-        boolean bold = false;
+        boolean bold = wasBold;
         char[] rawChars = str.toCharArray();
         for (int i = 0; i < rawChars.length; i++) {
             char c = rawChars[i];
@@ -94,6 +98,10 @@ public class TextWidthHelper {
         mainloop:
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
+            if (c == ChatColor.COLOR_CHAR) {
+                i++;
+                continue;
+            }
             if (c == '\n') {
                 String lastLine = str.substring(lineStart, i + 1);
                 bold = isBold(bold, lastLine);
@@ -101,7 +109,7 @@ public class TextWidthHelper {
                 lineStart = i + 1;
                 continue;
             }
-            if (getWidth(((bold ? ChatColor.BOLD.toString() : "") + str.substring(lineStart, i))) > width) {
+            if (getWidth(bold, str.substring(lineStart, i)) > width) {
                 for (int x = i - 1; x > lineStart; x--) {
                     char xc = str.charAt(x);
                     if (xc == ' ') {

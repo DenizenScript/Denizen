@@ -26,7 +26,7 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     //
     // @Context
     // <context.criteria> returns all the criteria present in this advancement.
-    // <context.advancement> returns the name of advancement completed.
+    // <context.advancement> returns the completed advancement's minecraft ID key.
     //
     // @Player Always.
     //

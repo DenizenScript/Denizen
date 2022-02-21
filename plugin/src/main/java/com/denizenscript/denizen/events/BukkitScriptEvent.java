@@ -1151,7 +1151,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean tryEntity(EntityTag entity, String comparedto) {
-        if (comparedto == null || comparedto.isEmpty() || entity == null) {
+        if (entity == null) {
             return false;
         }
         return entity.tryAdvancedMatcher(comparedto);

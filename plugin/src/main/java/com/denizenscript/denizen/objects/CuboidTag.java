@@ -1511,7 +1511,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     public void applyProperty(Mechanism mechanism) {
         if (NoteManager.isExactSavedObject(this)) {
-            Debug.echoError("Cannot apply properties to noted objects.");
+            mechanism.echoError("Cannot apply properties to noted objects.");
             return;
         }
         adjust(mechanism);
