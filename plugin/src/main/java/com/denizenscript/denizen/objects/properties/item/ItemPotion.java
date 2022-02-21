@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -224,14 +225,14 @@ public class ItemPotion implements Property {
         // <--[tag]
         // @attribute <ItemTag.potion_base>
         // @returns ElementTag
+        // @group attribute
         // @mechanism ItemTag.potion_effects
-        // @group properties
+        // @deprecated use 'effects_data' instead
         // @description
-        // Returns the potion type details for this potion item.
-        // In the format Type,Level,Extended,Splash,Color
-        // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_base", (attribute, object) -> {
+            Deprecations.oldPotionEffects.warn(attribute.context);
             PotionMeta meta = object.getMeta();
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (object.item.getBukkitMaterial() == Material.SPLASH_POTION)
@@ -241,13 +242,14 @@ public class ItemPotion implements Property {
         // <--[tag]
         // @attribute <ItemTag.potion_effects>
         // @returns ListTag
+        // @group attribute
         // @mechanism ItemTag.potion_effects
-        // @group properties
+        // @deprecated use 'effects_data' instead
         // @description
-        // Returns the list of potion effects on this item.
-        // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "potion_effects", (attribute, object) -> {
+            Deprecations.oldPotionEffects.warn(attribute.context);
             ListTag result = new ListTag();
             for (PotionEffect pot : object.getMeta().getCustomEffects()) {
                 result.add(stringifyEffect(pot));
@@ -266,147 +268,62 @@ public class ItemPotion implements Property {
             return new ElementTag(object.getMeta().hasCustomEffects());
         });
 
+        // <--[tag]
+        // @attribute <ItemTag.potion_effect[<#>]>
+        // @returns ElementTag
+        // @group attribute
+        // @mechanism ItemTag.potion_effects
+        // @deprecated use 'effects_data' instead
+        // @description
+        // Deprecated in favor of <@link tag ItemTag.effects_data>
+        // -->
         PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_effect", (attribute, object) -> {
+            Deprecations.oldPotionEffects.warn(attribute.context);
             PotionMeta meta = object.getMeta();
             int potN = attribute.hasParam() ? attribute.getIntParam() - 1 : 0;
             if (potN < 0 || potN > meta.getCustomEffects().size()) {
                 return null;
             }
-            
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].is_splash>
-            // @returns ElementTag(Boolean)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns whether the potion is a splash potion.
-            // -->
             if (attribute.startsWith("is_splash", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(object.item.getBukkitMaterial() == Material.SPLASH_POTION);
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].is_extended>
-            // @returns ElementTag(Boolean)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns whether the potion effect is extended.
-            // -->
             if (attribute.startsWith("is_extended", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getBasePotionData().isExtended());
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].level>
-            // @returns ElementTag(Number)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns the potion effect's level.
-            // -->
             if (attribute.startsWith("level", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getBasePotionData().isUpgraded() ? 2 : 1);
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].is_ambient>
-            // @returns ElementTag(Boolean)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns whether the potion effect is ambient.
-            // "Ambient" effects in vanilla came from a beacon, while non-ambient came from a potion.
-            // -->
             if (attribute.startsWith("is_ambient", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).isAmbient());
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].icon>
-            // @returns ElementTag(Boolean)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns whether the potion effect shows an icon.
-            // -->
             if (attribute.startsWith("icon", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).hasIcon());
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].has_particles>
-            // @returns ElementTag(Boolean)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns whether the potion effect has particles.
-            // -->
             if (attribute.startsWith("has_particles", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).hasParticles());
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].duration>
-            // @returns ElementTag(Number)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns the duration in ticks of the potion.
-            // -->
             if (attribute.startsWith("duration", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).getDuration());
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].amplifier>
-            // @returns ElementTag(Number)
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns the amplifier level of the potion effect.
-            // -->
             if (attribute.startsWith("amplifier", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).getAmplifier());
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>].type>
-            // @returns ElementTag
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @description
-            // Returns the type of the potion effect.
-            // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
-            // -->
             if (attribute.startsWith("type", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).getType().getName());
             }
-
             if (attribute.startsWith("data", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(0);
             }
-
-            // <--[tag]
-            // @attribute <ItemTag.potion_effect[<#>]>
-            // @returns ElementTag
-            // @mechanism ItemTag.potion_effects
-            // @group properties
-            // @warning Don't use this directly, use its sub-tags!
-            // @description
-            // Returns the potion effect on this item.
-            // In the format Effect,Level,Extended,Splash
-            // -->
             PotionData data = meta.getBasePotionData();
             return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
                     + "," + data.isExtended() + "," + (object.item.getBukkitMaterial() == Material.SPLASH_POTION));
@@ -419,7 +336,8 @@ public class ItemPotion implements Property {
         // @mechanism ItemTag.potion_effects
         // @group properties
         // @description
-        // Returns a list of all potion effects on this item, in the MapTag format of the mechanism.
+        // Returns a list of all potion effects on this item, in the same format as the MapTag input to the mechanism.
+        // Note that the first value in the list is the potion's base type, and all subsequent entries are effect data.
         // -->
         PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "effects_data", (attribute, object) -> {
             return object.getMapTagData();
@@ -441,12 +359,13 @@ public class ItemPotion implements Property {
         // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
         // 2: A MapTag with "type", "upgraded" and "extended" keys, and an optional "color" key.
         // For example: [type=SPEED;upgraded=true;extended=false;color=RED].
+        // The primary type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        //
         // The following items in the list are potion effects, which must be either:
         // 1: Comma-separated potion effect data, in the format Effect,Amplifier,Duration,Ambient,Particles,Icon.
         // For example: SPEED,2,200,false,true,true.
         // 2: A MapTag with "type", "amplifier", "duration", "ambient", "particles" and "icon" keys.
         // For example: [type=SPEED;amplifier=2;duration=200t;ambient=false;particles=true;icon=true].
-        // The primary type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
         // <ItemTag.effects_data>

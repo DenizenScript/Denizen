@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.entity.Arrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -96,13 +97,12 @@ public class EntityPotionEffects implements Property {
         // @returns ListTag
         // @group attribute
         // @mechanism EntityTag.potion_effects
+        // @deprecated use 'effects_data' instead
         // @description
-        // Returns the list of active potion effects on the entity, in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
-        // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
-        // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
-        // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // Deprecated in favor of <@link tag EntityTag.effects_data>
         // -->
         PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "list_effects", (attribute, object) -> {
+            Deprecations.oldPotionEffects.warn(attribute.context);
             return object.getEffectsListTag();
         });
 
