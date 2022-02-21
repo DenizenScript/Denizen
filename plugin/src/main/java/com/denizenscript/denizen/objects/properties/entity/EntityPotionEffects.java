@@ -81,7 +81,7 @@ public class EntityPotionEffects implements Property {
     }
 
     public String getPropertyString() {
-        ListTag effects = getEffectsListTag();
+        ListTag effects = getEffectsMapTag();
         return effects.isEmpty() ? null : effects.identify();
     }
 
@@ -172,8 +172,7 @@ public class EntityPotionEffects implements Property {
         // <EntityTag.has_effect[<effect>]>
         // -->
         if (mechanism.matches("potion_effects")) {
-            Collection<ObjectTag> effects = CoreUtilities.objectToList(mechanism.value, mechanism.context);
-            for (ObjectTag effectObj : effects) {
+            for (ObjectTag effectObj : CoreUtilities.objectToList(mechanism.value, mechanism.context)) {
                 PotionEffect effect;
                 if (effectObj.canBeType(MapTag.class)) {
                     MapTag effectMap = effectObj.asType(MapTag.class, mechanism.context);

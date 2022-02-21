@@ -69,6 +69,23 @@ public class ItemPotion implements Property {
         return map;
     }
 
+    public ListTag getMapTagData() {
+        ListTag result = new ListTag();
+        MapTag base = new MapTag();
+        PotionMeta meta = getMeta();
+        base.putObject("type", new ElementTag(meta.getBasePotionData().getType().name()));
+        base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
+        base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
+        if (meta.hasColor()) {
+            base.putObject("color", new ColorTag(meta.getColor()));
+        }
+        result.addObject(base);
+        for (PotionEffect effect : meta.getCustomEffects()) {
+            result.addObject(effectToMap(effect));
+        }
+        return result;
+    }
+
     public static PotionEffect parseEffect(String str, TagContext context) {
         String[] d2 = str.split(",");
         PotionEffectType type;
@@ -181,17 +198,7 @@ public class ItemPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        PotionMeta meta = getMeta();
-        ListTag effects = new ListTag();
-        effects.add(meta.getBasePotionData().getType()
-                + "," + meta.getBasePotionData().isUpgraded()
-                + "," + meta.getBasePotionData().isExtended()
-                + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify().replace(",", "&comma") : "")
-        );
-        for (PotionEffect pot : meta.getCustomEffects()) {
-            effects.add(stringifyEffect(pot));
-        }
-        return effects.identify();
+        return getMapTagData().identify();
     }
 
     @Override
@@ -415,20 +422,7 @@ public class ItemPotion implements Property {
         // Returns a list of all potion effects on this item, in the MapTag format of the mechanism.
         // -->
         PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "effects_data", (attribute, object) -> {
-            ListTag result = new ListTag();
-            PotionMeta meta = object.getMeta();
-            MapTag base = new MapTag();
-            base.putObject("type", new ElementTag(meta.getBasePotionData().getType().name()));
-            base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
-            base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
-            if (meta.hasColor()) {
-                base.putObject("color", new ColorTag(meta.getColor()));
-            }
-            result.addObject(base);
-            for (PotionEffect effect : meta.getCustomEffects()) {
-                result.addObject(effectToMap(effect));
-            }
-            return result;
+            return object.getMapTagData();
         });
     }
 
@@ -478,7 +472,7 @@ public class ItemPotion implements Property {
                 MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
                 if (baseEffect.getObject("type") != null) {
                     ElementTag typeElement = baseEffect.getObject("type").asElement();
-                    if (!typeElement.matchesEnum(PotionType.values())) {
+                    if (!typeElement.matchesEnum(PotionType.class)) {
                         mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
                         return;
                     }
