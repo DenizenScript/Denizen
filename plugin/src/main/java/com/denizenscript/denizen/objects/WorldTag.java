@@ -924,7 +924,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to a world!");
+        mechanism.echoError("Cannot apply properties to a world!");
     }
 
     @Override

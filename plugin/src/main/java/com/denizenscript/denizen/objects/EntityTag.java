@@ -465,6 +465,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public final boolean tryAdvancedMatcher(String text) {
+        if (text == null || text.isEmpty()) {
+            return false;
+        }
         ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(CoreUtilities.toLowerCase(text));
         if (isCitizensNPC()) {
             return matcher.doesMatch("npc", this::tryExactMatcher);
@@ -3011,7 +3014,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             mechanism.fulfill();
         }
         else {
-            Debug.echoError("Cannot apply properties to an already-spawned entity!");
+            mechanism.echoError("Cannot apply properties to an already-spawned entity!");
         }
     }
 
@@ -3026,10 +3029,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         if (getBukkitEntity() == null) {
             if (isCitizensNPC()) {
-                Debug.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
+                mechanism.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
             }
             else {
-                Debug.echoError("Cannot adjust entity " + this);
+                mechanism.echoError("Cannot adjust entity " + this);
             }
             return;
         }
@@ -4049,6 +4052,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public boolean advancedMatches(String matcher) {
-        return BukkitScriptEvent.tryEntity(this, matcher);
+        return tryAdvancedMatcher(matcher);
     }
 }

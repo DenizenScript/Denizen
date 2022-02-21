@@ -1277,7 +1277,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to an NPC!");
+        mechanism.echoError("Cannot apply properties to an NPC!");
     }
 
     @Override

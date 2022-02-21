@@ -284,7 +284,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to a biome!");
+        mechanism.echoError("Cannot apply properties to a biome!");
     }
 
     @Override

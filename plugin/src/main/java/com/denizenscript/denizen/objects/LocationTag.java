@@ -4109,7 +4109,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to a location!");
+        mechanism.echoError("Cannot apply properties to a location!");
     }
 
     @Override
@@ -4129,7 +4129,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Block block = getBlock();
             MaterialTag material = new MaterialTag(block);
             if (!MaterialDirectional.describes(material)) {
-                Debug.echoError("LocationTag.block_facing mechanism failed: block is not directional.");
+                mechanism.echoError("LocationTag.block_facing mechanism failed: block is not directional.");
                 return;
             }
             MaterialDirectional.getFrom(material).setFacing(Utilities.faceFor(faceVec.toVector()));

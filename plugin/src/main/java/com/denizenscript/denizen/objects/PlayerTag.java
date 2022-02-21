@@ -2501,7 +2501,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to a player!");
+        mechanism.echoError("Cannot apply properties to a player!");
     }
 
     @Override

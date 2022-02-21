@@ -2330,7 +2330,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     }
 
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to non-generic inventory!");
+        mechanism.echoError("Cannot apply properties to non-generic inventory!");
     }
 
     @Override
@@ -2349,7 +2349,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // -->
         if (mechanism.matches("matrix") && mechanism.requireObject(ListTag.class)) {
             if (!(inventory instanceof CraftingInventory)) {
-                Debug.echoError("Inventory is not a crafting inventory, cannot set matrix.");
+                mechanism.echoError("Inventory is not a crafting inventory, cannot set matrix.");
                 return;
             }
             CraftingInventory craftingInventory = (CraftingInventory) inventory;

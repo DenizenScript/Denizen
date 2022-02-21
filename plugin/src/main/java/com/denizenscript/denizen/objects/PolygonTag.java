@@ -714,7 +714,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     public void applyProperty(Mechanism mechanism) {
         if (NoteManager.isExactSavedObject(this)) {
-            Debug.echoError("Cannot apply properties to noted objects.");
+            mechanism.echoError("Cannot apply properties to noted objects.");
             return;
         }
         adjust(mechanism);

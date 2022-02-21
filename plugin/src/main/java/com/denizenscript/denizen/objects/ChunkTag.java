@@ -694,7 +694,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public void applyProperty(Mechanism mechanism) {
-        Debug.echoError("Cannot apply properties to a chunk!");
+        mechanism.echoError("Cannot apply properties to a chunk!");
     }
 
     @Override
