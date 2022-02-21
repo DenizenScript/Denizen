@@ -31,8 +31,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -253,11 +251,6 @@ public class ItemHelperImpl extends ItemHelper {
         net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.setTag(((CompoundTagImpl) compoundTag).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
-    }
-
-    @Override
-    public PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, boolean icon) {
-        return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
     }
 
     @Override
