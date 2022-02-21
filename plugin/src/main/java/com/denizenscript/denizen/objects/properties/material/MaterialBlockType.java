@@ -167,13 +167,13 @@ public class MaterialBlockType implements Property {
         // <MaterialTag.type>
         // -->
         if (mechanism.matches("type") || (mechanism.matches("slab_type"))) {
-            if (isSlab() && mechanism.requireEnum(false, Slab.Type.values())) {
+            if (isSlab() && mechanism.requireEnum(Slab.Type.class)) {
                 getSlab().setType(Slab.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isCampfire()) {
                 getCampfire().setSignalFire(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "signal"));
             }
-            else if (isPistonHead() && mechanism.requireEnum(false, TechnicalPiston.Type.values())) {
+            else if (isPistonHead() && mechanism.requireEnum(TechnicalPiston.Type.class)) {
                 getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isScaffolding()) {

@@ -226,7 +226,7 @@ public class ItemFirework implements Property {
                         builder.flicker(flicker != null && flicker.asElement().asBoolean());
                         if (type != null) {
                             ElementTag effectType = type.asElement();
-                            if (effectType.matchesEnum(FireworkEffect.Type.values())) {
+                            if (effectType.matchesEnum(FireworkEffect.Type.class)) {
                                 builder.with(FireworkEffect.Type.valueOf(effectType.asString().toUpperCase()));
                             }
                             else {
@@ -265,7 +265,7 @@ public class ItemFirework implements Property {
                             FireworkEffect.Builder builder = FireworkEffect.builder();
                             builder.trail(new ElementTag(data[0]).asBoolean());
                             builder.flicker(new ElementTag(data[1]).asBoolean());
-                            if (new ElementTag(data[2]).matchesEnum(FireworkEffect.Type.values())) {
+                            if (new ElementTag(data[2]).matchesEnum(FireworkEffect.Type.class)) {
                                 builder.with(FireworkEffect.Type.valueOf(data[2].toUpperCase()));
                             }
                             else {

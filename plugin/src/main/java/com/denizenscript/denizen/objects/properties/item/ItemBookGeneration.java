@@ -90,7 +90,7 @@ public class ItemBookGeneration implements Property {
         // @tags
         // <ItemTag.book_generation>
         // -->
-        if (mechanism.matches("book_generation") && mechanism.requireEnum(false, BookMeta.Generation.values())) {
+        if (mechanism.matches("book_generation") && mechanism.requireEnum(BookMeta.Generation.class)) {
             BookMeta meta = (BookMeta) item.getItemMeta();
             meta.setGeneration(BookMeta.Generation.valueOf(mechanism.getValue().asString().toUpperCase()));
             item.setItemMeta(meta);

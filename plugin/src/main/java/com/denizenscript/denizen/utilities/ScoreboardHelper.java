@@ -109,7 +109,7 @@ public class ScoreboardHelper {
                 o.setDisplayName(obj);
 
                 // Only set display slot if it's valid
-                if (Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.values())) {
+                if (Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.class)) {
                     o.setDisplaySlot(DisplaySlot.valueOf(displaySlot.toUpperCase()));
                 }
 

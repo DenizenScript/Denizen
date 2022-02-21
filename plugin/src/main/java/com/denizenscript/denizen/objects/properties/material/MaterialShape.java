@@ -78,7 +78,7 @@ public class MaterialShape implements Property {
         // @tags
         // <MaterialTag.shape>
         // -->
-        if (mechanism.matches("shape") && mechanism.requireEnum(false, Stairs.Shape.values())) {
+        if (mechanism.matches("shape") && mechanism.requireEnum(Stairs.Shape.class)) {
             getStairs().setShape(Stairs.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }

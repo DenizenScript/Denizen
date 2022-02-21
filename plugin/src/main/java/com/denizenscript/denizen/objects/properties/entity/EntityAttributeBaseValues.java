@@ -79,7 +79,7 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "has_attribute", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
                 attribute.echoError("Invalid entity.has_attribute[...] input: must be a valid attribute name.");
                 return null;
             }
@@ -99,7 +99,7 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "attribute_value", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
                 attribute.echoError("Invalid entity.attribute_value[...] input: must be a valid attribute name.");
                 return null;
             }
@@ -124,7 +124,7 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "attribute_base_value", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
                 attribute.echoError("Invalid entity.attribute_base_value[...] input: must be a valid attribute name.");
                 return null;
             }
@@ -149,7 +149,7 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.<EntityAttributeBaseValues, ElementTag>registerTag(ElementTag.class, "attribute_default_value", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.values()))) {
+            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
                 attribute.echoError("Invalid entity.attribute_default_value[...] input: must be a valid attribute name.");
                 return null;
             }

@@ -102,7 +102,7 @@ public class PauseCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("pause_type")
-                    && arg.matchesEnum(PauseType.values())) {
+                    && arg.matchesEnum(PauseType.class)) {
                 scriptEntry.addObject("pause_type", arg.asElement());
             }
             else {

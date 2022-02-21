@@ -97,21 +97,21 @@ public class BossBarCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("color")
                     && arg.matchesPrefix("color", "c")
-                    && arg.matchesEnum(BarColor.values())) {
+                    && arg.matchesEnum(BarColor.class)) {
                 scriptEntry.addObject("color", arg.asElement());
             }
             else if (!scriptEntry.hasObject("style")
                     && arg.matchesPrefix("style", "s")
-                    && arg.matchesEnum(BarStyle.values())) {
+                    && arg.matchesEnum(BarStyle.class)) {
                 scriptEntry.addObject("style", arg.asElement());
             }
             else if (!scriptEntry.hasObject("options")
                     && arg.matchesPrefix("options", "option", "opt", "o", "flags", "flag", "f")
-                    && arg.matchesEnumList(BarFlag.values())) {
+                    && arg.matchesEnumList(BarFlag.class)) {
                 scriptEntry.addObject("options", arg.asType(ListTag.class));
             }
             else if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values())) {
+                    && arg.matchesEnum(Action.class)) {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players")

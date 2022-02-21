@@ -316,7 +316,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
         InventoryTag result = null;
         if (typeName.equals("generic")) {
-            if (holder != null && !new ElementTag(holder).matchesEnum(InventoryType.values())) {
+            if (holder != null && !new ElementTag(holder).matchesEnum(InventoryType.class)) {
                 if (context == null || context.showErrors()) {
                     Debug.echoError("Unknown inventory type '" + holder + "'");
                 }
@@ -349,7 +349,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 result = ((InventoryScriptContainer) script.getContainer()).getInventoryFrom(context);
             }
         }
-        if (result == null && new ElementTag(typeName).matchesEnum(InventoryType.values())) {
+        if (result == null && new ElementTag(typeName).matchesEnum(InventoryType.class)) {
             InventoryType type = InventoryType.valueOf(typeName.toUpperCase());
             if (size == -1 || type != InventoryType.CHEST) {
                 result = new InventoryTag(type);
@@ -414,7 +414,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         if (ScriptRegistry.containsScript(string, InventoryScriptContainer.class)) {
             return ScriptRegistry.getScriptContainerAs(string, InventoryScriptContainer.class).getInventoryFrom(context);
         }
-        if (new ElementTag(string).matchesEnum(InventoryType.values())) {
+        if (new ElementTag(string).matchesEnum(InventoryType.class)) {
             InventoryType type = InventoryType.valueOf(string.toUpperCase());
             return new InventoryTag(type);
         }
@@ -432,7 +432,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         if (arg.contains("[")) {
             tid = arg.substring(0, arg.indexOf('['));
         }
-        if (new ElementTag(tid).matchesEnum(InventoryType.values())) {
+        if (new ElementTag(tid).matchesEnum(InventoryType.class)) {
             return true;
         }
         if (ScriptRegistry.containsScript(tid, InventoryScriptContainer.class)) {

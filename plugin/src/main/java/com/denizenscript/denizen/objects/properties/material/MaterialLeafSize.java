@@ -82,7 +82,7 @@ public class MaterialLeafSize implements Property {
         // @tags
         // <MaterialTag.leaf_size>
         // -->
-        if (mechanism.matches("leaf_size") && mechanism.requireEnum(false, Bamboo.Leaves.values())) {
+        if (mechanism.matches("leaf_size") && mechanism.requireEnum(Bamboo.Leaves.class)) {
             setLeafSize(mechanism.getValue().asString().toUpperCase());
         }
     }

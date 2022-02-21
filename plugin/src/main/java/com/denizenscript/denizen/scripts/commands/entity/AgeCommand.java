@@ -66,7 +66,7 @@ public class AgeCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("agetype")
-                    && arg.matchesEnum(AgeType.values())) {
+                    && arg.matchesEnum(AgeType.class)) {
                 scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("age")

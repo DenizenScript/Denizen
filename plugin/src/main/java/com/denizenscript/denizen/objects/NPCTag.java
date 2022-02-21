@@ -1379,7 +1379,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.hologram_direction>
         // -->
-        if (mechanism.matches("hologram_direction") && mechanism.requireEnum(false, HologramTrait.HologramDirection.values())) {
+        if (mechanism.matches("hologram_direction") && mechanism.requireEnum(HologramTrait.HologramDirection.class)) {
             HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
             hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
@@ -1790,7 +1790,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // TODO
         // -->
-        if (mechanism.matches("glow_color") && mechanism.requireEnum(false, ChatColor.values())) {
+        if (mechanism.matches("glow_color") && mechanism.requireEnum(ChatColor.class)) {
             getCitizen().getOrAddTrait(ScoreboardTrait.class).setColor(ChatColor.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 

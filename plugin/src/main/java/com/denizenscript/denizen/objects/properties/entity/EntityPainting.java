@@ -112,7 +112,7 @@ public class EntityPainting implements Property {
         // <EntityTag.painting>
         // <server.art_types>
         // -->
-        if (mechanism.matches("painting") && mechanism.requireEnum(false, Art.values())) {
+        if (mechanism.matches("painting") && mechanism.requireEnum(Art.class)) {
             Art art = Art.valueOf(mechanism.getValue().asString().toUpperCase());
             if (((Painting) painting.getBukkitEntity()).getArt() != art) {
                 ((Painting) painting.getBukkitEntity()).setArt(art, true);

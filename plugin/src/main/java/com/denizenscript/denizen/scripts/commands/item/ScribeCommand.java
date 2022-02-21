@@ -34,7 +34,7 @@ public class ScribeCommand extends AbstractCommand {
 
         for (Argument arg : scriptEntry) {
 
-            if (arg.matchesEnum(BookAction.values())
+            if (arg.matchesEnum(BookAction.class)
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", BookAction.valueOf(arg.getValue().toUpperCase()));
             }

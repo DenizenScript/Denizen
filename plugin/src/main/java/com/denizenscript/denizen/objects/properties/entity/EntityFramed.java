@@ -153,7 +153,7 @@ public class EntityFramed implements Property {
             else {
                 mechanism.echoError("Invalid item '" + list.get(0) + "'");
             }
-            if (list.size() > 1 && new ElementTag(list.get(1)).matchesEnum(Rotation.values())) {
+            if (list.size() > 1 && new ElementTag(list.get(1)).matchesEnum(Rotation.class)) {
                 getItemFrameEntity().setRotation(Rotation.valueOf(list.get(1).toUpperCase()));
             }
         }

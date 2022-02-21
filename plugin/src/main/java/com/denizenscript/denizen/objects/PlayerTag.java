@@ -2549,7 +2549,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Note: This is powered by a bug in Minecraft that has been present for a long time, but may at some point be 'fixed' by Mojang.
         // -->
         if (mechanism.matches("vision")) {
-            if (mechanism.hasValue() && mechanism.requireEnum(false, EntityType.values())) {
+            if (mechanism.hasValue() && mechanism.requireEnum(EntityType.class)) {
                 NMSHandler.getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
@@ -2909,7 +2909,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @tags
         // <PlayerTag.gamemode>
         // -->
-        if (mechanism.matches("gamemode") && mechanism.requireEnum(false, GameMode.values())) {
+        if (mechanism.matches("gamemode") && mechanism.requireEnum(GameMode.class)) {
             setGameMode(GameMode.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
@@ -2918,7 +2918,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             getPlayerEntity().kickPlayer(mechanism.getValue().asString());
         }
 
-        if (mechanism.matches("weather") && mechanism.requireEnum(false, WeatherType.values())) {
+        if (mechanism.matches("weather") && mechanism.requireEnum(WeatherType.class)) {
             Deprecations.oldWeatherMech.warn(mechanism.context);
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
@@ -3311,7 +3311,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 3);
                 if (split.length > 0 && new ElementTag(split[0]).matchesType(EntityTag.class)) {
                     String slot = split.length > 1 ? split[1].toUpperCase() : null;
-                    if (split.length > 1 && (new ElementTag(slot).matchesEnum(EquipmentSlot.values())
+                    if (split.length > 1 && (new ElementTag(slot).matchesEnum(EquipmentSlot.class)
                             || slot.equals("MAIN_HAND") || slot.equals("BOOTS"))) {
                         if (split.length > 2 && new ElementTag(split[2]).matchesType(ItemTag.class)) {
                             if (slot.equals("MAIN_HAND")) {
@@ -3667,7 +3667,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             String key = null;
             if (mechanism.hasValue()) {
                 try {
-                    if (mechanism.getValue().matchesEnum(SoundCategory.values())) {
+                    if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
                         category = SoundCategory.valueOf(mechanism.getValue().asString().toUpperCase());
                     }
                     else {

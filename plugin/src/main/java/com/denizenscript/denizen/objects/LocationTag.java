@@ -4885,7 +4885,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Applies bonemeal to the block, on the given block face. Input is NORTH, EAST, SOUTH, WEST, UP, or DOWN.
         // For example: - adjust <player.location.below> apply_bonemeal:up
         // -->
-        if (mechanism.matches("apply_bonemeal") && mechanism.requireEnum(false, BlockFace.values())) {
+        if (mechanism.matches("apply_bonemeal") && mechanism.requireEnum(BlockFace.class)) {
             getBlock().applyBoneMeal(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 

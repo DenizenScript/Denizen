@@ -57,7 +57,7 @@ public class FishCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("catch")
                     && arg.matchesPrefix("catch")
-                    && arg.matchesEnum(FishingHelper.CatchType.values())) {
+                    && arg.matchesEnum(FishingHelper.CatchType.class)) {
                 scriptEntry.addObject("catch", arg.asElement());
             }
             else if (!scriptEntry.hasObject("stop")

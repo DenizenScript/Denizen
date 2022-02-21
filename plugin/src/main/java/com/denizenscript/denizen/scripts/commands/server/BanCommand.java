@@ -120,7 +120,7 @@ public class BanCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.limitToOnlyPrefix("action")
-                    && arg.matchesEnum(Actions.values())) {
+                    && arg.matchesEnum(Actions.class)) {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("targets")

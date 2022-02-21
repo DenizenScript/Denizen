@@ -107,7 +107,7 @@ public class SwitchCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(DurationTag.class));
             }
             else if (!scriptEntry.hasObject("state") &&
-                    arg.matchesEnum(SwitchState.values())) {
+                    arg.matchesEnum(SwitchState.class)) {
                 scriptEntry.addObject("switchstate", new ElementTag(arg.getValue().toUpperCase()));
             }
             else {
