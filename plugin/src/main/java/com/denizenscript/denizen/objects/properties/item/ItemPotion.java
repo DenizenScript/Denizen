@@ -274,7 +274,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns whether the potion is a splash potion.
             // -->
-            if (attribute.startsWith("potion_effect.is_splash")) {
+            if (attribute.startsWith("is_splash", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(object.item.getBukkitMaterial() == Material.SPLASH_POTION);
             }
@@ -287,7 +287,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns whether the potion effect is extended.
             // -->
-            if (attribute.startsWith("potion_effect.is_extended")) {
+            if (attribute.startsWith("is_extended", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getBasePotionData().isExtended());
             }
@@ -300,7 +300,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns the potion effect's level.
             // -->
-            if (attribute.startsWith("potion_effect.level")) {
+            if (attribute.startsWith("level", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getBasePotionData().isUpgraded() ? 2 : 1);
             }
@@ -314,7 +314,7 @@ public class ItemPotion implements Property {
             // Returns whether the potion effect is ambient.
             // "Ambient" effects in vanilla came from a beacon, while non-ambient came from a potion.
             // -->
-            if (attribute.startsWith("potion_effect.is_ambient")) {
+            if (attribute.startsWith("is_ambient", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).isAmbient());
             }
@@ -327,7 +327,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns whether the potion effect shows an icon.
             // -->
-            if (attribute.startsWith("potion_effect.icon")) {
+            if (attribute.startsWith("icon", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).hasIcon());
             }
@@ -340,7 +340,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns whether the potion effect has particles.
             // -->
-            if (attribute.startsWith("potion_effect.has_particles")) {
+            if (attribute.startsWith("has_particles", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).hasParticles());
             }
@@ -353,7 +353,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns the duration in ticks of the potion.
             // -->
-            if (attribute.startsWith("potion_effect.duration")) {
+            if (attribute.startsWith("duration", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).getDuration());
             }
@@ -366,7 +366,7 @@ public class ItemPotion implements Property {
             // @description
             // Returns the amplifier level of the potion effect.
             // -->
-            if (attribute.startsWith("potion_effect.amplifier")) {
+            if (attribute.startsWith("amplifier", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).getAmplifier());
             }
@@ -380,12 +380,12 @@ public class ItemPotion implements Property {
             // Returns the type of the potion effect.
             // The effect type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
             // -->
-            if (attribute.startsWith("potion_effect.type")) {
+            if (attribute.startsWith("type", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(meta.getCustomEffects().get(potN).getType().getName());
             }
 
-            if (attribute.startsWith("potion_effect.data")) {
+            if (attribute.startsWith("data", 2)) {
                 attribute.fulfill(1);
                 return new ElementTag(0);
             }
