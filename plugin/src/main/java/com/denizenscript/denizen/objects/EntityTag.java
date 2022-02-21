@@ -4046,6 +4046,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.getEntityHelper().setFallingBlockType((FallingBlock) getBukkitEntity(), mechanism.valueAsType(MaterialTag.class).getModernData());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name tracking_range
+        // @input ElementTag(Number)
+        // @description
+        // Sets the range (in blocks) that an entity can be seen at. This is equivalent to the "entity-tracking-range" value in "Spigot.yml".
+        // -->
+        if (mechanism.matches("tracking_range") && mechanism.requireInteger()) {
+            NMSHandler.getEntityHelper().setTrackingRange(getBukkitEntity(), mechanism.getValue().asInt());
+        }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }

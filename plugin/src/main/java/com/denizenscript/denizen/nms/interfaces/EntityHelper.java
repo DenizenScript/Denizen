@@ -383,4 +383,8 @@ public abstract class EntityHelper {
     public void setInWaterTime(Zombie zombie, int ticks) {
         throw new UnsupportedOperationException();
     }
+
+    public void setTrackingRange(Entity entity, int range) {
+        throw new UnsupportedOperationException();
+    }
 }

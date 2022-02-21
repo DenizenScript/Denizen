@@ -829,4 +829,18 @@ public class EntityHelperImpl extends EntityHelper {
             Debug.echoError(ex);
         }
     }
+
+    public static final MethodHandle TRACKING_RANGE_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ChunkMap.TrackedEntity.class, int.class);
+
+    @Override
+    public void setTrackingRange(Entity entity, int range) {
+        try {
+            ChunkMap map = ((CraftWorld) entity.getWorld()).getHandle().getChunkProvider().chunkMap;
+            ChunkMap.TrackedEntity entry = map.G.get(entity.getEntityId());
+            TRACKING_RANGE_SETTER.invoke(entry, range);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
 }
