@@ -21,7 +21,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class ItemPotion implements Property {
@@ -109,9 +108,9 @@ public class ItemPotion implements Property {
         PotionEffectType type;
         DurationTag duration = new DurationTag(0);
         int amplifier = 0;
-        boolean ambient = false;
+        boolean ambient = true;
         boolean particles = true;
-        boolean icon = true;
+        boolean icon = false;
         if (effectMap.getObject("type") != null) {
             String typeString = effectMap.getObject("type").toString();
             type = PotionEffectType.getByName(typeString);
@@ -176,6 +175,10 @@ public class ItemPotion implements Property {
         return new PotionEffect(type, duration.getTicksAsInt(), amplifier, ambient, particles, icon);
     }
 
+    public PotionMeta getMeta() {
+        return (PotionMeta) item.getItemMeta();
+    }
+
     @Override
     public String getPropertyString() {
         PotionMeta meta = getMeta();
@@ -189,10 +192,6 @@ public class ItemPotion implements Property {
             effects.add(stringifyEffect(pot));
         }
         return effects.identify();
-    }
-
-    public PotionMeta getMeta() {
-        return (PotionMeta) item.getItemMeta();
     }
 
     @Override
@@ -406,8 +405,16 @@ public class ItemPotion implements Property {
                     + "," + data.isExtended() + "," + (object.item.getBukkitMaterial() == Material.SPLASH_POTION));
 
         });
-        
-        PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "effects_map", (attribute, object) -> {
+
+        // <--[tag]
+        // @attribute <ItemTag.effects_data>
+        // @returns ListTag(MapTag)
+        // @mechanism ItemTag.potion_effects
+        // @group properties
+        // @description
+        // Returns a list of all potion effects on this item, in the MapTag format of the mechanism.
+        // -->
+        PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "effects_data", (attribute, object) -> {
             ListTag result = new ListTag();
             PotionMeta meta = object.getMeta();
             MapTag base = new MapTag();
@@ -434,13 +441,21 @@ public class ItemPotion implements Property {
         // @input ListTag
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Type,Upgraded,Extended(,Color)|Effect,Amplifier,Duration,Ambient,Particles,Icon|...
-        // For example: SPEED,true,false|SPEED,2,200,false,true,true
-        // Second example: REGEN,false,true,RED|REGENERATION,1,500,true,false,false
+        // The first item in the list must be either:
+        // 1: Comma-separated base potion data, in the format Type,Upgraded,Extended(,Color).
+        // For example: "SPEED,true,false", or "REGEN,false,true,RED".
         // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
+        // 2: A MapTag with "type", "upgraded" and "extended" keys, and an optional "color" key.
+        // For example: [type=SPEED;upgraded=true;extended=false;color=RED].
+        // The following items in the list are potion effects, which must be either:
+        // 1: Comma-separated potion effect data, in the format Effect,Amplifier,Duration,Ambient,Particles,Icon.
+        // For example: SPEED,2,200,false,true,true.
+        // 2: A MapTag with "type", "amplifier", "duration", "ambient", "particles" and "icon" keys.
+        // For example: [type=SPEED;amplifier=2;duration=200t;ambient=false;particles=true;icon=true].
         // The primary type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
+        // <ItemTag.effects_data>
         // <ItemTag.potion_effect[<#>]>
         // <ItemTag.potion_effect[<#>].type>
         // <ItemTag.potion_effect[<#>].duration>
@@ -453,7 +468,7 @@ public class ItemPotion implements Property {
         // -->
         if (mechanism.matches("potion_effects")) {
             List<ObjectTag> data = new ArrayList<>(CoreUtilities.objectToList(mechanism.value, mechanism.context));
-            ObjectTag firstObj = data.get(0);
+            ObjectTag firstObj = data.remove(0);
             PotionMeta meta = getMeta();
             PotionType type;
             boolean upgraded = false;
@@ -492,7 +507,13 @@ public class ItemPotion implements Property {
                     }
                 }
                 if (baseEffect.getObject("color") != null) {
-                    colorObj = baseEffect.getObject("color");
+                    ObjectTag colorObj = baseEffect.getObject("color");
+                    if (colorObj.canBeType(ColorTag.class)) {
+                        color = colorObj.asType(ColorTag.class, mechanism.context);
+                    }
+                    else {
+                        mechanism.echoError("Invalid color '" + colorObj + "': must be a valid ColorTag");
+                    }
                 }
             }
             else {
@@ -506,22 +527,14 @@ public class ItemPotion implements Property {
                 }
                 upgraded = CoreUtilities.equalsIgnoreCase(d1[1], "true");
                 extended = CoreUtilities.equalsIgnoreCase(d1[2], "true");
-                meta.setBasePotionData(new PotionData(type, extended, upgraded));
                 if (d1.length > 3) {
-                    color = ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context);
-                    if (color == null) {
-                        mechanism.echoError("Invalid ColorTag input '" + d1[3] + "'");
+                    ColorTag temp = ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context);
+                    if (temp == null) {
+                        mechanism.echoError("Invalid color '" + d1[3] + "': must be a valid ColorTag");
                     }
-                    meta.setColor(color.getColor());
-                }
-                meta.clearCustomEffects();
-                for (int i = 1; i < data.size(); i++) {
-                    PotionEffect effect = parseEffect(data.get(i), mechanism.context);
-                    if (effect == null) {
-                        mechanism.echoError("Invalid potion effect '" + data.get(i) + "'");
-                        continue;
+                    else {
+                        color = temp;
                     }
-                    meta.addCustomEffect(effect, false);
                 }
             }
             if (upgraded && !type.isUpgradeable()) {
@@ -530,11 +543,31 @@ public class ItemPotion implements Property {
             }
             if (extended && !type.isExtendable()) {
                 mechanism.echoError("Cannot extend potion of type '" + type.name() + "'");
-                upgraded = false;
+                extended = false;
             }
             if (upgraded && extended) {
                 mechanism.echoError("Cannot both upgrade and extend a potion");
                 extended = false;
+            }
+            if (color != null) {
+                meta.setColor(color.getColor());
+            }
+            meta.setBasePotionData(new PotionData(type, extended, upgraded));
+            meta.clearCustomEffects();
+            for (ObjectTag effectObj : data) {
+                PotionEffect effect;
+                if (effectObj.canBeType(MapTag.class)) {
+                    effect = parseEffect(effectObj.asType(MapTag.class, mechanism.context), mechanism.context);
+                }
+                else {
+                    effect = parseEffect(effectObj.toString(), mechanism.context);
+                }
+                if (effect != null) {
+                    meta.addCustomEffect(effect, false);
+                }
+                else {
+                    mechanism.echoError("Invalid potion effect '" + effectObj + "'");
+                }
             }
             item.setItemMeta(meta);
         }

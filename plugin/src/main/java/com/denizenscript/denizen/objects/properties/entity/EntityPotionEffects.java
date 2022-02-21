@@ -107,14 +107,14 @@ public class EntityPotionEffects implements Property {
         });
 
         // <--[tag]
-        // @attribute <EntityTag.effects_map>
+        // @attribute <EntityTag.effects_data>
         // @returns ListTag(MapTag)
         // @group attribute
         // @mechanism EntityTag.potion_effects
         // @description
-        // Returns the list of active potion effects on the entity, in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
+        // Returns the active potion effects on the entity, in the MapTag format of the mechanism.
         // -->
-        PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "effects_map", (attribute, object) -> {
+        PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "effects_data", (attribute, object) -> {
             return object.getEffectsMapTag();
         });
 
@@ -158,13 +158,16 @@ public class EntityPotionEffects implements Property {
         // @input ListTag
         // @description
         // Set the entity's active potion effects.
-        // Each item in the list is formatted as: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON
+        // Each item in the list can be any of the following:
+        // 1: Comma-separated potion effect data in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
         // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
         // For example: SPEED,0,120,false,true,true would give the entity a swiftness potion for 120 ticks.
+        // 2: A MapTag with "type", "amplifier", "duration", "ambient", "particles", and "icon" keys.
+        // For example: [type=SPEED;amplifier=0;duration=120t;ambient=false;particles=true;icon=true]
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
-        // <EntityTag.effect_map>
+        // <EntityTag.effects_data>
         // <EntityTag.list_effects>
         // <EntityTag.has_effect[<effect>]>
         // -->
@@ -175,18 +178,14 @@ public class EntityPotionEffects implements Property {
                 if (effectObj.canBeType(MapTag.class)) {
                     MapTag effectMap = effectObj.asType(MapTag.class, mechanism.context);
                     effect = ItemPotion.parseEffect(effectMap, mechanism.context);
-                    if (effect == null) {
-                        mechanism.echoError("Invalid potion effect '" + effectMap + "'");
-                        continue;
-                    }
                 }
                 else {
                     String effectStr = effectObj.toString();
                     effect = ItemPotion.parseEffect(effectStr, mechanism.context);
-                    if (effect == null) {
-                        mechanism.echoError("Invalid potion effect '" + effectStr + "'");
-                        continue;
-                    }
+                }
+                if (effect == null) {
+                    mechanism.echoError("Invalid potion effect '" + effectObj + "'");
+                    continue;
                 }
                 if (entity.isLivingEntity()) {
                     entity.getLivingEntity().addPotionEffect(effect);
