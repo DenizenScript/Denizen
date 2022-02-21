@@ -329,7 +329,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @tags
         // <BiomeTag.temperature>
         // -->
-        if (mechanism.matches("downfall_type") && mechanism.requireEnum(false, BiomeNMS.DownfallType.values())) {
+        if (mechanism.matches("downfall_type") && mechanism.requireEnum(BiomeNMS.DownfallType.class)) {
             biome.setPrecipitation(BiomeNMS.DownfallType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 

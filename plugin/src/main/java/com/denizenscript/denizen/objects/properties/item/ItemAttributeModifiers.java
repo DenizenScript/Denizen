@@ -177,7 +177,7 @@ public class ItemAttributeModifiers implements Property {
             ItemMeta meta = item.getItemMeta();
             ArrayList<String> inputList = new ArrayList<>(mechanism.valueAsType(ListTag.class));
             for (String toRemove : new ArrayList<>(inputList)) {
-                if (new ElementTag(toRemove).matchesEnum(org.bukkit.attribute.Attribute.values())) {
+                if (new ElementTag(toRemove).matchesEnum(org.bukkit.attribute.Attribute.class)) {
                     inputList.remove(toRemove);
                     org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(toRemove.toUpperCase());
                     meta.removeAttributeModifier(attr);

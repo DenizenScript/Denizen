@@ -56,12 +56,12 @@ public class OxygenCommand extends AbstractCommand {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("type", "t")
-                    && arg.matchesEnum(Type.values())) {
+                    && arg.matchesEnum(Type.class)) {
                 scriptEntry.addObject("type", arg.asElement());
             }
             else if (!scriptEntry.hasObject("mode")
                     && arg.matchesPrefix("mode", "m")
-                    && arg.matchesEnum(Mode.values())) {
+                    && arg.matchesEnum(Mode.class)) {
                 scriptEntry.addObject("mode", arg.asElement());
             }
             else if (!scriptEntry.hasObject("amount")

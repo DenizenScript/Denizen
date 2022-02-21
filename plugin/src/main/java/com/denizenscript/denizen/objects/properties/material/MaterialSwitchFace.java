@@ -94,7 +94,7 @@ public class MaterialSwitchFace implements Property {
         // @tags
         // <MaterialTag.switch_face>
         // -->
-        if (mechanism.matches("switch_face") && mechanism.requireEnum(false, FaceAttachable.AttachedFace.values())) {
+        if (mechanism.matches("switch_face") && mechanism.requireEnum(FaceAttachable.AttachedFace.class)) {
             getFaceAttachable().setAttachedFace(FaceAttachable.AttachedFace.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }

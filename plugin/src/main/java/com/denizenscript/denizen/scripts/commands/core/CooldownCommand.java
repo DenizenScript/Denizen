@@ -72,7 +72,7 @@ public class CooldownCommand extends AbstractCommand {
                     && arg.matchesArgumentType(ScriptTag.class)) {
                 scriptEntry.addObject("script", arg.asType(ScriptTag.class));
             }
-            else if (arg.matchesEnum(Type.values())) {
+            else if (arg.matchesEnum(Type.class)) {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
             else if (!scriptEntry.hasObject("duration")

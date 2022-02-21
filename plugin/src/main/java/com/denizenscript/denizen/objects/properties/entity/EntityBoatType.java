@@ -78,7 +78,7 @@ public class EntityBoatType implements Property {
         // @tags
         // <EntityTag.boat_type>
         // -->
-        if (mechanism.matches("boat_type") && mechanism.requireEnum(false, TreeSpecies.values())) {
+        if (mechanism.matches("boat_type") && mechanism.requireEnum(TreeSpecies.class)) {
             getBoat().setWoodType(TreeSpecies.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }

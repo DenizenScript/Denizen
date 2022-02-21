@@ -88,7 +88,7 @@ public class TeleportCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Collections.singletonList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("cause")
-                    && arg.matchesEnum(PlayerTeleportEvent.TeleportCause.values())) {
+                    && arg.matchesEnum(PlayerTeleportEvent.TeleportCause.class)) {
                 scriptEntry.addObject("cause", arg.asElement());
             }
             else {

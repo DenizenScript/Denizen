@@ -107,19 +107,19 @@ public class TeamCommand extends AbstractCommand {
                 scriptEntry.addObject("suffix", suffixElement);
             }
             else if (arg.matchesPrefix("color")
-                    && arg.matchesEnum(ChatColor.values())
+                    && arg.matchesEnum(ChatColor.class)
                     && !scriptEntry.hasObject("color")) {
                 scriptEntry.addObject("color", arg.asElement());
             }
             else if (arg.matchesPrefix("option")
                     && !scriptEntry.hasObject("option")
-                    && (arg.matchesEnum(Team.Option.values())
+                    && (arg.matchesEnum(Team.Option.class)
                     || arg.matches("friendly_fire", "see_invisible"))) {
                 scriptEntry.addObject("option", arg.asElement());
             }
             else if (arg.matchesPrefix("status")
                     && !scriptEntry.hasObject("status")
-                    && arg.matchesEnum(Team.OptionStatus.values())) {
+                    && arg.matchesEnum(Team.OptionStatus.class)) {
                 scriptEntry.addObject("status", arg.asElement());
             }
             else {

@@ -89,7 +89,7 @@ public class TriggerCommand extends AbstractCommand {
                 scriptEntry.addObject("radius", arg.asElement());
             }
             else if (!scriptEntry.hasObject("toggle")
-                    && arg.matchesEnum(Toggle.values())) {
+                    && arg.matchesEnum(Toggle.class)) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
             else if (!scriptEntry.hasObject("npc")

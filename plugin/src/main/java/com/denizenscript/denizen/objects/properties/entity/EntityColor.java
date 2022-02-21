@@ -259,7 +259,7 @@ public class EntityColor implements Property {
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 Horse horse = (Horse) colored.getBukkitEntity();
                 String color = list.get(0);
-                if (new ElementTag(color).matchesEnum(Horse.Color.values())) {
+                if (new ElementTag(color).matchesEnum(Horse.Color.class)) {
                     horse.setColor(Horse.Color.valueOf(color.toUpperCase()));
                 }
                 else {
@@ -267,7 +267,7 @@ public class EntityColor implements Property {
                 }
                 if (list.size() > 1) {
                     String style = list.get(1);
-                    if (new ElementTag(style).matchesEnum(Horse.Style.values())) {
+                    if (new ElementTag(style).matchesEnum(Horse.Style.class)) {
                         horse.setStyle(Horse.Style.valueOf(style.toUpperCase()));
                     }
                     else {
@@ -275,35 +275,35 @@ public class EntityColor implements Property {
                     }
                 }
             }
-            else if (type == EntityType.SHEEP && mechanism.requireEnum(false, DyeColor.values())) {
+            else if (type == EntityType.SHEEP && mechanism.requireEnum(DyeColor.class)) {
                 ((Sheep) colored.getBukkitEntity()).setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.WOLF && mechanism.requireEnum(false, DyeColor.values())) {
+            else if (type == EntityType.WOLF && mechanism.requireEnum(DyeColor.class)) {
                 ((Wolf) colored.getBukkitEntity()).setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.OCELOT && mechanism.requireEnum(false, Ocelot.Type.values())) { // TODO: Deprecate?
+            else if (type == EntityType.OCELOT && mechanism.requireEnum(Ocelot.Type.class)) { // TODO: Deprecate?
                 ((Ocelot) colored.getBukkitEntity()).setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.RABBIT && mechanism.requireEnum(false, Rabbit.Type.values())) {
+            else if (type == EntityType.RABBIT && mechanism.requireEnum(Rabbit.Type.class)) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA) && mechanism.requireEnum(false, Llama.Color.values())) {
+            else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA) && mechanism.requireEnum(Llama.Color.class)) {
                 ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.PARROT && mechanism.requireEnum(false, Parrot.Variant.values())) {
+            else if (type == EntityType.PARROT && mechanism.requireEnum(Parrot.Variant.class)) {
                 ((Parrot) colored.getBukkitEntity()).setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.SHULKER && mechanism.requireEnum(false, DyeColor.values())) {
+            else if (type == EntityType.SHULKER && mechanism.requireEnum(DyeColor.class)) {
                 ((Shulker) colored.getBukkitEntity()).setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.MUSHROOM_COW && mechanism.requireEnum(false, MushroomCow.Variant.values())) {
+            else if (type == EntityType.MUSHROOM_COW && mechanism.requireEnum(MushroomCow.Variant.class)) {
                 ((MushroomCow) colored.getBukkitEntity()).setVariant(MushroomCow.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.TROPICAL_FISH && mechanism.requireObject(ListTag.class)) {
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 TropicalFish fish = ((TropicalFish) colored.getBukkitEntity());
                 String pattern = list.get(0);
-                if (new ElementTag(pattern).matchesEnum(TropicalFish.Pattern.values())) {
+                if (new ElementTag(pattern).matchesEnum(TropicalFish.Pattern.class)) {
                     fish.setPattern(TropicalFish.Pattern.valueOf(pattern.toUpperCase()));
                 }
                 else {
@@ -311,7 +311,7 @@ public class EntityColor implements Property {
                 }
                 if (list.size() > 1) {
                     String color = list.get(1);
-                    if (new ElementTag(color).matchesEnum(DyeColor.values())) {
+                    if (new ElementTag(color).matchesEnum(DyeColor.class)) {
                         fish.setBodyColor(DyeColor.valueOf(color.toUpperCase()));
                     }
                     else {
@@ -320,7 +320,7 @@ public class EntityColor implements Property {
                 }
                 if (list.size() > 2) {
                     String patternColor = list.get(2);
-                    if (new ElementTag(patternColor).matchesEnum(DyeColor.values())) {
+                    if (new ElementTag(patternColor).matchesEnum(DyeColor.class)) {
                         fish.setPatternColor(DyeColor.valueOf(patternColor.toUpperCase()));
                     }
                     else {
@@ -328,14 +328,14 @@ public class EntityColor implements Property {
                     }
                 }
             }
-            else if (type == EntityType.FOX && mechanism.requireEnum(false, Fox.Type.values())) {
+            else if (type == EntityType.FOX && mechanism.requireEnum(Fox.Type.class)) {
                 ((Fox) colored.getBukkitEntity()).setFoxType(Fox.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.CAT && mechanism.requireObject(ListTag.class)) {
                 Cat cat = (Cat) colored.getBukkitEntity();
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 String catType = list.get(0);
-                if (new ElementTag(catType).matchesEnum(Cat.Type.values())) {
+                if (new ElementTag(catType).matchesEnum(Cat.Type.class)) {
                     cat.setCatType(Cat.Type.valueOf(catType.toUpperCase()));
                 }
                 else {
@@ -343,7 +343,7 @@ public class EntityColor implements Property {
                 }
                 if (list.size() > 1) {
                     String color = list.get(1);
-                    if (new ElementTag(color).matchesEnum(DyeColor.values())) {
+                    if (new ElementTag(color).matchesEnum(DyeColor.class)) {
                         cat.setCollarColor(DyeColor.valueOf(list.get(1).toUpperCase()));
                     }
                     else {
@@ -355,7 +355,7 @@ public class EntityColor implements Property {
                 Panda panda = (Panda) colored.getBukkitEntity();
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 String mainGene = list.get(0);
-                if (new ElementTag(mainGene).matchesEnum(Panda.Gene.values())) {
+                if (new ElementTag(mainGene).matchesEnum(Panda.Gene.class)) {
                     panda.setMainGene(Panda.Gene.valueOf(mainGene.toUpperCase()));
                 }
                 else {
@@ -363,7 +363,7 @@ public class EntityColor implements Property {
                 }
                 if (list.size() > 1) {
                     String hiddenGene = list.get(1);
-                    if (new ElementTag(hiddenGene).matchesEnum(Panda.Gene.values())) {
+                    if (new ElementTag(hiddenGene).matchesEnum(Panda.Gene.class)) {
                         panda.setHiddenGene(Panda.Gene.valueOf(hiddenGene.toUpperCase()));
                     }
                     else {
@@ -371,7 +371,7 @@ public class EntityColor implements Property {
                     }
                 }
             }
-            else if (type == EntityType.VILLAGER && mechanism.requireEnum(false, Villager.Type.values())) {
+            else if (type == EntityType.VILLAGER && mechanism.requireEnum(Villager.Type.class)) {
                 ((Villager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {

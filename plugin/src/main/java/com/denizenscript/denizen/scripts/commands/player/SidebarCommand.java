@@ -110,7 +110,7 @@ public class SidebarCommand extends AbstractCommand {
         Action action = Action.SET;
         for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values())) {
+                    && arg.matchesEnum(Action.class)) {
                 action = Action.valueOf(arg.getValue().toUpperCase());
             }
             else if (!scriptEntry.hasObject("title")

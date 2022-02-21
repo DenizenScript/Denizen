@@ -88,7 +88,7 @@ public class HurtCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("cause")
-                    && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
+                    && arg.matchesEnum(EntityDamageEvent.DamageCause.class)) {
                 scriptEntry.addObject("cause", arg.asElement());
             }
             else if (!scriptEntry.hasObject("source_once")

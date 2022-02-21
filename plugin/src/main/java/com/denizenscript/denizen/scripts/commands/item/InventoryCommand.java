@@ -191,7 +191,7 @@ public class InventoryCommand extends AbstractCommand {
                 scriptEntry.addObject("slot", arg.asElement());
             }
             else if (!scriptEntry.hasObject("actions")
-                    && arg.matchesEnumList(Action.values())) {
+                    && arg.matchesEnumList(Action.class)) {
                 scriptEntry.addObject("actions", arg.asType(ListTag.class).filter(Action.values()));
                 isAdjust = arg.toString().equalsIgnoreCase("adjust");
                 isFlag = arg.toString().equalsIgnoreCase("flag");

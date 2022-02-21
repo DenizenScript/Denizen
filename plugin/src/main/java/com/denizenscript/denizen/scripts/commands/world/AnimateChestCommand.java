@@ -80,7 +80,7 @@ public class AnimateChestCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(ChestAction.values())) {
+                    && arg.matchesEnum(ChestAction.class)) {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("location")

@@ -121,7 +121,7 @@ public class ScoreboardCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values())) {
+                    && arg.matchesEnum(Action.class)) {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("lines")
@@ -145,7 +145,7 @@ public class ScoreboardCommand extends AbstractCommand {
                 scriptEntry.addObject("score", arg.asElement());
             }
             else if (!scriptEntry.hasObject("displayslot")
-                    && (arg.matchesEnum(DisplaySlot.values()) ||
+                    && (arg.matchesEnum(DisplaySlot.class) ||
                     arg.matches("none"))) {
                 scriptEntry.addObject("displayslot", arg.asElement());
             }
@@ -155,7 +155,7 @@ public class ScoreboardCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("rendertype")
                     && arg.matchesPrefix("rendertype")
-                    && arg.matchesEnum(RenderType.values())) {
+                    && arg.matchesEnum(RenderType.class)) {
                 scriptEntry.addObject("rendertype", arg.asElement());
             }
             else if (!scriptEntry.hasObject("viewers")

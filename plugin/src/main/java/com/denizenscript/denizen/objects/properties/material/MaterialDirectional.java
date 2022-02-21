@@ -337,16 +337,16 @@ public class MaterialDirectional implements Property {
         // <MaterialTag.valid_directions>
         // -->
         if (mechanism.matches("direction")) {
-            if (isOrientable() && mechanism.requireEnum(false, Axis.values())) {
+            if (isOrientable() && mechanism.requireEnum(Axis.class)) {
                 getOrientable().setAxis(Axis.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isRail() && mechanism.requireEnum(false, Rail.Shape.values())) {
+            else if (isRail() && mechanism.requireEnum(Rail.Shape.class)) {
                 getRail().setShape(Rail.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (isJigsaw() && mechanism.requireEnum(false, Jigsaw.Orientation.values())) {
+            else if (isJigsaw() && mechanism.requireEnum(Jigsaw.Orientation.class)) {
                 getJigsaw().setOrientation(Jigsaw.Orientation.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (!isJigsaw() && mechanism.requireEnum(false, BlockFace.values())) {
+            else if (!isJigsaw() && mechanism.requireEnum(BlockFace.class)) {
                 setFacing(BlockFace.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {

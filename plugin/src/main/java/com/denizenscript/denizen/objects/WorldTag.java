@@ -982,15 +982,8 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @tags
         // <WorldTag.difficulty>
         // -->
-        if (mechanism.matches("difficulty") && mechanism.requireEnum(true, Difficulty.values())) {
-            String upper = mechanism.getValue().asString().toUpperCase();
-            Difficulty diff;
-            if (upper.matches("(PEACEFUL|EASY|NORMAL|HARD)")) {
-                diff = Difficulty.valueOf(upper);
-            }
-            else {
-                diff = Difficulty.getByValue(mechanism.getValue().asInt());
-            }
+        if (mechanism.matches("difficulty") && mechanism.requireEnum(Difficulty.class)) {
+            Difficulty diff = mechanism.getValue().asEnum(Difficulty.class);
             if (diff != null) {
                 getWorld().setDifficulty(diff);
             }

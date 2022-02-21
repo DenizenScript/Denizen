@@ -77,7 +77,7 @@ public class MaterialHinge implements Property {
         // @tags
         // <MaterialTag.hinge>
         // -->
-        if (mechanism.matches("hinge") && mechanism.requireEnum(false, Door.Hinge.values())) {
+        if (mechanism.matches("hinge") && mechanism.requireEnum(Door.Hinge.class)) {
             getDoor().setHinge(Door.Hinge.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }

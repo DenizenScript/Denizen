@@ -59,7 +59,7 @@ public class InvisibleCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("state")
-                    && arg.matchesEnum(Action.values())) {
+                    && arg.matchesEnum(Action.class)) {
                 scriptEntry.addObject("state", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")

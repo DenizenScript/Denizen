@@ -195,7 +195,7 @@ public class MaterialMode implements Property {
         // <MaterialTag.mode>
         // -->
         if (mechanism.matches("mode")) {
-            if (isComparator() && mechanism.requireEnum(false, Comparator.Mode.values())) {
+            if (isComparator() && mechanism.requireEnum(Comparator.Mode.class)) {
                 getComparator().setMode(Comparator.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isBubbleColumn()) {
@@ -204,7 +204,7 @@ public class MaterialMode implements Property {
             else if (isPistonHead()) {
                 getPistonHead().setShort(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "short"));
             }
-            else if (isStructureBlock() && mechanism.requireEnum(false, StructureBlock.Mode.values())) {
+            else if (isStructureBlock() && mechanism.requireEnum(StructureBlock.Mode.class)) {
                 getStructureBlock().setMode(StructureBlock.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isDaylightDetector()) {

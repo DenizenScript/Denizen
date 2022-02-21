@@ -72,7 +72,7 @@ public class StatisticCommand extends AbstractCommand {
         boolean specified_players = false;
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values())) {
+                    && arg.matchesEnum(Action.class)) {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (arg.matchesPrefix("players")
@@ -82,7 +82,7 @@ public class StatisticCommand extends AbstractCommand {
                 specified_players = true;
             }
             else if (!scriptEntry.hasObject("statistic")
-                    && arg.matchesEnum(Statistic.values())) {
+                    && arg.matchesEnum(Statistic.class)) {
                 scriptEntry.addObject("statistic", arg.asElement());
             }
             else if (!scriptEntry.hasObject("amount")

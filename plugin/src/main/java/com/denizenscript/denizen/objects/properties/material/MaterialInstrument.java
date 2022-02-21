@@ -84,7 +84,7 @@ public class MaterialInstrument implements Property {
         // @tags
         // <MaterialTag.instrument>
         // -->
-        if (mechanism.matches("instrument") && mechanism.requireEnum(false, Instrument.values())) {
+        if (mechanism.matches("instrument") && mechanism.requireEnum(Instrument.class)) {
             setInstrument(mechanism.getValue().asString().toUpperCase());
         }
     }

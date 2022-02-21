@@ -90,10 +90,10 @@ public class AnimateCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("animation") &&
                     !scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("nms_animation")) {
-                if (arg.matchesEnum(PlayerAnimation.values())) {
+                if (arg.matchesEnum(PlayerAnimation.class)) {
                     scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
                 }
-                if (arg.matchesEnum(EntityEffect.values())) {
+                if (arg.matchesEnum(EntityEffect.class)) {
                     scriptEntry.addObject("effect", EntityEffect.valueOf(arg.getValue().toUpperCase()));
                 }
                 if (animationHelper.hasEntityAnimation(arg.getValue())) {

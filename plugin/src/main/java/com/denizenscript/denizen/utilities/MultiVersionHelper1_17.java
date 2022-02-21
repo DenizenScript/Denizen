@@ -47,22 +47,22 @@ public class MultiVersionHelper1_17 { // TODO: 1.17
         if (entity instanceof Goat) {
             ((Goat) entity).setScreaming(CoreUtilities.toLowerCase(mech.getValue().asString()).equals("screaming"));
         }
-        else if (entity instanceof Axolotl && mech.requireEnum(false, Axolotl.Variant.values())) {
+        else if (entity instanceof Axolotl && mech.requireEnum(Axolotl.Variant.class)) {
             ((Axolotl) entity).setVariant(Axolotl.Variant.valueOf(mech.getValue().asString().toUpperCase()));
         }
     }
 
     public static void materialBlockTypeRunMech(Mechanism mechanism, MaterialBlockType object) {
-        if (object.isDripstone() && mechanism.requireEnum(false, PointedDripstone.Thickness.values())) {
+        if (object.isDripstone() && mechanism.requireEnum(PointedDripstone.Thickness.class)) {
             ((PointedDripstone) object.material.getModernData()).setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 
     public static void materialModeRunMech(Mechanism mechanism, MaterialMode object) {
-        if (object.isSculkSensor() && mechanism.requireEnum(false, SculkSensor.Phase.values())) {
+        if (object.isSculkSensor() && mechanism.requireEnum(SculkSensor.Phase.class)) {
             ((SculkSensor) object.material.getModernData()).setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
-        else if (object.isBigDripleaf() && mechanism.requireEnum(false, BigDripleaf.Tilt.values())) {
+        else if (object.isBigDripleaf() && mechanism.requireEnum(BigDripleaf.Tilt.class)) {
             ((BigDripleaf) object.material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }

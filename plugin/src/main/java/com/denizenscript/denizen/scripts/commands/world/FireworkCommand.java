@@ -101,7 +101,7 @@ public class FireworkCommand extends AbstractCommand {
                 scriptEntry.addObject("type", new ElementTag(FireworkEffect.Type.values()[CoreUtilities.getRandom().nextInt(FireworkEffect.Type.values().length)].name()));
             }
             else if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(FireworkEffect.Type.values())) {
+                    && arg.matchesEnum(FireworkEffect.Type.class)) {
                 scriptEntry.addObject("type", arg.asElement());
             }
             else {

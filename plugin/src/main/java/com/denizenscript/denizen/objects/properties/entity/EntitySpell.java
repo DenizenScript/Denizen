@@ -83,7 +83,7 @@ public class EntitySpell implements Property {
         // @tags
         // <EntityTag.spell>
         // -->
-        if (mechanism.matches("spell") && mechanism.requireEnum(false, Spellcaster.Spell.values())) {
+        if (mechanism.matches("spell") && mechanism.requireEnum(Spellcaster.Spell.class)) {
             ((Spellcaster) dentity.getBukkitEntity()).setSpell(Spellcaster.Spell.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }

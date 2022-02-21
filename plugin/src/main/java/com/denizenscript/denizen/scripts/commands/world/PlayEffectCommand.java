@@ -141,7 +141,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                     continue;
                 }
-                else if (arg.matchesEnum(Effect.values())) {
+                else if (arg.matchesEnum(Effect.class)) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                     continue;
                 }

@@ -82,7 +82,7 @@ public class AssignmentCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (Argument arg : scriptEntry) {
-            if (arg.matchesEnum(Action.values())
+            if (arg.matchesEnum(Action.class)
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }

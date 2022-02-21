@@ -120,7 +120,7 @@ public class MapCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("scale")
                     && arg.matchesPrefix("scale")
-                    && arg.matchesEnum(MapView.Scale.values())) {
+                    && arg.matchesEnum(MapView.Scale.class)) {
                 scriptEntry.addObject("scale", arg.asElement());
             }
             else if (!scriptEntry.hasObject("tracking")

@@ -77,7 +77,7 @@ public class ToastCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("frame")
                     && arg.matchesPrefix("frame", "f")
-                    && arg.matchesEnum(Advancement.Frame.values())) {
+                    && arg.matchesEnum(Advancement.Frame.class)) {
                 scriptEntry.addObject("frame", arg.asElement());
             }
             else if (!scriptEntry.hasObject("text")) {
