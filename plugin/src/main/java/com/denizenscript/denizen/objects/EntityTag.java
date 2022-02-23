@@ -2349,7 +2349,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "swimming", (attribute, object) -> {
             return new ElementTag(object.getLivingEntity().isSwimming());
+        });
 
+        // <--[tag]
+        // @attribute <EntityTag.visual_pose>
+        // @returns ElementTag
+        // @group attributes
+        // @description
+        // Returns the name of the entity's current visual pose.
+        // See <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Pose.html>
+        // -->
+        registerSpawnedOnlyTag(ElementTag.class, "visual_pose", (attribute, object) -> {
+            return new ElementTag(object.getBukkitEntity().getPose().name());
         });
 
         // <--[tag]

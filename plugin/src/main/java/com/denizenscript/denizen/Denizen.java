@@ -537,6 +537,10 @@ public class Denizen extends JavaPlugin {
         return scoreboardsConfig;
     }
 
+    /**
+     * Immediately saves all non-core save data.
+     * @param canSleep 'true' if the system should sleep and lock the thread until saves are complete. 'false' is saves can happen in the future.
+     */
     public void saveSaves(boolean canSleep) {
         // Save scoreboards to scoreboards.yml
         ScoreboardHelper._saveScoreboards();
@@ -551,7 +555,7 @@ public class Denizen extends JavaPlugin {
         }
         PlayerFlagHandler.saveAllNow(canSleep);
         worldFlags.saveAll();
-        RunLaterCommand.saveToFile(canSleep);
+        RunLaterCommand.saveToFile(!canSleep);
     }
 
     @Override

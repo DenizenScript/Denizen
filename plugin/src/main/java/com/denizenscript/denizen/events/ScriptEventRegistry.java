@@ -83,6 +83,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityBreaksHangingScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityBreedScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityChangesBlockScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityChangesPoseScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityCombustsScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityCreatePortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityDamagedScriptEvent.class);

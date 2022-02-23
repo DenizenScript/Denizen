@@ -235,11 +235,12 @@ public class PlayerFlagHandler implements Listener {
 
     public static void saveAllNow(boolean canSleep) {
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
-            if (entry.getValue().tracker.modified) {
-                if (!canSleep && entry.getValue().savingNow || entry.getValue().loadingNow) {
+            CachedPlayerFlag flags = entry.getValue();
+            if (flags.tracker.modified) {
+                if (!canSleep && flags.savingNow || flags.loadingNow) {
                     continue;
                 }
-                while (entry.getValue().savingNow || entry.getValue().loadingNow) {
+                while (flags.savingNow || flags.loadingNow) {
                     try {
                         Thread.sleep(10);
                     }
@@ -247,8 +248,8 @@ public class PlayerFlagHandler implements Listener {
                         Debug.echoError(ex);
                     }
                 }
-                entry.getValue().tracker.modified = false;
-                saveFlags(entry.getKey(), entry.getValue().tracker.toString());
+                flags.tracker.modified = false;
+                saveFlags(entry.getKey(), flags.tracker.toString());
             }
         }
     }

@@ -369,13 +369,6 @@ public class ItemPotion implements Property {
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // @tags
         // <ItemTag.effects_data>
-        // <ItemTag.potion_effect[<#>]>
-        // <ItemTag.potion_effect[<#>].type>
-        // <ItemTag.potion_effect[<#>].duration>
-        // <ItemTag.potion_effect[<#>].amplifier>
-        // <ItemTag.potion_effect[<#>].is_ambient>
-        // <ItemTag.potion_effect[<#>].has_particles>
-        // <ItemTag.potion_effect[<#>].icon>
         // <server.potion_types>
         // <server.potion_effect_types>
         // -->
