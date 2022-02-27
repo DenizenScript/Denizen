@@ -193,6 +193,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerPreparesAnvilCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesEnchantScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerReceivesActionbarScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesCommandsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesMessageScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRespawnsScriptEvent.class);

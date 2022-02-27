@@ -44,6 +44,16 @@ public class PacketOutChatImpl implements PacketOutChat {
     }
 
     @Override
+    public boolean isSystem() {
+        return position == ChatType.SYSTEM;
+    }
+
+    @Override
+    public boolean isActionbar() {
+        return position == ChatType.GAME_INFO;
+    }
+
+    @Override
     public int getPosition() {
         return position.ordinal();
     }

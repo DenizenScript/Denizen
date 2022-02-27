@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
+import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
@@ -22,6 +23,7 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,6 +33,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -248,6 +251,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             || processMirrorForPacket(packet)
             || processParticlesForPacket(packet)
             || processSoundPacket(packet)
+            || processActionbarPacket(packet, genericfuturelistener)
             || processDisguiseForPacket(packet, genericfuturelistener)
             || processMetadataChangesForPacket(packet, genericfuturelistener)
             || processEquipmentForPacket(packet, genericfuturelistener)
@@ -256,6 +260,33 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         processBlockLightForPacket(packet);
         oldManager.send(packet, genericfuturelistener);
+    }
+
+    public boolean processActionbarPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (!PlayerReceivesActionbarScriptEvent.instance.loaded) {
+            return false;
+        }
+        if (packet instanceof ClientboundSetActionBarTextPacket) {
+            ClientboundSetActionBarTextPacket actionbarPacket = (ClientboundSetActionBarTextPacket) packet;
+            PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
+            Component baseComponent = actionbarPacket.getText();
+            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE));
+            event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
+            event.system = new ElementTag(false);
+            event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
+            event.modifyMessage = (msg) -> event.message = new ElementTag(msg);
+            event.modifyRawJson = (json) -> event.message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(json), ChatColor.WHITE));
+            event.modifyCancellation = (c) -> event.cancelled = c;
+            event.cancelled = false;
+            event.fire();
+            if (!event.cancelled) {
+                Component component = Handler.componentToNMS(FormattedTextHelper.parse(event.message.asString(), ChatColor.WHITE));
+                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
+                oldManager.send(newPacket, genericfuturelistener);
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean processSoundPacket(Packet<?> packet) {
