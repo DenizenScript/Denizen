@@ -2,6 +2,10 @@ package com.denizenscript.denizen.nms.interfaces.packets;
 
 public interface PacketOutChat {
 
+    boolean isSystem();
+
+    boolean isActionbar();
+
     int getPosition();
 
     String getMessage();

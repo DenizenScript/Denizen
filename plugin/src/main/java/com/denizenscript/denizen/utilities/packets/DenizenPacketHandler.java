@@ -1,15 +1,12 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.events.player.PlayerHoldsItemEvent;
+import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
-import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
-import com.denizenscript.denizen.events.player.ResourcePackStatusScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
@@ -108,33 +105,31 @@ public class DenizenPacketHandler {
     }
 
     public boolean shouldInterceptChatPacket() {
-        return !ExecuteCommand.silencedPlayers.isEmpty() || PlayerReceivesMessageScriptEvent.instance.loaded;
+        return !ExecuteCommand.silencedPlayers.isEmpty()
+                || PlayerReceivesMessageScriptEvent.instance.loaded
+                || PlayerReceivesActionbarScriptEvent.instance.loaded;
     }
 
     public boolean sendPacket(final Player player, final PacketOutChat chat) {
-        if (ExecuteCommand.silencedPlayers.contains(player.getUniqueId())) {
+        if (!chat.isActionbar() && ExecuteCommand.silencedPlayers.contains(player.getUniqueId())) {
             return true;
         }
         if (chat.getMessage() == null) {
             return false;
         }
-        final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
+        final PlayerReceivesMessageScriptEvent event = chat.isActionbar() ? PlayerReceivesActionbarScriptEvent.instance : PlayerReceivesMessageScriptEvent.instance;
         if (event.loaded) {
             Callable<Boolean> eventCall = () -> {
-                int pos = chat.getPosition();
-                if (pos != 2) {
-                    event.message = new ElementTag(chat.getMessage());
-                    event.rawJson = new ElementTag(chat.getRawJson());
-                    event.system = new ElementTag(pos == 1);
-                    event.player = PlayerTag.mirrorBukkitPlayer(player);
-                    event.modifyMessage = chat::setMessage;
-                    event.modifyRawJson = chat::setRawJson;
-                    event.cancelled = false;
-                    event.modifyCancellation = (c) -> event.cancelled = c;
-                    event.fire();
-                    return event.cancelled;
-                }
-                return false;
+                event.message = new ElementTag(chat.getMessage());
+                event.rawJson = new ElementTag(chat.getRawJson());
+                event.system = new ElementTag(chat.isSystem());
+                event.player = PlayerTag.mirrorBukkitPlayer(player);
+                event.modifyMessage = chat::setMessage;
+                event.modifyRawJson = chat::setRawJson;
+                event.cancelled = false;
+                event.modifyCancellation = (c) -> event.cancelled = c;
+                event.fire();
+                return event.cancelled;
             };
             try {
                 if (DenizenCoreImplementation.isSafeThread()) {
