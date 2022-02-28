@@ -38,6 +38,7 @@ public class EntityColor implements Property {
                 type == EntityType.PANDA ||
                 type == EntityType.ARROW ||
                 type == EntityType.VILLAGER ||
+                type == EntityType.ZOMBIE_VILLAGER ||
                 type == EntityType.TRADER_LLAMA ||
                 type == EntityType.TROPICAL_FISH ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type));
@@ -102,6 +103,8 @@ public class EntityColor implements Property {
                 return panda.getMainGene().name() + "|" + panda.getHiddenGene().name();
             case VILLAGER:
                 return ((Villager) colored.getBukkitEntity()).getVillagerType().name();
+            case ZOMBIE_VILLAGER:
+                return ((ZombieVillager) colored.getBukkitEntity()).getVillagerType().name();
             case ARROW:
                 try {
                     return new ColorTag(((Arrow) colored.getBukkitEntity()).getColor()).identify();
@@ -155,6 +158,7 @@ public class EntityColor implements Property {
             case PANDA:
                 return listForEnum(Panda.Gene.values());
             case VILLAGER:
+            case ZOMBIE_VILLAGER:
                 return listForEnum(Villager.Type.values());
             }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
@@ -194,7 +198,7 @@ public class EntityColor implements Property {
     // For foxes, the types are RED and SNOW.
     // For pandas, the format is MAIN_GENE|HIDDEN_GENE.
     //          The gene types are NORMAL, LAZY, WORRIED, PLAYFUL, BROWN, WEAK, and AGGRESSIVE.
-    // For villagers, the types are DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, and TAIGA.
+    // For villagers and zombie_villagers, the types are DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, and TAIGA.
     // For tropical_fish, the input is PATTERN|BODYCOLOR|PATTERNCOLOR, where BodyColor and PatterenColor are both DyeColor (see below),
     //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
     // For sheep, wolf, and shulker entities, the input is a Dye Color.
@@ -373,6 +377,9 @@ public class EntityColor implements Property {
             }
             else if (type == EntityType.VILLAGER && mechanism.requireEnum(Villager.Type.class)) {
                 ((Villager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (type == EntityType.ZOMBIE_VILLAGER && mechanism.requireEnum(Villager.Type.class)) {
+                ((ZombieVillager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
                 ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());

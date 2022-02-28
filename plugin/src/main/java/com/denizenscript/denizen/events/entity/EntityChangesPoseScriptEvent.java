@@ -24,8 +24,6 @@ public class EntityChangesPoseScriptEvent extends BukkitScriptEvent implements L
     // @Switch old:<pose> to only process the event if the old pose matches the input.
     // @Switch new:<pose> to only process the event if the new pose matches the input.
     //
-    // @Cancellable true
-    //
     // @Triggers when an entity changes its visual pose.
     //
     // @Context
