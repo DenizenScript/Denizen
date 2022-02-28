@@ -33,6 +33,7 @@ public class PlayerReceivesActionbarScriptEvent extends PlayerReceivesMessageScr
     }
 
     public static PlayerReceivesActionbarScriptEvent instance;
+    public boolean modified;
 
     @Override
     public boolean couldMatch(ScriptPath path) {

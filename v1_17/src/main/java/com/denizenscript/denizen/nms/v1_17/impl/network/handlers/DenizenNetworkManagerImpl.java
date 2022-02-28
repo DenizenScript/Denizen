@@ -274,17 +274,27 @@ public class DenizenNetworkManagerImpl extends Connection {
             event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
-            event.modifyMessage = (msg) -> event.message = new ElementTag(msg);
-            event.modifyRawJson = (json) -> event.message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(json), ChatColor.WHITE));
+            event.modifyMessage = (msg) -> {
+                event.message = new ElementTag(msg);
+                event.modified = true;
+            };
+            event.modifyRawJson = (json) -> {
+                event.message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(json), ChatColor.WHITE));
+                event.modified = true;
+            };
             event.modifyCancellation = (c) -> event.cancelled = c;
             event.cancelled = false;
+            event.modified = false;
             event.fire();
-            if (!event.cancelled) {
+            if (event.cancelled) {
+                return true;
+            }
+            if (event.modified) {
                 Component component = Handler.componentToNMS(FormattedTextHelper.parse(event.message.asString(), ChatColor.WHITE));
                 ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
                 oldManager.send(newPacket, genericfuturelistener);
+                return true;
             }
-            return true;
         }
         return false;
     }
