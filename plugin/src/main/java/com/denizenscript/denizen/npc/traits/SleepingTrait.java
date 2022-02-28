@@ -30,7 +30,7 @@ public class SleepingTrait extends Trait {
         if (npc == null || bedLocation == null || !npc.isSpawned()) {
             return;
         }
-        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 1)) {
+        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 2)) {
             wakeUp();
             Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
                 if (npc.hasTrait(SleepingTrait.class) && !npc.getOrAddTrait(SleepingTrait.class).isSleeping()) {
