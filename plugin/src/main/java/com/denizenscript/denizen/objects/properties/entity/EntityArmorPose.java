@@ -137,7 +137,7 @@ public class EntityArmorPose implements Property {
         // @input MapTag
         // @description
         // Sets the angle for various parts of the armor stand.
-        // For example, head=4.5,3,4.5;body=5.4,3.2,1
+        // For example, [head=4.5,3,4.5;body=5.4,3.2,1]
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
         // Angles are in radians!
         // Here's a website to help you figure out the correct values: <@link url https://bgielinor.github.io/Minecraft-ArmorStand/>.
@@ -146,19 +146,7 @@ public class EntityArmorPose implements Property {
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
-            if (mechanism.value.canBeType(MapTag.class)) {
-                MapTag map = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
-                    PosePart posePart = PosePart.fromName(entry.getKey().str);
-                    if (posePart == null) {
-                        mechanism.echoError("Invalid pose part specified: " + entry.getKey().str);
-                    }
-                    else {
-                        posePart.setAngle(armorStand, toEulerAngle(entry.getValue().asType(LocationTag.class, mechanism.context)));
-                    }
-                }
-            }
-            else {
+            if (mechanism.getValue().asString().contains("|")) { // legacy format
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 Iterator<String> iterator = list.iterator();
                 while (iterator.hasNext()) {
@@ -170,6 +158,18 @@ public class EntityArmorPose implements Property {
                     }
                     else {
                         posePart.setAngle(armorStand, toEulerAngle(LocationTag.valueOf(angle, mechanism.context)));
+                    }
+                }
+            }
+            else {
+                MapTag map = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+                    PosePart posePart = PosePart.fromName(entry.getKey().str);
+                    if (posePart == null) {
+                        mechanism.echoError("Invalid pose part specified: " + entry.getKey().str);
+                    }
+                    else {
+                        posePart.setAngle(armorStand, toEulerAngle(entry.getValue().asType(LocationTag.class, mechanism.context)));
                     }
                 }
             }
