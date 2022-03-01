@@ -49,13 +49,13 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_18_R1.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_18_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_18_R1.entity.*;
-import org.bukkit.craftbukkit.v1_18_R1.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_18_R2.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_18_R2.entity.*;
+import org.bukkit.craftbukkit.v1_18_R2.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -185,9 +185,19 @@ public class EntityHelperImpl extends EntityHelper {
         ((Arrow) entity).setPickupStatus(AbstractArrow.PickupStatus.valueOf(status));
     }
 
+    public static final MethodHandle LIVINGENTITY_AUTOSPINATTACK_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_autoSpinAttackTicks);
+    public static final MethodHandle LIVINGENTITY_SETLIVINGENTITYFLAG = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_setLivingEntityFlag, int.class, boolean.class);
+
     @Override
     public void setRiptide(Entity entity, boolean state) {
-        ((CraftLivingEntity) entity).getHandle().startAutoSpinAttack(state ? 0 : 1);
+        try {
+            net.minecraft.world.entity.LivingEntity nmsEntity = ((CraftLivingEntity) entity).getHandle();
+            LIVINGENTITY_AUTOSPINATTACK_SETTER.invoke(nmsEntity, state ? 0 : 1);
+            LIVINGENTITY_SETLIVINGENTITYFLAG.invoke(nmsEntity, 4, true);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     @Override

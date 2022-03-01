@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.18.1-R0.1-SNAPSHOT</craftbukkit.version>
+        <craftbukkit.version>1.18.2-R0.1-SNAPSHOT</craftbukkit.version>
         <citizens.version>2.0.29-SNAPSHOT</citizens.version>
         <dcore.version>1.90-SNAPSHOT</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>

@@ -5,7 +5,9 @@ import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
@@ -14,7 +16,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
@@ -23,19 +25,19 @@ import java.util.Locale;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
-    public net.minecraft.world.level.biome.Biome biomeBase;
+    public Holder<Biome> biomeBase;
 
     public ServerLevel world;
 
     public BiomeNMSImpl(ServerLevel world, String name) {
         super(world.getWorld(), name);
         this.world = world;
-        biomeBase = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).get(new ResourceLocation(name));
+        biomeBase = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getHolder(ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(name))).orElse(null);
     }
 
     @Override
     public DownfallType getDownfallType() {
-        Biome.Precipitation nmsType = biomeBase.getPrecipitation();
+        Biome.Precipitation nmsType = biomeBase.value().getPrecipitation();
         switch (nmsType) {
             case RAIN:
                 return DownfallType.RAIN;
@@ -50,12 +52,12 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public float getHumidity() {
-        return biomeBase.getDownfall();
+        return biomeBase.value().getDownfall();
     }
 
     @Override
     public float getTemperature() {
-        return biomeBase.getBaseTemperature();
+        return biomeBase.value().getBaseTemperature();
     }
 
     @Override
@@ -115,7 +117,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
-        MobSpawnSettings mobs = biomeBase.getMobSettings();
+        MobSpawnSettings mobs = biomeBase.value().getMobSettings();
         WeightedRandomList<MobSpawnSettings.SpawnerData> typeSettingList = mobs.getMobs(creatureType);
         List<EntityType> entityTypes = new ArrayList<>();
         if (typeSettingList == null) {

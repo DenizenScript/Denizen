@@ -5,12 +5,15 @@ import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 
 public class WorldHelperImpl implements WorldHelper {
 
@@ -34,10 +37,11 @@ public class WorldHelperImpl implements WorldHelper {
 
     @Override
     public Location getNearestBiomeLocation(Location start, BiomeTag biome) {
-        BlockPos result = ((CraftWorld) start.getWorld()).getHandle().findNearestBiome(((BiomeNMSImpl) biome.getBiome()).biomeBase, new BlockPos(start.getBlockX(), start.getBlockY(), start.getBlockZ()), 6400, 8);
-        if (result == null) {
+        Pair<BlockPos, Holder<Biome>> result = ((CraftWorld) start.getWorld()).getHandle()
+                .findNearestBiome(b -> b.is(((BiomeNMSImpl) biome.getBiome()).biomeBase.unwrapKey().get()), new BlockPos(start.getBlockX(), start.getBlockY(), start.getBlockZ()), 6400, 8);
+        if (result == null || result.getFirst() == null) {
             return null;
         }
-        return new Location(start.getWorld(), result.getX(), result.getY(), result.getZ());
+        return new Location(start.getWorld(), result.getFirst().getX(), result.getFirst().getY(), result.getFirst().getZ());
     }
 }

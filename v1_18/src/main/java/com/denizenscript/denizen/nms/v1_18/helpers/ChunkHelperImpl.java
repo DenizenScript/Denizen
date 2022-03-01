@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementat
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -18,8 +19,8 @@ import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_18_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -94,7 +95,7 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void setAllBiomes(Chunk chunk, BiomeNMS biome) {
-        Biome nmsBiome = ((BiomeNMSImpl) biome).biomeBase;
+        Holder<Biome> nmsBiome = ((BiomeNMSImpl) biome).biomeBase;
         LevelChunk nmsChunk = ((CraftChunk) chunk).getHandle();
         ChunkPos chunkcoordintpair = nmsChunk.getPos();
         int i = QuartPos.fromBlock(chunkcoordintpair.getMinBlockX());
@@ -102,7 +103,7 @@ public class ChunkHelperImpl implements ChunkHelper {
         LevelHeightAccessor levelheightaccessor = nmsChunk.getHeightAccessorForGeneration();
         for(int k = levelheightaccessor.getMinSection(); k < levelheightaccessor.getMaxSection(); ++k) {
             LevelChunkSection chunksection = nmsChunk.getSection(nmsChunk.getSectionIndexFromSectionY(k));
-            PalettedContainer<Biome> datapaletteblock = chunksection.getBiomes();
+            PalettedContainer<Holder<Biome>> datapaletteblock = chunksection.getBiomes();
             datapaletteblock.acquire();
             for(int l = 0; l < 4; ++l) {
                 for(int i1 = 0; i1 < 4; ++i1) {

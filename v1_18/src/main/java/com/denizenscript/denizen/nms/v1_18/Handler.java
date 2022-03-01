@@ -28,6 +28,7 @@ import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
@@ -47,15 +48,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R2.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -104,7 +105,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("20b026e774dbf715e40a0b2afe114792");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("eaeedbff51b16ead3170906872fda334");
     }
 
     @Override
@@ -272,8 +273,8 @@ public class Handler extends NMSHandler {
     public BiomeNMS getBiomeAt(Block block) {
         // Based on CraftWorld source
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
-        Biome biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
-        ResourceLocation key = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
+        Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
+        ResourceLocation key = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome.value());
         String keyText = key.getNamespace().equals("minecraft") ? key.getPath() : key.toString();
         return new BiomeNMSImpl(level, keyText);
     }
