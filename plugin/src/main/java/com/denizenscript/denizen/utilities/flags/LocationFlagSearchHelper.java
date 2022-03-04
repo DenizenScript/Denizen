@@ -14,9 +14,8 @@ public class LocationFlagSearchHelper {
 
     public static void getFlaggedLocations(Chunk chunk, String flagName, Consumer<Location> handleLocation) {
         int subKeyIndex = flagName.indexOf('.');
-        String fullPath = null;
+        String fullPath = flagName;
         if (subKeyIndex != -1) {
-            fullPath = flagName;
             flagName = flagName.substring(0, subKeyIndex);
         }
         PersistentDataContainer container = chunk.getPersistentDataContainer();
@@ -28,7 +27,7 @@ public class LocationFlagSearchHelper {
                     ref.setX(Integer.parseInt(split.get(2)));
                     ref.setY(Integer.parseInt(split.get(3)));
                     ref.setZ(Integer.parseInt(split.get(4)));
-                    if (fullPath == null || new LocationTag(ref).getFlagTracker().hasFlag(fullPath)) {
+                    if (new LocationTag(ref).getFlagTracker().hasFlag(fullPath)) {
                         handleLocation.accept(ref);
                     }
                 }
