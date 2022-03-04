@@ -1,147 +1,148 @@
 # Denizen config.
 
 Debug:
-  # Whether debug information about Denizen should EVER appear in the server console by default
-  # NOTE: You almost ALWAYS want this ON! Leave it at 'true'! To hide debug from scripts, set "debug: false" on the script containers that work fine.
-  # Disabling this can prevent your logs from showing error messages and other important notices!
-  Show: true
-  # Whether the '/ex' command should tell you to check debug when you use it.
-  Ex command help: true
-  # Whether the '/ex' command should show debug by default. (if set to false, this inverts the '-q' option)
-  Ex command debug: true
-  # The max length of a line of debug output. Shorten this if your console is hard to read.
-  Line length: 300
-  # The max length of debug output. After this length, all further output will be cut off.
-  Trim length limit: 1024
-  # Whether to permit the "system.redirect_logging" mechanism
-  Allow console redirection: false
-  # Whether to send basic statistic information to the Denizen central server.
-  # This is purely to maintain basic information on things like how many servers run any given version of Denizen.
-  # Please do not disable this unless it is throwing errors (Please report any errors you receive as well).
-  Stats: true
-  # Whether to force the help command to be the default bukkit help (required to fix issues with command script help options).
-  Override help: true
-  # The default debug mode for script containers.
-  # This should almost always be left at 'true'.
-  Container default: true
-  # How many debug messages can appear within the span of a single tick before they simply get blocked.
-  # This is available as a backup safety feature to prevent debug output from crashing a server.
-  # Set the value lower to better protect this, set the value higher to willfully debug a very very long script.
-  Limit per tick: 5000
-  # Whether to show extra 'verbose' info output (will FLOOD your console!).
-  Verbose: false
-  # Optional text to prefix all debug output.
-  Prefix: ""
-  # Whether to show full information about scripts being loaded (at startup and "/ex reload" usage).
-  Show loading info: false
-  # Whether to show deprecation warnings that are scheduled as future warnings.
-  Show future warnings: false
-  # Enable this to show a warning in logs when packets are sent asynchronously.
-  # Async packets are largely unsupported with a few exceptions, but some plugins send them regardless.
-  # This setting helps you catch those plugins if enabled.
-  Warn on async packets: false
+    # Whether debug information about Denizen should EVER appear in the server console by default
+    # NOTE: You almost ALWAYS want this ON! Leave it at 'true'! To hide debug from scripts, set "debug: false" on the script containers that work fine.
+    # Disabling this can prevent your logs from showing error messages and other important notices!
+    Show: true
+    # Whether the '/ex' command should tell you to check debug when you use it.
+    Ex command help: true
+    # Whether the '/ex' command should show debug by default. (if set to false, this inverts the '-q' option)
+    Ex command debug: true
+    # The max length of a line of debug output. Shorten this if your console is hard to read.
+    Line length: 300
+    # The max length of debug output. After this length, all further output will be cut off.
+    Trim length limit: 1024
+    # Whether to permit the "system.redirect_logging" mechanism
+    Allow console redirection: false
+    # Whether to send basic statistic information to the Denizen central server.
+    # This is purely to maintain basic information on things like how many servers run any given version of Denizen.
+    # Please do not disable this unless it is throwing errors (Please report any errors you receive as well).
+    Stats: true
+    # Whether to force the help command to be the default bukkit help (required to fix issues with command script help options).
+    Override help: true
+    # The default debug mode for script containers.
+    # This should almost always be left at 'true'.
+    Container default: true
+    # How many debug messages can appear within the span of a single tick before they simply get blocked.
+    # This is available as a backup safety feature to prevent debug output from crashing a server.
+    # Set the value lower to better protect this, set the value higher to willfully debug a very very long script.
+    Limit per tick: 5000
+    # Whether to show extra 'verbose' info output (will FLOOD your console!).
+    Verbose: false
+    # Optional text to prefix all debug output.
+    Prefix: ""
+    # Whether to show full information about scripts being loaded (at startup and "/ex reload" usage).
+    Show loading info: false
+    # Whether to show deprecation warnings that are scheduled as future warnings.
+    Show future warnings: false
+    # Enable this to show a warning in logs when packets are sent asynchronously.
+    # Async packets are largely unsupported with a few exceptions, but some plugins send them regardless.
+    # This setting helps you catch those plugins if enabled.
+    Warn on async packets: false
 
 Scripts:
-  World:
-    Events:
-      On player chats:
-        # Whether to use the dangerous 'async' chat event (not recommended!)
-        Use asynchronous event: false
-      On time changes:
-        Frequency of check: 250t
-  Interact:
-    # Default speed for interact script queues
+    World:
+        Events:
+            On player chats:
+                # Whether to use the dangerous 'async' chat event (not recommended!)
+                Use asynchronous event: false
+            On time changes:
+                Frequency of check: 250t
+    Interact:
+        # Default speed for interact script queues
+        Queue speed: instant
+    # Default speed for new queues (via run command usually)
     Queue speed: instant
-  # Default speed for new queues (via run command usually)
-  Queue speed: instant
-  # What character encoding to use. 'default' indicates system default, 'utf8' is suggested as a preferred encoding in most cases.
-  Encoding: utf8
-  Command:
-    # If set to 'true', the command scripts engine will automatically initialize when the server loads.
-    # If false, it will only initialize once at least one command script is loaded.
-    # This defaults to false to avoid any possible interference on servers that don't use command scripts.
-    Auto init: false
+    # What character encoding to use. 'default' indicates system default, 'utf8' is suggested as a preferred encoding in most cases.
+    Encoding: utf8
+    Command:
+        # If set to 'true', the command scripts engine will automatically initialize when the server loads.
+        # If false, it will only initialize once at least one command script is loaded.
+        # This defaults to false to avoid any possible interference on servers that don't use command scripts.
+        Auto init: false
 
 # The default options for new Denizen NPCs
 
 # Whether to spawn NPCs with given traits, and what settings to have by default
 Traits:
-  Health:
-    Enabled: false
-    # Whether to block drops from NPCs that have the health trait by default.
-    Block drops: false
-    Respawn:
-      # Whether the health trait should control respawn by default.
-      Enabled: false
-      # How long after death before ethe NPC should respawn by default.
-      Delay: 10s
-    Animated death:
-      # Whether the NPC should play a death animation by default.
-      Enabled: false
+    Health:
+        Enabled: false
+        # Whether to block drops from NPCs that have the health trait by default.
+        Block drops: false
+        Respawn:
+            # Whether the health trait should control respawn by default.
+            Enabled: false
+            # How long after death before ethe NPC should respawn by default.
+            Delay: 10s
+        Animated death:
+            # Whether the NPC should play a death animation by default.
+            Enabled: false
 
 # Whether triggers are on by default, and their individual settings
 Triggers:
-  Chat:
-    Enabled: true
-    Use asynchronous event: false
-    Cooldown: 2s
-    Range: 3
-    Overhearing range: 4
-    Prerequisites:
-      Must be looking in direction of NPC: true
-      Must be able to see NPC: true
-    Formats:
-      Player to NPC: "You -> <npc.nickname>: <text>"
-      Player to NPC overheard: "<player.name> -> <npc.nickname>: <text>"
-    Appears globally:
-      If triggers missing: true
-      If triggers failed: true
-      If NPC uninteractable: true
-  Click:
-    Enabled: true
-    Cooldown: 2s
-  Damage:
-    Enabled: false
-    Cooldown: 0.5s
-  Proximity:
-    Enabled: false
-    Cooldown: 1s
-    Range: 10
+    Chat:
+        Enabled: true
+        Use asynchronous event: false
+        # Note: cooldowns, ranges, etc. for all triggers should be edited in your script's "trigger" command, not in the config
+        Cooldown: 2s
+        Range: 3
+        Overhearing range: 4
+        Prerequisites:
+            Must be looking in direction of NPC: true
+            Must be able to see NPC: true
+        Formats:
+            Player to NPC: "You -> <npc.nickname>: <text>"
+            Player to NPC overheard: "<player.name> -> <npc.nickname>: <text>"
+        Appears globally:
+            If triggers missing: true
+            If triggers failed: true
+            If NPC uninteractable: true
+    Click:
+        Enabled: true
+        Cooldown: 2s
+    Damage:
+        Enabled: false
+        Cooldown: 0.5s
+    Proximity:
+        Enabled: false
+        Cooldown: 1s
+        Range: 10
 
 Commands:
-  Engage:
-    # the default timeout for engage, if not specifically set otherwise
-    Timeout: 150s
-  While:
-    # how many times the WHILE command can loop before it gives up
-    # Set to 0 for infinite
-    Max loops: 10000
-  Chat:
-    # settings for the Chat command, these override Citizens2 settings
-    Options:
-      Multiple targets format: "%target%, %target%, %target%, and others"
-      # set to -1 to disable bystanders overhearing, or 0 for all players on the server to hear
-      Range for bystanders: 5.0
-    Formats:
-      No target: "[<[talker].name>]: <[message]>"
-      To target: "[<[talker].name>] -> You: <[message]>"
-      With target to bystanders: "[<[talker].name>] -> <[target].name>: <[message]>"
-      With targets to bystanders: "[<[talker].name>] -> [<[targets]>]: <[message]>"
-  CreateWorld:
+    Engage:
+        # the default timeout for engage, if not specifically set otherwise
+        Timeout: 150s
+    While:
+        # how many times the WHILE command can loop before it gives up
+        # Set to 0 for infinite
+        Max loops: 10000
+    Chat:
+        # settings for the Chat command, these override Citizens2 settings
+        Options:
+            Multiple targets format: "%target%, %target%, %target%, and others"
+            # set to -1 to disable bystanders overhearing, or 0 for all players on the server to hear
+            Range for bystanders: 5.0
+        Formats:
+            No target: "[<[talker].name>]: <[message]>"
+            To target: "[<[talker].name>] -> You: <[message]>"
+            With target to bystanders: "[<[talker].name>] -> <[target].name>: <[message]>"
+            With targets to bystanders: "[<[talker].name>] -> [<[targets]>]: <[message]>"
+    CreateWorld:
         # Whether non-alphanumeric symbols are allowed in world names. Letters, numbers, unicode text, '-', '_', and ' ' are allowed always.
         # If this is changed to 'true', then other symbols like '/' can be used in a world name (effectively putting the world inside a subfolder).
         Allow symbols in names: false
-  Delete:
+    Delete:
         # Whether scripts are allowed to delete files from your server
         # This is mostly to clean up saves, but could potentially be abused.
         # Set to 'false' if you're worried about security.
         Allow file deletion: true
-  Remove:
+    Remove:
         # If set to true, the 'remove' command will always show a warning if it's removing all entities of a type from the world.
         # This is usually an intentional action, but can happen by mistake.
         # If entities are disappearing in groups unexpectedly, enable this config option to verify whether the 'remove' command is the source.
         Always warn on mass delete: false
-  Restart:
+    Restart:
         # Whether scripts are allowed to stop or restart your server.
         # This is usually only done intentionally, and quite identifiable if done on accident,
         # Though you may wish to disable this if your server is stopping and you don't know why,
@@ -153,16 +154,16 @@ Commands:
         # blocked by blocking the commands themselves with the command event, like so: 'on stop|restart command'
         Allow server stop: false
         Allow server restart: true
-  Filecopy:
+    Filecopy:
         # Whether scripts are allowed to copy files across your server
         # Note that this could be abused by overwriting existing files.
         # Set to 'false' if you're worried about security.
         Allow copying files: true
-  Log:
+    Log:
         # The log command writes to file, which is potentially dangerous
         # Set to 'false' if you're worried about security.
         Allow logging: true
-  Yaml:
+    Yaml:
         # Whether the YAML command (or any other file-alteration command) is allowed to save outside the minecraft server folder.
         # Set to 'false' if you want good security.
         Allow saving outside folder: false
@@ -170,56 +171,56 @@ Commands:
         # A good path to use for extra security is: plugins/Denizen/data/
         # Leave at "none" to disable this optional protection.
         Limit path: none
-  Webget:
+    Webget:
         # Whether to allow scripts to read arbitrary data from the web, which can also potentially enable tracking of your private server data.
         # Generally this is safe, but set to 'false' if you want very strict security.
         Allow: true
-    # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
-    # Otherwise, a bad script or plugin could potentially damage things (though being careful with these settings should reduce the risk of a script doing so)
-    # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
+        # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
+        # Otherwise, a bad script or plugin could potentially damage things (though being careful with these settings should reduce the risk of a script doing so)
+        # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
 
 Tags:
-  # How long a tag can parse before force-closing the tag parser engine. Set to 0 to disable tag parse timing entirely.
-  Timeout: 10
-  # Whether the tag system should still timeout when debug is off.
-  Timeout when silent: false
-  # Rate between when slowed warnings appear (in milliseconds). This is used for minor warnings such as future-deprecation notices, to avoid error message flood.
-  Warning rate: 10000
-  # Settings for tags like cuboid.blocks, location.find.blocks, ...
-  Block tags:
-    # How many blocks can be read, max, before stopping the tag in place
-    Max blocks: 1000000
-  Chat history:
-    # How many player messages will be stored for each player (<player.chat_history>, etc.)
-    Max messages: 10
+    # How long a tag can parse before force-closing the tag parser engine. Set to 0 to disable tag parse timing entirely.
+    Timeout: 10
+    # Whether the tag system should still timeout when debug is off.
+    Timeout when silent: false
+    # Rate between when slowed warnings appear (in milliseconds). This is used for minor warnings such as future-deprecation notices, to avoid error message flood.
+    Warning rate: 10000
+    # Settings for tags like cuboid.blocks, location.find.blocks, ...
+    Block tags:
+        # How many blocks can be read, max, before stopping the tag in place
+        Max blocks: 1000000
+    Chat history:
+        # How many player messages will be stored for each player (<player.chat_history>, etc.)
+        Max messages: 10
 
 Saves:
-  # How long (in seconds) before the offline player flag cache times out.
-  # Set to -1 to keep offline player flags loaded perpetually, or to 0 to never cache.
-  Offline player cache timeout: 300
-  # When set to 'true', player data will be loaded offthread during the login sequence, to avoid adding load to the server while players join.
-  Load async on login: true
-  # When set to 'true', all automatic flag cleanups will be skipped.
-  # This might save some processing time on servers that rarely use flag expirations, but otherwise should be left as 'false'.
-  Skip flag cleaning: false
+    # How long (in seconds) before the offline player flag cache times out.
+    # Set to -1 to keep offline player flags loaded perpetually, or to 0 to never cache.
+    Offline player cache timeout: 300
+    # When set to 'true', player data will be loaded offthread during the login sequence, to avoid adding load to the server while players join.
+    Load async on login: true
+    # When set to 'true', all automatic flag cleanups will be skipped.
+    # This might save some processing time on servers that rarely use flag expirations, but otherwise should be left as 'false'.
+    Skip flag cleaning: false
 
 Packets:
-  # Whether to allow Denizen to intercept packets from and to player clients.
-  # This enables access to certain ScriptEvents, such as PlayerSteers and PlayerReceivesMessage.
-  # It also enables hiding item script IDs and most likely has no real reason to be disabled.
-  # Note that changing this setting requires a full server restart.
-  Interception: true
-  # Whether to automatically initialize the packet interceptor at startup.
-  # If false, it will only initialize once at least one packet-interception command or event is used.
-  # This defaults to false to avoid any possible interference on servers that don't need packet interception.
-  # If this is false, some packet-interception related tags may not work.
-  Auto init: false
+    # Whether to allow Denizen to intercept packets from and to player clients.
+    # This enables access to certain ScriptEvents, such as PlayerSteers and PlayerReceivesMessage.
+    # It also enables hiding item script IDs and most likely has no real reason to be disabled.
+    # Note that changing this setting requires a full server restart.
+    Interception: true
+    # Whether to automatically initialize the packet interceptor at startup.
+    # If false, it will only initialize once at least one packet-interception command or event is used.
+    # This defaults to false to avoid any possible interference on servers that don't need packet interception.
+    # If this is false, some packet-interception related tags may not work.
+    Auto init: false
 
 # This is a special map of custom colors by name, for the '&' tag base to use. 'default' is used when the name is unrecognized. You can add extra keys here.
 # Tags work here and will be pre-parsed at load time. RGB color codes work here.
 Colors:
-  base: <&2>
-  emphasis: <&b>
-  error: <red>
-  warning: <yellow>
-  default: <white>
+    base: <&2>
+    emphasis: <&b>
+    error: <red>
+    warning: <yellow>
+    default: <white>
