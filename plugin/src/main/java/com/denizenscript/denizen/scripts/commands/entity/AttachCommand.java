@@ -184,7 +184,7 @@ public class AttachCommand extends AbstractCommand {
                 Debug.echoError("Cannot attach entity '" + entity + "': entity is not spawned.");
                 continue;
             }
-            if (forPlayers == null) {
+            if (forPlayers == null || (forPlayers.isEmpty() && sync_server.asBoolean())) {
                 procPlayer.accept(entity, null);
             }
             else {

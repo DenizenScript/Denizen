@@ -373,6 +373,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element with all color codes parsed.
         // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.
+        // This allows old-style colors like '&b', or Essentials-style hex codes like '&#ff00ff'
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "parse_color", (attribute, object) -> {
             char prefix = '&';
