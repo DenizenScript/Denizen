@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAttributeModifiers;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -8,12 +9,13 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -36,10 +38,6 @@ public class ItemAttributeModifiers implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "attribute_modifiers"
-    };
-
     public static final String[] handledMechs = new String[] {
             "attribute_modifiers", "add_attribute_modifiers", "remove_attribute_modifiers"
     };
@@ -55,8 +53,12 @@ public class ItemAttributeModifiers implements Property {
         if (meta == null) {
             return null;
         }
-        MapTag map = new MapTag();
         Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
+        return getAttributeModifiersFor(metaMap);
+    }
+
+    public static MapTag getAttributeModifiersFor(Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap) {
+        MapTag map = new MapTag();
         if (metaMap == null) {
             return map;
         }
@@ -74,12 +76,7 @@ public class ItemAttributeModifiers implements Property {
         return map;
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ItemTag.attribute_modifiers>
@@ -92,11 +89,30 @@ public class ItemAttributeModifiers implements Property {
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
         // See also <@link language attribute modifiers>.
         // -->
-        if (attribute.startsWith("attribute_modifiers")) {
-            return getAttributeModifiers().getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<ItemAttributeModifiers, MapTag>registerTag(MapTag.class, "attribute_modifiers", (attribute, object) -> {
+            return object.getAttributeModifiers();
+        });
 
-        return null;
+        // <--[tag]
+        // @attribute <ItemTag.default_attribute_modifiers[<slot>]>
+        // @returns MapTag
+        // @group properties
+        // @description
+        // Returns a map of all default attribute modifiers on the item based purely on its material type, for the given slot,
+        // in the same format as <@link tag ItemTag.attribute_modifiers>
+        // Slot must be one of: HAND, OFF_HAND, FEET, LEGS, CHEST, or HEAD
+        // -->
+        PropertyParser.<ItemAttributeModifiers, MapTag>registerTag(MapTag.class, "default_attribute_modifiers", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            EquipmentSlot slot = attribute.getParamElement().asEnum(EquipmentSlot.class);
+            if (slot == null) {
+                attribute.echoError("Invalid slot.");
+                return null;
+            }
+            return object.getAttributeModifiersFor(NMSHandler.getItemHelper().getDefaultAttributes(object.item.getItemStack(), slot));
+        });
     }
 
     @Override

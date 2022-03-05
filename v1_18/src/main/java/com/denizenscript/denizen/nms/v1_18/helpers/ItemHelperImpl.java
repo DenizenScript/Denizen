@@ -7,10 +7,7 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Multisets;
+import com.google.common.collect.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
@@ -26,6 +23,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ChunkPos;
@@ -43,6 +42,8 @@ import org.bukkit.NamespacedKey;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.attribute.CraftAttributeInstance;
+import org.bukkit.craftbukkit.v1_18_R2.attribute.CraftAttributeMap;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
@@ -518,5 +519,16 @@ public class ItemHelperImpl extends ItemHelper {
         }
         renderFullMap(worldmap, xMin, zMin, xMax, zMax);
         return true;
+    }
+
+    @Override
+    public Multimap<org.bukkit.attribute.Attribute, org.bukkit.attribute.AttributeModifier> getDefaultAttributes(ItemStack item, org.bukkit.inventory.EquipmentSlot slot) {
+        net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+        Multimap<Attribute, AttributeModifier> attributes = nmsStack.getItem().getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.values()[slot.ordinal()]);
+        LinkedHashMultimap<org.bukkit.attribute.Attribute, org.bukkit.attribute.AttributeModifier> bukkit = LinkedHashMultimap.create();
+        for (Map.Entry<Attribute, AttributeModifier> entry : attributes.entries()) {
+            bukkit.put(CraftAttributeMap.fromMinecraft(Registry.ATTRIBUTE.getKey(entry.getKey()).getPath()), CraftAttributeInstance.convert(entry.getValue()));
+        }
+        return bukkit;
     }
 }
