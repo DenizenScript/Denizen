@@ -63,7 +63,7 @@ public class ReflectionMappingsInfo {
     public static String Biome_ClimateSettings_precipitation = "b";
 
     // net.minecraft.network.Connection
-    public static String Connection_receiving = "i";
+    public static String Connection_receiving = "k";
 
     // net.minecraft.server.network.ServerGamePacketListenerImpl
     public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "C";
