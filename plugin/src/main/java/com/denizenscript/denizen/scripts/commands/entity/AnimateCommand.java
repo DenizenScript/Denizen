@@ -50,8 +50,9 @@ public class AnimateCommand extends AbstractCommand {
     // In addition, Denizen adds a few new entity animations:
     // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM,
     // POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING,
-    // HORSE_BUCK, HORSE_START_STANDING, HORSE_STOP_STANDING
-    // IRON_GOLEM_ATTACK
+    // HORSE_BUCK, HORSE_START_STANDING, HORSE_STOP_STANDING,
+    // IRON_GOLEM_ATTACK,
+    // VILLAGER_SHAKE_HEAD
     //
     // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
     //

@@ -468,7 +468,7 @@ public class Debug {
         else {
             callerId = caller.toString();
         }
-        finalOutputDebugText(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "]" + ChatColor.WHITE + string, caller);
+        finalOutputDebugText(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "] " + ChatColor.WHITE + string, caller);
     }
 
     static void finalOutputDebugText(String message, Debuggable caller) {
