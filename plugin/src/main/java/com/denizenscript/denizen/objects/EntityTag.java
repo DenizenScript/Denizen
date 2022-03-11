@@ -423,32 +423,50 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
 
+    public final boolean trySpecialEntityMatcher(String text, boolean isNPC) {
+        if (isNPC) {
+            return text.equals("entity") || text.equals("npc");
+        }
+        switch (text) {
+            case "entity":
+                return true;
+            case "npc":
+                return isCitizensNPC();
+            case "player":
+                return isPlayer();
+            case "living":
+                return isLivingEntityType();
+            case "vehicle":
+                return getBukkitEntity() instanceof Vehicle;
+            case "fish":
+                return getBukkitEntity() instanceof Fish;
+            case "projectile":
+                return getBukkitEntity() instanceof Projectile;
+            case "hanging":
+                return getBukkitEntity() instanceof Hanging;
+            case "monster":
+                return isMonsterType();
+            case "mob":
+                return isMobType();
+            case "animal":
+                return isAnimalType();
+        }
+        return false;
+    }
+
     public final boolean tryExactMatcher(String text) {
         if (specialEntityMatchables.contains(text)) {
-            switch (text) {
-                case "entity":
-                    return true;
-                case "npc":
-                    return isCitizensNPC();
-                case "player":
-                    return isPlayer();
-                case "living":
-                    return isLivingEntityType();
-                case "vehicle":
-                    return getBukkitEntity() instanceof Vehicle;
-                case "fish":
-                    return getBukkitEntity() instanceof Fish;
-                case "projectile":
-                    return getBukkitEntity() instanceof Projectile;
-                case "hanging":
-                    return getBukkitEntity() instanceof Hanging;
-                case "monster":
-                    return isMonsterType();
-                case "mob":
-                    return isMobType();
-                case "animal":
-                    return isAnimalType();
+            return trySpecialEntityMatcher(text, isCitizensNPC());
+        }
+        if (text.startsWith("npc_")) {
+            String check = text.substring("npc_".length());
+            if (specialEntityMatchables.contains(check)) {
+                if (check.equals("player")) { // Special case
+                    return npc.getEntityType() == EntityType.PLAYER;
+                }
+                return trySpecialEntityMatcher(check, false);
             }
+            return check.equals(CoreUtilities.toLowerCase(npc.getEntityType().name()));
         }
         if (text.contains(":")) {
             if (text.startsWith("entity_flagged:")) {

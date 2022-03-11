@@ -123,6 +123,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // "entity_flagged:<flag>": a Flag Matchable for EntityTag flags.
     // "player_flagged:<flag>": a Flag Matchable for PlayerTag flags (will never match non-players).
     // "npc_flagged:<flag>": a Flag Matchable for NPCTag flags (will never match non-NPCs).
+    // "npc_<type>": matches if the NPC is the given entity type (like "npc_cow" or "npc_mob" or "npc_player").
     // Any entity type name: matches if the entity is of the given type, using advanced matchers.
     //
     // InventoryTag matchers, sometimes identified as "<inventory>":
