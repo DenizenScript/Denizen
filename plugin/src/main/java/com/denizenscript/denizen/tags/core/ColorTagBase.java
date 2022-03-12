@@ -14,7 +14,7 @@ public class ColorTagBase {
         // Returns a color object constructed from the input value.
         // Refer to <@link objecttype ColorTag>.
         // -->
-        TagManager.registerStaticTagBaseHandler(ColorTag.class, "color", (attribute) -> {
+        TagManager.registerTagHandler(ColorTag.class, "color", (attribute) -> { // Cannot be static due to 'random' color
             if (!attribute.hasParam()) {
                 attribute.echoError("Color tag base must have input.");
                 return null;
