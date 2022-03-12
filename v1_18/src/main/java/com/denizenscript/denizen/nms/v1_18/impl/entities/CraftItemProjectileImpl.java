@@ -49,6 +49,16 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
     }
 
     @Override
+    public void setUnlimitedLifetime(boolean b) {
+        // Do nothing
+    }
+
+    @Override
+    public boolean isUnlimitedLifetime() {
+        return false;
+    }
+
+    @Override
     public void setOwner(UUID uuid) {
         // Do nothing
     }
