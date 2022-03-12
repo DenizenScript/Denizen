@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.npc.traits;
 
+import com.denizenscript.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -12,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class InvisibleTrait extends Trait implements Listener, Toggleable {
 
@@ -19,8 +21,9 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     // @name Invisible Trait
     // @group NPC Traits
     // @description
-    // The invisible trait will allow a NPC to remain invisible, even after a server restart. It permanently applies
-    // the invisible potion effect. Use '/trait invisible' or the 'invisible' script command to toggle this trait.
+    // The invisible trait will allow a NPC to remain invisible, even after a server restart.
+    // It permanently applies the invisible potion effect.
+    // Use '/npc invisible' or the 'invisible' script command to toggle this trait.
     //
     // Note that player-type NPCs must have '/npc playerlist' toggled to be turned invisible.
     // Once invisible, the player-type NPCs can be taken off the playerlist.
@@ -83,7 +86,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     }
 
     private void setInvisible() {
-        if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity) {
+        if (invisible && npc.isSpawned() && npc.getEntity() instanceof LivingEntity) {
             setInvisible((LivingEntity) npc.getEntity(), npc);
         }
     }
@@ -96,6 +99,22 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     public void onSpawn() {
         if (invisible) {
             setInvisible();
+            // Workaround bug in Citizens on Paper servers - NPCs don't seem to actually spawn at startup til several ticks *after* the spawn event (2022/03/12)
+            if (!npc.isSpawned()) {
+                new BukkitRunnable() {
+                    int ticks = 0;
+                    @Override
+                    public void run() {
+                        if (ticks++ > 80) {
+                            return;
+                        }
+                        if (npc.isSpawned()) {
+                            setInvisible();
+                            cancel();
+                        }
+                    }
+                }.runTaskTimer(Denizen.getInstance(), 1, 1);
+            }
         }
     }
 
