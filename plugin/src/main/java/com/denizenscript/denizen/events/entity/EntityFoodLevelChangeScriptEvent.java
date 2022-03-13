@@ -25,12 +25,14 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     //
     // @Cancellable true
     //
+    // @Switch item:<item> To only process the event if it was triggered by an item that matches the specified item.
+    //
     // @Triggers when an entity's food level changes.
     //
     // @Context
     // <context.entity> returns the EntityTag.
     // <context.food> returns an ElementTag(Number) of the entity's new food level.
-    // <context.item> returns an ItemTag of the item eaten, if any.
+    // <context.item> returns an ItemTag of the item that triggered the event, if any.
     //
     // @Determine
     // ElementTag(Number) to set the entity's new food level.
