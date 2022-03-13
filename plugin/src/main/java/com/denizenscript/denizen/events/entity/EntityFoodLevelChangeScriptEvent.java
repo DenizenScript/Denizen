@@ -15,7 +15,6 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // entity changes food level
     // <entity> changes food level
     //
     // @Synonyms player hunger depletes
