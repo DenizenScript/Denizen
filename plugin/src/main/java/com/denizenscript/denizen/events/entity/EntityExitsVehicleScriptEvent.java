@@ -14,11 +14,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     // <--[event]
     // @Events
     // entity exits vehicle
-    // entity exits <vehicle>
-    // <entity> exits vehicle
-    // <entity> exits <vehicle>
-    //
-    // @Regex ^on [^\s]+ exits [^\s]+$
+    // <entity> exits <entity>
     //
     // @Group Entity
     //
@@ -40,6 +36,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     public EntityExitsVehicleScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> exits <entity>");
     }
 
     public static EntityExitsVehicleScriptEvent instance;
@@ -48,25 +45,12 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     public EntityDismountEvent event;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("exits")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!path.eventArgLowerAt(2).equals("vehicle") && !tryEntity(vehicle, path.eventArgLowerAt(2))) {
+        String vehicleLabel = path.eventArgLowerAt(2);
+        if (!vehicleLabel.equals("vehicle") && !tryEntity(vehicle, vehicleLabel)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

@@ -17,11 +17,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     // <--[event]
     // @Events
     // entity enters vehicle
-    // entity enters <vehicle>
-    // <entity> enters vehicle
-    // <entity> enters <vehicle>
-    //
-    // @Regex ^on [^\s]+ enters [^\s]+$
+    // <entity> enters <entity>
     //
     // @Group Entity
     //
@@ -43,6 +39,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     public EntityEntersVehicleScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> enters <entity>");
     }
 
     public static EntityEntersVehicleScriptEvent instance;
@@ -54,16 +51,10 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("enters")) {
+        if (!super.couldMatch(path)) {
             return false;
         }
         if (notRelevantEnterables.contains(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
             return false;
         }
         return true;
@@ -71,8 +62,11 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(entity, path.eventArgLowerAt(0))
-                || !tryEntity(vehicle, path.eventArgLowerAt(2))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+            return false;
+        }
+        String vehicleLabel = path.eventArgLowerAt(2);
+        if (!vehicleLabel.equals("vehicle") && !tryEntity(vehicle, vehicleLabel)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {
