@@ -30,6 +30,10 @@ public class GlowCommand extends AbstractCommand {
         isProcedural = false;
     }
 
+    // TODO: REWRITE: 'glow [<entity>|...] (glow:{true}/false/reset) (per_player) (players:<player>|...)'
+    // Default apply globally, unless 'per_player' set, in which case use a purely network solution and do not override the global state at all.
+    // Also note that 'reset' is to reset per_player to view global state.
+
     // <--[command]
     // @Name Glow
     // @Syntax glow [<entity>|...] (<should glow>)

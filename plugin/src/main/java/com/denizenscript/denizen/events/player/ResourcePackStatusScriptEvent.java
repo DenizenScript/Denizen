@@ -30,6 +30,7 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     public ResourcePackStatusScriptEvent() {
         instance = this;
         registerCouldMatcher("resource pack status");
+        registerSwitches("status");
     }
 
     public static ResourcePackStatusScriptEvent instance;
