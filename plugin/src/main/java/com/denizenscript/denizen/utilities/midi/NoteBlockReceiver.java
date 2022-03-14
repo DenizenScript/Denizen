@@ -83,60 +83,53 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         }
     }
 
-    // Note that this may run async
     public void playNote(ShortMessage message) {
-        // if this isn't a NOTE_ON message, we can't play it
-        if (ShortMessage.NOTE_ON != message.getCommand()) {
-            return;
-        }
-
         int channel = message.getChannel();
-
         // If this is a percussion channel, return
         if (channel == 9) {
             return;
         }
-
         if (channelPatches == null) {
             Debug.echoError("Trying to play notes on closed midi NoteBlockReceiver!");
             return;
         }
-
         // get the correct instrument
         Integer patch = channelPatches.get(channel);
-
         // get pitch and volume from the midi message
         float pitch = (float) ToneUtil.midiToPitch(message);
         float volume = VOLUME_RANGE * (message.getData2() / 127.0f);
-
         SoundHelper soundHelper = NMSHandler.getSoundHelper();
-        Sound instrument = soundHelper.getDefaultMidiInstrument();
-        if (patch != null) {
-            instrument = soundHelper.getMidiInstrumentFromPatch(patch);
-        }
-
-        if (location != null) {
-            location.getWorld().playSound(location, instrument, volume, pitch);
-        }
-        else if (entities != null && !entities.isEmpty()) {
-            for (int i = 0; i < entities.size(); i++) {
-                EntityTag entity = entities.get(i);
-                if (entity.isSpawned()) {
-                    if (entity.isPlayer()) {
-                        NMSHandler.getSoundHelper().playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
+        Sound instrument = patch == null ? soundHelper.getDefaultMidiInstrument() : soundHelper.getMidiInstrumentFromPatch(patch);
+        Runnable actualPlay = () -> {
+            if (location != null) {
+                location.getWorld().playSound(location, instrument, volume, pitch);
+            }
+            else if (entities != null && !entities.isEmpty()) {
+                for (int i = 0; i < entities.size(); i++) {
+                    EntityTag entity = entities.get(i);
+                    if (entity.isSpawned()) {
+                        if (entity.isPlayer()) {
+                            NMSHandler.getSoundHelper().playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                        }
+                        else {
+                            NMSHandler.getSoundHelper().playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                        }
                     }
                     else {
-                        NMSHandler.getSoundHelper().playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                        entities.remove(i);
+                        i--;
                     }
                 }
-                else {
-                    entities.remove(i);
-                    i--;
-                }
             }
+            else {
+                this.close();
+            }
+        };
+        if (Bukkit.isPrimaryThread()) {
+            actualPlay.run();
         }
         else {
-            this.close();
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), actualPlay);
         }
     }
 

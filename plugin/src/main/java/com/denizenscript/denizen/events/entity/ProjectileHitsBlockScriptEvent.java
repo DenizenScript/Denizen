@@ -39,6 +39,10 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
     // <context.location> returns a LocationTag of the block that was hit.
     // <context.hit_face> returns a LocationTag vector of the hit normal (like '0,1,0' if the projectile hit the top of the block).
     //
+    // @Player when the entity that shot the projectile is a player.
+    //
+    // @NPC when the entity that shot the projectile is an NPC.
+    //
     // -->
 
     // <--[event]
@@ -65,6 +69,10 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
     // <context.shooter> returns the EntityTag of the shooter, if there is one.
     // <context.location> returns the LocationTag of the block that was hit.
     // <context.hit_face> returns a LocationTag vector of the hit normal (like '0,1,0' if the projectile hit the top of the block).
+    //
+    // @Player when the entity that shot the projectile is a player.
+    //
+    // @NPC when the entity that shot the projectile is an NPC.
     //
     // -->
     public ProjectileHitsBlockScriptEvent() {
