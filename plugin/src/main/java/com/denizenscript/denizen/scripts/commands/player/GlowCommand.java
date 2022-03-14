@@ -11,9 +11,10 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
+import com.denizenscript.denizencore.utilities.debugging.Warning;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,8 @@ public class GlowCommand extends AbstractCommand {
     // Makes the linked player see the chosen entities as glowing.
     // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
     // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
-    // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
+    //
+    // THIS COMMAND IS UNSTABLE AND IS SUBJECT TO BEING REWRITTEN IN THE NEAR FUTURE.
     //
     // @Tags
     // <EntityTag.glowing>
@@ -56,16 +58,6 @@ public class GlowCommand extends AbstractCommand {
     // -->
 
     public static HashMap<Integer, HashSet<UUID>> glowViewers = new HashMap<>();
-
-    public static void unGlow(LivingEntity e) {
-        if (glowViewers.containsKey(e.getEntityId())) {
-            glowViewers.remove(e.getEntityId());
-            e.setGlowing(false);
-            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(e)) {
-                CitizensAPI.getNPCRegistry().getNPC(e).data().setPersistent(NPC.GLOWING_METADATA, false);
-            }
-        }
-    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -91,8 +83,11 @@ public class GlowCommand extends AbstractCommand {
         }
     }
 
+    public static Warning GLOW_UNSTABLE_WARN = new SlowWarning("The 'glow' command is unstable, glitchy, and experimental. It is subject to a rewrite in the near future. It is recommended that you avoid it for the time being.");
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        GLOW_UNSTABLE_WARN.warn(scriptEntry);
         NetworkInterceptHelper.enable();
         final ArrayList<EntityTag> entities = (ArrayList<EntityTag>) scriptEntry.getObject("entities");
         ElementTag glowing = scriptEntry.getElement("glowing");
