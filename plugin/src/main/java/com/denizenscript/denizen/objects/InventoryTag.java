@@ -2052,8 +2052,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @attribute <InventoryTag.slot[<#>|...]>
         // @returns ObjectTag
         // @description
-        // If one slot is specified, returns the ItemTag in the specified slot.
-        // If more than one slot is specified, returns a ListTag(ItemTag) of the item in each given slot.
+        // If just a single slot is specified, returns the ItemTag in the specified slot.
+        // If a list is specified, returns a ListTag(ItemTag) of the item in each given slot.
         // -->
         tagProcessor.registerTag(ObjectTag.class, "slot", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -2066,7 +2066,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 }
                 return null;
             }
-            else if (slots.size() == 1) {
+            else if (slots.size() == 1 && !attribute.getParamObject().shouldBeType(ListTag.class)) {
                 int slot = SlotHelper.nameToIndexFor(attribute.getParam(), object.getInventory().getHolder());
                 if (slot < 0) {
                     slot = 0;
