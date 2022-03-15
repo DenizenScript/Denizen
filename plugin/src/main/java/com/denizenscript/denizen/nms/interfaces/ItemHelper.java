@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -108,6 +109,10 @@ public abstract class ItemHelper {
     }
 
     public Multimap<Attribute, AttributeModifier> getDefaultAttributes(ItemStack item, org.bukkit.inventory.EquipmentSlot slot) {
+        throw new UnsupportedOperationException();
+    }
+
+    public BlockData getPlacedBlock(Material material) {
         throw new UnsupportedOperationException();
     }
 }

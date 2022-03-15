@@ -25,10 +25,12 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,10 +42,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R2.attribute.CraftAttributeInstance;
 import org.bukkit.craftbukkit.v1_18_R2.attribute.CraftAttributeMap;
+import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
@@ -530,5 +534,15 @@ public class ItemHelperImpl extends ItemHelper {
             bukkit.put(CraftAttributeMap.fromMinecraft(Registry.ATTRIBUTE.getKey(entry.getKey()).getPath()), CraftAttributeInstance.convert(entry.getValue()));
         }
         return bukkit;
+    }
+
+    @Override
+    public BlockData getPlacedBlock(Material material) {
+        Item nmsItem = Registry.ITEM.getOptional(CraftNamespacedKey.toMinecraft(material.getKey())).orElse(null);
+        if (nmsItem instanceof BlockItem) {
+            Block block = ((BlockItem) nmsItem).getBlock();
+            return CraftBlockData.fromData(block.defaultBlockState());
+        }
+        return null;
     }
 }

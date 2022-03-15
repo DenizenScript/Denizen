@@ -28,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.*;
@@ -590,6 +591,22 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
                 return new MaterialTag(((BlockStateMeta) object.getItemMeta()).getBlockState());
             }
             return object.getMaterial();
+        });
+
+        // <--[tag]
+        // @attribute <ItemTag.placed_material>
+        // @returns MaterialTag
+        // @group conversion
+        // @description
+        // Returns the MaterialTag that this item would place as a block, if it is a block-like item.
+        // For example, the "redstone" item will return a "redstone_wire" block.
+        // -->
+        tagProcessor.registerTag(ObjectTag.class, "placed_material", (attribute, object) -> {
+            BlockData data = NMSHandler.getItemHelper().getPlacedBlock(object.getBukkitMaterial());
+            if (data == null) {
+                return null;
+            }
+            return new MaterialTag(data);
         });
 
         // <--[tag]

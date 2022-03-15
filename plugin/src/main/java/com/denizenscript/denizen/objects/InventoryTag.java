@@ -2068,6 +2068,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             else if (slots.size() == 1 && !attribute.getParamObject().shouldBeType(ListTag.class)) {
                 int slot = SlotHelper.nameToIndexFor(attribute.getParam(), object.getInventory().getHolder());
+                if (slot == -1) {
+                    attribute.echoError("Invalid slot index '" + attribute.getParam() + "'.");
+                    return null;
+                }
                 if (slot < 0) {
                     slot = 0;
                 }
@@ -2080,6 +2084,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 ListTag result = new ListTag();
                 for (String slotText : slots) {
                     int slot = SlotHelper.nameToIndexFor(slotText, object.getInventory().getHolder());
+                    if (slot == -1) {
+                        attribute.echoError("Invalid slot index '" + slotText + "'.");
+                        return null;
+                    }
                     if (slot < 0) {
                         slot = 0;
                     }
