@@ -98,7 +98,7 @@ public class ItemHelperImpl extends ItemHelper {
         return recipe.toBukkitRecipe();
     }
 
-    public static Field RECIPE_MANAGER_BY_NAME = ReflectionHelper.getFields(RecipeManager.class).get(ReflectionMappingsInfo.RecipeManager_byName);
+    public static Field RECIPE_MANAGER_BY_NAME = ReflectionHelper.getFields(RecipeManager.class).get(ReflectionMappingsInfo.RecipeManager_byName, Map.class);
 
     @Override
     public void removeRecipe(NamespacedKey key) {

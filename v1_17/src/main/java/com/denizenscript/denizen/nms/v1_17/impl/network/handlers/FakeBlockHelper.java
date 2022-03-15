@@ -24,8 +24,8 @@ import java.util.ListIterator;
 
 public class FakeBlockHelper {
 
-    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_buffer);
-    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_blockEntitiesTags);
+    public static Field DATA_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_buffer, byte[].class);
+    public static Field BLOCKENTITIES_MAPCHUNK = ReflectionHelper.getFields(ClientboundLevelChunkPacket.class).get(ReflectionMappingsInfo.ClientboundLevelChunkPacket_blockEntitiesTags, List.class);
 
     public static BlockState getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData()).getState();

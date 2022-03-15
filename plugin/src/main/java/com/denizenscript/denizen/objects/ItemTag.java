@@ -600,6 +600,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the MaterialTag that this item would place as a block, if it is a block-like item.
         // For example, the "redstone" item will return a "redstone_wire" block.
+        // Returns null if the item doesn't place as a block.
         // -->
         tagProcessor.registerTag(ObjectTag.class, "placed_material", (attribute, object) -> {
             BlockData data = NMSHandler.getItemHelper().getPlacedBlock(object.getBukkitMaterial());

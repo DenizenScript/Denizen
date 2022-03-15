@@ -57,12 +57,11 @@ import java.util.*;
 
 public class PlayerHelperImpl extends PlayerHelper {
 
-    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(LivingEntity.class).get(ReflectionMappingsInfo.LivingEntity_attackStrengthTicker);
+    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(LivingEntity.class).get(ReflectionMappingsInfo.LivingEntity_attackStrengthTicker, int.class);
 
-    public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class);
-    public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount);
-    public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount);
-    public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced);
+    public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
+    public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
+    public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
 
     public static final EntityDataAccessor<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
 

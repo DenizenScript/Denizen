@@ -73,9 +73,9 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get(ReflectionMappingsInfo.RecipeBook_known);
+    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get(ReflectionMappingsInfo.RecipeBook_known, Set.class);
 
-    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround);
+    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround, boolean.class);
 
     public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
 
@@ -817,7 +817,7 @@ public class EntityHelperImpl extends EntityHelper {
         return ((CraftFirework) firework).getHandle().lifetime;
     }
 
-    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime);
+    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
 
     @Override
     public int getInWaterTime(Zombie zombie) {
