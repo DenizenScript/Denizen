@@ -38,7 +38,6 @@ public class MaterialCampfire implements Property {
     MaterialTag material;
 
     public static void registerTags() {
-
         PropertyParser.<MaterialCampfire, ElementTag>registerTag(ElementTag.class, "signal_fire", (attribute, material) -> {
             Deprecations.materialCampfire.warn(attribute.context);
             return new ElementTag(material.getCampfire().isSignalFire());
@@ -51,7 +50,7 @@ public class MaterialCampfire implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getCampfire().isSignalFire());
+        return null;
     }
 
     @Override
@@ -61,11 +60,9 @@ public class MaterialCampfire implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
         if (mechanism.matches("signal_fire") && mechanism.requireBoolean()) {
             Deprecations.materialCampfire.warn(mechanism.context);
             getCampfire().setSignalFire(mechanism.getValue().asBoolean());
         }
     }
 }
-

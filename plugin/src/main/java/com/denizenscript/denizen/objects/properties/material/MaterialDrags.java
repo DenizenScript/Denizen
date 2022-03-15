@@ -38,7 +38,6 @@ public class MaterialDrags implements Property {
     MaterialTag material;
 
     public static void registerTags() {
-
         PropertyParser.<MaterialDrags, ElementTag>registerTag(ElementTag.class, "drags", (attribute, material) -> {
             Deprecations.materialDrags.warn(attribute.context);
             return new ElementTag(material.isDrag());
@@ -55,7 +54,7 @@ public class MaterialDrags implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(isDrag());
+        return null;
     }
 
     @Override
@@ -65,7 +64,6 @@ public class MaterialDrags implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
         if (mechanism.matches("drags") && mechanism.requireBoolean()) {
             Deprecations.materialDrags.warn(mechanism.context);
             getBubbleColumn().setDrag(mechanism.getValue().asBoolean());
