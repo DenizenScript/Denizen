@@ -172,9 +172,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                     return true;
                 }
             }
+            addPossibleCouldMatchFailReason("Imperfect area label (allowed due to advanced-matcher usage)", text);
+            return true;
         }
-        addPossibleCouldMatchFailReason("Not a valid area label", text);
-        return false;
+        else {
+            addPossibleCouldMatchFailReason("Not a valid area label", text);
+            return false;
+        }
     }
 
     public static boolean exactMatchesEnum(String text, final Enum<?>[] enumVals) {
