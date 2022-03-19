@@ -389,8 +389,20 @@ public class FormattedTextHelper {
             }
         }
         str = cleanRedundantCodes(str);
-        if (cleanBase && str.length() < 512 && !str.contains(ChatColor.COLOR_CHAR + "[") && !str.contains("://")) {
-            return parseSimpleColorsOnly(str);
+        if (cleanBase && str.length() < 512) {
+            if (str.equals("jeb_")) { // attempted compat with rainbow sheep, does not actually work but doesn't hurt to keep
+                return new BaseComponent[] { new TextComponent("jeb_") };
+            }
+            if (!str.contains(ChatColor.COLOR_CHAR + "[") && !str.contains("://")) {
+                return parseSimpleColorsOnly(str);
+            }
+            // Ensure compat with certain weird vanilla translate strings.
+            if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.endsWith("]") && str.indexOf(']') == str.length() - 1) {
+                String translatable = str.substring("&[translate=".length(), str.length() - 1);
+                TranslatableComponent component = new TranslatableComponent();
+                component.setTranslate(unescape(translatable));
+                return new BaseComponent[] { component };
+            }
         }
         TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();

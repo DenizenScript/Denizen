@@ -75,7 +75,8 @@ public class ItemRawNBT implements Property {
                 // Bucket specific
                 //"BucketVariantTag", // Temporarily sent through as raw due to lack of property coverage
                 // Map specific
-                "map", "map_scale_direction", "Decorations",
+                "map", "map_scale_direction",
+                //"Decorations", // Temporarily sent through due to apparent usage in certain vanilla cases not covered by properties
                 // Stew specific
                 "Effects",
                 // Lodestone compass specific
