@@ -3935,7 +3935,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(ElementTag.class, "custom_name", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof Nameable) {
-                return new ElementTag(((Nameable) object.getBlockStateForTag(attribute)).getCustomName());
+                return new ElementTag(AdvancedTextImpl.instance.getCustomName((Nameable) object.getBlockStateForTag(attribute)));
             }
             return null;
         });
@@ -4514,7 +4514,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     title = mechanism.getValue().asString();
                 }
                 BlockState state = getBlockState();
-                ((Nameable) state).setCustomName(title);
+                AdvancedTextImpl.instance.setCustomName((Nameable) state, title);
                 state.update(true);
             }
         }

@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Nameable;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -99,5 +100,15 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
             components.add(PaperModule.parseFormattedText(line, ChatColor.BLACK));
         }
         player.sendSignChange(loc, components);
+    }
+
+    @Override
+    public String getCustomName(Nameable object) {
+        return PaperModule.stringifyComponent(object.customName(), ChatColor.BLACK);
+    }
+
+    @Override
+    public void setCustomName(Nameable object, String name) {
+        object.customName(PaperModule.parseFormattedText(name, ChatColor.BLACK));
     }
 }

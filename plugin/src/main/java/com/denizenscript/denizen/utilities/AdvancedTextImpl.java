@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Nameable;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -80,5 +81,13 @@ public class AdvancedTextImpl {
 
     public void sendSignUpdate(Player player, Location loc, String[] text) {
         player.sendSignChange(loc, text);
+    }
+
+    public String getCustomName(Nameable object) {
+        return object.getCustomName();
+    }
+
+    public void setCustomName(Nameable object, String name) {
+        object.setCustomName(name);
     }
 }
