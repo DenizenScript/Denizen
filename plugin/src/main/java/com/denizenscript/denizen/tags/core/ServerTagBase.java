@@ -80,17 +80,18 @@ public class ServerTagBase {
             public void run(ReplaceableTagEvent event) {
                 serverTag(event);
             }
-        }, "server", "global");
+        }, "server");
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "global", (attribute) -> {
+            Deprecations.globalTagName.warn(attribute.context);
+            return null;
+        });
     }
 
     public static final long serverStartTimeMillis = System.currentTimeMillis();
 
     public void serverTag(ReplaceableTagEvent event) {
-        if (!event.matches("server", "global") || event.replaced()) {
+        if (!event.matches("server") || event.replaced()) {
             return;
-        }
-        if (event.matches("global")) {
-            Deprecations.globalTagName.warn(event.getScriptEntry());
         }
         Attribute attribute = event.getAttributes().fulfill(1);
 
