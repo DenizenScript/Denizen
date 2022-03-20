@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.google.common.base.Splitter;
 import com.denizenscript.denizen.objects.PlayerTag;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -215,16 +214,7 @@ public class ScoreboardHelper {
      * @param score  the score
      */
     public static void addScore(Objective o, String playerName, int score) {
-        Score sc;
-        if (playerName.length() <= 16) {
-            sc = o.getScore(playerName);
-        }
-        else {
-            Map.Entry<Team, String> teamData = createTeam(o.getScoreboard(), playerName);
-            sc = o.getScore(teamData.getValue());
-            teamData.getKey().addEntry(teamData.getValue());
-        }
-
+        Score sc = o.getScore(playerName);
         // If the score is 0, it won't normally be displayed at first,
         // so force it to be displayed by using setScore() like below on it
         if (score == 0) {
@@ -254,9 +244,7 @@ public class ScoreboardHelper {
         // Go through every score for this (real or fake) player
         // and put it in scoreMap if it doesn't belong to the
         // objective we want to remove the score from
-        String name = createTeam(board, playerName).getValue();
-        // TODO: Properly remove when teams are involved
-        for (Score sc : board.getScores(name)) {
+        for (Score sc : board.getScores(playerName)) {
             if (!sc.getObjective().equals(o)) {
                 scoreMap.put(sc.getObjective().getName(), sc.getScore());
             }
@@ -270,26 +258,6 @@ public class ScoreboardHelper {
         for (Map.Entry<String, Integer> entry : scoreMap.entrySet()) {
             board.getObjective(entry.getKey()).getScore(playerName).setScore(entry.getValue());
         }
-    }
-
-    private static Map.Entry<Team, String> createTeam(Scoreboard scoreboard, String text) {
-        if (text.length() <= 16) {
-            return new HashMap.SimpleEntry<>(null, text);
-        }
-        if (text.length() <= 32) {
-            Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
-            team.setPrefix(text.substring(0, text.length() - 16));
-            String result = text.substring(text.length() - 16);
-            return new HashMap.SimpleEntry<>(team, result);
-        }
-        Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
-        Iterator<String> iterator = Splitter.fixedLength(16).split(text).iterator();
-        team.setPrefix(iterator.next());
-        String result = iterator.next();
-        if (text.length() > 32) {
-            team.setSuffix(iterator.next());
-        }
-        return new HashMap.SimpleEntry<>(team, result);
     }
 
     /////////////////////
