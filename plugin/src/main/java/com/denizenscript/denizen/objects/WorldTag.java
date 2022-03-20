@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -904,6 +905,35 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             return new ElementTag(BukkitScriptEvent.tryWorld(object, attribute.getParam()));
         });
+
+        // <--[tag]
+        // @attribute <WorldTag.view_distance>
+        // @returns ElementTag(Number)
+        // @mechanism WorldTag.view_distance
+        // @group properties
+        // @description
+        // Returns the view distance of this world. Chunks are visible to players inside this radius.
+        // See also <@link tag WorldTag.simulation_distance>
+        // -->
+        registerTag(ElementTag.class, "view_distance", (attribute, world) -> {
+            // Note: mechanism is paper-only, in PaperWorldProperties
+            return new ElementTag(world.getWorld().getViewDistance());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.simulation_distance>
+        // @returns ElementTag(Number)
+        // @mechanism WorldTag.simulation_distance
+        // @group properties
+        // @description
+        // Returns the simulation distance of this world. Chunks inside of this radius to players are ticked and processed.
+        // See also <@link tag WorldTag.view_distance>
+        // -->
+        registerTag(ElementTag.class, "simulation_distance", (attribute, world) -> {
+            // Note: mechanism is paper-only, in PaperWorldProperties
+            return new ElementTag(world.getWorld().getSimulationDistance());
+        });
+
     }
 
     public static ObjectTagProcessor<WorldTag> tagProcessor = new ObjectTagProcessor<>();
