@@ -397,8 +397,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             int y_distance = pair.yDistance();
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
-            for (int x = 0; x < x_distance; x++) {
-                for (int y = 0; y < y_distance; y++) {
+            for (int x = 0; x <= x_distance; x++) {
+                for (int y = 0; y <= y_distance; y++) {
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, low.getBlockZ()));
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, high.getBlockZ()));
                     index++;
@@ -406,7 +406,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                         return list;
                     }
                 }
-                for (int z = 0; z < z_distance; z++) {
+                for (int z = 1; z < z_distance; z++) {
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY(), low.getBlockZ() + z));
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, high.getBlockY(), low.getBlockZ() + z));
                     index++;
@@ -415,8 +415,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     }
                 }
             }
-            for (int y = 0; y < y_distance; y++) {
-                for (int z = 0; z < z_distance; z++) {
+            for (int y = 1; y < y_distance; y++) {
+                for (int z = 1; z < z_distance; z++) {
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX(), low.getBlockY() + y, low.getBlockZ() + z));
                     list.addObject(new LocationTag(low.getWorld(), high.getBlockX(), low.getBlockY() + y, low.getBlockZ() + z));
                     index++;
