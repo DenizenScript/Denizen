@@ -14,6 +14,9 @@ public class ReflectionMappingsInfo {
     // net.minecraft.stats.RecipeBook
     public static String RecipeBook_known = "a";
 
+    // net.minecraft.core.MappedRegistry
+    public static String MappedRegistry_frozen = "bL";
+
     // net.minecraft.world.item.crafting.RecipeManager
     public static String RecipeManager_byName = "d";
 

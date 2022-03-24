@@ -2,11 +2,13 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_18.Handler;
+import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,12 +26,14 @@ import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     public static Map<NamespacedKey, Enchantment> ENCHANTMENTS_BY_KEY = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byKey", null);
     public static Map<String, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_NAME = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byName", null);
+    public static Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_frozen, boolean.class);
 
     @Override
     public org.bukkit.enchantments.Enchantment registerFakeEnchantment(EnchantmentScriptContainer.EnchantmentReference script) {
@@ -125,6 +129,8 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
             };
             String enchName = script.script.id.toUpperCase();
+            boolean wasFrozen = REGISTRY_FROZEN.getBoolean(Registry.ENCHANTMENT);
+            REGISTRY_FROZEN.setBoolean(Registry.ENCHANTMENT, false);
             Registry.register(Registry.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);
             CraftEnchantment ench = new CraftEnchantment(nmsEnchant) {
                 @Override
@@ -132,6 +138,9 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                     return enchName;
                 }
             };
+            if (wasFrozen) {
+                ((MappedRegistry) Registry.ENCHANTMENT).freeze();
+            }
             ENCHANTMENTS_BY_KEY.put(ench.getKey(), ench);
             ENCHANTMENTS_BY_NAME.put(enchName, ench);
             return ench;
