@@ -128,6 +128,7 @@ public class SpawnCommand extends AbstractCommand {
                         0,
                         CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
             }
+            entity = entity.duplicate();
             entity.spawnAt(loc);
             entityList.addObject(entity);
             if (!entity.isSpawned()) {
@@ -145,7 +146,7 @@ public class SpawnCommand extends AbstractCommand {
         // Add entities to context so that the specific entities created/spawned can be fetched.
         scriptEntry.addObject("spawned_entities", entityList);
         if (entities.size() != 0) {
-            scriptEntry.addObject("spawned_entity", entities.get(0));
+            scriptEntry.addObject("spawned_entity", entityList.getObject(0));
         }
     }
 }
