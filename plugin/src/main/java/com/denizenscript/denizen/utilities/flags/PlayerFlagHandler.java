@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -277,6 +278,14 @@ public class PlayerFlagHandler implements Listener {
             catch (Throwable ex) {
                 Debug.echoError(ex);
             }
+        }
+    }
+
+    public static void reloadAllFlagsNow() {
+        playerFlagTrackerCache.clear();
+        secondaryPlayerFlagTrackerCache.clear();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            getTrackerFor(player.getUniqueId());
         }
     }
 }

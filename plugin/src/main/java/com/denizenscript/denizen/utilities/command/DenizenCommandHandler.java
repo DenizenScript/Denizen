@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.command.manager.Paginator;
 import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
@@ -287,6 +288,7 @@ public class DenizenCommandHandler {
         if (args.hasFlag('a')) {
             Denizen.getInstance().reloadConfig();
             DenizenCore.reloadScripts();
+            PlayerFlagHandler.reloadAllFlagsNow();
             NoteManager.reload();
             Denizen.getInstance().reloadSaves();
             Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
@@ -298,6 +300,7 @@ public class DenizenCommandHandler {
         if (args.length() > 2) {
             if (args.getString(1).equalsIgnoreCase("saves")) {
                 Denizen.getInstance().reloadSaves();
+                PlayerFlagHandler.reloadAllFlagsNow();
                 Messaging.send(sender, "Denizen save data reloaded from disk to memory.");
                 return;
             }
@@ -325,6 +328,7 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTES, CONFIG, SCRIPTS");
         Messaging.send(sender, "<b>Example: /denizen reload scripts");
         Messaging.send(sender, "<f>Use '-a' to reload all parts.");
+        Messaging.send(sender, "<f>Note that you shouldn't use this command generally, instead use '/ex reload' - see also the Beginner's Guide @ https://guide.denizenscript.com/");
         Messaging.send(sender, "");
     }
 
