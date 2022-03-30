@@ -326,8 +326,8 @@ public class DenizenCommandHandler {
         }
         Messaging.send(sender, "");
         Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTES, CONFIG, SCRIPTS");
-        Messaging.send(sender, "<b>Example: /denizen reload scripts");
-        Messaging.send(sender, "<f>Use '-a' to reload all parts.");
+        Messaging.send(sender, "<b>Example: /denizen reload saves");
+        Messaging.send(sender, "<f>Use '-a' to reload all parts at once.");
         Messaging.send(sender, "<f>Note that you shouldn't use this command generally, instead use '/ex reload' - see also the Beginner's Guide @ https://guide.denizenscript.com/");
         Messaging.send(sender, "");
     }

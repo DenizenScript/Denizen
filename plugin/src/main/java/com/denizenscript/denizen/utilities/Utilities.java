@@ -104,6 +104,20 @@ public class Utilities {
             return true;
         }
         try {
+            String lown = CoreUtilities.toLowerCase(f.getCanonicalPath()).replace('\\', '/');
+            if (lown.endsWith("/")) {
+                lown = lown.substring(0, lown.length() - 1);
+            }
+            if (Debug.verbose) {
+                Debug.log("Checking file canRead: " + lown);
+            }
+            if (lown.contains("denizen/secrets.secret")) {
+                return false;
+            }
+            int dot = lown.lastIndexOf('.');
+            if (dot != -1 && lown.substring(dot + 1).equals("secret")) {
+                return false;
+            }
             if (!Settings.allowStrangeYAMLSaves() &&
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
@@ -126,11 +140,15 @@ public class Utilities {
             "sh", "bash", // Linux scripts
             "bat", "ps1", "vb", "vbs", "vbscript", "batch", "cmd", "com", "msc", "sct", "ws", "wsf", // Windows scripts
             "exe", "scr", "msi", "dll", "bin", // Windows executables
-            "lnk", "reg", "rgs" // other weird Windows files
+            "lnk", "reg", "rgs", // other weird Windows files
+            "secret" // Protected by Denizen
     ));
 
     public static boolean isFileCanonicalStringSafeToWrite(String lown) {
         if (lown.contains("denizen/config.yml")) {
+            return false;
+        }
+        if (lown.contains("denizen/secrets.secret")) {
             return false;
         }
         if (lown.contains("denizen/scripts/")) {
@@ -156,7 +174,7 @@ public class Utilities {
                 lown = lown.substring(0, lown.length() - 1);
             }
             if (Debug.verbose) {
-                Debug.log("Checking file : " + lown);
+                Debug.log("Checking file canWrite: " + lown);
             }
             if (!Settings.allowStrangeYAMLSaves() &&
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
