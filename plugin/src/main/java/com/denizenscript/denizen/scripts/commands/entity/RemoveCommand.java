@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
 import java.util.List;
 
@@ -56,6 +57,11 @@ public class RemoveCommand extends AbstractCommand {
     // Use to remove all dropped items in the world called cookies.
     // - remove dropped_item world:cookies
     // -->
+
+    @Override
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.add(EntityType.values());
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
