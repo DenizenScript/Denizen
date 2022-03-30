@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.debugging;
 
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
@@ -589,7 +590,7 @@ public class Debug {
                 }
             }
             if (showColor) {
-                commandSender.spigot().sendMessage(FormattedTextHelper.parse(string, net.md_5.bungee.api.ChatColor.WHITE));
+                AdvancedTextImpl.instance.sendConsoleMessage(commandSender, string);
             }
             else {
                 commandSender.sendMessage(ChatColor.stripColor(string));

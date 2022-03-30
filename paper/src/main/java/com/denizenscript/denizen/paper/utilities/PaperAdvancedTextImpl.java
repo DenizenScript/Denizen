@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Nameable;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -110,5 +111,10 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public void setCustomName(Nameable object, String name) {
         object.customName(PaperModule.parseFormattedText(name, ChatColor.BLACK));
+    }
+
+    @Override
+    public void sendConsoleMessage(CommandSender sender, String text) {
+        sender.sendMessage(PaperModule.parseFormattedText(text, ChatColor.WHITE));
     }
 }

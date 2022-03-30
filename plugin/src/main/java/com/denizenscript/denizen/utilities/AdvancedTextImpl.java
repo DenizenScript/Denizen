@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Nameable;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -89,5 +90,9 @@ public class AdvancedTextImpl {
 
     public void setCustomName(Nameable object, String name) {
         object.setCustomName(name);
+    }
+
+    public void sendConsoleMessage(CommandSender sender, String text) {
+        sender.spigot().sendMessage(FormattedTextHelper.parse(text, net.md_5.bungee.api.ChatColor.WHITE));
     }
 }
