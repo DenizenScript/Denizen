@@ -96,7 +96,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
      */
     public static void notePlayer(OfflinePlayer player) {
         if (player.getName() == null) {
-            Debug.echoError("Null player " + player.toString());
+            Debug.echoError("Null named player " + player + " - may be file corruption, or player data imported from non-bukkit server?");
             return;
         }
         if (!playerNames.containsKey(CoreUtilities.toLowerCase(player.getName()))) {
@@ -124,10 +124,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     @Fetchable("p")
     public static PlayerTag valueOf(String string, TagContext context) {
         return valueOfInternal(string, context, true);
-    }
-
-    public static PlayerTag valueOfInternal(String string, boolean announce) {
-        return valueOfInternal(string, null, announce);
     }
 
     public static String playerByNameMessage = Deprecations.playerByNameWarning.message;
@@ -158,7 +154,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Match as a player name
         if (string.length() <= 16 && playerNames.containsKey(string)) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(string));
-            if (announce) {
+            if (announce && (context == null || context.script != null)) { // 'script != null' check is to allow ex command usage silently
                 Deprecations.playerByNameWarning.message = playerByNameMessage + " Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
                 Deprecations.playerByNameWarning.warn(context);
             }
