@@ -35,6 +35,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.SimplexNoise;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -1167,6 +1168,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(LocationTag.class, "center", (attribute, object) -> {
             return new LocationTag(object.getWorld(), object.getBlockX() + 0.5, object.getBlockY() + 0.5, object.getBlockZ() + 0.5);
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.simplex_3d>
+        // @returns ElementTag(Decimal)
+        // @group math
+        // @description
+        // Returns the 3D simplex noise value (from -1 to 1) for this location's X/Y/Z.
+        // See also <@link tag util.random_simplex>
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "simplex_3d", (attribute, object) -> {
+            return new ElementTag(SimplexNoise.noise(object.getX(), object.getY(), object.getZ()));
         });
 
         // <--[tag]
