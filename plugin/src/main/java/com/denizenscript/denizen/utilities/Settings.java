@@ -26,6 +26,8 @@ public class Settings {
         CoreConfiguration.allowLog = config.getBoolean("Commands.Log.Allow logging", true);
         CoreConfiguration.allowFileCopy = config.getBoolean("Commands.Filecopy.Allow copying files", true);
         CoreConfiguration.allowWebget = config.getBoolean("Commands.Webget.Allow", true);
+        CoreConfiguration.allowSQL = config.getBoolean("Commands.SQL.Allow", true);
+        CoreConfiguration.allowRedis = config.getBoolean("Commands.Redis.Allow", true);
         CoreConfiguration.whileMaxLoops = config.getInt("Commands.While.Max loops", 10000);
         CoreConfiguration.tagTimeout = config.getInt("Tags.Timeout", 10);
         CoreConfiguration.tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
