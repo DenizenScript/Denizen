@@ -4,12 +4,9 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.scripts.commands.entity.RemoveCommand;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
-import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,37 +16,49 @@ public class Settings {
 
     public static void refillCache() {
         FileConfiguration config = Denizen.getInstance().getConfig();
-        cache_showDebug = config.getBoolean("Debug.Show", true);
-        com.denizenscript.denizen.utilities.debugging.Debug.showDebug = cache_showDebug;
-        Debug.verbose = config.getBoolean("Debug.Verbose", false);
-        Debug.showLoading = config.getBoolean("Debug.Show loading info", false);
-        cache_overrideHelp = config.getBoolean("Debug.Override help", true);
-        cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
-        cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
-        cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
-        cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
-        cache_scriptEncoding = config.getString("Scripts.Encoding", "default");
-        if (cache_scriptEncoding.equalsIgnoreCase("default")) {
-            ScriptHelper.encoding = null;
+        // Core
+        CoreConfiguration.defaultDebugMode = config.getBoolean("Debug.Show", true);
+        com.denizenscript.denizen.utilities.debugging.Debug.showDebug = CoreConfiguration.defaultDebugMode;
+        CoreConfiguration.debugVerbose = config.getBoolean("Debug.Verbose", false);
+        CoreConfiguration.debugLoadingInfo = config.getBoolean("Debug.Show loading info", false);
+        CoreConfiguration.deprecationWarningRate = config.getLong("Debug.Warning rate", config.getLong("Tags.Warning rate", 10000));
+        CoreConfiguration.futureWarningsEnabled = config.getBoolean("Debug.Show future warnings", false);
+        CoreConfiguration.allowLog = config.getBoolean("Commands.Log.Allow logging", true);
+        CoreConfiguration.allowFileCopy = config.getBoolean("Commands.Filecopy.Allow copying files", true);
+        CoreConfiguration.allowWebget = config.getBoolean("Commands.Webget.Allow", true);
+        CoreConfiguration.whileMaxLoops = config.getInt("Commands.While.Max loops", 10000);
+        CoreConfiguration.tagTimeout = config.getInt("Tags.Timeout", 10);
+        CoreConfiguration.tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
+        CoreConfiguration.tagTimeoutWhenSilent = config.getBoolean("Tags.Timeout when silent", false);
+        CoreConfiguration.scriptQueueSpeed = DurationTag.valueOf(config.getString("Scripts.Queue speed", "instant"), CoreUtilities.basicContext).getSeconds();
+        CoreConfiguration.allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
+        CoreConfiguration.allowStrangeFileSaves = config.getBoolean("Commands.Yaml.Allow saving outside folder", false);
+        CoreConfiguration.skipAllFlagCleanings = config.getBoolean("Saves.Skip flag cleaning", false);
+        String scriptEncoding = config.getString("Scripts.Encoding", "default");
+        if (scriptEncoding.equalsIgnoreCase("default")) {
+            CoreConfiguration.scriptEncoding = null;
         }
         else {
             try {
-                ScriptHelper.encoding = Charset.forName(cache_scriptEncoding).newDecoder();
+                CoreConfiguration.scriptEncoding = Charset.forName(scriptEncoding).newDecoder();
             }
             catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        // Spigot
+        cache_overrideHelp = config.getBoolean("Debug.Override help", true);
+        cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
+        cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
+        cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
+        cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
         cache_consoleWidth = config.getInt("Debug.Line length", 128);
         cache_trimLength = config.getInt("Debug.Trim length limit", 1024);
-        cache_allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
         cache_canRecordStats = config.getBoolean("Debug.Stats", true);
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
         cache_debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
         cache_debugPrefix = config.getString("Debug.Prefix", "");
-        FutureWarning.futureWarningsEnabled = config.getBoolean("Debug.Show future warnings", false);
         cache_warnOnAsyncPackets = config.getBoolean("Debug.Warn on async packets", false);
-        cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "instant");
         cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
         cache_healthTraitRespawnEnabled = config.getBoolean("Traits.Health.Respawn.Enabled", true);
@@ -57,15 +66,10 @@ public class Settings {
         cache_healthTraitRespawnDelay = config.getString("Traits.Health.Respawn.Delay", "10s");
         cache_healthTraitBlockDrops = config.getBoolean("Traits.Health.Block drops", false);
         cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
-        cache_whileMaxLoops = config.getInt("Commands.While.Max loops", 10000);
         cache_createWorldSymbols = config.getBoolean("Commands.CreateWorld.Allow symbols in names", false);
-        cache_allowWebget = config.getBoolean("Commands.Webget.Allow", true);
-        cache_allowFilecopy = config.getBoolean("Commands.Filecopy.Allow copying files", true);
         cache_allowDelete = config.getBoolean("Commands.Delete.Allow file deletion", true);
         cache_allowServerStop = config.getBoolean("Commands.Restart.Allow server stop", false);
         cache_allowServerRestart = config.getBoolean("Commands.Restart.Allow server restart", true);
-        cache_allowLogging = config.getBoolean("Commands.Log.Allow logging", true);
-        cache_allowStrangeYAMLSaves = config.getBoolean("Commands.Yaml.Allow saving outside folder", false);
         cache_limitPath = config.getString("Commands.Yaml.Limit path", "none");
         cache_chatMultipleTargetsFormat = config.getString("Commands.Chat.Options.Multiple targets format", "%target%, %target%, %target%, and others");
         cache_chatBystandersRange = config.getDouble("Commands.Chat.Options.Range for bystanders", 5.0);
@@ -86,16 +90,11 @@ public class Settings {
         cache_worldScriptTimeEventFrequency = DurationTag.valueOf(config.getString("Scripts.World.Events.On time changes.Frequency of check", "250t"), CoreUtilities.basicContext);
         cache_blockTagsMaxBlocks = config.getInt("Tags.Block tags.Max blocks", 1000000);
         cache_chatHistoryMaxMessages = config.getInt("Tags.Chat history.Max messages", 10);
-        cache_tagTimeout = config.getInt("Tags.Timeout", 10);
-        cache_tagTimeoutSilent = config.getBoolean("Tags.Timeout when silent", false);
-        cache_tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
-        cache_warningRate = config.getLong("Debug.Warning rate", config.getLong("Tags.Warning rate", 10000));
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
         cache_packetInterceptAutoInit = config.getBoolean("Packets.Auto init", false);
         cache_commandScriptAutoInit = config.getBoolean("Scripts.Command.Auto init", false);
         PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
         PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
-        MapTagBasedFlagTracker.skipAllCleanings = config.getBoolean("Saves.Skip flag cleaning", false);
         RemoveCommand.alwaysWarnOnMassRemove = config.getBoolean("Commands.Remove.Always warn on mass delete", false);
         ConfigurationSection colorSection = config.getConfigurationSection("Colors");
         if (colorSection != null) {
@@ -109,27 +108,25 @@ public class Settings {
         }
     }
 
-    public static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,
-            cache_showExHelp, cache_showExDebug, cache_allowConsoleRedirection, cache_canRecordStats,
+    public static boolean cache_overrideHelp, cache_useDefaultScriptPath,
+            cache_showExHelp, cache_showExDebug, cache_canRecordStats,
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
-            cache_healthTraitRespawnEnabled, cache_allowWebget, cache_allowFilecopy, cache_allowDelete,
-            cache_allowServerStop, cache_allowServerRestart, cache_allowLogging, cache_allowStrangeYAMLSaves,
+            cache_healthTraitRespawnEnabled, cache_allowDelete,
+            cache_allowServerStop, cache_allowServerRestart,
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
-            cache_tagTimeoutSilent, cache_packetInterception, cache_tagTimeoutUnsafe, cache_createWorldSymbols,
+            cache_packetInterception, cache_createWorldSymbols,
             cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets;
 
-    public static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
+    public static String cache_getAlternateScriptPath, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
             cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath,
-            cache_scriptEncoding, cache_debugPrefix;
+            cache_debugPrefix;
 
-    public static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
-            cache_chatHistoryMaxMessages, cache_tagTimeout, cache_debugLimitPerTick;
-
-    public static long cache_warningRate;
+    public static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_blockTagsMaxBlocks,
+            cache_chatHistoryMaxMessages, cache_debugLimitPerTick;
 
     public static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
 
@@ -141,13 +138,6 @@ public class Settings {
 
     public static String getAlternateScriptPath() {
         return cache_getAlternateScriptPath;
-    }
-
-    /**
-     * Whether Denizen should display debug in the console
-    */
-    public static boolean showDebug() {
-        return cache_showDebug;
     }
 
     public static boolean overrideHelp() {
@@ -170,16 +160,8 @@ public class Settings {
         return cache_showExDebug;
     }
 
-    public static boolean allowConsoleRedirection() {
-        return cache_allowConsoleRedirection;
-    }
-
     public static boolean canRecordStats() {
         return cache_canRecordStats;
-    }
-
-    public static boolean defaultDebugMode() {
-        return cache_defaultDebugMode;
     }
 
     public static int debugLimitPerTick() {
@@ -188,13 +170,6 @@ public class Settings {
 
     public static String debugPrefix() {
         return cache_debugPrefix;
-    }
-
-    /**
-     * Sets the default speed between execution of commands in queues
-    */
-    public static String scriptQueueSpeed() {
-        return cache_scriptQueueSpeed;
     }
 
     public static String interactQueueSpeed() {
@@ -261,14 +236,6 @@ public class Settings {
         return cache_engageTimeoutInSeconds;
     }
 
-    public static int whileMaxLoops() {
-        return cache_whileMaxLoops;
-    }
-
-    public static boolean allowWebget() {
-        return cache_allowWebget;
-    }
-
     public static boolean allowStupids() {
         return allowStupid1() && allowStupid2() && allowStupid3();
     }
@@ -300,10 +267,6 @@ public class Settings {
                 .getBoolean("Commands.General.Don't change this unrestricted file access option though", false);
     }
 
-    public static boolean allowFilecopy() {
-        return cache_allowFilecopy;
-    }
-
     public static boolean allowDelete() {
         return cache_allowDelete;
     }
@@ -314,14 +277,6 @@ public class Settings {
 
     public static boolean allowServerRestart() {
         return cache_allowServerRestart;
-    }
-
-    public static boolean allowLogging() {
-        return cache_allowLogging;
-    }
-
-    public static boolean allowStrangeYAMLSaves() {
-        return cache_allowStrangeYAMLSaves;
     }
 
     public static String fileLimitPath() {
@@ -432,21 +387,6 @@ public class Settings {
 
     public static int chatHistoryMaxMessages() {
         return cache_chatHistoryMaxMessages;
-    }
-
-    public static int tagTimeout() {
-        return cache_tagTimeout;
-    }
-
-    public static boolean tagTimeoutSilent() {
-        return cache_tagTimeoutSilent;
-    }
-    public static boolean tagTimeoutUnsafe() {
-        return cache_tagTimeoutUnsafe;
-    }
-
-    public static long warningRate() {
-        return cache_warningRate;
     }
 
     public static boolean packetInterception() {

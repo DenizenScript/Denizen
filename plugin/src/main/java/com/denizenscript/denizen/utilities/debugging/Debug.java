@@ -17,6 +17,7 @@ import com.denizenscript.denizencore.scripts.commands.CommandExecutor;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement;
 import org.bukkit.Bukkit;
@@ -148,7 +149,7 @@ public class Debug {
             return;
         }
         echo(ChatColor.WHITE + trimMessage(message), caller);
-        if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && caller != null) {
+        if (CoreConfiguration.debugVerbose && caller != null) {
             echo(ChatColor.GRAY + "(Verbose) Caller = " + caller, caller);
         }
     }
@@ -183,7 +184,7 @@ public class Debug {
     public static void echoError(ScriptEntry source, String addedContext, String message, boolean reformat) {
         message = cleanTextForDebugOutput(message);
         if (errorDuplicatePrevention) {
-            if (!com.denizenscript.denizencore.utilities.debugging.Debug.verbose) {
+            if (!CoreConfiguration.debugVerbose) {
                 finalOutputDebugText("Error within error (??!!!! SOMETHING WENT SUPER WRONG!): " + message, source, reformat);
             }
             return;
@@ -245,7 +246,7 @@ public class Debug {
         }
         finalOutputDebugText(header + message + (showDebugSuffix ? ENABLE_DEBUG_MESSAGE : ""), sourceQueue, reformat);
         errorDuplicatePrevention = false;
-        if (com.denizenscript.denizencore.utilities.debugging.Debug.verbose && depthCorrectError == 0) {
+        if (CoreConfiguration.debugVerbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
                 throw new RuntimeException("Verbose info for above error");

@@ -9,6 +9,7 @@ import com.denizenscript.denizen.scripts.commands.npc.*;
 import com.denizenscript.denizen.scripts.commands.player.*;
 import com.denizenscript.denizen.scripts.commands.server.*;
 import com.denizenscript.denizen.scripts.commands.world.*;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -186,7 +187,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand.registerMany("ACTION", "ANCHOR", "ANIMATE", "ASSIGNMENT", "BREAK", "CHAT", "CREATE", "DESPAWN",
                     "DISENGAGE", "ENGAGE", "FISH", "LOOKCLOSE", "PAUSE", "RESUME", "POSE", "PUSHABLE", "RENAME", "SIT", "STAND", "TRAIT", "TRIGGER", "VULNERABLE");
         }
-        if (Debug.verbose) {
+        if (CoreConfiguration.debugVerbose) {
             Debug.echoApproval("Loaded core commands: " + instances.keySet());
         }
     }

@@ -9,6 +9,7 @@ import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -2352,7 +2353,7 @@ public class ServerTagBase {
             }
             catch (Throwable ex) {
                 attribute.echoError("Loot table failed to generate: " + ex.getMessage());
-                if (Debug.verbose) {
+                if (CoreConfiguration.debugVerbose) {
                     attribute.echoError(ex);
                 }
                 return;
@@ -2382,7 +2383,7 @@ public class ServerTagBase {
     }
 
     public static void listDeprecateWarn(Attribute attribute) {
-        if (FutureWarning.futureWarningsEnabled && attribute.getAttribute(1).startsWith("list_")) {
+        if (CoreConfiguration.futureWarningsEnabled && attribute.getAttribute(1).startsWith("list_")) {
             Deprecations.listStyleTags.warn(attribute.context);
             Debug.echoError("Tag '" + attribute.getAttribute(1) + "' is deprecated: remove the 'list_' prefix.");
         }
@@ -2453,7 +2454,7 @@ public class ServerTagBase {
 
         if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
             Deprecations.serverRedirectLogging.warn(mechanism.context);
-            if (!Settings.allowConsoleRedirection()) {
+            if (!CoreConfiguration.allowConsoleRedirection) {
                 Debug.echoError("Console redirection disabled by administrator.");
                 return;
             }

@@ -11,6 +11,7 @@ import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -175,7 +176,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         catch (NullPointerException ex) {
             Debug.echoError("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
                     "Has this NPC been removed?");
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(ex);
             }
             return null;
@@ -195,7 +196,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         catch (NullPointerException ex) {
             Debug.echoError("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
                     "Has this NPC been removed?");
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(ex);
             }
             return null;
@@ -210,7 +211,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         catch (NullPointerException ex) {
             Debug.echoError("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC EntityTag. " +
                     "Has this NPC been removed?");
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(ex);
             }
             return null;

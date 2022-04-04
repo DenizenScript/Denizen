@@ -51,6 +51,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.queue.RunLaterCommand;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
@@ -423,7 +424,7 @@ public class Denizen extends JavaPlugin {
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();
-                if (!MapTagBasedFlagTracker.skipAllCleanings) {
+                if (!CoreConfiguration.skipAllFlagCleanings) {
                     BukkitWorldScriptHelper.cleanAllWorldChunkFlags();
                 }
                 Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);
@@ -497,10 +498,9 @@ public class Denizen extends JavaPlugin {
     public void reloadConfig() {
         super.reloadConfig();
         Settings.refillCache();
-        if (!Settings.showDebug()) {
+        if (!CoreConfiguration.defaultDebugMode) {
             getLogger().warning("Debug is disabled in the Denizen config. This is almost always a mistake, and should not be done in the majority of cases.");
         }
-        SlowWarning.WARNING_RATE = Settings.warningRate();
     }
 
     private FileConfiguration scoreboardsConfig = null;

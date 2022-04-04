@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.command.CommandSender;
@@ -175,16 +176,16 @@ public class DenizenCommandHandler {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
-            com.denizenscript.denizencore.utilities.debugging.Debug.verbose = !com.denizenscript.denizencore.utilities.debugging.Debug.verbose;
-            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.verbose ? "Denizen debugger is now verbose." :
+            CoreConfiguration.debugVerbose = !CoreConfiguration.debugVerbose;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugVerbose ? "Denizen debugger is now verbose." :
                     "Denizen debugger verbosity disabled."));
         }
         if (args.hasFlag('f')) {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
-            FutureWarning.futureWarningsEnabled = !FutureWarning.futureWarningsEnabled;
-            Messaging.sendInfo(sender, (FutureWarning.futureWarningsEnabled ? "Denizen debugger is now showing future warnings." :
+            CoreConfiguration.futureWarningsEnabled = !CoreConfiguration.futureWarningsEnabled;
+            Messaging.sendInfo(sender, (CoreConfiguration.futureWarningsEnabled ? "Denizen debugger is now showing future warnings." :
                     "Denizen debugger future-warnings disabled."));
         }
         if (args.hasFlag('n')) {
@@ -227,8 +228,8 @@ public class DenizenCommandHandler {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
-            com.denizenscript.denizencore.utilities.debugging.Debug.showLoading = !com.denizenscript.denizencore.utilities.debugging.Debug.showLoading;
-            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.showLoading ? "Denizen debugger is now showing script loading information."
+            CoreConfiguration.debugLoadingInfo = !CoreConfiguration.debugLoadingInfo;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugLoadingInfo ? "Denizen debugger is now showing script loading information."
                     : "Denizen debugger is no longer showing script loading information."));
         }
         if (args.getFlags().isEmpty()) {

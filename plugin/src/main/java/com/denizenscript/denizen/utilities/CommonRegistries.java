@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.tags.core.*;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
@@ -104,7 +105,7 @@ public class CommonRegistries {
         registerConversions();
         registerSubtypeSets();
         // Final debug
-        if (Debug.verbose) {
+        if (CoreConfiguration.debugVerbose) {
             StringBuilder debug = new StringBuilder(256);
             for (ObjectFetcher.ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
                 debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");

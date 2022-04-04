@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Sound;
 
@@ -155,7 +156,7 @@ public class PlaySoundCommand extends AbstractCommand {
         }
         catch (Exception e) {
             Debug.echoDebug(scriptEntry, "Unable to play sound.");
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(e);
             }
         }

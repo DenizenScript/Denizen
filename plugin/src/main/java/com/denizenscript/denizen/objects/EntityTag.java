@@ -27,6 +27,7 @@ import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -959,7 +960,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     else {
                         entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                         if (entity == null) {
-                            if (Debug.verbose) {
+                            if (CoreConfiguration.debugVerbose) {
                                 Debug.echoError("Failed to spawn entity of type " + entity_type.getName());
                             }
                             return;

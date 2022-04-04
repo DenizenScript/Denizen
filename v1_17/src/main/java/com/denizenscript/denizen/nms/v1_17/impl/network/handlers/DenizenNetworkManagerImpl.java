@@ -24,6 +24,7 @@ import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -669,7 +670,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                         pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.getyRot(), packet.getxRot(), packet.isOnGround());
                     }
                     else {
-                        if (Debug.verbose) {
+                        if (CoreConfiguration.debugVerbose) {
                             Debug.echoError("Impossible move-entity packet class: " + packet.getClass().getCanonicalName());
                         }
                         return;

@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.EnchantmentTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -298,7 +299,7 @@ public class ItemEnchantments implements Property {
                         }
                         catch (NumberFormatException ex) {
                             mechanism.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
-                            if (Debug.verbose) {
+                            if (CoreConfiguration.debugVerbose) {
                                 Debug.echoError(ex);
                             }
                         }

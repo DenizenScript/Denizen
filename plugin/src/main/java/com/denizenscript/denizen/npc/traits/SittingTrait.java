@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
@@ -45,7 +46,7 @@ public class SittingTrait extends Trait implements Listener {
         }
         if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), chairLocation, 2)) {
             stand();
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.log("NPC " + npc.getId() + " stood up because it moved away from its chair.");
             }
         }

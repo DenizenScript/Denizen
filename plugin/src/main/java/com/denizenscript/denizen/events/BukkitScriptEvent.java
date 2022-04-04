@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -535,7 +536,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     @Override
     public ScriptEvent fire() {
         if (!Bukkit.isPrimaryThread()) {
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.log("Event is firing async: " + getName());
             }
             BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();

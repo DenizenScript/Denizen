@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
@@ -108,7 +109,7 @@ public class Utilities {
             if (lown.endsWith("/")) {
                 lown = lown.substring(0, lown.length() - 1);
             }
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.log("Checking file canRead: " + lown);
             }
             if (lown.contains("denizen/secrets.secret")) {
@@ -118,7 +119,7 @@ public class Utilities {
             if (dot != -1 && lown.substring(dot + 1).equals("secret")) {
                 return false;
             }
-            if (!Settings.allowStrangeYAMLSaves() &&
+            if (!CoreConfiguration.allowStrangeFileSaves &&
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }
@@ -173,10 +174,10 @@ public class Utilities {
             if (lown.endsWith("/")) {
                 lown = lown.substring(0, lown.length() - 1);
             }
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.log("Checking file canWrite: " + lown);
             }
-            if (!Settings.allowStrangeYAMLSaves() &&
+            if (!CoreConfiguration.allowStrangeFileSaves &&
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }

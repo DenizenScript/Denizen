@@ -10,6 +10,7 @@ import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -121,7 +122,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             }
         }
         catch (Exception ex) {
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(ex);
             }
         }
@@ -138,7 +139,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             if (!string.equalsIgnoreCase("none") && (context == null || context.showErrors())) {
                 Debug.log("Does not match a valid item ID or material: " + string);
             }
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(ex);
             }
         }

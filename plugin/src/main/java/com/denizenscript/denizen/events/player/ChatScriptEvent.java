@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.Settings;
@@ -126,7 +127,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 }
                 else {
                     String formatstr = formatscr.getFormatText(null, player);
-                    if (Debug.verbose) {
+                    if (CoreConfiguration.debugVerbose) {
                         Debug.log("Setting format to " + formatstr);
                     }
                     if (pcEvent != null) {

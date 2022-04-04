@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.flags;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -153,7 +154,7 @@ public class PlayerFlagHandler implements Listener {
                 cache = softRef.get();
                 if (cache != null) {
                     cache.lastAccessed = System.currentTimeMillis();
-                    if (Debug.verbose) {
+                    if (CoreConfiguration.debugVerbose) {
                         Debug.echoError("Verbose - flag tracker updated for " + id);
                     }
                     playerFlagTrackerCache.put(id, cache);
@@ -164,7 +165,7 @@ public class PlayerFlagHandler implements Listener {
             cache = new CachedPlayerFlag();
             cache.lastAccessed = System.currentTimeMillis();
             cache.loadingNow = true;
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError("Verbose - flag tracker updated for " + id);
             }
             playerFlagTrackerCache.put(id, cache);
@@ -203,7 +204,7 @@ public class PlayerFlagHandler implements Listener {
                 cache = softRef.get();
                 if (cache != null) {
                     cache.lastAccessed = System.currentTimeMillis();
-                    if (Debug.verbose) {
+                    if (CoreConfiguration.debugVerbose) {
                         Debug.echoError("Verbose - flag tracker updated for " + id);
                     }
                     playerFlagTrackerCache.put(id, cache);
@@ -214,7 +215,7 @@ public class PlayerFlagHandler implements Listener {
             CachedPlayerFlag newCache = new CachedPlayerFlag();
             newCache.lastAccessed = System.currentTimeMillis();
             newCache.loadingNow = true;
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError("Verbose - flag tracker updated for " + id);
             }
             playerFlagTrackerCache.put(id, newCache);

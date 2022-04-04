@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
@@ -552,7 +553,7 @@ public class FormattedTextHelper {
                             else if (colorChar.length() == 7) {
                                 color = ChatColor.of(colorChar);
                             }
-                            else if (Debug.verbose) {
+                            else if (CoreConfiguration.debugVerbose) {
                                 Debug.echoError("Text parse issue: cannot interpret color '" + innardBase.get(1) + "'.");
                             }
                             if (color != null) {
@@ -587,7 +588,7 @@ public class FormattedTextHelper {
                             }
                         }
                         else {
-                            if (Debug.verbose) {
+                            if (CoreConfiguration.debugVerbose) {
                                 Debug.echoError("Text parse issue: cannot interpret type '" + innardType + "' with " + innardParts.size() + " parts.");
                             }
                         }

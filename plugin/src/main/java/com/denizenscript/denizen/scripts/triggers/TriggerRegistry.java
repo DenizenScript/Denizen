@@ -3,6 +3,7 @@ package com.denizenscript.denizen.scripts.triggers;
 import com.denizenscript.denizen.scripts.triggers.core.ChatTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.DamageTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.ProximityTrigger;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.core.ClickTrigger;
@@ -59,7 +60,7 @@ public class TriggerRegistry {
         new ChatTrigger().activate().as("Chat");
         new DamageTrigger().activate().as("Damage");
         new ProximityTrigger().activate().as("Proximity");
-        if (Debug.verbose) {
+        if (CoreConfiguration.debugVerbose) {
             Debug.echoApproval("Loaded core triggers: " + instances.keySet());
         }
         else {

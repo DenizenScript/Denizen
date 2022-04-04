@@ -9,6 +9,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -106,7 +107,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
     @EventHandler
     public void chunkLoadEvent(ChunkLoadEvent event) {
-        if (MapTagBasedFlagTracker.skipAllCleanings) {
+        if (CoreConfiguration.skipAllFlagCleanings) {
             return;
         }
         new DataPersistenceFlagTracker(event.getChunk()).doTotalClean();

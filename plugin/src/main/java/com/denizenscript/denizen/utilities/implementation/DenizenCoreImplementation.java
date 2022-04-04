@@ -261,11 +261,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public String scriptQueueSpeed() {
-        return Settings.scriptQueueSpeed();
-    }
-
-    @Override
     public TagContext getTagContext(ScriptContainer container) {
         return new BukkitTagContext(container);
     }
@@ -278,19 +273,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public ScriptEntryData getEmptyScriptEntryData() {
         return new BukkitScriptEntryData(null, null);
-    }
-
-    @Override
-    public int getTagTimeout() {
-        if (!Settings.tagTimeoutUnsafe()) {
-            return 0;
-        }
-        return Settings.tagTimeout();
-    }
-
-    @Override
-    public boolean allowConsoleRedirection() {
-        return Settings.allowConsoleRedirection();
     }
 
     @Override
@@ -329,11 +311,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return input;
     }
 
-    @Override
-    public boolean allowedToWebget() {
-        return Settings.allowWebget();
-    }
-
     public static Thread tagThread = null;
 
     public static boolean isSafeThread() {
@@ -362,21 +339,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         }
     }
 
-    Boolean tTimeoutSil = null;
-
-    @Override
-    public boolean tagTimeoutWhenSilent() {
-        if (tTimeoutSil == null) {
-            tTimeoutSil = Settings.tagTimeoutSilent();
-        }
-        return tTimeoutSil;
-    }
-
-    @Override
-    public boolean getDefaultDebugMode() {
-        return Settings.defaultDebugMode();
-    }
-
     @Override
     public boolean canWriteToFile(File f) {
         return Utilities.canWriteToFile(f);
@@ -394,33 +356,13 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public int whileMaxLoops() {
-        return Settings.whileMaxLoops();
-    }
-
-    @Override
-    public boolean allowLogging() {
-        return Settings.allowLogging();
-    }
-
-    @Override
     public boolean canReadFile(File f) {
         return Utilities.canReadFile(f);
     }
 
     @Override
-    public boolean allowFileCopy() {
-        return Settings.allowFilecopy();
-    }
-
-    @Override
     public File getDataFolder() {
         return Denizen.getInstance().getDataFolder();
-    }
-
-    @Override
-    public boolean allowStrangeYAMLSaves() {
-        return Settings.allowStrangeYAMLSaves();
     }
 
     @Override

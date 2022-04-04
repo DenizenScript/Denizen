@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -166,7 +167,7 @@ public class Handler extends NMSHandler {
             }
         }
         catch (Exception e) {
-            if (Debug.verbose) {
+            if (CoreConfiguration.debugVerbose) {
                 Debug.echoError(e);
             }
         }
