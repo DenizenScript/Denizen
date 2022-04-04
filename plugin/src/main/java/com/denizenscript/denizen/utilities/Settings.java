@@ -89,7 +89,7 @@ public class Settings {
         cache_tagTimeout = config.getInt("Tags.Timeout", 10);
         cache_tagTimeoutSilent = config.getBoolean("Tags.Timeout when silent", false);
         cache_tagTimeoutUnsafe = config.getBoolean("Tags.Timeout when unsafe", false);
-        cache_warningRate = config.getLong("Tags.Warning rate", 10000);
+        cache_warningRate = config.getLong("Debug.Warning rate", config.getLong("Tags.Warning rate", 10000));
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
         cache_packetInterceptAutoInit = config.getBoolean("Packets.Auto init", false);
         cache_commandScriptAutoInit = config.getBoolean("Scripts.Command.Auto init", false);

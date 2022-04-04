@@ -40,6 +40,8 @@ Debug:
     # Async packets are largely unsupported with a few exceptions, but some plugins send them regardless.
     # This setting helps you catch those plugins if enabled.
     Warn on async packets: false
+    # Rate between when slowed warnings appear (in milliseconds). This is used for minor warnings such as newer deprecation notices, to avoid error message flood.
+    Warning rate: 10000
 
 Scripts:
     World:
@@ -184,8 +186,6 @@ Tags:
     Timeout: 10
     # Whether the tag system should still timeout when debug is off.
     Timeout when silent: false
-    # Rate between when slowed warnings appear (in milliseconds). This is used for minor warnings such as future-deprecation notices, to avoid error message flood.
-    Warning rate: 10000
     # Settings for tags like cuboid.blocks, location.find.blocks, ...
     Block tags:
         # How many blocks can be read, max, before stopping the tag in place
