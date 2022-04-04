@@ -181,7 +181,7 @@ public class GiveCommand extends AbstractCommand {
                 boolean set_quantity = scriptEntry.hasObject("set_quantity");
                 boolean limited = !unlimit_stack_size.asBoolean();
                 for (ItemTag item : items) {
-                    ItemStack is = item.getItemStack();
+                    ItemStack is = new ItemStack(item.getItemStack());
                     if (is.getType() == Material.AIR) {
                         Debug.echoError("Cannot give air!");
                         continue;
