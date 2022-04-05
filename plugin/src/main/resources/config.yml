@@ -183,9 +183,20 @@ Commands:
         # Whether to allow scripts to read arbitrary data from the web, which can also potentially enable tracking of your private server data.
         # Generally this is safe, but set to 'false' if you want very strict security.
         Allow: true
-        # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
-        # Otherwise, a bad script or plugin could potentially damage things (though being careful with these settings should reduce the risk of a script doing so)
-        # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
+    # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
+    # Otherwise, a bad script or plugin could potentially damage things (though being careful with these settings should reduce the risk of a script doing so)
+    # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
+    Security:
+        # Some actions on a server are technically possible and supported by Denizen, but considered 'restricted'
+        # That is, misuse of them could potentially lead to you or your server getting in trouble.
+        # For example, generating fake tab list entries that look like real players is considered forbidden by Mojang, and may result in your server being blacklisted.
+        # Scripters caught abusing these tools may also be refused support by the Denizen team or on other support platforms.
+        # However, the code needed to do that can also perform useful behaviors, such as better organizing the tab list, or allowing custom tab completions.
+        # As such, you are able to change the 'Allow restricted actions' setting to 'true' if you wish to achieve the non-restricted results that require restricted code access.
+        # Note that you have been warned of the potential consequences of abusing these tools,
+        # and that none of Denizen, the Denizen team, Spigot, Mojang, etc. in any way support or endorse abusing these tools.
+        # Enable at your own risk.
+        Allow restricted actions: false
 
 Tags:
     # How long a tag can parse before force-closing the tag parser engine. Set to 0 to disable tag parse timing entirely.
