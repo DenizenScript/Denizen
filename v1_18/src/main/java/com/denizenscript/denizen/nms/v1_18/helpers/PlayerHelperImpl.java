@@ -18,11 +18,13 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.mojang.authlib.GameProfile;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -39,6 +41,7 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.GameType;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
@@ -393,5 +396,26 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public long getLastActionTime(Player player) {
         return ((CraftPlayer) player).getHandle().getLastActionTime();
+    }
+
+    @Override
+    public void sendPlayerInfoAddPacket(Player player, ProfileEditMode mode, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode) {
+        ClientboundPlayerInfoPacket.Action action = mode == ProfileEditMode.ADD ? ClientboundPlayerInfoPacket.Action.ADD_PLAYER :
+                (mode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY);
+        ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(action);
+        GameProfile profile = new GameProfile(id, name);
+        if (texture != null) {
+            profile.getProperties().put("textures", new Property("textures", texture, signature));
+        }
+        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, GameType.byName(CoreUtilities.toLowerCase(gameMode.name())), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE))));
+        PacketHelperImpl.send(player, packet);
+    }
+
+    @Override
+    public void sendPlayerRemovePacket(Player player, UUID id) {
+        ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER);
+        GameProfile profile = new GameProfile(id, "name");
+        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, null, null));
+        PacketHelperImpl.send(player, packet);
     }
 }

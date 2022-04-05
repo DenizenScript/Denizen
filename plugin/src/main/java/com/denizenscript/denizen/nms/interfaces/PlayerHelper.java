@@ -103,4 +103,14 @@ public abstract class PlayerHelper {
     public long getLastActionTime(Player player) {
         throw new UnsupportedOperationException();
     }
+
+    public enum ProfileEditMode { ADD, UPDATE_DISPLAY, UPDATE_LATENCY }
+
+    public void sendPlayerInfoAddPacket(Player player, ProfileEditMode mode, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void sendPlayerRemovePacket(Player player, UUID id) {
+        throw new UnsupportedOperationException();
+    }
 }

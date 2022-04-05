@@ -148,6 +148,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(ShowFakeCommand.class);
         registerCommand(SidebarCommand.class);
         registerCommand(StatisticCommand.class);
+        registerCommand(TablistCommand.class);
         registerCommand(TeamCommand.class);
         registerCommand(TitleCommand.class);
         registerCommand(ToastCommand.class);
