@@ -6,7 +6,6 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;

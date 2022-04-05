@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.ScoreboardHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
-import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

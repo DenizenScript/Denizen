@@ -29,6 +29,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     // @prefix enchantment
     // @base ElementTag
     // @implements FlaggableObject
+    // @ExampleTagBase enchantment[sharpness]
+    // @ExampleValues sharpness
     // @format
     // The identity format for enchantments is the vanilla ID, Denizen ID, or full key. Can also be constructed by Denizen script name.
     // For example, 'enchantment@sharpness', 'enchantment@my_custom_ench', or 'enchantment@otherplugin:customench'.

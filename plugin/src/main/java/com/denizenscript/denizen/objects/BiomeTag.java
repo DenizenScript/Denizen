@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -30,6 +29,8 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     // @prefix b
     // @base ElementTag
     // @implements FlaggableObject
+    // @ExampleTagBase biome[desert]
+    // @ExampleValues desert
     // @format
     // The identity format for biomes is a world name, then a comma, then the biome key. For example: 'hub,desert', or 'space,minecraft:desert'.
     //

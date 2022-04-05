@@ -34,6 +34,8 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     // @prefix m
     // @base ElementTag
     // @implements FlaggableObject, PropertyHolderObject
+    // @ExampleTagBase material[stone]
+    // @ExampleValues stone,dirt,stick,iron_sword
     // @format
     // The identity format for materials is the material type name.
     // For example, 'm@stick'.

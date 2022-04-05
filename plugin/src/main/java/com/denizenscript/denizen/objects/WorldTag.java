@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -55,6 +54,8 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     // @prefix w
     // @base ElementTag
     // @implements FlaggableObject
+    // @ExampleTagBase player.location.world
+    // @ExampleValues <player.location.world>,space
     // @format
     // The identity format for worlds is the name of the world it should be associated with.
     // For example, to reference the world named 'world1', use simply 'world1'.

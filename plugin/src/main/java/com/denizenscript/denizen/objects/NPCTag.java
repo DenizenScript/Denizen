@@ -54,6 +54,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     // @prefix n
     // @base EntityTag
     // @implements FlaggableObject
+    // @ExampleTagBase npc
+    // @ExampleValues <npc>
     // @format
     // The identity format for NPCs is the NPC's id number.
     // For example, 'n@5'.

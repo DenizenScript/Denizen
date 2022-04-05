@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -29,6 +28,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     // @prefix polygon
     // @base ElementTag
     // @implements FlaggableObject, AreaObject
+    // @ExampleTagBase polygon[my_noted_polygon]
+    // @ExampleValues my_polygon_note
     // @format
     // The identity format for polygons is <world>,<y-min>,<y-max>,<x1>,<z1>,... (the x,z pair repeats for as many points as the polygon has).
     //

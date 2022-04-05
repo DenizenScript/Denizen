@@ -64,6 +64,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // @prefix p
     // @base EntityTag
     // @implements FlaggableObject
+    // @ExampleTagBase player
+    // @ExampleValues <player>
     // @format
     // The identity format for players is the UUID of the relevant player.
     //

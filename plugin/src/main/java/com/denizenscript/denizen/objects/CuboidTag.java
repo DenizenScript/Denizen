@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -35,6 +34,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     // @prefix cu
     // @base ElementTag
     // @implements FlaggableObject, AreaObject
+    // @ExampleTagBase cuboid[my_noted_cuboid]
+    // @ExampleValues my_cuboid_note
     // @format
     // The identity format for cuboids is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
     // Multi-member cuboids can simply continue listing x,y,z pairs.

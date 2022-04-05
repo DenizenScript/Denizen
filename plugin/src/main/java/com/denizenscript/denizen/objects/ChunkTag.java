@@ -34,6 +34,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     // @prefix ch
     // @base ElementTag
     // @implements FlaggableObject
+    // @ExampleTagBase player.location.chunk
+    // @ExampleValues <player.location.chunk>
     // @format
     // The identity format for chunks is <x>,<z>,<world>
     // For example, 'ch@5,3,world'.

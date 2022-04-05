@@ -22,6 +22,8 @@ public class ColorTag implements ObjectTag {
     // @name ColorTag
     // @prefix co
     // @base ElementTag
+    // @ExampleTagBase color[red]
+    // @ExampleValues red,green,blue
     // @format
     // The identity format for colors is <red>,<green>,<blue> or the name of a color.
     // For example, 'co@50,64,128' or 'co@red'.

@@ -26,6 +26,8 @@ public class PluginTag implements ObjectTag, FlaggableObject {
     // @prefix pl
     // @base ElementTag
     // @implements FlaggableObject
+    // @ExampleTagBase plugin[Denizen]
+    // @ExampleValues Denizen
     // @format
     // The identity format for plugins is the plugin's registered name.
     // For example, 'pl@Denizen'.

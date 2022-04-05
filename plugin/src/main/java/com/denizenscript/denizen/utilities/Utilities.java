@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.scripts.commands.world.SignCommand;

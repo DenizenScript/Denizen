@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities.debugging;
 
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.Settings;

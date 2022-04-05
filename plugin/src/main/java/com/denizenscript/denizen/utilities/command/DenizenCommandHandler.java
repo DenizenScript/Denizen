@@ -17,7 +17,6 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.FutureWarning;
 import org.bukkit.command.CommandSender;
 
 import java.util.Set;

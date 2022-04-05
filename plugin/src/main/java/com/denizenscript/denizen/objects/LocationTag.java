@@ -65,6 +65,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     // @prefix l
     // @base ElementTag
     // @implements FlaggableObject
+    // @ExampleTagBase player.location
+    // @ExampleValues <player.location>,<npc.location>
     // @format
     // The identity format for locations is <x>,<y>,<z>,<pitch>,<yaw>,<world>
     // Note that you can leave off the world, and/or pitch and yaw, and/or the z value.

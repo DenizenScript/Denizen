@@ -25,6 +25,8 @@ public interface AreaContainmentObject extends ObjectTag {
 
     // <--[ObjectType]
     // @name AreaObject
+    // @ExampleTagBase cuboid[my_noted_cuboid]
+    // @ExampleValues my_cuboid_note
     // @prefix None
     // @base None
     // @format
