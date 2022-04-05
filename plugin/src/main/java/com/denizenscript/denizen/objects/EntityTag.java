@@ -459,7 +459,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (specialEntityMatchables.contains(text)) {
             return trySpecialEntityMatcher(text, isCitizensNPC());
         }
-        if (text.startsWith("npc_")) {
+        if (text.startsWith("npc_") && !text.startsWith("npc_flagged")) {
             String check = text.substring("npc_".length());
             if (specialEntityMatchables.contains(check)) {
                 if (check.equals("player")) { // Special case
