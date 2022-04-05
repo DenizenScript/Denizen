@@ -66,6 +66,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // @implements FlaggableObject
     // @ExampleTagBase player
     // @ExampleValues <player>
+    // @ExampleForReturns
+    // - kill %VALUE%
+    // @ExampleForReturns
+    // - heal %VALUE%
+    // @ExampleForReturns
+    // - narrate "hello there!" targets:%VALUE%
     // @format
     // The identity format for players is the UUID of the relevant player.
     //

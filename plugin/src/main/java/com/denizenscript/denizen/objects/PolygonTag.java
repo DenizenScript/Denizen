@@ -30,6 +30,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     // @implements FlaggableObject, AreaObject
     // @ExampleTagBase polygon[my_noted_polygon]
     // @ExampleValues my_polygon_note
+    // @ExampleForReturns
+    // - note %VALUE% as:my_new_polygon
     // @format
     // The identity format for polygons is <world>,<y-min>,<y-max>,<x1>,<z1>,... (the x,z pair repeats for as many points as the polygon has).
     //

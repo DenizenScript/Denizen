@@ -64,6 +64,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // @implements FlaggableObject, PropertyHolderObject
     // @ExampleTagBase player
     // @ExampleValues <player>,<npc>
+    // @ExampleForReturns
+    // - kill %VALUE%
+    // @ExampleForReturns
+    // - heal %VALUE%
+    // @ExampleForReturns
+    // - remove %VALUE%
     // @format
     // The identity format for entities is a spawned entity's UUID, or an entity type.
     // For example, 'e@abc123' or 'e@zombie'.

@@ -58,6 +58,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     // @implements FlaggableObject, PropertyHolderObject
     // @ExampleTagBase player.inventory
     // @ExampleValues <player.inventory>
+    // @ExampleForReturns
+    // - note %VALUE% as:my_new_inventory
+    // @ExampleForReturns
+    // - inventory set o:%VALUE% d:stick slot:5
     // @format
     // The identity format for inventories is a the classification type of inventory to use. All other data is specified through properties.
     //

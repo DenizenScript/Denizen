@@ -36,6 +36,11 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     // @implements FlaggableObject, PropertyHolderObject
     // @ExampleTagBase material[stone]
     // @ExampleValues stone,dirt,stick,iron_sword
+    // @ExampleForReturns
+    // - foreach <player.location.find_blocks[%VALUE%].within[5]> as:loc:
+    //     - modifyblock <[loc]> air
+    // @ExampleForReturns
+    // - modifyblock <player.location.below> %VALUE%
     // @format
     // The identity format for materials is the material type name.
     // For example, 'm@stick'.

@@ -31,6 +31,8 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     // @implements FlaggableObject, AreaObject
     // @ExampleTagBase ellipsoid[my_noted_ellipsoid]
     // @ExampleValues my_ellipsoid_note
+    // @ExampleForReturns
+    // - note %VALUE% as:my_new_ellipsoid
     // @format
     // The identity format for ellipsoids is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.

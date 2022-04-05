@@ -56,6 +56,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     // @implements FlaggableObject
     // @ExampleTagBase npc
     // @ExampleValues <npc>
+    // @ExampleForReturns
+    // - kill %VALUE%
+    // @ExampleForReturns
+    // - heal %VALUE%
+    // @ExampleForReturns
+    // - walk %VALUE% <player.location>
     // @format
     // The identity format for NPCs is the NPC's id number.
     // For example, 'n@5'.

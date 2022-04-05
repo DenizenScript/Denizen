@@ -24,6 +24,10 @@ public class ColorTag implements ObjectTag {
     // @base ElementTag
     // @ExampleTagBase color[red]
     // @ExampleValues red,green,blue
+    // @ExampleForReturns
+    // - inventory adjust slot:hand color:%VALUE%
+    // @ExampleForReturns
+    // - narrate "<&color[%VALUE%]>hello there!"
     // @format
     // The identity format for colors is <red>,<green>,<blue> or the name of a color.
     // For example, 'co@50,64,128' or 'co@red'.

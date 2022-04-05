@@ -56,6 +56,10 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     // @implements FlaggableObject
     // @ExampleTagBase player.location.world
     // @ExampleValues <player.location.world>,space
+    // @ExampleForReturns
+    // - adjust %VALUE% destroy
+    // @ExampleForReturns
+    // - adjust %VALUE% full_time:0
     // @format
     // The identity format for worlds is the name of the world it should be associated with.
     // For example, to reference the world named 'world1', use simply 'world1'.

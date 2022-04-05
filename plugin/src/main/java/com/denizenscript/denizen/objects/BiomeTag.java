@@ -31,6 +31,10 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     // @implements FlaggableObject
     // @ExampleTagBase biome[desert]
     // @ExampleValues desert
+    // @ExampleForReturns
+    // - adjust <player.location.to_ellipsoid[60,3,10].blocks> biome:%VALUE%
+    // @ExampleForReturns
+    // - adjust <player.location.chunk> set_all_biomes:%VALUE%
     // @format
     // The identity format for biomes is a world name, then a comma, then the biome key. For example: 'hub,desert', or 'space,minecraft:desert'.
     //

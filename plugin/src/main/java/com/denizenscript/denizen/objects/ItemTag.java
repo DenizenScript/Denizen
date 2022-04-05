@@ -48,6 +48,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     // @implements FlaggableObject, PropertyHolderObject
     // @ExampleTagBase player.item_in_hand
     // @ExampleValues <player.item_in_hand>,stick,iron_sword
+    // @ExampleForReturns
+    // - give %VALUE%
     // @format
     // The identity format for items is the basic material type name, or an item script name. Other data is specified in properties.
     // For example, 'i@stick'.

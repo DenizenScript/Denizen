@@ -36,6 +36,10 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     // @implements FlaggableObject
     // @ExampleTagBase player.location.chunk
     // @ExampleValues <player.location.chunk>
+    // @ExampleForReturns
+    // - chunkload %VALUE%
+    // @ExampleForReturns
+    // - adjust %VALUE% set_all_biomes:desert
     // @format
     // The identity format for chunks is <x>,<z>,<world>
     // For example, 'ch@5,3,world'.

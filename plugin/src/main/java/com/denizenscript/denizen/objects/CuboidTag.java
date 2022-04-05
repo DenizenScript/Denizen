@@ -36,6 +36,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     // @implements FlaggableObject, AreaObject
     // @ExampleTagBase cuboid[my_noted_cuboid]
     // @ExampleValues my_cuboid_note
+    // @ExampleForReturns
+    // - note %VALUE% as:my_new_cuboid
     // @format
     // The identity format for cuboids is <world>,<x1>,<y1>,<z1>,<x2>,<y2>,<z2>
     // Multi-member cuboids can simply continue listing x,y,z pairs.
