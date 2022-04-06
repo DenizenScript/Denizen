@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_18.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
+import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_18.Handler;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
@@ -27,6 +28,8 @@ import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -58,6 +61,7 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -294,6 +298,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             || processMirrorForPacket(packet)
             || processParticlesForPacket(packet)
             || processSoundPacket(packet)
+            || processTablistPacket(packet, genericfuturelistener)
             || processActionbarPacket(packet, genericfuturelistener)
             || processDisguiseForPacket(packet, genericfuturelistener)
             || processMetadataChangesForPacket(packet, genericfuturelistener)
@@ -306,6 +311,80 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         processBlockLightForPacket(packet);
         oldManager.send(packet, genericfuturelistener);
+    }
+
+    public boolean processTablistPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
+            return false;
+        }
+        if (packet instanceof ClientboundPlayerInfoPacket) {
+            ClientboundPlayerInfoPacket infoPacket = (ClientboundPlayerInfoPacket) packet;
+            String mode;
+            switch (infoPacket.getAction()) {
+                case ADD_PLAYER:
+                    mode = "add";
+                    break;
+                case REMOVE_PLAYER:
+                    mode = "remove";
+                    break;
+                case UPDATE_LATENCY:
+                    mode = "update_latency";
+                    break;
+                case UPDATE_GAME_MODE:
+                    mode = "update_gamemode";
+                    break;
+                case UPDATE_DISPLAY_NAME:
+                    mode = "update_display";
+                    break;
+                default:
+                    return false;
+            }
+            boolean isOverriding = false;
+            for (ClientboundPlayerInfoPacket.PlayerUpdate update : infoPacket.getEntries()) {
+                GameProfile profile = update.getProfile();
+                String texture = null, signature = null;
+                if (profile.getProperties().containsKey("textures")) {
+                    Property property = profile.getProperties().get("textures").stream().findFirst().get();
+                    texture = property.getValue();
+                    signature = property.getSignature();
+                }
+                PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), profile.getName(),
+                        update.getDisplayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.getDisplayName()), ChatColor.WHITE), update.getGameMode().name(), texture, signature, update.getLatency());
+                PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
+                if (data.modified) {
+                    if (!isOverriding) {
+                        isOverriding = true;
+                        ClientboundPlayerInfoPacket priorsPacket = new ClientboundPlayerInfoPacket(infoPacket.getAction());
+                        for (ClientboundPlayerInfoPacket.PlayerUpdate priorUpdate : infoPacket.getEntries()) {
+                            if (priorUpdate == update) {
+                                break;
+                            }
+                            priorsPacket.getEntries().add(priorUpdate);
+                        }
+                        if (!priorsPacket.getEntries().isEmpty()) {
+                            oldManager.send(priorsPacket, genericfuturelistener);
+                        }
+                    }
+                    if (!data.cancelled) {
+                        ClientboundPlayerInfoPacket newPacket = new ClientboundPlayerInfoPacket(infoPacket.getAction());
+                        GameProfile newProfile = new GameProfile(data.id, data.name);
+                        if (data.texture != null) {
+                            newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
+                        }
+                        newPacket.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(newProfile, data.latency, GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
+                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE))));
+                        oldManager.send(newPacket, genericfuturelistener);
+                    }
+                }
+                else if (isOverriding) {
+                    ClientboundPlayerInfoPacket newPacket = new ClientboundPlayerInfoPacket(infoPacket.getAction());
+                    newPacket.getEntries().add(update);
+                    oldManager.send(newPacket, genericfuturelistener);
+                }
+            }
+            return isOverriding;
+        }
+        return false;
     }
 
     public boolean processActionbarPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {

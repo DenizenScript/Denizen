@@ -63,6 +63,10 @@ public class TablistCommand extends AbstractCommand {
     // Use to add a new empty entry to the player's tab list to fill space.
     // - tablist add name:<empty> display:<empty> gamemode:spectator
     //
+    // @Usage
+    // Use to add a custom tab completion in the in-game chat, by adding an empty entry to the bottom of the tab list.
+    // - tablist add name:my_tab_complete display:<empty> gamemode:spectator
+    //
     // -->
 
     public enum Mode { ADD, REMOVE, UPDATE }
