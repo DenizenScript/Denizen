@@ -81,10 +81,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return cuboid;
     }
 
-    /////////////////////
-    //   STATIC METHODS
-    /////////////////
-
     public static List<CuboidTag> getNotableCuboidsContaining(Location location) {
         List<CuboidTag> cuboids = new ArrayList<>();
         for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
@@ -94,10 +90,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }
         return cuboids;
     }
-
-    //////////////////
-    //    OBJECT FETCHER
-    ////////////////
 
     @Deprecated
     public static CuboidTag valueOf(String string) {
@@ -273,10 +265,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return result;
     }
 
-    ///////////////
-    //  LocationPairs
-    /////////////
-
     public static class LocationPair {
         public LocationTag low;
         public LocationTag high;
@@ -299,35 +287,17 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
         public void regenerate(LocationTag point_1, LocationTag point_2) {
             String world = point_1.getWorldName();
-
-            // Find the low and high locations based on the points
-            // specified
-            int x_high = (point_1.getBlockX() >= point_2.getBlockX()
-                    ? point_1.getBlockX() : point_2.getBlockX());
-            int x_low = (point_1.getBlockX() <= point_2.getBlockX()
-                    ? point_1.getBlockX() : point_2.getBlockX());
-
-            int y_high = (point_1.getBlockY() >= point_2.getBlockY()
-                    ? point_1.getBlockY() : point_2.getBlockY());
-            int y_low = (point_1.getBlockY() <= point_2.getBlockY()
-                    ? point_1.getBlockY() : point_2.getBlockY());
-
-            int z_high = (point_1.getBlockZ() >= point_2.getBlockZ()
-                    ? point_1.getBlockZ() : point_2.getBlockZ());
-            int z_low = (point_1.getBlockZ() <= point_2.getBlockZ()
-                    ? point_1.getBlockZ() : point_2.getBlockZ());
-
-            // Specify defining locations to the pair
+            int x_high = Math.max(point_1.getBlockX(), point_2.getBlockX());
+            int x_low = Math.min(point_1.getBlockX(), point_2.getBlockX());
+            int y_high = Math.max(point_1.getBlockY(), point_2.getBlockY());
+            int y_low = Math.min(point_1.getBlockY(), point_2.getBlockY());
+            int z_high = Math.max(point_1.getBlockZ(), point_2.getBlockZ());
+            int z_low = Math.min(point_1.getBlockZ(), point_2.getBlockZ());
             low = new LocationTag(x_low, y_low, z_low, world);
             high = new LocationTag(x_high, y_high, z_high, world);
         }
     }
 
-    ///////////////////
-    //  Constructors/Instance Methods
-    //////////////////
-
-    // Location Pairs (low, high) that make up the CuboidTag
     public List<LocationPair> pairs = new ArrayList<>();
 
     public String noteName = null;
@@ -358,14 +328,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             Debug.echoError("Tried to make cross-world cuboid set!");
             return;
         }
-        // Make a new pair
         LocationPair pair = new LocationPair(point_1, point_2);
-        // Add it to the Cuboid pairs list
         pairs.add(pair);
     }
 
-    public static boolean isBetween(double a, double b, double c) {
-        return b > a ? (c >= a && c < b) : (c >= b && c < a); // Cuboid's have to be compensated for weirdly
+    private static boolean isBetween(int low, int high, int pos) {
+        return pos >= low && pos <= high;
     }
 
     public boolean isInsideCuboid(Location location) {
@@ -373,16 +341,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             return false;
         }
         for (LocationPair pair : pairs) {
-            if (!location.getWorld().getName().equals(pair.low.getWorldName())) {
-                continue;
-            }
-            if (!isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX())) {
-                continue;
-            }
-            if (!isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY())) {
-                continue;
-            }
-            if (isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ())) {
+            if (location.getWorld().getName().equals(pair.low.getWorldName())
+                && isBetween(pair.low.getBlockX(), pair.high.getBlockX(), location.getBlockX())
+                && isBetween(pair.low.getBlockY(), pair.high.getBlockY(), location.getBlockY())
+                && isBetween(pair.low.getBlockZ(), pair.high.getBlockZ(), location.getBlockZ())) {
                 return true;
             }
         }
@@ -613,10 +575,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return pairs.get(index).low;
     }
 
-    ///////////////////
-    // Notable
-    ///////////////////
-
     @Override
     public boolean isUnique() {
         return noteName != null;
@@ -645,10 +603,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         noteName = null;
         flagTracker = null;
     }
-
-    /////////////////////
-    // ObjectTag
-    ////////////////////
 
     String prefix = "Cuboid";
 
@@ -737,10 +691,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }
         return newCuboid;
     }
-
-    /////////////////////
-    // ObjectTag Tag Management
-    /////////////////////
 
     public static void registerTags() {
 
@@ -1607,6 +1557,5 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
-
     }
 }
