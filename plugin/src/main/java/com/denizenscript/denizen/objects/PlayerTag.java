@@ -3873,6 +3873,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @plugin BungeeCord
         // @description
         // Sends the player to the specified Bungee server.
+        // This also works with other Bungee-Messaging compatible proxy systems, such as Velocity.
         // -->
         if (mechanism.matches("send_to") && mechanism.hasValue()) {
             if (!isOnline()) {

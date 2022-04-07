@@ -847,7 +847,9 @@ public class EntityHelperImpl extends EntityHelper {
         try {
             ChunkMap map = ((CraftWorld) entity.getWorld()).getHandle().getChunkSource().chunkMap;
             ChunkMap.TrackedEntity entry = map.entityMap.get(entity.getEntityId());
-            TRACKING_RANGE_SETTER.invoke(entry, range);
+            if (entry != null) {
+                TRACKING_RANGE_SETTER.invoke(entry, range);
+            }
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
