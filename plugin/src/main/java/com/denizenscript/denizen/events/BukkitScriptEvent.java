@@ -460,11 +460,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
+    @Override
     public BukkitTagContext getTagContext(ScriptPath path) {
-        BukkitTagContext context = (BukkitTagContext) getScriptEntryData().getTagContext().clone();
-        context.script = new ScriptTag(path.container);
-        context.debug = path.container.shouldDebug();
-        return context;
+        return (BukkitTagContext) super.getTagContext(path);
     }
 
     public static Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {

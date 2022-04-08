@@ -183,6 +183,12 @@ Commands:
         # Whether to allow scripts to read arbitrary data from the web, which can also potentially enable tracking of your private server data.
         # Generally this is safe, but set to 'false' if you want very strict security.
         Allow: true
+    WebServer:
+        # Whether to allow the 'webserver' command. This command is potentially abusable to expose your server's data.
+        # In legitimate usage, this command can still accidentally leak information or induce server lag.
+        Allow: false
+        # The file path root under plugins/Denizen/ that any usages of the "FILE:" or "CACHED_FILE:" determinations must refer to files under (in addition to other file read security restrictions).
+        Webroot: webroot/
     # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
     # Otherwise, a bad script or plugin could potentially damage things (though being careful with these settings should reduce the risk of a script doing so)
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...

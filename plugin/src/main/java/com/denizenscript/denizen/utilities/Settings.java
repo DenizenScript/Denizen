@@ -37,6 +37,8 @@ public class Settings {
         CoreConfiguration.allowStrangeFileSaves = config.getBoolean("Commands.Yaml.Allow saving outside folder", false);
         CoreConfiguration.skipAllFlagCleanings = config.getBoolean("Saves.Skip flag cleaning", false);
         CoreConfiguration.allowRestrictedActions = config.getBoolean("Commands.Security.Allow restricted actions", false);
+        CoreConfiguration.allowWebserver = config.getBoolean("Commands.WebServer.Allow", false);
+        CoreConfiguration.webserverRoot = config.getString("Commands.WebServer.Webroot", "webroot/");
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;
