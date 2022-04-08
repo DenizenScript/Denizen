@@ -563,16 +563,16 @@ public class Debug {
             // Record current buffer to the to-be-submitted buffer
             if (Debug.record) {
                 try {
-                    //                                                                  "HH:mm:ss"
-                    String toRecord = " " + (reformat ? string.replace("<FORCE_ALIGN>", "        ") : string) + "\n";
+                    //                                                      "HH:mm:ss"
+                    String toRecord = " " + string.replace("<FORCE_ALIGN>", "        ")+ "\n";
                     Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date()) + toRecord, "UTF-8"));
                 }
                 catch (Throwable ex) {
                     Debug.echoError(ex);
                 }
             }
-            //                                                                            "[HH:mm:ss INFO]: "
-            string = Settings.debugPrefix() + (reformat ? string.replace("<FORCE_ALIGN>", "                 ") : string);
+            //                                                                "[HH:mm:ss INFO]: "
+            string = Settings.debugPrefix() + string.replace("<FORCE_ALIGN>", "                 ");
             if (DenizenCore.logInterceptor.redirected) {
                 if (!DenizenCore.logInterceptor.antiLoop) {
                     DenizenCore.logInterceptor.antiLoop = true;
