@@ -151,14 +151,18 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         }
     }
 
-    public Collection<Entity> getPossibleEntitiesForBoundary(BoundingBox box) {
+    public final Collection<Entity> getPossibleEntitiesForBoundary(BoundingBox box) {
+        // Bork-prevention: getNearbyEntities loops over chunks, so for large boxes just get the direct entity list, as that's probably better than a loop over unloaded chunks
+        if (box.getWidthX() > 512 || box.getWidthZ() > 512) {
+            return getWorld().getEntities();
+        }
+        return getWorld().getNearbyEntities(box);
+    }
+
+    public Collection<Entity> getPossibleEntitiesForBoundaryForTag(BoundingBox box) {
         NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
         try {
-            // Bork-prevention: getNearbyEntities loops over chunks, so for large boxes just get the direct entity list, as that's probably better than a loop over unloaded chunks
-            if (box.getWidthX() > 512 || box.getWidthZ() > 512) {
-                return getWorld().getEntities();
-            }
-            return getWorld().getNearbyEntities(box);
+            return getPossibleEntitiesForBoundary(box);
         }
         finally {
             NMSHandler.getChunkHelper().restoreServerThread(getWorld());

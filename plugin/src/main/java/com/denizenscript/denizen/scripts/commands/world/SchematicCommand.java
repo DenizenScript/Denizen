@@ -2,14 +2,12 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.CuboidTag;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -42,7 +40,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public SchematicCommand() {
         setName("schematic");
-        setSyntax("schematic [create/load/unload/rotate/save/flip_x/flip_y/flip_z/paste (fake_to:<player>|... fake_duration:<duration>) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
+        setSyntax("schematic [create/load/unload/rotate/save/flip_x/flip_y/flip_z/paste (fake_to:<player>|... fake_duration:<duration>) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (area:<area>) (delayed) (max_delay_ms:<#>) (entities) (flags)");
         setRequiredArguments(2, 13);
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
@@ -55,12 +53,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
         isProcedural = false;
         setBooleansHandled("noair", "delayed", "entities", "flags");
-        setPrefixesHandled("angle", "fake_duration", "mask", "name", "filename", "max_delay_ms", "fake_to");
+        setPrefixesHandled("angle", "fake_duration", "mask", "name", "filename", "max_delay_ms", "fake_to", "area");
     }
 
     // <--[command]
     // @Name Schematic
-    // @Syntax schematic [create/load/unload/rotate/save/flip_x/flip_y/flip_z/paste (fake_to:<player>|... fake_duration:<duration>) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (max_delay_ms:<#>) (entities) (flags)
+    // @Syntax schematic [create/load/unload/rotate/save/flip_x/flip_y/flip_z/paste (fake_to:<player>|... fake_duration:<duration>) (noair) (mask:<material_matcher>)] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (area:<area>) (delayed) (max_delay_ms:<#>) (entities) (flags)
     // @Group world
     // @Required 2
     // @Maximum 13
@@ -75,7 +73,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // All schematic command usages must specify the "name" argument, which is a unique global identifier of the schematic in memory.
     // This will be created by "create" or "load" options, and persist in memory until "unload" is used (or the server is restarted).
     //
-    // The 'create' option requires a cuboid region and a center location as input. This will create a new schematic in memory based on world data.
+    // The 'create' option requires an area and a center location as input.
+    // The area can be defined as any valid <@link ObjectType AreaObject>, such as a CuboidTag.
+    // Note that all schematics are internally tracked as cuboids, and other area shapes will only constrain the copy region.
+    // Note that the block boundaries of non-cuboid regions are defined by whether the region definition contains the center of a block.
+    // This will create a new schematic in memory based on world data.
     //
     // The "rotate angle:#" and "flip_x/y/z" options will apply the change to the copy of the schematic in memory, to later be pasted or saved.
     // This will rotate the set of blocks itself, the relative origin, and any directional blocks inside the schematic.
@@ -123,7 +125,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     //
     // @Usage
     // Use to create a new schematic from a cuboid and an origin location.
-    // - schematic create name:MySchematic <[my_cuboid]> <player.location>
+    // - schematic create name:MySchematic area:<[my_cuboid]> <player.location>
     //
     // @Usage
     // Use to load a schematic.
@@ -171,9 +173,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class).getBlockLocation());
             }
-            else if (!scriptEntry.hasObject("cuboid")
-                    && arg.matchesArgumentType(CuboidTag.class)) {
-                scriptEntry.addObject("cuboid", arg.asType(CuboidTag.class));
+            else if (!scriptEntry.hasObject("area")
+                    && arg.matchesArgumentType(CuboidTag.class)) { // Historical input format
+                scriptEntry.addObject("area", arg.asType(CuboidTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -232,9 +234,31 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         ElementTag mask = scriptEntry.argForPrefixAsElement("mask", null);
         List<PlayerTag> fakeTo = scriptEntry.argForPrefixList("fake_to", PlayerTag.class, true);
         DurationTag fakeDuration = scriptEntry.argForPrefix("fake_duration", DurationTag.class, true);
-        CuboidTag cuboid = scriptEntry.getObjectTag("cuboid");
+        CuboidTag legacyCuboid = scriptEntry.getObjectTag("area");
+        AreaContainmentObject areaVal = null;
+        if (legacyCuboid != null) {
+            areaVal = legacyCuboid;
+        }
+        else {
+            Argument areaArg = scriptEntry.argForPrefix("area");
+            if (areaArg != null) {
+                if (areaArg.object instanceof AreaContainmentObject) {
+                    areaVal = (AreaContainmentObject) areaArg.object;
+                }
+                else {
+                    ObjectTag reparsedArea = ObjectFetcher.pickObjectFor(areaArg.getValue(), scriptEntry.context);
+                    if (reparsedArea instanceof AreaContainmentObject) {
+                        areaVal = (AreaContainmentObject)  reparsedArea;
+                    }
+                    else {
+                        throw new InvalidArgumentsRuntimeException("Area input '" + areaArg.getValue() + "' is not a valid Area object");
+                    }
+                }
+            }
+        }
+        final AreaContainmentObject area = areaVal;
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), type, name, location, filename, cuboid, angle, db("noair", noair), db("delayed", delayed),
+            Debug.report(scriptEntry, getName(), type, name, location, filename, area, angle, db("noair", noair), db("delayed", delayed),
                     maxDelayMs, db("flags", flags), db("entities", copyEntities), mask, fakeDuration, db("fake_to", fakeTo));
         }
         CuboidBlockSet set;
@@ -247,8 +271,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
-                if (cuboid == null) {
-                    Debug.echoError(scriptEntry, "Missing cuboid argument!");
+                if (area == null) {
+                    Debug.echoError(scriptEntry, "Missing area argument!");
                     scriptEntry.setFinished(true);
                     return;
                 }
@@ -258,11 +282,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
+                    set = new CuboidBlockSet();
                     if (delayed) {
-                        set = new CuboidBlockSet();
-                        set.buildDelayed(cuboid, location, () -> {
+                        set.buildDelayed(area, location, () -> {
                             if (copyEntities) {
-                                set.buildEntities(cuboid, location);
+                                set.buildEntities(area, location);
                             }
                             schematics.put(name.asString().toUpperCase(), set);
                             scriptEntry.setFinished(true);
@@ -270,9 +294,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        set = new CuboidBlockSet(cuboid, location, flags);
+                        set.buildImmediate(area, location, flags);
                         if (copyEntities) {
-                            set.buildEntities(cuboid, location);
+                            set.buildEntities(area, location);
                         }
                         schematics.put(name.asString().toUpperCase(), set);
                     }

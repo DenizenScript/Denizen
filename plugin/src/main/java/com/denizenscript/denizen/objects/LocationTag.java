@@ -2580,7 +2580,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             attribute.fulfill(1);
             ListTag found = new ListTag();
             BoundingBox box = BoundingBox.of(object, radius, radius, radius);
-            for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundary(box)) {
+            for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundaryForTag(box)) {
                 if (Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
                     EntityTag current = new EntityTag(entity);
                     if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
@@ -2907,7 +2907,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
                 BoundingBox box = BoundingBox.of(object, radius, radius, radius);
-                for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundary(box)) {
+                for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundaryForTag(box)) {
                     if (entity instanceof LivingEntity
                             && Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
                         found.addObject(new EntityTag(entity).getDenizenObject());

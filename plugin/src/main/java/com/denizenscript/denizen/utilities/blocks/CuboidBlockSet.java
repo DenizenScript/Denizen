@@ -25,52 +25,80 @@ import java.util.HashSet;
 
 public class CuboidBlockSet implements BlockSet {
 
+    public static FullBlockData STRUCTURE_VOID = new FullBlockData(Material.STRUCTURE_VOID.createBlockData());
+
     public CuboidBlockSet() {
     }
 
-    public CuboidBlockSet(CuboidTag cuboid, Location center, boolean copyFlags) {
+    public void buildImmediate(AreaContainmentObject area, Location center, boolean copyFlags) {
         hasFlags = copyFlags;
-        Location low = cuboid.pairs.get(0).low;
-        Location high = cuboid.pairs.get(0).high;
+        CuboidTag boundary;
+        if (area instanceof CuboidTag && ((CuboidTag) area).pairs.size() == 1) {
+            boundary = (CuboidTag) area;
+        }
+        else {
+            constraint = area;
+            boundary = area.getCuboidBoundary();
+        }
+        Location low = boundary.pairs.get(0).low;
+        Location high = boundary.pairs.get(0).high;
         x_width = (int) ((high.getX() - low.getX()) + 1);
         y_length = (int) ((high.getY() - low.getY()) + 1);
         z_height = (int) ((high.getZ() - low.getZ()) + 1);
         center_x = (int) (center.getX() - low.getX());
         center_y = (int) (center.getY() - low.getY());
         center_z = (int) (center.getZ() - low.getZ());
-        blocks = new FullBlockData[(x_width * y_length * z_height)];
+        blocks = new FullBlockData[x_width * y_length * z_height];
         int index = 0;
+        double lowX = low.getBlockX() + 0.5, lowY = low.getBlockY() + 0.5, lowZ = low.getBlockZ() + 0.5;
+        Location refLoc = low.clone();
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks[index++] = new FullBlockData(low.clone().add(x, y, z).getBlock(), copyFlags);
+                    refLoc.setX(lowX + x);
+                    refLoc.setY(lowY + y);
+                    refLoc.setZ(lowZ + z);
+                    blocks[index++] = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
                 }
             }
         }
     }
 
-    public void buildDelayed(CuboidTag cuboid, Location center, Runnable runme, long maxDelayMs, boolean copyFlags) {
+    public void buildDelayed(AreaContainmentObject area, Location center, Runnable runme, long maxDelayMs, boolean copyFlags) {
         hasFlags = copyFlags;
-        Location low = cuboid.pairs.get(0).low;
-        Location high = cuboid.pairs.get(0).high;
+        CuboidTag boundary;
+        if (area instanceof CuboidTag && ((CuboidTag) area).pairs.size() == 1) {
+            boundary = (CuboidTag) area;
+        }
+        else {
+            constraint = area;
+            boundary = area.getCuboidBoundary();
+        }
+        Location low = boundary.pairs.get(0).low;
+        Location high = boundary.pairs.get(0).high;
         x_width = (int) ((high.getX() - low.getX()) + 1);
         y_length = (int) ((high.getY() - low.getY()) + 1);
         z_height = (int) ((high.getZ() - low.getZ()) + 1);
         center_x = (int) (center.getX() - low.getX());
         center_y = (int) (center.getY() - low.getY());
         center_z = (int) (center.getZ() - low.getZ());
-        final long goal = (long) (x_width * y_length * z_height);
-        blocks = new FullBlockData[(x_width * y_length * z_height)];
+        final long goal = (long)x_width * y_length * z_height;
+        blocks = new FullBlockData[x_width * y_length * z_height];
+        double lowX = low.getBlockX() + 0.5, lowY = low.getBlockY() + 0.5, lowZ = low.getBlockZ() + 0.5;
+        Location refLoc = low.clone();
         new BukkitRunnable() {
             int index = 0;
             @Override
             public void run() {
                 long start = System.currentTimeMillis();
                 while (index < goal) {
-                    long z = index % ((long) (z_height));
-                    long y = ((index - z) % ((long) (y_length * z_height))) / ((long) z_height);
-                    long x = (index - y - z) / ((long) (y_length * z_height));
-                    blocks[index] = new FullBlockData(low.clone().add(x, y, z).getBlock(), copyFlags);
+                    long z = index % ((long) z_height);
+                    long y = ((index - z) % ((long)y_length * z_height)) / ((long) z_height);
+                    long x = (index - y - z) / ((long)y_length * z_height);
+                    refLoc.setX(lowX + x);
+                    refLoc.setY(lowY + y);
+                    refLoc.setZ(lowZ + z);
+                    blocks[index] = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
                     index++;
                     if (System.currentTimeMillis() - start > maxDelayMs) {
                         SchematicCommand.noPhys = false;
@@ -85,6 +113,8 @@ public class CuboidBlockSet implements BlockSet {
             }
         }.runTaskTimer(Denizen.getInstance(), 1, 1);
     }
+
+    public AreaContainmentObject constraint = null;
 
     public FullBlockData[] blocks = null;
 
@@ -148,10 +178,10 @@ public class CuboidBlockSet implements BlockSet {
 
     public static HashSet<EntityType> copyTypes = new HashSet<>(Arrays.asList(EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND));
 
-    public void buildEntities(CuboidTag cuboid, Location center) {
+    public void buildEntities(AreaContainmentObject area, Location center) {
         entities = new ListTag();
-        for (Entity ent : cuboid.getWorld().getEntities()) {
-            if (cuboid.isInsideCuboid(ent.getLocation())) {
+        for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithin()) {
+            if (area.doesContainLocation(ent.getLocation())) {
                 if (copyTypes.contains(ent.getType())) {
                     EntityTag entTag = new EntityTag(ent);
                     if (entTag.isPlayer() || entTag.isNPC()) {

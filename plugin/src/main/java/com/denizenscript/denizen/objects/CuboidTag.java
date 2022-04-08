@@ -538,13 +538,22 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return list;
     }
 
+    public final Collection<Entity> getEntitiesPossiblyWithin() {
+        WorldTag world = getWorld();
+        if (pairs.size() != 1) {
+            return world.getEntities();
+        }
+        BoundingBox box = BoundingBox.of(getLow(0).toVector(), getHigh(0).toVector().add(new Vector(1, 1, 1)));
+        return world.getPossibleEntitiesForBoundary(box);
+    }
+
     public Collection<Entity> getEntitiesPossiblyWithinForTag() {
         WorldTag world = getWorld();
         if (pairs.size() != 1) {
             return world.getEntitiesForTag();
         }
         BoundingBox box = BoundingBox.of(getLow(0).toVector(), getHigh(0).toVector().add(new Vector(1, 1, 1)));
-        return world.getPossibleEntitiesForBoundary(box);
+        return world.getPossibleEntitiesForBoundaryForTag(box);
     }
 
     @Override

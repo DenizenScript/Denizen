@@ -151,6 +151,14 @@ public class CommonRegistries {
         CoreUtilities.registerTypeAsNoOtherTypeCode(CuboidTag.class, "cu");
         CoreUtilities.registerTypeAsNoOtherTypeCode(EllipsoidTag.class, "ellipsoid");
         CoreUtilities.registerTypeAsNoOtherTypeCode(EnchantmentTag.class, "enchantment");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(InventoryTag.class, "in");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(LocationTag.class, "l");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(MaterialTag.class, "m");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(PluginTag.class, "pl");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(PolygonTag.class, "polygon");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");
+        CoreUtilities.registerTypeAsNoOtherTypeCode(WorldTag.class, "w");
         CoreUtilities.typeCheckers.put(EntityTag.class, (inp) -> { // This is adapted 'no other type code' but for e@, p@, and n@
             if (inp == null) {
                 return false;
@@ -260,14 +268,6 @@ public class CommonRegistries {
             }
             return false;
         });
-        CoreUtilities.registerTypeAsNoOtherTypeCode(InventoryTag.class, "in");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(ItemTag.class, "i");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(LocationTag.class, "l");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(MaterialTag.class, "m");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(PluginTag.class, "pl");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(PolygonTag.class, "polygon");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(TradeTag.class, "trade");
-        CoreUtilities.registerTypeAsNoOtherTypeCode(WorldTag.class, "w");
     }
 
     private static void registerConversions() {
