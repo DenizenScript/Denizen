@@ -39,6 +39,9 @@ public class Settings {
         CoreConfiguration.allowRestrictedActions = config.getBoolean("Commands.Security.Allow restricted actions", false);
         CoreConfiguration.allowWebserver = config.getBoolean("Commands.WebServer.Allow", false);
         CoreConfiguration.webserverRoot = config.getString("Commands.WebServer.Webroot", "webroot/");
+        CoreConfiguration.allowFileRead = config.getBoolean("Commands.File.Allow read", false);
+        CoreConfiguration.allowFileWrite = config.getBoolean("Commands.File.Allow write", false);
+        CoreConfiguration.filePathLimit = config.getString("Commands.File.Restrict path", "data/");
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;

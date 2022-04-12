@@ -189,6 +189,15 @@ Commands:
         Allow: false
         # The file path root under plugins/Denizen/ that any usages of the "FILE:" or "CACHED_FILE:" determinations must refer to files under (in addition to other file read security restrictions).
         Webroot: webroot/
+    File:
+        # Set 'true' to enable the 'fileread' generic command.
+        # This setting does not affect YAML or other specific-file-type commands.
+        Allow read: false
+        # Set 'true' to enable the 'filewrite' generic command.
+        # This setting does not affect YAML or other specific-file-type commands.
+        Allow write: false
+        # The restricted file path, under plugins/Denizen/, for "fileread" and "filewrite" to be limited to. Set to 'none' to remove the path restriction.
+        Restrict path: data/
     # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
     # Otherwise, a bad script or plugin could potentially damage things (though being careful with these settings should reduce the risk of a script doing so)
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...

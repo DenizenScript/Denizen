@@ -433,7 +433,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @attribute <EllipsoidTag.location>
         // @returns LocationTag
         // @description
-        // Returns the location of the ellipsoid.
+        // Returns the center location of the ellipsoid.
         // -->
         tagProcessor.registerTag(LocationTag.class, "location", (attribute, object) -> {
             return object.center;

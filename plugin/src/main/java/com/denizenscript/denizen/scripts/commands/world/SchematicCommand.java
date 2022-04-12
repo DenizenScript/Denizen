@@ -83,7 +83,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // This will rotate the set of blocks itself, the relative origin, and any directional blocks inside the schematic.
     // Rotation angles must be a multiple of 90 degrees.
     //
-    // When using 'paste', you can only specify 'angle:#' to have that paste rotated, without rotating the original schematic.
+    // When using 'paste', you can specify 'angle:#' to have that paste rotated, without rotating the original schematic.
     //
     // The "delayed" option makes the command non-instant. This is recommended for large schematics.
     // For 'save', 'load', and 'rotate', this processes async to prevent server lockup.
