@@ -75,10 +75,14 @@ public class FormattedTextHelper {
         for (BaseComponent component : components) {
             builder.append(stringify(component));
         }
-        while (builder.toString().endsWith(RESET)) {
-            builder.setLength(builder.length() - RESET.length());
+        String output = builder.toString();
+        while (output.endsWith(RESET)) {
+            output = output.substring(0, output.length() - RESET.length());
         }
-        return builder.toString();
+        while (output.startsWith(POSSIBLE_RESET_PREFIX) && output.length() > 4 && colorCodeInvalidator.isMatch(output.charAt(3))) {
+            output = output.substring(2);
+        }
+        return output;
     }
 
     public static boolean boolNotNull(Boolean bool) {
@@ -185,7 +189,7 @@ public class FormattedTextHelper {
         return cleanRedundantCodes(output);
     }
 
-    public static final String RESET = ChatColor.RESET.toString();
+    public static final String RESET = ChatColor.RESET.toString(), POSSIBLE_RESET_PREFIX = RESET + ChatColor.COLOR_CHAR;
 
     public static TextComponent copyFormatToNewText(TextComponent last) {
         TextComponent toRet = new TextComponent();
@@ -232,13 +236,15 @@ public class FormattedTextHelper {
         return findEndIndexFor(base, "[" + type + "=", "[/" + type + "]", startAt);
     }
 
-    public static AsciiMatcher allowedCharCodes = new AsciiMatcher("0123456789abcdefABCDEFklmnorxKLMNORX[");
+    public static String HEX = "0123456789abcdefABCDEF";
 
-    public static AsciiMatcher hexMatcher = new AsciiMatcher("0123456789abcdefABCDEF");
+    public static AsciiMatcher allowedCharCodes = new AsciiMatcher(HEX + "klmnorxKLMNORX[");
 
-    public static AsciiMatcher colorCodesOrReset = new AsciiMatcher("0123456789abcdefABCDEFrR"); // Any color code that can be invalidated
+    public static AsciiMatcher hexMatcher = new AsciiMatcher(HEX);
 
-    public static AsciiMatcher colorCodeInvalidator = new AsciiMatcher("0123456789abcdefABCDEFrRxX"); // Any code that can invalidate the colors above
+    public static AsciiMatcher colorCodesOrReset = new AsciiMatcher(HEX + "rR"); // Any color code that can be invalidated
+
+    public static AsciiMatcher colorCodeInvalidator = new AsciiMatcher(HEX + "rRxX"); // Any code that can invalidate the colors above
 
     public static String cleanRedundantCodes(String str) {
         int index = str.indexOf(ChatColor.COLOR_CHAR);
