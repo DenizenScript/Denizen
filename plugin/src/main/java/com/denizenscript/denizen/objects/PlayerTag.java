@@ -2154,7 +2154,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the total amount of experience points the player has.
         // This is how much XP the player has ever received, not a current value.
-        // To get the current total, use @<link tag PlayerTag.calculate_xp>.
+        // To get the current total, use <@link tag PlayerTag.calculate_xp>.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "xp_total", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getTotalExperience());
