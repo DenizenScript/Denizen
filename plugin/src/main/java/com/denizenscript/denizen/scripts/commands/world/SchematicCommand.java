@@ -188,34 +188,38 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     public static void rotateSchem(CuboidBlockSet schematic, int angle, boolean delayed, Runnable callback) {
         Runnable rotateRunnable = () -> {
-            int ang = angle;
-            while (ang < 0) {
-                ang = 360 + ang;
-            }
-            while (ang >= 360) {
-                ang -= 360;
-            }
-            if (ang != 0) {
-                ang = 360 - ang;
-                while (ang > 0) {
-                    ang -= 90;
-                    schematic.rotateOne();
+            try {
+                int ang = angle;
+                while (ang < 0) {
+                    ang = 360 + ang;
+                }
+                while (ang >= 360) {
+                    ang -= 360;
+                }
+                if (ang != 0) {
+                    ang = 360 - ang;
+                    while (ang > 0) {
+                        ang -= 90;
+                        schematic.rotateOne();
+                    }
                 }
             }
-            Bukkit.getScheduler().runTask(Denizen.getInstance(), callback);
+            finally {
+                if (callback != null) {
+                    if (delayed) {
+                        Bukkit.getScheduler().runTask(Denizen.getInstance(), callback);
+                    }
+                    else {
+                        callback.run();
+                    }
+                }
+            }
         };
         if (delayed) {
             Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), rotateRunnable);
         }
         else {
-            try {
-                rotateRunnable.run();
-            }
-            finally {
-                if (callback != null) {
-                    callback.run();
-                }
-            }
+            rotateRunnable.run();
         }
     }
 
