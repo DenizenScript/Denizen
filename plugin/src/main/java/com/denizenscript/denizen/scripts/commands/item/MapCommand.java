@@ -27,7 +27,7 @@ public class MapCommand extends AbstractCommand {
 
     public MapCommand() {
         setName("map");
-        setSyntax("map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<radius>) (x:<#>) (y:<#>)");
+        setSyntax("map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<#>) (x:<#>) (y:<#>)");
         setRequiredArguments(2, 9);
         isProcedural = false;
         setPrefixesHandled("dot", "radius", "image", "script", "x", "y", "reset", "new");
@@ -36,7 +36,7 @@ public class MapCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Map
-    // @Syntax map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<radius>) (x:<#>) (y:<#>)
+    // @Syntax map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<#>) (x:<#>) (y:<#>)
     // @Required 2
     // @Maximum 9
     // @Short Modifies a new or existing map by adding images or text.
@@ -49,7 +49,7 @@ public class MapCommand extends AbstractCommand {
     //
     // When using 'reset', you can specify optionally 'scale' and/or 'tracking'.
     // When using 'image' you can optionally specify 'resize'.
-    // When using 'dot' you can optionally specify 'radius'.
+    // When using 'dot', you can specify any valid ColorTag (it will be compressed to map's color space), and you can optionally also specify 'radius' as a number.
     //
     // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
     // images and texts on the map and show the default world map at the specified location.

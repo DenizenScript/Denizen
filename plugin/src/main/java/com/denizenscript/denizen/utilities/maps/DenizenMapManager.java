@@ -222,7 +222,7 @@ public class DenizenMapManager {
             BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
             int lastDot = urlString.lastIndexOf('.');
             String fileName = String.format("%0" + (6 - String.valueOf(downloadCount).length()) + "d", downloadCount)
-                    + (lastDot > 0 ? allowedExtensionText.trimToMatches(urlString.substring(lastDot)) : "");
+                    + (lastDot > 0 ? "." + allowedExtensionText.trimToMatches(urlString.substring(lastDot)) : "");
             File output = new File(imageDownloads, fileName);
             FileImageOutputStream out = new FileImageOutputStream(output);
             int i;
