@@ -4,6 +4,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -140,6 +141,9 @@ public class CastCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        if (entities == null) {
+            throw new InvalidArgumentsRuntimeException("Missing entity target input");
+        }
         PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
         int amplifier = scriptEntry.getElement("amplifier").asInt();
         DurationTag duration = scriptEntry.getObjectTag("duration");
@@ -148,8 +152,7 @@ public class CastCommand extends AbstractCommand {
         ElementTag ambient = scriptEntry.getElement("ambient");
         ElementTag showIcon = scriptEntry.getElement("show_icon");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("Target(s)", entities.toString()), db("Effect", effect.getName()),
-                            db("Amplifier", amplifier), duration, ambient, showParticles, showIcon);
+            Debug.report(scriptEntry, getName(), db("targets", entities), db("effect", effect.getName()), db("amplifier", amplifier), duration, ambient, showParticles, showIcon);
         }
         boolean amb = ambient.asBoolean();
         boolean showP = showParticles.asBoolean();

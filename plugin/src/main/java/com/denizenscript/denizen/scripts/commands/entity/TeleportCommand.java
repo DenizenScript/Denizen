@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -107,6 +108,9 @@ public class TeleportCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) {
         LocationTag location = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        if (entities == null) {
+            throw new InvalidArgumentsRuntimeException("Missing entity target input");
+        }
         ElementTag cause = scriptEntry.getElement("cause");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), location, db("entities", entities), cause);

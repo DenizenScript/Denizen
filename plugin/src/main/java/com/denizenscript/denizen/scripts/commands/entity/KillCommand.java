@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -69,6 +70,9 @@ public class KillCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        if (entities == null) {
+            throw new InvalidArgumentsRuntimeException("Missing entity target input");
+        }
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), db("entities", entities));
         }

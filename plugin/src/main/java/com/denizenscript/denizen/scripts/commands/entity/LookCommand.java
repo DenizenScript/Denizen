@@ -7,6 +7,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -114,6 +115,9 @@ public class LookCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         final LocationTag loc = scriptEntry.getObjectTag("location");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        if (entities == null) {
+            throw new InvalidArgumentsRuntimeException("Missing entity target input");
+        }
         final DurationTag duration = scriptEntry.getObjectTag("duration");
         ElementTag yaw = scriptEntry.getElement("yaw");
         ElementTag pitch = scriptEntry.getElement("pitch");
@@ -171,4 +175,3 @@ public class LookCommand extends AbstractCommand {
         }
     }
 }
-

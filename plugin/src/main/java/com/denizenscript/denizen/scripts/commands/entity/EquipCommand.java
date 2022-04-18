@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -125,6 +126,9 @@ public class EquipCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         Map<String, ItemTag> equipment = (Map<String, ItemTag>) scriptEntry.getObject("equipment");
         List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        if (entities == null) {
+            throw new InvalidArgumentsRuntimeException("Missing entity target input");
+        }
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), db("entities", entities), db("equipment", equipment));
         }
