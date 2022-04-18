@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -35,11 +36,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     //
     // -->
 
-    //
-    // Default to 75, but dynamically set by checkMaxProximities().
-    // If a Player is further than this distance from an NPC, less
-    // logic is run in checking.
-    //
     private static int maxProximityDistance = 75; // TODO: is this reasonable to have?
 
     // <--[action]
@@ -88,62 +84,69 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
-        final ProximityTrigger trigger = this;
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.getInstance(), () -> {
+            if (timesUsed == 0) { // skip if not in use
+                return;
+            }
             Collection<? extends Player> allPlayers = Bukkit.getOnlinePlayers();
-            for (NPC citizensNPC : CitizensAPI.getNPCRegistry()) {
-                if (citizensNPC == null || !citizensNPC.isSpawned()) {
-                    continue;
-                }
-                if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
-                    continue;
-                }
-                NPCTag npc = new NPCTag(citizensNPC);
-                TriggerTrait triggerTrait = npc.getTriggerTrait();
-                for (Player bukkitPlayer : allPlayers) {
-                    if (!npc.getWorld().equals(bukkitPlayer.getWorld()) && hasExitedProximityOf(bukkitPlayer, npc)) {
+            for (NPCRegistry registry : CitizensAPI.getNPCRegistries()) {
+                for (NPC citizensNPC : registry) {
+                    if (citizensNPC == null || !citizensNPC.isSpawned()) {
                         continue;
                     }
-                    if (!isCloseEnough(bukkitPlayer, npc) && hasExitedProximityOf(bukkitPlayer, npc)) {
+                    if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getOrAddTrait(TriggerTrait.class).isEnabled(name)) {
                         continue;
                     }
-                    PlayerTag player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
-                    double entryRadius = triggerTrait.getRadius(name);
-                    double exitRadius = triggerTrait.getRadius(name);
-                    double moveRadius = triggerTrait.getRadius(name);
-                    Location npcLocation = npc.getLocation();
-                    boolean playerChangedWorlds = false;
-                    if (npcLocation.getWorld() != player.getWorld()) {
-                        playerChangedWorlds = true;
-                    }
-                    boolean exitedProximity = hasExitedProximityOf(bukkitPlayer, npc);
-                    double distance = 0;
-                    if (!playerChangedWorlds) {
-                        distance = npcLocation.distance(player.getLocation());
-                    }
-                    if (!exitedProximity && (playerChangedWorlds || distance >= exitRadius)) {
-                        if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
-                            continue;
-                        }
-                        exitProximityOf(bukkitPlayer, npc);
-                        npc.action("exit proximity", player);
-                        parseAll(npc, player, "EXIT");
-                    }
-                    else if (exitedProximity && distance <= entryRadius) {
-                        if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
-                            continue;
-                        }
-                        enterProximityOf(bukkitPlayer, npc);
-                        npc.action("enter proximity", player);
-                        parseAll(npc, player, "ENTRY");
-                    }
-                    else if (!exitedProximity && distance <= moveRadius) {
-                        npc.action("move proximity", player);
-                        parseAll(npc, player, "MOVE");
+                    NPCTag npc = new NPCTag(citizensNPC);
+                    TriggerTrait triggerTrait = npc.getTriggerTrait();
+                    for (Player bukkitPlayer : allPlayers) {
+                        tryProcessSinglePair(npc, triggerTrait, bukkitPlayer);
                     }
                 }
             }
         }, 5, 5);
+    }
+
+    public final void tryProcessSinglePair(NPCTag npc, TriggerTrait triggerTrait, Player bukkitPlayer) {
+        boolean exitedProximity = hasExitedProximityOf(bukkitPlayer, npc);
+        if (!npc.getWorld().equals(bukkitPlayer.getWorld()) && exitedProximity) {
+            return;
+        }
+        if (!isCloseEnough(bukkitPlayer, npc) && exitedProximity) {
+            return;
+        }
+        PlayerTag player = PlayerTag.mirrorBukkitPlayer(bukkitPlayer);
+        double radius = triggerTrait.getRadius(name);
+        Location npcLocation = npc.getLocation();
+        double distance;
+        if (npcLocation.getWorld() != player.getWorld()) {
+            distance = radius + 1;
+        }
+        else {
+            distance = npcLocation.distance(player.getLocation());
+        }
+        if (!exitedProximity) {
+            if (distance >= radius) {
+                if (!triggerTrait.triggerCooldownOnly(this, player)) {
+                    return;
+                }
+                exitProximityOf(bukkitPlayer, npc);
+                npc.action("exit proximity", player);
+                parseAll(npc, player, "EXIT");
+            }
+            else {
+                npc.action("move proximity", player);
+                parseAll(npc, player, "MOVE");
+            }
+        }
+        else if (distance <= radius) {
+            if (!triggerTrait.triggerCooldownOnly(this, player)) {
+                return;
+            }
+            enterProximityOf(bukkitPlayer, npc);
+            npc.action("enter proximity", player);
+            parseAll(npc, player, "ENTRY");
+        }
     }
 
     public void parseAll(NPCTag npc, PlayerTag player, String id) {
@@ -170,31 +173,25 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     private boolean isCloseEnough(Player player, NPCTag npc) {
         Location pLoc = player.getLocation();
         Location nLoc = npc.getLocation();
-        if (Math.abs(pLoc.getX() - nLoc.getX()) > maxProximityDistance) {
-            return false;
-        }
-        if (Math.abs(pLoc.getY() - nLoc.getY()) > maxProximityDistance) {
-            return false;
-        }
-        if (Math.abs(pLoc.getZ() - nLoc.getZ()) > maxProximityDistance) {
+        if (pLoc.getWorld() != nLoc.getWorld() || pLoc.distanceSquared(nLoc) > maxProximityDistance * maxProximityDistance) {
             return false;
         }
         return true;
     }
 
-    private static Map<UUID, Set<Integer>> proximityTracker = new HashMap<>();
+    private static Map<UUID, Set<UUID>> proximityTracker = new HashMap<>();
 
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
     //
     private boolean hasExitedProximityOf(Player player, NPCTag npc) {
         // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
-        Set<Integer> existing = proximityTracker.get(player.getUniqueId());
+        Set<UUID> existing = proximityTracker.get(player.getUniqueId());
         if (existing == null) {
             return true;
         }
         // If Player has no entry for this NPC, return true.
-        if (!existing.contains(npc.getId())) {
+        if (!existing.contains(npc.getCitizen().getUniqueId())) {
             return true;
         }
         // Entry is present, NPC has not yet triggered exit proximity.
@@ -209,8 +206,8 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc    the NPC
      */
     private void enterProximityOf(Player player, NPCTag npc) {
-        Set<Integer> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
-        npcs.add(npc.getId());
+        Set<UUID> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
+        npcs.add(npc.getCitizen().getUniqueId());
     }
 
     /**
@@ -221,7 +218,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc    the NPC
      */
     private void exitProximityOf(Player player, NPCTag npc) {
-        Set<Integer> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
-        npcs.remove(npc.getId());
+        Set<UUID> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
+        npcs.remove(npc.getCitizen().getUniqueId());
     }
 }

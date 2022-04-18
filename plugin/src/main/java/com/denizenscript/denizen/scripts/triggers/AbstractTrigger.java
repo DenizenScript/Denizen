@@ -21,6 +21,12 @@ import java.util.*;
 
 public abstract class AbstractTrigger {
 
+    /**
+     * Number of times this trigger has been seen as enabled in onSpawn of NPCs since start.
+     * If value is '0', trigger isn't in use.
+     */
+    public int timesUsed = 0;
+
     protected String name;
 
     public AbstractTrigger as(String triggerName) {

@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -35,12 +34,6 @@ public class TriggerTrait extends Trait implements Listener {
     @Persist(value = "radius", collectionType = HashMap.class)
     private Map<String, Integer> radius = new HashMap<>();
 
-    public void report() {
-        Debug.log("enabled: " + enabled.entrySet().toString());
-        Debug.log("duration: " + duration.entrySet().toString());
-        Debug.log("radius: " + radius.entrySet().toString());
-    }
-
     public TriggerTrait() {
         super("triggers");
         for (Map.Entry<String, Boolean> entry : enabled.entrySet()) {
@@ -62,9 +55,12 @@ public class TriggerTrait extends Trait implements Listener {
             npc.removeTrait(TriggerTrait.class);
             return;
         }
-        for (String triggerName : Denizen.getInstance().triggerRegistry.list().keySet()) {
-            if (!enabled.containsKey(triggerName)) {
-                enabled.put(triggerName, Settings.triggerEnabled(triggerName));
+        for (Map.Entry<String, AbstractTrigger> trigger : Denizen.getInstance().triggerRegistry.list().entrySet()) {
+            if (!enabled.containsKey(trigger.getKey())) {
+                enabled.put(trigger.getKey(), Settings.triggerEnabled(trigger.getKey()));
+            }
+            if (enabled.get(trigger.getKey())) {
+                trigger.getValue().timesUsed++;
             }
         }
     }
@@ -87,6 +83,7 @@ public class TriggerTrait extends Trait implements Listener {
      */
     public String toggleTrigger(String triggerName, boolean toggle) {
         if (enabled.containsKey(triggerName.toUpperCase())) {
+            Denizen.getInstance().triggerRegistry.get(triggerName).timesUsed++;
             enabled.put(triggerName.toUpperCase(), toggle);
             properly_set.put(triggerName.toUpperCase(), true);
             return triggerName + " trigger is now " + (toggle ? "enabled." : "disabled.");
@@ -118,7 +115,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public boolean isEnabled(String triggerName) {
-        if (!new NPCTag(npc).getCitizen().hasTrait(AssignmentTrait.class)) {
+        if (!npc.hasTrait(AssignmentTrait.class)) {
             return false;
         }
         return enabled.getOrDefault(triggerName.toUpperCase(), false);
