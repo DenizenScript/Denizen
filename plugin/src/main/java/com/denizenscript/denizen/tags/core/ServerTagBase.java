@@ -2316,7 +2316,7 @@ public class ServerTagBase {
         // CAUTION: Invalid loot table IDs will generate an empty list rather than an error.
         //
         // @example
-        // <server.generate_loot_table[id=chests/spawn_bonus_chest;killer=<player>;location=<player.location>]>
+        // - give <server.generate_loot_table[id=chests/spawn_bonus_chest;killer=<player>;location=<player.location>]>
         // -->
         else if (attribute.startsWith("generate_loot_table") && attribute.hasParam()) {
             MapTag map = attribute.paramAsType(MapTag.class);

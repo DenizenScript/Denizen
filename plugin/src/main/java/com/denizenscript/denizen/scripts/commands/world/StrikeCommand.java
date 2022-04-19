@@ -35,6 +35,7 @@ public class StrikeCommand extends AbstractCommand {
     // lightning do no damage to the player or any other entities, and means creepers struck will not activate.
     //
     // Use 'silent' to remove the sound of the lightning strike.
+    // NOTE: The 'silent' option appears to have been removed in a Minecraft update and thus lightning will be audible until/unless Mojang re-adds it.
     //
     // @Tags
     // None
