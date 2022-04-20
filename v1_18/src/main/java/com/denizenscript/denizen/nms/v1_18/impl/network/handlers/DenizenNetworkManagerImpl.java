@@ -993,6 +993,22 @@ public class DenizenNetworkManagerImpl extends Connection {
                 tryProcessTeleportPacketForAttach((ClientboundTeleportEntityPacket) packet, e, VECTOR_ZERO);
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
+            else if (packet instanceof ClientboundRemoveEntitiesPacket) {
+                for (int id : ((ClientboundRemoveEntitiesPacket) packet).getEntityIds()) {
+                    Entity e = player.getLevel().getEntity(id);
+                    if (e != null) {
+                        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
+                        if (attList != null) {
+                            for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                                if (attMap.attached.isValid() && att != null) {
+                                    att.visiblePositions.remove(player.getUUID());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         catch (Exception ex) {
             Debug.echoError(ex);
