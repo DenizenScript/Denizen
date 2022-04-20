@@ -124,6 +124,7 @@ public class PlayerHelperImpl extends PlayerHelper {
             else if (entityType.customEntityType == CustomEntityType.FAKE_PLAYER) {
                 String name = null;
                 String skin = null;
+                String blob = null;
                 for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
                     if (mechanism.matches("name")) {
                         name = mechanism.getValue().asString();
@@ -133,11 +134,15 @@ public class PlayerHelperImpl extends PlayerHelper {
                         skin = mechanism.getValue().asString();
                         mechanisms.remove(mechanism);
                     }
-                    if (name != null && skin != null) {
+                    else if (mechanism.matches("skin_blob")) {
+                        blob = mechanism.getValue().asString();
+                        mechanisms.remove(mechanism);
+                    }
+                    if (name != null && (skin != null || blob != null)) {
                         break;
                     }
                 }
-                nmsEntity = ((CraftFakePlayerImpl) CustomEntityHelperImpl.spawnFakePlayer(location, name, skin, false)).getHandle();
+                nmsEntity = ((CraftFakePlayerImpl) NMSHandler.customEntityHelper.spawnFakePlayer(location, name, skin, blob, false)).getHandle();
             }
             else {
                 throw new IllegalArgumentException("entityType");

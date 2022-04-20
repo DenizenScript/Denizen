@@ -9,5 +9,5 @@ public interface CustomEntityHelper {
 
     ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack);
 
-    FakePlayer spawnFakePlayer(Location location, String name, String skin);
+    FakePlayer spawnFakePlayer(Location location, String name, String skin, String blob, boolean doAdd);
 }

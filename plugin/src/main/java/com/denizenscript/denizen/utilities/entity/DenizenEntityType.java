@@ -101,6 +101,7 @@ public class DenizenEntityType {
                         if (Settings.packetInterception()) {
                             String name = null;
                             String skin = null;
+                            String blob = null;
                             for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
                                 if (mechanism.matches("name")) {
                                     name = mechanism.getValue().asString();
@@ -110,12 +111,16 @@ public class DenizenEntityType {
                                     skin = mechanism.getValue().asString();
                                     mechanisms.remove(mechanism);
                                 }
-                                if (name != null && skin != null) {
+                                else if (mechanism.matches("skin_blob")) {
+                                    blob = mechanism.getValue().asString();
+                                    mechanisms.remove(mechanism);
+                                }
+                                if (name != null && (skin != null || blob != null)) {
                                     break;
                                 }
                             }
                             NetworkInterceptHelper.enable();
-                            return customEntityHelper.spawnFakePlayer(location, name, skin);
+                            return customEntityHelper.spawnFakePlayer(location, name, skin, blob, true);
                         }
                         break;
                     case ITEM_PROJECTILE:

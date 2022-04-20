@@ -46,12 +46,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         return entity.getBukkitEntity();
     }
 
-    @Override
-    public FakePlayer spawnFakePlayer(Location location, String name, String skin) throws IllegalArgumentException {
-        return spawnFakePlayer(location, name, skin, true);
-    }
-
-    public static FakePlayer spawnFakePlayer(Location location, String name, String skin, boolean doAdd) throws IllegalArgumentException {
+    public FakePlayer spawnFakePlayer(Location location, String name, String skin, String blob, boolean doAdd) throws IllegalArgumentException {
         String fullName = name;
         String prefix = null;
         String suffix = null;
@@ -99,7 +94,14 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         CraftWorld world = (CraftWorld) location.getWorld();
         ServerLevel worldServer = world.getHandle();
         PlayerProfile playerProfile = new PlayerProfile(name, null);
-        if (skin == null && !name.matches(".*[^A-Za-z0-9_].*")) {
+        if (blob != null) {
+            int sc = blob.indexOf(';');
+            if (sc != -1) {
+                playerProfile.setTexture(blob.substring(0, sc));
+                playerProfile.setTextureSignature(blob.substring(sc + 1));
+            }
+        }
+        else if (skin == null && !name.matches(".*[^A-Za-z0-9_].*")) {
             playerProfile = NMSHandler.getInstance().fillPlayerProfile(playerProfile);
         }
         if (skin != null) {

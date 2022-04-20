@@ -47,8 +47,8 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
     }
 
     @Override
-    public FakePlayer spawnFakePlayer(Location location, String name, String skin) throws IllegalArgumentException {
-        return spawnFakePlayer(location, name, skin, true);
+    public FakePlayer spawnFakePlayer(Location location, String name, String skin, String blob, boolean doAdd) throws IllegalArgumentException {
+        return spawnFakePlayer(location, name, skin, doAdd);
     }
 
     public static FakePlayer spawnFakePlayer(Location location, String name, String skin, boolean doAdd) throws IllegalArgumentException {
