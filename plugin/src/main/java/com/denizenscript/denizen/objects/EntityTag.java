@@ -886,7 +886,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     despawned_entity = null;
                 }
                 else {
-                    if (entity_type.getBukkitEntityType() == EntityType.PLAYER) {
+                    if (entity_type.getBukkitEntityType() == EntityType.PLAYER && !entity_type.isCustom()) {
                         if (Depends.citizens == null) {
                             Debug.echoError("Cannot spawn entity of type PLAYER!");
                             return;

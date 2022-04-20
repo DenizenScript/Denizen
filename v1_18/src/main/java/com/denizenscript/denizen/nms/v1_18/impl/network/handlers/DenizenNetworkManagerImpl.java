@@ -310,6 +310,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             return;
         }
         processBlockLightForPacket(packet);
+        processFakePlayerSpawnForPacket(packet);
         oldManager.send(packet, genericfuturelistener);
     }
 
@@ -1044,19 +1045,22 @@ public class DenizenNetworkManagerImpl extends Connection {
                 if (isHidden(e)) {
                     return true;
                 }
-                if (packet instanceof ClientboundAddPlayerPacket
-                        || packet instanceof ClientboundAddEntityPacket
-                        || packet instanceof ClientboundAddMobPacket
-                        || packet instanceof ClientboundAddPaintingPacket
-                        || packet instanceof ClientboundAddExperienceOrbPacket) {
-                    processFakePlayerSpawn(e);
-                }
             }
         }
         catch (Exception ex) {
             Debug.echoError(ex);
         }
         return false;
+    }
+
+    public void processFakePlayerSpawnForPacket(Packet<?> packet) {
+        if (packet instanceof ClientboundAddPlayerPacket) {
+            int id = ((ClientboundAddPlayerPacket) packet).getEntityId();
+            if (id != -1) {
+                Entity e = player.getLevel().getEntity(id);
+                processFakePlayerSpawn(e);
+            }
+        }
     }
 
     public void processFakePlayerSpawn(Entity entity) {
