@@ -122,14 +122,14 @@ public class DebugBlockCommand extends AbstractCommand {
         }
         if (clear != null && clear.asBoolean()) {
             for (PlayerTag player : players) {
-                NMSHandler.getPacketHelper().clearDebugTestMarker(player.getPlayerEntity());
+                NMSHandler.packetHelper.clearDebugTestMarker(player.getPlayerEntity());
             }
         }
         else {
             int alphaInt = (int) (alpha.asFloat() * 255);
             for (LocationTag location : locations) {
                 for (PlayerTag player : players) {
-                    NMSHandler.getPacketHelper().showDebugTestMarker(player.getPlayerEntity(), location, color, alphaInt, name == null ? "" : name.asString(), (int) duration.getMillis());
+                    NMSHandler.packetHelper.showDebugTestMarker(player.getPlayerEntity(), location, color, alphaInt, name == null ? "" : name.asString(), (int) duration.getMillis());
                 }
             }
         }

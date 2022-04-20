@@ -64,7 +64,7 @@ public class ItemDisplayname implements Property {
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
-                return new ElementTag(NMSHandler.getItemHelper().getDisplayName(item), true)
+                return new ElementTag(NMSHandler.itemHelper.getDisplayName(item), true)
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }
@@ -88,7 +88,7 @@ public class ItemDisplayname implements Property {
     @Override
     public String getPropertyString() {
         if (hasDisplayName()) {
-            return NMSHandler.getItemHelper().getDisplayName(item);
+            return NMSHandler.itemHelper.getDisplayName(item);
         }
         else {
             return null;
@@ -121,7 +121,7 @@ public class ItemDisplayname implements Property {
                 item.setItemMeta(meta);
             }
             else {
-                NMSHandler.getItemHelper().setDisplayName(item, mechanism.getValue().asString());
+                NMSHandler.itemHelper.setDisplayName(item, mechanism.getValue().asString());
             }
         }
         else if (mechanism.matches("display_name")) {

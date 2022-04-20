@@ -48,8 +48,8 @@ public class MirrorEquipmentTrait extends Trait {
     public static MirrorOverride overrideInstance = new MirrorOverride();
 
     public void resend() {
-        for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(npc.getEntity())) {
-            NMSHandler.getPacketHelper().resetEquipment(player, (LivingEntity) npc.getEntity());
+        for (Player player : NMSHandler.entityHelper.getPlayersThatSee(npc.getEntity())) {
+            NMSHandler.packetHelper.resetEquipment(player, (LivingEntity) npc.getEntity());
         }
     }
 
@@ -63,10 +63,10 @@ public class MirrorEquipmentTrait extends Trait {
         if (player.getLocation().distanceSquared(npc.getStoredLocation()) > 100 * 100) {
             return;
         }
-        if (!NMSHandler.getEntityHelper().getPlayersThatSee(npc.getEntity()).contains(player)) {
+        if (!NMSHandler.entityHelper.getPlayersThatSee(npc.getEntity()).contains(player)) {
             return;
         }
-        NMSHandler.getPacketHelper().resetEquipment(player, (LivingEntity) npc.getEntity());
+        NMSHandler.packetHelper.resetEquipment(player, (LivingEntity) npc.getEntity());
     }
 
     @EventHandler

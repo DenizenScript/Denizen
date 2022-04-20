@@ -79,7 +79,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             world = worldTag.getWorld();
         }
-        BiomeNMS biome = NMSHandler.getInstance().getBiomeNMS(world, biomeName);
+        BiomeNMS biome = NMSHandler.instance.getBiomeNMS(world, biomeName);
         if (biome == null) {
             return null;
         }
@@ -107,7 +107,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
                 key = biome.getKey().toString();
             }
         }
-        this.biome = NMSHandler.getInstance().getBiomeNMS(Bukkit.getWorlds().get(0), key);
+        this.biome = NMSHandler.instance.getBiomeNMS(Bukkit.getWorlds().get(0), key);
     }
 
     public BiomeTag(BiomeNMS biome) {

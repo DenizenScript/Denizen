@@ -198,7 +198,7 @@ public class CompoundTagBuilder {
      * @return the new compound tag
      */
     public CompoundTag build() {
-        return NMSHandler.getInstance().createCompoundTag(new HashMap<>(entries));
+        return NMSHandler.instance.createCompoundTag(new HashMap<>(entries));
     }
 
     /**

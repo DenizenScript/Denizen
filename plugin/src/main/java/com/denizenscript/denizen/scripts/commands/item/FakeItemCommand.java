@@ -128,7 +128,6 @@ public class FakeItemCommand extends AbstractCommand {
             return;
         }
         final boolean playerOnly = player_only.asBoolean();
-        final PacketHelper packetHelper = NMSHandler.getPacketHelper();
         for (ItemTag item : items) {
             if (item == null) {
                 slot++;
@@ -136,7 +135,7 @@ public class FakeItemCommand extends AbstractCommand {
             }
             for (PlayerTag player : players) {
                 Player ent = player.getPlayerEntity();
-                packetHelper.setSlot(ent, translateSlot(ent, slot, playerOnly), item.getItemStack(), playerOnly);
+                NMSHandler.packetHelper.setSlot(ent, translateSlot(ent, slot, playerOnly), item.getItemStack(), playerOnly);
             }
             final int slotSnapshot = slot;
             slot++;
@@ -146,7 +145,7 @@ public class FakeItemCommand extends AbstractCommand {
                         Player ent = player.getPlayerEntity();
                         int translated = translateSlot(ent, slotSnapshot, playerOnly);
                         ItemStack original = ent.getOpenInventory().getItem(translated);
-                        packetHelper.setSlot(ent, translated, original, playerOnly);
+                        NMSHandler.packetHelper.setSlot(ent, translated, original, playerOnly);
                     }
                 }, (float) duration.getSeconds()));
             }

@@ -40,7 +40,7 @@ public class SpongeSchematicHelper {
     public static BlockData unstableParseMaterial(String key) {
         BlockData data;
         try {
-            data = NMSHandler.getBlockHelper().parseBlockData(key);
+            data = NMSHandler.blockHelper.parseBlockData(key);
         }
         catch (Exception ex) {
             Debug.echoError(ex);
@@ -165,7 +165,7 @@ public class SpongeSchematicHelper {
                 int cbsIndex = z + y * cbs.z_height + x * cbs.z_height * cbs.y_length;
                 BlockVector pt = new BlockVector(x, y, z);
                 if (tileEntitiesMap.containsKey(pt)) {
-                    block.tileEntityData = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
+                    block.tileEntityData = NMSHandler.instance.createCompoundTag(tileEntitiesMap.get(pt));
                 }
                 cbs.blocks[cbsIndex] = block;
                 index++;
@@ -230,14 +230,14 @@ public class SpongeSchematicHelper {
                         if (rawTag != null) {
                             HashMap<String, Tag> values = new HashMap<>(rawTag.getValue());
                             values.put("Pos", new IntArrayTag(new int[] { x, y, z }));
-                            CompoundTag tileEntityTag = NMSHandler.getInstance().createCompoundTag(values);
+                            CompoundTag tileEntityTag = NMSHandler.instance.createCompoundTag(values);
                             tileEntities.add(tileEntityTag);
                         }
                     }
                 }
             }
             schematic.put("PaletteMax", new IntTag(paletteMax));
-            schematic.put("Palette", NMSHandler.getInstance().createCompoundTag(palette));
+            schematic.put("Palette", NMSHandler.instance.createCompoundTag(palette));
             schematic.put("BlockData", new ByteArrayTag(blocksBuffer.toByteArray()));
             schematic.put("BlockEntities", new JNBTListTag(CompoundTag.class, tileEntities));
             if (blockSet.hasFlags) {
@@ -248,10 +248,10 @@ public class SpongeSchematicHelper {
                     }
                 }
                 if (!flagMap.isEmpty()) {
-                    schematic.put("DenizenFlags", NMSHandler.getInstance().createCompoundTag(flagMap));
+                    schematic.put("DenizenFlags", NMSHandler.instance.createCompoundTag(flagMap));
                 }
             }
-            CompoundTag schematicTag = NMSHandler.getInstance().createCompoundTag(schematic);
+            CompoundTag schematicTag = NMSHandler.instance.createCompoundTag(schematic);
             NBTOutputStream stream = new NBTOutputStream(new GZIPOutputStream(os));
             stream.writeNamedTag("Schematic", schematicTag);
             os.flush();

@@ -77,7 +77,6 @@ public class AnimateCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        AnimationHelper animationHelper = NMSHandler.getAnimationHelper();
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("for")
                     && arg.matchesPrefix("for")
@@ -97,7 +96,7 @@ public class AnimateCommand extends AbstractCommand {
                 if (arg.matchesEnum(EntityEffect.class)) {
                     scriptEntry.addObject("effect", EntityEffect.valueOf(arg.getValue().toUpperCase()));
                 }
-                if (animationHelper.hasEntityAnimation(arg.getValue())) {
+                if (NMSHandler.animationHelper.hasEntityAnimation(arg.getValue())) {
                     scriptEntry.addObject("nms_animation", arg.getValue());
                 }
             }
@@ -132,7 +131,7 @@ public class AnimateCommand extends AbstractCommand {
                     else if (effect != null) {
                         if (forPlayers != null) {
                             for (PlayerTag player : forPlayers) {
-                                NMSHandler.getPacketHelper().sendEntityEffect(player.getPlayerEntity(), entity.getBukkitEntity(), effect.getData());
+                                NMSHandler.packetHelper.sendEntityEffect(player.getPlayerEntity(), entity.getBukkitEntity(), effect.getData());
                             }
                         }
                         else {
@@ -140,7 +139,7 @@ public class AnimateCommand extends AbstractCommand {
                         }
                     }
                     else if (nmsAnimation != null) {
-                        EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(nmsAnimation);
+                        EntityAnimation entityAnimation = NMSHandler.animationHelper.getEntityAnimation(nmsAnimation);
                         entityAnimation.play(entity.getBukkitEntity());
                     }
                     else {

@@ -46,7 +46,7 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public String getTitle(Inventory inventory) {
         // TODO: Paper lacks an inventory.getTitle? 0.o
-        return NMSHandler.getInstance().getTitle(inventory);
+        return NMSHandler.instance.getTitle(inventory);
     }
 
     @Override

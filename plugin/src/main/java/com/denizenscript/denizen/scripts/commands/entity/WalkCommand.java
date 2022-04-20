@@ -195,11 +195,11 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
             }
             else if (shouldStop) {
-                NMSHandler.getEntityHelper().stopWalking(entity.getBukkitEntity());
+                NMSHandler.entityHelper.stopWalking(entity.getBukkitEntity());
             }
             else {
                 waitForEntities.add(entity);
-                NMSHandler.getEntityHelper().walkTo(entity.getLivingEntity(), loc, speed != null ? speed.asDouble() : null,
+                NMSHandler.entityHelper.walkTo(entity.getLivingEntity(), loc, speed != null ? speed.asDouble() : null,
                         () -> checkHeld(entity));
             }
         }

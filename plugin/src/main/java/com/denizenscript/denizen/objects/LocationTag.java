@@ -368,11 +368,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     public boolean isChunkLoadedSafe() {
         try {
-            NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+            NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
             return isChunkLoaded();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
@@ -386,7 +386,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public Block getBlockForTag(Attribute attribute) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
                 if (!attribute.hasAlternative()) {
@@ -403,12 +403,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return super.getBlock();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
     public Material getBlockTypeForTag(Attribute attribute) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
                 if (!attribute.hasAlternative()) {
@@ -425,26 +425,26 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return super.getBlock().getType();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
     public static BlockState getBlockStateSafe(Block block) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(block.getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(block.getWorld());
         try {
             return block.getState();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(block.getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(block.getWorld());
         }
     }
 
     public BiomeNMS getBiome() {
-        return NMSHandler.getInstance().getBiomeAt(super.getBlock());
+        return NMSHandler.instance.getBiomeAt(super.getBlock());
     }
 
     public BiomeNMS getBiomeForTag(Attribute attribute) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
                 if (!attribute.hasAlternative()) {
@@ -461,12 +461,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return getBiome();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
     public Location getHighestBlockForTag(Attribute attribute) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
                 if (!attribute.hasAlternative()) {
@@ -483,12 +483,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return getWorld().getHighestBlockAt(this).getLocation();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
     public Collection<ItemStack> getDropsForTag(Attribute attribute, ItemStack item) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
                 if (!attribute.hasAlternative()) {
@@ -505,12 +505,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return item == null ? super.getBlock().getDrops() : super.getBlock().getDrops(item);
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
     public int getExpDropForTag(Attribute attribute, ItemStack item) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
                 if (!attribute.hasAlternative()) {
@@ -524,10 +524,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 return 0;
             }
-            return NMSHandler.getBlockHelper().getExpDrop(super.getBlock(), item);
+            return NMSHandler.blockHelper.getExpDrop(super.getBlock(), item);
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
@@ -1359,7 +1359,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
                 return null;
             }
-            return NMSHandler.getEntityHelper().getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute))).describe(attribute.context);
+            return NMSHandler.entityHelper.getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute))).describe(attribute.context);
         });
 
         // <--[tag]
@@ -1600,7 +1600,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(ElementTag.class, "skull_name", (attribute, object) -> {
             BlockState blockState = object.getBlockStateForTag(attribute);
             if (blockState instanceof Skull) {
-                PlayerProfile profile = NMSHandler.getBlockHelper().getPlayerProfile((Skull) blockState);
+                PlayerProfile profile = NMSHandler.blockHelper.getPlayerProfile((Skull) blockState);
                 if (profile == null) {
                     return null;
                 }
@@ -1624,7 +1624,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(ElementTag.class, "skull_skin", (attribute, object) -> {
             BlockState blockState = object.getBlockStateForTag(attribute);
             if (blockState instanceof Skull) {
-                PlayerProfile profile = NMSHandler.getBlockHelper().getPlayerProfile((Skull) blockState);
+                PlayerProfile profile = NMSHandler.blockHelper.getPlayerProfile((Skull) blockState);
                 if (profile == null) {
                     return null;
                 }
@@ -2019,14 +2019,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             ListTag list = new ListTag();
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
                 BlockIterator iterator = new BlockIterator(object, 0, range);
                 while (iterator.hasNext()) {
                     list.addObject(new LocationTag(iterator.next().getLocation()));
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
             }
             return list;
         });
@@ -2045,11 +2045,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             LocationTag location = attribute.paramAsType(LocationTag.class);
             if (location != null) {
                 try {
-                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
-                    return new ElementTag(NMSHandler.getEntityHelper().canTrace(object.getWorld(), object.toVector(), location.toVector()));
+                    NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
+                    return new ElementTag(NMSHandler.entityHelper.canTrace(object.getWorld(), object.toVector(), location.toVector()));
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
                 }
             }
             return null;
@@ -2081,7 +2081,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 // Subtract this location's vector from the other location's vector,
                 // not the other way around
                 LocationTag target = attribute.paramAsType(LocationTag.class);
-                EntityHelper entityHelper = NMSHandler.getEntityHelper();
 
                 // <--[tag]
                 // @attribute <LocationTag.direction[<location>].yaw>
@@ -2092,19 +2091,19 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 // -->
                 if (attribute.startsWith("yaw", 2)) {
                     attribute.fulfill(1);
-                    return new ElementTag(EntityHelper.normalizeYaw(entityHelper.getYaw
+                    return new ElementTag(EntityHelper.normalizeYaw(NMSHandler.entityHelper.getYaw
                             (target.toVector().subtract(object.toVector())
                                     .normalize())));
                 }
                 else {
-                    return new ElementTag(entityHelper.getCardinal(entityHelper.getYaw
+                    return new ElementTag(NMSHandler.entityHelper.getCardinal(NMSHandler.entityHelper.getYaw
                             (target.toVector().subtract(object.toVector())
                                     .normalize())));
                 }
             }
             // Get a cardinal direction from this location's yaw
             else {
-                return new ElementTag(NMSHandler.getEntityHelper().getCardinal(object.getYaw()));
+                return new ElementTag(NMSHandler.entityHelper.getCardinal(object.getYaw()));
             }
         });
 
@@ -2147,7 +2146,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             Location two = attribute.paramAsType(LocationTag.class);
-            return new LocationTag(NMSHandler.getEntityHelper().faceLocation(object, two));
+            return new LocationTag(NMSHandler.entityHelper.faceLocation(object, two));
         });
 
         // <--[tag]
@@ -2193,14 +2192,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         String pitch = context.substring(context.indexOf(',') + 1);
                         degrees = Integer.parseInt(yaw);
                         int pitchDegrees = Integer.parseInt(pitch);
-                        return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation(object, facingLoc, degrees, pitchDegrees));
+                        return new ElementTag(NMSHandler.entityHelper.isFacingLocation(object, facingLoc, degrees, pitchDegrees));
                     }
                     else {
                         degrees = Integer.parseInt(context);
                     }
                 }
 
-                return new ElementTag(NMSHandler.getEntityHelper().isFacingLocation(object, facingLoc, degrees));
+                return new ElementTag(NMSHandler.entityHelper.isFacingLocation(object, facingLoc, degrees));
             }
             return null;
         });
@@ -2446,7 +2445,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 area = new EllipsoidTag(object.clone(), new LocationTag(object.getWorld(), radius, radius, radius));
             }
             FloodFiller flooder = new FloodFiller();
-            NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+            NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
             try {
                 if (object.getWorld() == null) {
                     attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
@@ -2480,7 +2479,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 flooder.run(object, area);
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
             }
             return new ListTag((Collection<LocationTag>) flooder.result);
         });
@@ -2503,7 +2502,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 attribute.echoError("Invalid biome input.");
                 return null;
             }
-            Location result = NMSHandler.getWorldHelper().getNearestBiomeLocation(object, biome);
+            Location result = NMSHandler.worldHelper.getNearestBiomeLocation(object, biome);
             if (result == null) {
                 return null;
             }
@@ -3599,11 +3598,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Block b = object.getBlockForTag(attribute);
             if (b != null) {
                 try {
-                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
                     return new ElementTag(b.isLiquid());
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
                 }
             }
             return null;
@@ -3620,7 +3619,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Block b = object.getBlockForTag(attribute);
             if (b != null) {
                 try {
-                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
 
                     // <--[tag]
                     // @attribute <LocationTag.light.blocks>
@@ -3650,7 +3649,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     return new ElementTag(object.getBlockForTag(attribute).getLightLevel());
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
                 }
             }
             return null;
@@ -3667,11 +3666,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             Block b = object.getBlockForTag(attribute);
             if (b != null) {
                 try {
-                    NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
                     return new ElementTag(object.getBlockForTag(attribute).getBlockPower());
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                    NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
                 }
             }
             return null;
@@ -3972,7 +3971,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // This is based internally on multiple factors, including <@link tag ChunkTag.inhabited_time> and <@link tag WorldTag.difficulty>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "local_difficulty", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getWorldHelper().getLocalDifficulty(object));
+            return new ElementTag(NMSHandler.worldHelper.getLocalDifficulty(object));
         });
 
         // <--[tag]
@@ -4236,7 +4235,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 mechanism.echoError("Invalid spawner_custom_rules input, missing map keys.");
                 return;
             }
-            NMSHandler.getBlockHelper().setSpawnerCustomRules(spawner, Integer.parseInt(skyMin.toString()), Integer.parseInt(skyMax.toString()), Integer.parseInt(blockMin.toString()), Integer.parseInt(blockMax.toString()));
+            NMSHandler.blockHelper.setSpawnerCustomRules(spawner, Integer.parseInt(skyMin.toString()), Integer.parseInt(skyMax.toString()), Integer.parseInt(blockMin.toString()), Integer.parseInt(blockMax.toString()));
             spawner.update();
         }
 
@@ -4251,7 +4250,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class) && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
-            NMSHandler.getBlockHelper().setSpawnerSpawnedType(spawner, mechanism.valueAsType(EntityTag.class));
+            NMSHandler.blockHelper.setSpawnerSpawnedType(spawner, mechanism.valueAsType(EntityTag.class));
             spawner.update();
         }
 
@@ -4428,11 +4427,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 else {
                     profile = new PlayerProfile(idString, null, texture);
                 }
-                profile = NMSHandler.getInstance().fillPlayerProfile(profile);
+                profile = NMSHandler.instance.fillPlayerProfile(profile);
                 if (texture != null) { // Ensure we didn't get overwritten
                     profile.setTexture(texture);
                 }
-                NMSHandler.getBlockHelper().setPlayerProfile((Skull) blockState, profile);
+                NMSHandler.blockHelper.setPlayerProfile((Skull) blockState, profile);
             }
             else {
                 Debug.echoError("Unable to set skull_skin on block of type " + material.name() + " with state " + blockState.getClass().getCanonicalName());
@@ -4822,7 +4821,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     ((Jukebox) state).setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
                 }
                 else {
-                    NMSHandler.getBlockHelper().makeBlockStateRaw(state);
+                    NMSHandler.blockHelper.makeBlockStateRaw(state);
                     ((Jukebox) state).setRecord(null);
                 }
                 state.update();
@@ -4932,7 +4931,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Causes an immediate vanilla tick at a block location (normally processed at random according to the randomTickSpeed gamerule).
         // -->
         if (mechanism.matches("vanilla_tick")) {
-            NMSHandler.getBlockHelper().doRandomTick(this);
+            NMSHandler.blockHelper.doRandomTick(this);
         }
 
         // <--[mechanism]
@@ -4988,7 +4987,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 Debug.echoError("'ring_bell' mechanism can only be called on Bell blocks.");
             }
             else {
-                NMSHandler.getBlockHelper().ringBell((Bell) state);
+                NMSHandler.blockHelper.ringBell((Bell) state);
             }
         }
 

@@ -230,7 +230,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("recipe_items") && attribute.hasParam()) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
             if (recipe == null) {
                 return;
             }
@@ -275,7 +275,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("recipe_shape") && attribute.hasParam()) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
             if (!(recipe instanceof ShapedRecipe)) {
                 return;
             }
@@ -293,7 +293,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("recipe_type") && attribute.hasParam()) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
             if (recipe == null) {
                 return;
             }
@@ -309,7 +309,7 @@ public class ServerTagBase {
         // -->
         if (attribute.startsWith("recipe_result") && attribute.hasParam()) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.getItemHelper().getRecipeById(key);
+            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
             if (recipe == null) {
                 return;
             }
@@ -2178,7 +2178,7 @@ public class ServerTagBase {
         // -->
         else if (attribute.startsWith("recent_tps")) {
             ListTag list = new ListTag();
-            for (double tps : NMSHandler.getInstance().getRecentTps()) {
+            for (double tps : NMSHandler.instance.getRecentTps()) {
                 list.addObject(new ElementTag(tps));
             }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
@@ -2191,7 +2191,7 @@ public class ServerTagBase {
         // Returns the port that the server is running on.
         // -->
         else if (attribute.startsWith("port")) {
-            event.setReplacedObject(new ElementTag(NMSHandler.getInstance().getPort()).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(NMSHandler.instance.getPort()).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -2514,7 +2514,7 @@ public class ServerTagBase {
         if (mechanism.matches("remove_recipes")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             for (String str : list) {
-                NMSHandler.getItemHelper().removeRecipe(Utilities.parseNamespacedKey(str));
+                NMSHandler.itemHelper.removeRecipe(Utilities.parseNamespacedKey(str));
             }
         }
 

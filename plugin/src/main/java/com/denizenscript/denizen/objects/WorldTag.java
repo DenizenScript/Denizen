@@ -142,12 +142,12 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public List<Entity> getEntitiesForTag() {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             return getWorld().getEntities();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
@@ -160,22 +160,22 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public Collection<Entity> getPossibleEntitiesForBoundaryForTag(BoundingBox box) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             return getPossibleEntitiesForBoundary(box);
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
     public List<LivingEntity> getLivingEntitiesForTag() {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             return getWorld().getLivingEntities();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
@@ -896,7 +896,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag(ListTag.class, "biomes", (attribute, object) -> {
             ListTag output = new ListTag();
-            for (BiomeNMS biome : NMSHandler.getInstance().getBiomes(object.getWorld())) {
+            for (BiomeNMS biome : NMSHandler.instance.getBiomes(object.getWorld())) {
                 output.addObject(new BiomeTag(biome));
             }
             return output;

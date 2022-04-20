@@ -24,7 +24,7 @@ import java.util.*;
 
 public abstract class NMSHandler {
 
-    private static NMSHandler instance;
+    public static NMSHandler instance;
     private static NMSVersion version;
     private static JavaPlugin javaPlugin;
 
@@ -98,58 +98,6 @@ public abstract class NMSHandler {
     public static WorldHelper worldHelper;
     public static EnchantmentHelper enchantmentHelper;
 
-    public static AdvancementHelper getAdvancementHelper() {
-        return advancementHelper;
-    }
-
-    public static AnimationHelper getAnimationHelper() {
-        return animationHelper;
-    }
-
-    public static BlockHelper getBlockHelper() {
-        return blockHelper;
-    }
-
-    public static ChunkHelper getChunkHelper() {
-        return chunkHelper;
-    }
-
-    public static CustomEntityHelper getCustomEntityHelper() {
-        return customEntityHelper;
-    }
-
-    public static EntityHelper getEntityHelper() {
-        return entityHelper;
-    }
-
-    public static FishingHelper getFishingHelper() {
-        return fishingHelper;
-    }
-
-    public static ItemHelper getItemHelper() {
-        return itemHelper;
-    }
-
-    public static SoundHelper getSoundHelper() {
-        return soundHelper;
-    }
-
-    public static PacketHelper getPacketHelper() {
-        return packetHelper;
-    }
-
-    public static ParticleHelper getParticleHelper() {
-        return particleHelper;
-    }
-
-    public static PlayerHelper getPlayerHelper() {
-        return playerHelper;
-    }
-
-    public static WorldHelper getWorldHelper() {
-        return worldHelper;
-    }
-
     public boolean isCorrectMappingsCode() {
         return true;
     }
@@ -175,7 +123,7 @@ public abstract class NMSHandler {
     public abstract BiomeNMS getBiomeNMS(World world, String name);
 
     public BiomeNMS getBiomeAt(Block block) {
-        return NMSHandler.getInstance().getBiomeNMS(block.getWorld(), block.getBiome().name());
+        return NMSHandler.instance.getBiomeNMS(block.getWorld(), block.getBiome().name());
     }
 
     public abstract double[] getRecentTps();

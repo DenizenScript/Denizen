@@ -99,11 +99,11 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         WorldServer worldServer = world.getHandle();
         PlayerProfile playerProfile = new PlayerProfile(name, null);
         if (skin == null && !name.matches(".*[^A-Za-z0-9_].*")) {
-            playerProfile = NMSHandler.getInstance().fillPlayerProfile(playerProfile);
+            playerProfile = NMSHandler.instance.fillPlayerProfile(playerProfile);
         }
         if (skin != null) {
             PlayerProfile skinProfile = new PlayerProfile(skin, null);
-            skinProfile = NMSHandler.getInstance().fillPlayerProfile(skinProfile);
+            skinProfile = NMSHandler.instance.fillPlayerProfile(skinProfile);
             playerProfile.setTexture(skinProfile.getTexture());
             playerProfile.setTextureSignature(skinProfile.getTextureSignature());
         }

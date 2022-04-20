@@ -101,7 +101,7 @@ public class InvisibleCommand extends AbstractCommand {
             }
         }
         else {
-            NMSHandler.getEntityHelper().setInvisible(entity.getBukkitEntity(), !visible);
+            NMSHandler.entityHelper.setInvisible(entity.getBukkitEntity(), !visible);
         }
     }
 

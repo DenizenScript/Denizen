@@ -141,7 +141,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
             event.setCancelled(true);
             Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
                 if (event.getEntity().isValid() && !event.getEntity().isDead()) {
-                    NMSHandler.getEntityHelper().setTicksLived(event.getEntity(), -1000);
+                    NMSHandler.entityHelper.setTicksLived(event.getEntity(), -1000);
                 }
             }, 1);
         }
@@ -161,7 +161,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         dropped.setGravity(false);
         dropped.setPickupDelay(32767);
         int ticks = duration.getTicksAsInt();
-        NMSHandler.getEntityHelper().setTicksLived(dropped, ticks <= 0 ? -32768 : -ticks);
+        NMSHandler.entityHelper.setTicksLived(dropped, ticks <= 0 ? -32768 : -ticks);
         if (!dropped.isValid()) {
             Debug.echoDebug(scriptEntry, "Item failed to spawned (likely blocked by some plugin).");
             return;

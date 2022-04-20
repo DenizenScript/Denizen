@@ -117,7 +117,7 @@ public class ItemSkullskin implements Property {
 
     @Override
     public String getPropertyString() {
-        PlayerProfile playerProfile = NMSHandler.getItemHelper().getSkullSkin(item.getItemStack());
+        PlayerProfile playerProfile = NMSHandler.itemHelper.getSkullSkin(item.getItemStack());
         if (playerProfile != null) {
             String name = playerProfile.getName();
             UUID uuid = playerProfile.getUniqueId();
@@ -170,14 +170,14 @@ public class ItemSkullskin implements Property {
             else {
                 profile = new PlayerProfile(idString, null, texture);
             }
-            profile = NMSHandler.getInstance().fillPlayerProfile(profile);
+            profile = NMSHandler.instance.fillPlayerProfile(profile);
             if (texture != null) { // Ensure we didn't get overwritten
                 profile.setTexture(texture);
             }
             if (profile.getTexture() == null) {
                 return; // Can't set a skull skin to nothing.
             }
-            item.setItemStack(NMSHandler.getItemHelper().setSkullSkin(item.getItemStack(), profile));
+            item.setItemStack(NMSHandler.itemHelper.setSkullSkin(item.getItemStack(), profile));
         }
     }
 }

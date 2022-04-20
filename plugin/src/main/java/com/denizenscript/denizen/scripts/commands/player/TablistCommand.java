@@ -142,13 +142,13 @@ public class TablistCommand extends AbstractCommand {
                     Debug.echoError("Cannot use 'tablist add' to add a non-empty display-named entry: 'Allow restricted actions' is disabled in Denizen config.yml.");
                     return;
                 }
-                NMSHandler.getPlayerHelper().sendPlayerInfoAddPacket(player, PlayerHelper.ProfileEditMode.ADD, name.asString(), CoreUtilities.stringifyNullPass(display), id, texture, signature, latencyNum, gameModeBukkit);
+                NMSHandler.playerHelper.sendPlayerInfoAddPacket(player, PlayerHelper.ProfileEditMode.ADD, name.asString(), CoreUtilities.stringifyNullPass(display), id, texture, signature, latencyNum, gameModeBukkit);
                 break;
             case REMOVE:
                 if (uuid == null) {
                     throw new InvalidArgumentsRuntimeException("'uuid' wasn't specified but is required for 'remove'");
                 }
-                NMSHandler.getPlayerHelper().sendPlayerRemovePacket(player, id);
+                NMSHandler.playerHelper.sendPlayerRemovePacket(player, id);
                 break;
             case UPDATE:
                 if (uuid == null) {
@@ -159,10 +159,10 @@ public class TablistCommand extends AbstractCommand {
                     return;
                 }
                 if (display != null) {
-                    NMSHandler.getPlayerHelper().sendPlayerInfoAddPacket(player, PlayerHelper.ProfileEditMode.UPDATE_DISPLAY, CoreUtilities.stringifyNullPass(name), CoreUtilities.stringifyNullPass(display), id, texture, signature, latencyNum, gameModeBukkit);
+                    NMSHandler.playerHelper.sendPlayerInfoAddPacket(player, PlayerHelper.ProfileEditMode.UPDATE_DISPLAY, CoreUtilities.stringifyNullPass(name), CoreUtilities.stringifyNullPass(display), id, texture, signature, latencyNum, gameModeBukkit);
                 }
                 if (latency != null) {
-                    NMSHandler.getPlayerHelper().sendPlayerInfoAddPacket(player, PlayerHelper.ProfileEditMode.UPDATE_LATENCY, CoreUtilities.stringifyNullPass(name), CoreUtilities.stringifyNullPass(display), id, texture, signature, latencyNum, gameModeBukkit);
+                    NMSHandler.playerHelper.sendPlayerInfoAddPacket(player, PlayerHelper.ProfileEditMode.UPDATE_LATENCY, CoreUtilities.stringifyNullPass(name), CoreUtilities.stringifyNullPass(display), id, texture, signature, latencyNum, gameModeBukkit);
                 }
                 break;
         }

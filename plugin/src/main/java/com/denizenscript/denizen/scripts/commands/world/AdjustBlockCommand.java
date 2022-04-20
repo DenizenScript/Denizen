@@ -123,12 +123,12 @@ public class AdjustBlockCommand extends AbstractCommand {
     }
 
     public static void applyPhysicsAt(Location location) {
-        NMSHandler.getBlockHelper().applyPhysics(location);
-        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(1, 0, 0));
-        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(-1, 0, 0));
-        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 0, 1));
-        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 0, -1));
-        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, 1, 0));
-        NMSHandler.getBlockHelper().applyPhysics(location.clone().add(0, -1, 0));
+        NMSHandler.blockHelper.applyPhysics(location);
+        NMSHandler.blockHelper.applyPhysics(location.clone().add(1, 0, 0));
+        NMSHandler.blockHelper.applyPhysics(location.clone().add(-1, 0, 0));
+        NMSHandler.blockHelper.applyPhysics(location.clone().add(0, 0, 1));
+        NMSHandler.blockHelper.applyPhysics(location.clone().add(0, 0, -1));
+        NMSHandler.blockHelper.applyPhysics(location.clone().add(0, 1, 0));
+        NMSHandler.blockHelper.applyPhysics(location.clone().add(0, -1, 0));
     }
 }

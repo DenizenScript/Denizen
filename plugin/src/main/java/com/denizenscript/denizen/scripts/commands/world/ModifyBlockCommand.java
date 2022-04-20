@@ -383,11 +383,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     boolean preSetup(LocationTag loc0) {
         // Freeze the first world in the list.
-        WorldHelper worldHelper = NMSHandler.getWorldHelper();
         World world = loc0.getWorld();
-        boolean was_static = worldHelper.isStatic(world);
+        boolean was_static = NMSHandler.worldHelper.isStatic(world);
         if (no_physics) {
-            worldHelper.setStatic(world, true);
+            NMSHandler.worldHelper.setStatic(world, true);
         }
         return was_static;
     }
@@ -395,7 +394,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     void postComplete(Location loc, boolean was_static) {
         // Unfreeze the first world in the list.
         if (no_physics) {
-            NMSHandler.getWorldHelper().setStatic(loc.getWorld(), was_static);
+            NMSHandler.worldHelper.setStatic(loc.getWorld(), was_static);
         }
         no_physics = false;
     }
@@ -430,7 +429,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
             else {
                 Block block = location.getBlock();
-                BlockState state = NMSHandler.getBlockHelper().generateBlockState(block, material.getMaterial());
+                BlockState state = NMSHandler.blockHelper.generateBlockState(block, material.getMaterial());
                 state.setBlockData(material.getModernData());
                 event = new BlockPlaceEvent(block, state, block, new ItemTag(material, 1).getItemStack(), source, true, EquipmentSlot.HAND);
             }
@@ -484,7 +483,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         if (natural != null && material.getMaterial() == Material.AIR) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                int xp = NMSHandler.getBlockHelper().getExpDrop(location.getBlock(), natural.getItemStack());
+                int xp = NMSHandler.blockHelper.getExpDrop(location.getBlock(), natural.getItemStack());
                 if (xp > 0) {
                     ExperienceOrb orb = (ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB);
                     orb.setExperience(xp);

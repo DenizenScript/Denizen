@@ -38,7 +38,7 @@ public abstract class ProfileEditor {
     public void setPlayerSkin(Player player, String name) {
         NetworkInterceptHelper.enable();
         PlayerProfile profile = getFakeProfile(player, true);
-        PlayerProfile skinProfile = NMSHandler.getInstance().fillPlayerProfile(new PlayerProfile(name, null));
+        PlayerProfile skinProfile = NMSHandler.instance.fillPlayerProfile(new PlayerProfile(name, null));
         if (skinProfile.getTexture() != null) {
             profile.setTexture(skinProfile.getTexture());
             profile.setTextureSignature(skinProfile.getTextureSignature());
@@ -103,7 +103,7 @@ public abstract class ProfileEditor {
             return fakeProfiles.get(uuid);
         }
         else {
-            PlayerProfile fakeProfile = NMSHandler.getInstance().getPlayerProfile(player);
+            PlayerProfile fakeProfile = NMSHandler.instance.getPlayerProfile(player);
             if (createCache) {
                 fakeProfiles.put(uuid, fakeProfile);
             }

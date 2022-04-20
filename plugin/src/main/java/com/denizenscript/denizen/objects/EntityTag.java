@@ -311,7 +311,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return rememberedEntities.get(id);
         }
         for (World world : Bukkit.getWorlds()) {
-            Entity entity = NMSHandler.getEntityHelper().getEntity(world, id);
+            Entity entity = NMSHandler.entityHelper.getEntity(world, id);
             if (entity != null) {
                 return entity;
             }
@@ -823,11 +823,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public Location getTargetBlockSafe(Set<Material> mats, int range) {
         try {
-            NMSHandler.getChunkHelper().changeChunkServerThread(getWorld());
+            NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
             return getLivingEntity().getTargetBlock(mats, range).getLocation();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
     }
 
@@ -1024,12 +1024,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return isValid() || rememberedEntities.containsKey(uuid);
         }
-        NMSHandler.getChunkHelper().changeChunkServerThread(entity.getWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(entity.getWorld());
         try {
             return isValid() || rememberedEntities.containsKey(entity.getUniqueId());
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(entity.getWorld());
+            NMSHandler.chunkHelper.restoreServerThread(entity.getWorld());
         }
     }
 
@@ -1075,13 +1075,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
         else if (isFake) {
-            NMSHandler.getEntityHelper().snapPositionTo(entity, location.toVector());
-            NMSHandler.getEntityHelper().look(entity, location.getYaw(), location.getPitch());
+            NMSHandler.entityHelper.snapPositionTo(entity, location.toVector());
+            NMSHandler.entityHelper.look(entity, location.getYaw(), location.getPitch());
         }
         else {
             getBukkitEntity().teleport(location, cause);
             if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
-                NMSHandler.getEntityHelper().teleport(entity, location);
+                NMSHandler.entityHelper.teleport(entity, location);
             }
         }
     }
@@ -1098,7 +1098,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return;
         }
         if (entity instanceof Creature) {
-            NMSHandler.getEntityHelper().setTarget((Creature) entity, target);
+            NMSHandler.entityHelper.setTarget((Creature) entity, target);
         }
         else if (entity instanceof ShulkerBullet) {
             ((ShulkerBullet) entity).setTarget(target);
@@ -1566,7 +1566,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Each coordinate is in the range of 0 to 128.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "map_trace", (attribute, object) -> {
-            EntityHelper.MapTraceResult mtr = NMSHandler.getEntityHelper().mapTrace(object.getLivingEntity(), 200);
+            EntityHelper.MapTraceResult mtr = NMSHandler.entityHelper.mapTrace(object.getLivingEntity(), 200);
             if (mtr != null) {
                 double x = 0;
                 double y;
@@ -1716,7 +1716,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity's body yaw (separate from head yaw).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "body_yaw", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getEntityHelper().getBaseYaw(object.getBukkitEntity()));
+            return new ElementTag(NMSHandler.entityHelper.getBaseYaw(object.getBukkitEntity()));
         });
 
         // <--[tag]
@@ -2158,7 +2158,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the living entity's absorption health.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "absorption_health", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getEntityHelper().getAbsorption(object.getLivingEntity()));
+            return new ElementTag(NMSHandler.entityHelper.getAbsorption(object.getLivingEntity()));
         });
 
         // <--[tag]
@@ -2585,7 +2585,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.hasParam()) {
                 target = attribute.paramAsType(EntityTag.class).getBukkitEntity();
             }
-            return new ElementTag(NMSHandler.getEntityHelper().getDamageTo(object.getLivingEntity(), target));
+            return new ElementTag(NMSHandler.entityHelper.getDamageTo(object.getLivingEntity(), target));
         });
 
         // <--[tag]
@@ -2598,7 +2598,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // CAPE, HAT, JACKET, LEFT_PANTS, LEFT_SLEEVE, RIGHT_PANTS, or RIGHT_SLEEVE.
         // -->
         registerSpawnedOnlyTag(ListTag.class, "skin_layers", (attribute, object) -> {
-            byte flags = NMSHandler.getPlayerHelper().getSkinLayers((Player) object.getBukkitEntity());
+            byte flags = NMSHandler.playerHelper.getSkinLayers((Player) object.getBukkitEntity());
             ListTag result = new ListTag();
             for (PlayerHelper.SkinLayer layer : PlayerHelper.SkinLayer.values()) {
                 if ((flags & layer.flag) != 0) {
@@ -2796,7 +2796,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 attribute.echoError("EntityTag.fish_hook_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.getFishingHelper().getLureTime((FishHook) object.getBukkitEntity()));
+            return new DurationTag((long) NMSHandler.fishingHelper.getLureTime((FishHook) object.getBukkitEntity()));
         });
 
         // <--[tag]
@@ -2950,7 +2950,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.getPlayerHelper().ticksPassedDuringCooldown((Player) object.getLivingEntity()));
+            return new DurationTag((long) NMSHandler.playerHelper.ticksPassedDuringCooldown((Player) object.getLivingEntity()));
         });
 
         // <--[tag]
@@ -2968,7 +2968,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.getPlayerHelper().getMaxAttackCooldownTicks((Player) object.getLivingEntity()));
+            return new DurationTag((long) NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) object.getLivingEntity()));
         });
 
         // <--[tag]
@@ -2985,7 +2985,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new ElementTag(NMSHandler.getPlayerHelper().getAttackCooldownPercent((Player) object.getLivingEntity()) * 100);
+            return new ElementTag(NMSHandler.playerHelper.getAttackCooldownPercent((Player) object.getLivingEntity()) * 100);
         });
 
         // <--[tag]
@@ -3271,7 +3271,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <EntityTag.time_lived>
         // -->
         if (mechanism.matches("time_lived") && mechanism.requireObject(DurationTag.class)) {
-            NMSHandler.getEntityHelper().setTicksLived(entity, mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            NMSHandler.entityHelper.setTicksLived(entity, mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3284,7 +3284,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <EntityTag.absorption_health>
         // -->
         if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
-            NMSHandler.getEntityHelper().setAbsorption(getLivingEntity(), mechanism.getValue().asDouble());
+            NMSHandler.entityHelper.setAbsorption(getLivingEntity(), mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
@@ -3516,7 +3516,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Forces an entity to move in the direction of the velocity vector specified.
         // -->
         if (mechanism.matches("move") && mechanism.requireObject(LocationTag.class)) {
-            NMSHandler.getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());
+            NMSHandler.entityHelper.move(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());
         }
 
         // <--[mechanism]
@@ -3528,7 +3528,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
-            NMSHandler.getEntityHelper().forceInteraction(getPlayer(), interactLocation);
+            NMSHandler.entityHelper.forceInteraction(getPlayer(), interactLocation);
         }
 
         if (mechanism.matches("play_death")) {
@@ -3670,7 +3670,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     flags |= layer.flag;
                 }
             }
-            NMSHandler.getPlayerHelper().setSkinLayers((Player) getBukkitEntity(), (byte) flags);
+            NMSHandler.playerHelper.setSkinLayers((Player) getBukkitEntity(), (byte) flags);
         }
 
         // <--[mechanism]
@@ -3762,7 +3762,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This will not rotate the body at all. Most users should prefer <@link command look>.
         // -->
         if (mechanism.matches("head_angle") && mechanism.requireFloat()) {
-            NMSHandler.getEntityHelper().setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
+            NMSHandler.entityHelper.setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -3773,7 +3773,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the skeleton entity should raise its arms.
         // -->
         if (mechanism.matches("skeleton_arms_raised") && mechanism.requireBoolean()) {
-            EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(mechanism.getValue().asBoolean() ? "SKELETON_START_SWING_ARM" : "SKELETON_STOP_SWING_ARM");
+            EntityAnimation entityAnimation = NMSHandler.animationHelper.getEntityAnimation(mechanism.getValue().asBoolean() ? "SKELETON_START_SWING_ARM" : "SKELETON_STOP_SWING_ARM");
             entityAnimation.play(entity);
         }
 
@@ -3785,7 +3785,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the polar bear entity should stand up.
         // -->
         if (mechanism.matches("polar_bear_standing") && mechanism.requireBoolean()) {
-            EntityAnimation entityAnimation = NMSHandler.getAnimationHelper().getEntityAnimation(mechanism.getValue().asBoolean() ? "POLAR_BEAR_START_STANDING" : "POLAR_BEAR_STOP_STANDING");
+            EntityAnimation entityAnimation = NMSHandler.animationHelper.getEntityAnimation(mechanism.getValue().asBoolean() ? "POLAR_BEAR_START_STANDING" : "POLAR_BEAR_STOP_STANDING");
             entityAnimation.play(entity);
         }
 
@@ -3797,7 +3797,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the ghast entity should show the attacking face.
         // -->
         if (mechanism.matches("ghast_attacking") && mechanism.requireBoolean()) {
-            NMSHandler.getEntityHelper().setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3808,7 +3808,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the enderman entity should be screaming angrily.
         // -->
         if (mechanism.matches("enderman_angry") && mechanism.requireBoolean()) {
-            NMSHandler.getEntityHelper().setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3823,7 +3823,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("melee_attack") && mechanism.requireObject(EntityTag.class)) {
             Entity target = mechanism.valueAsType(EntityTag.class).getBukkitEntity();
             if (getLivingEntity() instanceof Player && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                NMSHandler.getPlayerHelper().doAttack((Player) getLivingEntity(), target);
+                NMSHandler.playerHelper.doAttack((Player) getLivingEntity(), target);
             }
             else {
                 getLivingEntity().attack(target);
@@ -3840,7 +3840,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Angerable mobs will get angry.
         // -->
         if (mechanism.matches("last_hurt_by") && mechanism.requireObject(EntityTag.class)) {
-            NMSHandler.getEntityHelper().setLastHurtBy(getLivingEntity(), mechanism.valueAsType(EntityTag.class).getLivingEntity());
+            NMSHandler.entityHelper.setLastHurtBy(getLivingEntity(), mechanism.valueAsType(EntityTag.class).getLivingEntity());
         }
 
         // <--[mechanism]
@@ -3856,7 +3856,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("fish_hook_nibble_time is only valid for FishHook entities.");
                 return;
             }
-            NMSHandler.getFishingHelper().setNibble((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            NMSHandler.fishingHelper.setNibble((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3872,7 +3872,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("fish_hook_hook_time is only valid for FishHook entities.");
                 return;
             }
-            NMSHandler.getFishingHelper().setHookTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            NMSHandler.fishingHelper.setHookTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3890,7 +3890,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("fish_hook_lure_time is only valid for FishHook entities.");
                 return;
             }
-            NMSHandler.getFishingHelper().setLureTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            NMSHandler.fishingHelper.setLureTime((FishHook) getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3993,7 +3993,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Only player-type entities can have attack_cooldowns!");
                 return;
             }
-            NMSHandler.getPlayerHelper().setAttackCooldown((Player) getLivingEntity(), 0);
+            NMSHandler.playerHelper.setAttackCooldown((Player) getLivingEntity(), 0);
         }
 
         // <--[mechanism]
@@ -4014,8 +4014,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Only player-type entities can have attack_cooldowns!");
                 return;
             }
-            PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
-            playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity())));
+            NMSHandler.playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity())));
         }
 
         // <--[mechanism]
@@ -4038,8 +4037,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             float percent = mechanism.getValue().asFloat();
             if (percent >= 0 && percent <= 1) {
-                PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
-                playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity()) * mechanism.getValue().asFloat()));
+                NMSHandler.playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity()) * mechanism.getValue().asFloat()));
             }
             else {
                 com.denizenscript.denizen.utilities.debugging.Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
@@ -4064,7 +4062,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Only player-type entities can have attack_cooldowns!");
                 return;
             }
-            NMSHandler.getPlayerHelper().setAttackCooldown((Player) getLivingEntity(), mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
+            NMSHandler.playerHelper.setAttackCooldown((Player) getLivingEntity(), mechanism.getValue().asType(DurationTag.class, mechanism.context).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -4081,7 +4079,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("'fallingblock_type' is only valid for Falling Block entities.");
                 return;
             }
-            NMSHandler.getEntityHelper().setFallingBlockType((FallingBlock) getBukkitEntity(), mechanism.valueAsType(MaterialTag.class).getModernData());
+            NMSHandler.entityHelper.setFallingBlockType((FallingBlock) getBukkitEntity(), mechanism.valueAsType(MaterialTag.class).getModernData());
         }
 
         // <--[mechanism]
@@ -4092,7 +4090,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets the range (in blocks) that an entity can be seen at. This is equivalent to the "entity-tracking-range" value in "Spigot.yml".
         // -->
         if (mechanism.matches("tracking_range") && mechanism.requireInteger()) {
-            NMSHandler.getEntityHelper().setTrackingRange(getBukkitEntity(), mechanism.getValue().asInt());
+            NMSHandler.entityHelper.setTrackingRange(getBukkitEntity(), mechanism.getValue().asInt());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

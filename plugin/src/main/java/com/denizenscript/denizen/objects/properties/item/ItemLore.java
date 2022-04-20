@@ -85,7 +85,7 @@ public class ItemLore implements Property {
     }
 
     public ListTag getLoreList() {
-        List<String> lore = NMSHandler.getItemHelper().getLore(item);
+        List<String> lore = NMSHandler.itemHelper.getLore(item);
         if (lore == null) {
             return null;
         }
@@ -130,7 +130,7 @@ public class ItemLore implements Property {
                 }
                 lore.set(i, CoreUtilities.clearNBSPs(loreLine));
             }
-            NMSHandler.getItemHelper().setLore(item, lore);
+            NMSHandler.itemHelper.setLore(item, lore);
         }
     }
 }

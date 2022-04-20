@@ -141,10 +141,10 @@ public class LookCommand extends AbstractCommand {
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
                 if (loc != null) {
-                    NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                    NMSHandler.entityHelper.faceLocation(entity.getBukkitEntity(), loc);
                 }
                 else {
-                    NMSHandler.getEntityHelper().rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
+                    NMSHandler.entityHelper.rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
                 }
             }
         }
@@ -161,10 +161,10 @@ public class LookCommand extends AbstractCommand {
                         }
                         if (entity.isSpawned()) {
                             if (loc != null) {
-                                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
+                                NMSHandler.entityHelper.faceLocation(entity.getBukkitEntity(), loc);
                             }
                             else {
-                                NMSHandler.getEntityHelper().rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
+                                NMSHandler.entityHelper.rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
                             }
                         }
                     }

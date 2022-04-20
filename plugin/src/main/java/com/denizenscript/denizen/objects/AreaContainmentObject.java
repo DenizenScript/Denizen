@@ -200,14 +200,14 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag(ListTag.class, "blocks", (attribute, area) -> {
             if (attribute.hasParam()) {
-                NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
                 try {
                     String matcher = attribute.getParam();
                     Predicate<Location> predicate = (l) -> BukkitScriptEvent.tryMaterial(l.getBlock().getType(), matcher);
                     return area.getBlocks(predicate);
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(area.getWorld().getWorld());
+                    NMSHandler.chunkHelper.restoreServerThread(area.getWorld().getWorld());
                 }
             }
             return area.getBlocks(null);
@@ -222,7 +222,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Uses the same spawnable check as <@link tag LocationTag.is_spawnable>
         // -->
         processor.registerTag(ListTag.class, "spawnable_blocks", (attribute, area) -> {
-                NMSHandler.getChunkHelper().changeChunkServerThread(area.getWorld().getWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
                 try {
                     if (attribute.hasParam()) {
                         String matcher = attribute.getParam();
@@ -232,7 +232,7 @@ public interface AreaContainmentObject extends ObjectTag {
                     return area.getBlocks(SpawnableHelper::isSpawnable);
                 }
                 finally {
-                    NMSHandler.getChunkHelper().restoreServerThread(area.getWorld().getWorld());
+                    NMSHandler.chunkHelper.restoreServerThread(area.getWorld().getWorld());
                 }
         }, "get_spawnable_blocks");
 

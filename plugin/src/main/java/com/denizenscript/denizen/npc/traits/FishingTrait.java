@@ -215,7 +215,7 @@ public class FishingTrait extends Trait {
         victor = victor.multiply(v / 20.0);
 
         if (npc.getEntity() instanceof Player) {
-            fishHook = NMSHandler.getFishingHelper().spawnHook(from, (Player) npc.getEntity());
+            fishHook = NMSHandler.fishingHelper.spawnHook(from, (Player) npc.getEntity());
             fishHook.setShooter((ProjectileSource) npc.getEntity());
             fishHook.setVelocity(victor);
             PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
@@ -254,7 +254,7 @@ public class FishingTrait extends Trait {
             catch (Exception e) {
             }
             Location location = fishHook.getLocation();
-            ItemStack result = NMSHandler.getFishingHelper().getResult(fishHook, catchType);
+            ItemStack result = NMSHandler.fishingHelper.getResult(fishHook, catchType);
             if (result != null) {
                 fish = location.getWorld().dropItem(location, result);
                 Location npcLocation = npc.getStoredLocation();

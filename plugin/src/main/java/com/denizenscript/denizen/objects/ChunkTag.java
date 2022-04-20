@@ -131,7 +131,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     Chunk cachedChunk;
 
     public Chunk getChunkForTag(Attribute attribute) {
-        NMSHandler.getChunkHelper().changeChunkServerThread(getBukkitWorld());
+        NMSHandler.chunkHelper.changeChunkServerThread(getBukkitWorld());
         try {
             if (!isLoaded()) {
                 if (!attribute.hasAlternative()) {
@@ -142,7 +142,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             return getChunk();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getBukkitWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getBukkitWorld());
         }
     }
 
@@ -249,11 +249,11 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
 
     public boolean isLoadedSafe() {
         try {
-            NMSHandler.getChunkHelper().changeChunkServerThread(getBukkitWorld());
+            NMSHandler.chunkHelper.changeChunkServerThread(getBukkitWorld());
             return isLoaded();
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(getBukkitWorld());
+            NMSHandler.chunkHelper.restoreServerThread(getBukkitWorld());
         }
     }
 
@@ -455,13 +455,13 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 return null;
             }
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(object.getBukkitWorld());
                 for (BlockState block : chunk.getTileEntities()) {
                     tiles.addObject(new LocationTag(block.getLocation()));
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getBukkitWorld());
+                NMSHandler.chunkHelper.restoreServerThread(object.getBukkitWorld());
             }
             return tiles;
         });
@@ -481,7 +481,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             ListTag typeFilter = attribute.hasParam() ? attribute.paramAsType(ListTag.class) : null;
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(object.getBukkitWorld());
                 for (Entity entity : chunk.getEntities()) {
                     EntityTag current = new EntityTag(entity);
                     if (typeFilter != null) {
@@ -498,7 +498,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getBukkitWorld());
+                NMSHandler.chunkHelper.restoreServerThread(object.getBukkitWorld());
             }
             return entities;
         });
@@ -517,7 +517,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 return null;
             }
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getBukkitWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(object.getBukkitWorld());
                 for (Entity ent : chunk.getEntities()) {
                     if (ent instanceof LivingEntity) {
                         entities.addObject(new EntityTag(ent).getDenizenObject());
@@ -525,7 +525,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getBukkitWorld());
+                NMSHandler.chunkHelper.restoreServerThread(object.getBukkitWorld());
             }
             return entities;
         });
@@ -561,7 +561,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             if (chunk == null) {
                 return null;
             }
-            int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
+            int[] heightMap = NMSHandler.chunkHelper.getHeightMap(chunk);
             List<String> height_map = new ArrayList<>(heightMap.length);
             for (int i : heightMap) {
                 height_map.add(String.valueOf(i));
@@ -580,7 +580,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             if (chunk == null) {
                 return null;
             }
-            int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
+            int[] heightMap = NMSHandler.chunkHelper.getHeightMap(chunk);
             int sum = 0;
             for (int i : heightMap) {
                 sum += i;
@@ -601,7 +601,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             if (chunk == null) {
                 return null;
             }
-            int[] heightMap = NMSHandler.getChunkHelper().getHeightMap(chunk);
+            int[] heightMap = NMSHandler.chunkHelper.getHeightMap(chunk);
             int tolerance = 2;
             if (attribute.hasParam() && ArgumentHelper.matchesInteger(attribute.getParam())) {
                 tolerance = attribute.getIntParam();
@@ -826,7 +826,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 getBukkitWorld().regenerateChunk(chunkX, chunkZ);
             }
             else {
-                NMSHandler.getChunkHelper().refreshChunkSections(getChunk());
+                NMSHandler.chunkHelper.refreshChunkSections(getChunk());
             }
         }
 
@@ -838,7 +838,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Sets all biomes in the chunk to the given biome.
         // -->
         if (mechanism.matches("set_all_biomes") && mechanism.requireObject(BiomeTag.class)) {
-            NMSHandler.getChunkHelper().setAllBiomes(getChunk(), mechanism.valueAsType(BiomeTag.class).getBiome());
+            NMSHandler.chunkHelper.setAllBiomes(getChunk(), mechanism.valueAsType(BiomeTag.class).getBiome());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

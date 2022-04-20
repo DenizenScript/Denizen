@@ -54,7 +54,7 @@ public class ItemScriptHelper implements Listener {
         smithingRetain.clear();
         recipeCache.clear();
         recipeIdToItemScript.clear();
-        NMSHandler.getItemHelper().clearDenizenRecipes();
+        NMSHandler.itemHelper.clearDenizenRecipes();
     }
 
     public String getIdFor(ItemScriptContainer container, String type, int id) {
@@ -181,7 +181,7 @@ public class ItemScriptHelper implements Listener {
         }
         for (int i = 0; i < ingredients.size(); i++) {
             if (ingredients.get(i).length != 0) {
-                NMSHandler.getItemHelper().setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
+                NMSHandler.itemHelper.setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
             }
         }
         Bukkit.addRecipe(recipe);
@@ -209,7 +209,7 @@ public class ItemScriptHelper implements Listener {
         for (int i = 0; i < exacts.size(); i++) {
             bools[i] = exacts.get(i);
         }
-        NMSHandler.getItemHelper().registerShapelessRecipe(internalId, group, item, ingredients, bools);
+        NMSHandler.itemHelper.registerShapelessRecipe(internalId, group, item, ingredients, bools);
     }
 
     public void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
@@ -222,7 +222,7 @@ public class ItemScriptHelper implements Listener {
         if (items == null) {
             return;
         }
-        NMSHandler.getItemHelper().registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
+        NMSHandler.itemHelper.registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
     }
 
     public void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {
@@ -235,7 +235,7 @@ public class ItemScriptHelper implements Listener {
         if (items == null) {
             return;
         }
-        NMSHandler.getItemHelper().registerStonecuttingRecipe(internalId, group, item, items, exact);
+        NMSHandler.itemHelper.registerStonecuttingRecipe(internalId, group, item, items, exact);
     }
 
     public void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String baseItemString, String upgradeItemString, String internalId, String retain) {
@@ -258,7 +258,7 @@ public class ItemScriptHelper implements Listener {
             return;
         }
         smithingRetain.put(internalId, retain == null ? new String[0] : CoreUtilities.split(CoreUtilities.toLowerCase(retain), '|').toArray(new String[0]));
-        NMSHandler.getItemHelper().registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
+        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
     }
 
     public void rebuildRecipes() {
@@ -352,7 +352,7 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        CompoundTag tag = NMSHandler.getItemHelper().getNbtData(item);
+        CompoundTag tag = NMSHandler.itemHelper.getNbtData(item);
         String scriptName = tag.getString("DenizenItemScript");
         if (scriptName != null && !scriptName.equals("")) {
             return item_scripts.get(scriptName);

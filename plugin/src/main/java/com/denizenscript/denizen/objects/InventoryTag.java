@@ -108,13 +108,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new InventoryTag(NMSHandler.getPlayerHelper().getOfflineData(inv.getKey()));
+                return new InventoryTag(NMSHandler.playerHelper.getOfflineData(inv.getKey()));
             }
         }
         // Iterate through offline player enderchests
         for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new InventoryTag(NMSHandler.getPlayerHelper().getOfflineData(inv.getKey()), true);
+                return new InventoryTag(NMSHandler.playerHelper.getOfflineData(inv.getKey()), true);
             }
         }
 
@@ -888,12 +888,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                         if (amount > max) {
                             ItemStack clone = item.clone();
                             clone.setAmount(max);
-                            NMSHandler.getItemHelper().setInventoryItem(inventory, clone, firstFree);
+                            NMSHandler.itemHelper.setInventoryItem(inventory, clone, firstFree);
                             item.setAmount(amount -= max);
                         }
                         else {
                             // Just store it
-                            NMSHandler.getItemHelper().setInventoryItem(inventory, item, firstFree);
+                            NMSHandler.itemHelper.setInventoryItem(inventory, item, firstFree);
                             break;
                         }
                     }
@@ -953,12 +953,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                         if (amount > max) {
                             ItemStack clone = item.clone();
                             clone.setAmount(max);
-                            NMSHandler.getItemHelper().setInventoryItem(inventory, clone, firstFree);
+                            NMSHandler.itemHelper.setInventoryItem(inventory, clone, firstFree);
                             item.setAmount(amount -= max);
                         }
                         else {
                             // Just store it
-                            NMSHandler.getItemHelper().setInventoryItem(inventory, item, firstFree);
+                            NMSHandler.itemHelper.setInventoryItem(inventory, item, firstFree);
                             break;
                         }
                     }
@@ -1077,13 +1077,13 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
         for (int i = 0; i < c; i++) {
             if (i >= items.length || items[i] == null) {
-                NMSHandler.getItemHelper().setInventoryItem(inventory, new ItemStack(Material.AIR), slot + i);
+                NMSHandler.itemHelper.setInventoryItem(inventory, new ItemStack(Material.AIR), slot + i);
             }
             ItemStack item = items[i];
             if (slot + i < 0 || slot + i >= inventory.getSize()) {
                 break;
             }
-            NMSHandler.getItemHelper().setInventoryItem(inventory, item, slot + i);
+            NMSHandler.itemHelper.setInventoryItem(inventory, item, slot + i);
         }
         if (Depends.citizens != null && idHolder instanceof NPCTag) {
             ((NPCTag) idHolder).getInventoryTrait().setContents(inventory.getContents());

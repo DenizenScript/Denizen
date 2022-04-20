@@ -232,14 +232,14 @@ public class FakeEquipCommand extends AbstractCommand {
                                         if (playersMap.isEmpty()) {
                                             overrides.remove(player.getUUID());
                                         }
-                                        NMSHandler.getPacketHelper().resetEquipment(player.getPlayerEntity(), livingEntity);
+                                        NMSHandler.packetHelper.resetEquipment(player.getPlayerEntity(), livingEntity);
                                     }
                                 }
                             }
                         }.runTaskLater(Denizen.getInstance(), duration.getTicks());
                     }
                 }
-                NMSHandler.getPacketHelper().resetEquipment(player.getPlayerEntity(), livingEntity);
+                NMSHandler.packetHelper.resetEquipment(player.getPlayerEntity(), livingEntity);
             }
         }
     }

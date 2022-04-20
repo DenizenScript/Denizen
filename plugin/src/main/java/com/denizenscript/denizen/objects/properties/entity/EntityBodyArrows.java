@@ -35,11 +35,11 @@ public class EntityBodyArrows implements Property {
     EntityTag entity;
 
     private int getBodyArrows() {
-        return NMSHandler.getEntityHelper().getBodyArrows(entity.getBukkitEntity());
+        return NMSHandler.entityHelper.getBodyArrows(entity.getBukkitEntity());
     }
 
     private void setBodyArrows(int numArrows) {
-        NMSHandler.getEntityHelper().setBodyArrows(entity.getBukkitEntity(), numArrows);
+        NMSHandler.entityHelper.setBodyArrows(entity.getBukkitEntity(), numArrows);
     }
 
     @Override
@@ -101,4 +101,3 @@ public class EntityBodyArrows implements Property {
         }
     }
 }
-

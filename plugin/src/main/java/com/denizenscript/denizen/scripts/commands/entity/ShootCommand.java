@@ -245,7 +245,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
         final ListTag entityList = new ListTag();
         if (!no_rotate) {
-            originLocation = new LocationTag(NMSHandler.getEntityHelper().faceLocation(originLocation, destination));
+            originLocation = new LocationTag(NMSHandler.entityHelper.faceLocation(originLocation, destination));
         }
         for (EntityTag entity : entities) {
             if (!entity.isSpawned() || !no_rotate) {

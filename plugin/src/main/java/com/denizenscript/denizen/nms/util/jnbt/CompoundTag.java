@@ -65,7 +65,7 @@ public abstract class CompoundTag extends Tag {
      * @return the new compound tag
      */
     public CompoundTag setValue(Map<String, Tag> value) {
-        return NMSHandler.getInstance().createCompoundTag(value);
+        return NMSHandler.instance.createCompoundTag(value);
     }
 
     /**

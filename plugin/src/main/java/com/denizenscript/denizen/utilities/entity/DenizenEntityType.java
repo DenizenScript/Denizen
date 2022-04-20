@@ -93,10 +93,9 @@ public class DenizenEntityType {
                 return SpawnEntityHelper.spawn(location, bukkitEntityType, mechanisms, scriptName);
             }
             else {
-                CustomEntityHelper customEntityHelper = NMSHandler.getCustomEntityHelper();
                 switch (customEntityType) {
                     case FAKE_ARROW:
-                        return customEntityHelper.spawnFakeArrow(location);
+                        return NMSHandler.customEntityHelper.spawnFakeArrow(location);
                     case FAKE_PLAYER:
                         if (Settings.packetInterception()) {
                             String name = null;
@@ -120,7 +119,7 @@ public class DenizenEntityType {
                                 }
                             }
                             NetworkInterceptHelper.enable();
-                            return customEntityHelper.spawnFakePlayer(location, name, skin, blob, true);
+                            return NMSHandler.customEntityHelper.spawnFakePlayer(location, name, skin, blob, true);
                         }
                         break;
                     case ITEM_PROJECTILE:
@@ -131,7 +130,7 @@ public class DenizenEntityType {
                                 itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
                             }
                         }
-                        return customEntityHelper.spawnItemProjectile(location, itemStack);
+                        return NMSHandler.customEntityHelper.spawnItemProjectile(location, itemStack);
                 }
             }
         }

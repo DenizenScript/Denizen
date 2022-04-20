@@ -35,7 +35,7 @@ public class FullBlockData {
 
     public FullBlockData(Block block) {
         this(block.getBlockData());
-        tileEntityData = NMSHandler.getBlockHelper().getNbtData(block);
+        tileEntityData = NMSHandler.blockHelper.getNbtData(block);
     }
 
     public FullBlockData(BlockData data) {
@@ -179,7 +179,7 @@ public class FullBlockData {
     public void set(Block block, boolean physics) {
         block.setBlockData(data, physics);
         if (tileEntityData != null) {
-            NMSHandler.getBlockHelper().setNbtData(block, tileEntityData);
+            NMSHandler.blockHelper.setNbtData(block, tileEntityData);
         }
         if (flags != null) {
             MapTagBasedFlagTracker flagMap = (MapTagBasedFlagTracker) new LocationTag(block.getLocation()).getFlagTracker();

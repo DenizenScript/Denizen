@@ -268,7 +268,7 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Display Name
             if (contains("display name", String.class)) {
                 String displayName = TagManager.tag(getString("display name"), context);
-                NMSHandler.getItemHelper().setDisplayName(stack, displayName);
+                NMSHandler.itemHelper.setDisplayName(stack, displayName);
             }
             // Set if the object is bound to the player
             if (contains("bound", String.class)) {
@@ -276,7 +276,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Lore
             if (contains("lore", List.class)) {
-                List<String> lore = NMSHandler.getItemHelper().getLore(stack);
+                List<String> lore = NMSHandler.itemHelper.getLore(stack);
                 if (lore == null) {
                     lore = new ArrayList<>();
                 }
@@ -285,7 +285,7 @@ public class ItemScriptContainer extends ScriptContainer {
                     lore.add(line);
                 }
                 CoreUtilities.fixNewLinesToListSeparation(lore);
-                NMSHandler.getItemHelper().setLore(stack, lore);
+                NMSHandler.itemHelper.setLore(stack, lore);
             }
             // Set Durability
             if (contains("durability", String.class)) {

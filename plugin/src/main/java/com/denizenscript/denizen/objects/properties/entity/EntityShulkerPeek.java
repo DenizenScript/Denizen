@@ -41,7 +41,7 @@ public class EntityShulkerPeek implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(NMSHandler.getEntityHelper().getShulkerPeek(entity.getBukkitEntity()));
+        return String.valueOf(NMSHandler.entityHelper.getShulkerPeek(entity.getBukkitEntity()));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class EntityShulkerPeek implements Property {
         // Returns the peek value of a shulker box (where 0 is fully closed, 100 is fully open).
         // -->
         if (attribute.startsWith("shulker_peek")) {
-            return new ElementTag(NMSHandler.getEntityHelper().getShulkerPeek(entity.getBukkitEntity()))
+            return new ElementTag(NMSHandler.entityHelper.getShulkerPeek(entity.getBukkitEntity()))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -85,8 +85,7 @@ public class EntityShulkerPeek implements Property {
         // <EntityTag.shulker_peek>
         // -->
         if (mechanism.matches("shulker_peek") && mechanism.requireInteger()) {
-            NMSHandler.getEntityHelper().setShulkerPeek(entity.getBukkitEntity(), mechanism.getValue().asInt());
+            NMSHandler.entityHelper.setShulkerPeek(entity.getBukkitEntity(), mechanism.getValue().asInt());
         }
     }
 }
-

@@ -491,7 +491,7 @@ public class TakeCommand extends AbstractCommand {
             String newItem = CoreUtilities.toLowerCase(ItemTag.valueOf(new ItemTag(is).identify(), false).identify());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
-                    NMSHandler.getItemHelper().setInventoryItem(inventory, null, i);
+                    NMSHandler.itemHelper.setInventoryItem(inventory, null, i);
                     amount -= count;
                     if (amount == 0) {
                         return true;
@@ -499,7 +499,7 @@ public class TakeCommand extends AbstractCommand {
                 }
                 else {
                     is.setAmount(count - amount);
-                    NMSHandler.getItemHelper().setInventoryItem(inventory, is, i);
+                    NMSHandler.itemHelper.setInventoryItem(inventory, is, i);
                     return true;
                 }
             }

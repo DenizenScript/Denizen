@@ -59,7 +59,7 @@ public class SleepingTrait extends Trait {
             }
             else {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                    NMSHandler.getEntityHelper().setSleeping(npc.getEntity(), true);
+                    NMSHandler.entityHelper.setSleeping(npc.getEntity(), true);
                 }
                 else {
                     PlayerAnimation.SLEEP.play((Player) npc.getEntity());
@@ -130,7 +130,7 @@ public class SleepingTrait extends Trait {
                 ((Player) npc.getEntity()).wakeup(false);
             }
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                NMSHandler.getEntityHelper().setSleeping(npc.getEntity(), false);
+                NMSHandler.entityHelper.setSleeping(npc.getEntity(), false);
             }
             else {
                 PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());

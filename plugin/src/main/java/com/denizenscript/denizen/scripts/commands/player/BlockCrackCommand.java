@@ -116,7 +116,6 @@ public class BlockCrackCommand extends AbstractCommand {
         }
         Map<UUID, IntHolder> uuidInt = progressTracker.get(loc);
         boolean stackVal = stack.asBoolean();
-        PacketHelper packetHelper = NMSHandler.getPacketHelper();
         for (PlayerTag player : players) {
             if (!player.isOnline()) {
                 Debug.echoError("Players must be online!");
@@ -133,7 +132,7 @@ public class BlockCrackCommand extends AbstractCommand {
             IntHolder intHolder = uuidInt.get(uuid);
             if (!stackVal && intHolder.theInt > intHolder.base) {
                 for (int i = intHolder.base; i <= intHolder.theInt; i++) {
-                    packetHelper.showBlockCrack(playerEnt, i, loc, -1);
+                    NMSHandler.packetHelper.showBlockCrack(playerEnt, i, loc, -1);
                 }
                 intHolder.theInt = intHolder.base;
             }
@@ -141,7 +140,7 @@ public class BlockCrackCommand extends AbstractCommand {
                 continue;
             }
             int id = stackVal ? intHolder.theInt++ : intHolder.theInt;
-            packetHelper.showBlockCrack(player.getPlayerEntity(), id, loc, progress.asInt() - 1);
+            NMSHandler.packetHelper.showBlockCrack(player.getPlayerEntity(), id, loc, progress.asInt() - 1);
         }
     }
 }

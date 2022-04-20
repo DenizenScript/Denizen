@@ -55,7 +55,7 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
 
     @Override
     public Collection<String> listAllFlags() {
-        return NMSHandler.getInstance().containerListFlags(holder.getPersistentDataContainer(), keyPrefix);
+        return NMSHandler.instance.containerListFlags(holder.getPersistentDataContainer(), keyPrefix);
     }
 
     public static NamespacedKey expireNeededKey = new NamespacedKey(Denizen.getInstance(), "expire_flag_check_needed");

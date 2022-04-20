@@ -155,7 +155,7 @@ public final class NBTInputStream implements Closeable {
                     }
                 }
 
-                return NMSHandler.getInstance().createCompoundTag(tagMap);
+                return NMSHandler.instance.createCompoundTag(tagMap);
             case NBTConstants.TYPE_INT_ARRAY:
                 length = is.readInt();
                 int[] data = new int[length];

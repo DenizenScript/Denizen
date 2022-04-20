@@ -124,8 +124,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         }
         from = new LocationTag(event.getFrom());
         to = new LocationTag(event.getTo());
-        old_biome = new BiomeTag(NMSHandler.getInstance().getBiomeAt(from.getBlock()));
-        new_biome = new BiomeTag(NMSHandler.getInstance().getBiomeAt(to.getBlock()));
+        old_biome = new BiomeTag(NMSHandler.instance.getBiomeAt(from.getBlock()));
+        new_biome = new BiomeTag(NMSHandler.instance.getBiomeAt(to.getBlock()));
         if (old_biome.identify().equals(new_biome.identify())) {
             return;
         }

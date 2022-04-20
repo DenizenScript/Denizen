@@ -127,7 +127,7 @@ public class MapImage extends MapObject {
             }
             int x = getX(player);
             int y = getY(player);
-            NMSHandler.getPacketHelper().setMapData(mapCanvas, bytes, x, y, this);
+            NMSHandler.packetHelper.setMapData(mapCanvas, bytes, x, y, this);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

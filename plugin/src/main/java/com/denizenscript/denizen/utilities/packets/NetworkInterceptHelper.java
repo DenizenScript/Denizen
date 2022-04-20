@@ -22,14 +22,14 @@ public class NetworkInterceptHelper implements Listener {
         DenizenPacketHandler.instance = new DenizenPacketHandler();
         Bukkit.getPluginManager().registerEvents(new NetworkInterceptHelper(), Denizen.getInstance());
         for (Player player : Bukkit.getOnlinePlayers()) {
-            NMSHandler.getPacketHelper().setNetworkManagerFor(player);
+            NMSHandler.packetHelper.setNetworkManagerFor(player);
         }
-        NMSHandler.getPacketHelper().enableNetworkManager();
+        NMSHandler.packetHelper.enableNetworkManager();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        NMSHandler.getPacketHelper().setNetworkManagerFor(event.getPlayer());
+        NMSHandler.packetHelper.setNetworkManagerFor(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

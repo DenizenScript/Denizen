@@ -111,7 +111,7 @@ public class ItemAttributeModifiers implements Property {
                 attribute.echoError("Invalid slot.");
                 return null;
             }
-            return object.getAttributeModifiersFor(NMSHandler.getItemHelper().getDefaultAttributes(object.item.getItemStack(), slot));
+            return object.getAttributeModifiersFor(NMSHandler.itemHelper.getDefaultAttributes(object.item.getItemStack(), slot));
         });
     }
 

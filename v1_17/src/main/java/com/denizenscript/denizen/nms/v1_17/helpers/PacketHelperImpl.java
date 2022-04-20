@@ -214,14 +214,14 @@ public class PacketHelperImpl implements PacketHelper {
     public void showBannerUpdate(Player player, Location location, DyeColor base, List<Pattern> patterns) {
         List<CompoundTag> nbtPatterns = new ArrayList<>();
         for (Pattern pattern : patterns) {
-            nbtPatterns.add(NMSHandler.getInstance()
+            nbtPatterns.add(NMSHandler.instance
                     .createCompoundTag(new HashMap<>())
                     .createBuilder()
                     .putInt("Color", pattern.getColor().getDyeData())
                     .putString("Pattern", pattern.getPattern().getIdentifier())
                     .build());
         }
-        CompoundTag compoundTag = NMSHandler.getBlockHelper().getNbtData(location.getBlock())
+        CompoundTag compoundTag = NMSHandler.blockHelper.getNbtData(location.getBlock())
                 .createBuilder()
                 .put("Patterns", new JNBTListTag(CompoundTag.class, nbtPatterns))
                 .build();

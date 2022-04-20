@@ -31,25 +31,23 @@ public class InventoryScriptHelper implements Listener {
     }
 
     public static void _savePlayerInventories() {
-        PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
         for (Map.Entry<UUID, PlayerInventory> offlineInv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
-            playerHelper.getOfflineData(offlineInv.getKey()).setInventory(offlineInv.getValue());
+            NMSHandler.playerHelper.getOfflineData(offlineInv.getKey()).setInventory(offlineInv.getValue());
         }
         for (Map.Entry<UUID, Inventory> offlineEnderChest : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
-            playerHelper.getOfflineData(offlineEnderChest.getKey()).setEnderChest(offlineEnderChest.getValue());
+            NMSHandler.playerHelper.getOfflineData(offlineEnderChest.getKey()).setEnderChest(offlineEnderChest.getValue());
         }
     }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
         if (ImprovedOfflinePlayer.offlineInventories.containsKey(uuid)) {
-            playerHelper.getOfflineData(uuid).setInventory(ImprovedOfflinePlayer.offlineInventories.get(uuid));
+            NMSHandler.playerHelper.getOfflineData(uuid).setInventory(ImprovedOfflinePlayer.offlineInventories.get(uuid));
             ImprovedOfflinePlayer.offlineInventories.remove(uuid);
         }
         if (ImprovedOfflinePlayer.offlineEnderChests.containsKey(uuid)) {
-            playerHelper.getOfflineData(uuid).setEnderChest(ImprovedOfflinePlayer.offlineEnderChests.get(uuid));
+            NMSHandler.playerHelper.getOfflineData(uuid).setEnderChest(ImprovedOfflinePlayer.offlineEnderChests.get(uuid));
             ImprovedOfflinePlayer.offlineEnderChests.remove(uuid);
         }
     }

@@ -424,7 +424,7 @@ public class InventoryCommand extends AbstractCommand {
                 case ADJUST:
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     toAdjust.safeAdjust(new Mechanism(mechanism.asString(), mechanismValue, scriptEntry.getContext()));
-                    NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
+                    NMSHandler.itemHelper.setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
                     break;
                 case FLAG:
                     ItemTag toFlag = new ItemTag(destination.getInventory().getItem(slotId));
@@ -433,7 +433,7 @@ public class InventoryCommand extends AbstractCommand {
                     provider.tracker = toFlag.getFlagTracker();
                     flagAction.execute(scriptEntry.context);
                     toFlag.reapplyTracker(provider.tracker);
-                    NMSHandler.getItemHelper().setInventoryItem(destination.getInventory(), toFlag.getItemStack(), slotId);
+                    NMSHandler.itemHelper.setInventoryItem(destination.getInventory(), toFlag.getItemStack(), slotId);
                     break;
             }
         }

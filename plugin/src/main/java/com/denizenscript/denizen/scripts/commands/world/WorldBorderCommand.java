@@ -160,14 +160,14 @@ public class WorldBorderCommand extends AbstractCommand {
         if (players != null) {
             if (reset.asBoolean()) {
                 for (PlayerTag player : players) {
-                    NMSHandler.getPacketHelper().resetWorldBorder(player.getPlayerEntity());
+                    NMSHandler.packetHelper.resetWorldBorder(player.getPlayerEntity());
                 }
                 return;
             }
             WorldBorder wb;
             for (PlayerTag player : players) {
                 wb = player.getWorld().getWorldBorder();
-                NMSHandler.getPacketHelper().setWorldBorder(
+                NMSHandler.packetHelper.setWorldBorder(
                         player.getPlayerEntity(),
                         (center != null ? center : wb.getCenter()),
                         (size != null ? size.asDouble() : wb.getSize()),

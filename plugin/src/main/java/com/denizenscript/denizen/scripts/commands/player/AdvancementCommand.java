@@ -207,7 +207,6 @@ public class AdvancementCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, id, parent, delete, grant, revoke, icon, title, description, background, progressLength, frame, toast, announce, hidden, x, y);
         }
-        final AdvancementHelper advancementHelper = NMSHandler.getAdvancementHelper();
         NamespacedKey key = new NamespacedKey(Denizen.getInstance(), id.asString());
         if (delete == null && grant == null && revoke == null) {
             NamespacedKey parentKey = null;
@@ -234,7 +233,7 @@ public class AdvancementCommand extends AbstractCommand {
                     icon.getItemStack(), title.asString(), description.asString(),
                     backgroundKey, Advancement.Frame.valueOf(frame.asString().toUpperCase()),
                     toast.asBoolean(), announce.asBoolean(), hidden.asBoolean(), x.asFloat(), y.asFloat(), progressLength == null ? 1 : progressLength.asInt());
-            advancementHelper.register(advancement);
+            NMSHandler.advancementHelper.register(advancement);
             customRegistered.put(key, advancement);
             return;
         }
@@ -245,7 +244,7 @@ public class AdvancementCommand extends AbstractCommand {
             return;
         }
         if (delete != null) {
-            advancementHelper.unregister(advancement);
+            NMSHandler.advancementHelper.unregister(advancement);
             customRegistered.remove(key);
         }
         else if (grant != null) {
@@ -253,10 +252,10 @@ public class AdvancementCommand extends AbstractCommand {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
                     if (progressLength == null) {
-                        advancementHelper.grant(advancement, player);
+                        NMSHandler.advancementHelper.grant(advancement, player);
                     }
                     else {
-                        advancementHelper.grantPartial(advancement, player, progressLength.asInt());
+                        NMSHandler.advancementHelper.grantPartial(advancement, player, progressLength.asInt());
                     }
                 }
             }
@@ -265,7 +264,7 @@ public class AdvancementCommand extends AbstractCommand {
             for (PlayerTag target : revoke.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
-                    advancementHelper.revoke(advancement, player);
+                    NMSHandler.advancementHelper.revoke(advancement, player);
                 }
             }
         }

@@ -122,12 +122,12 @@ public class PlaySoundCommand extends AbstractCommand {
             if (players == null) {
                 if (custom) {
                     for (LocationTag location : locations) {
-                        NMSHandler.getSoundHelper().playSound(null, location, sound, volume, pitch, category);
+                        NMSHandler.soundHelper.playSound(null, location, sound, volume, pitch, category);
                     }
                 }
                 else {
                     for (LocationTag location : locations) {
-                        NMSHandler.getSoundHelper().playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        NMSHandler.soundHelper.playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                     }
                 }
             }
@@ -135,10 +135,10 @@ public class PlaySoundCommand extends AbstractCommand {
                 for (LocationTag location : locations) {
                     for (PlayerTag player : players) {
                         if (custom) {
-                            NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), location, sound, volume, pitch, category);
+                            NMSHandler.soundHelper.playSound(player.getPlayerEntity(), location, sound, volume, pitch, category);
                         }
                         else {
-                            NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                            NMSHandler.soundHelper.playSound(player.getPlayerEntity(), location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                         }
                     }
                 }
@@ -146,10 +146,10 @@ public class PlaySoundCommand extends AbstractCommand {
             else {
                 for (PlayerTag player : players) {
                     if (custom) {
-                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), sound, volume, pitch, category);
+                        NMSHandler.soundHelper.playSound(player.getPlayerEntity(), player.getLocation(), sound, volume, pitch, category);
                     }
                     else {
-                        NMSHandler.getSoundHelper().playSound(player.getPlayerEntity(), player.getLocation(), Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        NMSHandler.soundHelper.playSound(player.getPlayerEntity(), player.getLocation(), Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                     }
                 }
             }

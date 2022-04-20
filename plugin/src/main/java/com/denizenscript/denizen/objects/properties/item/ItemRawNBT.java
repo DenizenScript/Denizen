@@ -122,7 +122,7 @@ public class ItemRawNBT implements Property {
     }
 
     public MapTag getFullNBTMap() {
-        CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
         return (MapTag) jnbtTagToObject(compoundTag);
     }
 
@@ -165,7 +165,7 @@ public class ItemRawNBT implements Property {
                     return null;
                 }
             }
-            return NMSHandler.getInstance().createCompoundTag(result);
+            return NMSHandler.instance.createCompoundTag(result);
         }
         else if (object.startsWith("list:")) {
             int nextColonIndex = object.indexOf(':', "list:".length() + 1);
@@ -348,7 +348,7 @@ public class ItemRawNBT implements Property {
     }
 
     public void setFullNBT(ItemTag item, MapTag input, TagContext context, boolean retainOld) {
-        CompoundTag compoundTag = retainOld ? NMSHandler.getItemHelper().getNbtData(item.getItemStack()) : null;
+        CompoundTag compoundTag = retainOld ? NMSHandler.itemHelper.getNbtData(item.getItemStack()) : null;
         Map<String, Tag> result = compoundTag == null ? new LinkedHashMap<>() : new LinkedHashMap<>(compoundTag.getValue());
         for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
             try {
@@ -363,8 +363,8 @@ public class ItemRawNBT implements Property {
                 return;
             }
         }
-        compoundTag = NMSHandler.getInstance().createCompoundTag(result);
-        item.setItemStack(NMSHandler.getItemHelper().setNbtData(item.getItemStack(), compoundTag));
+        compoundTag = NMSHandler.instance.createCompoundTag(result);
+        item.setItemStack(NMSHandler.itemHelper.setNbtData(item.getItemStack(), compoundTag));
     }
 
     @Override

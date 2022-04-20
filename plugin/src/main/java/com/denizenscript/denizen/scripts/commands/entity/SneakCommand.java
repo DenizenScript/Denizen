@@ -148,14 +148,14 @@ public class SneakCommand extends AbstractCommand {
             if (shouldFake || shouldStopFake) {
                 if (forPlayers == null) {
                     updateFakeSneak(entity.getUUID(), null, shouldSneak, shouldFake);
-                    for (Player player : NMSHandler.getEntityHelper().getPlayersThatSee(entity.getBukkitEntity())) {
-                        NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player, entity.getBukkitEntity());
+                    for (Player player : NMSHandler.entityHelper.getPlayersThatSee(entity.getBukkitEntity())) {
+                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, entity.getBukkitEntity());
                     }
                 }
                 else {
                     for (PlayerTag player : forPlayers) {
                         updateFakeSneak(entity.getUUID(), player.getUUID(), shouldSneak, shouldFake);
-                        NMSHandler.getPacketHelper().sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), entity.getBukkitEntity());
+                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), entity.getBukkitEntity());
                     }
                 }
             }
@@ -169,7 +169,7 @@ public class SneakCommand extends AbstractCommand {
                 }
             }
             else if (entity.isSpawned()) {
-                NMSHandler.getEntityHelper().setSneaking(entity.getBukkitEntity(), shouldSneak);
+                NMSHandler.entityHelper.setSneaking(entity.getBukkitEntity(), shouldSneak);
             }
             else {
                 Debug.echoError("Cannot make unspawned entity sneak.");

@@ -54,7 +54,7 @@ public class ItemArmorPose implements Property {
     }
 
     public MapTag getPoseMap() {
-        CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
         if (compoundTag == null) {
             return null;
         }
@@ -141,7 +141,7 @@ public class ItemArmorPose implements Property {
         // <ItemTag.armor_pose>
         // -->
         if (mechanism.matches("armor_pose")) {
-            CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+            CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
             Tag entPart, posePart;
             if (mechanism.hasValue() && mechanism.requireObject(MapTag.class)) {
                 if (compoundTag == null) {
@@ -187,7 +187,7 @@ public class ItemArmorPose implements Property {
             else {
                 compoundTag = compoundTag.createBuilder().put("EntityTag", entPart).build();
             }
-            ItemStack result = NMSHandler.getItemHelper().setNbtData(item.getItemStack(), compoundTag);
+            ItemStack result = NMSHandler.itemHelper.setNbtData(item.getItemStack(), compoundTag);
             item.setItemStack(result);
         }
     }

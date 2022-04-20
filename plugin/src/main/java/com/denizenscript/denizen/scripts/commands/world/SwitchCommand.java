@@ -170,7 +170,7 @@ public class SwitchCommand extends AbstractCommand {
             return;
         }
         if (materialTag.getMaterial() == Material.BELL) {
-            NMSHandler.getBlockHelper().ringBell((Bell) block.getState());
+            NMSHandler.blockHelper.ringBell((Bell) block.getState());
             return;
         }
         boolean currentState = switchable.getState();

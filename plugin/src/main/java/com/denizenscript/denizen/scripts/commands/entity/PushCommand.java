@@ -210,7 +210,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             entity.spawnAt(originLocation);
             entityList.addObject(entity);
             if (!no_rotate) {
-                NMSHandler.getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
+                NMSHandler.entityHelper.faceLocation(entity.getBukkitEntity(), destination);
             }
             if (entity.isProjectile() && originEntity != null) {
                 entity.setShooter(originEntity);

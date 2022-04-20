@@ -501,14 +501,14 @@ public class EntityHelperImpl extends EntityHelper {
 
     private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
         try {
-            NMSHandler.getChunkHelper().changeChunkServerThread(world);
+            NMSHandler.chunkHelper.changeChunkServerThread(world);
             return ((CraftWorld) world).getHandle().rayTrace(new RayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
                     new Vec3D(end.getX(), end.getY(), end.getZ()),
                     // TODO: 1.14 - check if these collision options are reasonable (maybe provide the options for this method?)
                     RayTrace.BlockCollisionOption.OUTLINE, RayTrace.FluidCollisionOption.NONE, null));
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(world);
+            NMSHandler.chunkHelper.restoreServerThread(world);
         }
     }
 

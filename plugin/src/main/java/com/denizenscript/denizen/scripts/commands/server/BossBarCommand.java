@@ -175,7 +175,7 @@ public class BossBarCommand extends AbstractCommand {
                     }
                 }
                 BossBar bossBar = Bukkit.createBossBar(barTitle, barColor, barStyle, barFlags);
-                NMSHandler.getPlayerHelper().setBossBarTitle(bossBar, barTitle);
+                NMSHandler.playerHelper.setBossBarTitle(bossBar, barTitle);
                 bossBar.setProgress(barProgress);
                 for (PlayerTag player : barPlayers) {
                     if (!player.isOnline()) {
@@ -195,7 +195,7 @@ public class BossBarCommand extends AbstractCommand {
                 }
                 BossBar bossBar1 = bossBarMap.get(idString);
                 if (title != null) {
-                    NMSHandler.getPlayerHelper().setBossBarTitle(bossBar1, title.asString());
+                    NMSHandler.playerHelper.setBossBarTitle(bossBar1, title.asString());
                 }
                 if (progress != null) {
                     bossBar1.setProgress(progress.asDouble());

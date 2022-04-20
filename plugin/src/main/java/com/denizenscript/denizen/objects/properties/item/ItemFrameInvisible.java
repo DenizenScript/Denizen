@@ -46,7 +46,7 @@ public class ItemFrameInvisible implements Property {
     ItemTag item;
 
     public boolean isInvisible() {
-        CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
         if (compoundTag == null) {
             return false;
         }
@@ -102,7 +102,7 @@ public class ItemFrameInvisible implements Property {
         // <ItemTag.invisible>
         // -->
         if (mechanism.matches("invisible") && mechanism.requireBoolean()) {
-            CompoundTag compoundTag = NMSHandler.getItemHelper().getNbtData(item.getItemStack());
+            CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
             Map<String, Tag> result = new LinkedHashMap<>(compoundTag.getValue());
             CompoundTag entityTag = (CompoundTag) result.get("EntityTag");
             Map<String, Tag> entMap;
@@ -122,10 +122,10 @@ public class ItemFrameInvisible implements Property {
                 result.remove("EntityTag");
             }
             else {
-                result.put("EntityTag", NMSHandler.getInstance().createCompoundTag(entMap));
+                result.put("EntityTag", NMSHandler.instance.createCompoundTag(entMap));
             }
-            compoundTag = NMSHandler.getInstance().createCompoundTag(result);
-            item.setItemStack(NMSHandler.getItemHelper().setNbtData(item.getItemStack(), compoundTag));
+            compoundTag = NMSHandler.instance.createCompoundTag(result);
+            item.setItemStack(NMSHandler.itemHelper.setNbtData(item.getItemStack(), compoundTag));
         }
     }
 }

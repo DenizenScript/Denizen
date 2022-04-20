@@ -129,24 +129,23 @@ public class AnimateChestCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), location,  db("block type", location.getBlock().getType().name()), action, sound, db("players", players));
         }
-        PacketHelper packetHelper = NMSHandler.getPacketHelper();
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        NMSHandler.getSoundHelper().playSound(ent, location, Sound.BLOCK_CHEST_OPEN, 1, 1, "BLOCKS");
+                        NMSHandler.soundHelper.playSound(ent, location, Sound.BLOCK_CHEST_OPEN, 1, 1, "BLOCKS");
                     }
-                    packetHelper.showBlockAction(ent, location, 1, 1);
+                    NMSHandler.packetHelper.showBlockAction(ent, location, 1, 1);
                 }
                 break;
             case CLOSE:
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        NMSHandler.getSoundHelper().playSound(ent, location, Sound.BLOCK_CHEST_CLOSE, 1, 1, "BLOCKS");
+                        NMSHandler.soundHelper.playSound(ent, location, Sound.BLOCK_CHEST_CLOSE, 1, 1, "BLOCKS");
                     }
-                    packetHelper.showBlockAction(ent, location, 1, 0);
+                    NMSHandler.packetHelper.showBlockAction(ent, location, 1, 0);
                 }
                 break;
         }

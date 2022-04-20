@@ -135,7 +135,7 @@ public class HurtCommand extends AbstractCommand {
                 continue;
             }
             EntityDamageEvent.DamageCause causeEnum = cause == null ? null : EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase());
-            NMSHandler.getEntityHelper().damage(entity.getLivingEntity(), (float) amount, source == null ? null : source.getBukkitEntity(), causeEnum);
+            NMSHandler.entityHelper.damage(entity.getLivingEntity(), (float) amount, source == null ? null : source.getBukkitEntity(), causeEnum);
         }
     }
 }

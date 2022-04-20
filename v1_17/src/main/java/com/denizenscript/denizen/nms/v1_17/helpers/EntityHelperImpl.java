@@ -538,13 +538,13 @@ public class EntityHelperImpl extends EntityHelper {
 
     private static HitResult rayTrace(World world, Vector start, Vector end) {
         try {
-            NMSHandler.getChunkHelper().changeChunkServerThread(world);
+            NMSHandler.chunkHelper.changeChunkServerThread(world);
             return ((CraftWorld) world).getHandle().clip(new ClipContext(new Vec3(start.getX(), start.getY(), start.getZ()),
                     new Vec3(end.getX(), end.getY(), end.getZ()),
                     ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
         }
         finally {
-            NMSHandler.getChunkHelper().restoreServerThread(world);
+            NMSHandler.chunkHelper.restoreServerThread(world);
         }
     }
 

@@ -142,7 +142,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTo(Block block) {
         if (((CraftWorld) block.getWorld()).getHandle() != this.world) {
-            NMSHandler.getInstance().getBiomeNMS(block.getWorld(), getName()).setTo(block);
+            NMSHandler.instance.getBiomeNMS(block.getWorld(), getName()).setTo(block);
             return;
         }
         // Based on CraftWorld source

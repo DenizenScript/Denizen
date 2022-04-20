@@ -50,7 +50,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     public PlayerKickEvent event;
 
     public boolean isFlying() {
-        return NMSHandler.getPlayerHelper().getFlyKickCooldown(player.getPlayerEntity()) == 0;
+        return NMSHandler.playerHelper.getFlyKickCooldown(player.getPlayerEntity()) == 0;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             else if (lower.startsWith("fly_cooldown:")) {
                 DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()), getTagContext(path));
                 if (duration != null) {
-                    NMSHandler.getPlayerHelper().setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
+                    NMSHandler.playerHelper.setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
                     cancelled = true;
                     return true;
                 }

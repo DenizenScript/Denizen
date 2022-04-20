@@ -73,7 +73,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         }
         else if (name.equals("blocks")) {
             ListTag blocks = new ListTag();
-            for (Location location : NMSHandler.getBlockHelper().getBlocksList(event)) {
+            for (Location location : NMSHandler.blockHelper.getBlocksList(event)) {
                 blocks.addObject(new LocationTag(location));
             }
             return blocks;

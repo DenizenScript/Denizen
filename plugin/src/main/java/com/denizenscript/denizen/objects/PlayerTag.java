@@ -261,7 +261,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return NMSHandler.getPlayerHelper().getOfflineData(getOfflinePlayer());
+        return NMSHandler.playerHelper.getOfflineData(getOfflinePlayer());
     }
 
     @Override
@@ -566,7 +566,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public boolean hasChunkLoaded(Chunk chunk) {
-        return NMSHandler.getPlayerHelper().hasChunkLoaded(getPlayerEntity(), chunk);
+        return NMSHandler.playerHelper.hasChunkLoaded(getPlayerEntity(), chunk);
     }
 
     /////////////////////
@@ -799,14 +799,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         tagProcessor.registerTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
             try {
-                NMSHandler.getChunkHelper().changeChunkServerThread(object.getWorld());
+                NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
                 if (object.getOfflinePlayer().getBedSpawnLocation() == null) {
                     return null;
                 }
                 return new LocationTag(object.getOfflinePlayer().getBedSpawnLocation());
             }
             finally {
-                NMSHandler.getChunkHelper().restoreServerThread(object.getWorld());
+                NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
             }
         });
 
@@ -1430,7 +1430,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "client_brand", (attribute, object) -> {
             NetworkInterceptHelper.enable();
-            return new ElementTag(NMSHandler.getPlayerHelper().getPlayerBrand(object.getPlayerEntity()), true);
+            return new ElementTag(NMSHandler.playerHelper.getPlayerBrand(object.getPlayerEntity()), true);
         });
 
         // <--[tag]
@@ -1491,7 +1491,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns a list of the recipes the player has discovered, in the Namespace:Key format, for example "minecraft:gold_nugget".
         // -->
         registerOnlineOnlyTag(ListTag.class, "discovered_recipes", (attribute, object) -> {
-            return new ListTag(NMSHandler.getEntityHelper().getDiscoveredRecipes(object.getPlayerEntity()));
+            return new ListTag(NMSHandler.entityHelper.getDiscoveredRecipes(object.getPlayerEntity()));
         });
 
         // <--[tag]
@@ -1644,7 +1644,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "skin_blob", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity()));
+            return new ElementTag(NMSHandler.instance.getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity()));
         });
 
         // <--[tag]
@@ -1656,7 +1656,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "skull_skin", (attribute, object) -> {
-            String skin = NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity());
+            String skin = NMSHandler.instance.getProfileEditor().getPlayerSkinBlob(object.getPlayerEntity());
             if (skin == null) {
                 return null;
             }
@@ -1673,7 +1673,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ItemTag.class, "skull_item", (attribute, object) -> {
             ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-            item = NMSHandler.getItemHelper().setSkullSkin(item, NMSHandler.getInstance().getPlayerProfile(object.getPlayerEntity()));
+            item = NMSHandler.itemHelper.setSkullSkin(item, NMSHandler.instance.getPlayerProfile(object.getPlayerEntity()));
             return new ItemTag(item);
         });
 
@@ -1681,18 +1681,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Deprecations.playerAttackCooldownTags.warn(attribute.context);
             if (attribute.startsWith("duration", 2)) {
                 attribute.fulfill(1);
-                return new DurationTag((long) NMSHandler.getPlayerHelper()
+                return new DurationTag((long) NMSHandler.playerHelper
                         .ticksPassedDuringCooldown(object.getPlayerEntity()));
             }
             else if (attribute.startsWith("max_duration", 2)) {
                 attribute.fulfill(1);
-                return new DurationTag((long) NMSHandler.getPlayerHelper()
+                return new DurationTag((long) NMSHandler.playerHelper
                         .getMaxAttackCooldownTicks(object.getPlayerEntity()));
             }
 
             else if (attribute.startsWith("percent", 2)) {
                 attribute.fulfill(1);
-                return new ElementTag(NMSHandler.getPlayerHelper()
+                return new ElementTag(NMSHandler.playerHelper
                         .getAttackCooldownPercent(object.getPlayerEntity()) * 100);
             }
 
@@ -1797,7 +1797,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the displayed text in the nameplate of the player.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "nameplate", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getInstance().getProfileEditor().getPlayerName(object.getPlayerEntity()), true);
+            return new ElementTag(NMSHandler.instance.getProfileEditor().getPlayerName(object.getPlayerEntity()), true);
         });
 
         /////////////////////
@@ -2007,7 +2007,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the player's current ping.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "ping", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getPlayerHelper().getPing(object.getPlayerEntity()));
+            return new ElementTag(NMSHandler.playerHelper.getPing(object.getPlayerEntity()));
         });
 
         // <--[tag]
@@ -2355,7 +2355,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "packets_sent", (attribute, object) -> {
             NetworkInterceptHelper.enable();
-            return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), true));
+            return new ElementTag(NMSHandler.packetHelper.getPacketStats(object.getPlayerEntity(), true));
         });
 
         // <--[tag]
@@ -2367,7 +2367,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "packets_received", (attribute, object) -> {
             NetworkInterceptHelper.enable();
-            return new ElementTag(NMSHandler.getPacketHelper().getPacketStats(object.getPlayerEntity(), false));
+            return new ElementTag(NMSHandler.packetHelper.getPacketStats(object.getPlayerEntity(), false));
         });
 
         // <--[tag]
@@ -2377,7 +2377,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the fishing hook a player has cast (if any).
         // -->
         registerOnlineOnlyTag(EntityTag.class, "fish_hook", (attribute, object) -> {
-            FishHook hook = NMSHandler.getFishingHelper().getHookFrom(object.getPlayerEntity());
+            FishHook hook = NMSHandler.fishingHelper.getHookFrom(object.getPlayerEntity());
             if (hook == null) {
                 return null;
             }
@@ -2393,7 +2393,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         tagProcessor.registerTag(ElementTag.class, "spawn_forced", (attribute, object) -> {
             if (object.isOnline()) {
-                return new ElementTag(NMSHandler.getPlayerHelper().getSpawnForced(object.getPlayerEntity()));
+                return new ElementTag(NMSHandler.playerHelper.getSpawnForced(object.getPlayerEntity()));
             }
             return new ElementTag(object.getNBTEditor().isSpawnForced());
         });
@@ -2406,7 +2406,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(TimeTag.class, "last_action_time", (attribute, object) -> {
             // The internal time values use monotonic time - this converts to real time.
-            long playerMilliTime = NMSHandler.getPlayerHelper().getLastActionTime(object.getPlayerEntity());
+            long playerMilliTime = NMSHandler.playerHelper.getLastActionTime(object.getPlayerEntity());
             long relativeMillis = System.nanoTime() / 1000000L - playerMilliTime;
             return new TimeTag(System.currentTimeMillis() - relativeMillis);
         });
@@ -2539,7 +2539,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Forces the player to respawn if they are on the death screen.
         // -->
         if (mechanism.matches("respawn")) {
-            NMSHandler.getPacketHelper().respawn(getPlayerEntity());
+            NMSHandler.packetHelper.respawn(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -2554,10 +2554,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("vision")) {
             if (mechanism.hasValue() && mechanism.requireEnum(EntityType.class)) {
-                NMSHandler.getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
+                NMSHandler.packetHelper.setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
-                NMSHandler.getPacketHelper().forceSpectate(getPlayerEntity(), getPlayerEntity());
+                NMSHandler.packetHelper.forceSpectate(getPlayerEntity(), getPlayerEntity());
             }
         }
 
@@ -2689,7 +2689,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Shows the player fake absorption health that persists on damage.
         // -->
         if (mechanism.matches("fake_absorption_health") && mechanism.requireFloat()) {
-            NMSHandler.getPacketHelper().setFakeAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
+            NMSHandler.packetHelper.setFakeAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2835,7 +2835,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("spawn_forced") && mechanism.requireBoolean()) {
             if (isOnline()) {
-                NMSHandler.getPlayerHelper().setSpawnForced(getPlayerEntity(), mechanism.getValue().asBoolean());
+                NMSHandler.playerHelper.setSpawnForced(getPlayerEntity(), mechanism.getValue().asBoolean());
             }
             else {
                 ImprovedOfflinePlayer editor = getNBTEditor();
@@ -3104,7 +3104,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
                     if (BukkitScriptEvent.tryEntity(new EntityTag(ent), hideMe) && map.shouldHide(ent)) {
-                        NMSHandler.getEntityHelper().sendHidePacket(getPlayerEntity(), ent);
+                        NMSHandler.entityHelper.sendHidePacket(getPlayerEntity(), ent);
                     }
                 }
             }
@@ -3127,7 +3127,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
                     if (BukkitScriptEvent.tryEntity(new EntityTag(ent), unhideMe) && !map.shouldHide(ent)) {
-                        NMSHandler.getEntityHelper().sendShowPacket(getPlayerEntity(), ent);
+                        NMSHandler.entityHelper.sendShowPacket(getPlayerEntity(), ent);
                     }
                 }
             }
@@ -3164,11 +3164,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
-                        NMSHandler.getPacketHelper().showExperience(getPlayerEntity(),
+                        NMSHandler.packetHelper.showExperience(getPlayerEntity(),
                                 new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
                     }
                     else {
-                        NMSHandler.getPacketHelper().showExperience(getPlayerEntity(),
+                        NMSHandler.packetHelper.showExperience(getPlayerEntity(),
                                 new ElementTag(split[0]).asFloat(), getPlayerEntity().getLevel());
                     }
                 }
@@ -3177,7 +3177,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                NMSHandler.getPacketHelper().resetExperience(getPlayerEntity());
+                NMSHandler.packetHelper.resetExperience(getPlayerEntity());
             }
         }
 
@@ -3201,16 +3201,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
                         if (split.length > 2 && new ElementTag(split[2]).isFloat()) {
-                            NMSHandler.getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                            NMSHandler.packetHelper.showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                     new ElementTag(split[1]).asInt(), new ElementTag(split[2]).asFloat());
                         }
                         else {
-                            NMSHandler.getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                            NMSHandler.packetHelper.showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                     new ElementTag(split[1]).asInt(), getPlayerEntity().getSaturation());
                         }
                     }
                     else {
-                        NMSHandler.getPacketHelper().showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
+                        NMSHandler.packetHelper.showHealth(getPlayerEntity(), new ElementTag(split[0]).asFloat(),
                                 getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
                     }
                 }
@@ -3219,7 +3219,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                NMSHandler.getPacketHelper().resetHealth(getPlayerEntity());
+                NMSHandler.packetHelper.resetHealth(getPlayerEntity());
             }
         }
 
@@ -3259,7 +3259,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 current = liveVehicle.getHealth();
                 maximum = liveVehicle.getMaxHealth();
             }
-            NMSHandler.getPacketHelper().showMobHealth(getPlayerEntity(), liveVehicle, current, maximum);
+            NMSHandler.packetHelper.showMobHealth(getPlayerEntity(), liveVehicle, current, maximum);
         }
 
         // <--[mechanism]
@@ -3294,7 +3294,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             double max = maxObject == null ? entity.getLivingEntity().getMaxHealth() : maxObject.asElement().asDouble();
-            NMSHandler.getPacketHelper().showMobHealth(getPlayerEntity(), entity.getLivingEntity(), health, max);
+            NMSHandler.packetHelper.showMobHealth(getPlayerEntity(), entity.getLivingEntity(), health, max);
         }
 
         // <--[mechanism]
@@ -3324,7 +3324,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             else if (slot.equals("BOOTS")) {
                                 slot = "FEET";
                             }
-                            NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(),
+                            NMSHandler.packetHelper.showEquipment(getPlayerEntity(),
                                     new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity(),
                                     EquipmentSlot.valueOf(slot),
                                     new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack());
@@ -3337,7 +3337,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         Debug.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
-                        NMSHandler.getPacketHelper().resetEquipment(getPlayerEntity(),
+                        NMSHandler.packetHelper.resetEquipment(getPlayerEntity(),
                                 new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity());
                     }
                 }
@@ -3358,10 +3358,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("fov_multiplier")) {
             if (mechanism.hasValue() && mechanism.requireFloat()) {
-                NMSHandler.getPacketHelper().setFieldOfView(getPlayerEntity(), mechanism.getValue().asFloat());
+                NMSHandler.packetHelper.setFieldOfView(getPlayerEntity(), mechanism.getValue().asFloat());
             }
             else {
-                NMSHandler.getPacketHelper().setFieldOfView(getPlayerEntity(), Float.NaN);
+                NMSHandler.packetHelper.setFieldOfView(getPlayerEntity(), Float.NaN);
             }
         }
 
@@ -3378,7 +3378,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Shows the player the end credits.
         // -->
         if (mechanism.matches("show_endcredits")) {
-            NMSHandler.getPlayerHelper().showEndCredits(getPlayerEntity());
+            NMSHandler.playerHelper.showEndCredits(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3393,7 +3393,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 getPlayerEntity().showDemoScreen();
             }
             else {
-                NMSHandler.getPacketHelper().showDemoScreen(getPlayerEntity());
+                NMSHandler.packetHelper.showDemoScreen(getPlayerEntity());
             }
         }
 
@@ -3431,7 +3431,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Like: - adjust <player> spectate:<player>
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(EntityTag.class)) {
-            NMSHandler.getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
+            NMSHandler.packetHelper.forceSpectate(getPlayerEntity(), mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3443,7 +3443,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's hand without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.HAND);
+            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.HAND);
         }
 
         // <--[mechanism]
@@ -3455,7 +3455,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's offhand without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 
         // <--[mechanism]
@@ -3473,10 +3473,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("show_book mechanism must have a book as input.");
                 return;
             }
-            NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
+            NMSHandler.packetHelper.showEquipment(getPlayerEntity(), getPlayerEntity(),
                     EquipmentSlot.OFF_HAND, book.getItemStack());
-            NMSHandler.getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
-            NMSHandler.getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
+            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            NMSHandler.packetHelper.showEquipment(getPlayerEntity(), getPlayerEntity(),
                     EquipmentSlot.OFF_HAND, getPlayerEntity().getEquipment().getItemInOffHand());
         }
 
@@ -3490,8 +3490,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This will automatically resend discovered recipes at the same time (otherwise the player will seemingly have no recipes unlocked).
         // -->
         if (mechanism.matches("resend_recipes")) {
-            NMSHandler.getPlayerHelper().resendRecipeDetails(getPlayerEntity());
-            NMSHandler.getPlayerHelper().resendDiscoveredRecipes(getPlayerEntity());
+            NMSHandler.playerHelper.resendRecipeDetails(getPlayerEntity());
+            NMSHandler.playerHelper.resendDiscoveredRecipes(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3503,7 +3503,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This is useful when used alongside <@link mechanism PlayerTag.quietly_discover_recipe>.
         // -->
         if (mechanism.matches("resend_discovered_recipes")) {
-            NMSHandler.getPlayerHelper().resendDiscoveredRecipes(getPlayerEntity());
+            NMSHandler.playerHelper.resendDiscoveredRecipes(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3518,7 +3518,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("quietly_discover_recipe")) {
             for (String keyText : mechanism.valueAsType(ListTag.class)) {
                 NamespacedKey key = Utilities.parseNamespacedKey(keyText);
-                NMSHandler.getPlayerHelper().quietlyAddRecipe(getPlayerEntity(), key);
+                NMSHandler.playerHelper.quietlyAddRecipe(getPlayerEntity(), key);
             }
         }
 
@@ -3561,7 +3561,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Give no input to make a fake edit interface.
         // -->
         if (mechanism.matches("edit_sign")) {
-            if (!NMSHandler.getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.hasValue() ? mechanism.valueAsType(LocationTag.class) : null)) {
+            if (!NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.hasValue() ? mechanism.valueAsType(LocationTag.class) : null)) {
                 Debug.echoError("Can't edit non-sign materials!");
             }
         }
@@ -3583,14 +3583,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     if (split.length > 1) {
                         footer = split[1];
                     }
-                    NMSHandler.getPacketHelper().showTabListHeaderFooter(getPlayerEntity(), header, footer);
+                    NMSHandler.packetHelper.showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
                     Debug.echoError("Must specify a header and footer to show!");
                 }
             }
             else {
-                NMSHandler.getPacketHelper().resetTabListHeaderFooter(getPlayerEntity());
+                NMSHandler.packetHelper.resetTabListHeaderFooter(getPlayerEntity());
             }
         }
 
@@ -3648,7 +3648,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         }
                     }
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
-                    NMSHandler.getPacketHelper().showBannerUpdate(getPlayerEntity(), location, DyeColor.WHITE, patterns);
+                    NMSHandler.packetHelper.showBannerUpdate(getPlayerEntity(), location, DyeColor.WHITE, patterns);
                 }
                 else {
                     Debug.echoError("Must specify a valid location and pattern list!");
@@ -3684,7 +3684,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             else {
                 category = SoundCategory.MASTER;
             }
-            NMSHandler.getPlayerHelper().stopSound(getPlayerEntity(), key, category);
+            NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);
         }
 
         if (mechanism.matches("action_bar")) {
@@ -3700,7 +3700,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Updates the player's client-side advancements to match their server data.
         // -->
         if (mechanism.matches("update_advancements")) {
-            NMSHandler.getAdvancementHelper().update(getPlayerEntity());
+            NMSHandler.advancementHelper.update(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3718,7 +3718,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                NMSHandler.getInstance().getProfileEditor().setPlayerName(getPlayerEntity(), mechanism.getValue().asString());
+                NMSHandler.instance.getProfileEditor().setPlayerName(getPlayerEntity(), mechanism.getValue().asString());
             }
         }
 
@@ -3736,7 +3736,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                NMSHandler.getInstance().getProfileEditor().setPlayerSkin(getPlayerEntity(), mechanism.getValue().asString());
+                NMSHandler.instance.getProfileEditor().setPlayerSkin(getPlayerEntity(), mechanism.getValue().asString());
             }
         }
 
@@ -3752,7 +3752,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.skin_blob>
         // -->
         if (mechanism.matches("skin_blob")) {
-            NMSHandler.getInstance().getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
+            NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -3895,7 +3895,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("Cannot use send_server_brand on offline player.");
                 return;
             }
-            NMSHandler.getPacketHelper().sendBrand(getPlayerEntity(), mechanism.getValue().asString());
+            NMSHandler.packetHelper.sendBrand(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

@@ -36,7 +36,7 @@ public class EntityInWaterTime implements Property {
 
     @Override
     public String getPropertyString() {
-        return new DurationTag((long) NMSHandler.getEntityHelper().getInWaterTime((Zombie) entity.getBukkitEntity())).identify();
+        return new DurationTag((long) NMSHandler.entityHelper.getInWaterTime((Zombie) entity.getBukkitEntity())).identify();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EntityInWaterTime implements Property {
         // See also <@link tag EntityTag.conversion_duration>
         // -->
         PropertyParser.<EntityInWaterTime, DurationTag>registerTag(DurationTag.class, "in_water_duration", (attribute, object) -> {
-            return new DurationTag((long) NMSHandler.getEntityHelper().getInWaterTime((Zombie) object.entity.getBukkitEntity()));
+            return new DurationTag((long) NMSHandler.entityHelper.getInWaterTime((Zombie) object.entity.getBukkitEntity()));
         });
     }
 
@@ -76,7 +76,7 @@ public class EntityInWaterTime implements Property {
         // <EntityTag.in_water_duration>
         // -->
         if (mechanism.matches("in_water_duration") && mechanism.requireObject(DurationTag.class)) {
-            NMSHandler.getEntityHelper().setInWaterTime((Zombie) entity.getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            NMSHandler.entityHelper.setInWaterTime((Zombie) entity.getBukkitEntity(), mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
     }
 }

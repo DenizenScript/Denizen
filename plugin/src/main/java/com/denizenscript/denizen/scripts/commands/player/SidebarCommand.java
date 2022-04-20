@@ -450,7 +450,7 @@ public class SidebarCommand extends AbstractCommand {
         Player player = denizenPlayer.getPlayerEntity();
         UUID uuid = player.getUniqueId();
         if (!sidebars.containsKey(uuid)) {
-            sidebars.put(uuid, NMSHandler.getInstance().createSidebar(player));
+            sidebars.put(uuid, NMSHandler.instance.createSidebar(player));
         }
         return sidebars.get(player.getUniqueId());
     }

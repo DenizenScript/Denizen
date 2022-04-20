@@ -118,8 +118,8 @@ public class TeleportCommand extends AbstractCommand {
         PlayerTeleportEvent.TeleportCause causeEnum = cause == null ? PlayerTeleportEvent.TeleportCause.PLUGIN : PlayerTeleportEvent.TeleportCause.valueOf(cause.asString().toUpperCase());
         for (EntityTag entity : entities) {
             if (entity.isFake && entity.getWorld().equals(location.getWorld())) {
-                NMSHandler.getEntityHelper().snapPositionTo(entity.getBukkitEntity(), location.toVector());
-                NMSHandler.getEntityHelper().look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
+                NMSHandler.entityHelper.snapPositionTo(entity.getBukkitEntity(), location.toVector());
+                NMSHandler.entityHelper.look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
             }
             entity.teleport(location, causeEnum);

@@ -238,7 +238,7 @@ public class Utilities {
         if (location.getBlockY() < 1 || location.getBlockY() > 254) {
             return false;
         }
-        BlockHelper blockHelper = NMSHandler.getBlockHelper();
+        BlockHelper blockHelper = NMSHandler.blockHelper;
         return location.clone().subtract(0, 1, 0).getBlock().getType().isSolid()
                 && !location.getBlock().getType().isSolid()
                 && !location.clone().add(0, 1, 0).getBlock().getType().isSolid();
@@ -308,7 +308,7 @@ public class Utilities {
         if (!checkLocation(baseLocation, entity.getLocation(), theLeeway + 16)) {
             return false;
         }
-        double distanceSq = NMSHandler.getEntityHelper().getBoundingBox(entity).distanceSquared(baseLocation.toVector());
+        double distanceSq = NMSHandler.entityHelper.getBoundingBox(entity).distanceSquared(baseLocation.toVector());
         return distanceSq < theLeeway * theLeeway;
     }
 

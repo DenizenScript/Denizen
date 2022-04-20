@@ -320,7 +320,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public void preTagExecute() {
         try {
-            NMSHandler.getInstance().disableAsyncCatcher();
+            NMSHandler.instance.disableAsyncCatcher();
             tagThread = Thread.currentThread();
         }
         catch (Throwable e) {
@@ -331,7 +331,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public void postTagExecute() {
         try {
-            NMSHandler.getInstance().undisableAsyncCatcher();
+            NMSHandler.instance.undisableAsyncCatcher();
             tagThread = null;
         }
         catch (Throwable e) {

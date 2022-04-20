@@ -156,10 +156,9 @@ public class ExecuteCommand extends AbstractCommand {
                     return;
                 }
                 Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-                PlayerHelper playerHelper = NMSHandler.getPlayerHelper();
                 boolean isOp = player.isOp();
                 if (!isOp) {
-                    playerHelper.setTemporaryOp(player, true);
+                    NMSHandler.playerHelper.setTemporaryOp(player, true);
                 }
                 try {
                     PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(player, "/" + command);
@@ -181,7 +180,7 @@ public class ExecuteCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry, e);
                 }
                 if (!isOp) {
-                    playerHelper.setTemporaryOp(player, false);
+                    NMSHandler.playerHelper.setTemporaryOp(player, false);
                 }
                 break;
             case AS_NPC:

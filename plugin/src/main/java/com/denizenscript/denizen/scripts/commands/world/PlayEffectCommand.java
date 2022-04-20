@@ -93,13 +93,12 @@ public class PlayEffectCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        tab.addWithPrefix("effect:", NMSHandler.getParticleHelper().particles.keySet());
+        tab.addWithPrefix("effect:", NMSHandler.particleHelper.particles.keySet());
         tab.addWithPrefix("effect:", Effect.values());
     }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        ParticleHelper particleHelper = NMSHandler.getParticleHelper();
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(LocationTag.class)
@@ -113,18 +112,18 @@ public class PlayEffectCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
-                if (particleHelper.hasParticle(arg.getValue())) {
-                    scriptEntry.addObject("particleeffect", particleHelper.getParticle(arg.getValue()));
+                if (NMSHandler.particleHelper.hasParticle(arg.getValue())) {
+                    scriptEntry.addObject("particleeffect", NMSHandler.particleHelper.getParticle(arg.getValue()));
                     continue;
                 }
                 else if (arg.matches("barrier") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                    scriptEntry.addObject("particleeffect", particleHelper.getParticle("block_marker"));
+                    scriptEntry.addObject("particleeffect", NMSHandler.particleHelper.getParticle("block_marker"));
                     scriptEntry.addObject("special_data", new ElementTag("barrier"));
                     continue;
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
-                    List<Particle> visible = particleHelper.getVisibleParticles();
+                    List<Particle> visible = NMSHandler.particleHelper.getVisibleParticles();
                     scriptEntry.addObject("particleeffect", visible.get(CoreUtilities.getRandom().nextInt(visible.size())));
                     continue;
                 }
@@ -351,7 +350,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 if (iconcrack != null) {
                     ItemStack itemStack = iconcrack.getItemStack();
-                    Particle particle = NMSHandler.getParticleHelper().getParticle("ITEM_CRACK");
+                    Particle particle = NMSHandler.particleHelper.getParticle("ITEM_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, quantity.asInt(), offset.toVector(), data.asFloat(), itemStack);
                     }

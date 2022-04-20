@@ -363,7 +363,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         if (script.contains("NO_ID", String.class) && Boolean.valueOf(script.getString("NO_ID"))) {
             return;
         }
-        setItemStack(NMSHandler.getItemHelper().addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(script.getName()))));
+        setItemStack(NMSHandler.itemHelper.addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(script.getName()))));
     }
 
     public Material getBukkitMaterial() {
@@ -608,7 +608,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns null if the item doesn't place as a block.
         // -->
         tagProcessor.registerTag(ObjectTag.class, "placed_material", (attribute, object) -> {
-            BlockData data = NMSHandler.getItemHelper().getPlacedBlock(object.getBukkitMaterial());
+            BlockData data = NMSHandler.itemHelper.getPlacedBlock(object.getBukkitMaterial());
             if (data == null) {
                 return null;
             }
@@ -625,7 +625,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // Generally, prefer tags like <@link tag ElementTag.on_hover.type> with type 'show_item'.
         // -->
         tagProcessor.registerTag(ElementTag.class, "json", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getItemHelper().getJsonString(object.item));
+            return new ElementTag(NMSHandler.itemHelper.getJsonString(object.item));
         });
 
         // <--[tag]

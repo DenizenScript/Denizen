@@ -404,7 +404,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the duration that a burnable fuel block will burn in a furnace for.
         // -->
         tagProcessor.registerTag(DurationTag.class, "fuel_burn_time", (attribute, object) -> {
-            Integer ticks = NMSHandler.getItemHelper().burnTime(object.getMaterial());
+            Integer ticks = NMSHandler.itemHelper.burnTime(object.getMaterial());
             if (ticks != null) {
                 return new DurationTag(ticks.longValue());
             }
@@ -473,7 +473,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
                 Debug.echoError("Provided material does not have a placeable block.");
                 return null;
             }
-            return new ElementTag(NMSHandler.getBlockHelper().getBlockResistance(object.getMaterial()));
+            return new ElementTag(NMSHandler.blockHelper.getBlockResistance(object.getMaterial()));
         });
 
         // <--[tag]
@@ -543,7 +543,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the material's piston reaction. (Only for block materials).
         // -->
         tagProcessor.registerTag(ElementTag.class, "piston_reaction", (attribute, object) -> {
-            String res = NMSHandler.getBlockHelper().getPushReaction(object.material);
+            String res = NMSHandler.blockHelper.getPushReaction(object.material);
             if (res == null) {
                 return null;
             }
@@ -559,7 +559,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // This is a representation of how much time mining is needed to break a block.
         // -->
         tagProcessor.registerTag(ElementTag.class, "block_strength", (attribute, object) -> {
-            float res = NMSHandler.getBlockHelper().getBlockStength(object.material);
+            float res = NMSHandler.blockHelper.getBlockStength(object.material);
             return new ElementTag(res);
         });
 
@@ -611,7 +611,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // For the current instrument of a note block material refer to <@link tag MaterialTag.instrument>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "produced_instrument", (attribute, object) -> {
-            return new ElementTag(NMSHandler.getBlockHelper().getInstrumentFor(object.getMaterial()).name());
+            return new ElementTag(NMSHandler.blockHelper.getInstrumentFor(object.getMaterial()).name());
         });
     }
 
@@ -642,7 +642,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // <MaterialTag.max_stack_size>
         // -->
         if (!mechanism.isProperty && mechanism.matches("max_stack_size") && mechanism.requireInteger()) {
-            NMSHandler.getItemHelper().setMaxStackSize(material, mechanism.getValue().asInt());
+            NMSHandler.itemHelper.setMaxStackSize(material, mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -655,7 +655,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // <MaterialTag.block_resistance>
         // -->
         if (!mechanism.isProperty && mechanism.matches("block_resistance") && mechanism.requireFloat()) {
-            if (!NMSHandler.getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
+            if (!NMSHandler.blockHelper.setBlockResistance(material, mechanism.getValue().asFloat())) {
                 Debug.echoError("Provided material does not have a placeable block.");
             }
         }
@@ -674,7 +674,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             if (!material.isBlock()) {
                 Debug.echoError("'block_strength' mechanism is only valid for block types.");
             }
-            NMSHandler.getBlockHelper().setBlockStrength(material, mechanism.getValue().asFloat());
+            NMSHandler.blockHelper.setBlockStrength(material, mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -691,7 +691,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             if (!material.isBlock()) {
                 Debug.echoError("'piston_reaction' mechanism is only valid for block types.");
             }
-            NMSHandler.getBlockHelper().setPushReaction(material, mechanism.getValue().asString().toUpperCase());
+            NMSHandler.blockHelper.setPushReaction(material, mechanism.getValue().asString().toUpperCase());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

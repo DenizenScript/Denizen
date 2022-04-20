@@ -130,7 +130,7 @@ public class TitleCommand extends AbstractCommand {
                     personalTitle = TagManager.tag(personalTitle, context);
                     personalSubtitle = TagManager.tag(personalSubtitle, context);
                 }
-                NMSHandler.getPacketHelper().showTitle(player.getPlayerEntity(), personalTitle, personalSubtitle, fade_in.getTicksAsInt(), stay.getTicksAsInt(), fade_out.getTicksAsInt());
+                NMSHandler.packetHelper.showTitle(player.getPlayerEntity(), personalTitle, personalSubtitle, fade_in.getTicksAsInt(), stay.getTicksAsInt(), fade_out.getTicksAsInt());
             }
             else {
                 Debug.echoError("Sent title to non-existent player!?");

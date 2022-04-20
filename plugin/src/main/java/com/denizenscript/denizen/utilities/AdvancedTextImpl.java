@@ -45,7 +45,7 @@ public class AdvancedTextImpl {
     }
 
     public String getTitle(Inventory inventory) {
-        return NMSHandler.getInstance().getTitle(inventory);
+        return NMSHandler.instance.getTitle(inventory);
     }
 
     public void setCustomName(Entity entity, String name) {

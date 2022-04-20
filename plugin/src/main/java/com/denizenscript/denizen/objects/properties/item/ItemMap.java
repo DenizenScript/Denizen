@@ -197,7 +197,7 @@ public class ItemMap implements Property {
                     mechanism.echoError("Invalid input to 'full_render' - found comma separated list of 4 values, but not all values are integers: " + ex.getMessage());
                 }
             }
-            boolean worked = NMSHandler.getItemHelper().renderEntireMap(getMapId(), xMin, zMin, xMax, zMax);
+            boolean worked = NMSHandler.itemHelper.renderEntireMap(getMapId(), xMin, zMin, xMax, zMax);
             if (!worked) {
                 mechanism.echoError("Cannot render map: ID doesn't exist. Has the map never been displayed?");
             }

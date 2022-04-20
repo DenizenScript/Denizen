@@ -37,9 +37,9 @@ public class ItemChangeMessage implements Listener {
             item = item.clone();
         }
         ItemTag itemTag = new ItemTag(item);
-        NMSHandler.getItemHelper().setDisplayName(itemTag, message);
+        NMSHandler.itemHelper.setDisplayName(itemTag, message);
         int slot = player.getInventory().getHeldItemSlot() + 36;
-        NMSHandler.getPacketHelper().setSlot(player, slot, item, true);
+        NMSHandler.packetHelper.setSlot(player, slot, item, true);
         slotChanged.put(player.getUniqueId(), slot);
     }
 
@@ -51,7 +51,7 @@ public class ItemChangeMessage implements Listener {
         if (slotChanged.containsKey(uuid)) {
             int slot = slotChanged.get(uuid);
             ItemStack itemStack = player.getEquipment().getItemInMainHand();
-            NMSHandler.getPacketHelper().setSlot(player, slot, itemStack, true);
+            NMSHandler.packetHelper.setSlot(player, slot, itemStack, true);
             slotChanged.remove(uuid);
         }
     }

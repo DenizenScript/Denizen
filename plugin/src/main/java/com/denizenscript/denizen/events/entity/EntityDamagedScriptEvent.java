@@ -181,7 +181,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         Player player = damager.getPlayer();
-        if (NMSHandler.getPlayerHelper().getAttackCooldownPercent(player) < 0.999) { // attack cooldown is also checked in that method earlier
+        if (NMSHandler.playerHelper.getAttackCooldownPercent(player) < 0.999) { // attack cooldown is also checked in that method earlier
             return false;
         }
         if (player.getFallDistance() <= 0 || player.isOnGround() || player.isClimbing() || player.isInWater()) {

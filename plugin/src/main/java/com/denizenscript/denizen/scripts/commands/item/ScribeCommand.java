@@ -137,7 +137,7 @@ public class ScribeCommand extends AbstractCommand {
         }
         // move current held item to empty spot, set item in hand to the book
         else {
-            NMSHandler.getItemHelper().setInventoryItem(inv, currItem, emptySpot);
+            NMSHandler.itemHelper.setInventoryItem(inv, currItem, emptySpot);
             inv.setItem(emptySpot, currItem);
             player.setItemInHand(book);
             Debug.log("...added book to player hand, moved original item");

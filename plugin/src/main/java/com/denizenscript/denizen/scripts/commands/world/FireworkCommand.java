@@ -149,7 +149,7 @@ public class FireworkCommand extends AbstractCommand {
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);
         if (life != null) {
-            NMSHandler.getEntityHelper().setFireworkLifetime(firework, life.getTicksAsInt());
+            NMSHandler.entityHelper.setFireworkLifetime(firework, life.getTicksAsInt());
         }
         scriptEntry.addObject("launched_firework", new EntityTag(firework));
     }

@@ -152,7 +152,7 @@ public class Denizen extends JavaPlugin {
             startedSuccessful = false;
             return;
         }
-        if (!NMSHandler.getInstance().isCorrectMappingsCode()) {
+        if (!NMSHandler.instance.isCorrectMappingsCode()) {
             getLogger().warning("-------------------------------------");
             getLogger().warning("This build of Denizen was built for a different Spigot revision! This may potentially cause issues."
                     + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
