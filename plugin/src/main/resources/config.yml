@@ -251,8 +251,19 @@ Packets:
 # This is a special map of custom colors by name, for the '&' tag base to use. 'default' is used when the name is unrecognized. You can add extra keys here.
 # Tags work here and will be pre-parsed at load time. RGB color codes work here.
 Colors:
+    # The base text color. 'narrate' command usages should usually start with <&[base]>
     base: <&2>
+    # Special/stand-out/focused/emphasized text within a message. 'narrate' commands that need to emphasize a value should use this on those values.
     emphasis: <&b>
+    # Error messages. 'narrate' commands displaying an error message should use this.
     error: <red>
+    # Warning messages. 'narrate' commands displaying a warning message should use this.
     warning: <yellow>
+    # Your preferred color for item names. Item script "display name" keys should usually use this.
+    item: <gold>
+    # Your preferred item lore base color. Item script "lore" lines should start with this.
+    lore: <&7>
+    # Your preferred color for NPC names. Scripts that use the "create" command should usually use this.
+    npc: <&a>
+    # Default: the backup for when a color label is unrecognized. Generally don't touch this.
     default: <white>
