@@ -46,7 +46,7 @@ public class PlayerFlagHandler implements Listener {
             if (cacheTimeoutSeconds == 0) {
                 return true;
             }
-            return lastAccessed + (cacheTimeoutSeconds * 1000) < System.currentTimeMillis();
+            return lastAccessed + (cacheTimeoutSeconds * 1000) < CoreUtilities.monotonicMillis();
         }
     }
 
@@ -80,7 +80,7 @@ public class PlayerFlagHandler implements Listener {
         if (secondaryCleanTicker++ > 10) {
             cleanSecondaryCache();
         }
-        long timeNow = System.currentTimeMillis();
+        long timeNow = CoreUtilities.monotonicMillis();
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
             if (cacheTimeoutSeconds > 0 && entry.getValue().lastAccessed + (cacheTimeoutSeconds * 1000) < timeNow) {
                 continue;
@@ -153,7 +153,7 @@ public class PlayerFlagHandler implements Listener {
             if (softRef != null) {
                 cache = softRef.get();
                 if (cache != null) {
-                    cache.lastAccessed = System.currentTimeMillis();
+                    cache.lastAccessed = CoreUtilities.monotonicMillis();
                     if (CoreConfiguration.debugVerbose) {
                         Debug.echoError("Verbose - flag tracker updated for " + id);
                     }
@@ -163,7 +163,7 @@ public class PlayerFlagHandler implements Listener {
                 }
             }
             cache = new CachedPlayerFlag();
-            cache.lastAccessed = System.currentTimeMillis();
+            cache.lastAccessed = CoreUtilities.monotonicMillis();
             cache.loadingNow = true;
             if (CoreConfiguration.debugVerbose) {
                 Debug.echoError("Verbose - flag tracker updated for " + id);
@@ -173,9 +173,9 @@ public class PlayerFlagHandler implements Listener {
         }
         else {
             if (cache.loadingNow) {
-                long start = System.currentTimeMillis();
+                long start = CoreUtilities.monotonicMillis();
                 while (cache.loadingNow) {
-                    if (System.currentTimeMillis() - start > 15 * 1000) {
+                    if (CoreUtilities.monotonicMillis() - start > 15 * 1000) {
                         Debug.echoError("Flag loading timeout, errors may follow");
                         playerFlagTrackerCache.remove(id);
                         return null;
@@ -203,7 +203,7 @@ public class PlayerFlagHandler implements Listener {
             if (softRef != null) {
                 cache = softRef.get();
                 if (cache != null) {
-                    cache.lastAccessed = System.currentTimeMillis();
+                    cache.lastAccessed = CoreUtilities.monotonicMillis();
                     if (CoreConfiguration.debugVerbose) {
                         Debug.echoError("Verbose - flag tracker updated for " + id);
                     }
@@ -213,7 +213,7 @@ public class PlayerFlagHandler implements Listener {
                 }
             }
             CachedPlayerFlag newCache = new CachedPlayerFlag();
-            newCache.lastAccessed = System.currentTimeMillis();
+            newCache.lastAccessed = CoreUtilities.monotonicMillis();
             newCache.loadingNow = true;
             if (CoreConfiguration.debugVerbose) {
                 Debug.echoError("Verbose - flag tracker updated for " + id);
@@ -263,6 +263,9 @@ public class PlayerFlagHandler implements Listener {
     @EventHandler
     public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
         if (!asyncPreload) {
+            return;
+        }
+        if (!Denizen.hasTickedOnce) {
             return;
         }
         UUID id = event.getUniqueId();

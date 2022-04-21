@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -140,7 +141,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             switch (Action.valueOf(action.asString())) {
                 case ADD:
                     if (length.getSeconds() != 0) {
-                        chunkDelays.put(coord, System.currentTimeMillis() + length.getMillis());
+                        chunkDelays.put(coord, CoreUtilities.monotonicMillis() + length.getMillis());
                     }
                     else {
                         chunkDelays.put(coord, (long) 0);
@@ -152,7 +153,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     chunk.addPluginChunkTicket(Denizen.getInstance());
                     if (length.getSeconds() > 0) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
-                            if (chunkDelays.containsKey(coord) && chunkDelays.get(coord) <= System.currentTimeMillis()) {
+                            if (chunkDelays.containsKey(coord) && chunkDelays.get(coord) <= CoreUtilities.monotonicMillis()) {
                                 chunk.removePluginChunkTicket(Denizen.getInstance());
                                 chunkDelays.remove(coord);
                             }
@@ -195,7 +196,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 if (chunkDelays.get(coord) == 0) {
                     e.setCancelled(true);
                 }
-                else if (System.currentTimeMillis() < chunkDelays.get(coord)) {
+                else if (CoreUtilities.monotonicMillis() < chunkDelays.get(coord)) {
                     e.setCancelled(true);
                 }
                 else {

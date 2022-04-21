@@ -3,6 +3,7 @@ package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.persistence.Persist;
@@ -151,7 +152,7 @@ public class PushableTrait extends Trait implements Listener {
         if (event.getNPC() == npc && pushable) {
             event.setCancelled(false);
             // On Push action / Push Trigger
-            if (System.currentTimeMillis() > pushedTimer) {
+            if (CoreUtilities.monotonicMillis() > pushedTimer) {
                 // Get pusher
                 Player pusher = null;
                 for (Entity le : event.getNPC().getEntity().getNearbyEntities(1, 1, 1)) {
@@ -161,7 +162,7 @@ public class PushableTrait extends Trait implements Listener {
                 }
                 if (pusher != null) {
                     new NPCTag(npc).action("push", PlayerTag.mirrorBukkitPlayer(pusher));
-                    pushedTimer = System.currentTimeMillis() + (delay * 1000);
+                    pushedTimer = CoreUtilities.monotonicMillis() + (delay * 1000);
                 }
             } // End push action
             if (!pushed && returnable) {

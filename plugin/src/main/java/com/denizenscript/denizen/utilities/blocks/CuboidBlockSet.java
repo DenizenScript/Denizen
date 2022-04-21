@@ -90,7 +90,7 @@ public class CuboidBlockSet implements BlockSet {
             int index = 0;
             @Override
             public void run() {
-                long start = System.currentTimeMillis();
+                long start = CoreUtilities.monotonicMillis();
                 while (index < goal) {
                     long z = index % ((long) z_height);
                     long y = ((index - z) % ((long)y_length * z_height)) / ((long) z_height);
@@ -100,7 +100,7 @@ public class CuboidBlockSet implements BlockSet {
                     refLoc.setZ(lowZ + z);
                     blocks[index] = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
                     index++;
-                    if (System.currentTimeMillis() - start > maxDelayMs) {
+                    if (CoreUtilities.monotonicMillis() - start > maxDelayMs) {
                         SchematicCommand.noPhys = false;
                         return;
                     }
@@ -277,14 +277,14 @@ public class CuboidBlockSet implements BlockSet {
             @Override
             public void run() {
                 SchematicCommand.noPhys = true;
-                long start = System.currentTimeMillis();
+                long start = CoreUtilities.monotonicMillis();
                 while (index < goal) {
                     int z = index % (z_height);
                     int y = ((index - z) % (y_length * z_height)) / z_height;
                     int x = (index - y - z) / (y_length * z_height);
                     setBlockSingle(blocks[index], x, y, z, input);
                     index++;
-                    if (System.currentTimeMillis() - start > maxDelayMs) {
+                    if (CoreUtilities.monotonicMillis() - start > maxDelayMs) {
                         SchematicCommand.noPhys = false;
                         return;
                     }

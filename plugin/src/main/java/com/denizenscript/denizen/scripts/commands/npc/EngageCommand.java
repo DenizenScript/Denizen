@@ -127,7 +127,7 @@ public class EngageCommand extends AbstractCommand {
     public static boolean getEngaged(NPC npc, PlayerTag player) {
         String id = getID(npc, player);
         if (currentlyEngaged.containsKey(id)) {
-            if (currentlyEngaged.get(id) > System.currentTimeMillis()) {
+            if (currentlyEngaged.get(id) > CoreUtilities.monotonicMillis()) {
                 return true;
             }
         }
@@ -163,6 +163,6 @@ public class EngageCommand extends AbstractCommand {
      * @param duration the number of seconds to engage the NPCTag
      */
     public static void setEngaged(NPC npc, PlayerTag player, int duration) {
-        currentlyEngaged.put(getID(npc, player), System.currentTimeMillis() + duration * 1000);
+        currentlyEngaged.put(getID(npc, player), CoreUtilities.monotonicMillis() + duration * 1000);
     }
 }

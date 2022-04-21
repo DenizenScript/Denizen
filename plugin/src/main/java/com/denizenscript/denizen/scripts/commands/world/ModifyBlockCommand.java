@@ -296,7 +296,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 @Override
                 public void run() {
                     try {
-                        long start = System.currentTimeMillis();
+                        long start = CoreUtilities.monotonicMillis();
                         LocationTag loc;
                         if (locations != null) {
                             loc = locations.get(0);
@@ -325,7 +325,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                             }
                             handleLocation(nLoc, index, materialList, doPhysics, natural, radius, height, depth, percs, sourcePlayer, scriptEntry);
                             index++;
-                            if (System.currentTimeMillis() - start > maxDelay) {
+                            if (CoreUtilities.monotonicMillis() - start > maxDelay) {
                                 break;
                             }
                         }

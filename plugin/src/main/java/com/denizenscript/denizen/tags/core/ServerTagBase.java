@@ -87,7 +87,7 @@ public class ServerTagBase {
         });
     }
 
-    public static final long serverStartTimeMillis = System.currentTimeMillis();
+    public static final long serverStartTimeMillis = CoreUtilities.monotonicMillis();
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server") || event.replaced()) {
@@ -1131,12 +1131,12 @@ public class ServerTagBase {
         // Returns the time the server started.
         // -->
         if (attribute.startsWith("started_time")) {
-            event.setReplacedObject(new TimeTag(DenizenCore.startTime)
+            event.setReplacedObject(new TimeTag(CoreUtilities.monotonicMillisToReal(DenizenCore.startTime))
                     .getObjectAttribute(attribute.fulfill(1)));
         }
         if (attribute.startsWith("start_time")) {
             Deprecations.timeTagRewrite.warn(attribute.context);
-            event.setReplacedObject(new DurationTag(DenizenCore.startTime / 50)
+            event.setReplacedObject(new DurationTag(CoreUtilities.monotonicMillisToReal(DenizenCore.startTime) / 50)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
 
@@ -1277,7 +1277,7 @@ public class ServerTagBase {
         // In many cases <@link tag server.delta_time_since_start> is preferable.
         // -->
         if (attribute.startsWith("real_time_since_start")) {
-            event.setReplacedObject(new DurationTag((System.currentTimeMillis() - serverStartTimeMillis) / 1000.0)
+            event.setReplacedObject(new DurationTag((CoreUtilities.monotonicMillis() - serverStartTimeMillis) / 1000.0)
                     .getObjectAttribute(attribute.fulfill(1)));
         }
 
@@ -1287,6 +1287,7 @@ public class ServerTagBase {
         // @description
         // Returns the number of milliseconds since Jan 1, 1970.
         // Note that this can change every time the tag is read!
+        // Use <@link tag util.time_now> if you need stable time.
         // -->
         if (attribute.startsWith("current_time_millis")) {
             event.setReplacedObject(new ElementTag(System.currentTimeMillis())
@@ -2211,7 +2212,7 @@ public class ServerTagBase {
         // Returns the time that Denizen scripts were last reloaded.
         // -->
         else if (attribute.startsWith("last_reload")) {
-            event.setReplacedObject(new TimeTag(DenizenCore.lastReloadTime).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new TimeTag(CoreUtilities.monotonicMillisToReal(DenizenCore.lastReloadTime)).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.containers.core.TaskScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ScriptUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.Player;
@@ -106,7 +107,7 @@ public class ClickableCommand extends AbstractCommand {
         if (clickable == null) {
             return;
         }
-        if (clickable.until != 0 && System.currentTimeMillis() > clickable.until) {
+        if (clickable.until != 0 && CoreUtilities.monotonicMillis() > clickable.until) {
             clickables.remove(id);
             return;
         }
@@ -206,7 +207,7 @@ public class ClickableCommand extends AbstractCommand {
         newClickable.path = path == null ? null : path.asString();
         newClickable.definitions = definitions;
         newClickable.remainingUsages = usages == null ? -1 : usages.asInt();
-        newClickable.until = until == null ? 0 : (System.currentTimeMillis() + until.getMillis());
+        newClickable.until = until == null ? 0 : (CoreUtilities.monotonicMillis() + until.getMillis());
         newClickable.context = scriptEntry.context;
         newClickable.npc = Utilities.getEntryNPC(scriptEntry);
         newClickable.defMap = defMap;

@@ -79,6 +79,8 @@ public class Denizen extends JavaPlugin {
         return instance;
     }
 
+    public static boolean hasTickedOnce = false;
+
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -386,6 +388,7 @@ public class Denizen extends JavaPlugin {
         final boolean hadCitizensBork = citizensBork;
         // Run everything else on the first server tick
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            hasTickedOnce = true;
             try {
                 if (hadCitizensBork) {
                     Depends.setupCitizens();

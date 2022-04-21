@@ -2407,8 +2407,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerOnlineOnlyTag(TimeTag.class, "last_action_time", (attribute, object) -> {
             // The internal time values use monotonic time - this converts to real time.
             long playerMilliTime = NMSHandler.playerHelper.getLastActionTime(object.getPlayerEntity());
-            long relativeMillis = System.nanoTime() / 1000000L - playerMilliTime;
-            return new TimeTag(System.currentTimeMillis() - relativeMillis);
+            return new TimeTag(CoreUtilities.monotonicMillisToReal(playerMilliTime));
         });
 
         // <--[tag]

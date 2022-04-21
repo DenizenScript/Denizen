@@ -4,6 +4,7 @@ import com.denizenscript.denizen.scripts.triggers.core.ChatTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.DamageTrigger;
 import com.denizenscript.denizen.scripts.triggers.core.ProximityTrigger;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.core.ClickTrigger;
@@ -81,7 +82,7 @@ public class TriggerRegistry {
         else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name)) {
             return true;
         }
-        else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name)) {
+        else if (CoreUtilities.monotonicMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name)) {
             return true;
         }
         return false;
@@ -97,7 +98,7 @@ public class TriggerRegistry {
             triggerMap.remove(player.getName() + "/" + npc.getId());
         }
         else {
-            triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+            triggerMap.put(triggerClass.name, CoreUtilities.monotonicMillis() + (long) (seconds * 1000));
         }
         playerCooldown.put(player.getName() + "/" + npc.getId(), triggerMap);
     }
