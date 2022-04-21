@@ -139,7 +139,7 @@ public class PlayerFlagHandler implements Listener {
 
     public static void loadFlags(UUID id, CachedPlayerFlag cache) {
         try {
-            cache.tracker = SavableMapFlagTracker.loadFlagFile(new File(dataFolder, id.toString()).getPath());
+            cache.tracker = SavableMapFlagTracker.loadFlagFile(new File(dataFolder, id.toString()).getPath(), false);
         }
         finally {
             cache.loadingNow = false;
@@ -170,6 +170,9 @@ public class PlayerFlagHandler implements Listener {
             }
             playerFlagTrackerCache.put(id, cache);
             loadFlags(id, cache);
+            if (cache.tracker != null) {
+                cache.tracker.doTotalClean();
+            }
         }
         else {
             if (cache.loadingNow) {
@@ -224,6 +227,11 @@ public class PlayerFlagHandler implements Listener {
                 @Override
                 public void run() {
                     loadFlags(id, newCache);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.instance, () -> {
+                        if (newCache.tracker != null) {
+                            newCache.tracker.doTotalClean();
+                        }
+                    });
                     future.complete(null);
                 }
             }.runTaskAsynchronously(Denizen.getInstance());

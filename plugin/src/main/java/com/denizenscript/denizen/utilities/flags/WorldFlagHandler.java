@@ -49,7 +49,7 @@ public class WorldFlagHandler implements Listener {
         if (worldFlagTrackers.containsKey(world.getName())) {
             return;
         }
-        worldFlagTrackers.put(world.getName(), SavableMapFlagTracker.loadFlagFile(flagPathFor(world.getName())));
+        worldFlagTrackers.put(world.getName(), SavableMapFlagTracker.loadFlagFile(flagPathFor(world.getName()), true));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
