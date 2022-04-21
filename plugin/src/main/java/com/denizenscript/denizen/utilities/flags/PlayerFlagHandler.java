@@ -22,6 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerFlagHandler implements Listener {
 
@@ -35,9 +36,7 @@ public class PlayerFlagHandler implements Listener {
 
         public SavableMapFlagTracker tracker;
 
-        public boolean savingNow = false;
-
-        public boolean loadingNow = false;
+        public AtomicBoolean savingNow = new AtomicBoolean(false), loadingNow = new AtomicBoolean(false);
 
         public boolean shouldExpire() {
             if (cacheTimeoutSeconds == -1) {
@@ -103,7 +102,7 @@ public class PlayerFlagHandler implements Listener {
                 }
             }
         };
-        if (cache.savingNow || cache.loadingNow) {
+        if (cache.savingNow.get() || cache.loadingNow.get()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -121,7 +120,7 @@ public class PlayerFlagHandler implements Listener {
         }
         cache.tracker.modified = false;
         String text = cache.tracker.toString();
-        cache.savingNow = true;
+        cache.savingNow.set(true);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -131,7 +130,7 @@ public class PlayerFlagHandler implements Listener {
                 catch (Throwable ex) {
                     Debug.echoError(ex);
                 }
-                cache.savingNow = false;
+                cache.savingNow.set(false);
                 expireTask.runTaskLater(Denizen.getInstance(), 1);
             }
         }.runTaskAsynchronously(Denizen.getInstance());
@@ -142,7 +141,7 @@ public class PlayerFlagHandler implements Listener {
             cache.tracker = SavableMapFlagTracker.loadFlagFile(new File(dataFolder, id.toString()).getPath(), false);
         }
         finally {
-            cache.loadingNow = false;
+            cache.loadingNow.set(false);
         }
     }
 
@@ -155,7 +154,7 @@ public class PlayerFlagHandler implements Listener {
                 if (cache != null) {
                     cache.lastAccessed = CoreUtilities.monotonicMillis();
                     if (CoreConfiguration.debugVerbose) {
-                        Debug.echoError("Verbose - flag tracker updated for " + id);
+                        Debug.echoError("Verbose - (getTrackerFor) flag tracker updated from soft to main for " + id);
                     }
                     playerFlagTrackerCache.put(id, cache);
                     secondaryPlayerFlagTrackerCache.remove(id);
@@ -164,9 +163,9 @@ public class PlayerFlagHandler implements Listener {
             }
             cache = new CachedPlayerFlag();
             cache.lastAccessed = CoreUtilities.monotonicMillis();
-            cache.loadingNow = true;
+            cache.loadingNow.set(true);
             if (CoreConfiguration.debugVerbose) {
-                Debug.echoError("Verbose - flag tracker updated for " + id);
+                Debug.echoError("Verbose - (getTrackerFor) flag tracker created for " + id);
             }
             playerFlagTrackerCache.put(id, cache);
             loadFlags(id, cache);
@@ -175,9 +174,15 @@ public class PlayerFlagHandler implements Listener {
             }
         }
         else {
-            if (cache.loadingNow) {
+            if (CoreConfiguration.debugVerbose) {
+                Debug.echoError("Verbose - (getTrackerFor) flag tracker was cached for " + id);
+            }
+            if (cache.loadingNow.get()) {
                 long start = CoreUtilities.monotonicMillis();
-                while (cache.loadingNow) {
+                while (cache.loadingNow.get()) {
+                    if (CoreConfiguration.debugVerbose) {
+                        Debug.echoError("Verbose - (getTrackerFor) flag tracker is loading, so waiting, for " + id + " ... at " + (CoreUtilities.monotonicMillis() - start) + "ms");
+                    }
                     if (CoreUtilities.monotonicMillis() - start > 15 * 1000) {
                         Debug.echoError("Flag loading timeout, errors may follow");
                         playerFlagTrackerCache.remove(id);
@@ -200,6 +205,9 @@ public class PlayerFlagHandler implements Listener {
         try {
             CachedPlayerFlag cache = playerFlagTrackerCache.get(id);
             if (cache != null) {
+                if (CoreConfiguration.debugVerbose) {
+                    Debug.echoError("Verbose - (loadAsync) flag tracker ignored due to cache for " + id);
+                }
                 return null;
             }
             SoftReference<CachedPlayerFlag> softRef = secondaryPlayerFlagTrackerCache.get(id);
@@ -208,7 +216,7 @@ public class PlayerFlagHandler implements Listener {
                 if (cache != null) {
                     cache.lastAccessed = CoreUtilities.monotonicMillis();
                     if (CoreConfiguration.debugVerbose) {
-                        Debug.echoError("Verbose - flag tracker updated for " + id);
+                        Debug.echoError("Verbose - (loadAsync) flag tracker updated from softref to main for " + id);
                     }
                     playerFlagTrackerCache.put(id, cache);
                     secondaryPlayerFlagTrackerCache.remove(id);
@@ -217,9 +225,9 @@ public class PlayerFlagHandler implements Listener {
             }
             CachedPlayerFlag newCache = new CachedPlayerFlag();
             newCache.lastAccessed = CoreUtilities.monotonicMillis();
-            newCache.loadingNow = true;
+            newCache.loadingNow.set(true);
             if (CoreConfiguration.debugVerbose) {
-                Debug.echoError("Verbose - flag tracker updated for " + id);
+                Debug.echoError("Verbose - (loadAsync) flag tracker created " + id);
             }
             playerFlagTrackerCache.put(id, newCache);
             CompletableFuture future = new CompletableFuture();
@@ -228,6 +236,9 @@ public class PlayerFlagHandler implements Listener {
                 public void run() {
                     loadFlags(id, newCache);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.instance, () -> {
+                        if (CoreConfiguration.debugVerbose) {
+                            Debug.echoError("Verbose - flag tracker async loaded " + id);
+                        }
                         if (newCache.tracker != null) {
                             newCache.tracker.doTotalClean();
                         }
@@ -247,10 +258,10 @@ public class PlayerFlagHandler implements Listener {
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
             CachedPlayerFlag flags = entry.getValue();
             if (flags.tracker.modified) {
-                if (!canSleep && flags.savingNow || flags.loadingNow) {
+                if (!canSleep && flags.savingNow.get() || flags.loadingNow.get()) {
                     continue;
                 }
-                while (flags.savingNow || flags.loadingNow) {
+                while (flags.savingNow.get() || flags.loadingNow.get()) {
                     try {
                         Thread.sleep(10);
                     }
