@@ -513,6 +513,12 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, packet);
     }
 
+    @Override
+    public void sendCollectItemEntity(Player player, Entity taker, Entity item, int amount) {
+        ClientboundTakeItemEntityPacket packet = new ClientboundTakeItemEntityPacket(item.getEntityId(), taker.getEntityId(), amount);
+        send(player, packet);
+    }
+
     public static void send(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
     }

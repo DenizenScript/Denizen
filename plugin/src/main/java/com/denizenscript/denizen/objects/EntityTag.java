@@ -4093,6 +4093,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.entityHelper.setTrackingRange(getBukkitEntity(), mechanism.getValue().asInt());
         }
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name fake_pickup
+        // @input EntityTag
+        // @description
+        // Makes it look like this entity (usually a player) has picked up another entity (item, arrow, or XP orb).
+        // -->
+        if (mechanism.matches("fake_pickup") && mechanism.requireObject(EntityTag.class)) {
+            Entity ent = mechanism.valueAsType(EntityTag.class).getBukkitEntity();
+            int amount = 1;
+            if (ent instanceof Item) {
+                amount = ((Item) ent).getItemStack().getAmount();
+            }
+            for (Player player : NMSHandler.entityHelper.getPlayersThatSee(getBukkitEntity())) {
+                NMSHandler.packetHelper.sendCollectItemEntity(player, getBukkitEntity(), ent, amount);
+            }
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

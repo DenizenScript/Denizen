@@ -126,4 +126,8 @@ public interface PacketHelper {
     default void sendBrand(Player player, String brand) {
         throw new UnsupportedOperationException();
     }
+
+    default void sendCollectItemEntity(Player player, Entity taker, Entity item, int amount) {
+        throw new UnsupportedOperationException();
+    }
 }
