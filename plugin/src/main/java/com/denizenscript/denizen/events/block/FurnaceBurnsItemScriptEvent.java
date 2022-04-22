@@ -68,6 +68,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
         }
         else if (determinationObj.canBeType(DurationTag.class)) {
             event.setBurnTime(determinationObj.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }
