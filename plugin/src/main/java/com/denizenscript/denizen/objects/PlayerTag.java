@@ -2878,7 +2878,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.is_flying>
         // -->
         if (mechanism.matches("flying") && mechanism.requireBoolean()) {
-            getPlayerEntity().setFlying(mechanism.getValue().asBoolean());
+            boolean doFly = mechanism.getValue().asBoolean();
+            if (doFly && !getPlayerEntity().getAllowFlight()) {
+                Debug.echoError("Must adjust 'can_fly:true' before you can adjust 'flying:true'");
+                return;
+            }
+            getPlayerEntity().setFlying(doFly);
         }
 
         // <--[mechanism]

@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -101,10 +102,14 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
+        if (event.getTo() == null) {
             return;
         }
-        location = new LocationTag(event.getTo().clone().subtract(0, 1, 0));
+        Location from = event.getFrom().clone().subtract(0, 0.05, 0), to = event.getTo().clone().subtract(0, 0.05, 0);
+        if (LocationTag.isSameBlock(from, to)) {
+            return;
+        }
+        location = new LocationTag(to);
         if (!Utilities.isLocationYSafe(location)) {
             return;
         }

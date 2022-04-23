@@ -1704,7 +1704,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!object.getBukkitEntity().isOnGround()) {
                 return null;
             }
-            Location loc = object.getBukkitEntity().getLocation().clone().subtract(0, 0.05f, 0);
+            Location loc = object.getBukkitEntity().getLocation().clone().subtract(0, 0.05, 0);
             return new LocationTag(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         });
 
@@ -4099,6 +4099,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @description
         // Makes it look like this entity (usually a player) has picked up another entity (item, arrow, or XP orb).
+        // This technically also works with any entity type.
+        // Note that the original entity doesn't actually get picked up, it's still there, just invisible now.
         // -->
         if (mechanism.matches("fake_pickup") && mechanism.requireObject(EntityTag.class)) {
             Entity ent = mechanism.valueAsType(EntityTag.class).getBukkitEntity();
@@ -4108,6 +4110,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             for (Player player : NMSHandler.entityHelper.getPlayersThatSee(getBukkitEntity())) {
                 NMSHandler.packetHelper.sendCollectItemEntity(player, getBukkitEntity(), ent, amount);
+            }
+            if (isPlayer()) {
+                NMSHandler.packetHelper.sendCollectItemEntity((Player) getBukkitEntity(), getBukkitEntity(), ent, amount);
             }
         }
 
