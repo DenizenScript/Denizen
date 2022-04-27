@@ -4427,8 +4427,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 else {
                     profile = new PlayerProfile(idString, null, texture);
                 }
-                profile = NMSHandler.instance.fillPlayerProfile(profile);
-                if (texture != null) { // Ensure we didn't get overwritten
+                if (texture == null || profile.getName() == null || profile.getUniqueId() == null) { // Load if needed
+                    profile = NMSHandler.instance.fillPlayerProfile(profile);
+                }
+                if (texture != null) {
                     profile.setTexture(texture);
                 }
                 NMSHandler.blockHelper.setPlayerProfile((Skull) blockState, profile);

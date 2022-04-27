@@ -131,44 +131,33 @@ public class Handler extends NMSHandler {
 
     @Override
     public PlayerProfile fillPlayerProfile(PlayerProfile playerProfile) {
+        if (playerProfile == null) {
+            return null;
+        }
+        if (playerProfile.getName() == null && playerProfile.getUniqueId() == null) {
+            return playerProfile; // Cannot fill without lookup data
+        }
+        if (playerProfile.hasTexture() && playerProfile.hasTextureSignature() && playerProfile.getName() != null && playerProfile.getUniqueId() != null) {
+            return playerProfile; // Already filled
+        }
         try {
-            if (playerProfile != null) {
-                GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
-                gameProfile.getProperties().get("textures").clear();
-                if (playerProfile.getTextureSignature() != null) {
-                    gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
-                }
-                else {
-                    gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
-                }
-                MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
-                GameProfile gameProfile1 = null;
-                if (gameProfile.getId() != null) {
-                    gameProfile1 = minecraftServer.getProfileCache().get(gameProfile.getId()).orElse(null);
-                }
-                if (gameProfile1 == null && gameProfile.getName() != null) {
-                    gameProfile1 = minecraftServer.getProfileCache().get(gameProfile.getName()).orElse(null);
-                }
-                if (gameProfile1 == null) {
-                    gameProfile1 = gameProfile;
-                }
-                if (playerProfile.hasTexture()) {
-                    gameProfile1.getProperties().get("textures").clear();
-                    if (playerProfile.getTextureSignature() != null) {
-                        gameProfile1.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
-                    }
-                    else {
-                        gameProfile1.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
-                    }
-                }
-                if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
-                    gameProfile1 = minecraftServer.getSessionService().fillProfileProperties(gameProfile1, true);
-                }
-                Property property = Iterables.getFirst(gameProfile1.getProperties().get("textures"), null);
-                return new PlayerProfile(gameProfile1.getName(), gameProfile1.getId(),
-                        property != null ? property.getValue() : null,
-                        property != null ? property.getSignature() : null);
+            GameProfile profile = null;
+            MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
+            if (playerProfile.getUniqueId() != null) {
+                profile = minecraftServer.getProfileCache().get(playerProfile.getUniqueId()).orElse(null);
             }
+            if (profile == null && playerProfile.getName() != null) {
+                profile = minecraftServer.getProfileCache().get(playerProfile.getName()).orElse(null);
+            }
+            if (profile == null) {
+                profile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
+            }
+            Property textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
+            if (textures == null || !textures.hasSignature() || profile.getName() == null || profile.getId() == null) {
+                profile = minecraftServer.getSessionService().fillProfileProperties(profile, true);
+                textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
+            }
+            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.getValue(), textures == null ? null : textures.getSignature());
         }
         catch (Exception e) {
             if (CoreConfiguration.debugVerbose) {
