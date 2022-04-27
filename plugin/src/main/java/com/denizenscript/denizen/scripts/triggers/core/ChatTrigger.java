@@ -207,34 +207,23 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String step = InteractScriptHelper.getCurrentStep(denizenPlayer, script.getName());
         if (!script.containsTriggerInStep(step, ChatTrigger.class)) {
             if (!Settings.chatGloballyIfNoChatTriggers()) {
-                Debug.echoDebug(script, player.getName() + " says to "
-                        + npc.getNicknameTrait().getNickname() + ", " + message);
-                return;
+                Debug.echoDebug(script, player.getName() + " says to " + npc.getNicknameTrait().getNickname() + ", " + message);
             }
-            else {
-                if (CoreConfiguration.debugVerbose) {
-                    Debug.log("No trigger in step, chatting globally");
-                }
-                return;
+            else if (CoreConfiguration.debugVerbose) {
+                Debug.log("No trigger in step, chatting globally");
             }
+            return;
         }
         String id = null;
-        boolean matched = false;
         String replacementText = null;
-        String regexId = null;
-        String regexMessage = null;
         String messageLow = CoreUtilities.toLowerCase(message);
         Map<String, String> idMap = script.getIdMapFor(ChatTrigger.class, denizenPlayer);
         if (!idMap.isEmpty()) {
+            mainLoop:
             for (Map.Entry<String, String> entry : idMap.entrySet()) {
-
-                // Check if the chat trigger specified in the specified id's 'trigger:' key
-                // matches the text the player has said
-                // TODO: script arg?
                 String triggerText = TagManager.tag(entry.getValue(), new BukkitTagContext(denizenPlayer, npc, null, false, null));
                 Matcher matcher = triggerPattern.matcher(triggerText);
                 while (matcher.find()) {
-                    // TODO: script arg?
                     String keyword = TagManager.tag(matcher.group().replace("/", ""), new BukkitTagContext(denizenPlayer, npc, null, false, null));
                     String[] split = keyword.split("\\\\\\+REPLACE:", 2);
                     String replace = null;
@@ -243,20 +232,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         replace = split[1];
                     }
                     String keywordLow = CoreUtilities.toLowerCase(keyword);
-                    // Check if the trigger is REGEX, but only if we don't have a REGEX
-                    // match already (thus using alphabetical priority for triggers)
-                    if (regexId == null && keywordLow.startsWith("regex:")) {
+                    if (keywordLow.startsWith("regex:")) {
                         Pattern pattern = Pattern.compile(keyword.substring(6));
                         Matcher m = pattern.matcher(message);
                         if (m.find()) {
-                            // REGEX matches are left for last, so save it in case non-REGEX
-                            // matches don't exist
-                            regexId = entry.getKey();
-                            regexMessage = triggerText.replace(matcher.group(), m.group());
+                            id = entry.getKey();
+                            replacementText = triggerText.replace(matcher.group(), m.group());
                             context.put("keyword", new ElementTag(m.group()));
                             if (replace != null) {
-                                regexMessage = replace;
+                                replacementText = replace;
                             }
+                            break mainLoop;
                         }
                     }
                     else if (keyword.contains("|")) {
@@ -264,48 +250,40 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             if (messageLow.contains(CoreUtilities.toLowerCase(subkeyword))) {
                                 id = entry.getKey();
                                 replacementText = triggerText.replace(matcher.group(), subkeyword);
-                                matched = true;
                                 context.put("keyword", new ElementTag(subkeyword));
                                 if (replace != null) {
                                     replacementText = replace;
                                 }
+                                break mainLoop;
                             }
                         }
                     }
                     else if (keyword.equals("*")) {
                         id = entry.getKey();
                         replacementText = triggerText.replace("/*/", message);
-                        matched = true;
                         if (replace != null) {
                             replacementText = replace;
                         }
+                        break mainLoop;
                     }
                     else if (keywordLow.startsWith("strict:") && messageLow.equals(keywordLow.substring("strict:".length()))) {
                         id = entry.getKey();
                         replacementText = triggerText.replace(matcher.group(), keyword.substring("strict:".length()));
-                        matched = true;
                         if (replace != null) {
                             replacementText = replace;
                         }
+                        break mainLoop;
                     }
                     else if (messageLow.contains(keywordLow)) {
                         id = entry.getKey();
                         replacementText = triggerText.replace(matcher.group(), keyword);
-                        matched = true;
                         if (replace != null) {
                             replacementText = replace;
                         }
+                        break mainLoop;
                     }
                 }
-                if (matched) {
-                    break;
-                }
             }
-        }
-
-        if (!matched && regexId != null) {
-            id = regexId;
-            replacementText = regexMessage;
         }
 
         // If there was a match, the id of the match should have been returned.
