@@ -58,7 +58,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         if (!tryEntity(entity, path.eventArgLowerAt(isAt ? 4 : 3))) {
             return false;
         }
-        if (!runInCheck(path, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
         if (!runWithCheck(path, item)) {
@@ -86,21 +86,18 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("item")) {
-            return item;
-        }
-        else if (name.equals("hand")) {
-            return new ElementTag(event.getHand() == EquipmentSlot.OFF_HAND ? "offhand" : "mainhand");
-        }
-        else if (name.equals("location")) {
-            Deprecations.playerRightClicksEntityContext.warn();
-            return entity.getLocation();
-        }
-        else if (name.equals("click_position") && event instanceof PlayerInteractAtEntityEvent) {
-            return new LocationTag(((PlayerInteractAtEntityEvent) event).getClickedPosition());
+        switch (name) {
+            case "entity": return entity.getDenizenObject();
+            case "item": return item;
+            case "hand": return new ElementTag(event.getHand() == EquipmentSlot.OFF_HAND ? "offhand" : "mainhand");
+            case "location":
+                Deprecations.playerRightClicksEntityContext.warn();
+                return entity.getLocation();
+            case "click_position":
+                if (event instanceof PlayerInteractAtEntityEvent) {
+                    return new LocationTag(((PlayerInteractAtEntityEvent) event).getClickedPosition());
+                }
+                break;
         }
         return super.getContext(name);
     }
