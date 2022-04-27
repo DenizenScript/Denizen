@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -13,7 +14,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.entity.EntityType;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +58,7 @@ public class FakeSpawnCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        tab.add(EntityType.values());
+        TabCompleteHelper.tabCompleteEntityTypes(tab);
     }
 
     @Override

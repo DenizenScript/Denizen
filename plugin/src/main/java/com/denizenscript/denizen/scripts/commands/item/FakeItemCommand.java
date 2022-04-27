@@ -1,11 +1,10 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.DenizenCore;
@@ -17,7 +16,6 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.scheduling.OneTimeSchedulable;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
@@ -62,12 +60,7 @@ public class FakeItemCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        for (Material material : Material.values()) {
-            if (material.isItem()) {
-                tab.add(material.name());
-            }
-        }
-        tab.add(ItemScriptHelper.item_scripts.keySet());
+        TabCompleteHelper.tabCompleteItems(tab);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -76,12 +76,7 @@ public class GiveCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        for (Material material : Material.values()) {
-            if (material.isItem()) {
-                tab.add(material.name());
-            }
-        }
-        tab.add(ItemScriptHelper.item_scripts.keySet());
+        TabCompleteHelper.tabCompleteItems(tab);
     }
 
     @Override

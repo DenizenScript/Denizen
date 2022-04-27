@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -14,7 +15,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Material;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,11 +80,7 @@ public class ShowFakeCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        for (Material material : Material.values()) {
-            if (material.isBlock()) {
-                tab.add(material.name());
-            }
-        }
+        TabCompleteHelper.tabCompleteBlockMaterials(tab);
     }
 
     @Override

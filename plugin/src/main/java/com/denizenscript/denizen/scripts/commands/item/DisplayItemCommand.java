@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -74,12 +73,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        for (Material material : Material.values()) {
-            if (material.isItem()) {
-                tab.add(material.name());
-            }
-        }
-        tab.add(ItemScriptHelper.item_scripts.keySet());
+        TabCompleteHelper.tabCompleteItems(tab);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
-import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 
 import java.util.List;
 
@@ -64,8 +63,7 @@ public class SpawnCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        tab.add(EntityType.values());
-        tab.add(EntityScriptHelper.scripts.keySet());
+        TabCompleteHelper.tabCompleteEntityTypes(tab);
     }
 
     @Override

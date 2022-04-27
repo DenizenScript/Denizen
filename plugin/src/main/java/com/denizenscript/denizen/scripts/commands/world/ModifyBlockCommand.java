@@ -4,9 +4,9 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.WorldHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -112,11 +112,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        for (Material material : Material.values()) {
-            if (material.isBlock()) {
-                tab.add(material.name());
-            }
-        }
+        TabCompleteHelper.tabCompleteBlockMaterials(tab);
     }
 
     @Override

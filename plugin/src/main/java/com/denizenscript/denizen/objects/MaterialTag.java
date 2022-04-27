@@ -83,14 +83,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         return null;
     }
 
-    public static MaterialTag quickOfNamed(String string) {
-        Material m = Material.getMaterial(string.toUpperCase());
-        if (m != null) {
-            return new MaterialTag(m);
-        }
-        return null;
-    }
-
     public static TagContext noDebugContext = new BukkitTagContext(null, null, null, false, null);
 
     /**
