@@ -170,7 +170,7 @@ public class ItemSkullskin implements Property {
             else {
                 profile = new PlayerProfile(idString, null, texture);
             }
-            if (texture == null || profile.getName() == null || profile.getUniqueId() == null) { // Load if needed
+            if (texture == null || profile.getUniqueId() == null) { // Load if needed
                 profile = NMSHandler.instance.fillPlayerProfile(profile);
             }
             if (texture != null) {

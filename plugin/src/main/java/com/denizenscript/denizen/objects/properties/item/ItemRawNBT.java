@@ -254,7 +254,7 @@ public class ItemRawNBT implements Property {
             for (int i = 0; i < data.length; i++) {
                 output.append(data[i]).append("|");
             }
-            return new ElementTag("byte_array:" + output.toString());
+            return new ElementTag("byte_array:" + output);
         }
         else if (tag instanceof IntArrayTag) {
             int[] data = ((IntArrayTag) tag).getValue();
@@ -262,7 +262,7 @@ public class ItemRawNBT implements Property {
             for (int i = 0; i < data.length; i++) {
                 output.append(data[i]).append("|");
             }
-            return new ElementTag("int_array:" + output.toString());
+            return new ElementTag("int_array:" + output);
         }
         else if (tag instanceof ByteTag) {
             return new ElementTag("byte:" + ((ByteTag) tag).getValue());
