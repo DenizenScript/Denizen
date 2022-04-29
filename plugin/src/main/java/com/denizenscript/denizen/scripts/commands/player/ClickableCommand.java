@@ -11,8 +11,9 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.BracedCommand;
 import com.denizenscript.denizencore.scripts.containers.core.TaskScriptContainer;
+import com.denizenscript.denizencore.scripts.queues.ContextSource;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -23,12 +24,12 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ClickableCommand extends AbstractCommand {
+public class ClickableCommand extends BracedCommand {
 
     public ClickableCommand() {
         setName("clickable");
-        setSyntax("clickable [<script>/cancel:<id>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
-        setRequiredArguments(1, -1);
+        setSyntax("clickable (<script>/cancel:<id>) (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)");
+        setRequiredArguments(0, -1);
         isProcedural = false;
         allowedDynamicPrefixes = true;
         setPrefixesHandled("usages", "until", "for", "cancel", "def");
@@ -36,8 +37,8 @@ public class ClickableCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Clickable
-    // @Syntax clickable [<script>/cancel:<id>] (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)
-    // @Required 1
+    // @Syntax clickable (<script>/cancel:<id>) (def:<element>|.../defmap:<map>/def.<name>:<value>) (usages:<#>) (for:<player>|...) (until:<duration>)
+    // @Required 0
     // @Maximum -1
     // @Short Generates a clickable command for players.
     // @Group player
@@ -45,9 +46,19 @@ public class ClickableCommand extends AbstractCommand {
     // @Description
     // Generates a clickable command for players.
     //
-    // Specify a task script to run, and optionally any definitions to pass.
+    // Specify a task script to run, or put an executable script section as sub-commands.
+    //
+    // When running a task, optionally any definitions to pass.
+    //
+    // When using a sub-section, the running commands will be in their own queue, but copy out the original queue's definitions and context source.
     //
     // Optionally specify a maximum number of usages (defaults to unlimited).
+    //
+    // Optionally specify a maximum duration it can be used for with 'until'.
+    //
+    // If no duration is specified, the clickable will remain valid until the server stops or restarts.
+    // WARNING: if you use clickables very often without a duration limit, this can lead to a memory leak.
+    // Clickables that have a specified max duration will occasionally be cleaned from memory.
     //
     // Optionally specify what players are allowed to use it. Defaults to unrestricted (any player may use it).
     //
@@ -59,6 +70,12 @@ public class ClickableCommand extends AbstractCommand {
     // <entry[saveName].command> returns the command to use in "on_click".
     // <entry[saveName].id> returns the generate command's ID.
     // <ElementTag.on_click[<command>]>
+    //
+    // @Usage
+    // Use to generate a clickable that just narrates "hello there!" when clicked.
+    // - clickable save:my_clickable:
+    //     - narrate "Hello there!"
+    // - narrate "Click <blue><element[here].on_click[<entry[my_clickable].command>]><reset>!"
     //
     // @Usage
     // Use to generate a clickable message that will run a task script named 'test_script'.
@@ -98,6 +115,9 @@ public class ClickableCommand extends AbstractCommand {
         public int remainingUsages;
         public TagContext context;
         public long until;
+        public List<ScriptEntry> directEntries;
+        public ContextSource contextSource;
+        public String queueId;
     }
 
     public static HashMap<UUID, Clickable> clickables = new HashMap<>();
@@ -127,8 +147,13 @@ public class ClickableCommand extends AbstractCommand {
                 }
             }
         };
-        ScriptUtilities.createAndStartQueue(clickable.script.getContainer(), clickable.path,
-                new BukkitScriptEntryData(new PlayerTag(player), clickable.npc), null, configure, null, null, clickable.definitions, clickable.context);
+        BukkitScriptEntryData data = new BukkitScriptEntryData(new PlayerTag(player), clickable.npc);
+        if (clickable.directEntries != null) {
+            ScriptUtilities.createAndStartQueueArbitrary(clickable.queueId, clickable.directEntries, data, clickable.contextSource, configure);
+        }
+        else {
+            ScriptUtilities.createAndStartQueue(clickable.script.getContainer(), clickable.path, data, null, configure, null, clickable.queueId, clickable.definitions, clickable.context);
+        }
     }
 
     @Override
@@ -167,6 +192,27 @@ public class ClickableCommand extends AbstractCommand {
         }
     }
 
+    public static long lastTimeCleaned = CoreUtilities.monotonicMillis();
+
+    private final static List<UUID> toCleanNow = new ArrayList<>();
+
+    public static void cleanClickables() {
+        long curTime = CoreUtilities.monotonicMillis();
+        if (curTime < lastTimeCleaned + (30 * 60 * 1000)) {
+            return;
+        }
+        lastTimeCleaned = curTime;
+        toCleanNow.clear();
+        for (Map.Entry<UUID, Clickable> clickable : clickables.entrySet()) {
+            if (clickable.getValue().until != 0 && curTime > clickable.getValue().until) {
+                toCleanNow.add(clickable.getKey());
+            }
+        }
+        for (UUID id : toCleanNow) {
+            clickables.remove(id);
+        }
+    }
+
     @Override
     public void execute(ScriptEntry scriptEntry) {
         ScriptTag script = scriptEntry.getObjectTag("script");
@@ -177,7 +223,7 @@ public class ClickableCommand extends AbstractCommand {
         ListTag definitions = scriptEntry.argForPrefix("def", ListTag.class, true);
         DurationTag until = scriptEntry.argForPrefix("until", DurationTag.class, true);
         MapTag defMap = scriptEntry.getObjectTag("def_map");
-        if (script == null && cancel == null) {
+        if (script == null && cancel == null && scriptEntry.getInsideList() == null) {
             throw new InvalidArgumentsRuntimeException("Missing script argument!");
         }
         if (scriptEntry.dbCallShouldDebug()) {
@@ -201,16 +247,29 @@ public class ClickableCommand extends AbstractCommand {
             }
             return;
         }
+        cleanClickables();
         UUID id = UUID.randomUUID();
         Clickable newClickable = new Clickable();
-        newClickable.script = script;
+        if (script == null) {
+            newClickable.contextSource = scriptEntry.queue.contextSource;
+            newClickable.directEntries = getBracedCommandsDirect(scriptEntry, scriptEntry);
+            newClickable.defMap = scriptEntry.queue.definitions.duplicate();
+            if (defMap != null) {
+                newClickable.defMap.map.putAll(defMap.map);
+            }
+            newClickable.queueId = "CLICKABLE_" + (scriptEntry.getScript() == null ? "UNKNOWN" : scriptEntry.getScript().getName());
+        }
+        else {
+            newClickable.script = script;
+            newClickable.defMap = defMap;
+            newClickable.queueId = "CLICKABLE_" + script.getName();
+        }
         newClickable.path = path == null ? null : path.asString();
         newClickable.definitions = definitions;
         newClickable.remainingUsages = usages == null ? -1 : usages.asInt();
         newClickable.until = until == null ? 0 : (CoreUtilities.monotonicMillis() + until.getMillis());
         newClickable.context = scriptEntry.context;
         newClickable.npc = Utilities.getEntryNPC(scriptEntry);
-        newClickable.defMap = defMap;
         if (forPlayers != null) {
             newClickable.forPlayers = new HashSet<>(forPlayers.size());
             for (PlayerTag player : forPlayers) {
