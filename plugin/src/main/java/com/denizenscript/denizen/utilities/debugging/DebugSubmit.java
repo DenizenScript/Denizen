@@ -3,7 +3,9 @@ package com.denizenscript.denizen.utilities.debugging;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import org.bukkit.Bukkit;
@@ -73,19 +75,33 @@ public class DebugSubmit extends Thread {
             if (playerlist.length() < 2) {
                 playerlist.append("No Online Players, ");
             }
-            int validPl = 0, invalidPl = 0;
+            int plNormal = 0, plNull = 0, pl3 = 0, pl0 = 0, plWeird = 0;
             try {
                 for (UUID id : PlayerTag.getAllPlayers().values()) {
-                    if (id != null && id.version() == 4) {
-                        validPl++;
+                    if (id == null) {
+                        plNull++;
+                    }
+                    else if (id.version() == 4) {
+                        plNormal++;
+                    }
+                    else if (id.version() == 3) {
+                        pl3++;
+                    }
+                    else if (id.version() == 0) {
+                        pl0++;
                     }
                     else {
-                        invalidPl++;
+                        plWeird++;
                     }
                 }
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
+            }
+            String playerSet = (plNormal > 0 ? plNormal + " normal, " : "") + (plNull > 0 ? plNull + " null, " : "")
+                    + (pl3 > 0 ? pl3 + " v3, " : "") + (pl0 > 0 ? pl0 + " v0, " : "") + (plWeird > 0 ? plWeird + " other, " : "");
+            if (playerSet.length() > 2) {
+                playerSet = playerSet.substring(0, playerSet.length() - 2);
             }
             // Gather other setting info
             boolean proxied = false;
@@ -109,9 +125,10 @@ public class DebugSubmit extends Thread {
                     + "\nServer Version: " + Bukkit.getServer().getName() + " version " + Bukkit.getServer().getVersion()
                     + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + Denizen.getInstance().coreImplementation.getImplementationVersion()
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
+                    + "\nScript Containers: " + ScriptRegistry.scriptContainers.size() + ", Events: " + ScriptEvent.totalPaths
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
-                    + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + validPl + " valid, " + invalidPl + " invalid)"
+                    + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + playerSet + ")"
                     + "\nMode: " + onlineMode
                     + "\nLast reload: " + new DurationTag((CoreUtilities.monotonicMillis() - DenizenCore.lastReloadTime) / 1000.0).formatted(false) + " ago"
                     + "\n\n", "UTF-8");
