@@ -61,8 +61,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String eItem = path.eventArgLowerAt(2);
-        if (!tryItem(new ItemTag(event.getItem()), eItem)) {
+        if (!new ItemTag(event.getItem()).tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
         return super.matches(path);

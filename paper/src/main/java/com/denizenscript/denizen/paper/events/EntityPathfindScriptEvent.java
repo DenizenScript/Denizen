@@ -54,7 +54,7 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -64,7 +64,7 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         String at = path.switches.get("at");
-        if (at != null && !tryEntity(target, at)) {
+        if (at != null && (target == null || !target.tryAdvancedMatcher(at))) {
             return false;
         }
         return super.matches(path);

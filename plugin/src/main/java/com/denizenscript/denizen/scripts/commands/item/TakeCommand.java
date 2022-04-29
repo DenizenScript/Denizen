@@ -66,7 +66,7 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'raw_exact:' (Intentionally undocumented) will compare all raw details of an item exactly. This is almost always a bad idea to use. DO NOT USE.
     //
-    // Using 'item:' will take items that match an advanced item matcher, using the system behind <@link language Advanced Script Event Matching>.
+    // Using 'item:' will take items that match an advanced item matcher, using the system behind <@link language Advanced Object Matching>.
     //
     // Using 'xp' will take experience from the player.
     //
@@ -420,7 +420,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry, "Must specify an item matcher!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> BukkitScriptEvent.tryItem(new ItemTag(item), matcherText.asString()), quantity.asInt());
+                takeByMatcher(inventory, (item) -> new ItemTag(item).tryAdvancedMatcher(matcherText.asString()), quantity.asInt());
                 break;
             }
             case SLOT: {

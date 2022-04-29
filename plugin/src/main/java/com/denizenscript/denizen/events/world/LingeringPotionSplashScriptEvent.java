@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
@@ -48,8 +47,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String iTest = CoreUtilities.getXthArg(1, path.event);
-        if (!tryItem(item, iTest)) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(1))) {
             return false;
         }
         if (!runInCheck(path, location)) {

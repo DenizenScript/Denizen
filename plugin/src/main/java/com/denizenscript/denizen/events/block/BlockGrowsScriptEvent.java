@@ -56,7 +56,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         if (path.switches.containsKey("from")) {

@@ -63,10 +63,10 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (path.switches.containsKey("type") && !tryMaterial(material, path.switches.get("type"))) {
+        if (path.switches.containsKey("type") && !material.tryAdvancedMatcher(path.switches.get("type"))) {
             return false;
         }
         return super.matches(path);

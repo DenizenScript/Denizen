@@ -112,7 +112,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!cause.asString().equals(attacker) && !tryEntity(projectile, attacker) && !tryEntity(damager, attacker)) {
+                if (!cause.asString().equals(attacker) && (projectile == null || !projectile.tryAdvancedMatcher(attacker)) && (damager == null || !damager.tryAdvancedMatcher(attacker))) {
                     return false;
                 }
             }
@@ -122,7 +122,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (!tryEntity(entity, target)) {
+        if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

@@ -83,6 +83,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     // This object type is flaggable.
     // Flags on this object type will be stored in the chunk file inside the world folder.
     //
+    // @Matchable
+    // LocationTag matchers, sometimes identified as "<location>" or "<block>":
+    // "location" plaintext: always matches.
+    // "block_flagged:<flag>": a Flag Matchable for location flags at the given block location.
+    // "location_in:<area>": runs AreaObject checks, as defined below.
+    // If none of the above are used, and the location is at a real block, a MaterialTag matchable is used. Refer to <@link objecttype MaterialTag> matchable list.
+    //
     // -->
 
     /**
@@ -803,7 +810,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (!loc.isChunkLoaded()) {
                 return;
             }
-            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !BukkitScriptEvent.tryLocation(loc, matcher)) {
+            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !loc.tryAdvancedMatcher(matcher)) {
                 return;
             }
             result.add(loc);
@@ -2582,7 +2589,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundaryForTag(box)) {
                 if (Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
                     EntityTag current = new EntityTag(entity);
-                    if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
+                    if (matcher == null || current.tryAdvancedMatcher(matcher)) {
                         found.addObject(current.getDenizenObject());
                     }
                 }
@@ -2626,7 +2633,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             break fullloop;
                         }
                         if (Utilities.checkLocation(object, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
-                            if (matcher == null || BukkitScriptEvent.tryMaterial(new LocationTag(tstart.clone().add(x, y, z)).getBlockTypeForTag(attribute), matcher)) {
+                            if (matcher == null || new LocationTag(tstart.clone().add(x, y, z)).tryAdvancedMatcher(matcher)) {
                                 found.addObject(new LocationTag(tstart.clone().add(x, y, z)));
                             }
                         }
@@ -5045,6 +5052,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     @Override
     public boolean advancedMatches(String matcher) {
-        return BukkitScriptEvent.tryLocation(this, matcher);
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.equals("location")) {
+            return true;
+        }
+        if (matcherLow.contains(":")) {
+            if (matcherLow.startsWith("block_flagged:")) {
+                return BukkitScriptEvent.coreFlaggedCheck(matcher.substring("block_flagged:".length()), getFlagTracker());
+            }
+            if (matcherLow.startsWith("location_in:")) {
+                return BukkitScriptEvent.inCheckInternal(CoreUtilities.noDebugContext, "tryLocation", this, matcher.substring("location_in:".length()), "tryLocation", "tryLocation");
+            }
+        }
+        if (getWorld() == null) {
+            return false;
+        }
+        if (getY() < getWorld().getMinHeight() || getY() >= getWorld().getMaxHeight()) {
+            return false;
+        }
+        return MaterialTag.advancedMatchesInternal(getBlock().getType(), matcher, true);
     }
 }

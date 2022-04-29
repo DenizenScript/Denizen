@@ -56,19 +56,19 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!tryMaterial(material, path.eventArgLowerAt(0))) {
+        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         String adjacent = path.switches.get("adjacent");
         if (adjacent != null) {
-            if (!tryMaterial(material, adjacent)) {
+            if (!material.tryAdvancedMatcher(adjacent)) {
                 Block block = location.getBlock();
-                if (!tryLocation(block.getRelative(0, 1, 0).getLocation(), adjacent)
-                        && !tryLocation(block.getRelative(0, -1, 0).getLocation(), adjacent)
-                        && !tryLocation(block.getRelative(1, 0, 0).getLocation(), adjacent)
-                        && !tryLocation(block.getRelative(-1, 0, 0).getLocation(), adjacent)
-                        && !tryLocation(block.getRelative(0, 0, 1).getLocation(), adjacent)
-                        && !tryLocation(block.getRelative(0, 0, -1).getLocation(), adjacent)) {
+                if (!new LocationTag(block.getRelative(0, 1, 0).getLocation()).tryAdvancedMatcher(adjacent)
+                        && !new LocationTag(block.getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(adjacent)
+                        && !new LocationTag(block.getRelative(1, 0, 0).getLocation()).tryAdvancedMatcher(adjacent)
+                        && !new LocationTag(block.getRelative(-1, 0, 0).getLocation()).tryAdvancedMatcher(adjacent)
+                        && !new LocationTag(block.getRelative(0, 0, 1).getLocation()).tryAdvancedMatcher(adjacent)
+                        && !new LocationTag(block.getRelative(0, 0, -1).getLocation()).tryAdvancedMatcher(adjacent)) {
                     return false;
                 }
             }

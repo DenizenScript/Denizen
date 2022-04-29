@@ -78,7 +78,7 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
         if (!change.equals("modified") && !runGenericCheck(change, CoreUtilities.toLowerCase(event.getAction().name()))) {
             return false;
         }
-        if (!tryEntity(entity, target)) {
+        if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

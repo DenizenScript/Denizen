@@ -62,19 +62,16 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-
         String mat = path.eventArgLowerAt(2);
-        if (!tryMaterial(material, mat)) {
+        if (!material.tryAdvancedMatcher(mat)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
         if (!runWithCheck(path, new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
             return false;
         }
-
         return super.matches(path);
     }
 

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
@@ -55,6 +56,15 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the server saves file, under special sub-key "__materials"
+    //
+    // @Matchable
+    // MaterialTag matchers, sometimes identified as "<material>", associated with "<block>":
+    // "material" plaintext: always matches.
+    // "block" plaintext: matches if the material is a block-type material.
+    // "item" plaintext: matches if the material is an item-type material.
+    // "material_flagged:<flag>": a Flag Matchable for MaterialTag flags.
+    // "vanilla_tagged:<tag_name>": matches if the given vanilla tag applies to the material. Allows advanced matchers, for example: "vanilla_tagged:mineable*".
+    // If none of the above are used, uses an advanced matcher for the material name, like "stick".
     //
     // -->
 
@@ -568,19 +578,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <MaterialTag.advanced_matches[<matcher>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the material matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new ElementTag(BukkitScriptEvent.tryMaterial(object, attribute.getParam()));
-        });
-
-        // <--[tag]
         // @attribute <MaterialTag.vanilla_tags>
         // @returns ListTag
         // @description
@@ -689,8 +686,55 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
+
+    public static boolean advancedMatchesInternal(Material mat, String comparedto, boolean allowByMaterialName) {
+        if (comparedto == null || comparedto.isEmpty() || mat == null) {
+            return false;
+        }
+        String matcherLow = CoreUtilities.toLowerCase(comparedto);
+        if (matcherLow.equals("material")) {
+            return true;
+        }
+        if (matcherLow.equals("block")) {
+            return mat.isBlock();
+        }
+        if (matcherLow.equals("item")) {
+            return mat.isItem();
+        }
+        if (matcherLow.contains(":")) {
+            if (matcherLow.startsWith("vanilla_tagged:")) {
+                String tagCheck = comparedto.substring("vanilla_tagged:".length());
+                HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(mat);
+                if (tags == null) {
+                    return false;
+                }
+                ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(tagCheck);
+                for (String tag : tags) {
+                    if (matcher.doesMatch(tag)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else if (matcherLow.startsWith("material_flagged:")) {
+                return ScriptEvent.coreFlaggedCheck(comparedto.substring("material_flagged:".length()), new MaterialTag(mat).getFlagTracker());
+            }
+        }
+        if (allowByMaterialName) {
+            Material quickOf = Material.getMaterial(comparedto.toUpperCase());
+            if (quickOf != null) {
+                return quickOf == mat;
+            }
+            ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(comparedto);
+            if (matcher.doesMatch(mat.name())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean advancedMatches(String matcher) {
-        return BukkitScriptEvent.tryMaterial(this, matcher);
+        return advancedMatchesInternal(getMaterial(), matcher, true);
     }
 }

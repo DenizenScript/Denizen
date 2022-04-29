@@ -62,10 +62,10 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
         if (!runGenericSwitchCheck(path, "because", event.getTransformReason().name())) {
             return false;
         }
-        if (!tryEntity(originalEntity, path.eventArgLowerAt(0))) {
+        if (!originalEntity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("into") && !tryEntity(new EntityTag(event.getTransformedEntity()), path.eventArgLowerAt(3))) {
+        if (path.eventArgLowerAt(2).equals("into") && !new EntityTag(event.getTransformedEntity()).tryAdvancedMatcher(path.eventArgLowerAt(3))) {
             return false;
         }
         return super.matches(path);

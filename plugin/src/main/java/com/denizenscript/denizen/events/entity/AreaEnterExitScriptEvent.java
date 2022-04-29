@@ -71,33 +71,10 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (areaName.equals("notable")) { // TODO: Deprecate?
             areaName = path.eventArgLowerAt(3);
         }
-        if (areaName.equals("cuboid")) {
-            if (!(area instanceof CuboidTag)) {
-                return false;
-            }
+        if (!area.tryAdvancedMatcher(areaName)) {
+            return false;
         }
-        else if (areaName.equals("ellipsoid")) {
-            if (!(area instanceof EllipsoidTag)) {
-                return false;
-            }
-        }
-        else if (areaName.equals("polygon")) {
-            if (!(area instanceof PolygonTag)) {
-                return false;
-            }
-        }
-        else if (areaName.startsWith("area_flagged:")) {
-            AbstractFlagTracker tracker = ((FlaggableObject) area).getFlagTracker();
-            if (tracker == null || !tracker.hasFlag(areaName.substring("area_flagged:".length()))) {
-                return false;
-            }
-        }
-        else {
-            if (!runGenericCheck(areaName, area.getNoteName())) {
-                return false;
-            }
-        }
-        if (!tryEntity(currentEntity, path.eventArgLowerAt(0))) {
+        if (!currentEntity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         return super.matches(path);

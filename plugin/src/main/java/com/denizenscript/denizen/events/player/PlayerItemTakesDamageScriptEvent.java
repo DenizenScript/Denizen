@@ -71,9 +71,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-
-        String iItem = path.eventArgLowerAt(1);
-        if (!tryItem(item, iItem)) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(1))) {
             return false;
         }
         if (!runInCheck(path, location)) {

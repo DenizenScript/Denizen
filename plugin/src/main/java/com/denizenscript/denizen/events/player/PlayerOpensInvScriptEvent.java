@@ -55,7 +55,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryInventory(inventory, path.eventArgLowerAt(2))) {
+        if (!inventory.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
         Location loc = inventory.getLocation();

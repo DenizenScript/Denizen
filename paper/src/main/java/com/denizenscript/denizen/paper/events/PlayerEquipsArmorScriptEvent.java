@@ -69,19 +69,17 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     public boolean matches(ScriptPath path) {
         String type = path.eventArgLowerAt(1);
         String itemCompare = path.eventArgLowerAt(2);
-
         PlayerArmorChangeEvent.SlotType slotType = slotsByName.get(itemCompare);
         if (slotType != null && slot != slotType) {
             return false;
         }
-
         if (type.equals("equips")) {
             if (slotType != null) {
                 if (newItem.getMaterial().getMaterial() == Material.AIR) {
                     return false;
                 }
             }
-            else if (!itemCompare.equals("armor") && !tryItem(newItem, itemCompare)) {
+            else if (!itemCompare.equals("armor") && !newItem.tryAdvancedMatcher(itemCompare)) {
                 return false;
             }
         }
@@ -91,11 +89,10 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
                     return false;
                 }
             }
-            else if (!itemCompare.equals("armor") && !tryItem(oldItem, itemCompare)) {
+            else if (!itemCompare.equals("armor") && !oldItem.tryAdvancedMatcher(itemCompare)) {
                 return false;
             }
         }
-
         return super.matches(path);
     }
 

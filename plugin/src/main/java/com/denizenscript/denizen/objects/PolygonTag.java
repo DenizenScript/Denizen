@@ -54,6 +54,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     // This object type is flaggable when it is noted.
     // Flags on this object type will be stored in the notables.yml file.
     //
+    // @Matchable
+    // Refer to <@link objecttype areaobject>'s matchable list.
+    //
     // -->
 
     public WorldTag world;
@@ -741,5 +744,14 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             corners.add(newCorner);
             recalculateToFit(newCorner);
         }
+    }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.equals("polygon")) {
+            return true;
+        }
+        return areaBaseAdvancedMatches(matcher);
     }
 }

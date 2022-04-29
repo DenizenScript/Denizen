@@ -47,7 +47,7 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!tryMaterial(new MaterialTag(location.getBlock()), path.eventArgLowerAt(2))) {
+        if (!new MaterialTag(location.getBlock()).tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
         return super.matches(path);

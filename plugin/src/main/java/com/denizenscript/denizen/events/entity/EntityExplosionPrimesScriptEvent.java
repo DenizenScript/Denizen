@@ -41,17 +41,13 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-
-        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
-
     }
 
     @Override

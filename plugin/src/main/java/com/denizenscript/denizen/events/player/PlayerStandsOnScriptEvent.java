@@ -58,18 +58,13 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-
         String mat = path.eventArgLowerAt(3);
-        if (mat.length() > 0
-                && !mat.equals("in")
-                && !tryMaterial(material, mat)) {
+        if (mat.length() > 0 && !mat.equals("in") && !material.tryAdvancedMatcher(mat)) {
             return false;
         }
-
         if (!runInCheck(path, location)) {
             return false;
         }
-
         return super.matches(path);
     }
 

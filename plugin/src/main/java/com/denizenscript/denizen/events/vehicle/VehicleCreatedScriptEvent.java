@@ -51,7 +51,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
+        if (!vehicle.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

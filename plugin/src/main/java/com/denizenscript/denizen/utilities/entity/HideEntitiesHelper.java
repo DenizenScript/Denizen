@@ -37,7 +37,7 @@ public class HideEntitiesHelper {
                 }
                 EntityTag entityTag = new EntityTag(entity);
                 for (String matchable : matchersHidden) {
-                    if (BukkitScriptEvent.tryEntity(entityTag, matchable)) {
+                    if (entityTag.tryAdvancedMatcher(matchable)) {
                         if (entity instanceof Player) {
                             Player thisPlayer = Bukkit.getPlayer(player);
                             if (thisPlayer != null && thisPlayer.canSee((Player) entity)) {

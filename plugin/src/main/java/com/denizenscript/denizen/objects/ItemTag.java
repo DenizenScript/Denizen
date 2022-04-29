@@ -7,6 +7,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
@@ -68,6 +69,16 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the item NBT.
+    //
+    // @Matchable
+    // ItemTag matchers, sometimes identified as "<item>", often seen as "with:<item>":
+    // "potion": plaintext: matches if the item is any form of potion item.
+    // "item_flagged:<flag>": A Flag Matcher for item flags.
+    // "item_enchanted:<enchantment>": matches if the item is enchanted with the given enchantment name. Allows advanced matchers.
+    // "raw_exact:<item>": matches based on exact raw item data comparison (almost always a bad idea to use).
+    // Item script names: matches if the item is a script item with the given item script name, using advanced matchers.
+    // If none of the above are used, uses MaterialTag matchables. Refer to MaterialTag matchable list above.
+    // Note that "item" plaintext is always true.
     //
     // -->
 
@@ -709,20 +720,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         tagProcessor.registerTag(ElementTag.class, "formatted", (attribute, object) -> {
             return new ElementTag(object.formattedName());
         });
-
-        // <--[tag]
-        // @attribute <ItemTag.advanced_matches[<matcher>]>
-        // @returns ElementTag(Boolean)
-        // @group element checking
-        // @description
-        // Returns whether the item matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new ElementTag(BukkitScriptEvent.tryItem(object, attribute.getParam()));
-        });
     }
 
     public String formattedName() {
@@ -810,6 +807,41 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public boolean advancedMatches(String matcher) {
-        return BukkitScriptEvent.tryItem(this, matcher);
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.contains(":")) {
+            if (matcherLow.startsWith("item_flagged:")) {
+                if (getBukkitMaterial().isAir()) {
+                    return false;
+                }
+                return BukkitScriptEvent.coreFlaggedCheck(matcher.substring("item_flagged:".length()), getFlagTracker());
+            }
+            else if (matcherLow.startsWith("item_enchanted:")) {
+                String enchMatcher = matcher.substring("item_enchanted:".length());
+                if (getBukkitMaterial().isAir() || !getItemMeta().hasEnchants()) {
+                    return false;
+                }
+                for (Enchantment enchant : getItemMeta().getEnchants().keySet()) {
+                    if (BukkitScriptEvent.runGenericCheck(enchMatcher, enchant.getKey().getKey())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else if (matcherLow.startsWith("raw_exact:")) {
+                ItemTag compareItem = ItemTag.valueOf(matcher.substring("raw_exact:".length()), CoreUtilities.errorButNoDebugContext);
+                return compareItem != null && compareItem.matchesRawExact(this);
+            }
+        }
+        if (matcherLow.equals("potion") && CoreUtilities.toLowerCase(getBukkitMaterial().name()).contains("potion")) {
+            return true;
+        }
+        boolean isItemScript = isItemscript();
+        if (isItemScript) {
+            ScriptEvent.MatchHelper matchHelper = BukkitScriptEvent.createMatcher(matcher);
+            if (matchHelper.doesMatch(getScriptName())) {
+                return true;
+            }
+        }
+        return MaterialTag.advancedMatchesInternal(getBukkitMaterial(), matcher, !isItemScript);
     }
 }

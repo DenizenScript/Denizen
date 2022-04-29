@@ -105,7 +105,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                     ItemTag heldItem = new ItemTag(player.getPlayerEntity().getEquipment().getItemInMainHand());
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
                         String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(player, npc, null, false, null));
-                        boolean isMatch = entry_value.isEmpty() || BukkitScriptEvent.tryItem(heldItem, entry_value);
+                        boolean isMatch = entry_value.isEmpty() || heldItem.tryAdvancedMatcher(entry_value);
                         if (script.shouldDebug()) {
                             Debug.echoDebug(script, "Comparing click trigger '<A>" + entry_value + "<W>' with item '<A>" + heldItem.debuggable() + "<W>': " + (isMatch ? "<GR>Match!" : "<Y>Not a match"));
                         }

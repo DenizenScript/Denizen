@@ -72,11 +72,11 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
             if (entity == null) {
                 return false;
             }
-            if (!tryEntity(entity, fish)) {
+            if (!entity.tryAdvancedMatcher(fish)) {
                 if (item == null) {
                     return false;
                 }
-                if (!tryItem(item, fish)) {
+                if (!item.tryAdvancedMatcher(fish)) {
                     return false;
                 }
             }

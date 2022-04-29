@@ -86,11 +86,10 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        String itemTest = path.eventArgLowerAt(path.eventArgLowerAt(1).equals("picks") ? 3 : 2);
-        if (!tryItem(item, itemTest)) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(path.eventArgLowerAt(1).equals("picks") ? 3 : 2))) {
             return false;
         }
         if (!runInCheck(path, location)) {

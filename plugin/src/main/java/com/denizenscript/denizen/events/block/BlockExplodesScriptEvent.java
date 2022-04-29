@@ -47,13 +47,14 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     public static BlockExplodesScriptEvent instance;
     public BlockExplodeEvent event;
     public List<Block> blocks;
+    public LocationTag location;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryMaterial(event.getBlock().getType(), path.eventArgAt(0))) {
+        if (!location.tryAdvancedMatcher(path.eventArgAt(0))) {
             return false;
         }
-        if (!runInCheck(path, event.getBlock().getLocation())) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return super.matches(path);
@@ -90,7 +91,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "block": return new LocationTag(event.getBlock().getLocation());
+            case "block": return location;
             case "blocks": {
                 ListTag blocks = new ListTag();
                 for (Block block : this.blocks) {
@@ -107,6 +108,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     public void onBlockExplodes(BlockExplodeEvent event) {
         this.blocks = event.blockList();
         this.event = event;
+        location = new LocationTag(event.getBlock().getLocation());
         fire(event);
     }
 }

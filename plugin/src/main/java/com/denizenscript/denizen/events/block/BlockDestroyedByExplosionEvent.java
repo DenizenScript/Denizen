@@ -49,21 +49,21 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     public static BlockDestroyedByExplosionEvent instance;
     public BlockExplodeEvent blockEvent;
     public EntityExplodeEvent entityEvent;
-    public Block block;
+    public LocationTag location;
     public List<Block> rawList;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryMaterial(block.getType(), path.eventArgLowerAt(0))) {
+        if (!location.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!runInCheck(path, block.getLocation())) {
+        if (!runInCheck(path, location)) {
             return false;
         }
-        if (path.switches.containsKey("source_entity") && (entityEvent == null || !tryEntity(new EntityTag(entityEvent.getEntity()), path.switches.get("source_entity")))) {
+        if (path.switches.containsKey("source_entity") && (entityEvent == null || !new EntityTag(entityEvent.getEntity()).tryAdvancedMatcher(path.switches.get("source_entity")))) {
             return false;
         }
-        if (path.switches.containsKey("source_block") && (blockEvent == null || !tryMaterial(blockEvent.getBlock().getType(), path.switches.get("source_block")))) {
+        if (path.switches.containsKey("source_block") && (blockEvent == null || !new LocationTag(blockEvent.getBlock().getLocation()).tryAdvancedMatcher(path.switches.get("source_block")))) {
             return false;
         }
         return super.matches(path);
@@ -77,7 +77,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "block": return new LocationTag(block.getLocation());
+            case "block": return location;
             case "source_location": return new LocationTag(blockEvent != null ? blockEvent.getBlock().getLocation() : entityEvent.getLocation());
             case "source_entity": return entityEvent == null ? null : new EntityTag(entityEvent.getEntity());
             case "strength": return new ElementTag(blockEvent != null ? blockEvent.getYield() : entityEvent.getYield());
@@ -88,7 +88,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     @Override
     public void cancellationChanged() {
         if (cancelled) {
-            rawList.remove(block);
+            rawList.remove(location.getBlock());
         }
     }
 
@@ -98,7 +98,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
         this.entityEvent = null;
         this.rawList = event.blockList();
         for (Block block : new ArrayList<>(rawList)) {
-            this.block = block;
+            this.location = new LocationTag(block.getLocation());
             fire(event);
         }
     }
@@ -109,7 +109,7 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
         this.blockEvent = null;
         this.rawList = event.blockList();
         for (Block block : new ArrayList<>(rawList)) {
-            this.block = block;
+            this.location = new LocationTag(block.getLocation());
             fire(event);
         }
     }

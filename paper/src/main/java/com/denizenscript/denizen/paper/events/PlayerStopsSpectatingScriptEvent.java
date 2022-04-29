@@ -42,7 +42,7 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.eventArgLowerAt(3).length() > 0 && !tryEntity(new EntityTag(event.getSpectatorTarget()), path.eventArgLowerAt(3))) {
+        if (path.eventArgLowerAt(3).length() > 0 && !new EntityTag(event.getSpectatorTarget()).tryAdvancedMatcher(path.eventArgLowerAt(3))) {
             return false;
         }
         if (!runInCheck(path, event.getPlayer().getLocation())) {

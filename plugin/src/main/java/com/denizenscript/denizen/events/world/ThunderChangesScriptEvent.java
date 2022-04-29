@@ -53,7 +53,7 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
         else if (!changeType.equals("changes")) {
             return false;
         }
-        if (path.switches.containsKey("in") && !tryWorld(new WorldTag(event.getWorld()), path.switches.get("in"))) {
+        if (path.switches.containsKey("in") && !new WorldTag(event.getWorld()).tryAdvancedMatcher(path.switches.get("in"))) {
             return false;
         }
         return super.matches(path);

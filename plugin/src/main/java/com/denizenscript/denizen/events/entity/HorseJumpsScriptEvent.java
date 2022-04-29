@@ -66,7 +66,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         String arg1 = path.eventArgLowerAt(0);
         String arg2 = path.eventArgLowerAt(1);
         String tamed = arg2.equals("jumps") ? arg1 : arg2;
-        if (!tryEntity(entity, tamed)) {
+        if (!entity.tryAdvancedMatcher(tamed)) {
             return false;
         }
         if (path.eventArgLowerAt(2).equals("jumps") && (color == null || !arg1.equals(CoreUtilities.toLowerCase(color.toString())))) {

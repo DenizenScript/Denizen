@@ -7,10 +7,8 @@ import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -22,7 +20,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -40,7 +37,7 @@ import java.util.function.Function;
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
     // <--[language]
-    // @name Script Event Object Matchables
+    // @name Advanced Object Matchables
     // @group Script Events
     // @description
     // Script events have a variety of matchable object inputs, and the range of inputs they accept may not always be obvious.
@@ -50,14 +47,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // This means you can specify any valid block material name, like "stone" or "air", like "on player clicks stone:" (will only run the event if the player is clicking stone)
     // You can also use a catch-all such as "block", like "on player clicks block:" (will always run the event when the player clicks anything/anywhere)
     // You can also use some more complicated matchables such as "vanilla_tagged:", like "on player clicks vanilla_tagged:mineable/axe:" (will run if the block is mineable with axes)
-    // (For more block-related options, refer to the LocationTag and MaterialTag matchers lists below.)
+    // (For more block-related options, refer to the <@link objecttype LocationTag> and <@link objecttype MaterialTag> matchers lists.)
     //
     // Many object types can be used for matchables, the valid inputs are unique depending on the object type involved.
     //
     // Some inputs don't refer to any object at all - they're just advanced matchers for some generic plaintext,
     // for example "<cause>" implies an enumeration of causes will be matched against.
     //
-    // Many inputs support advanced matchers. For details on that, see <@link language Advanced Script Event Matching>.
+    // Many inputs support advanced matchers. For details on that, see <@link language Advanced Object Matching>.
     //
     // A common matchable type found among different objects is a Flag Matchable. This usually looks like "item_flagged:<flag>"
     // This matches if the object has the specified flag, and fails to match if the object doesn't have that flag.
@@ -69,23 +66,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // usually documented like ".types[<matcher>]", with tag documentation specifying what matcher is used,
     // or like "<material_matcher>" to indicate in this example specifically MaterialTag matchables are allowed.
     //
-    // Primary matchable types:
+    // Not all object types have defined matchable options, and those that do list them in their ObjectType meta. For an example of this, check <@link objecttype ItemTag>.
     //
-    // MaterialTag matchers, sometimes identified as "<material>", associated with "<block>":
-    // "material" plaintext: always matches.
-    // "block" plaintext: matches if the material is a block-type material.
-    // "item" plaintext: matches if the material is an item-type material.
-    // "material_flagged:<flag>": a Flag Matchable for MaterialTag flags.
-    // "vanilla_tagged:<tag_name>": matches if the given vanilla tag applies to the material. Allows advanced matchers, for example: "vanilla_tagged:mineable*".
-    // If none of the above are used, uses an advanced matcher for the material name, like "stick".
-    //
-    // LocationTag matchers, sometimes identified as "<location>" or "<block>":
-    // "location" plaintext: always matches.
-    // "block_flagged:<flag>": a Flag Matchable for location flags at the given block location.
-    // "location_in:<area>": runs AreaObject checks, as defined below.
-    // If none of the above are used, and the location is at a real block, a MaterialTag matchable is used. Refer to MaterialTag matchable list above.
-    //
-    // AreaObject matchers (applies to CuboidTag, EllipsoidTag, PolygonTag, ...), sometimes identified as "<area>": (Note: this is internally always sourced from a LocationTag instance, not a raw area object!)
+    // As a special case, "in:<area>" style matchable listings in event conform to the following option set:
     // "biome:<name>": matches if the location is in a given biome, using advanced matchers.
     // "cuboid" plaintext: matches if the location is in any noted cuboid.
     // "ellipsoid" plaintext: matches if the location is in any noted ellipsoid.
@@ -94,46 +77,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // "area_flagged:<flag>": a Flag Matchable for AreaObject flags.
     // Area note name: matches if an AreaObject note that matches the given advanced matcher contains the location.
     // If none of the above are used, uses WorldTag matchers.
-    //
-    // WorldTag matchers, sometimes identified as "<world>":
-    // "world" plaintext: always matches.
-    // World name: matches if the world has the given world name, using advanced matchers.
-    // "world_flagged:<flag>": a Flag Matchable for WorldTag flags.
-    //
-    // ItemTag matchers, sometimes identified as "<item>", often seen as "with:<item>":
-    // "potion": plaintext: matches if the item is any form of potion item.
-    // "item_flagged:<flag>": A Flag Matcher for item flags.
-    // "item_enchanted:<enchantment>": matches if the item is enchanted with the given enchantment name. Allows advanced matchers.
-    // "raw_exact:<item>": matches based on exact raw item data comparison (almost always a bad idea to use).
-    // Item script names: matches if the item is a script item with the given item script name, using advanced matchers.
-    // If none of the above are used, uses MaterialTag matchables. Refer to MaterialTag matchable list above.
-    // Note that "item" plaintext is always true.
-    //
-    // EntityTag matchers, sometimes identified as "<entity>", "<projectile>", or "<vehicle>":
-    // "entity" plaintext: always matches.
-    // "player" plaintext: matches any real player (not NPCs).
-    // "npc" plaintext: matches any Citizens NPC.
-    // "vehicle" plaintext: matches for any vehicle type (minecarts, boats, horses, etc).
-    // "fish" plaintext: matches for any fish type (cod, pufferfish, etc).
-    // "projectile" plaintext: matches for any projectile type (arrow, trident, fish hook, snowball, etc).
-    // "hanging" plaintext: matches for any hanging type (painting, item_frame, etc).
-    // "monster" plaintext: matches for any monster type (creepers, zombies, etc).
-    // "animal" plaintext: matches for any animal type (pigs, cows, etc).
-    // "mob" plaintext: matches for any mob type (creepers, pigs, etc).
-    // "living" plaintext: matches for any living type (players, pigs, creepers, etc).
-    // "entity_flagged:<flag>": a Flag Matchable for EntityTag flags.
-    // "player_flagged:<flag>": a Flag Matchable for PlayerTag flags (will never match non-players).
-    // "npc_flagged:<flag>": a Flag Matchable for NPCTag flags (will never match non-NPCs).
-    // "npc_<type>": matches if the NPC is the given entity type (like "npc_cow" or "npc_mob" or "npc_player").
-    // Any entity type name: matches if the entity is of the given type, using advanced matchers.
-    //
-    // InventoryTag matchers, sometimes identified as "<inventory>":
-    // "inventory" plaintext: always matches.
-    // "note" plaintext: matches if the inventory is noted.
-    // Inventory script name: matches if the inventory comes from an inventory script of the given name, using advanced matchers.
-    // Inventory note name: matches if the inventory is noted with the given name, using advanced matchers.
-    // Inventory type: matches if the inventory is of a given type, using advanced matchers.
-    // "inventory_flagged:<flag>": a Flag Matchable for InventoryTag flags.
     //
     // -->
 
@@ -454,7 +397,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
 
         String with = path.eventArgLowerAt(index + 1);
-        if (with != null && (held == null || !tryItem(held, with))) {
+        if (with != null && (held == null || !held.tryAdvancedMatcher(with))) {
             return false;
         }
         return true;
@@ -831,7 +774,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (CoreUtilities.equalsIgnoreCase(with, "item")) {
                 return true;
             }
-            if (held == null || !tryItem(held, with)) {
+            if (held == null || !held.tryAdvancedMatcher(with)) {
                 return false;
             }
         }
@@ -982,182 +925,4 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // </code>
     //
     // -->
-
-    public static boolean tryWorld(WorldTag world, String comparedto) {
-        if (comparedto.equals("world")) {
-            return true;
-        }
-        if (comparedto.startsWith("world_flagged:")) {
-            return coreFlaggedCheck(comparedto.substring("world_flagged:".length()), world.getFlagTracker());
-        }
-        return runGenericCheck(comparedto, world.getName());
-    }
-
-    public static boolean compareInventoryToMatch(InventoryTag inv, MatchHelper matcher) {
-        if (matcher instanceof InverseMatchHelper) {
-            return !compareInventoryToMatch(inv, ((InverseMatchHelper) matcher).matcher);
-        }
-        if (matcher.doesMatch(inv.getInventoryType().name())) {
-            return true;
-        }
-        if (matcher.doesMatch(inv.getIdType())) {
-            return true;
-        }
-        if (matcher.doesMatch(inv.getIdHolder().toString())) {
-            return true;
-        }
-        if (inv.getIdHolder() instanceof ScriptTag && matcher.doesMatch(((ScriptTag) inv.getIdHolder()).getName())) {
-            return true;
-        }
-        String notedId = NoteManager.getSavedId(inv);
-        if (notedId != null && matcher.doesMatch(notedId)) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean tryInventory(InventoryTag inv, String comparedto) {
-        comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.equals("inventory")) {
-            return true;
-        }
-        if (comparedto.equals("notable") || comparedto.equals("note")) {
-            return NoteManager.isSaved(inv);
-        }
-        if (comparedto.startsWith("inventory_flagged:")) {
-            return inv.flagTracker != null && coreFlaggedCheck(comparedto.substring("inventory_flagged:".length()), inv.flagTracker);
-        }
-        MatchHelper matcher = createMatcher(comparedto);
-        return compareInventoryToMatch(inv, matcher);
-    }
-
-    public static boolean tryItem(ItemTag item, String comparedto) {
-        if (comparedto == null || comparedto.isEmpty() || item == null) {
-            return false;
-        }
-        String rawComparedTo = comparedto;
-        comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.contains(":")) {
-            if (comparedto.startsWith("item_flagged:")) {
-                if (item.getBukkitMaterial().isAir()) {
-                    return false;
-                }
-                return coreFlaggedCheck(rawComparedTo.substring("item_flagged:".length()), item.getFlagTracker());
-            }
-            else if (comparedto.startsWith("item_enchanted:")) {
-                String enchMatcher = comparedto.substring("item_enchanted:".length());
-                if (item.getBukkitMaterial().isAir() || !item.getItemMeta().hasEnchants()) {
-                    return false;
-                }
-                for (Enchantment enchant : item.getItemMeta().getEnchants().keySet()) {
-                    if (runGenericCheck(enchMatcher, enchant.getKey().getKey())) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else if (comparedto.startsWith("raw_exact:")) {
-                ItemTag compareItem = ItemTag.valueOf(rawComparedTo.substring("raw_exact:".length()), CoreUtilities.errorButNoDebugContext);
-                return compareItem != null && compareItem.matchesRawExact(item);
-            }
-        }
-        if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getBukkitMaterial().name()).contains("potion")) {
-            return true;
-        }
-        boolean isItemScript = item.isItemscript();
-        if (isItemScript) {
-            MatchHelper matcher = createMatcher(comparedto);
-            if (matcher.doesMatch(item.getScriptName())) {
-                return true;
-            }
-        }
-        return tryMaterialInternal(item.getBukkitMaterial(), comparedto, !isItemScript);
-    }
-
-    public static boolean tryLocation(Location location, String comparedto) {
-        if (comparedto == null || comparedto.isEmpty() || location == null) {
-            return false;
-        }
-        comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.equals("location")) {
-            return true;
-        }
-        if (comparedto.contains(":")) {
-            if (comparedto.startsWith("block_flagged:")) {
-                return coreFlaggedCheck(comparedto.substring("block_flagged:".length()), new LocationTag(location).getFlagTracker());
-            }
-            if (comparedto.startsWith("location_in:")) {
-                return inCheckInternal(CoreUtilities.noDebugContext, "tryLocation", location,
-                        comparedto.substring("location_in:".length()), "tryLocation", "tryLocation");
-            }
-        }
-        if (location.getWorld() == null) {
-            return false;
-        }
-        if (location.getY() < location.getWorld().getMinHeight() || location.getY() >= location.getWorld().getMaxHeight()) {
-            return false;
-        }
-        return tryMaterial(location.getBlock().getType(), comparedto);
-    }
-
-    public static boolean tryMaterial(MaterialTag mat, String comparedto) {
-        return tryMaterial(mat.getMaterial(), comparedto);
-    }
-
-    public static boolean tryMaterial(Material mat, String comparedto) {
-        return tryMaterialInternal(mat, comparedto, true);
-    }
-
-    public static boolean tryMaterialInternal(Material mat, String comparedto, boolean allowByMaterialName) {
-        if (comparedto == null || comparedto.isEmpty() || mat == null) {
-            return false;
-        }
-        comparedto = CoreUtilities.toLowerCase(comparedto);
-        if (comparedto.equals("material")) {
-            return true;
-        }
-        if (comparedto.equals("block")) {
-            return mat.isBlock();
-        }
-        if (comparedto.equals("item")) {
-            return mat.isItem();
-        }
-        if (comparedto.contains(":")) {
-            if (comparedto.startsWith("vanilla_tagged:")) {
-                String tagCheck = comparedto.substring("vanilla_tagged:".length());
-                HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(mat);
-                if (tags == null) {
-                    return false;
-                }
-                MatchHelper matcher = createMatcher(tagCheck);
-                for (String tag : tags) {
-                    if (matcher.doesMatch(tag)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else if (comparedto.startsWith("material_flagged:")) {
-                return coreFlaggedCheck(comparedto.substring("material_flagged:".length()), new MaterialTag(mat).getFlagTracker());
-            }
-        }
-        if (allowByMaterialName) {
-            Material quickOf = Material.getMaterial(comparedto);
-            if (quickOf != null) {
-                return quickOf == mat;
-            }
-            MatchHelper matcher = createMatcher(comparedto);
-            if (matcher.doesMatch(mat.name())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean tryEntity(EntityTag entity, String comparedto) {
-        if (entity == null) {
-            return false;
-        }
-        return entity.tryAdvancedMatcher(comparedto);
-    }
 }

@@ -48,6 +48,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     // This object type is flaggable when it is noted.
     // Flags on this object type will be stored in the notables.yml file.
     //
+    // @Matchable
+    // Refer to <@link objecttype areaobject>'s matchable list.
+    //
     // -->
 
     public static List<EllipsoidTag> getNotableEllipsoidsContaining(Location location) {
@@ -600,5 +603,14 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     public boolean doesContainLocation(Location loc) {
         return contains(loc);
+    }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.equals("ellipsoid")) {
+            return true;
+        }
+        return areaBaseAdvancedMatches(matcher);
     }
 }

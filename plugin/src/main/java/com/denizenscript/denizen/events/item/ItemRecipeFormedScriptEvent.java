@@ -52,12 +52,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        String eItem = path.eventArgLowerAt(0);
-
-        if (!tryItem(result, eItem)) {
+        if (!result.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-
         return super.matches(path);
     }
 

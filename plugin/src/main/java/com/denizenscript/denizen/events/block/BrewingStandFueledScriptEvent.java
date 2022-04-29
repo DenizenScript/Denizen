@@ -51,7 +51,7 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (path.eventArgLowerAt(3).equals("with") && !tryItem(item, path.eventArgLowerAt(4))) {
+        if (path.eventArgLowerAt(3).equals("with") && !item.tryAdvancedMatcher(path.eventArgLowerAt(4))) {
             return false;
         }
         return super.matches(path);

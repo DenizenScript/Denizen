@@ -59,10 +59,10 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
+        if (!vehicle.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!tryMaterial(material, path.eventArgLowerAt(3))) {
+        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
             return false;
         }
         if (!runInCheck(path, location)) {

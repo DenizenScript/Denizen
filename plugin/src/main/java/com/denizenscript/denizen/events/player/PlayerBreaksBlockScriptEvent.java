@@ -79,7 +79,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(2);
-        if (!tryMaterial(material, mat)) {
+        if (!material.tryAdvancedMatcher(mat)) {
             return false;
         }
         if (!runInCheck(path, location)) {
@@ -90,7 +90,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         // Deprecated in favor of with: format
         if (path.eventArgLowerAt(3).equals("with")
-                && !tryItem(new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()), path.eventArgLowerAt(4))) {
+                && !new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()).tryAdvancedMatcher(path.eventArgLowerAt(4))) {
             return false;
         }
         return super.matches(path);

@@ -5,6 +5,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
+import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -36,6 +38,14 @@ public interface AreaContainmentObject extends ObjectTag {
     //
     // @description
     // "AreaObject" is a pseudo-ObjectType that represents any object that indicates a world-space area, such as a CuboidTag.
+    //
+    // @Matchable
+    // AreaObject matchers (applies to CuboidTag, EllipsoidTag, PolygonTag, ...), sometimes identified as "<area>":
+    // "cuboid" plaintext: matches if the area is a CuboidTag.
+    // "ellipsoid" plaintext: matches if the area is an EllipsoidTag.
+    // "polygon" plaintext: matches if the area is a PolygonTag.
+    // "area_flagged:<flag>": a Flag Matchable for AreaObject flags.
+    // Area note name: matches if the AreaObject's note name matches the given advanced matcher.
     //
     // -->
 
@@ -149,7 +159,7 @@ public interface AreaContainmentObject extends ObjectTag {
             for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithinForTag()) {
                 if (area.doesContainLocation(ent.getLocation())) {
                     EntityTag current = new EntityTag(ent);
-                    if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
+                    if (matcher == null || current.tryAdvancedMatcher(matcher)) {
                         entities.addObject(current.getDenizenObject());
                     }
                 }
@@ -203,7 +213,7 @@ public interface AreaContainmentObject extends ObjectTag {
                 NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
                 try {
                     String matcher = attribute.getParam();
-                    Predicate<Location> predicate = (l) -> BukkitScriptEvent.tryMaterial(l.getBlock().getType(), matcher);
+                    Predicate<Location> predicate = (l) -> new LocationTag(l).tryAdvancedMatcher(matcher);
                     return area.getBlocks(predicate);
                 }
                 finally {
@@ -226,7 +236,7 @@ public interface AreaContainmentObject extends ObjectTag {
                 try {
                     if (attribute.hasParam()) {
                         String matcher = attribute.getParam();
-                        Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && BukkitScriptEvent.tryMaterial(l.getBlock().getRelative(0, -1, 0).getType(), matcher);
+                        Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && new LocationTag(l.getBlock().getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(matcher);
                         return area.getBlocks(predicate);
                     }
                     return area.getBlocks(SpawnableHelper::isSpawnable);
@@ -319,5 +329,17 @@ public interface AreaContainmentObject extends ObjectTag {
             }
             return (T) area.withWorld(world);
         });
+    }
+
+    default boolean areaBaseAdvancedMatches(String matcher) {
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.startsWith("area_flagged:")) {
+            AbstractFlagTracker tracker = ((FlaggableObject) this).getFlagTracker();
+            return tracker != null && tracker.hasFlag(matcher.substring("area_flagged:".length()));
+        }
+        if (BukkitScriptEvent.runGenericCheck(matcher, getNoteName())) {
+            return true;
+        }
+        return false;
     }
 }

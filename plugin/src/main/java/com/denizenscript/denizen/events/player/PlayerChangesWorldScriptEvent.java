@@ -48,21 +48,16 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-
         String[] data = path.eventArgsLower;
+        // TODO: Switches
         for (int index = 3; index < data.length; index++) {
-            if (data[index].equals("from")) {
-                if (!tryWorld(origin_world, data[index + 1])) {
-                    return false;
-                }
+            if (data[index].equals("from") && !origin_world.tryAdvancedMatcher(data[index + 1])) {
+                return false;
             }
-            else if (data[index].equals("to")) {
-                if (!tryWorld(destination_world, data[index + 1])) {
-                    return false;
-                }
+            else if (data[index].equals("to") && !destination_world.tryAdvancedMatcher(data[index + 1])) {
+                return false;
             }
         }
-
         return super.matches(path);
     }
 

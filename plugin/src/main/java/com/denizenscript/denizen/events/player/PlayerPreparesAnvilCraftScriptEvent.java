@@ -65,12 +65,9 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public boolean matches(ScriptPath path) {
-        String eItem = path.eventArgLowerAt(4);
-
-        if (!tryItem(result, eItem)) {
+        if (!result.tryAdvancedMatcher(path.eventArgLowerAt(4))) {
             return false;
         }
-
         return super.matches(path);
     }
 

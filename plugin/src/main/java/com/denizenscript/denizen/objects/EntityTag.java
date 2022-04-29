@@ -85,6 +85,25 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // This object type is flaggable.
     // Flags on this object type will be stored in the world chunk files as a part of the entity's NBT.
     //
+    // @Matchable
+    // EntityTag matchers, sometimes identified as "<entity>", "<projectile>", or "<vehicle>":
+    // "entity" plaintext: always matches.
+    // "player" plaintext: matches any real player (not NPCs).
+    // "npc" plaintext: matches any Citizens NPC.
+    // "vehicle" plaintext: matches for any vehicle type (minecarts, boats, horses, etc).
+    // "fish" plaintext: matches for any fish type (cod, pufferfish, etc).
+    // "projectile" plaintext: matches for any projectile type (arrow, trident, fish hook, snowball, etc).
+    // "hanging" plaintext: matches for any hanging type (painting, item_frame, etc).
+    // "monster" plaintext: matches for any monster type (creepers, zombies, etc).
+    // "animal" plaintext: matches for any animal type (pigs, cows, etc).
+    // "mob" plaintext: matches for any mob type (creepers, pigs, etc).
+    // "living" plaintext: matches for any living type (players, pigs, creepers, etc).
+    // "entity_flagged:<flag>": a Flag Matchable for EntityTag flags.
+    // "player_flagged:<flag>": a Flag Matchable for PlayerTag flags (will never match non-players).
+    // "npc_flagged:<flag>": a Flag Matchable for NPCTag flags (will never match non-NPCs).
+    // "npc_<type>": matches if the NPC is the given entity type (like "npc_cow" or "npc_mob" or "npc_player").
+    // Any entity type name: matches if the entity is of the given type, using advanced matchers.
+    //
     // -->
 
     /////////////////////
@@ -429,88 +448,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Debug.echoError("NPC referenced is null!");
         }
     }
-
-    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
-
-    public final boolean trySpecialEntityMatcher(String text, boolean isNPC) {
-        if (isNPC) {
-            return text.equals("entity") || text.equals("npc");
-        }
-        switch (text) {
-            case "entity":
-                return true;
-            case "npc":
-                return isCitizensNPC();
-            case "player":
-                return isPlayer();
-            case "living":
-                return isLivingEntityType();
-            case "vehicle":
-                return getBukkitEntity() instanceof Vehicle;
-            case "fish":
-                return getBukkitEntity() instanceof Fish;
-            case "projectile":
-                return getBukkitEntity() instanceof Projectile;
-            case "hanging":
-                return getBukkitEntity() instanceof Hanging;
-            case "monster":
-                return isMonsterType();
-            case "mob":
-                return isMobType();
-            case "animal":
-                return isAnimalType();
-        }
-        return false;
-    }
-
-    public final boolean tryExactMatcher(String text) {
-        if (specialEntityMatchables.contains(text)) {
-            return trySpecialEntityMatcher(text, isCitizensNPC());
-        }
-        if (text.startsWith("npc_") && !text.startsWith("npc_flagged")) {
-            String check = text.substring("npc_".length());
-            if (specialEntityMatchables.contains(check)) {
-                if (check.equals("player")) { // Special case
-                    return npc.getEntityType() == EntityType.PLAYER;
-                }
-                return trySpecialEntityMatcher(check, false);
-            }
-            return check.equals(CoreUtilities.toLowerCase(npc.getEntityType().name()));
-        }
-        if (text.contains(":")) {
-            if (text.startsWith("entity_flagged:")) {
-                return ScriptEvent.coreFlaggedCheck(text.substring("entity_flagged:".length()), getFlagTracker());
-            }
-            else if (text.startsWith("player_flagged:")) {
-                return isPlayer() && ScriptEvent.coreFlaggedCheck(text.substring("player_flagged:".length()), getFlagTracker());
-            }
-            else if (text.startsWith("npc_flagged:")) {
-                return isCitizensNPC() && ScriptEvent.coreFlaggedCheck(text.substring("npc_flagged:".length()), getFlagTracker());
-            }
-        }
-        return false;
-    }
-
-    public final boolean tryAdvancedMatcher(String text) {
-        if (text == null || text.isEmpty()) {
-            return false;
-        }
-        ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(CoreUtilities.toLowerCase(text));
-        if (isCitizensNPC()) {
-            return matcher.doesMatch("npc", this::tryExactMatcher);
-        }
-        if (getEntityScript() != null && matcher.doesMatch(getEntityScript(), this::tryExactMatcher)) {
-            return true;
-        }
-        else if (matcher.doesMatch(getEntityType().getLowercaseName(), this::tryExactMatcher)) {
-            return true;
-        }
-        return false;
-    }
-
-    /////////////////////
-    //   INSTANCE FIELDS/METHODS
-    /////////////////
 
     @Override
     public EntityTag duplicate() {
@@ -2244,7 +2181,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && BukkitScriptEvent.tryEntity(new EntityTag(e), matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2280,7 +2217,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && BukkitScriptEvent.tryEntity(new EntityTag(e), matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2717,25 +2654,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <EntityTag.advanced_matches[<matcher>]>
-        // @returns ElementTag(Boolean)
-        // @group element checking
-        // @description
-        // Returns whether the entity matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new ElementTag(BukkitScriptEvent.tryEntity(object, attribute.getParam()));
-        });
-
-        // <--[tag]
         // @attribute <EntityTag.has_equipped[<item-matcher>]>
         // @returns ElementTag(Boolean)
         // @group element checking
         // @description
-        // Returns whether the entity has any armor equipment item that matches the given item matcher, using the system behind <@link language Advanced Script Event Matching>.
+        // Returns whether the entity has any armor equipment item that matches the given item matcher, using the system behind <@link language Advanced Object Matching>.
         // For example, has_equipped[diamond_*] will return true if the entity is wearing at least one piece of diamond armor.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "has_equipped", (attribute, object) -> {
@@ -2747,7 +2670,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             String matcher = attribute.getParam();
             for (ItemStack item : object.getLivingEntity().getEquipment().getArmorContents()) {
-                if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
                     return new ElementTag(true);
                 }
             }
@@ -4119,8 +4042,79 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
+    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
+
+    public final boolean trySpecialEntityMatcher(String text, boolean isNPC) {
+        if (isNPC) {
+            return text.equals("entity") || text.equals("npc");
+        }
+        switch (text) {
+            case "entity":
+                return true;
+            case "npc":
+                return isCitizensNPC();
+            case "player":
+                return isPlayer();
+            case "living":
+                return isLivingEntityType();
+            case "vehicle":
+                return getBukkitEntity() instanceof Vehicle;
+            case "fish":
+                return getBukkitEntity() instanceof Fish;
+            case "projectile":
+                return getBukkitEntity() instanceof Projectile;
+            case "hanging":
+                return getBukkitEntity() instanceof Hanging;
+            case "monster":
+                return isMonsterType();
+            case "mob":
+                return isMobType();
+            case "animal":
+                return isAnimalType();
+        }
+        return false;
+    }
+
+    public final boolean tryExactMatcher(String text) {
+        if (specialEntityMatchables.contains(text)) {
+            return trySpecialEntityMatcher(text, isCitizensNPC());
+        }
+        if (text.startsWith("npc_") && !text.startsWith("npc_flagged")) {
+            String check = text.substring("npc_".length());
+            if (specialEntityMatchables.contains(check)) {
+                if (check.equals("player")) { // Special case
+                    return npc.getEntityType() == EntityType.PLAYER;
+                }
+                return trySpecialEntityMatcher(check, false);
+            }
+            return check.equals(CoreUtilities.toLowerCase(npc.getEntityType().name()));
+        }
+        if (text.contains(":")) {
+            if (text.startsWith("entity_flagged:")) {
+                return ScriptEvent.coreFlaggedCheck(text.substring("entity_flagged:".length()), getFlagTracker());
+            }
+            else if (text.startsWith("player_flagged:")) {
+                return isPlayer() && ScriptEvent.coreFlaggedCheck(text.substring("player_flagged:".length()), getFlagTracker());
+            }
+            else if (text.startsWith("npc_flagged:")) {
+                return isCitizensNPC() && ScriptEvent.coreFlaggedCheck(text.substring("npc_flagged:".length()), getFlagTracker());
+            }
+        }
+        return false;
+    }
+
     @Override
-    public boolean advancedMatches(String matcher) {
-        return tryAdvancedMatcher(matcher);
+    public boolean advancedMatches(String text) {
+        ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(text);
+        if (isCitizensNPC()) {
+            return matcher.doesMatch("npc", this::tryExactMatcher);
+        }
+        if (getEntityScript() != null && matcher.doesMatch(getEntityScript(), this::tryExactMatcher)) {
+            return true;
+        }
+        if (matcher.doesMatch(getEntityType().getLowercaseName(), this::tryExactMatcher)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -104,14 +105,14 @@ public class ItemScriptHelper implements Listener {
             if (ScriptEvent.isAdvancedMatchable(entry)) {
                 boolean any = false;
                 for (Material material : Material.values()) {
-                    if (material.isItem() && BukkitScriptEvent.tryMaterial(material, entry)) {
+                    if (material.isItem() && MaterialTag.advancedMatchesInternal(material, entry, true)) {
                         outputItems.add(new ItemStack(material, 1));
                         any = true;
                     }
                 }
                 if (exact) {
                     for (ItemScriptContainer possibleContainer : ItemScriptHelper.item_scripts.values()) {
-                        if (BukkitScriptEvent.tryItem(possibleContainer.getCleanReference(), entry)) {
+                        if (possibleContainer.getCleanReference() != null && possibleContainer.getCleanReference().tryAdvancedMatcher(entry)) {
                             outputItems.add(possibleContainer.getCleanReference().getItemStack());
                             any = true;
                         }

@@ -128,7 +128,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         String mat = path.eventArgLowerAt(index + 1);
-        if (mat.length() > 0 && !withHelpList.contains(mat) && !tryMaterial(blockMaterial, mat)) {
+        if (mat.length() > 0 && !withHelpList.contains(mat) && !blockMaterial.tryAdvancedMatcher(mat)) {
             return false;
         }
         if (!nonSwitchWithCheck(path, new ItemTag(event.getItem()))) {
@@ -143,7 +143,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, location != null ? location : event.getPlayer().getLocation())) {
             return false;
         }
-        if (path.switches.containsKey("type") && !tryMaterial(blockMaterial, path.switches.get("type"))) {
+        if (path.switches.containsKey("type") && !blockMaterial.tryAdvancedMatcher(path.switches.get("type"))) {
             return false;
         }
         return super.matches(path);

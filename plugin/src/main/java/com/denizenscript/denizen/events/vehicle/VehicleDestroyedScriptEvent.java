@@ -79,10 +79,10 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
         String cmd = path.eventArgLowerAt(1);
         String veh = cmd.equals("destroyed") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String ent = cmd.equals("destroys") ? path.eventArgLowerAt(0) : "";
-        if (!tryEntity(vehicle, veh)) {
+        if (!vehicle.tryAdvancedMatcher(veh)) {
             return false;
         }
-        if (ent.length() > 0 && (entity == null || !tryEntity(entity, ent))) {
+        if (ent.length() > 0 && (entity == null || !entity.tryAdvancedMatcher(ent))) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

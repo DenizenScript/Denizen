@@ -45,11 +45,9 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-
-        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-
         String cmd = path.eventArgLowerAt(1);
         if (cmd.equals("starts") && !state) {
             return false;
@@ -57,11 +55,9 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
         if (cmd.equals("stops") && state) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

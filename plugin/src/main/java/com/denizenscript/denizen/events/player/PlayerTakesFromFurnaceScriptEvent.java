@@ -59,9 +59,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean matches(ScriptPath path) {
-        String itemTest = path.eventArgLowerAt(2);
-
-        if (!tryItem(item, itemTest)) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
         if (!runInCheck(path, location)) {

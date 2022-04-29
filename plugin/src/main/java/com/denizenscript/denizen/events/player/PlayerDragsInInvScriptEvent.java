@@ -71,10 +71,10 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         String arg3 = path.eventArgLowerAt(3);
         String arg4 = path.eventArgLowerAt(4);
         String inv = arg2.equals("in") ? arg3 : arg3.equals("in") ? arg4 : "";
-        if (!inv.equals("") && !tryInventory(dInv, inv)) {
+        if (!inv.equals("") && !dInv.tryAdvancedMatcher(inv)) {
             return false;
         }
-        if (!arg2.equals("in") && !tryItem(item, arg2)) {
+        if (!arg2.equals("in") && !item.tryAdvancedMatcher(arg2)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation(), "in_area")) {

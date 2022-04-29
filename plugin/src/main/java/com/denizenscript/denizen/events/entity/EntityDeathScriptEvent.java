@@ -77,13 +77,13 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean matches(ScriptPath path) {
         String target = path.eventArgLowerAt(0);
-        if (!tryEntity(entity, target)) {
+        if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-        if (path.switches.containsKey("by") && (damager == null || !tryEntity(damager, path.switches.get("by")))) {
+        if (path.switches.containsKey("by") && (damager == null || !damager.tryAdvancedMatcher(path.switches.get("by")))) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "cause", cause == null ? null : cause.asString())) {

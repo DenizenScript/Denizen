@@ -41,23 +41,23 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
     public static BlockCooksSmeltsItemScriptEvent instance;
     public ItemTag source_item;
     public ItemTag result_item;
-    public Block block;
+    public LocationTag location;
     public BlockCookEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryMaterial(block.getType(), path.eventArgLowerAt(0))) {
+        if (!location.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!tryItem(source_item, path.eventArgLowerAt(2))) {
+        if (!source_item.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
         if (path.eventArgLowerAt(3).equals("into")) {
-            if (!tryItem(result_item, path.eventArgLowerAt(4))) {
+            if (!result_item.tryAdvancedMatcher(path.eventArgLowerAt(4))) {
                 return false;
             }
         }
-        if (!runInCheck(path, block.getLocation())) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return super.matches(path);
@@ -81,7 +81,7 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "location": return new LocationTag(block.getLocation());
+            case "location": return location;
             case "source_item": return source_item;
             case "result_item": return result_item;
         }
@@ -90,7 +90,7 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
 
     @EventHandler
     public void onBlockCooks(BlockCookEvent event) {
-        block = event.getBlock();
+        location = new LocationTag(event.getBlock().getLocation());
         source_item = new ItemTag(event.getSource());
         result_item = new ItemTag(event.getResult());
         this.event = event;

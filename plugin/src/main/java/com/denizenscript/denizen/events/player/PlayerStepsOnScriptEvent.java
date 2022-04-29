@@ -65,7 +65,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(3);
         MaterialTag material = new MaterialTag(location.getBlock());
-        if (!tryMaterial(material, mat)) {
+        if (!material.tryAdvancedMatcher(mat)) {
             return false;
         }
         if (!runInCheck(path, location)) {

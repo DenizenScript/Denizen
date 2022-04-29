@@ -57,10 +57,10 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     @Override
     public boolean matches(ScriptPath path) {
         String target = path.eventArgLowerAt(0);
-        if (!tryEntity(entity, target)) {
+        if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
-        if (path.switches.containsKey("item") && !tryItem(item, path.switches.get("item"))) {
+        if (path.switches.containsKey("item") && !item.tryAdvancedMatcher(path.switches.get("item"))) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

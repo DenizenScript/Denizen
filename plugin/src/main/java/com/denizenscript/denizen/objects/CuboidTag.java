@@ -60,6 +60,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     // This object type is flaggable when it is noted.
     // Flags on this object type will be stored in the notables.yml file.
     //
+    // @Matchable
+    // Refer to <@link objecttype areaobject>'s matchable list.
     // -->
 
     @Override
@@ -1566,5 +1568,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
+    }
+
+    @Override
+    public boolean advancedMatches(String matcher) {
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.equals("cuboid")) {
+            return true;
+        }
+        return areaBaseAdvancedMatches(matcher);
     }
 }

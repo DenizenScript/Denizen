@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
@@ -44,8 +43,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String item_test = CoreUtilities.getXthArg(0, path.eventLower);
-        if (!tryItem(item, item_test)) {
+        if (!item.tryAdvancedMatcher(path.eventArgAt(0))) {
             return false;
         }
         if (!runInCheck(path, location)) {

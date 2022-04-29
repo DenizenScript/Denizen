@@ -47,19 +47,15 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean matches(ScriptPath path) {
         String hangCheck = path.eventArgLowerAt(0);
-
-        if (!tryEntity(hanging, hangCheck)) {
+        if (!hanging.tryAdvancedMatcher(hangCheck)) {
             return false;
         }
-
         if (path.eventArgLowerAt(2).equals("because") && !path.eventArgLowerAt(3).equals(CoreUtilities.toLowerCase(cause.asString()))) {
             return false;
         }
-
         if (!runInCheck(path, hanging.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 

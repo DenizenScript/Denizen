@@ -62,8 +62,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        String iCheck = path.eventArgLowerAt(3);
-        if (!tryItem(item, iCheck)) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
             return false;
         }
         if (!runInCheck(path, event.getPlayer().getLocation())) {

@@ -71,6 +71,12 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     // This object type is flaggable.
     // Flags on this object type will be stored in the world folder in a file named 'denizen_flags.dat', like "server/world/denizen_flags.dat".
     //
+    // @Matchable
+    // WorldTag matchers, sometimes identified as "<world>":
+    // "world" plaintext: always matches.
+    // World name: matches if the world has the given world name, using advanced matchers.
+    // "world_flagged:<flag>": a Flag Matchable for WorldTag flags.
+    //
     // -->
 
     @Deprecated
@@ -258,7 +264,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             String matcher = attribute.hasParam() ? attribute.getParam() : null;
             for (Entity entity : object.getEntitiesForTag()) {
                 EntityTag current = new EntityTag(entity);
-                if (matcher == null || BukkitScriptEvent.tryEntity(current, matcher)) {
+                if (matcher == null || current.tryAdvancedMatcher(matcher)) {
                     entities.addObject(current.getDenizenObject());
                 }
             }
@@ -903,19 +909,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <WorldTag.advanced_matches[<matcher>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the world matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
-        // -->
-        registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new ElementTag(BukkitScriptEvent.tryWorld(object, attribute.getParam()));
-        });
-
-        // <--[tag]
         // @attribute <WorldTag.view_distance>
         // @returns ElementTag(Number)
         // @mechanism WorldTag.view_distance
@@ -1275,6 +1268,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public boolean advancedMatches(String matcher) {
-        return BukkitScriptEvent.tryWorld(this, matcher);
+        String matcherLow = CoreUtilities.toLowerCase(matcher);
+        if (matcherLow.equals("world")) {
+            return true;
+        }
+        if (matcherLow.startsWith("world_flagged:")) {
+            return BukkitScriptEvent.coreFlaggedCheck(matcher.substring("world_flagged:".length()), getFlagTracker());
+        }
+        return BukkitScriptEvent.runGenericCheck(matcher, getName());
     }
 }

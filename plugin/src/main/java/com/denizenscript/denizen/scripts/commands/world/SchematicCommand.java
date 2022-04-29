@@ -466,7 +466,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         }
                         else {
                             for (Material material : Material.values()) {
-                                if (BukkitScriptEvent.tryMaterial(material, maskText)) {
+                                if (MaterialTag.advancedMatchesInternal(material, maskText, true)) {
                                     input.mask.add(material);
                                 }
                             }

@@ -83,19 +83,15 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     public boolean matches(ScriptPath path) {
         String attacker = path.eventArgLowerAt(0);
         String item = path.eventArgLowerAt(2);
-
-        if (!tryEntity(entity, attacker)) {
+        if (!entity.tryAdvancedMatcher(attacker)) {
             return false;
         }
-
-        if (!item.equals("bow") && !tryItem(bow, item)) {
+        if (!item.equals("bow") && !bow.tryAdvancedMatcher(item)) {
             return false;
         }
-
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-
         return super.matches(path);
 
     }

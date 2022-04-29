@@ -44,7 +44,7 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryWorld(world, path.eventArgLowerAt(0))) {
+        if (!world.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         return super.matches(path);

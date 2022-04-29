@@ -53,10 +53,10 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!tryInventory(inventory, path.eventArgLowerAt(0))) {
+        if (!inventory.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (!tryItem(item, path.eventArgLowerAt(3))) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
             return false;
         }
         if (!runInCheck(path, event.getItem().getLocation())) {

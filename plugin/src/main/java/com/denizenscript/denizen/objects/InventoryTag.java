@@ -11,6 +11,7 @@ import com.denizenscript.denizen.utilities.inventory.InventoryTrackerSystem;
 import com.denizenscript.denizen.utilities.inventory.RecipeHelper;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
@@ -78,6 +79,15 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     //
     // This object type is flaggable when it is noted.
     // Flags on this object type will be stored in the notables.yml file.
+    //
+    // @Matchable
+    // InventoryTag matchers, sometimes identified as "<inventory>":
+    // "inventory" plaintext: always matches.
+    // "note" plaintext: matches if the inventory is noted.
+    // Inventory script name: matches if the inventory comes from an inventory script of the given name, using advanced matchers.
+    // Inventory note name: matches if the inventory is noted with the given name, using advanced matchers.
+    // Inventory type: matches if the inventory is of a given type, using advanced matchers.
+    // "inventory_flagged:<flag>": a Flag Matchable for InventoryTag flags.
     //
     // -->
 
@@ -1324,7 +1334,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             for (int slot = 0; slot < dummyInv.inventory.getSize(); slot++) {
                 ItemStack item = dummyInv.inventory.getItem(slot);
-                if (item != null && BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                if (item != null && new ItemTag(item).tryAdvancedMatcher(matcher)) {
                     quantity -= item.getAmount();
                     if (quantity >= 0) {
                         dummyInv.inventory.setItem(slot, null);
@@ -1416,7 +1426,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the inventory contains any item that matches the specified item matcher.
-        // Uses the system behind <@link language Advanced Script Event Matching>.
+        // Uses the system behind <@link language Advanced Object Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "contains_item", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -1430,7 +1440,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the inventory contains a certain number of items that match the specified item matcher.
-            // Uses the system behind <@link language Advanced Script Event Matching>.
+            // Uses the system behind <@link language Advanced Object Matching>.
             // -->
             if (attribute.startsWith("quantity", 2) && attribute.hasContext(2)) {
                 qty = attribute.getIntContext(2);
@@ -1439,7 +1449,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             int found_items = 0;
             for (ItemStack item : object.getContents()) {
                 if (item != null) {
-                    if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                    if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
                         found_items += item.getAmount();
                         if (found_items >= qty) {
                             break;
@@ -1827,7 +1837,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the location of the first slot that contains an item that matches the given item matcher.
         // Returns -1 if there's no match.
-        // Uses the system behind <@link language Advanced Script Event Matching>.
+        // Uses the system behind <@link language Advanced Object Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "find_item", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -1837,7 +1847,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             for (int i = 0; i < object.inventory.getSize(); i++) {
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
-                    if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                    if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
                         return new ElementTag(i + 1);
                     }
                 }
@@ -1851,7 +1861,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns a list of the location of all slots that contains an item that matches the given item matcher.
         // Returns an empty list if there's no match.
-        // Uses the system behind <@link language Advanced Script Event Matching>.
+        // Uses the system behind <@link language Advanced Object Matching>.
         // -->
         tagProcessor.registerTag(ListTag.class, "find_all_items", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -1862,7 +1872,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             for (int i = 0; i < object.inventory.getSize(); i++) {
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
-                    if (BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                    if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
                         result.addObject(new ElementTag(i + 1));
                     }
                 }
@@ -1989,14 +1999,14 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @description
         // Returns the combined quantity of itemstacks that match an item matcher if one is specified,
         // or the combined quantity of all itemstacks if one is not.
-        // Uses the system behind <@link language Advanced Script Event Matching>.
+        // Uses the system behind <@link language Advanced Object Matching>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "quantity_item", (attribute, object) -> {
             String matcher = attribute.hasParam() ? attribute.getParam() : null;
             int found_items = 0;
             for (ItemStack item : object.getContents()) {
                 if (item != null) {
-                    if (matcher == null || BukkitScriptEvent.tryItem(new ItemTag(item), matcher)) {
+                    if (matcher == null || new ItemTag(item).tryAdvancedMatcher(matcher)) {
                         found_items += item.getAmount();
                     }
                 }
@@ -2306,20 +2316,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         tagProcessor.registerFutureTagDeprecation("input", "smelting");
 
         // <--[tag]
-        // @attribute <InventoryTag.advanced_matches[<matcher>]>
-        // @returns ElementTag(Boolean)
-        // @group element checking
-        // @description
-        // Returns whether the inventory matches some matcher text, using the system behind <@link language Advanced Script Event Matching>.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "advanced_matches", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new ElementTag(BukkitScriptEvent.tryInventory(object, attribute.getParam()));
-        });
-
-        // <--[tag]
         // @attribute <InventoryTag.viewers>
         // @returns ListTag(PlayerTag)
         // @description
@@ -2516,8 +2512,42 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
     }
 
+    public boolean compareInventoryToMatch(ScriptEvent.MatchHelper matcher) {
+        if (matcher instanceof ScriptEvent.InverseMatchHelper) {
+            return !compareInventoryToMatch(((ScriptEvent.InverseMatchHelper) matcher).matcher);
+        }
+        if (matcher.doesMatch(getInventoryType().name())) {
+            return true;
+        }
+        if (matcher.doesMatch(getIdType())) {
+            return true;
+        }
+        if (matcher.doesMatch(getIdHolder().toString())) {
+            return true;
+        }
+        if (getIdHolder() instanceof ScriptTag && matcher.doesMatch(((ScriptTag) getIdHolder()).getName())) {
+            return true;
+        }
+        String notedId = NoteManager.getSavedId(this);
+        if (notedId != null && matcher.doesMatch(notedId)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
-    public boolean advancedMatches(String matcher) {
-        return BukkitScriptEvent.tryInventory(this, matcher);
+    public boolean advancedMatches(String comparedto) {
+        String matcherLow = CoreUtilities.toLowerCase(comparedto);
+        if (matcherLow.equals("inventory")) {
+            return true;
+        }
+        if (matcherLow.equals("notable") || matcherLow.equals("note")) {
+            return NoteManager.isSaved(this);
+        }
+        if (matcherLow.startsWith("inventory_flagged:")) {
+            return flagTracker != null && BukkitScriptEvent.coreFlaggedCheck(comparedto.substring("inventory_flagged:".length()), flagTracker);
+        }
+        ScriptEvent.MatchHelper matcher = BukkitScriptEvent.createMatcher(comparedto);
+        return compareInventoryToMatch(matcher);
     }
 }

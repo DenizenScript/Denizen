@@ -109,20 +109,20 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
             pTest = path.eventArgLowerAt(0);
         }
         else if (cmd.equals("shoots")) {
-            if (shooter == null || !tryEntity(shooter, path.eventArgLowerAt(0))) {
+            if (shooter == null || !shooter.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
                 return false;
             }
             if (path.eventArgLowerAt(3).equals("with")) {
                 pTest = path.eventArgLowerAt(4);
             }
         }
-        if (!pTest.isEmpty() && !pTest.equals("projectile") && !tryEntity(projectile, pTest)) {
+        if (!pTest.isEmpty() && !pTest.equals("projectile") && !projectile.tryAdvancedMatcher(pTest)) {
             return false;
         }
-        if (path.switches.containsKey("with") && !tryEntity(projectile, path.switches.get("with"))) {
+        if (path.switches.containsKey("with") && !projectile.tryAdvancedMatcher(path.switches.get("with"))) {
             return false;
         }
-        if (!tryMaterial(material, path.eventArgLowerAt(2))) {
+        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
         if (!runInCheck(path, location)) {

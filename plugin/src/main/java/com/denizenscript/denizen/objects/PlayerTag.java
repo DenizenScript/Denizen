@@ -774,7 +774,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     return false;
                 }
                 if (matcher != null) {
-                    return BukkitScriptEvent.tryEntity(new EntityTag(e), matcher);
+                    return new EntityTag(e).tryAdvancedMatcher(matcher);
                 }
                 return true;
             });
@@ -3089,7 +3089,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @name hide_entities
         // @input ElementTag
         // @description
-        // Hides a matchable type of entity from the player. Can use any advanced entity matchers per <@link language Advanced Script Event Matching>.
+        // Hides a matchable type of entity from the player. Can use any advanced entity matchers per <@link language Advanced Object Matching>.
         // To hide a specific entity from the player, use <@link mechanism PlayerTag.hide_entity>.
         // To remove hide sets, use <@link mechanism PlayerTag.unhide_entities>.
         // Note that dynamic matchables like 'entity_flagged' will behave in unexpected ways when dynamically changing.
@@ -3100,7 +3100,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             map.matchersHidden.add(hideMe);
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
-                    if (BukkitScriptEvent.tryEntity(new EntityTag(ent), hideMe) && map.shouldHide(ent)) {
+                    if (new EntityTag(ent).tryAdvancedMatcher(hideMe) && map.shouldHide(ent)) {
                         NMSHandler.entityHelper.sendHidePacket(getPlayerEntity(), ent);
                     }
                 }
@@ -3123,7 +3123,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
-                    if (BukkitScriptEvent.tryEntity(new EntityTag(ent), unhideMe) && !map.shouldHide(ent)) {
+                    if (new EntityTag(ent).tryAdvancedMatcher(unhideMe) && !map.shouldHide(ent)) {
                         NMSHandler.entityHelper.sendShowPacket(getPlayerEntity(), ent);
                     }
                 }
@@ -3915,6 +3915,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public boolean advancedMatches(String matcher) {
-        return isOnline() && BukkitScriptEvent.tryEntity(getDenizenEntity(), matcher);
+        return isOnline() && getDenizenEntity().tryAdvancedMatcher(matcher);
     }
 }

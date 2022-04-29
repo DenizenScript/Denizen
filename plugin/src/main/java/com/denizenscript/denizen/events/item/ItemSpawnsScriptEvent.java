@@ -44,8 +44,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        String item_test = path.eventArgLowerAt(0);
-        if (!tryItem(item, item_test)) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
         if (!runInCheck(path, location)) {
