@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.debugging.Debug;

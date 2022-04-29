@@ -137,13 +137,13 @@ public class PauseCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry, e);
                 }
             }
-            Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
+            Debug.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType);
             final NPCTag theNpc = npc;
             final ScriptEntry se = scriptEntry;
             durations.put(npc.getId() + pauseType.name(), Denizen.getInstance()
                     .getServer().getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                             () -> {
-                                Debug.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
+                                Debug.echoDebug(se, "Running delayed task: Pausing " + pauseType);
                                 pause(theNpc, pauseType, false);
 
                             }, duration.getTicks()));

@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;

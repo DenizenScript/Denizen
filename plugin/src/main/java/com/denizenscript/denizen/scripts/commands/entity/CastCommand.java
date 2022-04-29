@@ -166,7 +166,7 @@ public class CastCommand extends AbstractCommand {
             }
             PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier, amb, showP, icon);
             if (!potion.apply(entity.getLivingEntity())) {
-                Debug.echoError(scriptEntry, "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
+                Debug.echoError(scriptEntry, "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity + "'.");
             }
         }
     }

@@ -271,7 +271,7 @@ public class CuboidBlockSet implements BlockSet {
 
     @Override
     public void setBlocksDelayed(final Runnable runme, final InputParams input, long maxDelayMs) {
-        final long goal = (long) (x_width * y_length * z_height);
+        final long goal = (long)x_width * y_length * z_height;
         new BukkitRunnable() {
             int index = 0;
             @Override

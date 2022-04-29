@@ -91,8 +91,6 @@ public class Denizen extends JavaPlugin {
     public TriggerRegistry triggerRegistry;
     public DenizenNPCHelper npcHelper;
 
-    public OldEventManager eventManager;
-
     public BukkitWorldScriptHelper worldScriptHelper;
 
     public ItemScriptHelper itemScriptHelper;
@@ -328,7 +326,6 @@ public class Denizen extends JavaPlugin {
         }
         try {
             AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
-            eventManager = new OldEventManager();
             // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();
             // Register Core ObjectTags with the ObjectFetcher

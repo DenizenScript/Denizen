@@ -96,7 +96,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         String[] parts = string.split(",");
         if (parts.length == 3) {
             try {
-                return new ChunkTag(new WorldTag(parts[2]), Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
+                return new ChunkTag(new WorldTag(parts[2]), Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
             }
             catch (Exception e) {
                 if (context == null || context.showErrors()) {

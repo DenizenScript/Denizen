@@ -371,7 +371,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public void setItemScript(ItemScriptContainer script) {
-        if (script.contains("NO_ID", String.class) && Boolean.valueOf(script.getString("NO_ID"))) {
+        if (script.contains("NO_ID", String.class) && Boolean.parseBoolean(script.getString("NO_ID"))) {
             return;
         }
         setItemStack(NMSHandler.itemHelper.addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(script.getName()))));

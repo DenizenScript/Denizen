@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;

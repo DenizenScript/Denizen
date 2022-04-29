@@ -68,7 +68,7 @@ public class EntityAttributeModifiers implements Property {
             for (AttributeModifier modifier : instance.getModifiers()) {
                 modifiers.append("/").append(stringify(modifier));
             }
-            list.add(EscapeTagBase.escape(attribute.name()) + "/" + instance.getBaseValue() + modifiers.toString());
+            list.add(EscapeTagBase.escape(attribute.name()) + "/" + instance.getBaseValue() + modifiers);
         }
         return list;
     }

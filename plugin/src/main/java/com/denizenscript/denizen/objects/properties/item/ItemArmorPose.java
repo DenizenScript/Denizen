@@ -121,7 +121,7 @@ public class ItemArmorPose implements Property {
         }
         List<FloatTag> rawList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            rawList.add(new FloatTag(Float.valueOf(raw.get(i))));
+            rawList.add(new FloatTag(Float.parseFloat(raw.get(i))));
         }
         JNBTListTag list = new JNBTListTag(FloatTag.class, rawList);
         pose.put(nmsName, list);

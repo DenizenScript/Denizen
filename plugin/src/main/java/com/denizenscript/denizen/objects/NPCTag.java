@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
@@ -954,7 +953,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 // LookClose.toString() returns "LookClose{" + enabled + "}"
                 String lookclose = citizen.getOrAddTrait(LookClose.class).toString();
                 lookclose = lookclose.substring(10, lookclose.length() - 1);
-                return new ElementTag(Boolean.valueOf(lookclose));
+                return new ElementTag(Boolean.parseBoolean(lookclose));
             }
             return new ElementTag(false);
         });

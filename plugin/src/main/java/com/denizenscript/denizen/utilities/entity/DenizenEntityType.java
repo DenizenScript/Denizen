@@ -5,7 +5,6 @@ import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.interfaces.CustomEntity;
-import com.denizenscript.denizen.nms.interfaces.CustomEntityHelper;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;

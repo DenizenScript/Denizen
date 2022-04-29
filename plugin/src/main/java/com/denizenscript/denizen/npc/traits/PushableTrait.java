@@ -162,7 +162,7 @@ public class PushableTrait extends Trait implements Listener {
                 }
                 if (pusher != null) {
                     new NPCTag(npc).action("push", PlayerTag.mirrorBukkitPlayer(pusher));
-                    pushedTimer = CoreUtilities.monotonicMillis() + (delay * 1000);
+                    pushedTimer = CoreUtilities.monotonicMillis() + ((long) delay * 1000L);
                 }
             } // End push action
             if (!pushed && returnable) {

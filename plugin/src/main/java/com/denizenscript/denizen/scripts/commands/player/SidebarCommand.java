@@ -256,7 +256,7 @@ public class SidebarCommand extends AbstractCommand {
                         int index = start != null ? start.asInt() : (current.size() > 0 ? current.get(current.size() - 1).score : value.size());
                         int incr = increment != null ? increment.asInt() : -1;
                         for (int i = 0; i < value.size(); i++, index += incr) {
-                            int score = (scores != null && i < scores.size()) ? Integer.valueOf(scores.get(i)) : index;
+                            int score = (scores != null && i < scores.size()) ? Integer.parseInt(scores.get(i)) : index;
                             while (hasScoreAlready(current, score)) {
                                 score += (incr == 0 ? 1 : incr);
                             }
@@ -296,7 +296,7 @@ public class SidebarCommand extends AbstractCommand {
                     if (scores != null) {
                         try {
                             for (String scoreString : scores) {
-                                int score = Integer.valueOf(scoreString);
+                                int score = Integer.parseInt(scoreString);
                                 for (int i = 0; i < current.size(); i++) {
                                     if (current.get(i).score == score) {
                                         current.remove(i--);
@@ -422,7 +422,7 @@ public class SidebarCommand extends AbstractCommand {
                             int index = start != null ? start.asInt() : value.size();
                             int incr = increment != null ? increment.asInt() : -1;
                             for (int i = 0; i < value.size(); i++, index += incr) {
-                                int score = (scores != null && i < scores.size()) ? Integer.valueOf(scores.get(i)) : index;
+                                int score = (scores != null && i < scores.size()) ? Integer.parseInt(scores.get(i)) : index;
                                 current.add(new Sidebar.SidebarLine(value.get(i), score));
                             }
                         }

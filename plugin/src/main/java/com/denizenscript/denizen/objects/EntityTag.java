@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;

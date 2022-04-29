@@ -78,7 +78,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("delay") && !args.hasFlag('t')) {
             if (args.getFlag("delay").matches("\\d+") && args.getFlagInteger("delay") > 0) {
-                trait.setDelay(Integer.valueOf(args.getFlag("delay")));
+                trait.setDelay(Integer.parseInt(args.getFlag("delay")));
                 trait.setReturnable(true);
                 Messaging.sendInfo(sender, npc.getName() + " will return after '" + args.getFlag("delay") + "' seconds"
                         + (trait.isPushable() ? "." : ", but is currently not pushable."));

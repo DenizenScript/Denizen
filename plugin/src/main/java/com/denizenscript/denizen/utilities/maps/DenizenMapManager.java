@@ -48,7 +48,7 @@ public class DenizenMapManager {
             return;
         }
         for (String key : mapsSection.getKeys(false)) {
-            int mapId = Integer.valueOf(key);
+            int mapId = Integer.parseInt(key);
             MapView mapView = Bukkit.getServer().getMap((short) mapId); // TODO: ??? (deprecated short method)
             if (mapView == null) {
                 Debug.echoError("Map #" + key + " does not exist. Has it been removed? Deleting from maps.yml...");

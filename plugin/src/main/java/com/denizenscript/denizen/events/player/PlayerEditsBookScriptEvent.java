@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,7 +70,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
-        if (determination.toUpperCase().equals("NOT_SIGNING")) {
+        if (CoreUtilities.toLowerCase(determination).equals("not_signing")) {
             event.setSigning(false);
             return true;
         }
@@ -82,12 +83,11 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
                     event.setSigning(false);
                 }
                 event.setNewBookMeta(bookMeta);
-                return true;
             }
             else {
                 Debug.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
-                return true;
             }
+            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

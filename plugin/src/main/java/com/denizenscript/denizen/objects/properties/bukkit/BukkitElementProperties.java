@@ -61,7 +61,7 @@ public class BukkitElementProperties implements Property {
                 }
                 converted.append(ChatColor.COLOR_CHAR).append(c);
             }
-            input = input.substring(0, hex) + converted.toString() + input.substring(hex + 8);
+            input = input.substring(0, hex) + converted + input.substring(hex + 8);
             hex = input.indexOf(prefix + "#", hex + 2);
         }
         return input;

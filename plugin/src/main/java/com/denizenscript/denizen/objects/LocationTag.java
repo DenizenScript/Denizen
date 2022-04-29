@@ -176,8 +176,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         {
             try {
                 return new LocationTag(null,
-                        Double.valueOf(split.get(0)),
-                        Double.valueOf(split.get(1)));
+                        Double.parseDouble(split.get(0)),
+                        Double.parseDouble(split.get(1)));
             }
             catch (Exception e) {
                 if (context == null || context.showErrors()) {
@@ -198,18 +198,18 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 World world = Bukkit.getWorld(worldName);
                 if (world != null) {
                     return new LocationTag(world,
-                            Double.valueOf(split.get(0)),
-                            Double.valueOf(split.get(1)));
+                            Double.parseDouble(split.get(0)),
+                            Double.parseDouble(split.get(1)));
                 }
                 if (ArgumentHelper.matchesDouble(split.get(2))) {
                     return new LocationTag(null,
-                            Double.valueOf(split.get(0)),
-                            Double.valueOf(split.get(1)),
-                            Double.valueOf(split.get(2)));
+                            Double.parseDouble(split.get(0)),
+                            Double.parseDouble(split.get(1)),
+                            Double.parseDouble(split.get(2)));
                 }
                 LocationTag output = new LocationTag(null,
-                        Double.valueOf(split.get(0)),
-                        Double.valueOf(split.get(1)));
+                        Double.parseDouble(split.get(0)),
+                        Double.parseDouble(split.get(1)));
                 output.backupWorld = worldName;
                 return output;
             }
@@ -232,14 +232,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 World world = Bukkit.getWorld(worldName);
                 if (world != null) {
                     return new LocationTag(world,
-                            Double.valueOf(split.get(0)),
-                            Double.valueOf(split.get(1)),
-                            Double.valueOf(split.get(2)));
+                            Double.parseDouble(split.get(0)),
+                            Double.parseDouble(split.get(1)),
+                            Double.parseDouble(split.get(2)));
                 }
                 LocationTag output = new LocationTag(null,
-                        Double.valueOf(split.get(0)),
-                        Double.valueOf(split.get(1)),
-                        Double.valueOf(split.get(2)));
+                        Double.parseDouble(split.get(0)),
+                        Double.parseDouble(split.get(1)),
+                        Double.parseDouble(split.get(2)));
                 output.backupWorld = worldName;
                 return output;
             }
@@ -256,12 +256,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // x,y,z,pitch,yaw
         {
             try {
-                float pitch = Float.valueOf(split.get(3));
-                float yaw = Float.valueOf(split.get(4));
+                float pitch = Float.parseFloat(split.get(3));
+                float yaw = Float.parseFloat(split.get(4));
                 return new LocationTag((World) null,
-                        Double.valueOf(split.get(0)),
-                        Double.valueOf(split.get(1)),
-                        Double.valueOf(split.get(2)),
+                        Double.parseDouble(split.get(0)),
+                        Double.parseDouble(split.get(1)),
+                        Double.parseDouble(split.get(2)),
                         yaw, pitch);
             }
             catch (Exception e) {
@@ -281,12 +281,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (worldName.startsWith("w@")) {
                     worldName = worldName.substring("w@".length());
                 }
-                float pitch = Float.valueOf(split.get(3));
-                float yaw = Float.valueOf(split.get(4));
+                float pitch = Float.parseFloat(split.get(3));
+                float yaw = Float.parseFloat(split.get(4));
                 return new LocationTag(worldName,
-                        Double.valueOf(split.get(0)),
-                        Double.valueOf(split.get(1)),
-                        Double.valueOf(split.get(2)),
+                        Double.parseDouble(split.get(0)),
+                        Double.parseDouble(split.get(1)),
+                        Double.parseDouble(split.get(2)),
                         yaw, pitch);
             }
             catch (Exception e) {
@@ -3233,9 +3233,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (ArgumentHelper.matchesDouble(ints[0])
                         && ArgumentHelper.matchesDouble(ints[1])
                         && ArgumentHelper.matchesDouble(ints[2])) {
-                    return new LocationTag(object.clone().add(Double.valueOf(ints[0]),
-                            Double.valueOf(ints[1]),
-                            Double.valueOf(ints[2])));
+                    return new LocationTag(object.clone().add(Double.parseDouble(ints[0]),
+                            Double.parseDouble(ints[1]),
+                            Double.parseDouble(ints[2])));
                 }
             }
             if (LocationTag.matches(attribute.getParam())) {
@@ -3260,9 +3260,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (ArgumentHelper.matchesDouble(ints[0])
                         && ArgumentHelper.matchesDouble(ints[1])
                         && ArgumentHelper.matchesDouble(ints[2])) {
-                    return new LocationTag(object.clone().subtract(Double.valueOf(ints[0]),
-                            Double.valueOf(ints[1]),
-                            Double.valueOf(ints[2])));
+                    return new LocationTag(object.clone().subtract(Double.parseDouble(ints[0]),
+                            Double.parseDouble(ints[1]),
+                            Double.parseDouble(ints[2])));
                 }
             }
             if (LocationTag.matches(attribute.getParam())) {

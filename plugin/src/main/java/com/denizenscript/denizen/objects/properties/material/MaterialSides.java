@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.RedstoneWire;
@@ -155,7 +156,7 @@ public class MaterialSides implements Property {
                 wall.setHeight(BlockFace.EAST, Wall.Height.valueOf(list.get(1).toUpperCase()));
                 wall.setHeight(BlockFace.SOUTH, Wall.Height.valueOf(list.get(2).toUpperCase()));
                 wall.setHeight(BlockFace.WEST, Wall.Height.valueOf(list.get(3).toUpperCase()));
-                wall.setUp(list.get(4).toUpperCase().equals("TALL"));
+                wall.setUp(CoreUtilities.toLowerCase(list.get(4)).equals("tall"));
             }
             else if (isWire()) {
                 if (list.size() != 4) {

@@ -289,7 +289,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Durability
             if (contains("durability", String.class)) {
-                short durability = Short.valueOf(getString("durability"));
+                short durability = Short.parseShort(getString("durability"));
                 stack.setDurability(durability);
             }
             // Set Enchantments
@@ -304,7 +304,7 @@ public class ItemScriptContainer extends ScriptContainer {
                             Debug.echoError("Item script '" + getName() + "' has enchantment '" + enchantment + "' without a level.");
                         }
                         else {
-                            level = Integer.valueOf(enchantment.substring(colon + 1).replace(" ", ""));
+                            level = Integer.parseInt(enchantment.substring(colon + 1).replace(" ", ""));
                             enchantment = enchantment.substring(0, colon).replace(" ", "");
                         }
                         // Add enchantment

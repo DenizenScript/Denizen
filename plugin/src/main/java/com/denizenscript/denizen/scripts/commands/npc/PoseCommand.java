@@ -112,7 +112,7 @@ public class PoseCommand extends AbstractCommand {
         switch (action) {
             case ASSUME:
                 if (!poses.hasPose(id)) {
-                    Debug.echoError("Pose \"" + id + "\" doesn't exist for " + npc.toString());
+                    Debug.echoError("Pose \"" + id + "\" doesn't exist for " + npc);
                 }
                 if (target.name().equals("NPC")) {
                     poses.assumePose(id);
@@ -128,12 +128,12 @@ public class PoseCommand extends AbstractCommand {
                 break;
             case ADD:
                 if (!poses.addPose(id, pose_loc)) {
-                    Debug.echoError(npc.toString() + " already has that pose!");
+                    Debug.echoError(npc + " already has that pose!");
                 }
                 break;
             case REMOVE:
                 if (!poses.removePose(id)) {
-                    Debug.echoError(npc.toString() + " does not have that pose!");
+                    Debug.echoError(npc + " does not have that pose!");
                 }
                 break;
         }

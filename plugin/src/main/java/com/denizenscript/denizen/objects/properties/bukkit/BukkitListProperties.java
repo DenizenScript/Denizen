@@ -105,7 +105,7 @@ public class BukkitListProperties implements Property {
                     output.append(", ");
                 }
             }
-            return new ElementTag(output.toString().substring(0, output.length() - 2));
+            return new ElementTag(output.substring(0, output.length() - 2));
         });
 
         // <--[tag]

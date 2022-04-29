@@ -401,7 +401,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
                 cause = EntityDamageEvent.DamageCause.valueOf(type.toString().toUpperCase());
             }
             catch (IllegalArgumentException ex) {
-                attribute.echoError("Invalid MapTag input to damage_protection - cause '" + type.toString() + "' is not a valid DamageCause.");
+                attribute.echoError("Invalid MapTag input to damage_protection - cause '" + type + "' is not a valid DamageCause.");
                 return null;
             }
             ObjectTag attacker = map.getObject("attacker");

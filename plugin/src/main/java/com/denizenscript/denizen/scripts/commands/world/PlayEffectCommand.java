@@ -4,7 +4,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
 import com.denizenscript.denizen.nms.interfaces.Particle;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;

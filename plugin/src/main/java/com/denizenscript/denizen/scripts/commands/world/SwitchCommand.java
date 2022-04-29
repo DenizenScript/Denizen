@@ -204,7 +204,7 @@ public class SwitchCommand extends AbstractCommand {
                 AdjustBlockCommand.applyPhysicsAt(interactLocation);
             }
             if (scriptEntry.dbCallShouldDebug()) {
-                Debug.echoDebug(scriptEntry, "Switched " + block.getType().toString() + "! Current state now: " + (switchState(block) ? "ON" : "OFF"));
+                Debug.echoDebug(scriptEntry, "Switched " + block.getType() + "! Current state now: " + (switchState(block) ? "ON" : "OFF"));
             }
         }
     }

@@ -16,6 +16,10 @@ public class ServerPrestartScriptEvent extends BukkitScriptEvent {
     //
     // @Warning This event uses special pre-loading tricks to fire before everything else. Use extreme caution.
     //
+    // @Examples
+    // on server prestart:
+    // - createworld my_extra_world
+    //
     // -->
 
     public ServerPrestartScriptEvent() {

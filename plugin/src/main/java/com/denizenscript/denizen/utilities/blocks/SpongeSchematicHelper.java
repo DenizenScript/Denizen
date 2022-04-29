@@ -173,7 +173,7 @@ public class SpongeSchematicHelper {
             if (schematic.containsKey("DenizenFlags")) {
                 Map<String, Tag> flags = getChildTag(schematic, "DenizenFlags", CompoundTag.class).getValue();
                 for (Map.Entry<String, Tag> flagData : flags.entrySet()) {
-                    int flagIndex = Integer.valueOf(flagData.getKey());
+                    int flagIndex = Integer.parseInt(flagData.getKey());
                     cbs.blocks[flagIndex].flags = MapTag.valueOf(stringifyTag(flagData.getValue()), CoreUtilities.noDebugContext);
                 }
             }

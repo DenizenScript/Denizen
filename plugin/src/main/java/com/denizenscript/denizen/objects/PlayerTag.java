@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityHealth;
@@ -603,7 +602,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public String identify() {
-        return "p@" + offlinePlayer.getUniqueId().toString();
+        return "p@" + offlinePlayer.getUniqueId();
     }
 
     @Override

@@ -68,7 +68,7 @@ public class DataPersistenceHelper {
                 Debug.echoError("Failed to read ObjectTag from entity key '" + keyName + "' for entity " + ((Entity) holder).getUniqueId() + "...");
             }
             else {
-                Debug.echoError("Failed to read ObjectTag from object key '" + keyName + "' for holder '" + holder.toString() + "'...");
+                Debug.echoError("Failed to read ObjectTag from object key '" + keyName + "' for holder '" + holder + "'...");
             }
             Debug.echoError(ex);
             return null;

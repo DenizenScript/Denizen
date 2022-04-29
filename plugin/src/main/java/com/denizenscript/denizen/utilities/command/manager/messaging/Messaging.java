@@ -33,11 +33,11 @@ public class Messaging {
     }
 
     public static void sendInfo(CommandSender sender, String msg) {
-        send(sender, ChatColor.YELLOW.toString() + msg);
+        send(sender, ChatColor.YELLOW + msg);
     }
 
     public static void sendError(CommandSender sender, String msg) {
-        send(sender, ChatColor.RED.toString() + msg);
+        send(sender, ChatColor.RED + msg);
     }
 
     private static void sendMessageTo(CommandSender sender, String rawMessage) {

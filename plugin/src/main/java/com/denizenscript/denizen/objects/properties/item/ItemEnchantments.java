@@ -282,11 +282,11 @@ public class ItemEnchantments implements Property {
                             if (ench != null) {
                                 if (item.getBukkitMaterial() == Material.ENCHANTED_BOOK) {
                                     EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-                                    meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
+                                    meta.addStoredEnchant(ench, Integer.parseInt(data[1]), true);
                                     item.setItemMeta(meta);
                                 }
                                 else {
-                                    item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                                    item.getItemStack().addUnsafeEnchantment(ench, Integer.parseInt(data[1]));
                                     item.resetCache();
                                 }
                             }

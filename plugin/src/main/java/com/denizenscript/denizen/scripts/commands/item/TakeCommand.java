@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;

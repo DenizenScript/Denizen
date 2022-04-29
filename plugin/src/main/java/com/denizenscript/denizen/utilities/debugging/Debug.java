@@ -314,7 +314,7 @@ public class Debug {
             if (!first) {
                 errorMessage.append("Caused by: ");
             }
-            errorMessage.append(ex.toString()).append("\n");
+            errorMessage.append(ex).append("\n");
             for (StackTraceElement ste : ex.getStackTrace()) {
                 errorMessage.append(prefix).append("  ").append(ste.toString()).append("\n");
             }
@@ -463,7 +463,7 @@ public class Debug {
                 callerId = "Tag in Script:" + ((TagContext) caller).script.getName();
             }
             else {
-                callerId = "Tag:" + caller.toString();
+                callerId = "Tag:" + caller;
             }
         }
         else {

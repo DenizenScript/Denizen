@@ -3,7 +3,6 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import org.bukkit.Bukkit;

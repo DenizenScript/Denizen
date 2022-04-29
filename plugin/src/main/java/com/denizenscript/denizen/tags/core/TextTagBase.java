@@ -429,7 +429,7 @@ public class TextTagBase {
                     with.append(";").append(FormattedTextHelper.escape(EscapeTagBase.unEscape(str)));
                 }
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateText) + with.toString() + "]");
+            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateText) + with + "]");
         });
 
         // <--[tag]

@@ -267,7 +267,7 @@ public class BStatsMetricsLite {
             throw new IllegalAccessException("This method must not be called from the main thread!");
         }
         if (logSentData) {
-            plugin.getLogger().info("Sending data to bStats: " + data.toString());
+            plugin.getLogger().info("Sending data to bStats: " + data);
         }
         HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
@@ -300,7 +300,7 @@ public class BStatsMetricsLite {
         }
         bufferedReader.close();
         if (logResponseStatusText) {
-            plugin.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder);
         }
     }
 

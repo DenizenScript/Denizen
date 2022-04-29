@@ -38,7 +38,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     // <--[language]
     // @name Advanced Object Matchables
-    // @group Script Events
+    // @group Object System
     // @description
     // Script events have a variety of matchable object inputs, and the range of inputs they accept may not always be obvious.
     // For example, an event might be "player clicks <block>"... what can "<block>" be filled with?
