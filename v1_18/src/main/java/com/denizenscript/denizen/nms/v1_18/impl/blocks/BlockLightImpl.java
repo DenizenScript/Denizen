@@ -18,7 +18,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.lighting.BlockLightEngine;
+import net.minecraft.world.level.lighting.LayerLightEventListener;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,12 +28,13 @@ import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
 public class BlockLightImpl extends BlockLight {
 
-    public static final Class LIGHTENGINETHREADED_TASKTYPE = ThreadedLevelLightEngine.class.getDeclaredClasses()[0]; // TaskType
+    public static final Class LIGHTENGINETHREADED_TASKTYPE = Arrays.stream(ThreadedLevelLightEngine.class.getDeclaredClasses()).filter(c -> c.isEnum()).findFirst().get(); // TaskType
     public static final Object LIGHTENGINETHREADED_TASKTYPE_PRE;
 
     static {
@@ -192,7 +193,7 @@ public class BlockLightImpl extends BlockLight {
     public static void runResetFor(final LevelChunk chunk, final BlockPos pos) {
         Runnable runnable = () -> {
             LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
-            BlockLightEngine engineBlock = (BlockLightEngine) lightEngine.getLayerListener(LightLayer.BLOCK);
+            LayerLightEventListener engineBlock = lightEngine.getLayerListener(LightLayer.BLOCK);
             engineBlock.checkBlock(pos);
         };
         enqueueRunnable(chunk, runnable);
@@ -201,7 +202,7 @@ public class BlockLightImpl extends BlockLight {
     public static void runSetFor(final LevelChunk chunk, final BlockPos pos, final int level) {
         Runnable runnable = () -> {
             LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
-            BlockLightEngine engineBlock = (BlockLightEngine) lightEngine.getLayerListener(LightLayer.BLOCK);
+            LayerLightEventListener engineBlock = lightEngine.getLayerListener(LightLayer.BLOCK);
             engineBlock.onBlockEmissionIncrease(pos, level);
         };
         enqueueRunnable(chunk, runnable);
