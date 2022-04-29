@@ -53,7 +53,9 @@ public class GiveCommand extends AbstractCommand {
     // To give money to a player, use <@link command money>.
     //
     // @Tags
-    // <PlayerTag.money>
+    // <PlayerTag.xp_level>
+    // <PlayerTag.xp_to_next_level>
+    // <PlayerTag.inventory>
     //
     // @Usage
     // Use to give XP to the player.

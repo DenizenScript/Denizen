@@ -104,7 +104,7 @@ public class ItemScriptHelper implements Listener {
             if (ScriptEvent.isAdvancedMatchable(entry)) {
                 boolean any = false;
                 for (Material material : Material.values()) {
-                    if (BukkitScriptEvent.tryMaterial(material, entry)) {
+                    if (material.isItem() && BukkitScriptEvent.tryMaterial(material, entry)) {
                         outputItems.add(new ItemStack(material, 1));
                         any = true;
                     }
