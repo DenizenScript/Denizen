@@ -58,6 +58,8 @@ import org.bukkit.inventory.*;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapCursor;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
@@ -65,6 +67,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.permissions.DefaultPermissions;
 
 import java.io.File;
 import java.sql.Connection;
@@ -2619,6 +2622,32 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("has_whitelist") && mechanism.requireBoolean()) {
             Bukkit.setWhitelist(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name register_permission
+        // @input MapTag
+        // @description
+        // Input must be a map with the key 'name' set to the permission name.
+        // Can also set 'description' to a description of the permission.
+        // Can also set 'parent' to the name of the parent permission (must already be registered).
+        // Can also set 'default' to 'true', 'false', or 'op' to define default accessibility.
+        // This mechanism should probably be executed during <@link event server prestart>.
+        // @tags
+        // <server.has_whitelist>
+        // -->
+        if (mechanism.matches("register_permission") && mechanism.requireObject(MapTag.class)) {
+            MapTag map = mechanism.valueAsType(MapTag.class);
+            ObjectTag name = map.getObject("name"), parent = map.getObject("parent"), mode = map.getObject("default"), description = map.getObject("description");
+            Permission actualParent = parent == null ? null : Bukkit.getPluginManager().getPermission(parent.toString());
+            PermissionDefault actualDef = mode == null ? null : mode.asElement().asEnum(PermissionDefault.class);
+            if (actualParent == null) {
+                DefaultPermissions.registerPermission(name.toString(), description == null ? null : description.toString(), actualDef);
+            }
+            else {
+                DefaultPermissions.registerPermission(name.toString(), description == null ? null : description.toString(), actualDef, actualParent);
+            }
         }
     }
 }
