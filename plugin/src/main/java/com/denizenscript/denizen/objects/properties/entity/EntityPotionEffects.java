@@ -158,14 +158,14 @@ public class EntityPotionEffects implements Property {
         // @input ListTag
         // @description
         // Set the entity's active potion effects.
-        // Each item in the list can be any of the following:
-        // 1: Comma-separated potion effect data in the format: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON
-        // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
-        // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
-        // For example: SPEED,0,120,false,true,true would give the entity a swiftness potion for 120 ticks.
-        // 2: A MapTag with "type", "amplifier", "duration", "ambient", "particles", and "icon" keys.
+        // Each item in the list must be a MapTag with keys:
+        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
+        // "amplifier" - number to increase the level by (0 for default level 1)
+        // "duration" - DurationTag, how long it lasts
+        // "ambient", "particles", "icon" - booleans
+        //
         // For example: [type=SPEED;amplifier=0;duration=120t;ambient=false;particles=true;icon=true]
-        // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // This example would be a level 1 swiftness potion that lasts 120 ticks.
         // @tags
         // <EntityTag.effects_data>
         // <EntityTag.list_effects>

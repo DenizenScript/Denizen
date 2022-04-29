@@ -353,20 +353,24 @@ public class ItemPotion implements Property {
         // @input ListTag
         // @description
         // Sets the potion's potion effect(s).
-        // The first item in the list must be either:
-        // 1: Comma-separated base potion data, in the format Type,Upgraded,Extended(,Color).
-        // For example: "SPEED,true,false", or "REGEN,false,true,RED".
-        // Color can also be used like "255&comma128&comma0" (r,g,b but replace ',' with '&comma').
-        // 2: A MapTag with "type", "upgraded" and "extended" keys, and an optional "color" key.
-        // For example: [type=SPEED;upgraded=true;extended=false;color=RED].
-        // The primary type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // The first item in the list must be a MapTag with keys:
+        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>
+        // "upgraded" - boolean, true means level 2 and false means level 1
+        // "extended" - true means longer, false means shorter
+        // "color" - optional, ColorTag
         //
-        // The following items in the list are potion effects, which must be either:
-        // 1: Comma-separated potion effect data, in the format Effect,Amplifier,Duration,Ambient,Particles,Icon.
-        // For example: SPEED,2,200,false,true,true.
-        // 2: A MapTag with "type", "amplifier", "duration", "ambient", "particles" and "icon" keys.
-        // For example: [type=SPEED;amplifier=2;duration=200t;ambient=false;particles=true;icon=true].
-        // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
+        // For example: [type=SPEED;upgraded=true;extended=false;color=RED]
+        // This example produces an item labeled as "Potion of Swiftness - Speed II (1:30)"
+        //
+        //
+        // Each following item in the list are potion effects, which must be a MapTag with keys:
+        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
+        // "amplifier" - number to increase the level by (0 for default level 1)
+        // "duration" - DurationTag, how long it lasts
+        // "ambient", "particles", "icon" - booleans
+        //
+        // For example: [type=SPEED;amplifier=2;duration=200t;ambient=false;particles=true;icon=true]
+        // This example would be a level 3 swiftness potion that lasts 200 ticks.
         // @tags
         // <ItemTag.effects_data>
         // <server.potion_types>
