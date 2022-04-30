@@ -91,6 +91,7 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
     @EventHandler
     public void onVillagerReplenishesTrade(VillagerReplenishTradeEvent event) {
         this.event = event;
+        entity = new EntityTag(event.getEntity());
         fire(event);
     }
 }
