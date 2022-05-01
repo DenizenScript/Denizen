@@ -564,7 +564,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns a list of all loaded schematics.
         // -->
         if (attribute.startsWith("list")) {
-            event.setReplaced(new ListTag(schematics.keySet()).getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ListTag(schematics.keySet()).getObjectAttribute(attribute.fulfill(1)));
         }
         if (id == null) {
             return;
@@ -572,8 +572,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         if (!schematics.containsKey(id)) {
             // Meta below
             if (attribute.startsWith("exists")) {
-                event.setReplaced(new ElementTag(false)
-                        .getAttribute(attribute.fulfill(1)));
+                event.setReplacedObject(new ElementTag(false)
+                        .getObjectAttribute(attribute.fulfill(1)));
                 return;
             }
             Debug.echoError(attribute.getScriptEntry(), "Schematic file " + id + " is not loaded.");
@@ -588,8 +588,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns whether the schematic exists.
         // -->
         if (attribute.startsWith("exists")) {
-            event.setReplaced(new ElementTag(true)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(true)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -600,8 +600,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns the height (Y) of the schematic.
         // -->
         if (attribute.startsWith("height")) {
-            event.setReplaced(new ElementTag(set.y_length)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(set.y_length)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -612,8 +612,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns the length (Z) of the schematic.
         // -->
         if (attribute.startsWith("length")) {
-            event.setReplaced(new ElementTag(set.z_height)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(set.z_height)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -624,8 +624,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns the width (X) of the schematic.
         // -->
         if (attribute.startsWith("width")) {
-            event.setReplaced(new ElementTag(set.x_width)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(set.x_width)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -640,8 +640,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             if (attribute.hasParam() && LocationTag.matches(attribute.getParam())) {
                 LocationTag location = attribute.paramAsType(LocationTag.class);
                 FullBlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
-                event.setReplaced(new MaterialTag(block.data)
-                        .getAttribute(attribute.fulfill(1)));
+                event.setReplacedObject(new MaterialTag(block.data)
+                        .getObjectAttribute(attribute.fulfill(1)));
                 return;
             }
         }
@@ -653,8 +653,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns the origin location of the schematic.
         // -->
         if (attribute.startsWith("origin")) {
-            event.setReplaced(new LocationTag(null, set.center_x, set.center_y, set.center_z)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new LocationTag(null, set.center_x, set.center_y, set.center_z)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -665,8 +665,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // Returns the number of blocks in the schematic.
         // -->
         if (attribute.startsWith("blocks")) {
-            event.setReplaced(new ElementTag(set.blocks.length)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(set.blocks.length)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -678,8 +678,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         // -->
         if (attribute.startsWith("cuboid") && attribute.hasParam()) {
             LocationTag origin = attribute.paramAsType(LocationTag.class);
-            event.setReplaced(set.getCuboid(origin)
-                    .getAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(set.getCuboid(origin)
+                    .getObjectAttribute(attribute.fulfill(1)));
             return;
         }
     }

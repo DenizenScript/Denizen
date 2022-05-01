@@ -23,55 +23,55 @@ public class TextTagBase {
                 Attribute attribute = event.getAttributes();
                 if (event.getName().equals("&auml")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("ä").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("ä").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&Auml")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("Ä").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("Ä").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&ouml")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("ö").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("ö").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&Ouml")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("Ö").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("Ö").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&uuml")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("ü").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("ü").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&Uuml")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("Ü").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("Ü").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&amp")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("&").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("&").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&cm")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag(",").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag(",").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&sc")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag(";").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag(";").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&pipe")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("|").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("|").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&ds")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("$").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("$").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&dot")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag(".").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag(".").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&hrt")) {
                     Deprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplaced(new ElementTag("\u2665").getAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag("\u2665").getObjectAttribute(attribute.fulfill(1)));
                 }
             }
         }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&amp", "&cm", "&sc", "&pipe", "&ds", "&at", "&dot", "&hrt");

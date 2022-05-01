@@ -41,7 +41,6 @@ import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizen.utilities.world.VoidGenerator1_17;
 import com.denizenscript.denizencore.DenizenCore;
-import com.denizenscript.denizencore.events.OldEventManager;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
