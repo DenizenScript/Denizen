@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.v1_17.impl.entities.CraftFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.EntityFakeArrowImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.EntityItemProjectileImpl;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -131,10 +132,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
             String teamName = "FAKE_PLAYER_TEAM_" + fullName;
             String hash = null;
             try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] bytes = teamName.getBytes(StandardCharsets.UTF_8);
-                md.update(bytes, 0, bytes.length);
-                hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
+                hash = CoreUtilities.hash_md5(teamName.getBytes(StandardCharsets.UTF_8));
             }
             catch (Exception e) {
                 Debug.echoError(e);

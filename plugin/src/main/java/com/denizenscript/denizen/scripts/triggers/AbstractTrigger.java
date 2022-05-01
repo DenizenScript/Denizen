@@ -77,7 +77,7 @@ public abstract class AbstractTrigger {
         return parse(npc, player, script, id, null);
     }
 
-    public static SlowWarning missetWarning = new SlowWarning("Trigger '{NAME}' on NPC '{NPC}' activated and used but not properly set via the 'trigger' command in 'on assignment'.");
+    public static SlowWarning missetWarning = new SlowWarning("npcTriggerMisset", "Trigger '{NAME}' on NPC '{NPC}' activated and used but not properly set via the 'trigger' command in 'on assignment'.");
 
     public boolean parse(NPCTag npc, PlayerTag player, InteractScriptContainer script, String id, Map<String, ObjectTag> context) {
         if (npc == null || player == null || script == null) {

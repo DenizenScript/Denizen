@@ -378,10 +378,7 @@ public class ItemScriptHelper implements Listener {
         StringBuilder colors = new StringBuilder();
         colors.append(ItemScriptHashID);
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] bytes = script.getBytes(StandardCharsets.UTF_8);
-            md.update(bytes, 0, bytes.length);
-            String hash = new BigInteger(1, md.digest()).toString(16);
+            String hash = CoreUtilities.hash_md5(script.getBytes(StandardCharsets.UTF_8));
             for (int i = 0; i < 16; i++) {
                 colors.append(ChatColor.COLOR_CHAR).append(hash.charAt(i));
             }

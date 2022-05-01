@@ -436,7 +436,7 @@ public class Denizen extends JavaPlugin {
             @Override
             public void run() {
                 if (Settings.canRecordStats()) {
-                    new StatsRecord().start();
+                    StatsRecord.trigger();
                 }
             }
         }.runTaskTimer(this, 100, 20 * 60 * 60);

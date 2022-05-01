@@ -210,8 +210,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     //
     // -->
 
-    public static StrongWarning invalidPlayerArg = new StrongWarning("The 'player:' arg should not be used in commands like define/flag/yaml/... just input the player directly instead.");
-    public static StrongWarning invalidNpcArg = new StrongWarning("The 'npc:' arg should not be used in commands like define/flag/yaml/... just input the npc directly instead.");
+    public static StrongWarning invalidPlayerArg = new StrongWarning("invalidPlayerArg", "The 'player:' arg should not be used in commands like define/flag/yaml/... just input the player directly instead.");
+    public static StrongWarning invalidNpcArg = new StrongWarning("invalidNpcArg", "The 'npc:' arg should not be used in commands like define/flag/yaml/... just input the npc directly instead.");
     public static HashSet<String> invalidPlayerArgCommands = new HashSet<>(Arrays.asList("DEFINE", "FLAG", "YAML"));
 
     @Override

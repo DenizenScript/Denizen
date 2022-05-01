@@ -87,7 +87,7 @@ public class GlowCommand extends AbstractCommand {
         }
     }
 
-    public static Warning GLOW_UNSTABLE_WARN = new SlowWarning("The 'glow' command is unstable, glitchy, and experimental. It is subject to a rewrite in the near future. It is recommended that you avoid it for the time being.");
+    public static Warning GLOW_UNSTABLE_WARN = new SlowWarning("glowCommand", "The 'glow' command is unstable, glitchy, and experimental. It is subject to a rewrite in the near future. It is recommended that you avoid it for the time being.");
 
     @Override
     public void execute(ScriptEntry scriptEntry) {

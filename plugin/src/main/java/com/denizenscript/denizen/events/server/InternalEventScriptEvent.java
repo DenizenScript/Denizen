@@ -72,7 +72,7 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
         return "InternalBukkitEvent";
     }
 
-    public static Warning depFieldContext = new VerySlowWarning("The context.field_<name> special tag for 'internal bukkit event' is experimental and subject to be removed or replace in the future");
+    public static Warning depFieldContext = new VerySlowWarning("internalEventFieldContext", "The context.field_<name> special tag for 'internal bukkit event' is experimental and subject to be removed or replace in the future");
 
     @Override
     public ObjectTag getContext(String name) {
