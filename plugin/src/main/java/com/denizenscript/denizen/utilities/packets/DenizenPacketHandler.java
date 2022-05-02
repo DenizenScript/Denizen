@@ -11,6 +11,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -132,7 +133,7 @@ public class DenizenPacketHandler {
                 return event.cancelled;
             };
             try {
-                if (DenizenCoreImplementation.isSafeThread()) {
+                if (DenizenCore.implementation.isSafeThread()) {
                     return eventCall.call();
                 }
                 else {

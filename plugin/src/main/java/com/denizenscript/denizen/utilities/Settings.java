@@ -42,6 +42,7 @@ public class Settings {
         CoreConfiguration.allowFileRead = config.getBoolean("Commands.File.Allow read", false);
         CoreConfiguration.allowFileWrite = config.getBoolean("Commands.File.Allow write", false);
         CoreConfiguration.filePathLimit = config.getString("Commands.File.Restrict path", "data/");
+        CoreConfiguration.verifyThreadMatches = config.getBoolean("Debug.Verify thread", false);
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;

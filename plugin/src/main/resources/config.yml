@@ -42,6 +42,8 @@ Debug:
     Warn on async packets: false
     # Rate between when slowed warnings appear (in milliseconds). This is used for minor warnings such as newer deprecation notices, to avoid error message flood.
     Warning rate: 10000
+    # If set true, core systems will check what thread is performing certain critical actions, and give a warning if the wrong one is used.
+    Verify thread: false
 
 Scripts:
     World:

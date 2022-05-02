@@ -313,7 +313,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     public static Thread tagThread = null;
 
-    public static boolean isSafeThread() {
+    @Override
+    public boolean isSafeThread() {
         return Bukkit.isPrimaryThread() || Thread.currentThread().equals(tagThread);
     }
 
