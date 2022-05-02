@@ -133,7 +133,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
             String teamName = "FAKE_PLAYER_TEAM_" + fullName;
             String hash = null;
             try {
-                hash = CoreUtilities.hash_md5(teamName.getBytes(StandardCharsets.UTF_8));
+                hash = CoreUtilities.hash_md5(teamName.getBytes(StandardCharsets.UTF_8)).substring(0, 16);
             }
             catch (Exception e) {
                 Debug.echoError(e);
