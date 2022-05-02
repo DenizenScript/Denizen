@@ -3,30 +3,44 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import org.bukkit.ChatColor;
 
+import java.util.HashMap;
+
 public class TextWidthHelper {
 
-    public static int[] characterWidthMap = new int[128];
+    public static int[] asciiWidthMap = new int[128];
+    public static HashMap<Character, Integer> characterWidthMap = new HashMap<>();
 
     public static void setWidth(int width, String chars) {
         for (char c : chars.toCharArray()) {
-            characterWidthMap[c] = width;
+            if (c < 128) {
+                asciiWidthMap[c] = width;
+            }
+            else {
+                characterWidthMap.put(c, width);
+            }
         }
     }
 
     static {
         for (int i = 0; i < 128; i++) {
-            characterWidthMap[i] = 6;
+            asciiWidthMap[i] = 6;
         }
-        setWidth(2, "!,.:;|i`");
-        setWidth(3, "'l");
-        setWidth(4, " []tI");
-        setWidth(5, "\"()*<>fk{}");
-        // all other ASCII characters are length=6
-        setWidth(7, "@~");
+        // Covers all symbols in the default ascii.png texture file
+        setWidth(2, "!,.:;|i'");
+        setWidth(3, "l`");
+        setWidth(4, " (){}[]tI\"*");
+        setWidth(5, "<>fkªº▌⌡°ⁿ²");
+        // all other characters are length=6
+        setWidth(7, "@~«»≡≈√");
+        setWidth(8, "░╢╖╣║╗╝╜∅⌠");
+        setWidth(9, "▒▓└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┌█▄▐▀");
     }
 
     public static int getWidth(char c) {
-        return c > 127 ? 6 : characterWidthMap[c];
+        if (c < 128) {
+            return asciiWidthMap[c];
+        }
+        return characterWidthMap.getOrDefault(c, 6);
     }
 
     public static AsciiMatcher formatCharCodeMatcher = new AsciiMatcher("klmnoKLMNO");
@@ -59,7 +73,7 @@ public class TextWidthHelper {
                 i++;
                 continue;
             }
-            total += getWidth(c) + (bold ? 2 : 0);
+            total += getWidth(c) + (bold ? 1 : 0);
             if (c == '\n') {
                 if (total > maxWidth) {
                     maxWidth = total;
