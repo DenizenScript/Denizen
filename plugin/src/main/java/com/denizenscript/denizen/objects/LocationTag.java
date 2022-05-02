@@ -41,6 +41,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -408,6 +409,28 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
             return super.getBlock();
+        }
+        finally {
+            NMSHandler.chunkHelper.restoreServerThread(getWorld());
+        }
+    }
+
+    public BlockData getBlockDataForTag(Attribute attribute) {
+        NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
+        try {
+            if (getWorld() == null) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
+                }
+                return null;
+            }
+            if (!isChunkLoaded()) {
+                if (!attribute.hasAlternative()) {
+                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                }
+                return null;
+            }
+            return super.getBlock().getBlockData();
         }
         finally {
             NMSHandler.chunkHelper.restoreServerThread(getWorld());
@@ -951,7 +974,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // You can use <some_block_location.add[<some_block_location.block_facing>]> to get the block directly in front of this block (based on its facing direction).
         // -->
         tagProcessor.registerTag(LocationTag.class, "block_facing", (attribute, object) -> {
-            Block block = object.getBlockForTag(attribute);
+            BlockData block = object.getBlockDataForTag(attribute);
             MaterialTag material = new MaterialTag(block);
             if (!MaterialDirectional.describes(material)) {
                 return null;
@@ -973,7 +996,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // You can use <some_block_location.with_facing_direction.forward[1]> to get the block directly in front of this block (based on its facing direction).
         // -->
         tagProcessor.registerTag(LocationTag.class, "with_facing_direction", (attribute, object) -> {
-            Block block = object.getBlockForTag(attribute);
+            BlockData block = object.getBlockDataForTag(attribute);
             MaterialTag material = new MaterialTag(block);
             if (!MaterialDirectional.describes(material)) {
                 return null;
@@ -1273,7 +1296,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the material of the block at the location.
         // -->
         tagProcessor.registerTag(MaterialTag.class, "material", (attribute, object) -> {
-            Block block = object.getBlockForTag(attribute);
+            BlockData block = object.getBlockDataForTag(attribute);
             if (block == null) {
                 return null;
             }
@@ -3743,7 +3766,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Defaults to 7 if not connected to a tree.
         // -->
         tagProcessor.registerTag(ElementTag.class, "tree_distance", (attribute, object) -> {
-            MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
+            MaterialTag material = new MaterialTag(object.getBlockDataForTag(attribute));
             if (MaterialPersistent.describes(material)) {
                 return new ElementTag(MaterialPersistent.getFrom(material).getDistance());
             }
@@ -3905,7 +3928,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(LocationTag.class, "attached_to", (attribute, object) -> {
             BlockFace face = BlockFace.SELF;
-            MaterialTag material = new MaterialTag(object.getBlockForTag(attribute));
+            MaterialTag material = new MaterialTag(object.getBlockDataForTag(attribute));
             if (material.getMaterial() == Material.TORCH || material.getMaterial() == Material.REDSTONE_TORCH || material.getMaterial() == Material.SOUL_TORCH) {
                 face = BlockFace.DOWN;
             }
@@ -3939,7 +3962,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // returns the location of the other block in the double-block structure.
         // -->
         tagProcessor.registerTag(LocationTag.class, "other_block", (attribute, object) -> {
-            Block b = object.getBlockForTag(attribute);
+            BlockData b = object.getBlockDataForTag(attribute);
             MaterialTag material = new MaterialTag(b);
             if (MaterialHalf.describes(material)) {
                 Vector vec = MaterialHalf.getFrom(material).getRelativeBlockVector();
