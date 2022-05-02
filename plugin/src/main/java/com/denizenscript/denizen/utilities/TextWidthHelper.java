@@ -7,15 +7,24 @@ import java.util.HashMap;
 
 public class TextWidthHelper {
 
+    public static int[] asciiWidthMap = new int[128];
     public static HashMap<Character, Integer> characterWidthMap = new HashMap<>();
 
     public static void setWidth(int width, String chars) {
         for (char c : chars.toCharArray()) {
-            characterWidthMap.put(c, width);
+            if (c < 128) {
+                asciiWidthMap[c] = width;
+            }
+            else {
+                characterWidthMap.put(c, width);
+            }
         }
     }
 
     static {
+        for (int i = 0; i < 128; i++) {
+            asciiWidthMap[i] = 6;
+        }
         // Covers all symbols in the default ascii.png texture file
         setWidth(2, "!,.:;|i'");
         setWidth(3, "l`");
@@ -28,6 +37,9 @@ public class TextWidthHelper {
     }
 
     public static int getWidth(char c) {
+        if (c < 128) {
+            return asciiWidthMap[c];
+        }
         return characterWidthMap.getOrDefault(c, 6);
     }
 
