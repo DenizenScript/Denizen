@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import org.bukkit.Color;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -97,4 +98,9 @@ public interface BlockHelper {
     default void setSpawnerSpawnedType(CreatureSpawner spawner, EntityTag entity) {
         spawner.setSpawnedType(entity.getBukkitEntityType());
     }
+
+    default Color getMapColor(Block block) {
+        throw new UnsupportedOperationException();
+    }
+
 }
