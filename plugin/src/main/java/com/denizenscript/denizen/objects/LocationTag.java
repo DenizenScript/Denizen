@@ -3758,14 +3758,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.tree_distance>
         // @returns ElementTag(Number)
         // @group world
+        // @deprecated Use MaterialTag.distance
         // @description
-        // Returns a number of how many blocks away from a connected tree leaves are.
-        // Defaults to 7 if not connected to a tree.
+        // Deprecated in favor of <@link tag MaterialTag.distance>
+        // Used like <[location].material.distance>
         // -->
         tagProcessor.registerTag(ElementTag.class, "tree_distance", (attribute, object) -> {
+            BukkitImplDeprecations.locationDistanceTag.warn(attribute.context);
             MaterialTag material = new MaterialTag(object.getBlockDataForTag(attribute));
-            if (MaterialPersistent.describes(material)) {
-                return new ElementTag(MaterialPersistent.getFrom(material).getDistance());
+            if (MaterialDistance.describes(material)) {
+                return new ElementTag(MaterialDistance.getFrom(material).getDistance());
             }
             return null;
         });

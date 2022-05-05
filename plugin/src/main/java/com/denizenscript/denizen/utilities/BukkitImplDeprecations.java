@@ -164,6 +164,9 @@ public class BukkitImplDeprecations {
     // Added 2019/11/11, made slow 2021/11/2021.
     public static Warning entityLocationCursorOnTag = new SlowWarning("entityLocationCursorOnTag", "entity.location.cursor_on tags should be replaced by entity.cursor_on (be careful with the slight differences though).");
 
+    // Added 2021/05/05.
+    public static Warning locationDistanceTag = new SlowWarning("locationDistanceTag", "locationtag.tree_distance is deprecated in favor of location.material.distance");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 
