@@ -9,7 +9,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -122,7 +122,7 @@ public class DenizenEntityType {
                         }
                         break;
                     case ITEM_PROJECTILE:
-                        Deprecations.itemProjectile.warn();
+                        BukkitImplDeprecations.itemProjectile.warn();
                         ItemStack itemStack = new ItemStack(Material.STONE);
                         for (Mechanism mechanism : mechanisms) {
                             if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {

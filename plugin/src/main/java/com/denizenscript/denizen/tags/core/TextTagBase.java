@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.ChatColor;
 
 public class TextTagBase {
@@ -22,55 +22,55 @@ public class TextTagBase {
                 String lower = CoreUtilities.toLowerCase(event.getName());
                 Attribute attribute = event.getAttributes();
                 if (event.getName().equals("&auml")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("ä").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&Auml")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("Ä").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&ouml")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("ö").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&Ouml")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("Ö").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&uuml")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("ü").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (event.getName().equals("&Uuml")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("Ü").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&amp")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("&").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&cm")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag(",").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&sc")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag(";").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&pipe")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("|").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&ds")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("$").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&dot")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag(".").getObjectAttribute(attribute.fulfill(1)));
                 }
                 else if (lower.equals("&hrt")) {
-                    Deprecations.pointlessTextTags.warn(event.getScriptEntry());
+                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
                     event.setReplacedObject(new ElementTag("\u2665").getObjectAttribute(attribute.fulfill(1)));
                 }
             }

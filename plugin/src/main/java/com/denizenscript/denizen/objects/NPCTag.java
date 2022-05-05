@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
@@ -436,7 +436,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         tagProcessor.registerTag(ObjectTag.class, "location", (attribute, object) -> {
             if (attribute.startsWith("previous_location", 2)) {
                 attribute.fulfill(1);
-                Deprecations.npcPreviousLocationTag.warn(attribute.context);
+                BukkitImplDeprecations.npcPreviousLocationTag.warn(attribute.context);
                 return NPCTagBase.previousLocations.get(object.getId());
             }
             if (object.isSpawned()) {
@@ -507,7 +507,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Documented in EntityTag
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             if (attribute.startsWith("nickname", 2)) {
-                Deprecations.npcNicknameTag.warn(attribute.context);
+                BukkitImplDeprecations.npcNicknameTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
                         .getNickname() : object.getName());
@@ -616,7 +616,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
             else if (attribute.startsWith("list", 2)) {
                 attribute.fulfill(1);
-                Deprecations.npcAnchorListTag.warn(attribute.context);
+                BukkitImplDeprecations.npcAnchorListTag.warn(attribute.context);
                 ListTag list = new ListTag();
                 for (Anchor anchor : trait.getAnchors()) {
                     list.add(anchor.getName());
@@ -996,7 +996,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         tagProcessor.registerTag(ElementTag.class, "has_script", (attribute, object) -> {
-            Deprecations.hasScriptTags.warn(attribute.context);
+            BukkitImplDeprecations.hasScriptTags.warn(attribute.context);
             NPC citizen = object.getCitizen();
             return new ElementTag(citizen.hasTrait(AssignmentTrait.class));
         });
@@ -1009,7 +1009,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Deprecated variant of <@link tag NPCTag.scripts>.
         // -->
         tagProcessor.registerTag(ScriptTag.class, "script", (attribute, object) -> {
-            Deprecations.npcScriptSingle.warn(attribute.context);
+            BukkitImplDeprecations.npcScriptSingle.warn(attribute.context);
             NPC citizen = object.getCitizen();
             if (!citizen.hasTrait(AssignmentTrait.class)) {
                 return null;
@@ -1264,7 +1264,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         tagProcessor.registerTag(NPCTag.class, "navigator", (attribute, object) -> {
-            Deprecations.oldNPCNavigator.warn(attribute.context);
+            BukkitImplDeprecations.oldNPCNavigator.warn(attribute.context);
             return object;
         });
     }
@@ -1338,7 +1338,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                     trait.checkAutoRemove();
                 }
                 else {
-                    Deprecations.assignmentRemove.warn(mechanism.context);
+                    BukkitImplDeprecations.assignmentRemove.warn(mechanism.context);
                     getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
                     npc.removeTrait(AssignmentTrait.class);
                 }
@@ -1588,7 +1588,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }
 
         if (mechanism.matches("spawn")) {
-            Deprecations.npcSpawnMechanism.warn(mechanism.context);
+            BukkitImplDeprecations.npcSpawnMechanism.warn(mechanism.context);
             if (mechanism.requireObject("Invalid LocationTag specified. Assuming last known NPC location.", LocationTag.class)) {
                 getCitizen().spawn(mechanism.valueAsType(LocationTag.class));
             }
@@ -1637,7 +1637,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }
 
         if (mechanism.matches("despawn")) {
-            Deprecations.npcDespawnMech.warn(mechanism.context);
+            BukkitImplDeprecations.npcDespawnMech.warn(mechanism.context);
             getCitizen().despawn(DespawnReason.PLUGIN);
         }
 

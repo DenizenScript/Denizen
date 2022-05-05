@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -64,25 +64,25 @@ public class EntityEquipment implements Property {
         PropertyParser.<EntityEquipment, ObjectTag>registerTag(ObjectTag.class, "equipment", (attribute, object) -> {
             org.bukkit.inventory.EntityEquipment equipment = object.entity.getLivingEntity().getEquipment();
             if (attribute.startsWith("equipment.boots")) {
-                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
                 attribute.fulfill(1);
                 ItemStack boots = equipment.getBoots();
                 return new ItemTag(boots != null ? boots : new ItemStack(Material.AIR));
             }
             else if (attribute.startsWith("equipment.chestplate") || attribute.startsWith("equipment.chest")) {
-                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
                 attribute.fulfill(1);
                 ItemStack chestplate = equipment.getChestplate();
                 return new ItemTag(chestplate != null ? chestplate : new ItemStack(Material.AIR));
             }
             else if (attribute.startsWith("equipment.helmet") || attribute.startsWith("equipment.head")) {
-                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
                 attribute.fulfill(1);
                 ItemStack helmet = equipment.getHelmet();
                 return new ItemTag(helmet != null ? helmet : new ItemStack(Material.AIR));
             }
             else if (attribute.startsWith("equipment.leggings") || attribute.startsWith("equipment.legs")) {
-                Deprecations.entityEquipmentSubtags.warn(attribute.context);
+                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
                 attribute.fulfill(1);
                 ItemStack leggings = equipment.getLeggings();
                 return new ItemTag(leggings != null ? leggings : new ItemStack(Material.AIR));

@@ -13,7 +13,7 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 
@@ -127,7 +127,7 @@ public class EntityScriptContainer extends ScriptContainer {
                 }
             }
             if (any) {
-                Deprecations.entityMechanismsFormat.warn(this);
+                BukkitImplDeprecations.entityMechanismsFormat.warn(this);
             }
             if (entity == null || entity.isUnique()) {
                 return null;

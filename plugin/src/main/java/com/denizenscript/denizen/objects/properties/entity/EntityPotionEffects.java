@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.entity.Arrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -102,7 +102,7 @@ public class EntityPotionEffects implements Property {
         // Deprecated in favor of <@link tag EntityTag.effects_data>
         // -->
         PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "list_effects", (attribute, object) -> {
-            Deprecations.oldPotionEffects.warn(attribute.context);
+            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             return object.getEffectsListTag();
         });
 

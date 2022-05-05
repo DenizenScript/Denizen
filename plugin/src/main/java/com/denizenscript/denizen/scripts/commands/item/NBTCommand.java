@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.inventory.ItemStack;
 
 public class NBTCommand extends AbstractCommand {
@@ -53,7 +53,7 @@ public class NBTCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Deprecations.nbtCommand.warn(scriptEntry);
+        BukkitImplDeprecations.nbtCommand.warn(scriptEntry);
 
         ItemTag item = scriptEntry.getObjectTag("item");
         ElementTag key = scriptEntry.getElement("key");

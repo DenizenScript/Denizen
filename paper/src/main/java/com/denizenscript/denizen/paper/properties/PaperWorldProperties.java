@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.paper.properties;
 
 import com.denizenscript.denizen.objects.WorldTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.Deprecations;
 
 public class PaperWorldProperties implements Property {
 
@@ -55,7 +55,7 @@ public class PaperWorldProperties implements Property {
         // Deprecated: replaced by Minecraft's simulation_distance and view_distance config pairing
         // -->
         PropertyParser.<PaperWorldProperties, ElementTag>registerTag(ElementTag.class, "no_tick_view_distance", (attribute, world) -> {
-            Deprecations.paperNoTickViewDistance.warn(attribute.context);
+            BukkitImplDeprecations.paperNoTickViewDistance.warn(attribute.context);
             return new ElementTag(world.world.getWorld().getNoTickViewDistance());
         });
     }
@@ -121,7 +121,7 @@ public class PaperWorldProperties implements Property {
         // <WorldTag.no_tick_view_distance>
         // -->
         if (mechanism.matches("no_tick_view_distance")) {
-            Deprecations.paperNoTickViewDistance.warn(mechanism.context);
+            BukkitImplDeprecations.paperNoTickViewDistance.warn(mechanism.context);
             if (!mechanism.hasValue()) {
                 world.getWorld().setNoTickViewDistance(-1);
             }

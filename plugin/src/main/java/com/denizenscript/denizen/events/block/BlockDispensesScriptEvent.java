@@ -6,7 +6,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -84,7 +84,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             }
         }
         if (ArgumentHelper.matchesDouble(determinationObj.toString())) {
-            Deprecations.blockDispensesItemDetermination.warn();
+            BukkitImplDeprecations.blockDispensesItemDetermination.warn();
             event.setVelocity(event.getVelocity().multiply(Double.parseDouble(determinationObj.toString())));
             return true;
         }

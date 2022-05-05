@@ -54,10 +54,6 @@ public class MaterialPersistent implements Property {
         return (Leaves) material.getModernData();
     }
 
-    public int getDistance() {
-        return getLeaves().getDistance();
-    }
-
     @Override
     public String getPropertyString() {
         return String.valueOf(getLeaves().isPersistent());

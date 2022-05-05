@@ -12,7 +12,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Effect;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -127,7 +127,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     continue;
                 }
                 else if (arg.startsWith("iconcrack_")) {
-                    Deprecations.oldPlayEffectSpecials.warn(scriptEntry);
+                    BukkitImplDeprecations.oldPlayEffectSpecials.warn(scriptEntry);
                     // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
                     String shrunk = arg.getValue().substring("iconcrack_".length());
                     ItemTag item = ItemTag.valueOf(shrunk, scriptEntry.context);
@@ -162,7 +162,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesInteger()
                     && arg.matchesPrefix("qty", "q", "quantity")) {
                 if (arg.matchesPrefix("q", "qty")) {
-                    Deprecations.qtyTags.warn(scriptEntry);
+                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
                 }
                 scriptEntry.addObject("quantity", arg.asElement());
             }

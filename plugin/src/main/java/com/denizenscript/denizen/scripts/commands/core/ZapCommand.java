@@ -16,7 +16,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.Listener;
 
 public class ZapCommand extends AbstractCommand implements Listener {
@@ -85,7 +85,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("step")
                     && arg.hasPrefix()
                     && arg.getPrefix().matchesArgumentType(ScriptTag.class)) {
-                Deprecations.zapPrefix.warn(scriptEntry);
+                BukkitImplDeprecations.zapPrefix.warn(scriptEntry);
                 scriptEntry.addObject("script", arg.getPrefix().asType(ScriptTag.class));
                 scriptEntry.addObject("step", arg.asElement());
             }

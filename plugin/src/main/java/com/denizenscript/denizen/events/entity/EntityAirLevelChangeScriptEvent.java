@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityAirChangeEvent;
@@ -91,7 +91,7 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
             case "entity":
                 return entity.getDenizenObject();
             case "air":
-                Deprecations.airLevelEventDuration.warn();
+                BukkitImplDeprecations.airLevelEventDuration.warn();
                 return new ElementTag(event.getAmount());
             case "air_duration":
                 return new DurationTag((long) event.getAmount());

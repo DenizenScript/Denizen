@@ -15,7 +15,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
 import org.bukkit.inventory.Inventory;
@@ -326,7 +326,7 @@ public class InventoryCommand extends AbstractCommand {
                     break;
                 // Add origin's contents to destination
                 case ADD:
-                    Deprecations.oldInventoryCommands.warn(scriptEntry);
+                    BukkitImplDeprecations.oldInventoryCommands.warn(scriptEntry);
                     if (origin == null) {
                         Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;
@@ -335,7 +335,7 @@ public class InventoryCommand extends AbstractCommand {
                     break;
                 // Remove origin's contents from destination
                 case REMOVE:
-                    Deprecations.oldInventoryCommands.warn(scriptEntry);
+                    BukkitImplDeprecations.oldInventoryCommands.warn(scriptEntry);
                     if (origin == null) {
                         Debug.echoError(scriptEntry, "Missing origin argument!");
                         return;

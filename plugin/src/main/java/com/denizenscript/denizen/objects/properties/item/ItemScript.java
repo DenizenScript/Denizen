@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 
 public class ItemScript implements Property {
 
@@ -49,7 +49,7 @@ public class ItemScript implements Property {
         }
 
         if (attribute.startsWith("has_script")) {
-            Deprecations.hasScriptTags.warn(attribute.context);
+            BukkitImplDeprecations.hasScriptTags.warn(attribute.context);
             return new ElementTag(item.isItemscript())
                     .getObjectAttribute(attribute.fulfill(1));
         }
@@ -63,7 +63,7 @@ public class ItemScript implements Property {
         // Use ".script.name" instead.
         // -->
         if (attribute.startsWith("scriptname")) {
-            Deprecations.hasScriptTags.warn(attribute.context);
+            BukkitImplDeprecations.hasScriptTags.warn(attribute.context);
             if (item.isItemscript()) {
                 return new ElementTag(item.getScriptName())
                         .getObjectAttribute(attribute.fulfill(1));

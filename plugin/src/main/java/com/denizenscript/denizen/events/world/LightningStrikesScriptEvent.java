@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.LightningStrikeEvent;
@@ -60,7 +60,7 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
             case "location":
                 return location;
             case "world":
-                Deprecations.worldContext.warn();
+                BukkitImplDeprecations.worldContext.warn();
                 return new WorldTag(location.getWorld());
         }
         return super.getContext(name);

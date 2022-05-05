@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
@@ -102,7 +103,7 @@ public class EconomyScriptContainer extends ScriptContainer {
             DefinitionProvider defProvider = new SimpleDefinitionProvider();
             defProvider.addDefinition("amount", new ElementTag(amountText));
             if (value.contains("<amount")) {
-                Deprecations.pseudoTagBases.warn(backingScript);
+                BukkitImplDeprecations.pseudoTagBases.warn(backingScript);
                 value = value.replace("<amount", "<element[" + amountText + "]");
             }
             return autoTag(value, player, defProvider);

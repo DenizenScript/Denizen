@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -232,22 +232,22 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         tagProcessor.registerTag(ListTag.class, "spawnable_entities", (attribute, object) -> {
             List<EntityType> entityTypes;
             if (attribute.startsWith("ambient", 2)) {
-                Deprecations.biomeSpawnableTag.warn(attribute.context);
+                BukkitImplDeprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
                 entityTypes = object.biome.getAmbientEntities();
             }
             else if (attribute.startsWith("creatures", 2)) {
-                Deprecations.biomeSpawnableTag.warn(attribute.context);
+                BukkitImplDeprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
                 entityTypes = object.biome.getCreatureEntities();
             }
             else if (attribute.startsWith("monsters", 2)) {
-                Deprecations.biomeSpawnableTag.warn(attribute.context);
+                BukkitImplDeprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
                 entityTypes = object.biome.getMonsterEntities();
             }
             else if (attribute.startsWith("water", 2)) {
-                Deprecations.biomeSpawnableTag.warn(attribute.context);
+                BukkitImplDeprecations.biomeSpawnableTag.warn(attribute.context);
                 attribute.fulfill(1);
                 entityTypes = object.biome.getWaterEntities();
             }

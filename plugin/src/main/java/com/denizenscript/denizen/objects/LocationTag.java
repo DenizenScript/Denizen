@@ -2,10 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
-import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
-import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
-import com.denizenscript.denizen.objects.properties.material.MaterialPersistent;
+import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
@@ -34,7 +31,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.SimplexNoise;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -2763,7 +2760,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             double radius = attribute.getDoubleContext(3);
 
             if (attribute.startsWith("blocks", 2)) {
-                Deprecations.locationFindEntities.warn(attribute.context);
+                BukkitImplDeprecations.locationFindEntities.warn(attribute.context);
                 ArrayList<LocationTag> found = new ArrayList<>();
                 List<MaterialTag> materials = new ArrayList<>();
                 if (attribute.hasContext(2)) {
@@ -2873,7 +2870,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
 
             else if (attribute.startsWith("players", 2)) {
-                Deprecations.locationFindEntities.warn(attribute.context);
+                BukkitImplDeprecations.locationFindEntities.warn(attribute.context);
                 ArrayList<PlayerTag> found = new ArrayList<>();
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -2886,7 +2883,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
 
             else if (attribute.startsWith("npcs", 2)) {
-                Deprecations.locationFindEntities.warn(attribute.context);
+                BukkitImplDeprecations.locationFindEntities.warn(attribute.context);
                 ArrayList<NPCTag> found = new ArrayList<>();
                 attribute.fulfill(2);
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
@@ -2899,7 +2896,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
 
             else if (attribute.startsWith("entities", 2)) {
-                Deprecations.locationFindEntities.warn(attribute.context);
+                BukkitImplDeprecations.locationFindEntities.warn(attribute.context);
                 ListTag ent_list = attribute.hasContext(2) ? attribute.contextAsType(2, ListTag.class) : null;
                 ListTag found = new ListTag();
                 attribute.fulfill(2);
@@ -3562,7 +3559,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(ObjectTag.class, "biome", (attribute, object) -> {
             if (attribute.startsWith("formatted", 2)) {
-                Deprecations.locationBiomeFormattedTag.warn(attribute.context);
+                BukkitImplDeprecations.locationBiomeFormattedTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(CoreUtilities.toLowerCase(object.getBiomeForTag(attribute).getName()).replace('_', ' '));
             }
@@ -3761,14 +3758,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.tree_distance>
         // @returns ElementTag(Number)
         // @group world
+        // @deprecated Use MaterialTag.distance
         // @description
-        // Returns a number of how many blocks away from a connected tree leaves are.
-        // Defaults to 7 if not connected to a tree.
+        // Deprecated in favor of <@link tag MaterialTag.distance>
+        // Used like <[location].material.distance>
         // -->
         tagProcessor.registerTag(ElementTag.class, "tree_distance", (attribute, object) -> {
+            BukkitImplDeprecations.locationDistanceTag.warn(attribute.context);
             MaterialTag material = new MaterialTag(object.getBlockDataForTag(attribute));
-            if (MaterialPersistent.describes(material)) {
-                return new ElementTag(MaterialPersistent.getFrom(material).getDistance());
+            if (MaterialDistance.describes(material)) {
+                return new ElementTag(MaterialDistance.getFrom(material).getDistance());
             }
             return null;
         });
@@ -3839,7 +3838,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getBurnTime());
         });
         tagProcessor.registerTag(ElementTag.class, "furnace_burn_time", (attribute, object) -> {
-            Deprecations.furnaceTimeTags.warn(attribute.context);
+            BukkitImplDeprecations.furnaceTimeTags.warn(attribute.context);
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getBurnTime());
         });
 
@@ -3855,7 +3854,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getCookTime());
         });
         tagProcessor.registerTag(ElementTag.class, "furnace_cook_time", (attribute, object) -> {
-            Deprecations.furnaceTimeTags.warn(attribute.context);
+            BukkitImplDeprecations.furnaceTimeTags.warn(attribute.context);
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTime());
         });
 
@@ -3871,7 +3870,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             return new DurationTag((long) ((Furnace) object.getBlockStateForTag(attribute)).getCookTimeTotal());
         });
         tagProcessor.registerTag(ElementTag.class, "furnace_cook_time_total", (attribute, object) -> {
-            Deprecations.furnaceTimeTags.warn(attribute.context);
+            BukkitImplDeprecations.furnaceTimeTags.warn(attribute.context);
             return new ElementTag(((Furnace) object.getBlockStateForTag(attribute)).getCookTimeTotal());
         });
 
@@ -4639,7 +4638,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
         }
         if (mechanism.matches("furnace_burn_time")) {
-            Deprecations.furnaceTimeTags.warn(mechanism.context);
+            BukkitImplDeprecations.furnaceTimeTags.warn(mechanism.context);
             if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setBurnTime((short) mechanism.getValue().asInt());
@@ -4664,7 +4663,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
         }
         if (mechanism.matches("furnace_cook_time")) {
-            Deprecations.furnaceTimeTags.warn(mechanism.context);
+            BukkitImplDeprecations.furnaceTimeTags.warn(mechanism.context);
             if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTime((short) mechanism.getValue().asInt());
@@ -4689,7 +4688,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
         }
         if (mechanism.matches("furnace_cook_time_total")) {
-            Deprecations.furnaceTimeTags.warn(mechanism.context);
+            BukkitImplDeprecations.furnaceTimeTags.warn(mechanism.context);
             if (getBlockState() instanceof Furnace) {
                 Furnace furnace = (Furnace) getBlockState();
                 furnace.setCookTimeTotal((short) mechanism.getValue().asInt());

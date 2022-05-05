@@ -19,7 +19,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -262,67 +262,67 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         PropertyParser.registerPropertyTagHandlers(MaterialTag.class, tagProcessor);
 
         tagProcessor.registerTag(ElementTag.class, "is_ageable", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialAge.describes(object));
         }, "is_plant");
         tagProcessor.registerTag(ElementTag.class, "is_campfire", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialCampfire.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_directional", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialDirectional.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "has_multiple_faces", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialFaces.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "can_drag", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialDrags.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_bisected", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialHalf.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "has_leaf_size", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialLeafSize.describes(object));
         }, "is_bamboo");
         tagProcessor.registerTag(ElementTag.class, "is_levelable", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialLevel.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_lightable", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialLightable.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_leaves", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialPersistent.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "has_count", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialCount.describes(object));
         }, "is_pickle");
         tagProcessor.registerTag(ElementTag.class, "has_type", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialBlockType.describes(object));
         }, "is_slab");
         tagProcessor.registerTag(ElementTag.class, "is_snowable", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialSnowable.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_switch", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialSwitchFace.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_waterloggable", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialWaterlogged.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_switchable", (attribute, object) -> {
-            Deprecations.materialPropertyTags.warn(attribute.context);
+            BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
             return new ElementTag(MaterialSwitchable.describes(object));
         });
 
@@ -565,7 +565,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         tagProcessor.registerTag(ElementTag.class, "has_vanilla_data_tag", (attribute, object) -> {
-            Deprecations.materialHasDataPackTag.warn(attribute.context);
+            BukkitImplDeprecations.materialHasDataPackTag.warn(attribute.context);
             if (!attribute.hasParam()) {
                 attribute.echoError("MaterialTag.has_vanilla_data_tag[...] tag must have an input value.");
                 return null;

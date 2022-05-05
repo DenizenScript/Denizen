@@ -10,6 +10,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
@@ -32,7 +33,7 @@ import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.CommandContext;
@@ -85,7 +86,7 @@ public class ServerTagBase {
             }
         }, "server");
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "global", (attribute) -> {
-            Deprecations.globalTagName.warn(attribute.context);
+            BukkitImplDeprecations.globalTagName.warn(attribute.context);
             return null;
         });
     }
@@ -749,7 +750,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("list_biomes")) {
-            Deprecations.serverListBiomeNames.warn(attribute.context);
+            BukkitImplDeprecations.serverListBiomeNames.warn(attribute.context);
             ListTag allBiomes = new ListTag();
             for (Biome biome : Biome.values()) {
                 allBiomes.add(biome.name());
@@ -772,7 +773,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("enchantment_types") || attribute.startsWith("list_enchantments")) {
-            Deprecations.echantmentTagUpdate.warn(attribute.context);
+            BukkitImplDeprecations.echantmentTagUpdate.warn(attribute.context);
             if (attribute.matches("list_enchantments")) {
                 Debug.echoError("list_enchantments is deprecated: use enchantment_types");
             }
@@ -785,7 +786,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("enchantment_keys") || attribute.startsWith("list_enchantment_keys")) {
-            Deprecations.echantmentTagUpdate.warn(attribute.context);
+            BukkitImplDeprecations.echantmentTagUpdate.warn(attribute.context);
             listDeprecateWarn(attribute);
             ListTag enchants = new ListTag();
             for (Enchantment e : Enchantment.values()) {
@@ -831,7 +832,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("list_materials")) {
-            Deprecations.serverListMaterialNames.warn(attribute.context);
+            BukkitImplDeprecations.serverListMaterialNames.warn(attribute.context);
             ListTag allMats = new ListTag();
             for (Material mat : Material.values()) {
                 allMats.add(mat.name());
@@ -1108,7 +1109,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("enchantment_max_level") && attribute.hasParam()) {
-            Deprecations.echantmentTagUpdate.warn(attribute.context);
+            BukkitImplDeprecations.echantmentTagUpdate.warn(attribute.context);
             EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getParam(), attribute.context);
             if (ench == null) {
                 attribute.echoError("Enchantment '" + attribute.getParam() + "' does not exist.");
@@ -1118,7 +1119,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("enchantment_start_level") && attribute.hasParam()) {
-            Deprecations.echantmentTagUpdate.warn(attribute.context);
+            BukkitImplDeprecations.echantmentTagUpdate.warn(attribute.context);
             EnchantmentTag ench = EnchantmentTag.valueOf(attribute.getParam(), attribute.context);
             if (ench == null) {
                 attribute.echoError("Enchantment '" + attribute.getParam() + "' does not exist.");
@@ -1601,7 +1602,7 @@ public class ServerTagBase {
         }
 
         if (attribute.startsWith("list_plugin_names")) {
-            Deprecations.serverPluginNamesTag.warn(attribute.context);
+            BukkitImplDeprecations.serverPluginNamesTag.warn(attribute.context);
             ListTag plugins = new ListTag();
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
                 plugins.add(plugin.getName());
@@ -2127,20 +2128,20 @@ public class ServerTagBase {
         }
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasParam()) {
-            Deprecations.isValidTag.warn(attribute.context);
+            BukkitImplDeprecations.isValidTag.warn(attribute.context);
             EntityTag ent = EntityTag.valueOf(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag((ent != null && ent.isUnique() && ent.isSpawnedOrValidForTag()) ? "true" : "false")
                     .getObjectAttribute(attribute.fulfill(1)));
         }
         else if (attribute.startsWith("player_is_valid")
                 && attribute.hasParam()) {
-            Deprecations.isValidTag.warn(attribute.context);
+            BukkitImplDeprecations.isValidTag.warn(attribute.context);
             event.setReplacedObject(new ElementTag(PlayerTag.playerNameIsValid(attribute.getParam()))
                     .getObjectAttribute(attribute.fulfill(1)));
         }
         else if (attribute.startsWith("npc_is_valid")
                 && attribute.hasParam()) {
-            Deprecations.isValidTag.warn(attribute.context);
+            BukkitImplDeprecations.isValidTag.warn(attribute.context);
             NPCTag npc = NPCTag.valueOf(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
             event.setReplacedObject(new ElementTag((npc != null && npc.isValid()))
                     .getObjectAttribute(attribute.fulfill(1)));
@@ -2388,7 +2389,7 @@ public class ServerTagBase {
 
     public static void listDeprecateWarn(Attribute attribute) {
         if (CoreConfiguration.futureWarningsEnabled && attribute.getAttribute(1).startsWith("list_")) {
-            Deprecations.listStyleTags.warn(attribute.context);
+            BukkitImplDeprecations.listStyleTags.warn(attribute.context);
             Debug.echoError("Tag '" + attribute.getAttribute(1) + "' is deprecated: remove the 'list_' prefix.");
         }
     }
@@ -2459,7 +2460,7 @@ public class ServerTagBase {
         }
 
         if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
-            Deprecations.serverRedirectLogging.warn(mechanism.context);
+            BukkitImplDeprecations.serverRedirectLogging.warn(mechanism.context);
             if (!CoreConfiguration.allowConsoleRedirection) {
                 Debug.echoError("Console redirection disabled by administrator.");
                 return;

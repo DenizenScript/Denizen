@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -87,7 +87,7 @@ public class ItemHidden implements Property {
             return hides().getObjectAttribute(attribute.fulfill(1));
         }
         if (attribute.startsWith("flags")) {
-            Deprecations.itemFlagsProperty.warn(attribute.context);
+            BukkitImplDeprecations.itemFlagsProperty.warn(attribute.context);
             return flags().getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -130,7 +130,7 @@ public class ItemHidden implements Property {
         // -->
         if (mechanism.matches("flags") || mechanism.matches("hides")) {
             if (mechanism.matches("flags")) {
-                Deprecations.itemFlagsProperty.warn(mechanism.context);
+                BukkitImplDeprecations.itemFlagsProperty.warn(mechanism.context);
             }
             ItemMeta meta = item.getItemMeta();
             meta.removeItemFlags(ItemFlag.values());

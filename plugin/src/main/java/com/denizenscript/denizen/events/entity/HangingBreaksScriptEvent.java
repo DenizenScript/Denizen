@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -79,7 +79,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
             case "hanging":
                 return hanging;
             case "location":
-                Deprecations.hangingBreaksEventContext.warn();
+                BukkitImplDeprecations.hangingBreaksEventContext.warn();
                 return hanging.getLocation();
         }
         return super.getContext(name);

@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -242,7 +242,7 @@ public class EntityAttributeModifiers implements Property {
         });
 
         PropertyParser.<EntityAttributeModifiers, ListTag>registerTag(ListTag.class, "attributes", (attribute, object) -> {
-            Deprecations.legacyAttributeProperties.warn(attribute.context);
+            BukkitImplDeprecations.legacyAttributeProperties.warn(attribute.context);
             return object.getAttributes();
         });
     }
@@ -373,7 +373,7 @@ public class EntityAttributeModifiers implements Property {
         }
 
         if (mechanism.matches("attributes") && mechanism.hasValue()) {
-            Deprecations.legacyAttributeProperties.warn(mechanism.context);
+            BukkitImplDeprecations.legacyAttributeProperties.warn(mechanism.context);
             Attributable ent = getAttributable();
             ListTag list = mechanism.valueAsType(ListTag.class);
             for (String str : list) {
