@@ -76,7 +76,7 @@ public class EntityDisabledSlots implements Property {
         return "disabled_slots";
     }
 
-    public void registerTags() {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.disabled_slots>
@@ -98,10 +98,11 @@ public class EntityDisabledSlots implements Property {
             // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
             // -->
             if (attribute.startsWith("raw", 2)) {
-                return new ElementTag(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS));
+                attribute.fulfill(1);
+                return new ElementTag(CustomNBT.getCustomIntNBT(object.dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS));
             }
 
-            return getDisabledSlots();
+            return object.getDisabledSlots();
         });
     }
 
