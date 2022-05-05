@@ -141,7 +141,7 @@ public class EntityDisabledSlots implements Property {
         // @description
         // Sets the disabled slots of an armor stand.
         // Input is a list of MapTags with a "slot" key, optionally include an "action" key to disable specific interactions (defaults to ALL).
-        // Specify no input to enable all slots.
+        // Provide no input to enable all slots.
         // Slots: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html>
         // Actions: ALL, REMOVE, PLACE
         // NOTE: Minecraft contains a bug where disabling ALL for the HAND slot still allows item removal.
