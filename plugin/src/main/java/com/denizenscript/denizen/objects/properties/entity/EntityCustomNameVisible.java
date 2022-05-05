@@ -5,7 +5,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class EntityCustomNameVisible implements Property {
 
@@ -17,12 +17,10 @@ public class EntityCustomNameVisible implements Property {
         if (!describes(entity)) {
             return null;
         }
-        return new EntityCustomNameVisible((EntityTag) entity);
+        else {
+            return new EntityCustomNameVisible((EntityTag) entity);
+        }
     }
-
-    public static final String[] handledTags = new String[] {
-            "custom_name_visible"
-    };
 
     public static final String[] handledMechs = new String[] {
             "custom_name_visibility", "custom_name_visible"
@@ -44,12 +42,7 @@ public class EntityCustomNameVisible implements Property {
         return "custom_name_visible";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.custom_name_visible>
@@ -59,11 +52,9 @@ public class EntityCustomNameVisible implements Property {
         // @description
         // Returns true if the entity's custom name is visible.
         // -->
-        if (attribute.startsWith("custom_name_visible")) {
-            return new ElementTag(entity.getBukkitEntity().isCustomNameVisible()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityCustomNameVisible, ElementTag>registerTag(ElementTag.class, "custom_name_visible", (attribute, object) -> {
+            return new ElementTag(object.entity.getBukkitEntity().isCustomNameVisible());
+        });
     }
 
     @Override
@@ -74,7 +65,7 @@ public class EntityCustomNameVisible implements Property {
         // @name custom_name_visible
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether the custom name is visible.
+        // Sets whether the entity's custom name is visible.
         // @tags
         // <EntityTag.custom_name_visible>
         // -->
