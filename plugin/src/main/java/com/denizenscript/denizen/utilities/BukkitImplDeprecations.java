@@ -166,6 +166,7 @@ public class BukkitImplDeprecations {
 
     // Added 2021/05/05.
     public static Warning locationDistanceTag = new SlowWarning("locationDistanceTag", "locationtag.tree_distance is deprecated in favor of location.material.distance");
+    public static Warning armorStandRawSlot = new SlowWarning("armorStandRawSlot", "The EntityTag.disabled_slots.raw tag and EntityTag.disabled_slots_raw mechanism are deprecated, use the EntityTag.disabled_slots_data tag and EntityTag.disabled_slots mechanism instead.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
