@@ -5,7 +5,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,7 +50,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     public boolean couldMatch(ScriptPath path) {
         if (!super.couldMatch(path)) {
             if (path.eventArgLowerAt(2).equals("jumps") && couldMatchEntity(path.eventArgLowerAt(1))) {
-                Deprecations.horseJumpsFormat.warn(path.container);
+                BukkitImplDeprecations.horseJumpsFormat.warn(path.container);
                 return true;
             }
             return false;

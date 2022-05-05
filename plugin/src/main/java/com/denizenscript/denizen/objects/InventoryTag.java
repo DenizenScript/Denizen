@@ -32,7 +32,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -1236,7 +1236,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             // -->
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
-                    Deprecations.qtyTags.warn(attribute.context);
+                    BukkitImplDeprecations.qtyTags.warn(attribute.context);
                 }
                 int qty = attribute.getIntContext(2);
                 ItemTag itemZero = new ItemTag(items.get(0).getItemStack().clone());
@@ -1285,7 +1285,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             // -->
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
-                    Deprecations.qtyTags.warn(attribute.context);
+                    BukkitImplDeprecations.qtyTags.warn(attribute.context);
                 }
                 int qty = attribute.getIntContext(2);
                 ItemTag itemZero = new ItemTag(items.get(0).getItemStack().clone());
@@ -1353,7 +1353,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         tagProcessor.registerTag(InventoryTag.class, "exclude", (attribute, object) -> {
-            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+            BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasParam()) {
                 return null;
             }
@@ -1370,7 +1370,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             trackTemporaryInventory(dummyInv);
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
-                    Deprecations.qtyTags.warn(attribute.context);
+                    BukkitImplDeprecations.qtyTags.warn(attribute.context);
                 }
                 int qty = attribute.getIntContext(2);
                 ItemTag itemZero = new ItemTag(items.get(0).getItemStack().clone());
@@ -1494,7 +1494,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
-                        Deprecations.qtyTags.warn(attribute.context);
+                        BukkitImplDeprecations.qtyTags.warn(attribute.context);
                     }
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
@@ -1577,7 +1577,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 // -->
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
-                        Deprecations.qtyTags.warn(attribute.context);
+                        BukkitImplDeprecations.qtyTags.warn(attribute.context);
                     }
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
@@ -1638,7 +1638,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return new ElementTag(found_items >= qty);
             }
             if (attribute.startsWith("scriptname", 2)) {
-                Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+                BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
@@ -1651,7 +1651,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
-                        Deprecations.qtyTags.warn(attribute.context);
+                        BukkitImplDeprecations.qtyTags.warn(attribute.context);
                     }
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
@@ -1672,7 +1672,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return new ElementTag(found_items >= qty);
             }
             if (attribute.startsWith("flagged", 2)) {
-                Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+                BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
@@ -1703,7 +1703,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return new ElementTag(found_items >= qty);
             }
             if (attribute.startsWith("nbt", 2)) {
-                Deprecations.itemNbt.warn(attribute.context);
+                BukkitImplDeprecations.itemNbt.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
@@ -1711,7 +1711,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 int qty = 1;
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
-                        Deprecations.qtyTags.warn(attribute.context);
+                        BukkitImplDeprecations.qtyTags.warn(attribute.context);
                     }
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
@@ -1729,7 +1729,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return new ElementTag(found_items >= qty);
             }
             if (attribute.startsWith("material", 2)) {
-                Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+                BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
                 if (!attribute.hasContext(2)) {
                     return null;
                 }
@@ -1738,7 +1738,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
                 if ((attribute.startsWith("quantity", 3) || attribute.startsWith("qty", 3)) && attribute.hasContext(3)) {
                     if (attribute.startsWith("qty", 3)) {
-                        Deprecations.qtyTags.warn(attribute.context);
+                        BukkitImplDeprecations.qtyTags.warn(attribute.context);
                     }
                     qty = attribute.getIntContext(3);
                     attribute.fulfill(1);
@@ -1770,10 +1770,10 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             int qty = 1;
 
-            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+            BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
-                    Deprecations.qtyTags.warn(attribute.context);
+                    BukkitImplDeprecations.qtyTags.warn(attribute.context);
                 }
                 qty = attribute.getIntContext(2);
                 attribute.fulfill(1);
@@ -1791,7 +1791,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         tagProcessor.registerTag(ElementTag.class, "contains_any", (attribute, object) -> {
-            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+            BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasParam()) {
                 return null;
             }
@@ -1803,7 +1803,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
             if ((attribute.startsWith("quantity", 2) || attribute.startsWith("qty", 2)) && attribute.hasContext(2)) {
                 if (attribute.startsWith("qty", 2)) {
-                    Deprecations.qtyTags.warn(attribute.context);
+                    BukkitImplDeprecations.qtyTags.warn(attribute.context);
                 }
                 qty = attribute.getIntContext(2);
                 attribute.fulfill(1);
@@ -1881,7 +1881,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         tagProcessor.registerTag(ElementTag.class, "find", (attribute, object) -> {
-            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+            BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("material", 2)) {
                 ListTag list = attribute.contextAsType(2, ListTag.class);
                 if (list == null) {
@@ -1938,7 +1938,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         tagProcessor.registerTag(ElementTag.class, "find_imperfect", (attribute, object) -> {
-            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+            BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (!attribute.hasParam() || !ItemTag.matches(attribute.getParam())) {
                 return null;
             }
@@ -2015,7 +2015,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         });
 
         tagProcessor.registerTag(ElementTag.class, "quantity", (attribute, object) -> {
-            Deprecations.inventoryNonMatcherTags.warn(attribute.context);
+            BukkitImplDeprecations.inventoryNonMatcherTags.warn(attribute.context);
             if (attribute.startsWith("scriptname", 2)) {
                 if (!attribute.hasContext(2)) {
                     return null;

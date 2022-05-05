@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -52,7 +52,7 @@ public class EntityItem implements Property {
             return new ItemTag(getDroppedItem().getItemStack());
         }
         else if (includeDeprecated && isEnderman()) {
-            Deprecations.entityItemEnderman.warn(context);
+            BukkitImplDeprecations.entityItemEnderman.warn(context);
             BlockData data = getEnderman().getCarriedBlock();
             if (data == null) {
                 return new ItemTag(Material.AIR);
@@ -169,7 +169,7 @@ public class EntityItem implements Property {
                 getDroppedItem().setItemStack(itemStack);
             }
             else if (isEnderman()) {
-                Deprecations.entityItemEnderman.warn(mechanism.context);
+                BukkitImplDeprecations.entityItemEnderman.warn(mechanism.context);
                 getEnderman().setCarriedBlock(itemStack.getType().createBlockData());
             }
             else if (isFireball()) {

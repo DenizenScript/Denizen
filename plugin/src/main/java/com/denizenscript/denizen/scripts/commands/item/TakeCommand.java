@@ -17,7 +17,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -126,7 +126,7 @@ public class TakeCommand extends AbstractCommand {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
-                Deprecations.giveTakeMoney.warn(scriptEntry);
+                BukkitImplDeprecations.giveTakeMoney.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MONEY);
             }
             else if (!scriptEntry.hasObject("type")
@@ -145,7 +145,7 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesFloat()) {
                 if (arg.matchesPrefix("q", "qty")) {
-                    Deprecations.qtyTags.warn(scriptEntry);
+                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
                 }
                 scriptEntry.addObject("quantity", arg.asElement());
             }
@@ -158,7 +158,7 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && arg.matchesPrefix("nbt")
                     && !scriptEntry.hasObject("type")) {
-                Deprecations.itemNbt.warn(scriptEntry);
+                BukkitImplDeprecations.itemNbt.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.NBT);
                 scriptEntry.addObject("nbt_key", arg.asElement());
             }
@@ -183,14 +183,14 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("material")) {
-                Deprecations.takeRawItems.warn(scriptEntry);
+                BukkitImplDeprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MATERIAL);
                 scriptEntry.addObject("material", arg.asType(ListTag.class).filter(MaterialTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("script", "scriptname")) {
-                Deprecations.takeRawItems.warn(scriptEntry);
+                BukkitImplDeprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.SCRIPTNAME);
                 scriptEntry.addObject("scriptitem", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
@@ -209,7 +209,7 @@ public class TakeCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesArgumentList(ItemTag.class)) {
-                Deprecations.takeRawItems.warn(scriptEntry);
+                BukkitImplDeprecations.takeRawItems.warn(scriptEntry);
                 scriptEntry.addObject("items", arg.asType(ListTag.class).filter(ItemTag.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("inventory")
@@ -219,12 +219,12 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("inventory")) {
-                Deprecations.takeCommandInventory.warn(scriptEntry);
+                BukkitImplDeprecations.takeCommandInventory.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.INVENTORY);
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matches("npc")) {
-                Deprecations.takeCommandInventory.warn(scriptEntry);
+                BukkitImplDeprecations.takeCommandInventory.warn(scriptEntry);
                 scriptEntry.addObject("inventory", Utilities.getEntryNPC(scriptEntry).getDenizenEntity().getInventory());
             }
             else {

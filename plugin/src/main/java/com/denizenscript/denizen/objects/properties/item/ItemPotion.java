@@ -13,7 +13,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -232,7 +232,7 @@ public class ItemPotion implements Property {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_base", (attribute, object) -> {
-            Deprecations.oldPotionEffects.warn(attribute.context);
+            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             PotionMeta meta = object.getMeta();
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (object.item.getBukkitMaterial() == Material.SPLASH_POTION)
@@ -249,7 +249,7 @@ public class ItemPotion implements Property {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "potion_effects", (attribute, object) -> {
-            Deprecations.oldPotionEffects.warn(attribute.context);
+            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             ListTag result = new ListTag();
             for (PotionEffect pot : object.getMeta().getCustomEffects()) {
                 result.add(stringifyEffect(pot));
@@ -278,7 +278,7 @@ public class ItemPotion implements Property {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_effect", (attribute, object) -> {
-            Deprecations.oldPotionEffects.warn(attribute.context);
+            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             PotionMeta meta = object.getMeta();
             int potN = attribute.hasParam() ? attribute.getIntParam() - 1 : 0;
             if (potN < 0 || potN > meta.getCustomEffects().size()) {

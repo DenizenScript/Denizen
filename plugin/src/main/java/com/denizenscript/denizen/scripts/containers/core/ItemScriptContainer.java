@@ -15,7 +15,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
@@ -272,7 +272,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set if the object is bound to the player
             if (contains("bound", String.class)) {
-                Deprecations.boundWarning.warn(context);
+                BukkitImplDeprecations.boundWarning.warn(context);
             }
             // Set Lore
             if (contains("lore", List.class)) {
@@ -331,7 +331,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Set Color
             if (contains("color", String.class)) {
-                Deprecations.itemScriptColor.warn(context);
+                BukkitImplDeprecations.itemScriptColor.warn(context);
                 String color = TagManager.tag(getString("color"), context);
                 LeatherColorer.colorArmor(stack, color);
             }

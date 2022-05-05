@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
@@ -88,7 +88,7 @@ public class ItemSkullskin implements Property {
                 attribute = attribute.fulfill(1);
 
                 if (attribute.startsWith("full")) {
-                    Deprecations.itemSkinFullTag.warn(attribute.context);
+                    BukkitImplDeprecations.itemSkinFullTag.warn(attribute.context);
                     return new ElementTag(skin).getObjectAttribute(attribute.fulfill(1));
                 }
                 return new ElementTag(CoreUtilities.split(skin, '|').get(0)).getObjectAttribute(attribute);

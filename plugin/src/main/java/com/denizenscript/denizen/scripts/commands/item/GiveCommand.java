@@ -13,7 +13,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -88,14 +88,14 @@ public class GiveCommand extends AbstractCommand {
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesFloat()) {
                 if (arg.matchesPrefix("q", "qty")) {
-                    Deprecations.qtyTags.warn(scriptEntry);
+                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
                 }
                 scriptEntry.addObject("quantity", arg.asElement());
                 scriptEntry.addObject("set_quantity", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
-                Deprecations.giveTakeMoney.warn(scriptEntry);
+                BukkitImplDeprecations.giveTakeMoney.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MONEY);
             }
             else if (!scriptEntry.hasObject("type")

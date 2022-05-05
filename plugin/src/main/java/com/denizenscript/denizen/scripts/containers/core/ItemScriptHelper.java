@@ -19,7 +19,7 @@ import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.*;
@@ -318,15 +318,15 @@ public class ItemScriptHelper implements Listener {
                 }
                 // Old script style
                 if (container.contains("RECIPE", List.class)) {
-                    Deprecations.oldRecipeScript.warn(container);
+                    BukkitImplDeprecations.oldRecipeScript.warn(container);
                     registerShapedRecipe(container, container.getCleanReference().getItemStack().clone(), container.getStringList("RECIPE"), getIdFor(container, "old_recipe", 0), "custom");
                 }
                 if (container.contains("SHAPELESS_RECIPE", String.class)) {
-                    Deprecations.oldRecipeScript.warn(container);
+                    BukkitImplDeprecations.oldRecipeScript.warn(container);
                     registerShapelessRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom");
                 }
                 if (container.contains("FURNACE_RECIPE", String.class)) {
-                    Deprecations.oldRecipeScript.warn(container);
+                    BukkitImplDeprecations.oldRecipeScript.warn(container);
                     registerFurnaceRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
                 }
             }

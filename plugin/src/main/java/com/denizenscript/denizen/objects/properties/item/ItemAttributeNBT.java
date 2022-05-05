@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,7 +53,7 @@ public class ItemAttributeNBT implements Property {
         }
 
         if (attribute.startsWith("nbt_attributes")) {
-            Deprecations.legacyAttributeProperties.warn(attribute.context);
+            BukkitImplDeprecations.legacyAttributeProperties.warn(attribute.context);
             return getList().getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -86,7 +86,7 @@ public class ItemAttributeNBT implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("nbt_attributes")) {
-            Deprecations.legacyAttributeProperties.warn(mechanism.context);
+            BukkitImplDeprecations.legacyAttributeProperties.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
                 mechanism.echoError("Cannot apply NBT to AIR!");
                 return;

@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,19 +52,19 @@ public class ItemNBT implements Property {
         }
 
         if (attribute.startsWith("has_nbt")) {
-            Deprecations.itemNbt.warn(attribute.context);
+            BukkitImplDeprecations.itemNbt.warn(attribute.context);
             return new ElementTag(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getParam(), CustomNBT.KEY_DENIZEN))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("nbt_keys")) {
-            Deprecations.itemNbt.warn(attribute.context);
+            BukkitImplDeprecations.itemNbt.warn(attribute.context);
             return new ListTag(CustomNBT.listNBT(item.getItemStack(), CustomNBT.KEY_DENIZEN))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
         if (attribute.matches("nbt")) {
-            Deprecations.itemNbt.warn(attribute.context);
+            BukkitImplDeprecations.itemNbt.warn(attribute.context);
             if (!attribute.hasParam()) {
                 ListTag list = getNBTDataList();
                 if (list == null) {
@@ -114,7 +114,7 @@ public class ItemNBT implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("remove_nbt")) {
-            Deprecations.itemNbt.warn(mechanism.context);
+            BukkitImplDeprecations.itemNbt.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
                 mechanism.echoError("Cannot apply NBT to AIR!");
                 return;
@@ -134,7 +134,7 @@ public class ItemNBT implements Property {
         }
 
         if (mechanism.matches("nbt")) {
-            Deprecations.itemNbt.warn(mechanism.context);
+            BukkitImplDeprecations.itemNbt.warn(mechanism.context);
             if (item.getMaterial().getMaterial() == Material.AIR) {
                 mechanism.echoError("Cannot apply NBT to AIR!");
                 return;

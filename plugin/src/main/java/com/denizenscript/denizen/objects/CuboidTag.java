@@ -15,7 +15,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -1424,7 +1424,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }, "notable_name");
 
         tagProcessor.registerTag(ElementTag.class, "full", (attribute, cuboid) -> {
-            Deprecations.cuboidFullTag.warn(attribute.context);
+            BukkitImplDeprecations.cuboidFullTag.warn(attribute.context);
             return new ElementTag(cuboid.identifyFull());
         });
     }

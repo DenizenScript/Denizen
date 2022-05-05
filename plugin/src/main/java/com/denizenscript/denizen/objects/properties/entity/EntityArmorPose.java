@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.util.EulerAngle;
@@ -98,7 +98,7 @@ public class EntityArmorPose implements Property {
         // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
         // -->
         PropertyParser.<EntityArmorPose, ListTag>registerTag(ListTag.class, "armor_pose_list", (attribute, entity) -> {
-            Deprecations.entityArmorPose.warn(attribute.context);
+            BukkitImplDeprecations.entityArmorPose.warn(attribute.context);
             return entity.getPoseList();
         });
 
@@ -112,7 +112,7 @@ public class EntityArmorPose implements Property {
         // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
         // -->
         PropertyParser.<EntityArmorPose, LocationTag>registerTag(LocationTag.class, "armor_pose", (attribute, entity) -> {
-            Deprecations.entityArmorPose.warn(attribute.context);
+            BukkitImplDeprecations.entityArmorPose.warn(attribute.context);
             if (!attribute.hasParam()) {
                 return null;
             }

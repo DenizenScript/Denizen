@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.objects.EnchantmentTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -70,7 +70,7 @@ public class ItemEnchantments implements Property {
         }
 
         if (attribute.startsWith("enchantments.with_levels")) {
-            Deprecations.itemEnchantmentTags.warn(attribute.context);
+            BukkitImplDeprecations.itemEnchantmentTags.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
@@ -79,7 +79,7 @@ public class ItemEnchantments implements Property {
             return enchants.getObjectAttribute(attribute.fulfill(2));
         }
         if (attribute.startsWith("enchantments.levels")) {
-            Deprecations.itemEnchantmentTags.warn(attribute.context);
+            BukkitImplDeprecations.itemEnchantmentTags.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
@@ -88,7 +88,7 @@ public class ItemEnchantments implements Property {
             return enchants.getObjectAttribute(attribute.fulfill(2));
         }
         if (attribute.startsWith("enchantments.level") && attribute.hasContext(2)) {
-            Deprecations.itemEnchantmentTags.warn(attribute.context);
+            BukkitImplDeprecations.itemEnchantmentTags.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             if (enchantments.size() > 0) {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
@@ -130,7 +130,7 @@ public class ItemEnchantments implements Property {
         // Deprecated in favor of <@link tag ItemTag.enchantment_types> or <@link tag ItemTag.enchantment_map>
         // -->
         if (attribute.startsWith("enchantments")) {
-            Deprecations.itemEnchantmentsLegacy.warn(attribute.context);
+            BukkitImplDeprecations.itemEnchantmentsLegacy.warn(attribute.context);
             Set<Map.Entry<Enchantment, Integer>> enchantments = getEnchantments();
             ListTag enchants = new ListTag();
             for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {

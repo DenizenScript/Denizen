@@ -12,7 +12,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -102,7 +102,7 @@ public class ItemInventory implements Property {
             return getInventoryContents().getObjectAttribute(attribute.fulfill(1));
         }
         if (attribute.startsWith("inventory")) {
-            Deprecations.itemInventoryTag.warn(attribute.context);
+            BukkitImplDeprecations.itemInventoryTag.warn(attribute.context);
             return getItemInventory().getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -176,7 +176,7 @@ public class ItemInventory implements Property {
         }
 
         if (mechanism.matches("inventory") && mechanism.hasValue()) {
-            Deprecations.itemInventoryTag.warn(mechanism.context);
+            BukkitImplDeprecations.itemInventoryTag.warn(mechanism.context);
             Argument argument = new Argument("");
             argument.unsetValue();
             argument.object = mechanism.getValue();

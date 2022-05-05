@@ -35,6 +35,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -133,7 +134,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return valueOfInternal(string, context, true);
     }
 
-    public static String playerByNameMessage = Deprecations.playerByNameWarning.message;
+    public static String playerByNameMessage = BukkitImplDeprecations.playerByNameWarning.message;
 
     public static PlayerTag valueOfInternal(String string, TagContext context, boolean defaultAnnounce) {
         if (string == null) {
@@ -162,8 +163,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (string.length() <= 16 && playerNames.containsKey(string)) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(string));
             if (announce && (context == null || context.script != null)) { // 'script != null' check is to allow ex command usage silently
-                Deprecations.playerByNameWarning.message = playerByNameMessage + " Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
-                Deprecations.playerByNameWarning.warn(context);
+                BukkitImplDeprecations.playerByNameWarning.message = playerByNameMessage + " Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
+                BukkitImplDeprecations.playerByNameWarning.warn(context);
             }
             return new PlayerTag(player);
         }
@@ -719,19 +720,19 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
             if (attribute.startsWith("formatted", 2)) {
                 attribute.fulfill(1);
-                Deprecations.playerMoneyFormatTag.warn(attribute.context);
+                BukkitImplDeprecations.playerMoneyFormatTag.warn(attribute.context);
                 return new ElementTag(Depends.economy.format(Depends.economy.getBalance(object.getOfflinePlayer())));
             }
 
             if (attribute.startsWith("currency_singular", 2)) {
                 attribute.fulfill(1);
-                Deprecations.oldEconomyTags.warn(attribute.context);
+                BukkitImplDeprecations.oldEconomyTags.warn(attribute.context);
                 return new ElementTag(Depends.economy.currencyNameSingular());
             }
 
             if (attribute.startsWith("currency", 2)) {
                 attribute.fulfill(1);
-                Deprecations.oldEconomyTags.warn(attribute.context);
+                BukkitImplDeprecations.oldEconomyTags.warn(attribute.context);
                 return new ElementTag(Depends.economy.currencyNamePlural());
             }
 
@@ -849,7 +850,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new TimeTag(object.getOfflinePlayer().getFirstPlayed());
         });
         tagProcessor.registerTag(DurationTag.class, "first_played", (attribute, object) -> {
-            Deprecations.playerTimePlayedTags.warn(attribute.context);
+            BukkitImplDeprecations.playerTimePlayedTags.warn(attribute.context);
             return new DurationTag(object.getOfflinePlayer().getFirstPlayed() / 50);
         });
 
@@ -883,7 +884,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         tagProcessor.registerTag(DurationTag.class, "oxygen", (attribute, object) -> {
             if (attribute.startsWith("max", 2)) {
-                Deprecations.entityMaxOxygenTag.warn(attribute.context);
+                BukkitImplDeprecations.entityMaxOxygenTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag((long) object.getMaximumAir());
             }
@@ -932,23 +933,23 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "health", (attribute, object) -> {
             if (attribute.startsWith("is_scaled", 2)) {
                 attribute.fulfill(1);
-                Deprecations.entityHealthTags.warn(attribute.context);
+                BukkitImplDeprecations.entityHealthTags.warn(attribute.context);
                 return new ElementTag(object.getPlayerEntity().isHealthScaled());
             }
 
             if (attribute.startsWith("scale", 2)) {
                 attribute.fulfill(1);
-                Deprecations.entityHealthTags.warn(attribute.context);
+                BukkitImplDeprecations.entityHealthTags.warn(attribute.context);
                 return new ElementTag(object.getPlayerEntity().getHealthScale());
             }
             if (attribute.startsWith("formatted", 2)) {
-                Deprecations.entityHealthTags.warn(attribute.context);
+                BukkitImplDeprecations.entityHealthTags.warn(attribute.context);
                 Double maxHealth = attribute.hasContext(2) ? attribute.getDoubleContext(2) : null;
                 attribute.fulfill(1);
                 return EntityHealth.getHealthFormatted(new EntityTag(object.getPlayerEntity()), maxHealth);
             }
             if (attribute.startsWith("percentage", 2)) {
-                Deprecations.entityHealthTags.warn(attribute.context);
+                BukkitImplDeprecations.entityHealthTags.warn(attribute.context);
                 attribute.fulfill(1);
                 double maxHealth = object.getPlayerEntity().getMaxHealth();
                 if (attribute.hasParam()) {
@@ -957,7 +958,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return new ElementTag((object.getPlayerEntity().getHealth() / maxHealth) * 100);
             }
             if (attribute.startsWith("max", 2)) {
-                Deprecations.entityHealthTags.warn(attribute.context);
+                BukkitImplDeprecations.entityHealthTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getMaxHealth());
             }
@@ -1031,7 +1032,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new TimeTag(object.getOfflinePlayer().getLastPlayed());
         });
         tagProcessor.registerTag(DurationTag.class, "last_played", (attribute, object) -> {
-            Deprecations.playerTimePlayedTags.warn(attribute.context);
+            BukkitImplDeprecations.playerTimePlayedTags.warn(attribute.context);
             if (object.isOnline()) {
                 return new DurationTag(System.currentTimeMillis() / 50);
             }
@@ -1084,7 +1085,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new TimeTag(ban.getExpiration().getTime());
         });
         tagProcessor.registerTag(DurationTag.class, "ban_expiration", (attribute, object) -> {
-            Deprecations.playerTimePlayedTags.warn(attribute.context);
+            BukkitImplDeprecations.playerTimePlayedTags.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || ban.getExpiration() == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1143,7 +1144,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         tagProcessor.registerTag(ObjectTag.class, "ban_info", (attribute, object) -> {
-            Deprecations.playerBanInfoTags.warn(attribute.context);
+            BukkitImplDeprecations.playerBanInfoTags.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1400,12 +1401,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Documented in EntityTag
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             if (attribute.startsWith("list", 2) && object.isOnline()) {
-                Deprecations.playerNameTags.warn(attribute.context);
+                BukkitImplDeprecations.playerNameTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getPlayerListName(), true);
             }
             if (attribute.startsWith("display", 2) && object.isOnline()) {
-                Deprecations.playerNameTags.warn(attribute.context);
+                BukkitImplDeprecations.playerNameTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getDisplayName(), true);
             }
@@ -1539,7 +1540,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         registerOnlineOnlyTag(ObjectTag.class, "item_in_hand", (attribute, object) -> {
             if (attribute.startsWith("slot", 2)) {
-                Deprecations.playerItemInHandSlotTag.warn(attribute.context);
+                BukkitImplDeprecations.playerItemInHandSlotTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getInventory().getHeldItemSlot() + 1);
             }
@@ -1594,7 +1595,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         registerOnlineOnlyTag(ObjectTag.class, "sidebar", (attribute, object) -> {
-            Deprecations.playerSidebarTags.warn(attribute.context);
+            BukkitImplDeprecations.playerSidebarTags.warn(attribute.context);
             if (attribute.startsWith("lines", 2)) {
                 attribute.fulfill(1);
                 Sidebar sidebar = SidebarCommand.getSidebar(object);
@@ -1670,7 +1671,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         registerOnlineOnlyTag(ObjectTag.class, "attack_cooldown", (attribute, object) -> {
-            Deprecations.playerAttackCooldownTags.warn(attribute.context);
+            BukkitImplDeprecations.playerAttackCooldownTags.warn(attribute.context);
             if (attribute.startsWith("duration", 2)) {
                 attribute.fulfill(1);
                 return new DurationTag((long) NMSHandler.playerHelper
@@ -1941,7 +1942,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "food_level", (attribute, object) -> {
             if (attribute.startsWith("formatted", 2)) {
-                Deprecations.playerFoodLevelFormatTag.warn(attribute.context);
+                BukkitImplDeprecations.playerFoodLevelFormatTag.warn(attribute.context);
                 double maxHunger = object.getPlayerEntity().getMaxHealth();
                 if (attribute.hasContext(2)) {
                     maxHunger = attribute.getIntContext(2);
@@ -2160,17 +2161,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "xp", (attribute, object) -> {
             if (attribute.startsWith("level", 2)) {
-                Deprecations.playerXpTags.warn(attribute.context);
+                BukkitImplDeprecations.playerXpTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getLevel());
             }
             if (attribute.startsWith("to_next_level", 2)) {
-                Deprecations.playerXpTags.warn(attribute.context);
+                BukkitImplDeprecations.playerXpTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getExpToLevel());
             }
             if (attribute.startsWith("total", 2)) {
-                Deprecations.playerXpTags.warn(attribute.context);
+                BukkitImplDeprecations.playerXpTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getPlayerEntity().getTotalExperience());
             }
@@ -2731,7 +2732,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Deprecated, use <@link command resourcepack>.
         // -->
         if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
-            Deprecations.playerResourcePackMech.warn(mechanism.context);
+            BukkitImplDeprecations.playerResourcePackMech.warn(mechanism.context);
             String pack = mechanism.getValue().asString();
             int pipe = pack.indexOf('|');
             if (pipe > 0) {
@@ -2914,17 +2915,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("kick")) {
-            Deprecations.oldKickMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldKickMech.warn(mechanism.context);
             getPlayerEntity().kickPlayer(mechanism.getValue().asString());
         }
 
         if (mechanism.matches("weather") && mechanism.requireEnum(WeatherType.class)) {
-            Deprecations.oldWeatherMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldWeatherMech.warn(mechanism.context);
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         if (mechanism.matches("reset_weather")) {
-            Deprecations.oldWeatherMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldWeatherMech.warn(mechanism.context);
             getPlayerEntity().resetPlayerWeather();
         }
 
@@ -2983,12 +2984,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("time") && mechanism.requireInteger()) {
-            Deprecations.oldTimeMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldTimeMech.warn(mechanism.context);
             getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), true);
         }
 
         if (mechanism.matches("freeze_time")) {
-            Deprecations.oldTimeMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldTimeMech.warn(mechanism.context);
             if (mechanism.requireInteger("Invalid integer specified. Assuming current world time.")) {
                 getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), false);
             }
@@ -2998,7 +2999,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("reset_time")) {
-            Deprecations.oldTimeMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldTimeMech.warn(mechanism.context);
             getPlayerEntity().resetPlayerTime();
         }
 
@@ -3130,7 +3131,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("show_boss_bar")) {
-            Deprecations.oldBossBarMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldBossBarMech.warn(mechanism.context);
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length == 2 && new ElementTag(split[0]).isDouble()) {
@@ -3362,7 +3363,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("item_message")) {
-            Deprecations.itemMessage.warn(mechanism.context);
+            BukkitImplDeprecations.itemMessage.warn(mechanism.context);
             ItemChangeMessage.sendMessage(getPlayerEntity(), mechanism.getValue().asString());
         }
 
@@ -3684,7 +3685,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("action_bar")) {
-            Deprecations.playerActionBarMech.warn(mechanism.context);
+            BukkitImplDeprecations.playerActionBarMech.warn(mechanism.context);
             getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(mechanism.getValue().asString(), ChatColor.WHITE));
         }
 
@@ -3778,7 +3779,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
-            Deprecations.oldMoneyMech.warn(mechanism.context);
+            BukkitImplDeprecations.oldMoneyMech.warn(mechanism.context);
             double bal = Depends.economy.getBalance(getOfflinePlayer());
             double goal = mechanism.getValue().asDouble();
             if (goal > bal) {

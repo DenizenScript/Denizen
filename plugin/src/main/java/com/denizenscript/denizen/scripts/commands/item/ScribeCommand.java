@@ -11,7 +11,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class ScribeCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        Deprecations.scribeCommand.warn(scriptEntry);
+        BukkitImplDeprecations.scribeCommand.warn(scriptEntry);
 
         // Retrieve objects from ScriptEntry
         BookAction action = (BookAction) scriptEntry.getObject("action");

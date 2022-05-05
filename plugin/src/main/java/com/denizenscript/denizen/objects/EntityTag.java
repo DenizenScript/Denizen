@@ -9,6 +9,7 @@ import com.denizenscript.denizen.objects.properties.entity.EntityTame;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.*;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
@@ -27,7 +28,6 @@ import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -1257,7 +1257,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public LocationTag doLocationTag(Attribute attribute) {
         if (attribute.startsWith("cursor_on", 2)) {
-            Deprecations.entityLocationCursorOnTag.warn(attribute.context);
+            BukkitImplDeprecations.entityLocationCursorOnTag.warn(attribute.context);
             int range = attribute.getIntContext(2);
             if (range < 1) {
                 range = 50;
@@ -1277,7 +1277,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (attribute.startsWith("standing_on", 2)) {
-            Deprecations.entityStandingOn.warn(attribute.context);
+            BukkitImplDeprecations.entityStandingOn.warn(attribute.context);
             attribute.fulfill(1);
             return new LocationTag(getBukkitEntity().getLocation().clone().add(0, -0.5f, 0));
         }
@@ -1377,7 +1377,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Use ".script.name" instead.
         // -->
         tagProcessor.registerTag(ElementTag.class, "scriptname", (attribute, object) -> {
-            Deprecations.hasScriptTags.warn(attribute.context);
+            BukkitImplDeprecations.hasScriptTags.warn(attribute.context);
             if (object.entityScript == null) {
                 return null;
             }
@@ -1389,7 +1389,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         /////////////////
 
         registerSpawnedOnlyTag(ObjectTag.class, "custom_id", (attribute, object) -> {
-            Deprecations.entityCustomIdTag.warn(attribute.context);
+            BukkitImplDeprecations.entityCustomIdTag.warn(attribute.context);
             if (CustomNBT.hasCustomNBT(object.getLivingEntity(), "denizen-script-id")) {
                 return new ScriptTag(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"));
             }
@@ -2120,7 +2120,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "oxygen", (attribute, object) -> {
             if (attribute.startsWith("max", 2)) {
-                Deprecations.entityMaxOxygenTag.warn(attribute.context);
+                BukkitImplDeprecations.entityMaxOxygenTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag((long) object.getLivingEntity().getMaximumAir());
             }
@@ -2128,7 +2128,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         registerSpawnedOnlyTag(ElementTag.class, "remove_when_far", (attribute, object) -> {
-            Deprecations.entityRemoveWhenFar.warn(attribute.context);
+            BukkitImplDeprecations.entityRemoveWhenFar.warn(attribute.context);
             return new ElementTag(object.getLivingEntity().getRemoveWhenFarAway());
         });
 
@@ -2998,7 +2998,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("attach_to")) {
-            Deprecations.attachToMech.warn(mechanism.context);
+            BukkitImplDeprecations.attachToMech.warn(mechanism.context);
             if (mechanism.hasValue()) {
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 Vector offset = null;
@@ -3225,7 +3225,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
-            Deprecations.entityRemainingAir.warn(mechanism.context);
+            BukkitImplDeprecations.entityRemainingAir.warn(mechanism.context);
             getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
         }
 
@@ -3351,7 +3351,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             getLivingEntity().setRemoveWhenFarAway(!mechanism.getValue().asBoolean());
         }
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
-            Deprecations.entityRemoveWhenFar.warn(mechanism.context);
+            BukkitImplDeprecations.entityRemoveWhenFar.warn(mechanism.context);
             getLivingEntity().setRemoveWhenFarAway(mechanism.getValue().asBoolean());
         }
 
@@ -3454,7 +3454,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         if (mechanism.matches("play_death")) {
-            Deprecations.entityPlayDeath.warn(mechanism.context);
+            BukkitImplDeprecations.entityPlayDeath.warn(mechanism.context);
             getLivingEntity().playEffect(EntityEffect.DEATH);
         }
 

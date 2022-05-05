@@ -13,7 +13,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
@@ -98,7 +98,7 @@ public class DropCommand extends AbstractCommand {
                     && arg.matchesInteger()
                     && arg.matchesPrefix("quantity", "q", "qty", "a", "amt", "amount")) {
                 if (arg.matchesPrefix("q", "qty")) {
-                    Deprecations.qtyTags.warn(scriptEntry);
+                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
                 }
                 scriptEntry.addObject("quantity", arg.asElement().setPrefix("quantity"));
             }

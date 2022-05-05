@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.milkbowl.vault.economy.Economy;
 
@@ -81,7 +81,7 @@ public class MoneyCommand extends AbstractCommand {
                     && arg.matchesPrefix("quantity", "qty", "q")
                     && arg.matchesFloat()) {
                 if (arg.matchesPrefix("q", "qty")) {
-                    Deprecations.qtyTags.warn(scriptEntry);
+                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
                 }
                 scriptEntry.addObject("quantity", arg.asElement());
             }

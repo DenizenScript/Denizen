@@ -13,7 +13,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +144,7 @@ public class AssignmentCommand extends AbstractCommand {
                     break;
                 case REMOVE:
                     if (script == null) {
-                        Deprecations.assignmentRemove.warn(scriptEntry);
+                        BukkitImplDeprecations.assignmentRemove.warn(scriptEntry);
                         if (npc.getCitizen().hasTrait(AssignmentTrait.class)) {
                             npc.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(player);
                             npc.getCitizen().removeTrait(AssignmentTrait.class);

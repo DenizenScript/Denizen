@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 
 public class ParseTagBase {
 
@@ -21,7 +21,7 @@ public class ParseTagBase {
     }
 
     public void parseTags(ReplaceableTagEvent event) {
-        Deprecations.oldParseTag.warn(event.getScriptEntry());
+        BukkitImplDeprecations.oldParseTag.warn(event.getScriptEntry());
         if (event.matches("parse")) {
             if (!event.hasValue()) {
                 Debug.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");

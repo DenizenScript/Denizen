@@ -18,7 +18,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -370,7 +370,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         registerTag(ChunkTag.class, "random_loaded_chunk", (attribute, object) -> {
-            Deprecations.worldRandomLoadedChunkTag.warn(attribute.context);
+            BukkitImplDeprecations.worldRandomLoadedChunkTag.warn(attribute.context);
             int random = CoreUtilities.getRandom().nextInt(object.getWorld().getLoadedChunks().length);
             return new ChunkTag(object.getWorld().getLoadedChunks()[random]);
         });

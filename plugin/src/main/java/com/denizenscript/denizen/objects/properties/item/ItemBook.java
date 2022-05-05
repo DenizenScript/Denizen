@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -116,7 +116,7 @@ public class ItemBook implements Property {
         }
 
         if (attribute.startsWith("book")) {
-            Deprecations.itemBookTags.warn(attribute.context);
+            BukkitImplDeprecations.itemBookTags.warn(attribute.context);
             BookMeta bookInfo = (BookMeta) item.getItemMeta();
             attribute = attribute.fulfill(1);
 
@@ -139,7 +139,7 @@ public class ItemBook implements Property {
                         .getObjectAttribute(attribute.fulfill(1));
             }
             if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasParam()) {
-                Deprecations.bookItemRawTags.warn(attribute.context);
+                BukkitImplDeprecations.bookItemRawTags.warn(attribute.context);
                 return new ElementTag(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntParam())))
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -151,7 +151,7 @@ public class ItemBook implements Property {
                 return output.getObjectAttribute(attribute.fulfill(1));
             }
             if (attribute.startsWith("raw_pages")) {
-                Deprecations.bookItemRawTags.warn(attribute.context);
+                BukkitImplDeprecations.bookItemRawTags.warn(attribute.context);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookInfo.spigot().getPages()) {
                     output.add(ComponentSerializer.toString(page));
@@ -219,7 +219,7 @@ public class ItemBook implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("book_raw_pages")) {
-            Deprecations.bookItemRawTags.warn(mechanism.context);
+            BukkitImplDeprecations.bookItemRawTags.warn(mechanism.context);
             BookMeta meta = (BookMeta) item.getItemMeta();
             ListTag data = mechanism.valueAsType(ListTag.class);
             ArrayList<BaseComponent[]> newPages = new ArrayList<>();

@@ -3,7 +3,7 @@ package com.denizenscript.denizen.scripts.containers.core;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
 import java.util.List;
@@ -66,7 +66,7 @@ public class AssignmentScriptContainer extends ScriptContainer {
                 String name = names.get(0);
                 int space = name.indexOf(' ');
                 if (space != -1 && Character.isDigit(name.charAt(0))) {
-                    Deprecations.interactScriptPriority.warn(this);
+                    BukkitImplDeprecations.interactScriptPriority.warn(this);
                     name = name.substring(space + 1).replace("^", "");
                 }
                 interactName = name;

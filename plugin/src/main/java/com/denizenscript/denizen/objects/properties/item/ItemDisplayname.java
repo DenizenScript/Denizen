@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemDisplayname implements Property {
@@ -125,7 +125,7 @@ public class ItemDisplayname implements Property {
             }
         }
         else if (mechanism.matches("display_name")) {
-            Deprecations.itemDisplayNameMechanism.warn(mechanism.context);
+            BukkitImplDeprecations.itemDisplayNameMechanism.warn(mechanism.context);
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(mechanism.hasValue() ? CoreUtilities.clearNBSPs(EscapeTagBase.unEscape(mechanism.getValue().asString())) : null);
             item.setItemMeta(meta);

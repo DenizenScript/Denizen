@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.block.data.Lightable;
 
 @Deprecated
@@ -40,7 +40,7 @@ public class MaterialLightable implements Property {
     public static void registerTags() {
 
         PropertyParser.<MaterialLightable, ElementTag>registerTag(ElementTag.class, "lit", (attribute, material) -> {
-            Deprecations.materialLit.warn(attribute.context);
+            BukkitImplDeprecations.materialLit.warn(attribute.context);
             return new ElementTag(material.getLightable().isLit());
         });
     }
@@ -63,7 +63,7 @@ public class MaterialLightable implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("lit") && mechanism.requireBoolean()) {
-            Deprecations.materialLit.warn(mechanism.context);
+            BukkitImplDeprecations.materialLit.warn(mechanism.context);
             getLightable().setLit(mechanism.getValue().asBoolean());
         }
     }

@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class HurtCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("source_once")
                     && arg.matches("source_once")) {
-                Deprecations.hurtSourceOne.warn(scriptEntry);
+                BukkitImplDeprecations.hurtSourceOne.warn(scriptEntry);
                 scriptEntry.addObject("source_once", new ElementTag(true));
             }
             else {

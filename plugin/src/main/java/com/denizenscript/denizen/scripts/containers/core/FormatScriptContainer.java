@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
-import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 
@@ -54,7 +54,7 @@ public class FormatScriptContainer extends ScriptContainer {
         String name = npc != null ? npc.getName() : (player != null ? player.getName() : "");
         String text = getFormat();
         if (text.contains("<text") || text.contains("<name")) {
-            Deprecations.pseudoTagBases.warn(this);
+            BukkitImplDeprecations.pseudoTagBases.warn(this);
             text = text.replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped").replace("<name", "<element[" + EscapeTagBase.escape(name) + "].unescaped");
         }
         BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
@@ -67,7 +67,7 @@ public class FormatScriptContainer extends ScriptContainer {
     public String getFormatText(NPCTag npc, PlayerTag player) {
         String text = getFormat();
         if (text.contains("<text") || text.contains("<name")) {
-            Deprecations.pseudoTagBases.warn(this);
+            BukkitImplDeprecations.pseudoTagBases.warn(this);
             text = text.replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04));
         }
         text = text.replace("<[text]>", String.valueOf((char) 0x00)).replace("<[name]>", String.valueOf((char) 0x04));
