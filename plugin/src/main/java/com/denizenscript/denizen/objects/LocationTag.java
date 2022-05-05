@@ -4186,6 +4186,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return new ElementTag(((Sign) state).getColor().name());
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.map_color>
+        // @returns ColorTag
+        // @group world
+        // @description
+        // Returns the color of the block at the location, as seen in a map.
+        // -->
+        tagProcessor.registerTag(ColorTag.class, "map_color", (attribute, object) -> {
+            Block block = object.getBlockForTag(attribute);
+            if (block == null) {
+                return null;
+            }
+            return new ColorTag(NMSHandler.blockHelper.getMapColor(block));
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
