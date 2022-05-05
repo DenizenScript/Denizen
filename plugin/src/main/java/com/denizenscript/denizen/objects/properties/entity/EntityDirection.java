@@ -5,13 +5,14 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.Fireball;
 
 public class EntityDirection implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Fireball;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof Fireball;
     }
 
     public static EntityDirection getFrom(ObjectTag entity) {
@@ -22,10 +23,6 @@ public class EntityDirection implements Property {
             return new EntityDirection((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "direction"
-    };
 
     public static final String[] handledMechs = new String[] {
             "direction"
@@ -39,7 +36,7 @@ public class EntityDirection implements Property {
 
     @Override
     public String getPropertyString() {
-        return new LocationTag(((Fireball) entity.getBukkitEntity()).getDirection()).identify();
+        return new LocationTag(getFireball().getDirection()).identify();
     }
 
     @Override
@@ -47,12 +44,11 @@ public class EntityDirection implements Property {
         return "direction";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public Fireball getFireball() {
+        return (Fireball) entity.getBukkitEntity();
+    }
 
-        if (attribute == null) {
-            return null;
-        }
+    public void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.direction>
@@ -62,12 +58,9 @@ public class EntityDirection implements Property {
         // @description
         // Returns the movement/acceleration direction of a fireball entity, as a LocationTag vector.
         // -->
-        if (attribute.startsWith("direction")) {
-            return new LocationTag(((Fireball) entity.getBukkitEntity()).getDirection())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityDirection, LocationTag>registerTag(LocationTag.class, "direction", (attribute, object) -> {
+            return new LocationTag(object.getFireball().getDirection());
+        });
     }
 
     @Override
@@ -83,7 +76,7 @@ public class EntityDirection implements Property {
         // <EntityTag.direction>
         // -->
         if (mechanism.matches("direction") && mechanism.requireObject(LocationTag.class)) {
-            ((Fireball) entity.getBukkitEntity()).setDirection(mechanism.valueAsType(LocationTag.class).toVector());
+            getFireball().setDirection(mechanism.valueAsType(LocationTag.class).toVector());
         }
     }
 }
