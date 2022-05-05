@@ -42,7 +42,7 @@ public class EntityCustomNameVisible implements Property {
         return "custom_name_visible";
     }
 
-    public void registerTags() {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.custom_name_visible>

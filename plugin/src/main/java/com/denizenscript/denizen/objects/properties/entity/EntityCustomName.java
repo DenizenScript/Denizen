@@ -44,7 +44,7 @@ public class EntityCustomName implements Property {
         return "custom_name";
     }
 
-    public void registerTags() {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.custom_name>
@@ -55,7 +55,7 @@ public class EntityCustomName implements Property {
         // Returns the entity's custom name (as set by plugin or name tag item), if any.
         // -->
         PropertyParser.<EntityCustomName, ElementTag>registerTag(ElementTag.class, "custom_name", (attribute, object) -> {
-            String name = AdvancedTextImpl.instance.getCustomName(entity.getBukkitEntity());
+            String name = AdvancedTextImpl.instance.getCustomName(object.entity.getBukkitEntity());
             if (name == null) {
                 return null;
             }
