@@ -33,7 +33,7 @@ public class EntityDisabledSlots implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "disabled_slots", "disabled_slots_raw"
+            "disabled_slots_raw", "disabled_slots"
     };
 
     private EntityDisabledSlots(EntityTag entity) {
