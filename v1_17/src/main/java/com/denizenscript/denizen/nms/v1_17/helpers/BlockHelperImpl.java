@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.PushReaction;
+import org.bukkit.Color;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -298,4 +299,11 @@ public class BlockHelperImpl implements BlockHelper {
         return blockType.getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
                 item == null ? null : CraftItemStack.asNMSCopy(item));
     }
+
+    @Override
+    public Color getMapColor(Block block) {
+        CraftBlock craftBlock = (CraftBlock) block;
+        return Color.fromRGB(craftBlock.getNMS().getMapColor(craftBlock.getHandle(), craftBlock.getPosition()).col);
+    }
+
 }
