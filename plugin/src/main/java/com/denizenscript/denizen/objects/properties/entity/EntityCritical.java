@@ -5,13 +5,14 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
-import org.bukkit.entity.Arrow;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.entity.AbstractArrow;
 
 public class EntityCritical implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof AbstractArrow;
     }
 
     public static EntityCritical getFrom(ObjectTag entity) {
@@ -22,10 +23,6 @@ public class EntityCritical implements Property {
             return new EntityCritical((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "critical"
-    };
 
     public static final String[] handledMechs = new String[] {
             "critical"
@@ -39,12 +36,7 @@ public class EntityCritical implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!((Arrow) critical.getBukkitEntity()).isCritical()) {
-            return null;
-        }
-        else {
-            return "true";
-        }
+        return getAbstractArrow().isCritical() ? "true" : null;
     }
 
     @Override
@@ -52,12 +44,11 @@ public class EntityCritical implements Property {
         return "critical";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public AbstractArrow getAbstractArrow() {
+        return (AbstractArrow) critical.getBukkitEntity();
+    }
 
-        if (attribute == null) {
-            return null;
-        }
+    public void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.critical>
@@ -67,12 +58,9 @@ public class EntityCritical implements Property {
         // @description
         // If the entity is an arrow or trident, returns whether the arrow/trident is critical.
         // -->
-        if (attribute.startsWith("critical")) {
-            return new ElementTag(((Arrow) critical.getBukkitEntity()).isCritical())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityCritical, ElementTag>registerTag(ElementTag.class, "critical", (attribute, object) -> {
+            return new ElementTag(object.getAbstractArrow().isCritical());
+        });
     }
 
     @Override
@@ -88,7 +76,7 @@ public class EntityCritical implements Property {
         // <EntityTag.critical>
         // -->
         if (mechanism.matches("critical") && mechanism.requireBoolean()) {
-            ((Arrow) critical.getBukkitEntity()).setCritical(mechanism.getValue().asBoolean());
+            getAbstractArrow().setCritical(mechanism.getValue().asBoolean());
         }
     }
 }
