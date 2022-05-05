@@ -7,9 +7,9 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.*;
@@ -17,7 +17,8 @@ import java.util.*;
 public class EntityDisabledSlots implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof ArmorStand;
     }
 
     public static EntityDisabledSlots getFrom(ObjectTag entity) {
@@ -28,10 +29,6 @@ public class EntityDisabledSlots implements Property {
             return new EntityDisabledSlots((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "disabled_slots"
-    };
 
     public static final String[] handledMechs = new String[] {
             "disabled_slots_raw", "disabled_slots"
@@ -79,26 +76,7 @@ public class EntityDisabledSlots implements Property {
         return "disabled_slots";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
-        // <--[tag]
-        // @attribute <EntityTag.disabled_slots.raw>
-        // @returns ElementTag(Number)
-        // @mechanism EntityTag.disabled_slots_raw
-        // @group properties
-        // @description
-        // If the entity is an armor stand, returns its raw disabled slots value.
-        // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
-        // -->
-        if (attribute.startsWith("disabled_slots.raw")) {
-            return new ElementTag(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS))
-                    .getObjectAttribute(attribute.fulfill(2));
-        }
+    public void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.disabled_slots>
@@ -108,11 +86,23 @@ public class EntityDisabledSlots implements Property {
         // @description
         // If the entity is an armor stand, returns a list of its disabled slots in the form slot/action|...
         // -->
-        if (attribute.startsWith("disabled_slots")) {
-            return getDisabledSlots().getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.<EntityDisabledSlots, ObjectTag>registerTag(ObjectTag.class, "disabled_slots", (attribute, object) -> {
 
-        return null;
+            // <--[tag]
+            // @attribute <EntityTag.disabled_slots.raw>
+            // @returns ElementTag(Number)
+            // @mechanism EntityTag.disabled_slots_raw
+            // @group properties
+            // @description
+            // If the entity is an armor stand, returns its raw disabled slots value.
+            // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
+            // -->
+            if (attribute.startsWith("raw", 2)) {
+                return new ElementTag(CustomNBT.getCustomIntNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS));
+            }
+
+            return getDisabledSlots();
+        });
     }
 
     @Override
@@ -161,22 +151,17 @@ public class EntityDisabledSlots implements Property {
             for (String string : list) {
                 String[] split = string.toUpperCase().split("/", 2);
 
-                EquipmentSlot slot;
+                EquipmentSlot slot = new ElementTag(split[0]).asEnum(EquipmentSlot.class);
                 Action action = null;
 
-                try {
-                    slot = EquipmentSlot.valueOf(split[0]);
-                }
-                catch (IllegalArgumentException e) {
+                if (slot == null) {
                     mechanism.echoError("Invalid equipment slot specified: " + split[0]);
                     continue;
                 }
 
                 if (split.length == 2) {
-                    try {
-                        action = Action.valueOf(split[1]);
-                    }
-                    catch (IllegalArgumentException e) {
+                    action = new ElementTag(split[1]).asEnum(Action.class);
+                    if (action == null) {
                         mechanism.echoError("Invalid action specified: " + split[1]);
                         continue;
                     }
