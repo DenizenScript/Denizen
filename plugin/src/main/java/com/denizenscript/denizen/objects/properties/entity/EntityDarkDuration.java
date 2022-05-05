@@ -5,13 +5,14 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.GlowSquid;
 
 public class EntityDarkDuration implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof GlowSquid;
+        return entity instanceof EntityTag
+                && ((EntityTag) entity).getBukkitEntity() instanceof GlowSquid;
     }
 
     public static EntityDarkDuration getFrom(ObjectTag entity) {
@@ -22,10 +23,6 @@ public class EntityDarkDuration implements Property {
             return new EntityDarkDuration((EntityTag) entity);
         }
     }
-
-    public static final String[] handledTags = new String[] {
-            "dark_duration"
-    };
 
     public static final String[] handledMechs = new String[] {
             "dark_duration"
@@ -39,7 +36,7 @@ public class EntityDarkDuration implements Property {
 
     @Override
     public String getPropertyString() {
-        return new DurationTag((long) ((GlowSquid) entity.getBukkitEntity()).getDarkTicksRemaining()).identify();
+        return new DurationTag((long) getGlowSquid().getDarkTicksRemaining()).identify();
     }
 
     @Override
@@ -47,12 +44,11 @@ public class EntityDarkDuration implements Property {
         return "dark_duration";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
+    public GlowSquid getGlowSquid() {
+        return (GlowSquid) entity.getBukkitEntity();
+    }
 
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.dark_duration>
@@ -62,12 +58,9 @@ public class EntityDarkDuration implements Property {
         // @description
         // Returns the duration remaining before a glow squid starts glowing.
         // -->
-        if (attribute.startsWith("dark_duration")) {
-            return new DurationTag((long) ((GlowSquid) entity.getBukkitEntity()).getDarkTicksRemaining())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+        PropertyParser.<EntityDarkDuration, DurationTag>registerTag(DurationTag.class, "dark_duration", (attribute, object) -> {
+            return new DurationTag((long) object.getGlowSquid().getDarkTicksRemaining());
+        });
     }
 
     @Override
@@ -83,7 +76,7 @@ public class EntityDarkDuration implements Property {
         // <EntityTag.dark_duration>
         // -->
         if (mechanism.matches("dark_duration") && mechanism.requireObject(DurationTag.class)) {
-            ((GlowSquid) entity.getBukkitEntity()).setDarkTicksRemaining(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+            getGlowSquid().setDarkTicksRemaining(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
     }
 }
