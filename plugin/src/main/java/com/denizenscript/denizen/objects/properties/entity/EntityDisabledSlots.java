@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -32,7 +33,7 @@ public class EntityDisabledSlots implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "disabled_slots"
+            "disabled_slots", "disabled_slots_raw"
     };
 
     private EntityDisabledSlots(EntityTag entity) {
@@ -104,6 +105,7 @@ public class EntityDisabledSlots implements Property {
         // -->
         PropertyParser.<EntityDisabledSlots, ObjectTag>registerTag(ObjectTag.class, "disabled_slots", (attribute, object) -> {
             if (attribute.startsWith("raw", 2)) {
+                BukkitImplDeprecations.armorStandRawSlot.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(CustomNBT.getCustomIntNBT(object.dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS));
             }
@@ -128,6 +130,7 @@ public class EntityDisabledSlots implements Property {
     public void adjust(Mechanism mechanism) {
 
         if (mechanism.matches("disabled_slots_raw") && mechanism.requireInteger()) {
+            BukkitImplDeprecations.armorStandRawSlot.warn(mechanism.context);
             CustomNBT.addCustomNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS, mechanism.getValue().asInt());
         }
 
@@ -144,8 +147,7 @@ public class EntityDisabledSlots implements Property {
         // NOTE: Minecraft contains a bug where disabling ALL for the HAND slot still allows item removal.
         // To fully disable hand interaction, disable ALL and REMOVE.
         // @tags
-        // <EntityTag.disabled_slots>
-        // <EntityTag.disabled_slots.raw>
+        // <EntityTag.disabled_slots_data>
         // -->
         if (mechanism.matches("disabled_slots")) {
             if (!mechanism.hasValue()) {
