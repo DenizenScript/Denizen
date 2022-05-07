@@ -250,6 +250,10 @@ public class BukkitImplDeprecations {
     // Added 2022/02/21, deprecate officially by 2024.
     public static Warning oldPotionEffects = new FutureWarning("oldPotionEffects", "The comma-separated-list potion effect tags like 'list_effects' are deprecated in favor of MapTag based tags - 'effects_data'. Refer to meta documentation for details.");
 
+    // Added 2022/5/7, deprecate officially by 2024.
+    public static Warning armorStandDisabledSlotsOldFormat = new FutureWarning("armorStandDisabledSlotsList", "The EntityTag.disabled_slots tag and the SLOT/ACTION format in the EntityTag.disabled_slots mechanism are deprecated in favour of the EntityTag.disabled_slots_data tag and the MapTag format.");
+
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Added on 2019/10/13

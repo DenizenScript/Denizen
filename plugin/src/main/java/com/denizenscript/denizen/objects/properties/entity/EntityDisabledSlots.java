@@ -98,28 +98,39 @@ public class EntityDisabledSlots implements Property {
         // @attribute <EntityTag.disabled_slots>
         // @returns ListTag
         // @mechanism EntityTag.disabled_slots
+        // @deprecated Use 'EntityTag.disabled_slots_data'
         // @group properties
         // @description
-        // If the entity is an armor stand, returns a list of its disabled slots in the form slot/action|...
-        // Consider instead using <@link tag EntityTag.disabled_slots_data>.
+        // Deprecated in favor of <@link tag EntityTag.disabled_slots_data>.
         // -->
         PropertyParser.<EntityDisabledSlots, ObjectTag>registerTag(ObjectTag.class, "disabled_slots", (attribute, object) -> {
+
+            // <--[tag]
+            // @attribute <EntityTag.disabled_slots.raw>
+            // @returns ElementTag(Number)
+            // @mechanism EntityTag.disabled_slots_raw
+            // @deprecated Use 'disabled_slots_data'
+            // @group properties
+            // @description
+            // Deprecated in favor of <@link tag EntityTag.disabled_slots_data>.
+            // -->
             if (attribute.startsWith("raw", 2)) {
                 BukkitImplDeprecations.armorStandRawSlot.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(CustomNBT.getCustomIntNBT(object.dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS));
             }
 
+            BukkitImplDeprecations.armorStandDisabledSlotsOldFormat.warn(attribute.context);
             return object.getDisabledSlots();
         });
 
         // <--[tag]
         // @attribute <EntityTag.disabled_slots_data>
-        // @returns ListTag
+        // @returns MapTag
         // @mechanism EntityTag.disabled_slots
         // @group properties
         // @description
-        // If the entity is an armor stand, returns it's disabled slots as a map of slot names to list of actions.
+        // If the entity is an armor stand, returns its disabled slots as a map of slot names to list of actions.
         // -->
         PropertyParser.<EntityDisabledSlots, MapTag>registerTag(MapTag.class, "disabled_slots_data", (attribute, object) -> {
             return object.getDisabledSlotsMap();
@@ -129,6 +140,17 @@ public class EntityDisabledSlots implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name disabled_slots_raw
+        // @input ElementTag(Number)
+        // @deprecated Use 'disabled_slots'
+        // @description
+        // Deprecated in favor of <@link mechanism EntityTag.disabled_slots>.
+        // @tags
+        // <EntityTag.disabled_slots>
+        // <EntityTag.disabled_slots.raw>
+        // -->
         if (mechanism.matches("disabled_slots_raw") && mechanism.requireInteger()) {
             BukkitImplDeprecations.armorStandRawSlot.warn(mechanism.context);
             CustomNBT.addCustomNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS, mechanism.getValue().asInt());
@@ -169,7 +191,6 @@ public class EntityDisabledSlots implements Property {
 
                     ListTag actionsInput = entry.getValue().asType(ListTag.class, mechanism.context);
                     Set<Action> actions = new HashSet<>();
-                    map.put(slot, actions);
 
                     for (String actionStr : actionsInput) {
                         Action action = new ElementTag(actionStr).asEnum(Action.class);
@@ -179,9 +200,11 @@ public class EntityDisabledSlots implements Property {
                         }
                         actions.add(action);
                     }
+                    map.put(slot, actions);
                 }
             }
             else {
+                BukkitImplDeprecations.armorStandDisabledSlotsOldFormat.warn(mechanism.context);
                 ListTag input = mechanism.valueAsType(ListTag.class);
                 for (String string : input) {
                     String[] split = string.split("/", 2);
