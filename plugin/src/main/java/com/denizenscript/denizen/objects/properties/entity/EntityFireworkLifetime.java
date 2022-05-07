@@ -69,7 +69,7 @@ public class EntityFireworkLifetime implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name firework_lifetime
-        // @input ElementTag(Boolean)
+        // @input DurationTag
         // @description
         // Sets the duration that a firework will live for (before detonating).
         // @tags
