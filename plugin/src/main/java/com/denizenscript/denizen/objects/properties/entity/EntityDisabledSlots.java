@@ -144,7 +144,6 @@ public class EntityDisabledSlots implements Property {
         // @object EntityTag
         // @name disabled_slots_raw
         // @input ElementTag(Number)
-        // @deprecated Use 'disabled_slots'
         // @description
         // Deprecated in favor of <@link mechanism EntityTag.disabled_slots>.
         // @tags
