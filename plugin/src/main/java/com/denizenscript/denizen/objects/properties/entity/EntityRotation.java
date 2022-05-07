@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 
 public class EntityRotation implements Property {
@@ -18,8 +17,7 @@ public class EntityRotation implements Property {
         if (!(entity instanceof EntityTag)) {
             return false;
         }
-        return ((EntityTag) entity).getBukkitEntityType() == EntityType.PAINTING
-                || ((EntityTag) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
+        return ((EntityTag) entity).getBukkitEntity() instanceof Hanging;
     }
 
     public static EntityRotation getFrom(ObjectTag entity) {

@@ -81,7 +81,7 @@ public class MaterialDistance implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getScaffolding().getDistance());
+        return String.valueOf(getDistance());
     }
 
     @Override

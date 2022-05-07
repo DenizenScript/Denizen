@@ -1,14 +1,17 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -65,10 +68,23 @@ public class EntityDisabledSlots implements Property {
         return list;
     }
 
+    private MapTag getDisabledSlotsMap() {
+        Map<EquipmentSlot, Set<Action>> map = CustomNBT.getDisabledSlots(dentity.getBukkitEntity());
+        MapTag mapTag = new MapTag();
+        for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
+            ListTag actions = new ListTag();
+            for (Action action : entry.getValue()) {
+                actions.addObject(new ElementTag(action.name()));
+            }
+            mapTag.putObject(entry.getKey().name(), actions);
+        }
+        return mapTag;
+    }
+
     @Override
     public String getPropertyString() {
-        ListTag list = getDisabledSlots();
-        return list.isEmpty() ? null : list.identify();
+        MapTag map = getDisabledSlotsMap();
+        return map.map.isEmpty() ? null : map.identify();
     }
 
     @Override
@@ -82,9 +98,10 @@ public class EntityDisabledSlots implements Property {
         // @attribute <EntityTag.disabled_slots>
         // @returns ListTag
         // @mechanism EntityTag.disabled_slots
+        // @deprecated Use 'EntityTag.disabled_slots_data'
         // @group properties
         // @description
-        // If the entity is an armor stand, returns a list of its disabled slots in the form slot/action|...
+        // Deprecated in favor of <@link tag EntityTag.disabled_slots_data>.
         // -->
         PropertyParser.<EntityDisabledSlots, ObjectTag>registerTag(ObjectTag.class, "disabled_slots", (attribute, object) -> {
 
@@ -92,17 +109,31 @@ public class EntityDisabledSlots implements Property {
             // @attribute <EntityTag.disabled_slots.raw>
             // @returns ElementTag(Number)
             // @mechanism EntityTag.disabled_slots_raw
+            // @deprecated Use 'disabled_slots_data'
             // @group properties
             // @description
-            // If the entity is an armor stand, returns its raw disabled slots value.
-            // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
+            // Deprecated in favor of <@link tag EntityTag.disabled_slots_data>.
             // -->
             if (attribute.startsWith("raw", 2)) {
+                BukkitImplDeprecations.armorStandRawSlot.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(CustomNBT.getCustomIntNBT(object.dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS));
             }
 
+            BukkitImplDeprecations.armorStandDisabledSlotsOldFormat.warn(attribute.context);
             return object.getDisabledSlots();
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.disabled_slots_data>
+        // @returns MapTag
+        // @mechanism EntityTag.disabled_slots
+        // @group properties
+        // @description
+        // If the entity is an armor stand, returns its disabled slots as a map of slot names to list of actions.
+        // -->
+        PropertyParser.<EntityDisabledSlots, MapTag>registerTag(MapTag.class, "disabled_slots_data", (attribute, object) -> {
+            return object.getDisabledSlotsMap();
         });
     }
 
@@ -113,32 +144,32 @@ public class EntityDisabledSlots implements Property {
         // @object EntityTag
         // @name disabled_slots_raw
         // @input ElementTag(Number)
+        // @deprecated Use 'disabled_slots'
         // @description
-        // Sets the raw disabled slots value of an armor stand.
-        // See <@link url https://minecraft.fandom.com/wiki/Armor_Stand/ED>
+        // Deprecated in favor of <@link mechanism EntityTag.disabled_slots>.
         // @tags
         // <EntityTag.disabled_slots>
         // <EntityTag.disabled_slots.raw>
         // -->
         if (mechanism.matches("disabled_slots_raw") && mechanism.requireInteger()) {
+            BukkitImplDeprecations.armorStandRawSlot.warn(mechanism.context);
             CustomNBT.addCustomNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS, mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
         // @object EntityTag
         // @name disabled_slots
-        // @input ListTag
+        // @input MapTag
         // @description
-        // Sets the disabled slots of an armor stand in the form slot(/action)|...
-        // Optionally include an action to disable specific interactions (defaults to ALL).
-        // Leave empty to enable all slots.
+        // Sets the disabled slots of an armor stand as a map of slot names to list of actions.
+        // For example: [HEAD=PLACE|REMOVE;CHEST=PLACE;FEET=ALL]
+        // Provide no input to enable all slots.
         // Slots: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html>
         // Actions: ALL, REMOVE, PLACE
-        // NOTE: Minecraft contains a bug where disabling HAND/ALL still allows item removal.
-        // To fully disable hand interaction, disable HAND/ALL and HAND/REMOVE.
+        // NOTE: Minecraft contains a bug where disabling ALL for the HAND slot still allows item removal.
+        // To fully disable hand interaction, disable ALL and REMOVE.
         // @tags
-        // <EntityTag.disabled_slots>
-        // <EntityTag.disabled_slots.raw>
+        // <EntityTag.disabled_slots_data>
         // -->
         if (mechanism.matches("disabled_slots")) {
             if (!mechanism.hasValue()) {
@@ -146,30 +177,56 @@ public class EntityDisabledSlots implements Property {
                 return;
             }
 
-            ListTag list = mechanism.valueAsType(ListTag.class);
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
 
-            for (String string : list) {
-                String[] split = string.toUpperCase().split("/", 2);
+            if (mechanism.value.canBeType(MapTag.class)) {
+                MapTag input = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
+                    EquipmentSlot slot = new ElementTag(entry.getKey().str).asEnum(EquipmentSlot.class);
 
-                EquipmentSlot slot = new ElementTag(split[0]).asEnum(EquipmentSlot.class);
-                Action action = null;
-
-                if (slot == null) {
-                    mechanism.echoError("Invalid equipment slot specified: " + split[0]);
-                    continue;
-                }
-
-                if (split.length == 2) {
-                    action = new ElementTag(split[1]).asEnum(Action.class);
-                    if (action == null) {
-                        mechanism.echoError("Invalid action specified: " + split[1]);
+                    if (slot == null) {
+                        mechanism.echoError("Invalid equipment slot specified: " + entry.getKey().str);
                         continue;
                     }
-                }
 
-                Set<Action> set = map.computeIfAbsent(slot, k -> new HashSet<>());
-                set.add(action == null ? Action.ALL : action);
+                    ListTag actionsInput = entry.getValue().asType(ListTag.class, mechanism.context);
+                    Set<Action> actions = new HashSet<>();
+
+                    for (String actionStr : actionsInput) {
+                        Action action = new ElementTag(actionStr).asEnum(Action.class);
+                        if (action == null) {
+                            mechanism.echoError("Invalid action specified: " + actionStr);
+                            continue;
+                        }
+                        actions.add(action);
+                    }
+                    map.put(slot, actions);
+                }
+            }
+            else {
+                BukkitImplDeprecations.armorStandDisabledSlotsOldFormat.warn(mechanism.context);
+                ListTag input = mechanism.valueAsType(ListTag.class);
+                for (String string : input) {
+                    String[] split = string.split("/", 2);
+
+                    EquipmentSlot slot = new ElementTag(split[0]).asEnum(EquipmentSlot.class);
+                    Action action = Action.ALL;
+
+                    if (slot == null) {
+                        mechanism.echoError("Invalid equipment slot specified: " + split[0]);
+                        continue;
+                    }
+
+                    if (split.length == 2) {
+                        action = new ElementTag(split[1]).asEnum(Action.class);
+                        if (action == null) {
+                            mechanism.echoError("Invalid action specified: " + split[1]);
+                            continue;
+                        }
+                    }
+                    Set<Action> set = map.computeIfAbsent(slot, k -> new HashSet<>());
+                    set.add(action);
+                }
             }
 
             CustomNBT.setDisabledSlots(dentity.getBukkitEntity(), map);
