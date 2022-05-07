@@ -166,6 +166,7 @@ public class BukkitImplDeprecations {
 
     // Added 2021/05/05.
     public static Warning locationDistanceTag = new SlowWarning("locationDistanceTag", "locationtag.tree_distance is deprecated in favor of location.material.distance");
+    public static Warning armorStandRawSlot = new SlowWarning("armorStandRawSlot", "The EntityTag.disabled_slots.raw tag and EntityTag.disabled_slots_raw mechanism are deprecated, use the EntityTag.disabled_slots_data tag and EntityTag.disabled_slots mechanism instead.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
@@ -248,6 +249,10 @@ public class BukkitImplDeprecations {
 
     // Added 2022/02/21, deprecate officially by 2024.
     public static Warning oldPotionEffects = new FutureWarning("oldPotionEffects", "The comma-separated-list potion effect tags like 'list_effects' are deprecated in favor of MapTag based tags - 'effects_data'. Refer to meta documentation for details.");
+
+    // Added 2022/5/7, deprecate officially by 2024.
+    public static Warning armorStandDisabledSlotsOldFormat = new FutureWarning("armorStandDisabledSlotsList", "The EntityTag.disabled_slots tag and the SLOT/ACTION format in the EntityTag.disabled_slots mechanism are deprecated in favour of the EntityTag.disabled_slots_data tag and the MapTag format.");
+
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
