@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -67,24 +68,23 @@ public class EntityDisabledSlots implements Property {
         return list;
     }
 
-    private ListTag getDisabledSlotsMap() {
+    private MapTag getDisabledSlotsMap() {
         Map<EquipmentSlot, Set<Action>> map = CustomNBT.getDisabledSlots(dentity.getBukkitEntity());
-        ListTag list = new ListTag();
+        MapTag mapTag = new MapTag();
         for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
+            ListTag actions = new ListTag();
             for (Action action : entry.getValue()) {
-                MapTag mapTag = new MapTag();
-                mapTag.putObject("slot", new ElementTag(CoreUtilities.toLowerCase(entry.getKey().name())));
-                mapTag.putObject("action", new ElementTag(CoreUtilities.toLowerCase(action.name())));
-                list.addObject(mapTag);
+                actions.addObject(new ElementTag(action.name()));
             }
+            mapTag.putObject(entry.getKey().name(), actions);
         }
-        return list;
+        return mapTag;
     }
 
     @Override
     public String getPropertyString() {
-        ListTag list = getDisabledSlotsMap();
-        return list.isEmpty() ? null : list.identify();
+        MapTag map = getDisabledSlotsMap();
+        return map.map.isEmpty() ? null : map.identify();
     }
 
     @Override
@@ -119,9 +119,9 @@ public class EntityDisabledSlots implements Property {
         // @mechanism EntityTag.disabled_slots
         // @group properties
         // @description
-        // If the entity is an armor stand, returns it's disabled slots as a list of maps with "slot" and "action" keys.
+        // If the entity is an armor stand, returns it's disabled slots as a map of slot names to list of actions.
         // -->
-        PropertyParser.<EntityDisabledSlots, ListTag>registerTag(ListTag.class, "disabled_slots_data", (attribute, object) -> {
+        PropertyParser.<EntityDisabledSlots, MapTag>registerTag(MapTag.class, "disabled_slots_data", (attribute, object) -> {
             return object.getDisabledSlotsMap();
         });
     }
@@ -137,10 +137,10 @@ public class EntityDisabledSlots implements Property {
         // <--[mechanism]
         // @object EntityTag
         // @name disabled_slots
-        // @input ListTag
+        // @input MapTag
         // @description
-        // Sets the disabled slots of an armor stand.
-        // Input is a list of MapTags with a "slot" key, optionally include an "action" key to disable specific interactions (defaults to ALL).
+        // Sets the disabled slots of an armor stand as a map of slot names to list of actions.
+        // For example: [HEAD=PLACE|REMOVE;CHEST=PLACE;FEET=ALL]
         // Provide no input to enable all slots.
         // Slots: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html>
         // Actions: ALL, REMOVE, PLACE
@@ -155,43 +155,39 @@ public class EntityDisabledSlots implements Property {
                 return;
             }
 
-            Collection<ObjectTag> list = CoreUtilities.objectToList(mechanism.value, mechanism.context);
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
 
-            for (ObjectTag object : list) {
-                EquipmentSlot slot;
-                Action action = Action.ALL;
-                if (object.canBeType(MapTag.class)) {
-                    MapTag mapTag = object.asType(MapTag.class, mechanism.context);
-                    ObjectTag slotObject = mapTag.getObject("slot");
-                    ObjectTag actionObject = mapTag.getObject("action");
-                    if (slotObject != null) {
-                        if (slotObject.asElement().matchesEnum(EquipmentSlot.class)) {
-                            slot = slotObject.asElement().asEnum(EquipmentSlot.class);
-                        }
-                        else {
-                            mechanism.echoError("Invalid equipment slot specified: " + slotObject);
-                            continue;
-                        }
-                    }
-                    else {
-                        mechanism.echoError("Invalid equipment slot specified: slot is required.");
+            if (mechanism.value.canBeType(MapTag.class)) {
+                MapTag input = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
+                    EquipmentSlot slot = new ElementTag(entry.getKey().str).asEnum(EquipmentSlot.class);
+
+                    if (slot == null) {
+                        mechanism.echoError("Invalid equipment slot specified: " + entry.getKey().str);
                         continue;
                     }
-                    if (actionObject != null) {
-                        if (actionObject.asElement().matchesEnum(Action.class)) {
-                            action = actionObject.asElement().asEnum(Action.class);
-                        }
-                        else {
-                            mechanism.echoError("Invalid action specified: " + actionObject);
+
+                    ListTag actionsInput = entry.getValue().asType(ListTag.class, mechanism.context);
+                    Set<Action> actions = new HashSet<>();
+                    map.put(slot, actions);
+
+                    for (String actionStr : actionsInput) {
+                        Action action = new ElementTag(actionStr).asEnum(Action.class);
+                        if (action == null) {
+                            mechanism.echoError("Invalid action specified: " + actionStr);
                             continue;
                         }
+                        actions.add(action);
                     }
                 }
-                else {
-                    String[] split = object.toString().toUpperCase().split("/", 2);
+            }
+            else {
+                ListTag input = mechanism.valueAsType(ListTag.class);
+                for (String string : input) {
+                    String[] split = string.split("/", 2);
 
-                    slot = new ElementTag(split[0]).asEnum(EquipmentSlot.class);
+                    EquipmentSlot slot = new ElementTag(split[0]).asEnum(EquipmentSlot.class);
+                    Action action = Action.ALL;
 
                     if (slot == null) {
                         mechanism.echoError("Invalid equipment slot specified: " + split[0]);
@@ -205,11 +201,9 @@ public class EntityDisabledSlots implements Property {
                             continue;
                         }
                     }
-
-
+                    Set<Action> set = map.computeIfAbsent(slot, k -> new HashSet<>());
+                    set.add(action);
                 }
-                Set<Action> set = map.computeIfAbsent(slot, k -> new HashSet<>());
-                set.add(action);
             }
 
             CustomNBT.setDisabledSlots(dentity.getBukkitEntity(), map);
