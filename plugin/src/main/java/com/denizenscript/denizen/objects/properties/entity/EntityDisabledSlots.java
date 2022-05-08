@@ -176,9 +176,7 @@ public class EntityDisabledSlots implements Property {
                 CustomNBT.removeCustomNBT(dentity.getBukkitEntity(), CustomNBT.KEY_DISABLED_SLOTS);
                 return;
             }
-
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
-
             if (mechanism.value.canBeType(MapTag.class)) {
                 MapTag input = mechanism.valueAsType(MapTag.class);
                 for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
@@ -188,10 +186,8 @@ public class EntityDisabledSlots implements Property {
                         mechanism.echoError("Invalid equipment slot specified: " + entry.getKey().str);
                         continue;
                     }
-
                     ListTag actionsInput = entry.getValue().asType(ListTag.class, mechanism.context);
                     Set<Action> actions = new HashSet<>();
-
                     for (String actionStr : actionsInput) {
                         Action action = new ElementTag(actionStr).asEnum(Action.class);
                         if (action == null) {
@@ -208,15 +204,12 @@ public class EntityDisabledSlots implements Property {
                 ListTag input = mechanism.valueAsType(ListTag.class);
                 for (String string : input) {
                     String[] split = string.split("/", 2);
-
                     EquipmentSlot slot = new ElementTag(split[0]).asEnum(EquipmentSlot.class);
                     Action action = Action.ALL;
-
                     if (slot == null) {
                         mechanism.echoError("Invalid equipment slot specified: " + split[0]);
                         continue;
                     }
-
                     if (split.length == 2) {
                         action = new ElementTag(split[1]).asEnum(Action.class);
                         if (action == null) {
@@ -228,7 +221,6 @@ public class EntityDisabledSlots implements Property {
                     set.add(action);
                 }
             }
-
             CustomNBT.setDisabledSlots(dentity.getBukkitEntity(), map);
         }
     }

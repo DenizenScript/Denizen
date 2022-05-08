@@ -126,7 +126,7 @@ public class SittingTrait extends Trait implements Listener {
         safetyCleanup(location.clone());
         new NPCTag(npc).action("sit", null);
         npc.getEntity().teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        forceEntitySit(npc.getEntity(), location.clone(), false);
+        forceEntitySit(npc.getEntity(), location.clone(), 0);
         sitting = true;
     }
 
@@ -225,7 +225,7 @@ public class SittingTrait extends Trait implements Listener {
 
     public NPC sitStandNPC = null;
 
-    public void forceEntitySit(Entity entity, Location location, boolean isRetry) {
+    public void forceEntitySit(Entity entity, Location location, int retryCount) {
         if (sitStandNPC != null) {
             sitStandNPC.destroy();
         }
@@ -252,7 +252,7 @@ public class SittingTrait extends Trait implements Listener {
         holder.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
         boolean spawned = holder.spawn(location);
         if (!spawned || !holder.isSpawned()) {
-            if (isRetry) {
+            if (retryCount >= 4) {
                 Debug.echoError("NPC " + (npc == null ? "null" : npc.getId()) + " sit failed (" + spawned + "," + holder.isSpawned() + "): cannot spawn chair id "
                         + holder.getId() + " at " + new LocationTag(location).identifySimple() + " ChunkIsLoaded=" + new ChunkTag(location).isLoaded());
                 holder.destroy();
@@ -260,7 +260,7 @@ public class SittingTrait extends Trait implements Listener {
             }
             else {
                 Messaging.debug("(Denizen/SittingTrait) retrying failed sit for", npc.getId());
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> { if (npc.isSpawned()) { forceEntitySit(entity, location, true); } }, 5);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> { if (npc.isSpawned()) { forceEntitySit(entity, location, retryCount + 1); } }, 5);
             }
             return;
         }
