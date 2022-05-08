@@ -350,31 +350,23 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         return determination;
     }
 
-    /**
-     * Check whether this item contains the lore specific
-     * to item scripts.
-     *
-     * @return True if it does, otherwise false
-     */
     public boolean isItemscript() {
-        return ItemScriptHelper.isItemscript(getItemStack());
+        return ItemScriptHelper.isItemscript(item);
     }
 
     public String getScriptName() {
-        ItemScriptContainer cont = ItemScriptHelper.getItemScriptContainer(getItemStack());
-        if (cont != null) {
-            return cont.getName();
-        }
-        else {
-            return null;
-        }
+        return ItemScriptHelper.getItemScriptNameText(item);
+    }
+
+    public void setItemScriptName(String name) {
+        setItemStack(NMSHandler.itemHelper.addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(name))));
     }
 
     public void setItemScript(ItemScriptContainer script) {
         if (script.contains("NO_ID", String.class) && Boolean.parseBoolean(script.getString("NO_ID"))) {
             return;
         }
-        setItemStack(NMSHandler.itemHelper.addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(script.getName()))));
+        setItemScriptName(script.getName());
     }
 
     public Material getBukkitMaterial() {
@@ -687,7 +679,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
-            ItemScriptContainer container = object.isItemscript() ? ItemScriptHelper.getItemScriptContainer(object.getItemStack()) : null;
+            ItemScriptContainer container = ItemScriptHelper.getItemScriptContainer(object.getItemStack());
             ListTag list = new ListTag();
             for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
                 if (!Utilities.isRecipeOfType(recipe, type)) {

@@ -343,7 +343,27 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static boolean isItemscript(ItemStack item) {
-        return getItemScriptContainer(item) != null;
+        return getItemScriptNameText(item) != null;
+    }
+
+    public static String getItemScriptNameText(ItemStack item) {
+        if (item == null) {
+            return null;
+        }
+        CompoundTag tag = NMSHandler.itemHelper.getNbtData(item);
+        String scriptName = tag.getString("DenizenItemScript");
+        if (scriptName != null && !scriptName.equals("")) {
+            return scriptName;
+        }
+        // NOTE: Legacy hashed format
+        String nbt = tag.getString("Denizen Item Script");
+        if (nbt != null && !nbt.equals("")) {
+            ItemScriptContainer container = item_scripts_by_hash_id.get(nbt);
+            if (container != null) {
+                return container.getName();
+            }
+        }
+        return null;
     }
 
     public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
@@ -355,7 +375,7 @@ public class ItemScriptHelper implements Listener {
         if (scriptName != null && !scriptName.equals("")) {
             return item_scripts.get(scriptName);
         }
-        // TODO: Legacy hashed format
+        // NOTE: Legacy hashed format
         String nbt = tag.getString("Denizen Item Script");
         if (nbt != null && !nbt.equals("")) {
             return item_scripts_by_hash_id.get(nbt);

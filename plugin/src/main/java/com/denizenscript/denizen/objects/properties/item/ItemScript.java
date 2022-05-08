@@ -61,6 +61,7 @@ public class ItemScript implements Property {
         // @group data
         // @description
         // Use ".script.name" instead.
+        // This deprecated tag may be useful for debugging items when item scripts may have been deleted.
         // -->
         if (attribute.startsWith("scriptname")) {
             BukkitImplDeprecations.hasScriptTags.warn(attribute.context);
@@ -102,9 +103,13 @@ public class ItemScript implements Property {
 
         // Undocumented as meant for internal usage.
 
-        if (mechanism.matches("script") && mechanism.requireObject(ScriptTag.class)) {
+        if (mechanism.matches("script") && mechanism.hasValue()) {
             ScriptTag script = mechanism.valueAsType(ScriptTag.class);
-            if (script.getContainer() instanceof ItemScriptContainer) {
+            if (script == null) {
+                mechanism.echoError("Invalid item script '" + mechanism.getValue().asString() + "' - doesn't exist. Applying anyway. Resultant item may be corrupt.");
+                item.setItemScriptName(mechanism.getValue().asString());
+            }
+            else if (script.getContainer() instanceof ItemScriptContainer) {
                 item.setItemScript((ItemScriptContainer) script.getContainer());
             }
             else {

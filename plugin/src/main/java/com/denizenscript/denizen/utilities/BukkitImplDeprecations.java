@@ -219,6 +219,7 @@ public class BukkitImplDeprecations {
     public static Warning itemNbt = new FutureWarning("itemNbt", "The item 'nbt' property is deprecated: use ItemTag flags instead!");
 
     // Added 2021/02/03, deprecate officially by 2023.
+    // Bad candidate for functional removal due to the "scriptname" variant being useful for debugging sometimes.
     public static Warning hasScriptTags = new FutureWarning("hasScriptTags", "The ItemTag.scriptname and EntityTag.scriptname and ItemTag.has_script and NPCTag.has_script tags are deprecated: use '.script.name' or a null check on .script.");
 
     // Added 2021/10/18, deprecate officially by 2023.
