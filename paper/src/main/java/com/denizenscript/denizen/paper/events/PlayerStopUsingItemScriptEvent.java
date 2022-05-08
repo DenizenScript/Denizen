@@ -14,7 +14,7 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // player stops using item
+    // player stops using <item>
     //
     // @Plugin Paper
     //
@@ -22,9 +22,10 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
     //
     // @Location true
     //
+    // @Player Always.
+    //
     // @Triggers when a player stops using an item. For example: letting go when holding a bow, an edible item, or a spyglass.
     //
-    // @Switch item:<item> to only process the event if it was triggered by an item that matches the specified item.
     // @Switch after:<duration> to only process the event if the item was being used for at least the specified duration
     //
     // @Context
@@ -35,16 +36,18 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
 
     public PlayerStopUsingItemScriptEvent() {
         instance = this;
-        registerCouldMatcher("player stops using item");
-        registerSwitches("item", "after");
+        registerCouldMatcher("player stops using <item>");
+        registerSwitches("after");
     }
 
     public static PlayerStopUsingItemScriptEvent instance;
+    public ItemTag item;
     public PlayerStopUsingItemEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
         if (path.switches.containsKey("after") && !DurationTag.matches(path.switches.get("after"))) {
+            addPossibleCouldMatchFailReason("not a valid duration", path.switches.get("after"));
             return false;
         }
         return super.couldMatch(path);
@@ -55,11 +58,11 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        if (!runWithCheck(path, new ItemTag(event.getItem()), "item")) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
             return false;
         }
         if (path.switches.containsKey("after")
-                && DurationTag.valueOf(path.switches.get("after"), getTagContext(path)).getTicks() < event.getTicksHeldFor()) {
+                && DurationTag.valueOf(path.switches.get("after"), getTagContext(path)).getTicks() > event.getTicksHeldFor()) {
             return false;
         }
         return super.matches(path);
@@ -78,7 +81,7 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "item": return new ItemTag(event.getItem());
+            case "item": return item;
             case "time_used": return new DurationTag((long) event.getTicksHeldFor());
         }
         return super.getContext(name);
@@ -86,6 +89,7 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
 
     @EventHandler
     public void onPlayerStopUsingItem(PlayerStopUsingItemEvent event) {
+        item = new ItemTag(event.getItem());
         this.event = event;
         fire(event);
     }
