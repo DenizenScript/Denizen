@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.paper;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -43,7 +45,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerStopUsingItemScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            ScriptEvent.registerScriptEvent(PlayerStopsUsingItemScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);

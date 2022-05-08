@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
 
-public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerStopsUsingItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -34,13 +34,13 @@ public class PlayerStopUsingItemScriptEvent extends BukkitScriptEvent implements
     //
     // -->
 
-    public PlayerStopUsingItemScriptEvent() {
+    public PlayerStopsUsingItemScriptEvent() {
         instance = this;
         registerCouldMatcher("player stops using <item>");
         registerSwitches("after");
     }
 
-    public static PlayerStopUsingItemScriptEvent instance;
+    public static PlayerStopsUsingItemScriptEvent instance;
     public ItemTag item;
     public PlayerStopUsingItemEvent event;
 
