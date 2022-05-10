@@ -23,7 +23,7 @@ public class PaperPlayerProperties implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "affects_monster_spawning", "firework_boost"
+            "affects_monster_spawning", "firework_boost", "fake_op_level"
     };
 
     private PaperPlayerProperties(PlayerTag player) {
