@@ -96,5 +96,18 @@ public class PaperPlayerProperties implements Property {
             }
             player.getPlayerEntity().boostElytra(item.getItemStack());
         }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name fake_op_level
+        // @input ElementTag(Number)
+        // @Plugin Paper
+        // @description
+        // Sends a fake operator level to the client, enabling clientside op-required features like the debug gamemode hotkey (F3+F4).
+        // Input should be a number from 0 to 4, 0 indicating not op and 4 indicating maximum level op.
+        // -->
+        if (mechanism.matches("fake_op_level") && mechanism.requireInteger()) {
+            player.getPlayerEntity().sendOpLevel((byte) mechanism.getValue().asInt());
+        }
     }
 }
