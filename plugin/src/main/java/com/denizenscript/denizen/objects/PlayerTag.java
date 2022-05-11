@@ -651,10 +651,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ListTag
         // @description
         // Returns a list of the last 10 things the player has said, less if the player hasn't said all that much.
-        // Works with offline players.
+        // Works with offline players, if the player previously joke and typed in chat since the last server restart.
         // -->
         tagProcessor.registerTag(ListTag.class, "chat_history_list", (attribute, object) -> {
-            return new ListTag(PlayerTagBase.playerChatHistory.get(object.getUUID()), true);
+            List<String> history = PlayerTagBase.playerChatHistory.get(object.getUUID());
+            return history == null ? new ListTag() : new ListTag(history, true);
         });
 
         // <--[tag]
@@ -670,12 +671,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.hasParam() && ArgumentHelper.matchesInteger(attribute.getParam())) {
                 x = attribute.getIntParam();
             }
-            // No playerchathistory? Return null.
-            if (!PlayerTagBase.playerChatHistory.containsKey(object.getUUID())) {
-                return null;
-            }
             List<String> messages = PlayerTagBase.playerChatHistory.get(object.getUUID());
-            if (messages.size() < x || x < 1) {
+            if (messages == null || messages.size() < x || x < 1) {
                 return null;
             }
             return new ElementTag(messages.get(x - 1), true);
