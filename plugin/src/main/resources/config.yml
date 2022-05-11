@@ -66,8 +66,20 @@ Scripts:
         # This defaults to false to avoid any possible interference on servers that don't use command scripts.
         Auto init: false
 
-# The default options for new Denizen NPCs
+# Settings related to queues.
+Queues:
+    # Toggle which parts of a queue ID are used for the queue ID generator.
+    # At least one (or both) of "numeric" or "words" must be enabled (otherwise, queue IDs cannot be unique).
+    Id parts:
+        # Whether to include the queue prefix - usually the script name.
+        Prefix: true
+        # Whether to include the numeric ID - incremental number, guaranteed unique.
+        # Be warned that disabling this reduces the guarantee of unique IDs.
+        Numeric: true
+        # Whether to include random words - helps easily distinguish queues in logs. Can create partial uniqueness if numeric is turned off.
+        Words: true
 
+# The default options for new Denizen NPCs
 # Whether to spawn NPCs with given traits, and what settings to have by default
 Traits:
     Health:

@@ -651,7 +651,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ListTag
         // @description
         // Returns a list of the last 10 things the player has said, less if the player hasn't said all that much.
-        // Works with offline players, if the player previously joke and typed in chat since the last server restart.
+        // Works with offline players, if the player previously joined and typed in chat since the last server restart.
         // -->
         tagProcessor.registerTag(ListTag.class, "chat_history_list", (attribute, object) -> {
             List<String> history = PlayerTagBase.playerChatHistory.get(object.getUUID());

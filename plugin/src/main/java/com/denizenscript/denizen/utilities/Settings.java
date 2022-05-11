@@ -43,6 +43,9 @@ public class Settings {
         CoreConfiguration.allowFileWrite = config.getBoolean("Commands.File.Allow write", false);
         CoreConfiguration.filePathLimit = config.getString("Commands.File.Restrict path", "data/");
         CoreConfiguration.verifyThreadMatches = config.getBoolean("Debug.Verify thread", false);
+        CoreConfiguration.queueIdPrefix = config.getBoolean("Queues.Id parts.Prefix", true);
+        CoreConfiguration.queueIdNumeric = config.getBoolean("Queues.Id parts.Numeric", true);
+        CoreConfiguration.queueIdWords = config.getBoolean("Queues.Id parts.Words", true);
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;
