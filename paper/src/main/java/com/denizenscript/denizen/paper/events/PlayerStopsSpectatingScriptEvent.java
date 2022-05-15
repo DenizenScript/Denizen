@@ -64,7 +64,7 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
-            return new EntityTag(event.getSpectatorTarget());
+            return new EntityTag(event.getSpectatorTarget()).getDenizenObject();
         }
         return super.getContext(name);
     }

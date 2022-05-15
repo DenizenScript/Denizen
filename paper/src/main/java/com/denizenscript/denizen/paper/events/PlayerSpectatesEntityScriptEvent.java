@@ -65,10 +65,10 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
-            return new EntityTag(event.getNewSpectatorTarget());
+            return new EntityTag(event.getNewSpectatorTarget()).getDenizenObject();
         }
         else if (name.equals("old_entity")) {
-            return new EntityTag(event.getCurrentSpectatorTarget());
+            return new EntityTag(event.getCurrentSpectatorTarget()).getDenizenObject();
         }
         return super.getContext(name);
     }

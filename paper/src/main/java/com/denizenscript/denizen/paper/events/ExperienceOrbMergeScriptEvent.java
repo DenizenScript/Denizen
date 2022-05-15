@@ -61,10 +61,10 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("target")) {
-            return new EntityTag(event.getMergeTarget());
+            return new EntityTag(event.getMergeTarget()).getDenizenObject();
         }
         else if (name.equals("source")) {
-            return new EntityTag(event.getMergeSource());
+            return new EntityTag(event.getMergeSource()).getDenizenObject();
         }
         return super.getContext(name);
     }

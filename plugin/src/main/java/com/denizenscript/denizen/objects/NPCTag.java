@@ -1213,11 +1213,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the entity being targeted by the NPC's current navigation (if any).
         // -->
-        tagProcessor.registerTag(EntityTag.class, "target_entity", (attribute, object) -> {
+        tagProcessor.registerTag(EntityFormObject.class, "target_entity", (attribute, object) -> {
             if (object.getNavigator().getEntityTarget() == null || object.getNavigator().getEntityTarget().getTarget() == null) {
                 return null;
             }
-            return new EntityTag(object.getNavigator().getEntityTarget().getTarget());
+            return new EntityTag(object.getNavigator().getEntityTarget().getTarget()).getDenizenObject();
         });
 
         // <--[tag]

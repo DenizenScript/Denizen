@@ -2,6 +2,7 @@ package com.denizenscript.denizen.paper.properties;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.objects.EntityFormObject;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -90,7 +91,7 @@ public class PaperEntityProperties implements Property {
         // If the entity is an experience orb, returns the entity that triggered it spawning (if any).
         // For example, if a player killed an entity this would return the player.
         // -->
-        PropertyParser.<PaperEntityProperties, EntityTag>registerTag(EntityTag.class, "xp_trigger", (attribute, entity) -> {
+        PropertyParser.<PaperEntityProperties, EntityFormObject>registerTag(EntityFormObject.class, "xp_trigger", (attribute, entity) -> {
             if (!(entity.entity.getBukkitEntity() instanceof ExperienceOrb)) {
                 attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
                 return null;
@@ -103,7 +104,7 @@ public class PaperEntityProperties implements Property {
             if (e == null) {
                 return null;
             }
-            return new EntityTag(e);
+            return new EntityTag(e).getDenizenObject();
         });
 
         // <--[tag]
@@ -115,7 +116,7 @@ public class PaperEntityProperties implements Property {
         // If the entity is an experience orb, returns the entity that it was created from (if any).
         // For example, if the xp orb was spawned from breeding this would return the baby.
         // -->
-        PropertyParser.<PaperEntityProperties, EntityTag>registerTag(EntityTag.class, "xp_source", (attribute, entity) -> {
+        PropertyParser.<PaperEntityProperties, EntityFormObject>registerTag(EntityFormObject.class, "xp_source", (attribute, entity) -> {
             if (!(entity.entity.getBukkitEntity() instanceof ExperienceOrb)) {
                 attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
                 return null;
@@ -128,7 +129,7 @@ public class PaperEntityProperties implements Property {
             if (e == null) {
                 return null;
             }
-            return new EntityTag(e);
+            return new EntityTag(e).getDenizenObject();
         });
 
         // <--[tag]

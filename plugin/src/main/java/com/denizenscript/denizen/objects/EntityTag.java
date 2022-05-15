@@ -1888,7 +1888,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.breed
         // @group attributes
         // @description
-        // Returns whether the animal entity is trying to with another of its kind.
+        // Returns whether the animal entity is trying to mate with another of its kind.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "breeding", (attribute, object) -> {
             if (!(object.getLivingEntity() instanceof Animals)) {

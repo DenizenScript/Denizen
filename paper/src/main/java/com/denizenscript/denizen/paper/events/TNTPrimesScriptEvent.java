@@ -66,7 +66,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity") && event.getPrimerEntity() != null) {
-            return new EntityTag(event.getPrimerEntity());
+            return new EntityTag(event.getPrimerEntity()).getDenizenObject();
         }
         else if (name.equals("location")) {
             return location;

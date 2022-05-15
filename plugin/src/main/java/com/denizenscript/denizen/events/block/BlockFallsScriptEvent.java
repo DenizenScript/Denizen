@@ -63,7 +63,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;
-            case "entity": return new EntityTag(event.getEntity());
+            case "entity": return new EntityTag(event.getEntity()).getDenizenObject();
             case "old_material": return material;
             case "new_material": return new MaterialTag(event.getBlockData());
         }

@@ -63,7 +63,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity") && event.getEntity() != null) {
-            return new EntityTag(event.getEntity());
+            return new EntityTag(event.getEntity()).getDenizenObject();
         }
         else if (name.equals("world")) {
             return new WorldTag(event.getWorld());

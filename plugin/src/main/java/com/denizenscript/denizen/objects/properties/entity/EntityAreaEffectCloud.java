@@ -275,7 +275,7 @@ public class EntityAreaEffectCloud implements Property {
         if (attribute.startsWith("source")) {
             ProjectileSource shooter = getHelper().getSource();
             if (shooter instanceof LivingEntity) {
-                return new EntityTag((LivingEntity) shooter)
+                return new EntityTag((LivingEntity) shooter).getDenizenObject()
                         .getObjectAttribute(attribute.fulfill(1));
             }
         }

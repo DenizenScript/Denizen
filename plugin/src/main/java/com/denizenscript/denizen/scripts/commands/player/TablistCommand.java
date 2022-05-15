@@ -57,7 +57,7 @@ public class TablistCommand extends AbstractCommand {
     // Using this tool to add entries that look like real players (but aren't) is forbidden.
     //
     // @Tags
-    // None.
+    // None
     //
     // @Usage
     // Use to add a new empty entry to the player's tab list to fill space.

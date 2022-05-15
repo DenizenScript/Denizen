@@ -299,6 +299,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether this enchantment can enchant the given ItemTag (based on material mainly).
+        // This is internally based on multiple factors, such as the enchantment's category and its own specific compatibility checks.
         // -->
         tagProcessor.registerTag(ElementTag.class, "can_enchant", (attribute, object) -> {
             if (!attribute.hasParam()) {

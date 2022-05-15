@@ -85,7 +85,7 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":
-                return new EntityTag(event.getEntity());
+                return new EntityTag(event.getEntity()).getDenizenObject();
             case "experience":
                 return new ElementTag(event.getExperience());
             case "show_effect":

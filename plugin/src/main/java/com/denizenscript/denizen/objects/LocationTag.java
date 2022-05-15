@@ -1918,7 +1918,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the entity this location is pointing at, using precise ray trace logic.
         // Optionally, specify a maximum range to find the entity from (defaults to 100).
         // -->
-        tagProcessor.registerTag(EntityTag.class, "precise_target", (attribute, object) -> {
+        tagProcessor.registerTag(EntityFormObject.class, "precise_target", (attribute, object) -> {
             double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 100;
@@ -1945,7 +1945,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 result = object.getWorld().rayTrace(object, object.getDirection(), range, FluidCollisionMode.NEVER, true, 0, null);
             }
             if (result != null && result.getHitEntity() != null) {
-                return new EntityTag(result.getHitEntity());
+                return new EntityTag(result.getHitEntity()).getDenizenObject();
             }
             return null;
         });

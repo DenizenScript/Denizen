@@ -88,7 +88,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
-    private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging", "fake"));
+    private static final HashSet<String> matchHelpList = new HashSet<>(Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging", "fake", "item"));
 
     @Override
     public boolean couldMatch(ScriptPath path) {

@@ -96,7 +96,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
                 return new DurationTag(event.getDuration());
             case "source":
                 if (event instanceof EntityCombustByEntityEvent) {
-                    return new EntityTag(((EntityCombustByEntityEvent) event).getCombuster());
+                    return new EntityTag(((EntityCombustByEntityEvent) event).getCombuster()).getDenizenObject();
                 }
                 else if (event instanceof EntityCombustByBlockEvent) {
                     Block combuster = ((EntityCombustByBlockEvent) event).getCombuster();
