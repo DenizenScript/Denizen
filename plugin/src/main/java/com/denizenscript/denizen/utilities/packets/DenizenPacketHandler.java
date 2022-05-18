@@ -43,9 +43,12 @@ public class DenizenPacketHandler {
     public boolean receivePacket(final Player player, final PacketInSteerVehicle steerVehicle, Runnable allow) {
         if (PlayerSteersEntityScriptEvent.instance.enabled) {
             Runnable process = () -> {
+                if (!player.isInsideVehicle()) {
+                    return;
+                }
                 PlayerSteersEntityScriptEvent event = PlayerSteersEntityScriptEvent.instance;
                 event.player = PlayerTag.mirrorBukkitPlayer(player);
-                event.entity = player.isInsideVehicle() ? new EntityTag(player.getVehicle()) : null;
+                event.entity = new EntityTag(player.getVehicle());
                 event.sideways = new ElementTag(steerVehicle.getLeftwardInput());
                 event.forward = new ElementTag(steerVehicle.getForwardInput());
                 event.jump = new ElementTag(steerVehicle.getJumpInput());

@@ -1144,7 +1144,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         if (mechanism.matches("spawn_location") && mechanism.requireObject(LocationTag.class)) {
             LocationTag loc = mechanism.valueAsType(LocationTag.class);
-            getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw());
         }
 
         // <--[mechanism]
