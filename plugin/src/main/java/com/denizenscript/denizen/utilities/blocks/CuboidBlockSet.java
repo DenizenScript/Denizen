@@ -134,6 +134,10 @@ public class CuboidBlockSet implements BlockSet {
 
     public ListTag entities = null;
 
+    public boolean isModifying = false;
+
+    public int readingProcesses = 0;
+
     public CuboidBlockSet duplicate() {
         CuboidBlockSet result = new CuboidBlockSet();
         result.blocks = blocks.clone();
@@ -398,20 +402,5 @@ public class CuboidBlockSet implements BlockSet {
 
     public FullBlockData blockAt(double X, double Y, double Z) {
         return blocks[(int) (Z + Y * z_height + X * z_height * y_length)];
-        // This calculation should produce the same result as the below nonsense:
-        /*
-        int index = 0;
-        for (int x = 0; x < x_width; x++) {
-            for (int y = 0; y < y_length; y++) {
-                for (int z = 0; z < z_height; z++) {
-                    if (x == X && y == Y && z == Z) {
-                        return blocks.get(index);
-                    }
-                    index++;
-                }
-            }
-        }
-        return null;
-        */
     }
 }

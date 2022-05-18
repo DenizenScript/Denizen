@@ -204,9 +204,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 }
             }
             finally {
+                if (delayed) {
+                    Bukkit.getScheduler().runTask(Denizen.instance, () -> schematic.isModifying = false);
+                }
                 if (callback != null) {
                     if (delayed) {
-                        Bukkit.getScheduler().runTask(Denizen.getInstance(), callback);
+                        Bukkit.getScheduler().runTask(Denizen.instance, callback);
                     }
                     else {
                         callback.run();
@@ -215,7 +218,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             }
         };
         if (delayed) {
-            Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), rotateRunnable);
+            schematic.isModifying = true;
+            Bukkit.getScheduler().runTaskAsynchronously(Denizen.instance, rotateRunnable);
         }
         else {
             rotateRunnable.run();
@@ -345,7 +349,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             scriptEntry.setFinished(true);
                         };
                         if (delayed) {
-                            Bukkit.getScheduler().runTask(Denizen.getInstance(), storeSchem);
+                            Bukkit.getScheduler().runTask(Denizen.instance, storeSchem);
                         }
                         else {
                             storeSchem.run();
@@ -357,7 +361,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                             Debug.echoError(scriptEntry, ex);
                         };
                         if (delayed) {
-                            Bukkit.getScheduler().runTask(Denizen.getInstance(), showError);
+                            Bukkit.getScheduler().runTask(Denizen.instance, showError);
                         }
                         else {
                             showError.run();
@@ -367,7 +371,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                 };
                 if (delayed) {
-                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), loadRunnable);
+                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.instance, loadRunnable);
                 }
                 else {
                     loadRunnable.run();
@@ -397,6 +401,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 final CuboidBlockSet schematic = schematics.get(name.asString().toUpperCase());
+                if (schematic.isModifying || schematic.readingProcesses > 0) {
+                    Debug.echoError("Cannot rotate schematic: schematic is currently processing another instruction.");
+                    return;
+                }
                 rotateSchem(schematic, angle.asInt(), delayed, () -> scriptEntry.setFinished(true));
                 break;
             }
@@ -406,7 +414,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
-                schematics.get(name.asString().toUpperCase()).flipX();
+                final CuboidBlockSet schematic = schematics.get(name.asString().toUpperCase());
+                if (schematic.isModifying || schematic.readingProcesses > 0) {
+                    Debug.echoError("Cannot flip schematic: schematic is currently processing another instruction.");
+                    return;
+                }
+                schematic.flipX();
                 scriptEntry.setFinished(true);
                 break;
             }
@@ -416,7 +429,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
-                schematics.get(name.asString().toUpperCase()).flipY();
+                final CuboidBlockSet schematic = schematics.get(name.asString().toUpperCase());
+                if (schematic.isModifying || schematic.readingProcesses > 0) {
+                    Debug.echoError("Cannot flip schematic: schematic is currently processing another instruction.");
+                    return;
+                }
+                schematic.flipY();
                 scriptEntry.setFinished(true);
                 break;
             }
@@ -426,7 +444,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
-                schematics.get(name.asString().toUpperCase()).flipZ();
+                final CuboidBlockSet schematic = schematics.get(name.asString().toUpperCase());
+                if (schematic.isModifying || schematic.readingProcesses > 0) {
+                    Debug.echoError("Cannot flip schematic: schematic is currently processing another instruction.");
+                    return;
+                }
+                schematic.flipZ();
                 scriptEntry.setFinished(true);
                 break;
             }
@@ -472,13 +495,25 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         }
                     }
                     set = schematics.get(name.asString().toUpperCase());
+                    if (set.isModifying) {
+                        Debug.echoError("Cannot paste schematic: schematic is currently processing another instruction.");
+                        return;
+                    }
                     Consumer<CuboidBlockSet> pasteRunnable = (schematic) -> {
                         if (delayed) {
+                            schematic.readingProcesses++;
                             schematic.setBlocksDelayed(() -> {
-                                if (copyEntities) {
-                                    schematic.pasteEntities(location);
+                                try {
+                                    if (copyEntities) {
+                                        schematic.pasteEntities(location);
+                                    }
                                 }
-                                scriptEntry.setFinished(true);
+                                finally {
+                                    Bukkit.getScheduler().runTask(Denizen.instance, () -> {
+                                        scriptEntry.setFinished(true);
+                                        schematic.readingProcesses--;
+                                    });
+                                }
                             }, input, maxDelayMs.asLong());
                         }
                         else {
@@ -511,6 +546,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 set = schematics.get(name.asString().toUpperCase());
+                if (set.isModifying) {
+                    Debug.echoError("Cannot save schematic: schematic is currently processing another instruction.");
+                    return;
+                }
                 String directory = URLDecoder.decode(System.getProperty("user.dir"));
                 String extension = ".schem";
                 File f = new File(directory + "/plugins/Denizen/schematics/" + fname + extension);
@@ -526,19 +565,21 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                         SpongeSchematicHelper.saveToSpongeStream(set, fs);
                         fs.flush();
                         fs.close();
-                        Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> scriptEntry.setFinished(true));
                     }
                     catch (Exception ex) {
-                        Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                        Bukkit.getScheduler().runTask(Denizen.instance, () -> {
                             Debug.echoError(scriptEntry, "Error saving schematic file " + fname + ".");
                             Debug.echoError(scriptEntry, ex);
                         });
-                        scriptEntry.setFinished(true);
-                        return;
                     }
+                    Bukkit.getScheduler().runTask(Denizen.instance, () -> {
+                        set.readingProcesses--;
+                        scriptEntry.setFinished(true);
+                    });
                 };
                 if (delayed) {
-                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.getInstance(), saveRunnable);
+                    set.readingProcesses++;
+                    Bukkit.getScheduler().runTaskAsynchronously(Denizen.instance, saveRunnable);
                 }
                 else {
                     scriptEntry.setFinished(true);
