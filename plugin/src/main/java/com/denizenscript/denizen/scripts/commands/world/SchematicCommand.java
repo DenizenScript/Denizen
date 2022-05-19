@@ -509,10 +509,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                                     }
                                 }
                                 finally {
-                                    Bukkit.getScheduler().runTask(Denizen.instance, () -> {
-                                        scriptEntry.setFinished(true);
-                                        schematic.readingProcesses--;
-                                    });
+                                    scriptEntry.setFinished(true);
+                                    schematic.readingProcesses--;
                                 }
                             }, input, maxDelayMs.asLong());
                         }
