@@ -35,13 +35,20 @@ public class FormattedTextHelper {
     // Thanks to Paper's implementation of component APIs where Spigot was too lazy to, Paper servers have advanced text formatting available in more areas.
     // -->
 
+    public static AsciiMatcher needsEscapeMatcher = new AsciiMatcher("&;[]");
 
     public static String escape(String input) {
-        return input.replace("&", "&amp").replace(";", "&sc").replace("[", "&lb").replace("]", "&rb").replace(String.valueOf(ChatColor.COLOR_CHAR), "&ss");
+        if (needsEscapeMatcher.containsAnyMatch(input)) {
+            input = input.replace("&", "&amp").replace(";", "&sc").replace("[", "&lb").replace("]", "&rb");
+        }
+        return input.replace(String.valueOf(ChatColor.COLOR_CHAR), "&ss");
     }
 
     public static String unescape(String input) {
-        return input.replace("&sc", ";").replace("&lb", "[").replace("&rb", "]").replace("&ss", String.valueOf(ChatColor.COLOR_CHAR)).replace("&amp", "&");
+        if (input.indexOf('&') != -1) {
+            return input.replace("&sc", ";").replace("&lb", "[").replace("&rb", "]").replace("&ss", String.valueOf(ChatColor.COLOR_CHAR)).replace("&amp", "&");
+        }
+        return input;
     }
 
     public static boolean hasRootFormat(BaseComponent component) {
@@ -407,7 +414,13 @@ public class FormattedTextHelper {
             if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.endsWith("]") && str.indexOf(']') == str.length() - 1) {
                 String translatable = str.substring("&[translate=".length(), str.length() - 1);
                 TranslatableComponent component = new TranslatableComponent();
-                component.setTranslate(unescape(translatable));
+                List<String> innardParts = CoreUtilities.split(translatable, ';');
+                component.setTranslate(unescape(innardParts.get(0)));
+                for (int i = 1; i < innardParts.size(); i++) {
+                    for (BaseComponent subComponent : parse(unescape(innardParts.get(i)), baseColor, false)) {
+                        component.addWith(subComponent);
+                    }
+                }
                 return new BaseComponent[] { component };
             }
         }
