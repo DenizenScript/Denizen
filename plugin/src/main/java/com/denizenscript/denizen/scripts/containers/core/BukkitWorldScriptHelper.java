@@ -106,7 +106,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
     @EventHandler
     public void chunkLoadEvent(ChunkLoadEvent event) {
-        if (CoreConfiguration.skipAllFlagCleanings) {
+        if (CoreConfiguration.skipAllFlagCleanings || Settings.skipChunkFlagCleaning) {
             return;
         }
         new DataPersistenceFlagTracker(event.getChunk()).doTotalClean();

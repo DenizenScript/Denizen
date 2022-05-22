@@ -779,6 +779,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     @Override
     public void adjust(Mechanism mechanism) {
 
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+
         // <--[mechanism]
         // @object ItemTag
         // @name material

@@ -729,6 +729,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     @Override
     public void adjust(Mechanism mechanism) {
 
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+
         // <--[mechanism]
         // @object PolygonTag
         // @name add_corner

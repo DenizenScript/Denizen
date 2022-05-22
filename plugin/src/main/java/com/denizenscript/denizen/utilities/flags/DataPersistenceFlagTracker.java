@@ -3,12 +3,14 @@ package com.denizenscript.denizen.utilities.flags;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.DataPersistenceHelper;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
@@ -60,10 +62,8 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
 
     public static NamespacedKey expireNeededKey = new NamespacedKey(Denizen.getInstance(), "expire_flag_check_needed");
 
+    @Override
     public void doTotalClean() {
-        if (CoreConfiguration.skipAllFlagCleanings) {
-            return;
-        }
         if (!holder.getPersistentDataContainer().has(expireNeededKey, PersistentDataType.STRING)) {
             return;
         }

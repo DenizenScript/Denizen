@@ -2500,6 +2500,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     @Override
     public void adjust(Mechanism mechanism) {
 
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+
         // <--[mechanism]
         // @object PlayerTag
         // @name noclip

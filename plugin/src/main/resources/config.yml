@@ -249,6 +249,8 @@ Saves:
     # When set to 'true', all automatic flag cleanups will be skipped.
     # This might save some processing time on servers that rarely use flag expirations, but otherwise should be left as 'false'.
     Skip flag cleaning: false
+    # When set to 'true', skips flag cleaning for ChunkTag and LocationTag flags.
+    Skip chunk flag cleaning: false
 
 Packets:
     # Whether to allow Denizen to intercept packets from and to player clients.

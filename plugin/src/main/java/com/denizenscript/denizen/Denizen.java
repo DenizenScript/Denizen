@@ -421,7 +421,7 @@ public class Denizen extends JavaPlugin {
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();
-                if (!CoreConfiguration.skipAllFlagCleanings) {
+                if (!CoreConfiguration.skipAllFlagCleanings && !Settings.skipChunkFlagCleaning) {
                     BukkitWorldScriptHelper.cleanAllWorldChunkFlags();
                 }
                 Bukkit.getPluginManager().registerEvents(new PlayerFlagHandler(), this);

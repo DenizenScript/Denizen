@@ -169,7 +169,7 @@ public class PlayerFlagHandler implements Listener {
             }
             playerFlagTrackerCache.put(id, cache);
             loadFlags(id, cache);
-            if (cache.tracker != null) {
+            if (cache.tracker != null && !CoreConfiguration.skipAllFlagCleanings) {
                 cache.tracker.doTotalClean();
             }
         }
@@ -239,7 +239,7 @@ public class PlayerFlagHandler implements Listener {
                         if (CoreConfiguration.debugVerbose) {
                             Debug.echoError("Verbose - flag tracker async loaded " + id);
                         }
-                        if (newCache.tracker != null) {
+                        if (newCache.tracker != null && !CoreConfiguration.skipAllFlagCleanings) {
                             newCache.tracker.doTotalClean();
                         }
                     });

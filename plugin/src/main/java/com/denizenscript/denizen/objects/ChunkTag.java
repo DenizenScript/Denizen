@@ -706,6 +706,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     @Override
     public void adjust(Mechanism mechanism) {
 
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+
         // <--[mechanism]
         // @object ChunkTag
         // @name inhabited_time

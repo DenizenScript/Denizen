@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.persistence.PersistenceLoader;
@@ -26,7 +27,9 @@ public class DenizenFlagsTrait extends Trait {
                 flag.canExpire = flag.string.startsWith("map@");
                 toRet.map.put(new StringHolder(key.name()), flag);
             }
-            toRet.doTotalClean();
+            if (!CoreConfiguration.skipAllFlagCleanings) {
+                toRet.doTotalClean();
+            }
             return toRet;
         }
 

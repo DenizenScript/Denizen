@@ -59,6 +59,7 @@ public class Settings {
             }
         }
         // Spigot
+        skipChunkFlagCleaning = config.getBoolean("Saves.Skip chunk flag cleaning", false);
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
         cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
@@ -119,6 +120,8 @@ public class Settings {
             CustomColorTagBase.defaultColorRaw = CustomColorTagBase.customColorsRaw.getOrDefault("default", CustomColorTagBase.defaultColorRaw);
         }
     }
+
+    public static boolean skipChunkFlagCleaning = false;
 
     public static boolean cache_overrideHelp, cache_useDefaultScriptPath,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,

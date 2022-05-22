@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject, FlaggableObject {
+public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject, FlaggableObject, Adjustable {
 
     // <--[ObjectType]
     // @name EllipsoidTag
@@ -603,6 +603,21 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     @Override
     public boolean doesContainLocation(Location loc) {
         return contains(loc);
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        if (NoteManager.isExactSavedObject(this)) {
+            mechanism.echoError("Cannot apply properties to noted objects.");
+            return;
+        }
+        adjust(mechanism);
+    }
+
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
     }
 
     @Override

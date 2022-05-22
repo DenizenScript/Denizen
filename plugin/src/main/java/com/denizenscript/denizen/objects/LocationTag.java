@@ -4216,6 +4216,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     @Override
     public void adjust(Mechanism mechanism) {
 
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+
         // <--[mechanism]
         // @object LocationTag
         // @name block_facing

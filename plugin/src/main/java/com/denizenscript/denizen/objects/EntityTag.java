@@ -494,8 +494,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
+        if (CoreConfiguration.skipAllFlagCleanings) {
+            return;
+        }
         if (cleanRateProtect + 60000 > DenizenCore.serverTimeMillis) {
-            ((DataPersistenceFlagTracker) tracker).doTotalClean();
+            tracker.doTotalClean();
             cleanRateProtect = DenizenCore.serverTimeMillis;
         }
     }
@@ -2980,6 +2983,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
 
         if (isGeneric()) {
             mechanisms.add(mechanism);
