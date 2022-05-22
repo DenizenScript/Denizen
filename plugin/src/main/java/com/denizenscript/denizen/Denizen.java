@@ -108,9 +108,9 @@ public class Denizen extends JavaPlugin {
             versionTag = this.getDescription().getVersion();
 
             CoreUtilities.noDebugContext = new BukkitTagContext(null, null, null, false, null);
+            CoreUtilities.noDebugContext.showErrors = () -> false;
             CoreUtilities.basicContext = new BukkitTagContext(null, null, null, true, null);
             CoreUtilities.errorButNoDebugContext = new BukkitTagContext(null, null, null, false, null);
-            CoreUtilities.errorButNoDebugContext.showErrors = true;
             // Load Denizen's core
             DenizenCore.init(coreImplementation);
         }

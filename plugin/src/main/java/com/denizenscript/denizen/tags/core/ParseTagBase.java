@@ -27,7 +27,7 @@ public class ParseTagBase {
                 Debug.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
-            ObjectTag read = TagManager.tagObject(event.getValue(), event.getContext());
+            ObjectTag read = TagManager.tagObject(event.getValue(), event.getAttributes().context);
             event.setReplacedObject(CoreUtilities.autoAttrib(read, event.getAttributes().fulfill(1)));
         }
     }
