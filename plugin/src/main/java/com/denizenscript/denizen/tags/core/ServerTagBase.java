@@ -2428,6 +2428,20 @@ public class ServerTagBase {
 
         // <--[mechanism]
         // @object server
+        // @name clean_flags
+        // @input None
+        // @description
+        // Cleans any expired flags from the object.
+        // Generally doesn't need to be called, using the 'skip flag cleanings' setting was enabled.
+        // This is an internal/special case mechanism, and should be avoided where possible.
+        // Does not function on all flaggable objects, particularly those that just store their flags into other objects.
+        // -->
+        if (mechanism.matches("clean_flags")) {
+            DenizenCore.serverFlagMap.doTotalClean();
+        }
+
+        // <--[mechanism]
+        // @object server
         // @name delete_file
         // @input ElementTag
         // @description

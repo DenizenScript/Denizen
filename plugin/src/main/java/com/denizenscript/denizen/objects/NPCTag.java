@@ -1374,13 +1374,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("hologram_lines") && mechanism.requireObject(ListTag.class)) {
             HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            if (npc.isSpawned()) {
-                hologram.onDespawn();
-            }
-            hologram.getLines().clear();
-            hologram.getLines().addAll(mechanism.valueAsType(ListTag.class));
-            if (npc.isSpawned()) {
-                hologram.onSpawn();
+            hologram.clear();
+            for (String line : mechanism.valueAsType(ListTag.class)) {
+                hologram.addLine(line);
             }
         }
 
