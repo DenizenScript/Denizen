@@ -18,6 +18,8 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.scheduling.OneTimeSchedulable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -27,14 +29,15 @@ public class FakeItemCommand extends AbstractCommand {
 
     public FakeItemCommand() {
         setName("fakeitem");
-        setSyntax("fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)");
+        setSyntax("fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (raw)");
         setRequiredArguments(2, 5);
         isProcedural = false;
+        setBooleansHandled("raw");
     }
 
     // <--[command]
     // @Name FakeItem
-    // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
+    // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (raw)
     // @Required 2
     // @Maximum 5
     // @Short Show a fake item in a player's inventory.
@@ -44,11 +47,18 @@ public class FakeItemCommand extends AbstractCommand {
     // This command allows you to display an item in an inventory that is not really there.
     //
     // To make it automatically disappear at a specific time, use the 'duration:' argument.
+    // Note that the reset can be unreliable, especially if the player changes their open inventory view. Consider using "- inventory update" after a delay instead.
     //
     // By default, it will use any inventory the player currently has open.
-    // To force it to use only the player's inventory, use the 'player_only' argument.
+    //
+    // Slots function as follows:
+    // Player inventory is slots 1-36, same as normal inventory slot indices.
+    // If the player has an open inventory, to apply the item to a slot in that inventory, add 36 to the slot index.
+    // If the player does not have an open inventory, slots 36-40 are equipment, 41 is offhand, 42 is recipe result, 43-46 are recipe.
     //
     // The slot argument can be any valid slot, see <@link language Slot Inputs>.
+    //
+    // Optionally specify 'raw' to indicate that the slow is a raw network slot ID.
     //
     // @Tags
     // None
@@ -84,10 +94,6 @@ public class FakeItemCommand extends AbstractCommand {
                     && arg.matchesPrefix("players")) {
                 scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
-            else if (!scriptEntry.hasObject("player_only")
-                    && arg.matches("player_only")) {
-                scriptEntry.addObject("player_only", new ElementTag(true));
-            }
             else {
                 arg.reportUnhandled();
             }
@@ -98,19 +104,19 @@ public class FakeItemCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("slot")) {
             throw new InvalidArgumentsException("Must specify a valid slot!");
         }
-        scriptEntry.defaultObject("duration", new DurationTag(0)).defaultObject("player_only", new ElementTag(false))
+        scriptEntry.defaultObject("duration", new DurationTag(0))
                 .defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
+        boolean raw = scriptEntry.argAsBoolean("raw");
         List<ItemTag> items = (List<ItemTag>) scriptEntry.getObject("item");
         final ElementTag elSlot = scriptEntry.getElement("slot");
         DurationTag duration = scriptEntry.getObjectTag("duration");
         final List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        final ElementTag player_only = scriptEntry.getElement("player_only");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("items", items), elSlot, duration, db("players", players), player_only);
+            Debug.report(scriptEntry, getName(), db("items", items), elSlot, duration, db("players", players), db("raw", raw));
         }
         if (players.size() == 0) {
             return;
@@ -120,65 +126,70 @@ public class FakeItemCommand extends AbstractCommand {
             Debug.echoError(scriptEntry, "The input '" + elSlot.asString() + "' is not a valid slot!");
             return;
         }
-        final boolean playerOnly = player_only.asBoolean();
         for (ItemTag item : items) {
             if (item == null) {
                 slot++;
                 continue;
             }
+            int slotSnapshot = slot;
             for (PlayerTag player : players) {
-                Player ent = player.getPlayerEntity();
-                NMSHandler.packetHelper.setSlot(ent, translateSlot(ent, slot, playerOnly), item.getItemStack(), playerOnly);
+                final Player ent = player.getPlayerEntity();
+                final int translated = raw ? slot : translateSlot(ent, slot);
+                final InventoryView view = ent.getOpenInventory();
+                final Inventory top = view.getTopInventory();
+                NMSHandler.packetHelper.setSlot(ent, translated, item.getItemStack(), false);
+                if (duration.getSeconds() > 0) {
+                    DenizenCore.schedule(new OneTimeSchedulable(() -> {
+                        if (!ent.isOnline()) {
+                            return;
+                        }
+                        if (top == view.getTopInventory()) {
+                            ItemStack original = view.getItem(translated);
+                            NMSHandler.packetHelper.setSlot(ent, translated, original, false);
+                        }
+                        else if (slotSnapshot < 36) {
+                            NMSHandler.packetHelper.setSlot(ent, translateSlot(ent, slotSnapshot), ent.getInventory().getItem(slotSnapshot), false);
+                        }
+                    }, (float) duration.getSeconds()));
+                }
             }
-            final int slotSnapshot = slot;
             slot++;
-            if (duration.getSeconds() > 0) {
-                DenizenCore.schedule(new OneTimeSchedulable(() -> {
-                    for (PlayerTag player : players) {
-                        Player ent = player.getPlayerEntity();
-                        int translated = translateSlot(ent, slotSnapshot, playerOnly);
-                        ItemStack original = ent.getOpenInventory().getItem(translated);
-                        NMSHandler.packetHelper.setSlot(ent, translated, original, playerOnly);
-                    }
-                }, (float) duration.getSeconds()));
-            }
         }
     }
 
-    static int translateSlot(Player player, int slot, boolean player_only) {
+    static int translateSlot(Player player, int slot) {
         // This translates Spigot slot standards to vanilla slots.
         // The slot order is different when a player is viewing an inventory vs not doing so, leading to this chaos.
-        int total;
-        if (player_only || player.getOpenInventory().getTopInventory() instanceof CraftingInventory) {
-            total = 46;
-        }
-        else {
-            total = 36 + player.getOpenInventory().getTopInventory().getSize();
-        }
-        int result;
-        if (total == 46) {
-            if (slot == 45) {
-                return slot;
+        int result, total;
+        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory && slot > 35) {
+            if (slot < 40) { // Armor equipment
+                return 8 - (slot - 36);
             }
-            else if (slot > 35) {
-                slot = 8 - (slot - 36);
-                return slot;
+            else if (slot == 40) { // Offhand
+                return 45;
             }
-            total -= 1;
-            result = (int) (slot + (total - 9) - (9 * (2 * Math.floor(slot / 9.0))));
+            else if (slot < 46) { // Recipe (Server slot IDs for this are effectively made up just to be linearly on the end)
+                return slot - 41;
+            }
         }
-        else {
+        total = 36 + player.getOpenInventory().getTopInventory().getSize();
+        int rowCount = (int) Math.ceil(total / 9.0);
+        if (slot < 9) { // First row on server is last row on client
             int row = (int) Math.floor(slot / 9.0);
-            int column = slot - (row * 9);
-            int rowCount = (int) Math.ceil(total / 9.0);
-            int realRow = rowCount - row - 1;
-            result = realRow * 9 + column;
+            int flippedRow = rowCount - row - 1;
+            result = flippedRow * 9 + slot;
+        }
+        else if (slot < 36) { // player inv insides on client come after the top inv
+            result = slot + (rowCount - 5) * 9;
+        }
+        else { // Top-inv slots are same server/client, but offset by the size of player inv
+            result = slot - 36;
         }
         if (result < 0) {
             return 0;
         }
         if (result > total) {
-            return total;
+            return total - 1;
         }
         return result;
     }
