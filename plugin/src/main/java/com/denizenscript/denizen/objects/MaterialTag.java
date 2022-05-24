@@ -92,8 +92,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         return null;
     }
 
-    public static TagContext noDebugContext = new BukkitTagContext(null, null, null, false, null);
-
     /**
      * Determine whether a string is a valid material.
      *
@@ -101,7 +99,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-        if (valueOf(arg, noDebugContext) != null) {
+        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
             return true;
         }
         return false;

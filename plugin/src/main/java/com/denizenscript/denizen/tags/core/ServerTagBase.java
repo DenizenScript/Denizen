@@ -469,7 +469,7 @@ public class ServerTagBase {
         // Returns whether the object is a valid object (non-null), as well as not an ElementTag.
         // -->
         if (attribute.startsWith("object_is_valid")) {
-            ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
+            ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getParam(), CoreUtilities.noDebugContext);
             event.setReplacedObject(new ElementTag(!(o == null || o instanceof ElementTag)).getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -2129,7 +2129,7 @@ public class ServerTagBase {
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasParam()) {
             BukkitImplDeprecations.isValidTag.warn(attribute.context);
-            EntityTag ent = EntityTag.valueOf(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
+            EntityTag ent = EntityTag.valueOf(attribute.getParam(), CoreUtilities.noDebugContext);
             event.setReplacedObject(new ElementTag((ent != null && ent.isUnique() && ent.isSpawnedOrValidForTag()) ? "true" : "false")
                     .getObjectAttribute(attribute.fulfill(1)));
         }
@@ -2142,7 +2142,7 @@ public class ServerTagBase {
         else if (attribute.startsWith("npc_is_valid")
                 && attribute.hasParam()) {
             BukkitImplDeprecations.isValidTag.warn(attribute.context);
-            NPCTag npc = NPCTag.valueOf(attribute.getParam(), new BukkitTagContext(null, null, null, false, null));
+            NPCTag npc = NPCTag.valueOf(attribute.getParam(), CoreUtilities.noDebugContext);
             event.setReplacedObject(new ElementTag((npc != null && npc.isValid()))
                     .getObjectAttribute(attribute.fulfill(1)));
         }

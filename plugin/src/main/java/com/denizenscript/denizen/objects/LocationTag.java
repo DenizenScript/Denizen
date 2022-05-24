@@ -307,7 +307,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (string.startsWith("l@")) {
             return true;
         }
-        return LocationTag.valueOf(string, new BukkitTagContext(null, null, null, false, null)) != null;
+        return LocationTag.valueOf(string, CoreUtilities.noDebugContext) != null;
     }
 
     @Override
