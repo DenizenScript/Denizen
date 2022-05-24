@@ -56,6 +56,8 @@ public class FakeItemCommand extends AbstractCommand {
     // If the player has an open inventory, to apply the item to a slot in that inventory, add 36 to the slot index.
     // If the player does not have an open inventory, slots 36-40 are equipment, 41 is offhand, 42 is recipe result, 43-46 are recipe.
     //
+    // For modifying equipment, consider <@link mechanism PlayerTag.fake_equipment> instead.
+    //
     // The slot argument can be any valid slot, see <@link language Slot Inputs>.
     //
     // Optionally specify 'raw' to indicate that the slow is a raw network slot ID.
@@ -160,7 +162,6 @@ public class FakeItemCommand extends AbstractCommand {
     static int translateSlot(Player player, int slot) {
         // This translates Spigot slot standards to vanilla slots.
         // The slot order is different when a player is viewing an inventory vs not doing so, leading to this chaos.
-        int result, total;
         if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory && slot > 35) {
             if (slot < 40) { // Armor equipment
                 return 8 - (slot - 36);
@@ -172,7 +173,8 @@ public class FakeItemCommand extends AbstractCommand {
                 return slot - 41;
             }
         }
-        total = 36 + player.getOpenInventory().getTopInventory().getSize();
+        int result;
+        int total = 36 + player.getOpenInventory().getTopInventory().getSize();
         int rowCount = (int) Math.ceil(total / 9.0);
         if (slot < 9) { // First row on server is last row on client
             int row = (int) Math.floor(slot / 9.0);

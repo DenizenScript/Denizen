@@ -23,7 +23,7 @@ public class ReflectionMappingsInfo {
 
     public static String ServerPlayer_respawnForced = "cS";
 
-    public static String EnderMan_DATA_CREEPY = "bU";
+    public static String EnderMan_DATA_CREEPY = "bV";
 
     public static String Zombie_inWaterTime = "cc";
 
