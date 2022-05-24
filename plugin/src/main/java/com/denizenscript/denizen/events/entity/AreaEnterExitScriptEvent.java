@@ -17,6 +17,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
@@ -314,6 +315,13 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         }
 
         @EventHandler
+        public void onTeleport(EntityTeleportEvent event) {
+            if (!onlyTrackPlayers) {
+                processNewPosition(new EntityTag(event.getEntity()), event.getTo(), event);
+            }
+        }
+
+        @EventHandler
         public void onWorldChange(PlayerChangedWorldEvent event) {
             processNewPosition(new EntityTag(event.getPlayer()), event.getPlayer().getLocation(), event);
         }
@@ -322,6 +330,9 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         public void onVehicleMove(VehicleMoveEvent event) {
             if (LocationTag.isSameBlock(event.getFrom(), event.getTo())) {
                 return;
+            }
+            if (!onlyTrackPlayers) {
+                processNewPosition(new EntityTag(event.getVehicle()), event.getTo(), event);
             }
             for (Entity entity : event.getVehicle().getPassengers()) {
                 if (!onlyTrackPlayers || EntityTag.isPlayer(entity)) {
