@@ -3,6 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizen.utilities.entity.Velocity;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -107,6 +108,11 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     // Use to shoot an arrow out of the player with a given speed.
     // - shoot arrow origin:<player> speed:2
     // -->
+
+    @Override
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        TabCompleteHelper.tabCompleteEntityTypes(tab);
+    }
 
     Map<UUID, EntityTag> arrows = new HashMap<>();
 
