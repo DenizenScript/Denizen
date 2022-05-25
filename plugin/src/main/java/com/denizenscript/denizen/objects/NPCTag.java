@@ -1069,6 +1069,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
+        // @attribute <NPCTag.use_new_finder>
+        // @returns ElementTag(Boolean)
+        // @mechanism NPCTag.use_new_finder
+        // @description
+        // If output is 'true', the NPC uses the 'new' Citizens A-Star pathfinder.
+        // if 'false', the NPC uses the 'old' minecraft vanilla mob pathfinder.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "use_new_finder", (attribute, object) -> {
+            return new ElementTag(object.getNavigator().getDefaultParameters().useNewPathfinder());
+        });
+
+        // <--[tag]
         // @attribute <NPCTag.is_navigating>
         // @returns ElementTag(Boolean)
         // @description
@@ -1755,6 +1767,20 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("path_distance_margin") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().pathDistanceMargin(mechanism.getValue().asDouble());
+        }
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name use_new_finder
+        // @input ElementTag(Boolean)
+        // @description
+        // If input is 'true', causes the NPC to use the 'new' Citizens A-Star pathfinder.
+        // if 'false', causes the NPC to use the 'old' minecraft vanilla mob pathfinder.
+        // @tags
+        // <NPCTag.use_new_finder>
+        // -->
+        if (mechanism.matches("use_new_finder") && mechanism.requireBoolean()) {
+            getNavigator().getDefaultParameters().useNewPathfinder(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
