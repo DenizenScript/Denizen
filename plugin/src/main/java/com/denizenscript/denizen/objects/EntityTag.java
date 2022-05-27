@@ -10,6 +10,7 @@ import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.*;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
@@ -97,6 +98,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // "animal" plaintext: matches for any animal type (pigs, cows, etc).
     // "mob" plaintext: matches for any mob type (creepers, pigs, etc).
     // "living" plaintext: matches for any living type (players, pigs, creepers, etc).
+    // "vanilla_tagged:<tag_name>": matches if the given vanilla tag applies to the entity. Allows advanced matchers, for example: "vanilla_tagged:axolotl_*".
     // "entity_flagged:<flag>": a Flag Matchable for EntityTag flags.
     // "player_flagged:<flag>": a Flag Matchable for PlayerTag flags (will never match non-players).
     // "npc_flagged:<flag>": a Flag Matchable for NPCTag flags (will never match non-NPCs).
@@ -1317,6 +1319,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "translated_name", (attribute, object) -> {
             String key = object.getEntityType().getBukkitEntityType().getKey().getKey();
             return new ElementTag(ChatColor.COLOR_CHAR + "[translate=entity.minecraft." + key + "]");
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.vanilla_tags>
+        // @returns ListTag
+        // @description
+        // Returns a list of vanilla tags that apply to this entity type. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "vanilla_tags", (attribute, object) -> {
+            HashSet<String> tags = VanillaTagHelper.tagsByEntity.get(object.getBukkitEntityType());
+            if (tags == null) {
+                return new ListTag();
+            }
+            return new ListTag(tags);
         });
 
         // <--[tag]
@@ -4102,6 +4118,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else if (text.startsWith("npc_flagged:")) {
                 return isCitizensNPC() && ScriptEvent.coreFlaggedCheck(text.substring("npc_flagged:".length()), getFlagTracker());
+            }
+            else if (text.startsWith("vanilla_tagged:")) {
+                String tagCheck = text.substring("vanilla_tagged:".length());
+                HashSet<String> tags = VanillaTagHelper.tagsByEntity.get(getBukkitEntityType());
+                if (tags == null) {
+                    return false;
+                }
+                ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(tagCheck);
+                for (String tag : tags) {
+                    if (matcher.doesMatch(tag)) {
+                        return true;
+                    }
+                }
+                return false;
             }
         }
         return false;

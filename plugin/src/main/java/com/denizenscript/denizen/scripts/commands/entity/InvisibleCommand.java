@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -29,12 +30,12 @@ public class InvisibleCommand extends AbstractCommand {
     // @Syntax invisible [<entity>] (state:true/false/toggle)
     // @Required 1
     // @Maximum 2
-    // @Short Makes an NPC or entity go invisible
+    // @Short Makes an NPC or entity go invisible.
     // @Group entity
     //
     // @Description
-    // For non-armor stand entities, applies a maximum duration invisibility potion.
-    // For armor stands, toggles them invisible.
+    // For living entities (other than armor_stand), applies a maximum duration invisibility potion.
+    // For armor_stands or item_frame, toggles them invisible.
     // Applies the 'invisible' trait to NPCs.
     //
     // NPCs can't be made invisible if not added to the playerlist.
@@ -92,6 +93,9 @@ public class InvisibleCommand extends AbstractCommand {
         if (entity.getBukkitEntity() instanceof ArmorStand) {
             ((ArmorStand) entity.getBukkitEntity()).setVisible(visible);
         }
+        else if (entity.getBukkitEntity() instanceof ItemFrame) {
+            ((ItemFrame) entity.getBukkitEntity()).setVisible(visible);
+        }
         else if (entity.isLivingEntity() && !entity.isFake) {
             if (visible) {
                 entity.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
@@ -141,6 +145,9 @@ public class InvisibleCommand extends AbstractCommand {
                 case TOGGLE:
                     if (target.getBukkitEntity() instanceof ArmorStand) {
                         setInvisible(target, !((ArmorStand) target.getBukkitEntity()).isVisible());
+                    }
+                    else if (target.getBukkitEntity() instanceof ItemFrame) {
+                        setInvisible(target, !((ItemFrame) target.getBukkitEntity()).isVisible());
                     }
                     else {
                         setInvisible(target, target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY));

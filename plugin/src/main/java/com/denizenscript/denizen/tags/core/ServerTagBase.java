@@ -2232,13 +2232,44 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.vanilla_tags>
+        // @attribute <server.vanilla_entity_tags>
         // @returns ListTag
         // @description
-        // Returns a list of vanilla tags (applicable to blocks, fluids, or items). See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of vanilla tags applicable to entity types. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
         // -->
-        else if (attribute.startsWith("vanilla_tags")) {
-            event.setReplacedObject(new ListTag(VanillaTagHelper.tagsByKey.keySet()).getObjectAttribute(attribute.fulfill(1)));
+        else if (attribute.startsWith("vanilla_entity_tags")) {
+            event.setReplacedObject(new ListTag(VanillaTagHelper.entityTagsByKey.keySet()).getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.vanilla_tagged_entities[<tag>]>
+        // @returns ListTag(EntityTag)
+        // @description
+        // Returns a list of materials referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // -->
+        else if (attribute.startsWith("vanilla_tagged_entities")) {
+            if (!attribute.hasParam()) {
+                return;
+            }
+            HashSet<EntityType> types = VanillaTagHelper.entityTagsByKey.get(CoreUtilities.toLowerCase(attribute.getParam()));
+            if (types == null) {
+                return;
+            }
+            ListTag list = new ListTag();
+            for (EntityType type : types) {
+                list.addObject(new EntityTag(type));
+            }
+            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.vanilla_material_tags>
+        // @returns ListTag
+        // @description
+        // Returns a list of vanilla tags applicable to blocks, fluids, or items. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // -->
+        else if (attribute.startsWith("vanilla_material_tags") || attribute.startsWith("vanilla_tags")) {
+            event.setReplacedObject(new ListTag(VanillaTagHelper.materialTagsByKey.keySet()).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -2251,7 +2282,7 @@ public class ServerTagBase {
             if (!attribute.hasParam()) {
                 return;
             }
-            HashSet<Material> materials = VanillaTagHelper.tagsByKey.get(CoreUtilities.toLowerCase(attribute.getParam()));
+            HashSet<Material> materials = VanillaTagHelper.materialTagsByKey.get(CoreUtilities.toLowerCase(attribute.getParam()));
             if (materials == null) {
                 return;
             }
