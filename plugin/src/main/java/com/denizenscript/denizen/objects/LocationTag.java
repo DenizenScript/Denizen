@@ -1301,6 +1301,22 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.is_passable>
+        // @returns ElementTag(Boolean)
+        // @group world
+        // @description
+        // Returns whether the block at this location is non-solid and can be walked through.
+        // Note that for example an open door is still solid, and thus will return false.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "is_passable", (attribute, object) -> {
+            Block block = object.getBlockForTag(attribute);
+            if (block == null) {
+                return null;
+            }
+            return new ElementTag(block.isPassable());
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.patterns>
         // @returns ListTag
         // @mechanism LocationTag.patterns
