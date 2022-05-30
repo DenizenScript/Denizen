@@ -229,7 +229,7 @@ public class InventoryScriptContainer extends ScriptContainer {
             if (containsScriptSection("procedural items")) {
                 List<ScriptEntry> entries = getEntries(context.getScriptEntryData(), "procedural items");
                 if (!entries.isEmpty()) {
-                    InstantQueue queue = new InstantQueue("INV_SCRIPT_ITEM_PROC");
+                    InstantQueue queue = new InstantQueue(getName());
                     queue.addEntries(entries);
                     if (contains("definitions", Map.class)) {
                         YamlConfiguration section = getConfigurationSection("definitions");

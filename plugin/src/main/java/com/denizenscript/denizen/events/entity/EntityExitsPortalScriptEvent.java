@@ -23,7 +23,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
     //
     // @Location true
     //
-    // @Triggers when an entity exits a portal.
+    // @Triggers when an entity exits a portal. This uses Spigot 'EntityPortalExitEvent' which seems to no longer be called on modern server versions.
     //
     // @Context
     // <context.entity> returns the EntityTag.
