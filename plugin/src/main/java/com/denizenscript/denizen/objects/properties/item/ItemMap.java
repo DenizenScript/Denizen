@@ -2,25 +2,24 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 
 import java.util.List;
 
 public class ItemMap implements Property {
 
-    public static Material MAP_MATERIAL = Material.FILLED_MAP;
-
     public static boolean describes(ObjectTag item) {
         return item instanceof ItemTag
-                && (((ItemTag) item).getBukkitMaterial() == MAP_MATERIAL);
+                && (((ItemTag) item).getBukkitMaterial() == Material.FILLED_MAP);
     }
 
     public static ItemMap getFrom(ObjectTag _item) {
@@ -32,12 +31,8 @@ public class ItemMap implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "map", "map_scale", "map_locked"
-    };
-
     public static final String[] handledMechs = new String[] {
-            "map", "full_render", "map_locked"
+            "map", "full_render", "map_locked", "map_center"
     };
 
     private ItemMap(ItemTag _item) {
@@ -46,12 +41,7 @@ public class ItemMap implements Property {
 
     ItemTag item;
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ItemTag.map>
@@ -61,12 +51,12 @@ public class ItemMap implements Property {
         // @description
         // Returns the ID number of the map item's map.
         // -->
-        if (attribute.startsWith("map")) {
-            if (!hasMapId()) {
+        PropertyParser.<ItemMap, ElementTag>registerTag(ElementTag.class, "map", (attribute, object) -> {
+            if (!object.hasMapId()) {
                 return null;
             }
-            return new ElementTag(getMapId()).getObjectAttribute(attribute.fulfill(1));
-        }
+            return new ElementTag(object.getMapId());
+        });
 
         // <--[tag]
         // @attribute <ItemTag.map_scale>
@@ -76,16 +66,16 @@ public class ItemMap implements Property {
         // @description
         // Returns the scale of the map, from 0 (smallest) to 4 (largest).
         // -->
-        if (attribute.startsWith("map_scale")) {
-            if (!hasMapId()) {
+        PropertyParser.<ItemMap, ElementTag>registerTag(ElementTag.class, "map_scale", (attribute, object) -> {
+            if (!object.hasMapId()) {
                 return null;
             }
-            MapMeta map = (MapMeta) item.getItemMeta();
+            MapMeta map = object.getMapMeta();
             if (!map.hasMapView()) {
                 return null;
             }
-            return new ElementTag(map.getMapView().getScale().getValue()).getObjectAttribute(attribute.fulfill(1));
-        }
+            return new ElementTag(map.getMapView().getScale().getValue());
+        });
 
         // <--[tag]
         // @attribute <ItemTag.map_locked>
@@ -95,45 +85,60 @@ public class ItemMap implements Property {
         // @description
         // Returns whether maps with the same ID as this map are locked.
         // -->
-        if (attribute.startsWith("map_locked")) {
-            if (!hasMapId()) {
+        PropertyParser.<ItemMap, ElementTag>registerTag(ElementTag.class, "map_locked", (attribute, object) -> {
+            if (!object.hasMapId()) {
                 return null;
             }
-            MapMeta map = (MapMeta) item.getItemMeta();
+            MapMeta map = object.getMapMeta();
             if (!map.hasMapView()) {
                 return null;
             }
-            return new ElementTag(map.getMapView().isLocked()).getObjectAttribute(attribute.fulfill(1));
-        }
+            return new ElementTag(map.getMapView().isLocked());
+        });
 
-        return null;
+        // <--[tag]
+        // @attribute <ItemTag.map_center>
+        // @returns LocationTag
+        // @group properties
+        // @mechanism ItemTag.map_center
+        // @description
+        // Returns the center location of the map.
+        // -->
+        PropertyParser.<ItemMap, LocationTag>registerTag(LocationTag.class, "map_center", (attribute, object) -> {
+            if (!object.hasMapId()) {
+                return null;
+            }
+            MapMeta map = object.getMapMeta();
+            if (!map.hasMapView()) {
+                return null;
+            }
+            MapView mapView = map.getMapView();
+            return new LocationTag(mapView.getWorld(), mapView.getCenterX(), 0, mapView.getCenterZ());
+        });
+    }
+
+    public MapMeta getMapMeta() {
+        return (MapMeta) item.getItemMeta();
     }
 
     public boolean hasMapId() {
-        MapMeta map = (MapMeta) item.getItemMeta();
-        return map.hasMapId();
+        return getMapMeta().hasMapId();
     }
 
     public int getMapId() {
-        MapMeta map = (MapMeta) item.getItemMeta();
-        if (!map.hasMapId()) {
-            return 0;
-        }
-        return map.getMapId();
+        MapMeta map = getMapMeta();
+        return map.hasMapId() ? map.getMapId() : 0;
     }
 
     public void setMapId(int id) {
-        MapMeta map = (MapMeta) item.getItemMeta();
+        MapMeta map = getMapMeta();
         map.setMapId(id);
         item.setItemMeta(map);
     }
 
     @Override
     public String getPropertyString() {
-        if (!hasMapId()) {
-            return null;
-        }
-        return String.valueOf(getMapId());
+        return hasMapId() ? String.valueOf(getMapId()) : null;
     }
 
     @Override
@@ -215,12 +220,36 @@ public class ItemMap implements Property {
         // <ItemTag.map_locked>
         // -->
         if (mechanism.matches("map_locked") && mechanism.requireBoolean()) {
-            MapMeta meta = ((MapMeta) item.getItemMeta());
+            MapMeta meta = getMapMeta();
             if (!meta.hasMapView()) {
-                Debug.echoError("Map is yet loaded/rendered.");
+                mechanism.echoError("Map is not loaded/rendered yet.");
                 return;
             }
             meta.getMapView().setLocked(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object ItemTag
+        // @name map_center
+        // @input LocationTag
+        // @description
+        // Sets the map's center location.
+        // @tags
+        // <ItemTag.map_center>
+        // -->
+        if (mechanism.matches("map_center") && mechanism.requireObject(LocationTag.class)) {
+            LocationTag loc = mechanism.valueAsType(LocationTag.class);
+            MapMeta meta = getMapMeta();
+            if (!meta.hasMapView()) {
+                mechanism.echoError("Map is not loaded/rendered yet.");
+                return;
+            }
+            MapView mapView = meta.getMapView();
+            mapView.setCenterX(loc.getBlockX());
+            mapView.setCenterZ(loc.getBlockZ());
+            if (loc.getWorld() != null) {
+                mapView.setWorld(loc.getWorld());
+            }
         }
     }
 }
