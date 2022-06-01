@@ -102,7 +102,8 @@ public class ItemMap implements Property {
         // @group properties
         // @mechanism ItemTag.map_center
         // @description
-        // Returns the center location of the map.
+        // Returns the center location on the map's display.
+        // Note that there is no Y value (it's always 0), only X, Z, and a World.
         // -->
         PropertyParser.<ItemMap, LocationTag>registerTag(LocationTag.class, "map_center", (attribute, object) -> {
             if (!object.hasMapId()) {
@@ -233,7 +234,7 @@ public class ItemMap implements Property {
         // @name map_center
         // @input LocationTag
         // @description
-        // Sets the center location of a map.
+        // Sets the map's center location (the location in the middle of the map's display).
         // @tags
         // <ItemTag.map_center>
         // -->
