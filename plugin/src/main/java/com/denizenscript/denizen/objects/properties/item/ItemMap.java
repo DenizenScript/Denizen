@@ -222,7 +222,7 @@ public class ItemMap implements Property {
         if (mechanism.matches("map_locked") && mechanism.requireBoolean()) {
             MapMeta meta = getMapMeta();
             if (!meta.hasMapView()) {
-                mechanism.echoError("Map is not loaded/rendered yet.");
+                mechanism.echoError("Map is not loaded/rendered.");
                 return;
             }
             meta.getMapView().setLocked(mechanism.getValue().asBoolean());
@@ -241,7 +241,7 @@ public class ItemMap implements Property {
             LocationTag loc = mechanism.valueAsType(LocationTag.class);
             MapMeta meta = getMapMeta();
             if (!meta.hasMapView()) {
-                mechanism.echoError("Map is not loaded/rendered yet.");
+                mechanism.echoError("Map is not loaded/rendered.");
                 return;
             }
             MapView mapView = meta.getMapView();
