@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -12,6 +13,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
@@ -610,6 +612,17 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void move(Entity entity, Vector vector) {
         ((CraftEntity) entity).getHandle().move(MoverType.SELF, new Vec3(vector.getX(), vector.getY(), vector.getZ()));
+    }
+
+    @Override
+    public void fakeMove(Entity entity, Vector vector) {
+        long x = ClientboundMoveEntityPacket.entityToPacket(vector.getX());
+        long y = ClientboundMoveEntityPacket.entityToPacket(vector.getY());
+        long z = ClientboundMoveEntityPacket.entityToPacket(vector.getZ());
+        ClientboundMoveEntityPacket packet = new ClientboundMoveEntityPacket.Pos(entity.getEntityId(), (short) x, (short) y, (short) z, entity.isOnGround());
+        for (Player player : getPlayersThatSee(entity)) {
+            PacketHelperImpl.send(player, packet);
+        }
     }
 
     @Override

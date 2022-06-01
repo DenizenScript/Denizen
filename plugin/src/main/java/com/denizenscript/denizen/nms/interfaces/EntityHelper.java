@@ -292,6 +292,10 @@ public abstract class EntityHelper {
 
     public abstract void move(Entity entity, Vector vector);
 
+    public void fakeMove(Entity entity, Vector vector) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void teleport(Entity entity, Location loc);
 
     public abstract BoundingBox getBoundingBox(Entity entity);

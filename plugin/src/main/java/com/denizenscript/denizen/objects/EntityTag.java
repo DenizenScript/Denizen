@@ -3464,6 +3464,18 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object EntityTag
+        // @name fake_move
+        // @input LocationTag
+        // @description
+        // Causes an entity to broadcast a fake movement packet in the direction of the velocity vector specified.
+        // The vector value must be in the range [-8,8] on each of X, Y, and Z.
+        // -->
+        if (mechanism.matches("fake_move") && mechanism.requireObject(LocationTag.class)) {
+            NMSHandler.entityHelper.fakeMove(getBukkitEntity(), mechanism.valueAsType(LocationTag.class).toVector());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
         // @name interact_with
         // @input LocationTag
         // @description
