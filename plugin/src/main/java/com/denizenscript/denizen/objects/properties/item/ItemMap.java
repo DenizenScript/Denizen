@@ -233,7 +233,7 @@ public class ItemMap implements Property {
         // @name map_center
         // @input LocationTag
         // @description
-        // Sets the map's center location.
+        // Sets the center location of a map.
         // @tags
         // <ItemTag.map_center>
         // -->
