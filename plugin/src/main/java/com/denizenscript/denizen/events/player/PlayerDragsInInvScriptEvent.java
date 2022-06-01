@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -30,6 +31,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // @Group Player
     //
     // @Switch in_area:<area> replaces the default 'in:<area>' for this event.
+    // @Switch drag_type:<type> to only run the event if the given drag type (SINGLE or EVEN) was used.
     //
     // @Location true
     //
@@ -43,6 +45,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // <context.clicked_inventory> returns the InventoryTag that was clicked in.
     // <context.slots> returns a ListTag of the slot numbers dragged through.
     // <context.raw_slots> returns a ListTag of the raw slot numbers dragged through.
+    // <context.drag_type> returns either SINGLE or EVEN depending on whether the player used their left or right mouse button.
     //
     // @Player Always.
     //
@@ -80,6 +83,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         if (!runInCheck(path, entity.getLocation(), "in_area")) {
             return false;
         }
+        if (!runGenericSwitchCheck(path, "drag_type", event.getType().name())) {
+            return false;
+        }
         return super.matches(path);
     }
 
@@ -115,6 +121,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             case "clicked_inventory":
                 return InventoryTag.mirrorBukkitInventory(event.getView()
                         .getInventory(event.getRawSlots().stream().findFirst().orElse(0)));
+            case "drag_type":
+                return new ElementTag(event.getType().name());
         }
         return super.getContext(name);
     }
