@@ -3393,6 +3393,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             if (LocationTag.matches(attribute.getParam())) {
                 LocationTag toLocation = attribute.paramAsType(LocationTag.class);
+                if (object.getWorldName() == null) {
+                    return new ElementTag(object.toVector().distanceSquared(toLocation.toVector()));
+                }
                 if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
                     if (!attribute.hasAlternative()) {
                         Debug.echoError("Can't measure distance between two different worlds!");
@@ -3471,16 +3474,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         return new ElementTag(Math.abs(object.getY() - toLocation.getY()));
                     }
                 }
-
                 if (object.getWorldName() == null) {
-                    if (toLocation.getWorldName() != null) {
-                        if (!attribute.hasAlternative()) {
-                            Debug.echoError("Can't measure distance between a non-world and a world!");
-                        }
-                        return null;
-                    }
+                    return new ElementTag(object.toVector().distance(toLocation.toVector()));
                 }
-                else if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
+                if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
                     if (!attribute.hasAlternative()) {
                         Debug.echoError("Can't measure distance between two different worlds!");
                     }
