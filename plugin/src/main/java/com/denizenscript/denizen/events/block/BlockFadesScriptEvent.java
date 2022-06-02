@@ -43,7 +43,6 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
         if (!runInCheck(path, location)) {
             return false;
         }
-
         if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }

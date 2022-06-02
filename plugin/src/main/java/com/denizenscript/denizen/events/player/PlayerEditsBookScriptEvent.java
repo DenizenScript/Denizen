@@ -25,11 +25,14 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     // player edits book
     // player signs book
     //
-    // @Regex ^on player (edits|signs) book$
-    //
     // @Group Player
     //
+    // @Cancellable true
+    //
+    // @Location true
+    //
     // @Triggers when a player edits or signs a book.
+    //
     // @Context
     // <context.title> returns the name of the book, if any.
     // <context.pages> returns the number of pages in the book.
@@ -44,19 +47,23 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     //
     // -->
 
-    PlayerEditsBookScriptEvent instance;
-    PlayerEditBookEvent event;
-    PlayerTag player;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player edits book") || path.eventLower.startsWith("player signs book");
+    public PlayerEditsBookScriptEvent() {
+        instance = this;
+        registerCouldMatcher("player edits book");
+        registerCouldMatcher("player signs book");
     }
+
+    public static PlayerEditsBookScriptEvent instance;
+    public PlayerEditBookEvent event;
+    public PlayerTag player;
 
     @Override
     public boolean matches(ScriptPath path) {
         String action = path.eventArgLowerAt(1);
         if (!(action.equals("edits") && !event.isSigning()) && !(action.equals("signs") && event.isSigning())) {
+            return false;
+        }
+        if (!runInCheck(path, player.getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -99,16 +106,14 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("signing")) {
-            return new ElementTag(event.isSigning());
-        }
-        if (name.equals("title")) {
-            return event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
-        }
-        else if (name.equals("book")) {
-            ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
-            book.setItemMeta(event.getNewBookMeta());
-            return new ItemTag(book);
+        switch (name) {
+            case "signing": return new ElementTag(event.isSigning());
+            case "title": return event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
+            case "pages": return new ElementTag(event.getNewBookMeta().getPageCount());
+            case "book":
+                ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
+                book.setItemMeta(event.getNewBookMeta());
+                return new ItemTag(book);
         }
         return super.getContext(name);
     }
