@@ -124,6 +124,10 @@ public abstract class EntityHelper {
         return newLocation;
     }
 
+    public boolean internalLook(Player player, Location at) {
+        return false;
+    }
+
     /**
      * Changes an entity's yaw and pitch to make it face a location.
      *
@@ -133,6 +137,11 @@ public abstract class EntityHelper {
     public void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) {
             return;
+        }
+        if (from instanceof Player) {
+            if (internalLook((Player) from, at)) {
+                return;
+            }
         }
         Location origin = from instanceof LivingEntity ? ((LivingEntity) from).getEyeLocation()
                 : new LocationTag(from.getLocation()).getBlockLocation().add(0.5, 0.5, 0.5);

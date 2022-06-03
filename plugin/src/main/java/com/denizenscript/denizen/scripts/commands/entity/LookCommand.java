@@ -148,12 +148,12 @@ public class LookCommand extends AbstractCommand {
                 }
             }
         }
-        if (duration != null && duration.getTicks() > 2) {
+        if (duration != null && duration.getTicks() > 1) {
             for (EntityTag entity : entities) {
                 BukkitRunnable task = new BukkitRunnable() {
                     long bounces = 0;
                     public void run() {
-                        bounces += 2;
+                        bounces++;
                         if (bounces > duration.getTicks()) {
                             this.cancel();
                             lookTasks.remove(entity.getUUID());
@@ -169,7 +169,7 @@ public class LookCommand extends AbstractCommand {
                         }
                     }
                 };
-                BukkitTask newTask = task.runTaskTimer(Denizen.getInstance(), 0, 2);
+                BukkitTask newTask = task.runTaskTimer(Denizen.getInstance(), 0, 1);
                 lookTasks.put(entity.getUUID(), newTask);
             }
         }

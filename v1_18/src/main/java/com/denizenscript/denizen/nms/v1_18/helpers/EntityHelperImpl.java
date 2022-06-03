@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -12,8 +11,10 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
@@ -612,6 +613,13 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void move(Entity entity, Vector vector) {
         ((CraftEntity) entity).getHandle().move(MoverType.SELF, new Vec3(vector.getX(), vector.getY(), vector.getZ()));
+    }
+
+    @Override
+    public boolean internalLook(Player player, Location at) {
+        ClientboundPlayerLookAtPacket packet = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.EYES, at.getX(), at.getY(), at.getZ());
+        PacketHelperImpl.send(player, packet);
+        return true;
     }
 
     @Override
