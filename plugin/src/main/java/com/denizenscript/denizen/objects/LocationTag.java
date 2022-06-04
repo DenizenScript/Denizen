@@ -2655,7 +2655,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             int index = 0;
             Location tstart = object.getBlockLocation();
             double tstartY = tstart.getY();
-            int radiusInt = (int) radius;
+            int radiusInt = (int) Math.ceil(radius);
             fullloop:
             for (int y = -radiusInt; y <= radiusInt; y++) {
                 double newY = y + tstartY;
@@ -2699,7 +2699,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             int index = 0;
             Location tstart = object.getBlockLocation();
             double tstartY = tstart.getY();
-            int radiusInt = (int) radius;
+            int radiusInt = (int) Math.ceil(radius);
             fullloop:
             for (int y = -radiusInt; y <= radiusInt; y++) {
                 double newY = y + tstartY;

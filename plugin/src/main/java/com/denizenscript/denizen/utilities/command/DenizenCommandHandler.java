@@ -274,7 +274,7 @@ public class DenizenCommandHandler {
             min = 1, max = 3, permission = "denizen.basic")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
         DenizenCore.saveAll();
-        Denizen.getInstance().saveSaves(true);
+        Denizen.getInstance().saveSaves(false);
         Messaging.send(sender, "Denizen save data saved to disk from memory.");
     }
 

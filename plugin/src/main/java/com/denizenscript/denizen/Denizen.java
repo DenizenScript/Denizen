@@ -487,7 +487,7 @@ public class Denizen extends JavaPlugin {
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
-        saveSaves(false);
+        saveSaves(true);
         worldFlags.shutdown();
     }
 
@@ -536,9 +536,9 @@ public class Denizen extends JavaPlugin {
 
     /**
      * Immediately saves all non-core save data.
-     * @param canSleep 'true' if the system should sleep and lock the thread until saves are complete. 'false' is saves can happen in the future.
+     * @param lockUntilDone 'true' if the system should sleep and lock the thread until saves are complete. 'false' is saves can happen in the future.
      */
-    public void saveSaves(boolean canSleep) {
+    public void saveSaves(boolean lockUntilDone) {
         // Save scoreboards to scoreboards.yml
         ScoreboardHelper._saveScoreboards();
         // Save maps to maps.yml
@@ -550,9 +550,9 @@ public class Denizen extends JavaPlugin {
         catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
-        PlayerFlagHandler.saveAllNow(canSleep);
+        PlayerFlagHandler.saveAllNow(lockUntilDone);
         worldFlags.saveAll();
-        RunLaterCommand.saveToFile(!canSleep);
+        RunLaterCommand.saveToFile(!lockUntilDone);
     }
 
     @Override

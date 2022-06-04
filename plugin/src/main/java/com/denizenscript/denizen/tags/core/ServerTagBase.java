@@ -2625,7 +2625,7 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("save")) {
             DenizenCore.saveAll();
-            Denizen.getInstance().saveSaves(true);
+            Denizen.getInstance().saveSaves(false);
         }
 
         // <--[mechanism]

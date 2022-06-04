@@ -254,11 +254,11 @@ public class PlayerFlagHandler implements Listener {
         }
     }
 
-    public static void saveAllNow(boolean canSleep) {
+    public static void saveAllNow(boolean lockUntilDone) {
         for (Map.Entry<UUID, CachedPlayerFlag> entry : playerFlagTrackerCache.entrySet()) {
             CachedPlayerFlag flags = entry.getValue();
             if (flags.tracker.modified) {
-                if (!canSleep && flags.savingNow.get() || flags.loadingNow.get()) {
+                if (!lockUntilDone && flags.savingNow.get() || flags.loadingNow.get()) {
                     continue;
                 }
                 while (flags.savingNow.get() || flags.loadingNow.get()) {
