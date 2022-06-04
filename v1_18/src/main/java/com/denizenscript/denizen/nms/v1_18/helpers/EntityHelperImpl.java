@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -628,6 +629,14 @@ public class EntityHelperImpl extends EntityHelper {
         long y = ClientboundMoveEntityPacket.entityToPacket(vector.getY());
         long z = ClientboundMoveEntityPacket.entityToPacket(vector.getZ());
         ClientboundMoveEntityPacket packet = new ClientboundMoveEntityPacket.Pos(entity.getEntityId(), (short) x, (short) y, (short) z, entity.isOnGround());
+        for (Player player : getPlayersThatSee(entity)) {
+            PacketHelperImpl.send(player, packet);
+        }
+    }
+
+    @Override
+    public void clientResetLoc(Entity entity) {
+        ClientboundTeleportEntityPacket packet = new ClientboundTeleportEntityPacket(((CraftEntity) entity).getHandle());
         for (Player player : getPlayersThatSee(entity)) {
             PacketHelperImpl.send(player, packet);
         }

@@ -3476,6 +3476,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object EntityTag
+        // @name reset_client_location
+        // @input None
+        // @description
+        // Causes an entity to broadcast a fake teleport packet to its own location, forcibly resetting its location for clients.
+        // -->
+        if (mechanism.matches("reset_client_location")) {
+            NMSHandler.entityHelper.clientResetLoc(getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
         // @name interact_with
         // @input LocationTag
         // @description

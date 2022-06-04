@@ -305,6 +305,10 @@ public abstract class EntityHelper {
         throw new UnsupportedOperationException();
     }
 
+    public void clientResetLoc(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void teleport(Entity entity, Location loc);
 
     public abstract BoundingBox getBoundingBox(Entity entity);
