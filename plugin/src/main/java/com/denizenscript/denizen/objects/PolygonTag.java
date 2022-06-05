@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -185,13 +186,13 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             return false;
         }
         PolygonTag poly2 = (PolygonTag) other;
-        if (poly2.corners.size() != corners.size()) {
-            return false;
-        }
         if ((noteName == null) != (poly2.noteName == null)) {
             return false;
         }
-        if (noteName != null && !noteName.equals(poly2.noteName)) {
+        if (noteName != null) {
+            return noteName.equals(poly2.noteName);
+        }
+        if (poly2.corners.size() != corners.size()) {
             return false;
         }
         if (!world.getName().equals(poly2.world.getName())) {
@@ -213,16 +214,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     @Override
     public String getNoteName() {
         return noteName;
-    }
-
-    public static List<PolygonTag> getNotedPolygonsContaining(Location location) {
-        List<PolygonTag> polygons = new ArrayList<>();
-        for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
-            if (polygon.doesContainLocation(location)) {
-                polygons.add(polygon);
-            }
-        }
-        return polygons;
     }
 
     @Override
@@ -426,10 +417,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         toNote.noteName = id;
         toNote.flagTracker = new SavableMapFlagTracker();
         NoteManager.saveAs(toNote, id);
+        NotedAreaTracker.add(toNote);
     }
 
     @Override
     public void forget() {
+        NotedAreaTracker.remove(this);
         NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
@@ -719,7 +712,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     }
 
     public void applyProperty(Mechanism mechanism) {
-        if (NoteManager.isExactSavedObject(this)) {
+        if (noteName != null) {
             mechanism.echoError("Cannot apply properties to noted objects.");
             return;
         }
@@ -741,10 +734,16 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // <PolygonTag.with_corner[<location>]>
         // -->
         if (mechanism.matches("add_corner") && mechanism.requireObject(LocationTag.class)) {
+            if (noteName != null) {
+                NotedAreaTracker.remove(this);
+            }
             LocationTag loc = mechanism.valueAsType(LocationTag.class);
             Corner newCorner = new Corner(loc.getX(), loc.getZ());
             corners.add(newCorner);
             recalculateToFit(newCorner);
+            if (noteName != null) {
+                NotedAreaTracker.add(this);
+            }
         }
     }
 

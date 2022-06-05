@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -190,17 +191,17 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     public String[] flagTracked = null;
     public MatchHelper[] matchers = null;
     public boolean onlyTrackPlayers = true;
-    public static HashMap<UUID, HashSet<String>> entitiesInArea = new HashMap<>();
+    public static HashMap<UUID, HashSet<AreaContainmentObject>> entitiesInArea = new HashMap<>();
 
     @Override
     public void cancellationChanged() {
         if (cancelled) {
-            HashSet<String> inAreas = entitiesInArea.get(currentEntity.getUUID());
+            HashSet<AreaContainmentObject> inAreas = entitiesInArea.get(currentEntity.getUUID());
             if (isEntering) {
-                inAreas.remove(CoreUtilities.toLowerCase(area.getNoteName()));
+                inAreas.remove(area);
             }
             else {
-                inAreas.add(CoreUtilities.toLowerCase(area.getNoteName()));
+                inAreas.add(area);
             }
         }
         super.cancellationChanged();
@@ -228,9 +229,9 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         return false;
     }
 
-    public void processSingle(AreaContainmentObject obj, EntityTag entity, HashSet<String> inAreas, Location pos, Event eventCause) {
+    public void processSingle(AreaContainmentObject obj, EntityTag entity, HashSet<AreaContainmentObject> inAreas, Location pos, Event eventCause) {
         boolean containedNow = pos != null && obj.doesContainLocation(pos);
-        boolean wasContained = inAreas != null && inAreas.contains(obj.getNoteName());
+        boolean wasContained = inAreas != null && inAreas.contains(obj);
         if (containedNow == wasContained) {
             return;
         }
@@ -239,10 +240,10 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             entitiesInArea.put(entity.getUUID(), inAreas);
         }
         if (containedNow) {
-            inAreas.add(obj.getNoteName());
+            inAreas.add(obj);
         }
         else {
-            inAreas.remove(obj.getNoteName());
+            inAreas.remove(obj);
         }
         currentEntity = entity;
         isEntering = containedNow;
@@ -251,26 +252,30 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         fire(eventCause);
     }
 
+    private final static List<AreaContainmentObject> reusableClearList = new ArrayList<>();
+
     public void processNewPosition(EntityTag entity, Location pos, Event eventCause) {
         if (onlyTrackPlayers && !entity.isPlayer()) {
             return;
         }
-        HashSet<String> inAreas = entitiesInArea.get(entity.getUUID());
+        HashSet<AreaContainmentObject> inAreas = entitiesInArea.get(entity.getUUID());
         if (doTrackAll || matchers != null || flagTracked != null) {
-            for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
-                if (anyMatch(cuboid.noteName, cuboid)) {
-                    processSingle(cuboid, entity, inAreas, pos, eventCause);
-                }
+            if (pos != null) {
+                NotedAreaTracker.forEachAreaThatContains(new LocationTag(pos), (a) -> {
+                    if (a instanceof FlaggableObject && anyMatch(a.getNoteName(), (FlaggableObject) a)) {
+                        processSingle(a, entity, inAreas, pos, eventCause);
+                    }
+                });
             }
-            for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
-                if (anyMatch(ellipsoid.noteName, ellipsoid)) {
-                    processSingle(ellipsoid, entity, inAreas, pos, eventCause);
+            if (inAreas != null) {
+                reusableClearList.addAll(inAreas);
+                for (AreaContainmentObject area : reusableClearList) {
+                    if (area.getNoteName() == null) {
+                        inAreas.remove(area);
+                    }
+                    processSingle(area, entity, inAreas, pos, eventCause);
                 }
-            }
-            for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
-                if (anyMatch(polygon.noteName, polygon)) {
-                    processSingle(polygon, entity, inAreas, pos, eventCause);
-                }
+                reusableClearList.clear();
             }
         }
         else {

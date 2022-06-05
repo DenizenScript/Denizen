@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -81,16 +82,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             cuboid.pairs.add(new LocationPair(pair.low.clone(), pair.high.clone()));
         }
         return cuboid;
-    }
-
-    public static List<CuboidTag> getNotableCuboidsContaining(Location location) {
-        List<CuboidTag> cuboids = new ArrayList<>();
-        for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
-            if (cuboid.isInsideCuboid(location)) {
-                cuboids.add(cuboid);
-            }
-        }
-        return cuboids;
     }
 
     @Deprecated
@@ -229,8 +220,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if ((noteName == null) != (cuboid2.noteName == null)) {
             return false;
         }
-        if (noteName != null && !noteName.equals(cuboid2.noteName)) {
-            return false;
+        if (noteName != null) {
+            return noteName.equals(cuboid2.noteName);
         }
         for (int i = 0; i < pairs.size(); i++) {
             LocationPair pair1 = pairs.get(i);
@@ -606,10 +597,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         toNote.noteName = id;
         toNote.flagTracker = new SavableMapFlagTracker();
         NoteManager.saveAs(toNote, id);
+        NotedAreaTracker.add(toNote);
     }
 
     @Override
     public void forget() {
+        NotedAreaTracker.remove(this);
         NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
@@ -1474,7 +1467,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     }
 
     public void applyProperty(Mechanism mechanism) {
-        if (NoteManager.isExactSavedObject(this)) {
+        if (noteName != null) {
             mechanism.echoError("Cannot apply properties to noted objects.");
             return;
         }
@@ -1499,6 +1492,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <CuboidTag.set[<cuboid>].at[<#>]>
         // -->
         if (mechanism.matches("set_member")) {
+            if (noteName != null) {
+                NotedAreaTracker.remove(this);
+            }
             String value = mechanism.getValue().asString();
             int comma = value.indexOf(',');
             int member = 1;
@@ -1515,6 +1511,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
             LocationPair pair = subCuboid.pairs.get(0);
             pairs.set(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
+            if (noteName != null) {
+                NotedAreaTracker.add(this);
+            }
         }
 
         // <--[mechanism]
@@ -1531,6 +1530,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <CuboidTag.add_member[<cuboid>].at[<#>]>
         // -->
         if (mechanism.matches("add_member")) {
+            if (noteName != null) {
+                NotedAreaTracker.remove(this);
+            }
             String value = mechanism.getValue().asString();
             int comma = value.indexOf(',');
             int member = pairs.size() + 1;
@@ -1547,6 +1549,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
             LocationPair pair = subCuboid.pairs.get(0);
             pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
+            if (noteName != null) {
+                NotedAreaTracker.add(this);
+            }
         }
 
         // <--[mechanism]
@@ -1559,6 +1564,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <CuboidTag.remove_member[<#>]>
         // -->
         if (mechanism.matches("remove_member") && mechanism.requireInteger()) {
+            if (noteName != null) {
+                NotedAreaTracker.remove(this);
+            }
             int member = mechanism.getValue().asInt();
             if (member < 1) {
                 member = 1;
@@ -1567,6 +1575,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 member = pairs.size();
             }
             pairs.remove(member - 1);
+            if (noteName != null) {
+                NotedAreaTracker.add(this);
+            }
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

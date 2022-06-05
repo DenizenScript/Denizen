@@ -4,22 +4,19 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -31,7 +28,6 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.SimplexNoise;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -3580,6 +3576,21 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.areas>
+        // @returns ListTag(AreaObject)
+        // @group areas
+        // @description
+        // Returns a ListTag of all noted areas that include this location.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "areas", (attribute, object) -> {
+            ListTag list = new ListTag();
+            NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
+                list.addObject(area);
+            });
+            return list;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.cuboids>
         // @returns ListTag(CuboidTag)
         // @group areas
@@ -3587,12 +3598,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a ListTag of all noted CuboidTags that include this location.
         // -->
         tagProcessor.registerTag(ListTag.class, "cuboids", (attribute, object) -> {
-            List<CuboidTag> cuboids = CuboidTag.getNotableCuboidsContaining(object);
-            ListTag cuboid_list = new ListTag();
-            for (CuboidTag cuboid : cuboids) {
-                cuboid_list.addObject(cuboid);
-            }
-            return cuboid_list;
+            ListTag list = new ListTag();
+            NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
+                if (area instanceof CuboidTag) {
+                    list.addObject(area);
+                }
+            });
+            return list;
         });
 
         // <--[tag]
@@ -3603,12 +3615,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a ListTag of all noted EllipsoidTags that include this location.
         // -->
         tagProcessor.registerTag(ListTag.class, "ellipsoids", (attribute, object) -> {
-            List<EllipsoidTag> ellipsoids = EllipsoidTag.getNotableEllipsoidsContaining(object);
-            ListTag ellipsoid_list = new ListTag();
-            for (EllipsoidTag ellipsoid : ellipsoids) {
-                ellipsoid_list.addObject(ellipsoid);
-            }
-            return ellipsoid_list;
+            ListTag list = new ListTag();
+            NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
+                if (area instanceof EllipsoidTag) {
+                    list.addObject(area);
+                }
+            });
+            return list;
         });
 
         // <--[tag]
@@ -3619,12 +3632,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a ListTag of all noted PolygonTags that include this location.
         // -->
         tagProcessor.registerTag(ListTag.class, "polygons", (attribute, object) -> {
-            List<PolygonTag> polygons = PolygonTag.getNotedPolygonsContaining(object);
-            ListTag polygon_list = new ListTag();
-            for (PolygonTag polygon : polygons) {
-                polygon_list.addObject(polygon);
-            }
-            return polygon_list;
+            ListTag list = new ListTag();
+            NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
+                if (area instanceof PolygonTag) {
+                    list.addObject(area);
+                }
+            });
+            return list;
         });
 
         // <--[tag]

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -52,17 +53,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     // Refer to <@link objecttype areaobject>'s matchable list.
     //
     // -->
-
-    public static List<EllipsoidTag> getNotableEllipsoidsContaining(Location location) {
-        List<EllipsoidTag> ellipsoids = new ArrayList<>();
-        for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
-            if (ellipsoid.contains(location)) {
-                ellipsoids.add(ellipsoid);
-            }
-        }
-
-        return ellipsoids;
-    }
 
     //////////////////
     //    OBJECT FETCHER
@@ -289,10 +279,12 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         toNote.noteName = id;
         toNote.flagTracker = new SavableMapFlagTracker();
         NoteManager.saveAs(toNote, id);
+        NotedAreaTracker.add(toNote);
     }
 
     @Override
     public void forget() {
+        NotedAreaTracker.remove(this);
         NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
@@ -314,8 +306,8 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if ((noteName == null) != (ellipsoid2.noteName == null)) {
             return false;
         }
-        if (noteName != null && !noteName.equals(ellipsoid2.noteName)) {
-            return false;
+        if (noteName != null) {
+            return noteName.equals(ellipsoid2.noteName);
         }
         if (!center.getWorldName().equals(ellipsoid2.center.getWorldName())) {
             return false;
@@ -606,7 +598,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public void applyProperty(Mechanism mechanism) {
-        if (NoteManager.isExactSavedObject(this)) {
+        if (noteName != null) {
             mechanism.echoError("Cannot apply properties to noted objects.");
             return;
         }

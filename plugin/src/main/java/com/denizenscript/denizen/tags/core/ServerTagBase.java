@@ -5,9 +5,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
-import com.denizenscript.denizen.utilities.ScoreboardHelper;
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.VanillaTagHelper;
+import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.Deprecations;
@@ -17,12 +15,10 @@ import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.events.core.TickScriptEvent;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -33,7 +29,7 @@ import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.command.CommandContext;
@@ -75,6 +71,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ServerTagBase {
 
@@ -2416,6 +2413,35 @@ public class ServerTagBase {
             String trace = com.denizenscript.denizen.utilities.debugging.Debug.getFullExceptionMessage(new RuntimeException("TRACE"), false);
             event.setReplacedObject(new ElementTag(trace).getObjectAttribute(attribute.fulfill(1)));
         }
+
+        // <--[tag]
+        // @attribute <server.area_notes_debug>
+        // @returns MapTag
+        // @description
+        // Generates a report about noted area tracking.
+        // This tag is strictly for internal debugging reasons.
+        // -->
+        else if (attribute.startsWith("area_notes_debug")) {
+            MapTag worlds = new MapTag();
+            for (Map.Entry<String, NotedAreaTracker.PerWorldSet> set : NotedAreaTracker.worlds.entrySet()) {
+                MapTag worldData = new MapTag();
+                worldData.putObject("global", new ListTag(set.getValue().globalSet.list.stream().map(t -> t.area).collect(Collectors.toList())));
+                worldData.putObject("x50", areaNotesDebugStreamHack(set.getValue().sets50));
+                worldData.putObject("x50_offset", areaNotesDebugStreamHack(set.getValue().sets50_offset));
+                worldData.putObject("x200", areaNotesDebugStreamHack(set.getValue().sets200));
+                worldData.putObject("x200_offset", areaNotesDebugStreamHack(set.getValue().sets200_offset));
+                worlds.putObject(set.getKey(), worldData);
+            }
+            event.setReplacedObject(worlds.getObjectAttribute(attribute.fulfill(1)));
+        }
+    }
+
+    private static MapTag areaNotesDebugStreamHack(Int2ObjectOpenHashMap<NotedAreaTracker.AreaSet> set) {
+        MapTag out = new MapTag();
+        for (Map.Entry<Integer, NotedAreaTracker.AreaSet> pair : set.entrySet()) {
+            out.putObject(String.valueOf(pair.getKey()), new ListTag(pair.getValue().list.stream().map(t -> t.area).collect(Collectors.toList())));
+        }
+        return out;
     }
 
     public static void listDeprecateWarn(Attribute attribute) {

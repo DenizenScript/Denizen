@@ -7,8 +7,10 @@ import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -600,6 +602,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return runFlaggedCheck(path, switchName, location == null ? null : new LocationTag(location).getFlagTracker());
     }
 
+    public static class BoolHolder {
+        public boolean bool;
+    }
+
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
         if (!runLocationFlaggedCheck(path, "location_flagged", location)) {
             return false;
@@ -624,10 +630,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (inputText.equals("notable") || inputText.equals("noted")) {
                 String subit = path.eventArgLowerAt(index + 2);
                 if (subit.equals("cuboid")) {
-                    return CuboidTag.getNotableCuboidsContaining(location).size() > 0;
+                    BoolHolder bool = new BoolHolder();
+                    NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> { if (a instanceof CuboidTag) { bool.bool = true; } });
+                    return bool.bool;
                 }
                 else if (subit.equals("ellipsoid")) {
-                    return EllipsoidTag.getNotableEllipsoidsContaining(location).size() > 0;
+                    BoolHolder bool = new BoolHolder();
+                    NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> { if (a instanceof EllipsoidTag) { bool.bool = true; } });
+                    return bool.bool;
                 }
                 else {
                     Debug.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
@@ -655,22 +665,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             else if (lower.startsWith("area_flagged:")) {
                 String flagName = inputText.substring("area_flagged:".length());
-                for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
-                    if (cuboid.isInsideCuboid(location) && coreFlaggedCheck(flagName, cuboid.flagTracker)) {
-                        return true;
+                BoolHolder bool = new BoolHolder();
+                NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> {
+                    if (a instanceof FlaggableObject && coreFlaggedCheck(flagName, ((FlaggableObject) a).getFlagTracker())) {
+                        bool.bool = true;
                     }
-                }
-                for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
-                    if (ellipsoid.contains(location) && coreFlaggedCheck(flagName, ellipsoid.flagTracker)) {
-                        return true;
-                    }
-                }
-                for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
-                    if (polygon.doesContainLocation(location) && coreFlaggedCheck(flagName, polygon.flagTracker)) {
-                        return true;
-                    }
-                }
-                return false;
+                });
+                return bool.bool;
             }
             else if (lower.startsWith("biome:")) {
                 String biome = inputText.substring("biome:".length());
@@ -678,28 +679,19 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         if (lower.equals("cuboid")) {
-            for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
-                if (cuboid.isInsideCuboid(location)) {
-                    return true;
-                }
-            }
-            return false;
+            BoolHolder bool = new BoolHolder();
+            NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> { if (a instanceof CuboidTag) { bool.bool = true; } });
+            return bool.bool;
         }
         else if (lower.equals("ellipsoid")) {
-            for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
-                if (ellipsoid.contains(location)) {
-                    return true;
-                }
-            }
-            return false;
+            BoolHolder bool = new BoolHolder();
+            NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> { if (a instanceof EllipsoidTag) { bool.bool = true; } });
+            return bool.bool;
         }
         else if (lower.equals("polygon")) {
-            for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
-                if (polygon.doesContainLocation(location)) {
-                    return true;
-                }
-            }
-            return false;
+            BoolHolder bool = new BoolHolder();
+            NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> { if (a instanceof PolygonTag) { bool.bool = true; } });
+            return bool.bool;
         }
         else if (WorldTag.matches(inputText)) {
             return CoreUtilities.equalsIgnoreCase(location.getWorld().getName(), lower);
@@ -736,20 +728,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         else if (isAdvancedMatchable(lower)) {
             MatchHelper matcher = createMatcher(lower);
-            for (CuboidTag cuboid : NoteManager.getAllType(CuboidTag.class)) {
-                if (cuboid.isInsideCuboid(location) && matcher.doesMatch(cuboid.noteName)) {
-                    return true;
-                }
-            }
-            for (EllipsoidTag ellipsoid : NoteManager.getAllType(EllipsoidTag.class)) {
-                if (ellipsoid.contains(location) && matcher.doesMatch(ellipsoid.noteName)) {
-                    return true;
-                }
-            }
-            for (PolygonTag polygon : NoteManager.getAllType(PolygonTag.class)) {
-                if (polygon.doesContainLocation(location) && matcher.doesMatch(polygon.noteName)) {
-                    return true;
-                }
+            BoolHolder bool = new BoolHolder();
+            NotedAreaTracker.forEachAreaThatContains(new LocationTag(location), (a) -> { if (matcher.doesMatch(a.getNoteName())) { bool.bool = true; } });
+            if (bool.bool) {
+                return true;
             }
             if (matcher.doesMatch(CoreUtilities.toLowerCase(location.getWorld().getName()))) {
                 return true;
