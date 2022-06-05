@@ -323,6 +323,10 @@ public abstract class EntityHelper {
         throw new UnsupportedOperationException();
     }
 
+    public void sendAllUpdatePackets(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
     public void setTicksLived(Entity entity, int ticks) {
         entity.setTicksLived(ticks);
     }

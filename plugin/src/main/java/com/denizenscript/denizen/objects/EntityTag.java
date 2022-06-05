@@ -3498,6 +3498,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object EntityTag
+        // @name send_update_packets
+        // @input None
+        // @description
+        // Causes an entity to broadcast any pending entity update packets to all players that can see it.
+        // -->
+        if (mechanism.matches("send_update_packets")) {
+            NMSHandler.entityHelper.sendAllUpdatePackets(getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
         // @name interact_with
         // @input LocationTag
         // @description

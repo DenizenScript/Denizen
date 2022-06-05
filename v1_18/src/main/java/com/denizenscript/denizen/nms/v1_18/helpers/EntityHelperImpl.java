@@ -454,6 +454,23 @@ public class EntityHelperImpl extends EntityHelper {
         return output;
     }
 
+    @Override
+    public void sendAllUpdatePackets(Entity entity) {
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
+        ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
+        ArrayList<Player> output = new ArrayList<>();
+        if (entityTracker == null) {
+            return;
+        }
+        try {
+            ServerEntity serverEntity = (ServerEntity) PacketHelperImpl.ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
+            serverEntity.sendChanges();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
     /*
         Hide Entity
      */
