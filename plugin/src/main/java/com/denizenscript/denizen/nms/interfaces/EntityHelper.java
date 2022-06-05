@@ -305,6 +305,10 @@ public abstract class EntityHelper {
         throw new UnsupportedOperationException();
     }
 
+    public void fakeTeleport(Entity entity, Location location) {
+        throw new UnsupportedOperationException();
+    }
+
     public void clientResetLoc(Entity entity) {
         throw new UnsupportedOperationException();
     }

@@ -11,14 +11,17 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import io.netty.buffer.Unpooled;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
@@ -629,6 +632,23 @@ public class EntityHelperImpl extends EntityHelper {
         long y = ClientboundMoveEntityPacket.entityToPacket(vector.getY());
         long z = ClientboundMoveEntityPacket.entityToPacket(vector.getZ());
         ClientboundMoveEntityPacket packet = new ClientboundMoveEntityPacket.Pos(entity.getEntityId(), (short) x, (short) y, (short) z, entity.isOnGround());
+        for (Player player : getPlayersThatSee(entity)) {
+            PacketHelperImpl.send(player, packet);
+        }
+    }
+
+    @Override
+    public void fakeTeleport(Entity entity, Location location) {
+        FriendlyByteBuf packetData = new FriendlyByteBuf(Unpooled.buffer());
+        // Referenced from ClientboundTeleportEntityPacket source
+        packetData.writeVarInt(entity.getEntityId());
+        packetData.writeDouble(location.getX());
+        packetData.writeDouble(location.getY());
+        packetData.writeDouble(location.getZ());
+        packetData.writeByte((byte)((int)(location.getYaw() * 256.0F / 360.0F)));
+        packetData.writeByte((byte)((int)(location.getPitch() * 256.0F / 360.0F)));
+        packetData.writeBoolean(entity.isOnGround());
+        ClientboundTeleportEntityPacket packet = new ClientboundTeleportEntityPacket(packetData);
         for (Player player : getPlayersThatSee(entity)) {
             PacketHelperImpl.send(player, packet);
         }
