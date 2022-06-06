@@ -97,7 +97,7 @@ public class Conversion {
             }
         }
         ListTag asList = ListTag.getListFor(arg.object, context);
-        if (asList.containsObjectsFrom(ItemTag.class)) {
+        if (asList.containsObjectsFrom(ItemTag.class) || asList.isEmpty()) {
             List<ItemTag> list = asList.filter(ItemTag.class, context);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             InventoryTag inventory = new InventoryTag(Math.min(InventoryTag.maxSlots, (items.length / 9) * 9 + 9));
