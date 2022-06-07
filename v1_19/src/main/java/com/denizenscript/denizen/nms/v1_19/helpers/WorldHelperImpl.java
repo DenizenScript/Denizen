@@ -38,7 +38,7 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public Location getNearestBiomeLocation(Location start, BiomeTag biome) {
         Pair<BlockPos, Holder<Biome>> result = ((CraftWorld) start.getWorld()).getHandle()
-                .findNearestBiome(b -> b.is(((BiomeNMSImpl) biome.getBiome()).biomeBase.unwrapKey().get()), new BlockPos(start.getBlockX(), start.getBlockY(), start.getBlockZ()), 6400, 8);
+                .findClosestBiome3d(b -> b.is(((BiomeNMSImpl) biome.getBiome()).biomeBase.unwrapKey().get()), new BlockPos(start.getBlockX(), start.getBlockY(), start.getBlockZ()), 6400, 32, 64);
         if (result == null || result.getFirst() == null) {
             return null;
         }

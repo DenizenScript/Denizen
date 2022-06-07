@@ -412,7 +412,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         if (texture != null) {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }
-        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, GameType.byName(CoreUtilities.toLowerCase(gameMode.name())), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE))));
+        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, GameType.byName(CoreUtilities.toLowerCase(gameMode.name())), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), null));
         PacketHelperImpl.send(player, packet);
     }
 
@@ -420,7 +420,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void sendPlayerRemovePacket(Player player, UUID id) {
         ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER);
         GameProfile profile = new GameProfile(id, "name");
-        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, null, null));
+        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, null, null, null));
         PacketHelperImpl.send(player, packet);
     }
 }

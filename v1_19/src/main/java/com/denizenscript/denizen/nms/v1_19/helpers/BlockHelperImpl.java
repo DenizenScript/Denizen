@@ -301,7 +301,7 @@ public class BlockHelperImpl implements BlockHelper {
             return 0;
         }
         return blockType.getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
-                item == null ? null : CraftItemStack.asNMSCopy(item));
+                item == null ? null : CraftItemStack.asNMSCopy(item), true);
     }
 
     @Override

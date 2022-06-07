@@ -183,7 +183,7 @@ public class PacketHelperImpl implements PacketHelper {
 
         // Spectating an entity then immediately respawning the player prevents a client shader update,
         // allowing the player to retain whatever vision the mob they spectated had.
-        send(player, new ClientboundAddMobPacket(entity));
+        send(player, new ClientboundAddEntityPacket(entity));
         send(player, new ClientboundSetCameraPacket(entity));
         ((CraftServer) Bukkit.getServer()).getHandle().respawn(((CraftPlayer) player).getHandle(),
                 ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false);

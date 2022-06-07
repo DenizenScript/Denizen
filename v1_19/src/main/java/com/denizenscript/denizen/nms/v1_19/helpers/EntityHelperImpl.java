@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.stats.RecipeBook;
 import net.minecraft.stats.ServerRecipeBook;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
@@ -643,11 +644,15 @@ public class EntityHelperImpl extends EntityHelper {
         return true;
     }
 
+    public static long entityToPacket(double x) {
+        return Mth.lfloor(x * 4096.0D);
+    }
+
     @Override
     public void fakeMove(Entity entity, Vector vector) {
-        long x = ClientboundMoveEntityPacket.entityToPacket(vector.getX());
-        long y = ClientboundMoveEntityPacket.entityToPacket(vector.getY());
-        long z = ClientboundMoveEntityPacket.entityToPacket(vector.getZ());
+        long x = entityToPacket(vector.getX());
+        long y = entityToPacket(vector.getY());
+        long z = entityToPacket(vector.getZ());
         ClientboundMoveEntityPacket packet = new ClientboundMoveEntityPacket.Pos(entity.getEntityId(), (short) x, (short) y, (short) z, entity.isOnGround());
         for (Player player : getPlayersThatSee(entity)) {
             PacketHelperImpl.send(player, packet);

@@ -274,7 +274,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (!Bukkit.isPrimaryThread()) {
             if (Settings.cache_warnOnAsyncPackets
-                    && !(packet instanceof ClientboundChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
+                    && !(packet instanceof ClientboundSystemChatPacket) && !(packet instanceof ClientboundPlayerChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
                     && !(packet instanceof ClientboundCommandSuggestionsPacket)) { // Async tab complete is wholly unsupported in Spigot (and will cause an exception), however Paper explicitly adds async support (for unclear reasons), so let it through too
                 Debug.echoError("Warning: packet sent off main thread! This is completely unsupported behavior! Denizen network interceptor ignoring packet to avoid crash. Packet class: "
                         + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName() + " identify the sender of the packet from the stack trace:");
@@ -373,7 +373,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
                         newPacket.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(newProfile, data.latency, GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
-                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE))));
+                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.getProfilePublicKey()));
                         oldManager.send(newPacket, genericfuturelistener);
                     }
                 }
@@ -635,9 +635,6 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             else if (packet instanceof ClientboundAddEntityPacket) {
                 ider = ((ClientboundAddEntityPacket) packet).getId();
-            }
-            else if (packet instanceof ClientboundAddMobPacket) {
-                ider = ((ClientboundAddMobPacket) packet).getId();
             }
             if (ider != -1) {
                 Entity e = player.getLevel().getEntity(ider);
@@ -1033,12 +1030,6 @@ public class DenizenNetworkManagerImpl extends Connection {
             else if (packet instanceof ClientboundAddEntityPacket) {
                 ider = ((ClientboundAddEntityPacket) packet).getId();
             }
-            else if (packet instanceof ClientboundAddMobPacket) {
-                ider = ((ClientboundAddMobPacket) packet).getId();
-            }
-            else if (packet instanceof ClientboundAddPaintingPacket) {
-                ider = ((ClientboundAddPaintingPacket) packet).getId();
-            }
             else if (packet instanceof ClientboundAddExperienceOrbPacket) {
                 ider = ((ClientboundAddExperienceOrbPacket) packet).getId();
             }
@@ -1100,10 +1091,12 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
+        // TODO: 1.19: New chat system, probably needs event changes?
+        /*
         if (packet instanceof ClientboundChatPacket && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((ClientboundChatPacket) packet));
         }
-        else if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
+        else */if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
         }
         return false;
@@ -1172,16 +1165,18 @@ public class DenizenNetworkManagerImpl extends Connection {
                     return true;
                 }
             }
-            else if (packet instanceof ClientboundBlockBreakAckPacket) {
-                ClientboundBlockBreakAckPacket origPack = (ClientboundBlockBreakAckPacket) packet;
+            else if (packet instanceof ClientboundBlockChangedAckPacket) {
+                // TODO: 1.19: Can no longer determine what block this packet is for. Would have to track separately? Possibly from the inbound packet rather than the outbound one.
+                /*
+                ClientboundBlockChangedAckPacket origPack = (ClientboundBlockChangedAckPacket) packet;
                 BlockPos pos = origPack.pos();
                 LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {
-                    ClientboundBlockBreakAckPacket newPacket = new ClientboundBlockBreakAckPacket(origPack.pos(), FakeBlockHelper.getNMSState(block), origPack.action(), false);
+                    ClientboundBlockChangedAckPacket newPacket = new ClientboundBlockChangedAckPacket(origPack.pos(), FakeBlockHelper.getNMSState(block), origPack.action(), false);
                     oldManager.send(newPacket, genericfuturelistener);
                     return true;
-                }
+                }*/
             }
         }
         catch (Throwable ex) {

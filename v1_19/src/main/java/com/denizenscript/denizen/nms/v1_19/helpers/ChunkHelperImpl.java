@@ -103,7 +103,7 @@ public class ChunkHelperImpl implements ChunkHelper {
         LevelHeightAccessor levelheightaccessor = nmsChunk.getHeightAccessorForGeneration();
         for(int k = levelheightaccessor.getMinSection(); k < levelheightaccessor.getMaxSection(); ++k) {
             LevelChunkSection chunksection = nmsChunk.getSection(nmsChunk.getSectionIndexFromSectionY(k));
-            PalettedContainer<Holder<Biome>> datapaletteblock = chunksection.getBiomes();
+            PalettedContainer<Holder<Biome>> datapaletteblock = (PalettedContainer<Holder<Biome>>) chunksection.getBiomes();
             datapaletteblock.acquire();
             for(int l = 0; l < 4; ++l) {
                 for(int i1 = 0; i1 < 4; ++i1) {

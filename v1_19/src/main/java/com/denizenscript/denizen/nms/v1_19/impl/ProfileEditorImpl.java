@@ -105,7 +105,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                     }
                     String listRename = RenameCommand.getCustomNameFor(data.getProfile().getId(), manager.player.getBukkitEntity(), true);
                     Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : data.getDisplayName();
-                    ClientboundPlayerInfoPacket.PlayerUpdate newData = new ClientboundPlayerInfoPacket.PlayerUpdate(patchedProfile, data.getLatency(), data.getGameMode(), displayName);
+                    ClientboundPlayerInfoPacket.PlayerUpdate newData = new ClientboundPlayerInfoPacket.PlayerUpdate(patchedProfile, data.getLatency(), data.getGameMode(), displayName, data.getProfilePublicKey());
                     newPacketDataList.add(newData);
                     manager.oldManager.send(newPacket);
                 }
