@@ -67,6 +67,7 @@ public class LookCommand extends AbstractCommand {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("location")
                     && !scriptEntry.hasObject("cancel")
+                    && arg.limitToOnlyPrefix("location")
                     && arg.matchesArgumentType(LocationTag.class)) {
                 scriptEntry.addObject("location", arg.asType(LocationTag.class));
             }
