@@ -26,7 +26,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Cancellable true
     //
-    // @Triggers when a player walks over a notable location. In most cases, it is preferable to use <@link event player enters area> with a small cuboid.
+    // @Triggers when a player walks over a noted location. In most cases, it is preferable to use <@link event player enters area> with a small cuboid.
     //
     // @Context
     // <context.notable> returns an ElementTag of the notable location's name.

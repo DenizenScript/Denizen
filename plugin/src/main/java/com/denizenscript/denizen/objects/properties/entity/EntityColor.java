@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -41,7 +42,8 @@ public class EntityColor implements Property {
                 type == EntityType.ZOMBIE_VILLAGER ||
                 type == EntityType.TRADER_LLAMA ||
                 type == EntityType.TROPICAL_FISH ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type));
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type));
     }
 
     public static EntityColor getFrom(ObjectTag entity) {
@@ -116,6 +118,9 @@ public class EntityColor implements Property {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
             return MultiVersionHelper1_17.getColor(colored.getBukkitEntity());
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
+            return MultiVersionHelper1_19.getColor(colored.getBukkitEntity());
+        }
         return null;
     }
 
@@ -160,9 +165,12 @@ public class EntityColor implements Property {
             case VILLAGER:
             case ZOMBIE_VILLAGER:
                 return listForEnum(Villager.Type.values());
-            }
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
             return MultiVersionHelper1_17.getAllowedColors(type);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
+            return MultiVersionHelper1_19.getAllowedColors(type);
         }
         return null; // includes Ocelot (deprecated) and arrow (ColorTag)
     }
@@ -204,7 +212,8 @@ public class EntityColor implements Property {
     // For sheep, wolf, and shulker entities, the input is a Dye Color.
     // For Tipped Arrow entities, the input is a ColorTag.
     // For goats, the input is SCREAMING or NORMAL.
-    // For axolotl, the input is BLUE, CYAN, GOLD, LUCY, or WILD.
+    // For axolotl, the types are BLUE, CYAN, GOLD, LUCY, or WILD.
+    // For frogs, the types are TEMPERATE, WARM, or COLD.
     //
     // For all places where a DyeColor is needed, the options are:
     // BLACK, BLUE, BROWN, CYAN, GRAY, GREEN, LIGHT_BLUE, LIGHT_GRAY, LIME, MAGENTA, ORANGE, PINK, PURPLE, RED, WHITE, or YELLOW.
@@ -386,6 +395,9 @@ public class EntityColor implements Property {
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
                 MultiVersionHelper1_17.setColor(colored.getBukkitEntity(), mechanism);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
+                MultiVersionHelper1_19.setColor(colored.getBukkitEntity(), mechanism);
             }
         }
     }

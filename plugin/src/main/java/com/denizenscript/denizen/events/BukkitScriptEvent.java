@@ -740,7 +740,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         else {
             if (context.showErrors()) {
-                Debug.echoError("Invalid event 'in:<area>' switch [" + name + "] ('in:???') (did you make a typo, or forget to make a notable by that name?): '" + evtLine + "' for " + containerName);
+                Debug.echoError("Invalid event 'in:<area>' switch [" + name + "] ('in:???') (did you make a typo, or forget to 'note' an object with that name?): '" + evtLine + "' for " + containerName);
             }
             return false;
         }
