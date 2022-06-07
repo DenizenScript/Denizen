@@ -80,6 +80,7 @@ public class Settings {
         cache_healthTraitBlockDrops = config.getBoolean("Traits.Health.Block drops", false);
         cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
         cache_createWorldSymbols = config.getBoolean("Commands.CreateWorld.Allow symbols in names", false);
+        cache_createWorldWeirdPaths = config.getBoolean("Commands.CreateWorld.Allow weird paths", false);
         cache_allowDelete = config.getBoolean("Commands.Delete.Allow file deletion", true);
         cache_allowServerStop = config.getBoolean("Commands.Restart.Allow server stop", false);
         cache_allowServerRestart = config.getBoolean("Commands.Restart.Allow server restart", true);
@@ -131,7 +132,7 @@ public class Settings {
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
-            cache_packetInterception, cache_createWorldSymbols,
+            cache_packetInterception, cache_createWorldSymbols, cache_createWorldWeirdPaths,
             cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets;
 
     public static String cache_getAlternateScriptPath, cache_healthTraitRespawnDelay,

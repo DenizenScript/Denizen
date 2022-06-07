@@ -81,7 +81,9 @@ public class MaterialLevel implements Property {
         // @mechanism MaterialTag.level
         // @group properties
         // @description
-        // Returns the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, or farmland.
+        // Returns the current level for a Levelled material, cake, beehives, snow, or farmland.
+        // "Levelled" materials include: water, lava, cauldrons, composters, light blocks, and any other future Levelled implementing types.
+        // For light blocks, this is the brightness of the light.
         // For water/lava this is the height of the liquid block.
         // For cauldrons, this is the amount of liquid contained.
         // For cake, this is the number of bites left.

@@ -131,10 +131,31 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             scriptEntry.setFinished(true);
             return;
         }
-        if (!Settings.cache_createWorldSymbols && forbiddenSymbols.containsAnyMatch(worldName.asString())) {
-            Debug.echoError("Cannot use world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
-            scriptEntry.setFinished(true);
-            return;
+        if (!Settings.cache_createWorldSymbols) {
+            if (forbiddenSymbols.containsAnyMatch(worldName.asString())) {
+                Debug.echoError("Cannot use world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
+                scriptEntry.setFinished(true);
+                return;
+            }
+        }
+        else if (!Settings.cache_createWorldWeirdPaths) {
+            String cleaned = CoreUtilities.toLowerCase(worldName.asString()).replace('\\', '/');
+            while (cleaned.contains("//")) {
+                cleaned = cleaned.replace("//", "/");
+            }
+            if (cleaned.startsWith("/")) {
+                cleaned = cleaned.substring(1);
+            }
+            if (cleaned.startsWith("plugins/")) {
+                Debug.echoError("CreateWorld cannot create a world inside the plugins folder due to security settings in Denizen/config.yml.");
+                scriptEntry.setFinished(true);
+                return;
+            }
+            if (cleaned.startsWith("..")) {
+                Debug.echoError("CreateWorld cannot create a world with a raised path (contains '..') due to security settings in Denizen/config.yml.");
+                scriptEntry.setFinished(true);
+                return;
+            }
         }
         final File newFolder = new File(Bukkit.getWorldContainer(), worldName.asString());
         if (!Utilities.canWriteToFile(newFolder)) {

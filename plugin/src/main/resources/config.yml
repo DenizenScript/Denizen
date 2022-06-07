@@ -148,6 +148,8 @@ Commands:
         # Whether non-alphanumeric symbols are allowed in world names. Letters, numbers, unicode text, '-', '_', and ' ' are allowed always.
         # If this is changed to 'true', then other symbols like '/' can be used in a world name (effectively putting the world inside a subfolder).
         Allow symbols in names: false
+        # Whether 'weird' paths are allowed. These are paths containing '..', inside the "plugins/" folder, or other almost-certainly-invalid paths like that.
+        Allow weird paths: false
     Delete:
         # Whether scripts are allowed to delete files from your server
         # This is mostly to clean up saves, but could potentially be abused.
