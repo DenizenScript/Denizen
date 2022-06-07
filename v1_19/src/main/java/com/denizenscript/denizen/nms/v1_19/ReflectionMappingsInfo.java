@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_19;
 
 public class ReflectionMappingsInfo {
 
-    // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.18.2
+    // Contents gathered via https://minidigger.github.io/MiniMappingViewer/#/mojang/server/1.19
 
     // net.minecraft.advancements.AdvancementList
     public static String AdvancementList_roots = "c";
@@ -15,7 +15,7 @@ public class ReflectionMappingsInfo {
     public static String RecipeBook_known = "a";
 
     // net.minecraft.core.MappedRegistry
-    public static String MappedRegistry_frozen = "bL";
+    public static String MappedRegistry_frozen = "ca";
 
     // net.minecraft.world.item.crafting.RecipeManager
     public static String RecipeManager_byName = "d";
@@ -32,23 +32,23 @@ public class ReflectionMappingsInfo {
     public static String LivingEntity_setLivingEntityFlag = "c";
 
     // net.minecraft.world.entity.player.Player
-    public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bP";
+    public static String Player_DATA_PLAYER_ABSORPTION_ID = "e";
+    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bO";
 
     // net.minecraft.server.level.ServerPlayer
     public static String ServerPlayer_respawnForced = "cU";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "bX";
+    public static String EnderMan_DATA_CREEPY = "bZ";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "ce";
+    public static String Zombie_inWaterTime = "cg";
 
     // net.minecraft.world.item.Item
     public static String Item_maxStackSize = "d";
 
     // net.minecraft.world.level.Level
-    public static String Level_isClientSide = "x";
+    public static String Level_isClientSide = "y";
 
     // net.minecraft.server.level.ThreadedLevelLightEngine
     public static String ThreadedLevelLightEngine_addTask = "a";
@@ -61,17 +61,17 @@ public class ReflectionMappingsInfo {
     // net.minecraft.world.level.biome.Biome
     public static String Biome_climateSettings = "i";
     // net.minecraft.world.level.biome.Biome$ClimateSettings
-    public static String Biome_ClimateSettings_temperature = "c";
-    public static String Biome_ClimateSettings_downfall = "e";
-    public static String Biome_ClimateSettings_precipitation = "b";
+    public static String Biome_ClimateSettings_precipitation = "a";
+    public static String Biome_ClimateSettings_temperature = "b";
+    public static String Biome_ClimateSettings_downfall = "d";
 
     // net.minecraft.network.Connection
     public static String Connection_receiving = "k";
 
     // net.minecraft.server.network.ServerGamePacketListenerImpl
-    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "C";
-    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "E";
-    public static String ServerGamePacketListenerImpl_connection = "a";
+    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "F";
+    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "H";
+    public static String ServerGamePacketListenerImpl_connection = "b";
 
     // net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
     public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "j";
@@ -81,8 +81,8 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket
     public static String ClientboundSectionBlocksUpdatePacket_sectionPos = "b";
-    public static String ClientboundSectionBlocksUpdatePacket_states = "d";
     public static String ClientboundSectionBlocksUpdatePacket_positions = "c";
+    public static String ClientboundSectionBlocksUpdatePacket_states = "d";
 
     // net.minecraft.network.protocol.game.ClientboundMoveEntityPacket
     public static String ClientboundMoveEntityPacket_xa = "b";
@@ -112,7 +112,7 @@ public class ReflectionMappingsInfo {
     public static String FishingHook_timeUntilHooked = "at";
 
     // net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase
-    public static String BlockBehaviour_BlockStateBase_getFluidState = "o";
+    public static String BlockBehaviour_BlockStateBase_getFluidState = "p";
 
     // net.minecraft.world.level.material.FluidState
     public static String FluidState_isRandomlyTicking = "f";

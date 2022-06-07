@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Set;
@@ -25,12 +26,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
     }
-
-    /*
-    @Override
-    public CraftPlayer getPlayer() {
-        return oldListener.getPlayer();
-    }*/
 
     @Override
     public Connection getConnection() {
@@ -93,6 +88,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public CraftPlayer getCraftPlayer() {
+        return oldListener.getCraftPlayer();
+    }
+
+    @Override
     public void tick() {
         oldListener.tick();
     }
@@ -105,6 +105,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void onDisconnect(Component ichatbasecomponent) {
         oldListener.onDisconnect(ichatbasecomponent);
+    }
+
+    @Override
+    public void ackBlockChangesUpTo(int i) {
+        oldListener.ackBlockChangesUpTo(i);
     }
 
     @Override
@@ -122,6 +127,12 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         if (NMSHandler.debugPackets) {
             DenizenNetworkManagerImpl.doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getScoreboardName());
         }
+    }
+
+    @Override
+    public void handleChatPreview(ServerboundChatPreviewPacket packet) {
+        handlePacketIn(packet);
+        oldListener.handleChatPreview(packet);
     }
 
     @Override
@@ -299,6 +310,12 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public void handleChatCommand(ServerboundChatCommandPacket packet) {
+        handlePacketIn(packet);
+        oldListener.handleChatCommand(packet);
+    }
+
+    @Override
     public void handleAnimate(ServerboundSwingPacket packet) {
         handlePacketIn(packet);
         oldListener.handleAnimate(packet);
@@ -392,5 +409,10 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleLockDifficulty(ServerboundLockDifficultyPacket packet) {
         handlePacketIn(packet);
         oldListener.handleLockDifficulty(packet);
+    }
+
+    @Override
+    public ServerPlayer getPlayer() {
+        return oldListener.getPlayer();
     }
 }
