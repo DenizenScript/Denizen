@@ -319,6 +319,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
      */
     public LocationTag(Location location) {
         this(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        if (location instanceof LocationTag) {
+            backupWorld = ((LocationTag) location).backupWorld;
+        }
     }
 
     public LocationTag(Vector vector) {

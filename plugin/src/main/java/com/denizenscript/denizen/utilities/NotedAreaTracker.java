@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.CuboidTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public class NotedAreaTracker {
 
         public TrackedArea(AreaContainmentObject area) {
             CuboidTag boundary = area.getCuboidBoundary();
-            Location low = boundary.getLow(0), high = boundary.getHigh(0);
+            LocationTag low = boundary.getLow(0), high = boundary.getHigh(0);
             this.area = area;
             lowX = low.getBlockX();
             lowZ = low.getBlockZ();
