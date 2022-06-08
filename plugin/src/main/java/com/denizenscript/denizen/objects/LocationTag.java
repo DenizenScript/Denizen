@@ -4265,7 +4265,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             Structure structure = (Structure) state;
             MapTag output = new MapTag();
-
             output.putObject("author", new ElementTag(structure.getAuthor()));
             output.putObject("integrity", new ElementTag(structure.getIntegrity()));
             output.putObject("metadata", new ElementTag(structure.getMetadata()));
@@ -4279,7 +4278,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             output.putObject("box_visible", new ElementTag(structure.isBoundingBoxVisible()));
             output.putObject("ignore_entities", new ElementTag(structure.isIgnoreEntities()));
             output.putObject("show_invisible", new ElementTag(structure.isShowAir()));
-
             return output;
         });
     }
@@ -5198,10 +5196,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 mechanism.echoError("'structure_block_data' mechanism can only be called on Structure blocks.");
                 return;
             }
-
             Structure structure = (Structure) state;
             MapTag input = mechanism.valueAsType(MapTag.class);
-
             ObjectTag author = input.getObject("author");
             if (author != null) {
                 if (author.shouldBeType(EntityTag.class)) {
@@ -5216,7 +5212,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     structure.setAuthor(author.toString());
                 }
             }
-
             ObjectTag integrity = input.getObject("integrity");
             if (integrity != null) {
                 ElementTag integrityElement = integrity.asElement();
@@ -5235,7 +5230,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setMetadata(metadata.toString());
             }
-
             ObjectTag mirror = input.getObject("mirror");
             if (mirror != null) {
                 Mirror mirrorEnum = mirror.asElement().asEnum(Mirror.class);
@@ -5245,7 +5239,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setMirror(mirrorEnum);
             }
-
             ObjectTag boxPosition = input.getObject("box_position");
             if (boxPosition != null) {
                 LocationTag boxPositionLoc = boxPosition.asType(LocationTag.class, mechanism.context);
@@ -5262,7 +5255,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setRelativePosition(new BlockVector(boxPositionLoc.toVector()));
             }
-
             ObjectTag rotation = input.getObject("rotation");
             if (rotation != null) {
                 StructureRotation rotationEnum = rotation.asElement().asEnum(StructureRotation.class);
@@ -5272,7 +5264,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setRotation(rotationEnum);
             }
-
             ObjectTag seed = input.getObject("seed");
             if (seed != null) {
                 ElementTag seedElement = seed.asElement();
@@ -5282,12 +5273,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setSeed(seedElement.asLong());
             }
-
             ObjectTag structureName = input.getObject("structure_name");
             if (structureName != null) {
                 structure.setStructureName(structureName.toString());
             }
-
             ObjectTag size = input.getObject("size");
             if (size != null) {
                 LocationTag sizeLoc = size.asType(LocationTag.class, mechanism.context);
@@ -5304,7 +5293,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setStructureSize(new BlockVector(sizeLoc.toVector()));
             }
-
             ObjectTag mode = input.getObject("mode");
             if (mode != null) {
                 UsageMode usageMode = mode.asElement().asEnum(UsageMode.class);
@@ -5314,7 +5302,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setUsageMode(usageMode);
             }
-
             ObjectTag boxVisible = input.getObject("box_visible");
             if (boxVisible != null) {
                 ElementTag boxVisibleElement = boxVisible.asElement();
@@ -5324,7 +5311,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setBoundingBoxVisible(boxVisibleElement.asBoolean());
             }
-
             ObjectTag ignoreEntities = input.getObject("ignore_entities");
             if (ignoreEntities != null) {
                 ElementTag ignoreEntitiesElement = ignoreEntities.asElement();
@@ -5334,7 +5320,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setIgnoreEntities(ignoreEntitiesElement.asBoolean());
             }
-
             ObjectTag showInvisible = input.getObject("show_invisible");
             if (showInvisible != null) {
                 ElementTag showInvisibleElement = showInvisible.asElement();
@@ -5344,7 +5329,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setShowAir(showInvisibleElement.asBoolean());
             }
-
             structure.update();
         }
 
