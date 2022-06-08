@@ -36,6 +36,9 @@ import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.structure.Mirror;
+import org.bukkit.block.structure.StructureRotation;
+import org.bukkit.block.structure.UsageMode;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -4230,6 +4233,53 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return new ColorTag(NMSHandler.blockHelper.getMapColor(block));
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.structure_block_data>
+        // @returns MapTag
+        // @mechanism LocationTag.structure_block_data
+        // @group world
+        // @description
+        // Returns the structure block data of the structure block at the location as a map with the following keys:
+        // - author: ElementTag: The name of the structure's creator. set to "?" for most vanilla structures.
+        // - integrity: ElementTag(Decimal): The integrity of the structure (0-1). Lower integrity values will result in more blocks being removed when loading a structure.
+        // used with the seed to determine which blocks are randomly removed to mimic "decay".
+        // - metadata: ElementTag: Only applies in DATA mode, sets specific functions that can be applied to the structure,
+        // check the Minecraft wiki (<@link url https://minecraft.gamepedia.com/Structure_Block#Data>) for more information.
+        // - mirror: ElementTag: How the structure is mirrored; "NONE", "LEFT_RIGHT", or "FRONT_BACK".
+        // - box_position: LocationTag: The position of the structure's bounding box, relative to the position of the structure block. Maximum allowed distance is 48 blocks in any direction.
+        // - rotation: ElementTag: The rotation of the structure; "NONE", "CLOCKWISE_90", "CLOCKWISE_180", or "COUNTERCLOCKWISE_90".
+        // - seed: ElementTag(Number): The seed used to determine how many blocks are removed upon loading of this structure (see "integrity" for more information).
+        // - structure_name: ElementTag: The name of the structure.
+        // - size: LocationTag: The size of the structure's bounding box, The maximum structure size is 48,48,48.
+        // - mode: ElementTag: The structure block's mode; "CORNER", "DATA", "LOAD", or "SAVE". See also <@link mechanism MaterialTag.mode>.
+        // - box_visible: ElementTag(Boolean): Whether the structure's bounding box is visible, only applies in LOAD mode.
+        // - ignore_entities: ElementTag(Boolean): Whether entities in the structure are ignored, only applies in SAVE mode.
+        // - show_invisible: ElementTag(Boolean): Whether invisible blocks in the structure are shown.
+        // -->
+        tagProcessor.registerTag(MapTag.class, "structure_block_data", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Structure)) {
+                attribute.echoError("Location is not a valid Structure block.");
+                return null;
+            }
+            Structure structure = (Structure) state;
+            MapTag output = new MapTag();
+            output.putObject("author", new ElementTag(structure.getAuthor()));
+            output.putObject("integrity", new ElementTag(structure.getIntegrity()));
+            output.putObject("metadata", new ElementTag(structure.getMetadata()));
+            output.putObject("mirror", new ElementTag(structure.getMirror().name()));
+            output.putObject("box_position", new LocationTag(structure.getRelativePosition()));
+            output.putObject("rotation", new ElementTag(structure.getRotation().name()));
+            output.putObject("seed", new ElementTag(structure.getSeed()));
+            output.putObject("structure_name", new ElementTag(structure.getStructureName()));
+            output.putObject("size", new LocationTag(structure.getStructureSize()));
+            output.putObject("mode", new ElementTag(structure.getUsageMode().name()));
+            output.putObject("box_visible", new ElementTag(structure.isBoundingBoxVisible()));
+            output.putObject("ignore_entities", new ElementTag(structure.isIgnoreEntities()));
+            output.putObject("show_invisible", new ElementTag(structure.isShowAir()));
+            return output;
+        });
     }
 
     public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -5114,6 +5164,172 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 sign.setColor(mechanism.getValue().asEnum(DyeColor.class));
                 sign.update();
             }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name structure_block_data
+        // @input MapTag
+        // @description
+        // Sets the structure block data of the structure block at the location. Input is a map with the following keys (all keys are optional):
+        // - author: EntityTag: The Structure's author, can also input an ElementTag to set the name directly (set to "?" for most vanilla structures).
+        // - integrity: ElementTag(Decimal): The integrity of the structure (0-1). Lower integrity values will result in more blocks being removed when loading a structure.
+        // used with the seed to determine which blocks are randomly removed to mimic "decay".
+        // - metadata: ElementTag: Can only be set while in DATA mode. sets specific functions that can be applied to the structure,
+        // check the Minecraft wiki (<@link url https://minecraft.gamepedia.com/Structure_Block#Data>) for more information.
+        // - mirror: ElementTag: How the structure is mirrored; "NONE", "LEFT_RIGHT", or "FRONT_BACK".
+        // - box_position: LocationTag: The position of the structure's bounding box, relative to the position of the structure block. Maximum allowed distance is 48 blocks in any direction.
+        // - rotation: ElementTag: The rotation of the structure; "NONE", "CLOCKWISE_90", "CLOCKWISE_180", or "COUNTERCLOCKWISE_90".
+        // - seed: ElementTag(Number): The seed used to determine how many blocks are removed upon loading of this structure (see "integrity" for more information).
+        // - structure_name: ElementTag: The name of the structure.
+        // - size: LocationTag: The size of the structure's bounding box, The maximum structure size is 48,48,48.
+        // - mode: ElementTag: The structure block's mode; "CORNER", "DATA", "LOAD", or "SAVE". See also <@link mechanism MaterialTag.mode>.
+        // - box_visible: ElementTag(Boolean): Whether the structure's bounding box is visible, only applies in LOAD mode.
+        // - ignore_entities: ElementTag(Boolean): Whether entities in the structure are ignored, only applies in SAVE mode.
+        // - show_invisible: ElementTag(Boolean): Whether invisible blocks in the structure are shown.
+        // @tags
+        // <LocationTag.structure_block_data>
+        // -->
+        if (mechanism.matches("structure_block_data") && mechanism.requireObject(MapTag.class)) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Structure)) {
+                mechanism.echoError("'structure_block_data' mechanism can only be called on Structure blocks.");
+                return;
+            }
+            Structure structure = (Structure) state;
+            MapTag input = mechanism.valueAsType(MapTag.class);
+            ObjectTag author = input.getObject("author");
+            if (author != null) {
+                if (author.shouldBeType(EntityTag.class)) {
+                    EntityTag entity = author.asType(EntityTag.class, mechanism.context);
+                    if (!entity.isLivingEntity()) {
+                        mechanism.echoError("Invalid author entity input '" + author + "': entity must be living.");
+                        return;
+                    }
+                    structure.setAuthor(entity.getLivingEntity());
+                }
+                else {
+                    structure.setAuthor(author.toString());
+                }
+            }
+            ObjectTag integrity = input.getObject("integrity");
+            if (integrity != null) {
+                ElementTag integrityElement = integrity.asElement();
+                float integrityFloat = integrityElement.isFloat() ? integrityElement.asFloat() : -1;
+                if (integrityFloat < 0 || integrityFloat > 1) {
+                    mechanism.echoError("Invalid integrity input '" + integrity + "': must be a decimal between 0 and 1.");
+                    return;
+                }
+                structure.setIntegrity(integrityFloat);
+            }
+            ObjectTag metadata = input.getObject("metadata");
+            if (metadata != null) {
+                if (structure.getUsageMode() != UsageMode.DATA) {
+                    mechanism.echoError("metadata can only be set while in DATA mode.");
+                    return;
+                }
+                structure.setMetadata(metadata.toString());
+            }
+            ObjectTag mirror = input.getObject("mirror");
+            if (mirror != null) {
+                Mirror mirrorEnum = mirror.asElement().asEnum(Mirror.class);
+                if (mirrorEnum == null) {
+                    mechanism.echoError("Invalid mirror input '" + mirror + "': check meta docs for more information.");
+                    return;
+                }
+                structure.setMirror(mirrorEnum);
+            }
+            ObjectTag boxPosition = input.getObject("box_position");
+            if (boxPosition != null) {
+                LocationTag boxPositionLoc = boxPosition.asType(LocationTag.class, mechanism.context);
+                if (boxPositionLoc == null) {
+                    mechanism.echoError("Invalid box_position input '" + boxPosition + "': must be a LocationTag.");
+                    return;
+                }
+                int x = boxPositionLoc.getBlockX();
+                int y = boxPositionLoc.getBlockY();
+                int z = boxPositionLoc.getBlockZ();
+                if (x < -48 || x > 48 || y < -48 || y > 48 || z < -48 || z > 48) {
+                    mechanism.echoError("Invalid box_position input '" + boxPosition + "': must be within 48 blocks of the structure block.");
+                    return;
+                }
+                structure.setRelativePosition(new BlockVector(boxPositionLoc.toVector()));
+            }
+            ObjectTag rotation = input.getObject("rotation");
+            if (rotation != null) {
+                StructureRotation rotationEnum = rotation.asElement().asEnum(StructureRotation.class);
+                if (rotationEnum == null) {
+                    mechanism.echoError("Invalid rotation input '" + rotation + "': check meta docs for more information.");
+                    return;
+                }
+                structure.setRotation(rotationEnum);
+            }
+            ObjectTag seed = input.getObject("seed");
+            if (seed != null) {
+                ElementTag seedElement = seed.asElement();
+                if (!seedElement.isInt()) {
+                    mechanism.echoError("Invalid seed input '" + seed + "': must be an integer.");
+                    return;
+                }
+                structure.setSeed(seedElement.asLong());
+            }
+            ObjectTag structureName = input.getObject("structure_name");
+            if (structureName != null) {
+                structure.setStructureName(structureName.toString());
+            }
+            ObjectTag size = input.getObject("size");
+            if (size != null) {
+                LocationTag sizeLoc = size.asType(LocationTag.class, mechanism.context);
+                if (sizeLoc == null) {
+                    mechanism.echoError("Invalid size input '" + size + "': must be a LocationTag.");
+                    return;
+                }
+                int x = sizeLoc.getBlockX();
+                int y = sizeLoc.getBlockY();
+                int z = sizeLoc.getBlockZ();
+                if (x < 0 || x > 48 || y < 0 || y > 48 || z < 0 || z > 48) {
+                    mechanism.echoError("Invalid size input '" + size + "': cannot be larger than 48,48,48 or smaller than 0,0,0.");
+                    return;
+                }
+                structure.setStructureSize(new BlockVector(sizeLoc.toVector()));
+            }
+            ObjectTag mode = input.getObject("mode");
+            if (mode != null) {
+                UsageMode usageMode = mode.asElement().asEnum(UsageMode.class);
+                if (usageMode == null) {
+                    mechanism.echoError("Invalid mode input '" + mode + "': check meta docs for more information.");
+                    return;
+                }
+                structure.setUsageMode(usageMode);
+            }
+            ObjectTag boxVisible = input.getObject("box_visible");
+            if (boxVisible != null) {
+                ElementTag boxVisibleElement = boxVisible.asElement();
+                if (!boxVisibleElement.isBoolean()) {
+                    mechanism.echoError("Invalid box_visible input '" + boxVisible + "': must be a boolean.");
+                    return;
+                }
+                structure.setBoundingBoxVisible(boxVisibleElement.asBoolean());
+            }
+            ObjectTag ignoreEntities = input.getObject("ignore_entities");
+            if (ignoreEntities != null) {
+                ElementTag ignoreEntitiesElement = ignoreEntities.asElement();
+                if (!ignoreEntitiesElement.isBoolean()) {
+                    mechanism.echoError("Invalid ignore_entities input '" + ignoreEntities + "': must be a boolean.");
+                    return;
+                }
+                structure.setIgnoreEntities(ignoreEntitiesElement.asBoolean());
+            }
+            ObjectTag showInvisible = input.getObject("show_invisible");
+            if (showInvisible != null) {
+                ElementTag showInvisibleElement = showInvisible.asElement();
+                if (!showInvisibleElement.isBoolean()) {
+                    mechanism.echoError("Invalid show_invisible input '" + showInvisible + "': must be a boolean.");
+                    return;
+                }
+                structure.setShowAir(showInvisibleElement.asBoolean());
+            }
+            structure.update();
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
