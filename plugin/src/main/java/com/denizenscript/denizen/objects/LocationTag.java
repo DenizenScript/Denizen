@@ -3582,66 +3582,88 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.areas>
+        // @attribute <LocationTag.areas[(<matcher>)]>
         // @returns ListTag(AreaObject)
         // @group areas
         // @description
         // Returns a ListTag of all noted areas that include this location.
+        // Optionally, specify a matcher to only include areas that match the given AreaObject matcher text.
+        // @example
+        // # This example shows all areas at the player's location.
+        // - narrate "You are inside: <player.location.areas.parse[note_name].formatted>"
+        // @example
+        // # This example finds which "Town" area the player is in.
+        // - narrate "You are inside the town of <player.location.areas[town_*].first.flag[town_name].if_null[Nowhere!]>"
         // -->
         tagProcessor.registerTag(ListTag.class, "areas", (attribute, object) -> {
+            String matcher = attribute.getParam();
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
-                list.addObject(area);
+                if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                    list.addObject(area);
+                }
             });
             return list;
         });
 
         // <--[tag]
-        // @attribute <LocationTag.cuboids>
+        // @attribute <LocationTag.cuboids[(<matcher>)]>
         // @returns ListTag(CuboidTag)
         // @group areas
         // @description
         // Returns a ListTag of all noted CuboidTags that include this location.
+        // Optionally, specify a matcher to only include areas that match the given AreaObject matcher text.
         // -->
         tagProcessor.registerTag(ListTag.class, "cuboids", (attribute, object) -> {
+            String matcher = attribute.getParam();
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
                 if (area instanceof CuboidTag) {
-                    list.addObject(area);
+                    if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                        list.addObject(area);
+                    }
                 }
             });
             return list;
         });
 
         // <--[tag]
-        // @attribute <LocationTag.ellipsoids>
+        // @attribute <LocationTag.ellipsoids[(<matcher>)]>
         // @returns ListTag(EllipsoidTag)
         // @group areas
         // @description
         // Returns a ListTag of all noted EllipsoidTags that include this location.
+        // Optionally, specify a matcher to only include areas that match the given AreaObject matcher text.
         // -->
         tagProcessor.registerTag(ListTag.class, "ellipsoids", (attribute, object) -> {
+            String matcher = attribute.getParam();
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
                 if (area instanceof EllipsoidTag) {
-                    list.addObject(area);
+                    if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                        list.addObject(area);
+                    }
                 }
             });
             return list;
         });
 
         // <--[tag]
-        // @attribute <LocationTag.polygons>
+        // @attribute <LocationTag.polygons[(<matcher>)]>
         // @returns ListTag(PolygonTag)
         // @group areas
         // @description
         // Returns a ListTag of all noted PolygonTags that include this location.
+        // Optionally, specify a matcher to only include areas that match the given AreaObject matcher text.
         // -->
         tagProcessor.registerTag(ListTag.class, "polygons", (attribute, object) -> {
+            String matcher = attribute.getParam();
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
                 if (area instanceof PolygonTag) {
-                    list.addObject(area);
+                    if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                        list.addObject(area);
+                    }
                 }
             });
             return list;
