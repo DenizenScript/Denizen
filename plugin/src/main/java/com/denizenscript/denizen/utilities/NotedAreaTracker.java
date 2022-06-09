@@ -41,6 +41,20 @@ public class NotedAreaTracker {
         public boolean mightContain(int x, int z) {
             return x >= lowX && x <= highX && z >= lowZ && z <= highZ;
         }
+
+        @Override
+        public int hashCode() {
+            return area.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof TrackedArea)) {
+                return false;
+            }
+            TrackedArea compareTo = (TrackedArea) other;
+            return lowX == compareTo.lowX && lowZ == compareTo.lowZ && highX == compareTo.highX && highZ == compareTo.highZ && area.equals(compareTo.area);
+        }
     }
 
     public static final class AreaSet {
