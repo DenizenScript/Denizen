@@ -2032,12 +2032,19 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (attribute.startsWith("distance", 2)) {
                 rad = attribute.getDoubleContext(2);
                 attribute.fulfill(1);
+                if (rad < 0.000001) {
+                    attribute.echoError("Distance value cannot be zero or negative.");
+                    return null;
+                }
             }
             ListTag list = new ListTag();
             org.bukkit.util.Vector rel = target.toVector().subtract(object.toVector());
             double len = rel.length();
-            if (len < 0.0001) {
-                return new ListTag();
+            if (len < 0.000001) {
+                return list;
+            }
+            if (len / rad > Settings.cache_blockTagsMaxBlocks) {
+                len = rad * Settings.cache_blockTagsMaxBlocks;
             }
             rel = rel.multiply(1d / len);
             for (double i = 0d; i <= len; i += rad) {
