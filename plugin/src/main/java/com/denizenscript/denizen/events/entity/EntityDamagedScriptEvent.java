@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -243,11 +244,13 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         held = null;
         if (event instanceof EntityDamageByEntityEvent) {
             damager = new EntityTag(((EntityDamageByEntityEvent) event).getDamager());
-            if (damager.isProjectile()) {
+            EntityTag shooter = damager.getShooter();
+            if (damager instanceof Projectile) {
                 projectile = damager;
-                if (damager.hasShooter()) {
-                    damager = damager.getShooter();
-                }
+            }
+            if (shooter != null) {
+                projectile = damager;
+                damager = shooter;
             }
             if (damager != null) {
                 held = damager.getItemInHand();

@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -40,6 +41,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @Context
     // <context.entity> returns the EntityTag that died.
     // <context.damager> returns the EntityTag damaging the other entity, if any.
+    // <context.projectile> returns the EntityTag of a projectile used to kill the entity, if one was used.
     // <context.message> returns an ElementTag of a player's death message.
     // <context.cause> returns an ElementTag of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
     // <context.drops> returns a ListTag of all pending item drops.
@@ -71,6 +73,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityTag entity;
     public EntityTag damager;
+    public EntityTag projectile;
     public ElementTag cause;
     public EntityDeathEvent event;
 
@@ -158,27 +161,19 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("damager") && damager != null) {
-            return damager.getDenizenObject();
-        }
-        else if (name.equals("message") && event instanceof PlayerDeathEvent) {
-            return new ElementTag(((PlayerDeathEvent) event).getDeathMessage());
-        }
-        else if (name.equals("cause") && cause != null) {
-            return cause;
-        }
-        else if (name.equals("drops")) {
-            ListTag list = new ListTag();
-            for (ItemStack stack : event.getDrops()) {
-                list.addObject(new ItemTag(stack));
-            }
-            return list;
-        }
-        else if (name.equals("xp")) {
-            return new ElementTag(event.getDroppedExp());
+        switch (name) {
+            case "entity": return entity.getDenizenObject();
+            case "projectile": return projectile == null ? null : projectile.getDenizenObject();
+            case "damager": return damager == null ? null : damager.getDenizenObject();
+            case "message": return event instanceof PlayerDeathEvent ? new ElementTag(((PlayerDeathEvent) event).getDeathMessage()) : null;
+            case "cause": return cause;
+            case "xp": return new ElementTag(event.getDroppedExp());
+            case "drops":
+                ListTag list = new ListTag();
+                for (ItemStack stack : event.getDrops()) {
+                    list.addObject(new ItemTag(stack));
+                }
+                return list;
         }
         return super.getContext(name);
     }
@@ -198,17 +193,19 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         entity = new EntityTag(livingEntity);
         cause = null;
         damager = null;
+        projectile = null;
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
         if (lastDamage != null) {
             cause = new ElementTag(event.getEntity().getLastDamageCause().getCause().toString());
             if (lastDamage instanceof EntityDamageByEntityEvent) {
-                EntityTag damageEntity = new EntityTag(((EntityDamageByEntityEvent) lastDamage).getDamager());
-                EntityTag shooter = damageEntity.getShooter();
-                if (shooter != null) {
-                    damager = shooter;
+                damager = new EntityTag(((EntityDamageByEntityEvent) lastDamage).getDamager());
+                EntityTag shooter = damager.getShooter();
+                if (damager instanceof Projectile) {
+                    projectile = damager;
                 }
-                else {
-                    damager = damageEntity;
+                if (shooter != null) {
+                    projectile = damager;
+                    damager = shooter;
                 }
             }
             else if (livingEntity.getKiller() != null) {
