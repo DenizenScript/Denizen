@@ -48,6 +48,7 @@ import org.bukkit.inventory.*;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
 import org.bukkit.potion.*;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -672,23 +673,32 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public EntityTag getShooter() {
-        if (hasShooter()) {
-            return new EntityTag((LivingEntity) getProjectile().getShooter());
+        if (getBukkitEntity() instanceof TNTPrimed) {
+            Entity source = ((TNTPrimed) getBukkitEntity()).getSource();
+            if (source != null) {
+                return new EntityTag(source);
+            }
         }
-        else {
-            return null;
+        else if (isProjectile()) {
+            ProjectileSource shooter = getProjectile().getShooter();
+            if (shooter instanceof Entity) {
+                return new EntityTag((Entity) shooter);
+            }
         }
+        return null;
     }
 
     public void setShooter(EntityTag shooter) {
-        if (isProjectile() && shooter.isLivingEntity()) {
+        if (getBukkitEntity() instanceof TNTPrimed) {
+            ((TNTPrimed) getBukkitEntity()).setSource(shooter.getBukkitEntity());
+        }
+        else if (isProjectile() && shooter.isLivingEntity()) {
             getProjectile().setShooter(shooter.getLivingEntity());
         }
     }
 
     public boolean hasShooter() {
-        return isProjectile() && getProjectile().getShooter() != null && getProjectile().getShooter() instanceof LivingEntity;
-        // TODO: Handle other shooter source thingy types
+        return getShooter() != null;
     }
 
     public Inventory getBukkitInventory() {
@@ -1820,7 +1830,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.shooter
         // @synonyms EntityTag.arrow_firer,EntityTag.fishhook_shooter,EntityTag.snowball_thrower
         // @description
-        // Returns the projectile's shooter, if any.
+        // Returns the projectile's shooter or TNT's priming source, if any.
         // -->
         registerSpawnedOnlyTag(EntityFormObject.class, "shooter", (attribute, object) -> {
             EntityTag shooter = object.getShooter();
@@ -3043,7 +3053,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @input EntityTag
         // @synonyms EntityTag.arrow_firer,EntityTag.fishhook_shooter,EntityTag.snowball_thrower
         // @description
-        // Sets the projectile's shooter.
+        // Sets the projectile's shooter or TNT's priming source.
         // @tags
         // <EntityTag.shooter>
         // -->

@@ -374,6 +374,7 @@ public class BukkitElementProperties implements Property {
         // @group conversion
         // @description
         // Shortens the element down to an itemscript hash ID, made of invisible color codes.
+        // This is considered a historical system, no longer relevant to modern Denizen.
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "to_itemscript_hash", (attribute, object) -> {
             return new ElementTag(ItemScriptHelper.createItemScriptID(object.asString()));
