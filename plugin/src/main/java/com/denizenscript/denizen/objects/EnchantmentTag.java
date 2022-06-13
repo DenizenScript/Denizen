@@ -364,13 +364,13 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
                 attribute.echoError("Invalid MapTag input to damage_bonus - not a valid map.");
                 return null;
             }
-            ObjectTag level = map.getObject("level");
-            ObjectTag type = map.getObject("type");
+            ElementTag level = map.getElement("level");
+            ElementTag type = map.getElement("type");
             if (level == null || type == null) {
                 attribute.echoError("Invalid MapTag input to damage_bonus - missing 'level' or 'type'");
                 return null;
             }
-            return new ElementTag(NMSHandler.enchantmentHelper.getDamageBonus(object.enchantment, new ElementTag(level.toString()).asInt(), CoreUtilities.toLowerCase(type.toString())));
+            return new ElementTag(NMSHandler.enchantmentHelper.getDamageBonus(object.enchantment, level.asInt(), CoreUtilities.toLowerCase(type.toString())));
         });
 
         // <--[tag]
@@ -391,8 +391,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
                 attribute.echoError("Invalid MapTag input to damage_protection - not a valid map.");
                 return null;
             }
-            ObjectTag level = map.getObject("level");
-            ObjectTag type = map.getObject("type");
+            ElementTag level = map.getElement("level");
+            ElementTag type = map.getElement("type");
             if (level == null || type == null) {
                 attribute.echoError("Invalid MapTag input to damage_protection - missing 'level' or 'type'");
                 return null;
@@ -405,8 +405,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
                 attribute.echoError("Invalid MapTag input to damage_protection - cause '" + type + "' is not a valid DamageCause.");
                 return null;
             }
-            ObjectTag attacker = map.getObject("attacker");
-            return new ElementTag(NMSHandler.enchantmentHelper.getDamageProtection(object.enchantment, new ElementTag(level.toString()).asInt(), cause, attacker == null ? null : attacker.asType(EntityTag.class, attribute.context).getBukkitEntity()));
+            EntityTag attacker = map.getObjectAs("attacker", EntityTag.class, attribute.context);
+            return new ElementTag(NMSHandler.enchantmentHelper.getDamageProtection(object.enchantment, level.asInt(), cause, attacker == null ? null : attacker.getBukkitEntity()));
         });
     }
 

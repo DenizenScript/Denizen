@@ -3276,14 +3276,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             MapTag map = mechanism.valueAsType(MapTag.class);
-            ObjectTag entityObject = map.getObject("entity");
+            EntityTag entity = map.getObjectAs("entity", EntityTag.class, mechanism.context);
             ElementTag healthObject = map.getElement("health");
             ElementTag maxObject = map.getElement("max");
-            if (entityObject == null || healthObject == null) {
-                mechanism.echoError("Cannot run fake_entity_health - input map is missing keys.");
+            if (healthObject == null) {
+                mechanism.echoError("Cannot run fake_entity_health - input map is missing 'health' key.");
                 return;
             }
-            EntityTag entity = entityObject.asType(EntityTag.class, mechanism.context);
             double health = healthObject.asDouble();
             if (entity == null || !entity.isLivingEntity()) {
                 mechanism.echoError("Cannot run fake_entity_health - entity is invalid or not living.");

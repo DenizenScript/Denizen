@@ -208,9 +208,9 @@ public class CuboidBlockSet implements BlockSet {
         }
         for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
             try {
-                LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
-                int rotation = data.getObject("rotation").asElement().asInt();
-                EntityTag entity = data.getObject("entity").asType(EntityTag.class, CoreUtilities.noDebugContext);
+                LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
+                int rotation = data.getElement("rotation").asInt();
+                EntityTag entity = data.getObjectAs("entity", EntityTag.class, CoreUtilities.noDebugContext);
                 if (entity == null || offset == null) {
                     continue;
                 }
@@ -323,8 +323,8 @@ public class CuboidBlockSet implements BlockSet {
         }
         ListTag outEntities = new ListTag();
         for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
-            LocationTag offset = data.getObject("offset").asType(LocationTag.class, CoreUtilities.noDebugContext);
-            int rotation = data.getObject("rotation").asElement().asInt();
+            LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
+            int rotation = data.getElement("rotation").asInt();
             offset = new LocationTag((String) null, offset.getZ(), offset.getY(), -offset.getX() + 1, offset.getYaw(), offset.getPitch());
             rotation += 90;
             while (rotation >= 360) {

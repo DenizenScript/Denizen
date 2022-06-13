@@ -787,13 +787,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (inputMap == null) {
             return null;
         }
-        ObjectTag radiusObj = inputMap.getObject("radius");
-        ObjectTag pointsObj = inputMap.getObject("points");
-        if (radiusObj == null || pointsObj == null) {
-            return null;
-        }
-        ElementTag radiusElement = radiusObj.asElement();
-        ElementTag amountElement = pointsObj.asElement();
+        ElementTag radiusElement = inputMap.getElement("radius");
+        ElementTag amountElement = inputMap.getElement("points");
         if (radiusElement == null || amountElement == null) {
             return null;
         }
@@ -4385,12 +4380,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("spawner_custom_rules") && mechanism.requireObject(MapTag.class) && getBlockState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
             MapTag map = mechanism.valueAsType(MapTag.class);
-            ObjectTag skyMin = map.getObject("sky_min"), skyMax = map.getObject("sky_max"), blockMin = map.getObject("block_min"), blockMax = map.getObject("block_max");
+            ElementTag skyMin = map.getElement("sky_min"), skyMax = map.getElement("sky_max"), blockMin = map.getElement("block_min"), blockMax = map.getElement("block_max");
             if (skyMin == null || skyMax == null || blockMin == null || blockMax == null) {
                 mechanism.echoError("Invalid spawner_custom_rules input, missing map keys.");
                 return;
             }
-            NMSHandler.blockHelper.setSpawnerCustomRules(spawner, Integer.parseInt(skyMin.toString()), Integer.parseInt(skyMax.toString()), Integer.parseInt(blockMin.toString()), Integer.parseInt(blockMax.toString()));
+            NMSHandler.blockHelper.setSpawnerCustomRules(spawner, skyMin.asInt(), skyMax.asInt(), blockMin.asInt(), blockMax.asInt());
             spawner.update();
         }
 
@@ -5241,17 +5236,16 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     structure.setAuthor(author.toString());
                 }
             }
-            ObjectTag integrity = input.getObject("integrity");
+            ElementTag integrity = input.getElement("integrity");
             if (integrity != null) {
-                ElementTag integrityElement = integrity.asElement();
-                float integrityFloat = integrityElement.isFloat() ? integrityElement.asFloat() : -1;
+                float integrityFloat = integrity.isFloat() ? integrity.asFloat() : -1;
                 if (integrityFloat < 0 || integrityFloat > 1) {
                     mechanism.echoError("Invalid integrity input '" + integrity + "': must be a decimal between 0 and 1.");
                     return;
                 }
                 structure.setIntegrity(integrityFloat);
             }
-            ObjectTag metadata = input.getObject("metadata");
+            ElementTag metadata = input.getElement("metadata");
             if (metadata != null) {
                 if (structure.getUsageMode() != UsageMode.DATA) {
                     mechanism.echoError("metadata can only be set while in DATA mode.");
@@ -5259,104 +5253,90 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 }
                 structure.setMetadata(metadata.toString());
             }
-            ObjectTag mirror = input.getObject("mirror");
+            ElementTag mirror = input.getElement("mirror");
             if (mirror != null) {
-                Mirror mirrorEnum = mirror.asElement().asEnum(Mirror.class);
+                Mirror mirrorEnum = mirror.asEnum(Mirror.class);
                 if (mirrorEnum == null) {
                     mechanism.echoError("Invalid mirror input '" + mirror + "': check meta docs for more information.");
                     return;
                 }
                 structure.setMirror(mirrorEnum);
             }
-            ObjectTag boxPosition = input.getObject("box_position");
-            if (boxPosition != null) {
-                LocationTag boxPositionLoc = boxPosition.asType(LocationTag.class, mechanism.context);
-                if (boxPositionLoc == null) {
-                    mechanism.echoError("Invalid box_position input '" + boxPosition + "': must be a LocationTag.");
-                    return;
-                }
+            LocationTag boxPositionLoc = input.getObjectAs("box_position", LocationTag.class, mechanism.context);
+            if (boxPositionLoc != null) {
                 int x = boxPositionLoc.getBlockX();
                 int y = boxPositionLoc.getBlockY();
                 int z = boxPositionLoc.getBlockZ();
                 if (x < -48 || x > 48 || y < -48 || y > 48 || z < -48 || z > 48) {
-                    mechanism.echoError("Invalid box_position input '" + boxPosition + "': must be within 48 blocks of the structure block.");
+                    mechanism.echoError("Invalid box_position input '" + boxPositionLoc + "': must be within 48 blocks of the structure block.");
                     return;
                 }
                 structure.setRelativePosition(new BlockVector(boxPositionLoc.toVector()));
             }
-            ObjectTag rotation = input.getObject("rotation");
+            ElementTag rotation = input.getElement("rotation");
             if (rotation != null) {
-                StructureRotation rotationEnum = rotation.asElement().asEnum(StructureRotation.class);
+                StructureRotation rotationEnum = rotation.asEnum(StructureRotation.class);
                 if (rotationEnum == null) {
                     mechanism.echoError("Invalid rotation input '" + rotation + "': check meta docs for more information.");
                     return;
                 }
                 structure.setRotation(rotationEnum);
             }
-            ObjectTag seed = input.getObject("seed");
+            ElementTag seed = input.getElement("seed");
             if (seed != null) {
-                ElementTag seedElement = seed.asElement();
-                if (!seedElement.isInt()) {
+                if (!seed.isInt()) {
                     mechanism.echoError("Invalid seed input '" + seed + "': must be an integer.");
                     return;
                 }
-                structure.setSeed(seedElement.asLong());
+                structure.setSeed(seed.asLong());
             }
-            ObjectTag structureName = input.getObject("structure_name");
+            ElementTag structureName = input.getElement("structure_name");
             if (structureName != null) {
                 structure.setStructureName(structureName.toString());
             }
-            ObjectTag size = input.getObject("size");
-            if (size != null) {
-                LocationTag sizeLoc = size.asType(LocationTag.class, mechanism.context);
-                if (sizeLoc == null) {
-                    mechanism.echoError("Invalid size input '" + size + "': must be a LocationTag.");
-                    return;
-                }
+            LocationTag sizeLoc = input.getObjectAs("size", LocationTag.class, mechanism.context);
+            if (sizeLoc != null) {
                 int x = sizeLoc.getBlockX();
                 int y = sizeLoc.getBlockY();
                 int z = sizeLoc.getBlockZ();
                 if (x < 0 || x > 48 || y < 0 || y > 48 || z < 0 || z > 48) {
-                    mechanism.echoError("Invalid size input '" + size + "': cannot be larger than 48,48,48 or smaller than 0,0,0.");
+                    mechanism.echoError("Invalid size input '" + sizeLoc + "': cannot be larger than 48,48,48 or smaller than 0,0,0.");
                     return;
                 }
                 structure.setStructureSize(new BlockVector(sizeLoc.toVector()));
             }
-            ObjectTag mode = input.getObject("mode");
+            ElementTag mode = input.getElement("mode");
             if (mode != null) {
-                UsageMode usageMode = mode.asElement().asEnum(UsageMode.class);
+                UsageMode usageMode = mode.asEnum(UsageMode.class);
                 if (usageMode == null) {
                     mechanism.echoError("Invalid mode input '" + mode + "': check meta docs for more information.");
                     return;
                 }
                 structure.setUsageMode(usageMode);
             }
-            ObjectTag boxVisible = input.getObject("box_visible");
+            ElementTag boxVisible = input.getElement("box_visible");
             if (boxVisible != null) {
-                ElementTag boxVisibleElement = boxVisible.asElement();
-                if (!boxVisibleElement.isBoolean()) {
+                if (!boxVisible.isBoolean()) {
                     mechanism.echoError("Invalid box_visible input '" + boxVisible + "': must be a boolean.");
                     return;
                 }
-                structure.setBoundingBoxVisible(boxVisibleElement.asBoolean());
+                structure.setBoundingBoxVisible(boxVisible.asBoolean());
             }
-            ObjectTag ignoreEntities = input.getObject("ignore_entities");
+            ElementTag ignoreEntities = input.getElement("ignore_entities");
             if (ignoreEntities != null) {
-                ElementTag ignoreEntitiesElement = ignoreEntities.asElement();
-                if (!ignoreEntitiesElement.isBoolean()) {
+                if (!ignoreEntities.isBoolean()) {
                     mechanism.echoError("Invalid ignore_entities input '" + ignoreEntities + "': must be a boolean.");
                     return;
                 }
-                structure.setIgnoreEntities(ignoreEntitiesElement.asBoolean());
+                structure.setIgnoreEntities(ignoreEntities.asBoolean());
             }
-            ObjectTag showInvisible = input.getObject("show_invisible");
+            ElementTag showInvisible = input.getElement("show_invisible");
             if (showInvisible != null) {
-                ElementTag showInvisibleElement = showInvisible.asElement();
-                if (!showInvisibleElement.isBoolean()) {
+                if (!showInvisible.isBoolean()) {
                     mechanism.echoError("Invalid show_invisible input '" + showInvisible + "': must be a boolean.");
                     return;
                 }
-                structure.setShowAir(showInvisibleElement.asBoolean());
+                structure.setShowAir(showInvisible.asBoolean());
             }
             structure.update();
         }

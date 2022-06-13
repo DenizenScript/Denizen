@@ -84,13 +84,13 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
                 }
                 for (int i = 0; i < offers.size(); i++) {
                     MapTag map = MapTag.getMapFor(offers.getObject(i), getTagContext(path));
-                    event.getOffers()[i].setCost(map.getObject("cost").asElement().asInt());
-                    ObjectTag enchantment = map.getObject("enchantment_type");
+                    event.getOffers()[i].setCost(map.getElement("cost").asInt());
+                    EnchantmentTag enchantment = map.getObjectAs("enchantment_type", EnchantmentTag.class, getTagContext(path));
                     if (enchantment == null) {
-                        enchantment = map.getObject("enchantment");
+                        enchantment = map.getObjectAs("enchantment", EnchantmentTag.class, getTagContext(path));
                     }
-                    event.getOffers()[i].setEnchantment(enchantment.asType(EnchantmentTag.class, getTagContext(path)).enchantment);
-                    event.getOffers()[i].setEnchantmentLevel(map.getObject("level").asElement().asInt());
+                    event.getOffers()[i].setEnchantment(enchantment.enchantment);
+                    event.getOffers()[i].setEnchantmentLevel(map.getElement("level").asInt());
                 }
                 return true;
             }
