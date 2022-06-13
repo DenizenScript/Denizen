@@ -311,8 +311,8 @@ public class ItemBook implements Property {
                     mechanism.echoError("Book input is an invalid map?");
                     return;
                 }
-                ObjectTag author = mapData.getObject("author");
-                ObjectTag title = mapData.getObject("title");
+                ElementTag author = mapData.getElement("author");
+                ElementTag title = mapData.getElement("title");
                 if (author != null && title != null) {
                     if (!item.getBukkitMaterial().equals(Material.WRITTEN_BOOK)) {
                         mechanism.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
@@ -322,12 +322,11 @@ public class ItemBook implements Property {
                         meta.setTitle(title.toString());
                     }
                 }
-                ObjectTag pages = mapData.getObject("pages");
+                ListTag pages = mapData.getObjectAs("pages", ListTag.class, mechanism.context);
                 if (pages != null) {
-                    ListTag pageList = ListTag.getListFor(pages, mechanism.context);
-                    ArrayList<BaseComponent[]> newPages = new ArrayList<>(pageList.size());
-                    for (int i = 0; i < pageList.size(); i++) {
-                        newPages.add(FormattedTextHelper.parse(pageList.get(i), ChatColor.BLACK));
+                    ArrayList<BaseComponent[]> newPages = new ArrayList<>(pages.size());
+                    for (int i = 0; i < pages.size(); i++) {
+                        newPages.add(FormattedTextHelper.parse(pages.get(i), ChatColor.BLACK));
                     }
                     meta.spigot().setPages(newPages);
                 }

@@ -84,19 +84,15 @@ public class EntityAttributeModifiers implements Property {
     }
 
     public static AttributeModifier modiferForMap(Attribute attr, MapTag map) {
-        ObjectTag name = map.getObject("name");
-        ObjectTag amount = map.getObject("amount");
-        ObjectTag operation = map.getObject("operation");
-        ObjectTag slot = map.getObject("slot");
-        ObjectTag id = map.getObject("id");
-        AttributeModifier.Operation operationValue;
-        EquipmentSlot slotValue;
+        ElementTag name = map.getElement("name");
+        ElementTag amount = map.getElement("amount");
+        ElementTag operation = map.getElement("operation");
+        ElementTag slot = map.getElement("slot", "any");
+        ElementTag id = map.getElement("id");
         UUID idValue;
         double amountValue;
-        try {
-            operationValue = AttributeModifier.Operation.valueOf(operation.toString().toUpperCase());
-        }
-        catch (IllegalArgumentException ex) {
+        AttributeModifier.Operation operationValue = operation.asEnum(AttributeModifier.Operation.class);
+        if (operationValue == null) {
             Debug.echoError("Attribute modifier operation '" + operation + "' does not exist.");
             return null;
         }
@@ -107,13 +103,7 @@ public class EntityAttributeModifiers implements Property {
             Debug.echoError("Attribute modifier ID '" + id + "' is not a valid UUID.");
             return null;
         }
-        try {
-            slotValue = slot == null || CoreUtilities.equalsIgnoreCase(slot.toString(), "any") ? null : EquipmentSlot.valueOf(slot.toString().toUpperCase());
-        }
-        catch (IllegalArgumentException ex) {
-            Debug.echoError("Attribute modifier slot '" + slot + "' is not a valid slot.");
-            return null;
-        }
+        EquipmentSlot slotValue = CoreUtilities.equalsIgnoreCase(slot.toString(), "any") ? null : slot.asEnum(EquipmentSlot.class);
         try {
             amountValue = Double.parseDouble(amount.toString());
         }

@@ -96,25 +96,25 @@ public class ItemArmorStand implements Property {
         if (mechanism.matches("armor_stand_data") && mechanism.requireObject(MapTag.class)) {
             MapTag map = mechanism.valueAsType(MapTag.class);
             ArmorStandMeta meta = (ArmorStandMeta) item.getItemMeta();
-            ObjectTag base_plate = map.getObject("base_plate");
-            ObjectTag visible = map.getObject("visible");
-            ObjectTag marker = map.getObject("marker");
-            ObjectTag is_small = map.getObject("is_small");
-            ObjectTag arms = map.getObject("arms");
+            ElementTag base_plate = map.getElement("base_plate");
+            ElementTag visible = map.getElement("visible");
+            ElementTag marker = map.getElement("marker");
+            ElementTag is_small = map.getElement("is_small");
+            ElementTag arms = map.getElement("arms");
             if (base_plate != null) {
-                meta.setNoBasePlate(!((ElementTag) base_plate).asBoolean());
+                meta.setNoBasePlate(!base_plate.asBoolean());
             }
             if (visible != null) {
-                meta.setInvisible(!((ElementTag) visible).asBoolean());
+                meta.setInvisible(!visible.asBoolean());
             }
             if (marker != null) {
-                meta.setMarker(((ElementTag) marker).asBoolean());
+                meta.setMarker(marker.asBoolean());
             }
             if (is_small != null) {
-                meta.setSmall(((ElementTag) is_small).asBoolean());
+                meta.setSmall(is_small.asBoolean());
             }
             if (arms != null) {
-                meta.setShowArms(((ElementTag) arms).asBoolean());
+                meta.setShowArms(arms.asBoolean());
             }
             item.setItemMeta(meta);
         }

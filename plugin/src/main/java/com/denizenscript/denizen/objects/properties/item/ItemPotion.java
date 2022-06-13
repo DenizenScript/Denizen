@@ -146,7 +146,7 @@ public class ItemPotion implements Property {
             return null;
         }
         if (effectMap.getObject("amplifier") != null) {
-            ElementTag amplifierElement = effectMap.getObject("amplifier").asElement();
+            ElementTag amplifierElement = effectMap.getElement("amplifier");
             if (amplifierElement.isInt()) {
                 amplifier = amplifierElement.asInt();
             }
@@ -164,7 +164,7 @@ public class ItemPotion implements Property {
             }
         }
         if (effectMap.getObject("ambient") != null) {
-            ElementTag ambientElement = effectMap.getObject("ambient").asElement();
+            ElementTag ambientElement = effectMap.getElement("ambient");
             if (ambientElement.isBoolean()) {
                 ambient = ambientElement.asBoolean();
             }
@@ -173,7 +173,7 @@ public class ItemPotion implements Property {
             }
         }
         if (effectMap.getObject("particles") != null) {
-            ElementTag particlesElement = effectMap.getObject("particles").asElement();
+            ElementTag particlesElement = effectMap.getElement("particles");
             if (particlesElement.isBoolean()) {
                 particles = particlesElement.asBoolean();
             }
@@ -182,7 +182,7 @@ public class ItemPotion implements Property {
             }
         }
         if (effectMap.getObject("icon") != null) {
-            ElementTag iconElement = effectMap.getObject("icon").asElement();
+            ElementTag iconElement = effectMap.getElement("icon");
             if (iconElement.isBoolean()) {
                 icon = iconElement.asBoolean();
             }
@@ -387,7 +387,7 @@ public class ItemPotion implements Property {
             if (firstObj.canBeType(MapTag.class)) {
                 MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
                 if (baseEffect.getObject("type") != null) {
-                    ElementTag typeElement = baseEffect.getObject("type").asElement();
+                    ElementTag typeElement = baseEffect.getElement("type");
                     if (!typeElement.matchesEnum(PotionType.class)) {
                         mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
                         return;
@@ -399,7 +399,7 @@ public class ItemPotion implements Property {
                     return;
                 }
                 if (baseEffect.getObject("upgraded") != null) {
-                    ElementTag upgradedElement = baseEffect.getObject("upgraded").asElement();
+                    ElementTag upgradedElement = baseEffect.getElement("upgraded");
                     if (upgradedElement.isBoolean()) {
                         upgraded = upgradedElement.asBoolean();
                     }
@@ -408,7 +408,7 @@ public class ItemPotion implements Property {
                     }
                 }
                 if (baseEffect.getObject("extended") != null) {
-                    ElementTag extendedElement = baseEffect.getObject("extended").asElement();
+                    ElementTag extendedElement = baseEffect.getElement("extended");
                     if (extendedElement.isBoolean()) {
                         extended = extendedElement.asBoolean();
                     }

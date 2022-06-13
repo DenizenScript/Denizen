@@ -217,20 +217,19 @@ public class ItemFirework implements Property {
                     if (object.canBeType(MapTag.class)) {
                         MapTag effectMap = object.asType(MapTag.class, mechanism.context);
                         FireworkEffect.Builder builder = FireworkEffect.builder();
-                        ObjectTag type = effectMap.getObject("type");
+                        ElementTag type = effectMap.getElement("type");
                         ObjectTag color = effectMap.getObject("color");
                         ObjectTag fadeColor = effectMap.getObject("fade_color");
-                        ObjectTag trail = effectMap.getObject("trail");
-                        ObjectTag flicker = effectMap.getObject("flicker");
-                        builder.trail(trail != null && trail.asElement().asBoolean());
-                        builder.flicker(flicker != null && flicker.asElement().asBoolean());
+                        ElementTag trail = effectMap.getElement("trail", "false");
+                        ElementTag flicker = effectMap.getElement("flicker", "false");
+                        builder.trail(trail.asBoolean());
+                        builder.flicker(flicker.asBoolean());
                         if (type != null) {
-                            ElementTag effectType = type.asElement();
-                            if (effectType.matchesEnum(FireworkEffect.Type.class)) {
-                                builder.with(FireworkEffect.Type.valueOf(effectType.asString().toUpperCase()));
+                            if (type.matchesEnum(FireworkEffect.Type.class)) {
+                                builder.with(type.asEnum(FireworkEffect.Type.class));
                             }
                             else {
-                                mechanism.echoError("Invalid firework type '" + effectType.asString() + "'");
+                                mechanism.echoError("Invalid firework type '" + type.asString() + "'");
                             }
                         }
                         ColorTag co = new ColorTag(Color.BLACK);

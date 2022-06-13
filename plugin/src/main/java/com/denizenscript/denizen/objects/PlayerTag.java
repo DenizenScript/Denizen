@@ -3277,19 +3277,19 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             MapTag map = mechanism.valueAsType(MapTag.class);
             ObjectTag entityObject = map.getObject("entity");
-            ObjectTag healthObject = map.getObject("health");
-            ObjectTag maxObject = map.getObject("max");
+            ElementTag healthObject = map.getElement("health");
+            ElementTag maxObject = map.getElement("max");
             if (entityObject == null || healthObject == null) {
                 mechanism.echoError("Cannot run fake_entity_health - input map is missing keys.");
                 return;
             }
             EntityTag entity = entityObject.asType(EntityTag.class, mechanism.context);
-            double health = new ElementTag(healthObject.toString()).asDouble();
+            double health = healthObject.asDouble();
             if (entity == null || !entity.isLivingEntity()) {
                 mechanism.echoError("Cannot run fake_entity_health - entity is invalid or not living.");
                 return;
             }
-            double max = maxObject == null ? entity.getLivingEntity().getMaxHealth() : maxObject.asElement().asDouble();
+            double max = maxObject == null ? entity.getLivingEntity().getMaxHealth() : maxObject.asDouble();
             NMSHandler.packetHelper.showMobHealth(getPlayerEntity(), entity.getLivingEntity(), health, max);
         }
 

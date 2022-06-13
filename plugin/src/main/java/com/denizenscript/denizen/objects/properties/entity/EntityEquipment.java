@@ -129,9 +129,9 @@ public class EntityEquipment implements Property {
             org.bukkit.inventory.EntityEquipment equip = entity.getLivingEntity().getEquipment();
             if (mechanism.value.canBeType(MapTag.class)) {
                 MapTag map = mechanism.valueAsType(MapTag.class);
-                ObjectTag boots = map.getObject("boots");
+                ItemTag boots = map.getObjectAs("boots", ItemTag.class, mechanism.context);
                 if (boots != null) {
-                    ItemStack bootsItem = boots.asType(ItemTag.class, mechanism.context).getItemStack();
+                    ItemStack bootsItem = boots.getItemStack();
                     if (entity.isCitizensNPC()) {
                         entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.BOOTS, bootsItem);
                     }
@@ -139,9 +139,9 @@ public class EntityEquipment implements Property {
                         equip.setBoots(bootsItem);
                     }
                 }
-                ObjectTag leggings = map.getObject("leggings");
+                ItemTag leggings = map.getObjectAs("leggings", ItemTag.class, mechanism.context);
                 if (leggings != null) {
-                    ItemStack leggingsItem = leggings.asType(ItemTag.class, mechanism.context).getItemStack();
+                    ItemStack leggingsItem = leggings.getItemStack();
                     if (entity.isCitizensNPC()) {
                         entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.LEGGINGS, leggingsItem);
                     }
@@ -149,9 +149,9 @@ public class EntityEquipment implements Property {
                         equip.setLeggings(leggingsItem);
                     }
                 }
-                ObjectTag chestplate = map.getObject("chestplate");
+                ItemTag chestplate = map.getObjectAs("chestplate", ItemTag.class, mechanism.context);
                 if (chestplate != null) {
-                    ItemStack chestplateItem = chestplate.asType(ItemTag.class, mechanism.context).getItemStack();
+                    ItemStack chestplateItem = chestplate.getItemStack();
                     if (entity.isCitizensNPC()) {
                         entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.CHESTPLATE, chestplateItem);
                     }
@@ -159,9 +159,9 @@ public class EntityEquipment implements Property {
                         equip.setChestplate(chestplateItem);
                     }
                 }
-                ObjectTag helmet = map.getObject("helmet");
+                ItemTag helmet = map.getObjectAs("helmet", ItemTag.class, mechanism.context);
                 if (helmet != null) {
-                    ItemStack helmetItem = helmet.asType(ItemTag.class, mechanism.context).getItemStack();
+                    ItemStack helmetItem = helmet.getItemStack();
                     if (entity.isCitizensNPC()) {
                         entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.HELMET, helmetItem);
                     }

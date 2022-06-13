@@ -799,13 +799,8 @@ public class BukkitElementProperties implements Property {
             if (inputMap == null) {
                 return null;
             }
-            ObjectTag fromObj = inputMap.getObject("from");
-            ObjectTag toObj = inputMap.getObject("to");
-            if (fromObj == null || toObj == null) {
-                return null;
-            }
-            ColorTag fromColor = fromObj.asType(ColorTag.class, attribute.context);
-            ColorTag toColor = toObj.asType(ColorTag.class, attribute.context);
+            ColorTag fromColor = inputMap.getObjectAs("from", ColorTag.class, attribute.context);
+            ColorTag toColor = inputMap.getObjectAs("to", ColorTag.class, attribute.context);
             if (fromColor == null || toColor == null) {
                 return null;
             }
@@ -880,13 +875,8 @@ public class BukkitElementProperties implements Property {
             if (inputMap == null) {
                 return null;
             }
-            ObjectTag fromObj = inputMap.getObject("from");
-            ObjectTag toObj = inputMap.getObject("to");
-            if (fromObj == null || toObj == null) {
-                return null;
-            }
-            ColorTag fromColor = fromObj.asType(ColorTag.class, attribute.context);
-            ColorTag toColor = toObj.asType(ColorTag.class, attribute.context);
+            ColorTag fromColor = inputMap.getObjectAs("from", ColorTag.class, attribute.context);
+            ColorTag toColor = inputMap.getObjectAs("to", ColorTag.class, attribute.context);
             if (fromColor == null || toColor == null) {
                 return null;
             }

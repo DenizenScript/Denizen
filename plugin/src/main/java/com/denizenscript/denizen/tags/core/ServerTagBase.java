@@ -2334,7 +2334,7 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.generate_loot_table[<map>]>
+        // @attribute <server.generate_loot_table[id=<id>;location=<location>;(killer=<entity>);(entity=<entity>);(loot_bonus=<#>);(luck=<#.#>)]>
         // @returns ListTag(ItemTag)
         // @description
         // Returns a list of items from a loot table, given a map of input data.
@@ -2353,8 +2353,8 @@ public class ServerTagBase {
         // -->
         else if (attribute.startsWith("generate_loot_table") && attribute.hasParam()) {
             MapTag map = attribute.paramAsType(MapTag.class);
-            ObjectTag idObj = map.getObject("id");
-            ObjectTag locationObj = map.getObject("location");
+            ElementTag idObj = map.getElement("id");
+            LocationTag locationObj = map.getObjectAs("location", LocationTag.class, attribute.context);
             if (idObj == null || locationObj == null) {
                 return;
             }
@@ -2363,16 +2363,16 @@ public class ServerTagBase {
                 return;
             }
             LootTable table = Bukkit.getLootTable(key);
-            LootContext.Builder context = new LootContext.Builder(locationObj.asType(LocationTag.class, attribute.context));
-            ObjectTag killer = map.getObject("killer");
-            ObjectTag luck = map.getObject("luck");
-            ObjectTag bonus = map.getObject("loot_bonus");
-            ObjectTag entity = map.getObject("entity");
+            LootContext.Builder context = new LootContext.Builder(locationObj);
+            EntityTag killer = map.getObjectAs("killer", EntityTag.class, attribute.context);
+            ElementTag luck = map.getElement("luck");
+            ElementTag bonus = map.getElement("loot_bonus");
+            EntityTag entity = map.getObjectAs("entity", EntityTag.class, attribute.context);
             if (entity != null) {
-                context = context.lootedEntity(entity.asType(EntityTag.class, attribute.context).getBukkitEntity());
+                context = context.lootedEntity(entity.getBukkitEntity());
             }
             if (killer != null) {
-                context = context.killer((HumanEntity) killer.asType(EntityTag.class, attribute.context).getLivingEntity());
+                context = context.killer((HumanEntity) killer.getLivingEntity());
             }
             if (luck != null) {
                 context = context.luck(luck.asElement().asFloat());
@@ -2711,7 +2711,7 @@ public class ServerTagBase {
         // -->
         if (mechanism.matches("register_permission") && mechanism.requireObject(MapTag.class)) {
             MapTag map = mechanism.valueAsType(MapTag.class);
-            ObjectTag name = map.getObject("name"), parent = map.getObject("parent"), mode = map.getObject("default"), description = map.getObject("description");
+            ElementTag name = map.getElement("name"), parent = map.getElement("parent"), mode = map.getElement("default"), description = map.getElement("description");
             Permission actualParent = parent == null ? null : Bukkit.getPluginManager().getPermission(parent.toString());
             PermissionDefault actualDef = mode == null ? null : mode.asElement().asEnum(PermissionDefault.class);
             if (actualParent == null) {

@@ -374,7 +374,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <EnchantmentTag.damage_protection[level=<level>;type=<cause>;attacker=<entity>]>
+        // @attribute <EnchantmentTag.damage_protection[level=<level>;type=<cause>;(attacker=<entity>)]>
         // @returns ElementTag(Number)
         // @description
         // Returns the damage protection this enchantment applies against the given damage cause and optional attacker.
