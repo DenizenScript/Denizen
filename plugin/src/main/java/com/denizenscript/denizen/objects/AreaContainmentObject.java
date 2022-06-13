@@ -206,7 +206,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location within the area.
-        // Optionally, specify a material match to only return locations with that block type.
+        // Optionally, specify a material matcher to only return locations with that block type.
         // -->
         processor.registerTag(ListTag.class, "blocks", (attribute, area) -> {
             if (attribute.hasParam()) {

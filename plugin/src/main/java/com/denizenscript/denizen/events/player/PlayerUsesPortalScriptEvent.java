@@ -31,7 +31,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Context
     // <context.from> returns the location teleported from.
-    // <context.to> returns the location teleported to.
+    // <context.to> returns the location teleported to (can sometimes be null).
     // <context.can_create> returns whether the server will attempt to create a destination portal.
     // <context.creation_radius> returns the radius that will be checked for a free space to create the portal in.
     // <context.search_radius> returns the radius that will be checked for an existing portal to teleport to.
@@ -66,7 +66,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         if (path.switches.containsKey("from") && !from.tryAdvancedMatcher(path.switches.get("from"))) {
             return false;
         }
-        if (to != null && path.switches.containsKey("to") && !to.tryAdvancedMatcher(path.switches.get("to"))) {
+        if (path.switches.containsKey("to") && (to == null || !to.tryAdvancedMatcher(path.switches.get("to")))) {
             return false;
         }
         return super.matches(path);
