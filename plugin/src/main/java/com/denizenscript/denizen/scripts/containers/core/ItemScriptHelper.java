@@ -595,20 +595,18 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onItemSmithing(PrepareSmithingEvent event) {
-        if (!isItemscript(event.getInventory().getItem(0))) {
-            return;
-        }
+        ItemStack inputItem = event.getInventory().getItem(0);
         Recipe recipe = event.getInventory().getRecipe();
         SmithingRecipe smithRecipe = (SmithingRecipe) recipe;
         if (smithRecipe == null || !(smithRecipe.getKey().getNamespace().equals("denizen"))) {
-            if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
+            if (!isAllowedToCraftWith(inputItem)) {
                 event.setResult(new ItemStack(Material.AIR));
             }
             return;
         }
         ItemScriptContainer realResult = recipeIdToItemScript.get(smithRecipe.getKey().toString());
         if (realResult == null) {
-            if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
+            if (!isAllowedToCraftWith(inputItem)) {
                 event.setResult(new ItemStack(Material.AIR));
             }
             return;
@@ -616,7 +614,7 @@ public class ItemScriptHelper implements Listener {
         String[] retain = smithingRetain.get(smithRecipe.getKey().getKey());
         if (retain == null) {
             Debug.echoError("Smithing recipe mis-registered for script item: " + realResult.getName());
-            if (!isAllowedToCraftWith(event.getInventory().getItem(0))) {
+            if (!isAllowedToCraftWith(inputItem)) {
                 event.setResult(new ItemStack(Material.AIR));
             }
             return;
@@ -633,11 +631,20 @@ public class ItemScriptHelper implements Listener {
             return;
         }
         if (retain.length > 0) {
-            ItemMeta originalMeta = event.getInventory().getItem(0).getItemMeta();
+            ItemMeta originalMeta = inputItem.getItemMeta();
             ItemMeta newMeta = got.getItemMeta();
             for (String retainable : retain) {
                 switch (retainable) {
-                    case "display": newMeta.setDisplayName(originalMeta.hasDisplayName() ? originalMeta.getDisplayName() : null); break;
+                    case "display":
+                        if (!originalMeta.hasDisplayName()) {
+                            newMeta.setDisplayName(null);
+                        }
+                        else {
+                            String originalName = NMSHandler.itemHelper.getDisplayName(new ItemTag(inputItem));
+                            NMSHandler.itemHelper.setDisplayName(got, originalName);
+                        }
+                        newMeta = got.getItemMeta();
+                        break;
                     case "enchantments":
                         if (newMeta.hasEnchants()) {
                             for (Enchantment enchant : new ArrayList<>(newMeta.getEnchants().keySet())) {
