@@ -356,14 +356,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For example, <[my_enchantment].damage_bonus[level=3;type=undead]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "damage_bonus", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            MapTag map = attribute.paramAsType(MapTag.class);
-            if (map == null) {
-                attribute.echoError("Invalid MapTag input to damage_bonus - not a valid map.");
-                return null;
-            }
+            MapTag map = attribute.inputParameterMap();
             ElementTag level = map.getElement("level");
             ElementTag type = map.getElement("type");
             if (level == null || type == null) {
@@ -383,18 +376,10 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For example, <[my_enchantment].damage_protection[level=3;type=undead]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "damage_protection", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            MapTag map = attribute.paramAsType(MapTag.class);
-            if (map == null) {
-                attribute.echoError("Invalid MapTag input to damage_protection - not a valid map.");
-                return null;
-            }
-            ElementTag level = map.getElement("level");
-            ElementTag type = map.getElement("type");
+            MapTag map = attribute.inputParameterMap();
+            ElementTag level = map.getRequiredObjectAs("level", ElementTag.class, attribute);
+            ElementTag type = map.getRequiredObjectAs("type", ElementTag.class, attribute);
             if (level == null || type == null) {
-                attribute.echoError("Invalid MapTag input to damage_protection - missing 'level' or 'type'");
                 return null;
             }
             EntityDamageEvent.DamageCause cause;

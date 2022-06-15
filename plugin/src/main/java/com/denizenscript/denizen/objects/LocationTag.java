@@ -780,15 +780,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     public static double[] parsePointsAroundArgs(Attribute attribute) {
-        if (!attribute.hasParam()) {
-            return null;
-        }
-        MapTag inputMap = attribute.paramAsType(MapTag.class);
-        if (inputMap == null) {
-            return null;
-        }
-        ElementTag radiusElement = inputMap.getElement("radius");
-        ElementTag amountElement = inputMap.getElement("points");
+        MapTag inputMap = attribute.inputParameterMap();
+        ElementTag radiusElement = inputMap.getRequiredObjectAs("radius", ElementTag.class, attribute);
+        ElementTag amountElement = inputMap.getRequiredObjectAs("points", ElementTag.class, attribute);
         if (radiusElement == null || amountElement == null) {
             return null;
         }

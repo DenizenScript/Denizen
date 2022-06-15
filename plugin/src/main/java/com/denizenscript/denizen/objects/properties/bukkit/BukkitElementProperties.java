@@ -788,20 +788,14 @@ public class BukkitElementProperties implements Property {
         // Or: <element[this looks kinda like fire doesn't it].color_gradient[from=#FF0000;to=#FFFF00]>
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "color_gradient", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
             String str = object.asString();
             int length = ChatColor.stripColor(str).length();
             if (length == 0) {
                 return new ElementTag("");
             }
-            MapTag inputMap = attribute.paramAsType(MapTag.class);
-            if (inputMap == null) {
-                return null;
-            }
-            ColorTag fromColor = inputMap.getObjectAs("from", ColorTag.class, attribute.context);
-            ColorTag toColor = inputMap.getObjectAs("to", ColorTag.class, attribute.context);
+            MapTag inputMap = attribute.inputParameterMap();
+            ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
+            ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
             if (fromColor == null || toColor == null) {
                 return null;
             }
@@ -864,20 +858,14 @@ public class BukkitElementProperties implements Property {
         // Specify the input as a map with keys 'from' and 'to' both set to hex colors (or any valid ColorTag).
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "hsb_color_gradient", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
             String str = object.asString();
             int length = ChatColor.stripColor(str).length();
             if (length == 0) {
                 return new ElementTag("");
             }
-            MapTag inputMap = attribute.paramAsType(MapTag.class);
-            if (inputMap == null) {
-                return null;
-            }
-            ColorTag fromColor = inputMap.getObjectAs("from", ColorTag.class, attribute.context);
-            ColorTag toColor = inputMap.getObjectAs("to", ColorTag.class, attribute.context);
+            MapTag inputMap = attribute.inputParameterMap();
+            ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
+            ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
             if (fromColor == null || toColor == null) {
                 return null;
             }

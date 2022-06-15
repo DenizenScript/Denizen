@@ -2352,9 +2352,9 @@ public class ServerTagBase {
         // - give <server.generate_loot_table[id=chests/spawn_bonus_chest;killer=<player>;location=<player.location>]>
         // -->
         else if (attribute.startsWith("generate_loot_table") && attribute.hasParam()) {
-            MapTag map = attribute.paramAsType(MapTag.class);
-            ElementTag idObj = map.getElement("id");
-            LocationTag locationObj = map.getObjectAs("location", LocationTag.class, attribute.context);
+            MapTag map = attribute.inputParameterMap();
+            ElementTag idObj = map.getRequiredObjectAs("id", ElementTag.class, attribute);
+            LocationTag locationObj = map.getRequiredObjectAs("location", LocationTag.class, attribute);
             if (idObj == null || locationObj == null) {
                 return;
             }
