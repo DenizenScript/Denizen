@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,5 +117,10 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public void sendConsoleMessage(CommandSender sender, String text) {
         sender.sendMessage(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+    }
+
+    @Override
+    public InventoryView openAnvil(Player player) {
+        return player.openAnvil(null, true);
     }
 }

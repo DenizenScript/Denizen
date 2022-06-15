@@ -1,8 +1,10 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
@@ -18,7 +20,10 @@ import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.AbstractMap;
@@ -287,6 +292,12 @@ public class InventoryCommand extends AbstractCommand {
                     if (destination.getIdType().equals("workbench")
                             || destination.getIdHolder().equals(new ElementTag("workbench"))) {
                         Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().openWorkbench(null, true);
+                    }
+                    else if (Denizen.supportsPaper && destination.getInventoryType() == InventoryType.ANVIL && destination.getInventory().getLocation() == null) {
+                        InventoryView view = AdvancedTextImpl.instance.openAnvil(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity());
+                        AnvilInventory anvil = (AnvilInventory) view.getTopInventory();
+                        anvil.setContents(destination.getContents());
+
                     }
                     // Otherwise, open inventory as usual
                     else {

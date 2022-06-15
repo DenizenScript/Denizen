@@ -1832,7 +1832,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.ray_trace[(range=<#.#>/{200});(return=<{precise}/block/normal>);(default=<{null}/air>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>);(ignore=<entity|...>);(raysize=<#.#>/{0})]>
+        // @attribute <LocationTag.ray_trace[(range=<#.#>/{200});(return=<{precise}/block/normal>);(default=<{null}/air>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>);(ignore=<entity>|...);(raysize=<#.#>/{0})]>
         // @returns LocationTag
         // @group world
         // @description
@@ -1842,10 +1842,10 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Optionally specify:
         // range: (defaults to 200) a maximum distance (in blocks) to trace before giving up.
         // return: (defaults to precise)
-        //     specify "precise" to return the exact location of the hit,
+        //     specify "precise" to return the exact location of the hit (if it hits a block, returns a location along the edge of the block -- but if it hits an entity, returns a location along the body of the entity)
         //     "normal" to return the normal vector of the impact location,
-        //     or "block" to return the location of the block hit (block returns the default if an entity is in the way, precise returns a location when an entity is in the way).
-        //     For "precise" and "block", the location's direction is set to the direction of the blockface hit (or entity bounding box face).
+        //     or "block" to return the location of the block hit (if it hits an entity, returns equivalent to 'precise')
+        //     For "precise" and "block", the location's direction is set to the direction of the block face hit (or entity bounding box face), pointing exactly away from whatever was hit (the 'normal' direction).
         // default: (defaults to "null")
         //     specify "null" to return null when nothing is hit,
         //     or "air" to return the location of the air at the end of the trace (NOTE: can potentially be in water or other ignored block type, not just literal air).
@@ -1899,6 +1899,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (CoreUtilities.equalsIgnoreCase(returnMode, "block")) {
                     if (traced.getHitBlock() != null) {
                         result = new LocationTag(traced.getHitBlock().getLocation());
+                    }
+                    else if (CoreUtilities.equalsIgnoreCase(defaultMode, "air")) {
+                        result = new LocationTag(object.getWorld(), traced.getHitPosition());
                     }
                 }
                 else if (CoreUtilities.equalsIgnoreCase(returnMode, "normal")) {

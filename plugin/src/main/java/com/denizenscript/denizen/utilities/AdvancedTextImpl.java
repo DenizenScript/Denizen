@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 
 public class AdvancedTextImpl {
 
@@ -94,5 +95,9 @@ public class AdvancedTextImpl {
 
     public void sendConsoleMessage(CommandSender sender, String text) {
         sender.spigot().sendMessage(FormattedTextHelper.parse(text, net.md_5.bungee.api.ChatColor.WHITE));
+    }
+
+    public InventoryView openAnvil(Player player) {
+        throw new UnsupportedOperationException();
     }
 }
