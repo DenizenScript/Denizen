@@ -48,7 +48,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //     type: inventory
     //
     //     # Must be a valid inventory type.
-    //     # Valid inventory types: BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, WORKBENCH
+    //     # Valid inventory types: ANVIL, BREWING, CHEST, DISPENSER, ENCHANTING, ENDER_CHEST, HOPPER, WORKBENCH
     //     # | All inventory scripts MUST have this key!
     //     inventory: inventory type
     //

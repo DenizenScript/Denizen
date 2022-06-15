@@ -97,7 +97,7 @@ public class AdvancedTextImpl {
         sender.spigot().sendMessage(FormattedTextHelper.parse(text, net.md_5.bungee.api.ChatColor.WHITE));
     }
 
-    public InventoryView openAnvil(Player player) {
+    public InventoryView openAnvil(Player player, Location loc) {
         throw new UnsupportedOperationException();
     }
 }

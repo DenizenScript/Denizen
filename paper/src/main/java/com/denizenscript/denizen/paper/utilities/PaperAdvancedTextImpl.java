@@ -120,7 +120,7 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     }
 
     @Override
-    public InventoryView openAnvil(Player player) {
-        return player.openAnvil(null, true);
+    public InventoryView openAnvil(Player player, Location loc) {
+        return player.openAnvil(loc, true);
     }
 }

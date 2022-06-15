@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.inventory.InventoryTrackerSystem;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.*;
@@ -20,18 +21,22 @@ import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class InventoryCommand extends AbstractCommand {
+public class InventoryCommand extends AbstractCommand implements Listener {
 
     public InventoryCommand() {
         setName("inventory");
@@ -39,6 +44,7 @@ public class InventoryCommand extends AbstractCommand {
         setRequiredArguments(1, 6);
         isProcedural = false;
         allowedDynamicPrefixes = true;
+        Bukkit.getPluginManager().registerEvents(this, Denizen.instance);
     }
 
     // <--[language]
@@ -255,6 +261,53 @@ public class InventoryCommand extends AbstractCommand {
         }
     }
 
+    public ObjectTag currentScriptInvHolder;
+    public Player currentScriptInvPlayer;
+    public Location currentScriptInvLocation;
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onOpen(InventoryOpenEvent event) {
+        if (currentScriptInvHolder == null || currentScriptInvPlayer == null) {
+            return;
+        }
+        if (event.getInventory().getLocation() == null || currentScriptInvLocation.distanceSquared(event.getInventory().getLocation()) > 1) {
+            return;
+        }
+        if (!event.getPlayer().getUniqueId().equals(currentScriptInvPlayer.getUniqueId())) {
+            return;
+        }
+        InventoryTag newTag = new InventoryTag(event.getInventory(), "script", currentScriptInvHolder);
+        InventoryTrackerSystem.trackTemporaryInventory(event.getInventory(), newTag);
+    }
+
+    public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination) {
+        try {
+            if (destination.getIdType().equals("script")) {
+                currentScriptInvHolder = destination.getIdHolder();
+                currentScriptInvPlayer = player;
+                currentScriptInvLocation = player.getLocation();
+                currentScriptInvLocation.setY(-1000);
+            }
+            InventoryView view;
+            if (type == InventoryType.ANVIL) {
+                view = AdvancedTextImpl.instance.openAnvil(player, currentScriptInvLocation);
+            }
+            else if (type == InventoryType.WORKBENCH) {
+                view = player.openWorkbench(currentScriptInvLocation, true);
+            }
+            else {
+                return;
+            }
+            Inventory newInv = view.getTopInventory();
+            newInv.setContents(destination.getContents());
+        }
+        finally {
+            currentScriptInvHolder = null;
+            currentScriptInvPlayer = null;
+            currentScriptInvLocation = null;
+        }
+    }
+
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
@@ -284,29 +337,23 @@ public class InventoryCommand extends AbstractCommand {
         if (origin != null) {
             InventoryTag.trackTemporaryInventory(origin);
         }
+        PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {
                 // Make the attached player open the destination inventory
                 case OPEN:
-                    // Use special method to make opening workbenches work properly
-                    if (destination.getIdType().equals("workbench")
-                            || destination.getIdHolder().equals(new ElementTag("workbench"))) {
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().openWorkbench(null, true);
-                    }
-                    else if (Denizen.supportsPaper && destination.getInventoryType() == InventoryType.ANVIL && destination.getInventory().getLocation() == null) {
-                        InventoryView view = AdvancedTextImpl.instance.openAnvil(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity());
-                        AnvilInventory anvil = (AnvilInventory) view.getTopInventory();
-                        anvil.setContents(destination.getContents());
-
+                    // Use special method to make opening workbenches and anvils work properly
+                    if ((destination.getInventoryType() == InventoryType.WORKBENCH || (destination.getInventoryType() == InventoryType.ANVIL && Denizen.supportsPaper)) && destination.getInventory().getLocation() == null) {
+                        doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination);
                     }
                     // Otherwise, open inventory as usual
                     else {
-                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().openInventory(destination.getInventory());
+                        player.getPlayerEntity().openInventory(destination.getInventory());
                     }
                     break;
                 // Make the attached player close any open inventory
                 case CLOSE:
-                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().closeInventory();
+                    player.getPlayerEntity().closeInventory();
                     break;
                 // Turn destination's contents into a copy of origin's
                 case COPY:
