@@ -20,7 +20,7 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when a block fades, melts or disappears based on world conditions.
+    // @Triggers when a block fades, melts, or disappears based on world conditions.
     //
     // @Context
     // <context.location> returns the LocationTag the block faded at.

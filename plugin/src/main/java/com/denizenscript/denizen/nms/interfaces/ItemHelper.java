@@ -15,16 +15,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.UUID;
 
 public abstract class ItemHelper {
 
-    public void setMaxStackSize(Material material, int size) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void setMaxStackSize(Material material, int size);
 
     public abstract Integer burnTime(Material material);
 
@@ -34,9 +31,7 @@ public abstract class ItemHelper {
 
     public abstract void clearDenizenRecipes();
 
-    public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact);
 
     public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact);
 
@@ -62,47 +57,21 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
-    public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact);
 
-    public void setInventoryItem(Inventory inventory, ItemStack item, int slot) {
-        inventory.setItem(slot, item);
-    }
+    public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
 
-    public IntArrayTag convertUuidToNbt(UUID id) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract IntArrayTag convertUuidToNbt(UUID id);
 
-    public UUID convertNbtToUuid(IntArrayTag id) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract UUID convertNbtToUuid(IntArrayTag id);
 
-    public String getDisplayName(ItemTag item) {
-        if (!item.getItemMeta().hasDisplayName()) {
-            return null;
-        }
-        return item.getItemMeta().getDisplayName();
-    }
+    public abstract String getDisplayName(ItemTag item);
 
-    public List<String> getLore(ItemTag item) {
-        if (!item.getItemMeta().hasLore()) {
-            return null;
-        }
-        return item.getItemMeta().getLore();
-    }
+    public abstract List<String> getLore(ItemTag item);
 
-    public void setDisplayName(ItemTag item, String name) {
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        item.setItemMeta(meta);
-    }
+    public abstract void setDisplayName(ItemTag item, String name);
 
-    public void setLore(ItemTag item, List<String> lore) {
-        ItemMeta meta = item.getItemMeta();
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-    }
+    public abstract void setLore(ItemTag item, List<String> lore);
 
     public boolean renderEntireMap(int mapId, int xMin, int zMin, int xMax, int zMax) {
         throw new UnsupportedOperationException();

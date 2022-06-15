@@ -111,7 +111,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //     # | Most item scripts should exclude this key, unless you're specifically building craftable items.
     //     recipes:
     //         1:
-    //             # The type can be: shaped, shapeless, stonecutting, furnace, blast, smoker, or campfire.
+    //             # The type can be: shaped, shapeless, stonecutting, furnace, blast, smoker, campfire, or smithing.
     //             # | All recipes must include this key!
     //             type: shaped
     //             # The recipe can optionally have a custom internal recipe ID (for recipe books).

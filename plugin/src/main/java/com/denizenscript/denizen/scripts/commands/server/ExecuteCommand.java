@@ -53,6 +53,7 @@ public class ExecuteCommand extends AbstractCommand {
     // This can be considered the inverse of '/ex' (a Bukkit command that executes Denizen script commands).
     //
     // The 'silent' option can be specified with 'as_server' to hide the output. Note that 'silent' might or might not work with different plugins depending on how they operate.
+    // It can also be used with 'as_player' or 'as_op' to use network interception to silence the command output to player chat.
     //
     // Generally, you should never use this to execute a vanilla command, there is almost always a script command that should be used instead.
     // Usually the 'execute' command should be reserved for interacting with external plugins.
