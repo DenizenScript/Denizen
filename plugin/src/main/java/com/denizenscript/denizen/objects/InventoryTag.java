@@ -2183,8 +2183,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // -->
         tagProcessor.registerTag(ElementTag.class, "recipe", (attribute, object) -> {
             Recipe recipe;
-            if ((object.inventory instanceof CraftingInventory)) {
+            if (object.inventory instanceof CraftingInventory) {
                 recipe = ((CraftingInventory) object.inventory).getRecipe();
+            }
+            else if (object.inventory instanceof SmithingInventory) {
+                recipe = ((SmithingInventory) object.inventory).getRecipe();
             }
             else {
                 return null;
