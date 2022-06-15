@@ -2334,7 +2334,7 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.generate_loot_table[id=<id>;location=<location>;(killer=<entity>);(entity=<entity>);(loot_bonus=<#>);(luck=<#.#>)]>
+        // @attribute <server.generate_loot_table[id=<id>;location=<location>;(killer=<entity>);(entity=<entity>);(loot_bonus=<#>/{-1});(luck=<#.#>/{0})]>
         // @returns ListTag(ItemTag)
         // @description
         // Returns a list of items from a loot table, given a map of input data.

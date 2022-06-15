@@ -256,6 +256,8 @@ public class BukkitImplDeprecations {
     // Added 2022/05/07, deprecate officially by 2024.
     public static Warning armorStandDisabledSlotsOldFormat = new FutureWarning("armorStandDisabledSlotsOldFormat", "The EntityTag.disabled_slots tag and the SLOT/ACTION format in the EntityTag.disabled_slots mechanism are deprecated in favour of the EntityTag.disabled_slots_data tag and the MapTag format.");
 
+    // Added 2021/06/15, deprecate officially by 2024.
+    public static Warning locationOldCursorOn = new FutureWarning("locationOldCursorOn", "Several of the old 'LocationTag.cursor_on', 'precise_target_position', 'precise_impact_normal' variants are deprecated in favor of the 'ray_trace' tags.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

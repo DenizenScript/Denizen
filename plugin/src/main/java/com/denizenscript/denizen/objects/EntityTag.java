@@ -1605,9 +1605,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the location of the solid block the entity is looking at.
         // Optionally, specify a maximum range to find the location from (defaults to 200).
-        // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
         // Note that this will return null if there is no solid block in range.
         // This only uses solid blocks, ie it ignores passable blocks like tall-grass. Use <@link tag EntityTag.cursor_on> to include passable blocks.
+        // Equivalent to <EntityTag.eye_location.ray_trace[return=block]>
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "cursor_on_solid", (attribute, object) -> {
             double range = attribute.getDoubleParam();
@@ -1631,6 +1631,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
         // Note that this will return null if there is no block in range.
         // This uses all blocks, ie it includes passable blocks like tall-grass and water. Use <@link tag EntityTag.cursor_on_solid> to exclude passable blocks.
+        // Equivalent to <EntityTag.eye_location.ray_trace[return=block;fluids=true;nonsolids=true]>
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "cursor_on", (attribute, object) -> {
             double range = attribute.getDoubleParam();

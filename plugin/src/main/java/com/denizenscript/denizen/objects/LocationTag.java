@@ -54,6 +54,7 @@ import org.bukkit.util.*;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
 
@@ -1831,15 +1832,106 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.precise_impact_normal[(<range>)]>
+        // @attribute <LocationTag.ray_trace[(range=<#.#>/{200});(return=<{precise}/block/normal>);(default=<{null}/air>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>);(ignore=<entity|...>);(raysize=<#.#>/{0})]>
         // @returns LocationTag
         // @group world
         // @description
-        // Returns the exact impact normal at the location this location is pointing at.
-        // In minecraft, the impact normal is generally the side of the block that the location is facing.
-        // Optionally, specify a maximum range to find the location from (defaults to 200).
+        // Traces a line from this location, in the direction its facing, towards whatever block it hits first, and returns the location of where it hit.
+        // This tag has also been referred to as 'cursor_on' or 'precise_cursor_on' in the past.
+        // Using 'return=normal' instead replaces the old 'precise_impact_normal' tag.
+        // Optionally specify:
+        // range: (defaults to 200) a maximum distance (in blocks) to trace before giving up.
+        // return: (defaults to precise)
+        //     specify "precise" to return the exact location of the hit,
+        //     "normal" to return the normal vector of the impact location,
+        //     or "block" to return the location of the block hit (block returns the default if an entity is in the way, precise returns a location when an entity is in the way).
+        //     For "precise" and "block", the location's direction is set to the direction of the blockface hit (or entity bounding box face).
+        // default: (defaults to "null")
+        //     specify "null" to return null when nothing is hit,
+        //     or "air" to return the location of the air at the end of the trace (NOTE: can potentially be in water or other ignored block type, not just literal air).
+        // fluids: (defaults to false) specify "true" to count fluids like water as solid, or "false" to ignore them.
+        // nonsolids: (defaults to false) specify "true" to count passable blocks (like tallgrass) as solid, or false to ignore them.
+        // entities: (defaults to none) specify an entity matcher for entities to count as blocking the trace, "*" for any entity counts, or leave off (or empty) to ignore entities.
+        // ignore: (defaults to none) optional list of EntityTags to ignore even if they match the matcher.
+        // raysize: (defaults to 0) sets the radius of the ray being used to trace entities (and NOT for blocks!).
+        //
+        // @example
+        // # Destroys whatever solid block the player is looking at.
+        // - define target <player.eye_location.ray_trace[return=block]||null>
+        // - if <[target]> != null:
+        //     - modifyblock <[target]> air
+        //
+        // @example
+        // # Spawns a heart wherever the player is looking, no more than 5 blocks away.
+        // - playeffect effect:heart offset:0 at:<player.eye_location.ray_trace[range=5;entities=*;ignore=<player>;fluids=true;nonsolids=true;default=air]>
+        //
+        // @example
+        // # Spawns a line of fire starting at the player's target location and spewing out in the direction of the blockface hit, demonstrating the concept of a normal vector.
+        // - define hit at:<player.eye_location.ray_trace[entities=*;ignore=<player>;fluids=true;nonsolids=true]||null>
+        // - if <[hit]> != null:
+        //     - playeffect effect:flame offset:0 at:<[hit].points_between[<[hit].forward[2]>].distance[0.2]>
+        //
+        // -->
+        tagProcessor.registerTag(LocationTag.class, "ray_trace", (attribute, object) -> {
+            if (object.getWorld() == null) {
+                return null;
+            }
+            MapTag input = attribute.inputParameterMap();
+            double range = input.getElement("range", "200").asDouble();
+            String returnMode = input.getElement("return", "precise").asString();
+            String defaultMode = input.getElement("default", "null").asString();
+            boolean fluids = input.getElement("fluids", "false").asBoolean();
+            boolean nonsolids = input.getElement("nonsolids", "false").asBoolean();
+            String entitiesMatcher = input.getElement("entities", "").asString();
+            double raySize = input.getElement("raysize", "0").asDouble();
+            List<EntityTag> ignore = input.getObjectAs("ignore", ListTag.class, attribute.context, ListTag::new).filter(EntityTag.class, attribute.context);
+            HashSet<UUID> ignoreIds = ignore.stream().map(EntityTag::getUUID).collect(Collectors.toCollection(HashSet::new));
+            Vector direction = object.getDirection();
+            RayTraceResult traced;
+            if (entitiesMatcher.isEmpty()) {
+                traced = object.getWorld().rayTraceBlocks(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids);
+            }
+            else {
+                traced = object.getWorld().rayTrace(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids, raySize, (e) -> !ignoreIds.contains(e.getUniqueId()) && new EntityTag(e).tryAdvancedMatcher(entitiesMatcher));
+            }
+            if (traced != null) {
+                LocationTag result = null;
+                if (CoreUtilities.equalsIgnoreCase(returnMode, "block")) {
+                    if (traced.getHitBlock() != null) {
+                        result = new LocationTag(traced.getHitBlock().getLocation());
+                    }
+                }
+                else if (CoreUtilities.equalsIgnoreCase(returnMode, "normal")) {
+                    if (traced.getHitBlockFace() != null) {
+                        return new LocationTag(traced.getHitBlockFace().getDirection());
+                    }
+                }
+                else {
+                    result = new LocationTag(object.getWorld(), traced.getHitPosition());
+                }
+                if (result != null) {
+                    if (traced.getHitBlockFace() != null) {
+                        result.setDirection(traced.getHitBlockFace().getDirection());
+                    }
+                    return result;
+                }
+            }
+            if (CoreUtilities.equalsIgnoreCase(defaultMode, "air")) {
+                return object.clone().add(direction.clone().multiply(range));
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.precise_impact_normal[(<range>)]>
+        // @returns LocationTag
+        // @group world
+        // @deprecated use "ray_trace[return=normal]" instead.
+        // @description
+        // Deprecated in favor of <@link tag LocationTag.ray_trace> with input setting [return=normal].
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_impact_normal", (attribute, object) -> {
+            BukkitImplDeprecations.locationOldCursorOn.warn(attribute.context);
             double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
@@ -1855,11 +1947,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.precise_cursor_on_block[(<range>)]>
         // @returns LocationTag
         // @group world
+        // @deprecated use "ray_trace[return=block]" instead.
         // @description
-        // Returns the block location this location is pointing at.
-        // Optionally, specify a maximum range to find the location from (defaults to 200).
+        // Deprecated in favor of <@link tag LocationTag.ray_trace> with input setting [return=block].
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_cursor_on_block", (attribute, object) -> {
+            BukkitImplDeprecations.locationOldCursorOn.warn(attribute.context);
             double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
@@ -1875,11 +1968,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.precise_cursor_on[(<range>)]>
         // @returns LocationTag
         // @group world
+        // @deprecated use "ray_trace" instead.
         // @description
-        // Returns the exact location this location is pointing at.
-        // Optionally, specify a maximum range to find the location from (defaults to 200).
+        // Deprecated in favor of <@link tag LocationTag.ray_trace> with all default settings (no input other than optionally the range).
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_cursor_on", (attribute, object) -> {
+            BukkitImplDeprecations.locationOldCursorOn.warn(attribute.context);
             double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 200;
@@ -1961,24 +2055,24 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @attribute <LocationTag.precise_target_position[(<range>)]>
         // @returns LocationTag
         // @group world
+        // @deprecated use "ray_trace[entities=*]" instead.
         // @description
-        // Returns the precise location this location is pointing at, when tracing against entities.
-        // Optionally, specify a maximum range to find the entity from (defaults to 100).
+        // Deprecated in favor of <@link tag LocationTag.ray_trace> with input of [entities=*]
         // -->
         tagProcessor.registerTag(LocationTag.class, "precise_target_position", (attribute, object) -> {
             double range = attribute.getDoubleParam();
             if (range <= 0) {
                 range = 100;
             }
+            BukkitImplDeprecations.locationOldCursorOn.warn(attribute.context);
             RayTraceResult result;
             // <--[tag]
             // @attribute <LocationTag.precise_target_position[(<range>)].type[<entity_type>|...]>
             // @returns LocationTag
             // @group world
+            // @deprecated use "ray_trace[entities=(your_types)]" instead.
             // @description
-            // Returns the precise location this location is pointing at, when tracing against entities.
-            // Optionally, specify a maximum range to find the entity from (defaults to 100).
-            // Accepts a list of types to trace against (types not listed will be ignored).
+            // Deprecated in favor of <@link tag LocationTag.ray_trace> with "entities=" set to your input types as a matcher.
             // -->
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
