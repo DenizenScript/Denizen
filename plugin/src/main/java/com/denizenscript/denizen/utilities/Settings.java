@@ -19,6 +19,7 @@ public class Settings {
         // Core
         CoreConfiguration.defaultDebugMode = config.getBoolean("Debug.Show", true);
         com.denizenscript.denizen.utilities.debugging.Debug.showDebug = CoreConfiguration.defaultDebugMode;
+        CoreConfiguration.debugExtraInfo = config.getBoolean("Debug.Extra info", false);
         CoreConfiguration.debugVerbose = config.getBoolean("Debug.Verbose", false);
         CoreConfiguration.debugLoadingInfo = config.getBoolean("Debug.Show loading info", false);
         CoreConfiguration.deprecationWarningRate = config.getLong("Debug.Warning rate", config.getLong("Tags.Warning rate", 10000));

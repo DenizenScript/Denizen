@@ -116,7 +116,8 @@ public class DenizenCommandHandler {
     // '-p' enables/disables packet debug logging. When enabled, all packets sent to players (from anywhere) will be logged to console.
     // or, '--pfilter (filter)' to enable packet debug logging with a string contain filter.
     // '-f' enables/disables showing of future warnings. When enabled, future warnings (such as upcoming deprecations) will be displayed in console logs.
-    // '-v' enables/disables advanced verbose log output. This will *flood* your console super hard.
+    // '-e' enables/disables extra output. This will spam more information about various internal things.
+    // '-v' enables/disables advanced ultra-verbose log output. This will *flood* your console super hard.
     // '-o' enables/disables 'override' mode. This will display all script debug, even when 'debug: false' is set for scripts.
     // '-l' enables/disables script loading information. When enabled, '/ex reload' will produce a potentially large amount of debug output.
     //
@@ -128,7 +129,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = {"denizen"}, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
-            min = 1, max = 5, permission = "denizen.debug", flags = "scbrovnipfl")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scbroevnipfl")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!Debug.showDebug) {
@@ -170,6 +171,14 @@ public class DenizenCommandHandler {
             Debug.recording = new StringBuilder();
             Messaging.sendInfo(sender, (Debug.record ? "Denizen debugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen debugger recording disabled."));
+        }
+        if (args.hasFlag('e')) {
+            if (!Debug.showDebug) {
+                Debug.toggle();
+            }
+            CoreConfiguration.debugExtraInfo = !CoreConfiguration.debugExtraInfo;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugExtraInfo ? "Denizen debugger is now showing extra internal information." :
+                    "Denizen debugger extra-info disabled."));
         }
         if (args.hasFlag('v')) {
             if (!Debug.showDebug) {

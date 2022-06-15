@@ -28,7 +28,9 @@ Debug:
     # This is available as a backup safety feature to prevent debug output from crashing a server.
     # Set the value lower to better protect this, set the value higher to willfully debug a very very long script.
     Limit per tick: 5000
-    # Whether to show extra 'verbose' info output (will FLOOD your console!).
+    # Whether to show some extra info output (will spam your console).
+    Extra info: false
+    # Whether to show extra advanced detailed 'verbose' info output (will FLOOD your console!).
     Verbose: false
     # Optional text to prefix all debug output.
     Prefix: ""
