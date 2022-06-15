@@ -2,7 +2,9 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Conversion;
@@ -264,6 +266,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
     public ObjectTag currentScriptInvHolder;
     public Player currentScriptInvPlayer;
     public Location currentScriptInvLocation;
+    public String currentScriptInvTitle;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onOpen(InventoryOpenEvent event) {
@@ -276,6 +279,9 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         if (!event.getPlayer().getUniqueId().equals(currentScriptInvPlayer.getUniqueId())) {
             return;
         }
+        if (currentScriptInvTitle != null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            NMSHandler.getInstance().setInventoryTitle(event.getView(), currentScriptInvTitle);
+        }
         InventoryTag newTag = new InventoryTag(event.getInventory(), "script", currentScriptInvHolder);
         InventoryTrackerSystem.trackTemporaryInventory(event.getInventory(), newTag);
     }
@@ -283,10 +289,15 @@ public class InventoryCommand extends AbstractCommand implements Listener {
     public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination) {
         try {
             if (destination.getIdType().equals("script")) {
-                currentScriptInvHolder = destination.getIdHolder();
-                currentScriptInvPlayer = player;
-                currentScriptInvLocation = player.getLocation();
-                currentScriptInvLocation.setY(-1000);
+                ScriptTag scriptTag = (ScriptTag) destination.getIdHolder();
+                if (scriptTag != null && scriptTag.getContainer() instanceof InventoryScriptContainer) {
+                    InventoryScriptContainer script = (InventoryScriptContainer) scriptTag.getContainer();
+                    currentScriptInvTitle = script.getString("title", null);
+                    currentScriptInvHolder = destination.getIdHolder();
+                    currentScriptInvPlayer = player;
+                    currentScriptInvLocation = player.getLocation();
+                    currentScriptInvLocation.setY(-1000);
+                }
             }
             InventoryView view;
             if (type == InventoryType.ANVIL) {
@@ -305,6 +316,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
             currentScriptInvHolder = null;
             currentScriptInvPlayer = null;
             currentScriptInvLocation = null;
+            currentScriptInvTitle = null;
         }
     }
 

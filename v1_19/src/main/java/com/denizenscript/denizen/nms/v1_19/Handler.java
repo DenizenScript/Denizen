@@ -43,6 +43,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
@@ -54,12 +55,14 @@ import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_19_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.spigotmc.AsyncCatcher;
 
@@ -200,6 +203,19 @@ public class Handler extends NMSHandler {
             }
         }
         return "Chest";
+    }
+
+    public static MethodHandle AbstractContainerMenu_title_SETTER = ReflectionHelper.getFinalSetter(AbstractContainerMenu.class, "title");
+
+    @Override
+    public void setInventoryTitle(InventoryView view, String title) {
+        AbstractContainerMenu menu = ((CraftInventoryView) view).getHandle();
+        try {
+            AbstractContainerMenu_title_SETTER.invoke(menu, componentToNMS(FormattedTextHelper.parse(title, ChatColor.DARK_GRAY)));
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     public static final Class MINECRAFT_INVENTORY;

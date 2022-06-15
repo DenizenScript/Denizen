@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -133,6 +134,10 @@ public abstract class NMSHandler {
     public abstract int getPort();
 
     public abstract String getTitle(Inventory inventory);
+
+    public void setInventoryTitle(InventoryView view, String title) {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract String stringForHover(HoverEvent hover);
 
