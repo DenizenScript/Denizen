@@ -3,9 +3,7 @@ package com.denizenscript.denizen.utilities.maps;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import org.bukkit.Color;
 import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.map.MinecraftFont;
 
@@ -53,8 +51,8 @@ public class MapText extends MapObject {
             if (!playerTexts.containsKey(uuid)) {
                 playerTexts.put(uuid, tag(textTag, player));
             }
-            Color color = ColorTag.valueOf(colorTag == null ? "black" : tag(colorTag, player), getTagContext(player)).getColor();
-            byte b = MapPalette.matchColor(color.getRed(), color.getGreen(), color.getBlue());
+            ColorTag color = ColorTag.valueOf(colorTag == null ? "black" : tag(colorTag, player), getTagContext(player));
+            byte b = MapImage.matchColor(color.getAWTColor());
             String text = ((char) 167) + Byte.toString(b) + ((char) 59) + getText(player);
             mapCanvas.drawText(getX(player), getY(player), MinecraftFont.Font, text);
         }

@@ -475,11 +475,11 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showDebugTestMarker(Player player, Location location, ColorTag color, int alpha, String name, int time) {
+    public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
         ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_add_marker");
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeBlockPos(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
-        int colorInt = color.getColor().getBlue() | (color.getColor().getGreen() << 8) | (color.getColor().getRed() << 16) | (alpha << 24);
+        int colorInt = color.blue | (color.green << 8) | (color.red << 16) | (color.alpha << 24);
         buf.writeInt(colorInt);
         buf.writeByteArray(name.getBytes(StandardCharsets.UTF_8));
         buf.writeInt(time);

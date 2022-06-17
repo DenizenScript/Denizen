@@ -3,9 +3,7 @@ package com.denizenscript.denizen.utilities.maps;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.debugging.Debug;
-import org.bukkit.Color;
 import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 
 import java.util.Map;
@@ -37,7 +35,8 @@ public class MapDot extends MapObject {
             int baseX = getX(player);
             int baseY = getY(player);
             int radius = (int) Double.parseDouble(tag(radiusTag, player));
-            Color color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player)).getColor();
+            ColorTag color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player));
+            byte colorId = MapImage.matchColor(color.getAWTColor());
             for (int x = -radius; x < radius; x++) {
                 int finalX = baseX + x;
                 if (finalX < 0 || finalX > 127) {
@@ -49,7 +48,7 @@ public class MapDot extends MapObject {
                         continue;
                     }
                     if (((x + 0.5) * (x + 0.5)) + ((y + 0.5) * (y + 0.5)) <= (radius * radius)) {
-                        mapCanvas.setPixel(finalX, finalY, MapPalette.matchColor(color.getRed(), color.getGreen(), color.getBlue()));
+                        mapCanvas.setPixel(finalX, finalY, colorId);
                     }
                 }
             }

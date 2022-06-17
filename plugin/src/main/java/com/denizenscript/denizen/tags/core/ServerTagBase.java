@@ -623,8 +623,9 @@ public class ServerTagBase {
         // @attribute <server.color_names>
         // @returns ListTag
         // @description
-        // Returns a list of all available color names that would be accepted by <@link objecttype ColorTag>.
+        // Returns a list of almost all available color names that would be accepted by <@link objecttype ColorTag>.
         // This is only their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>.
+        // This also includes "transparent" as defined by ColorTag.
         // -->
         if (attribute.startsWith("color_names")) {
             ListTag list = new ListTag();
