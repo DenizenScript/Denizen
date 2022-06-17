@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_16.impl.network.handlers;
 
+import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.ProfileEditorImpl;
@@ -819,7 +820,9 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
         if (packet instanceof PacketPlayOutChat && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((PacketPlayOutChat) packet));
+            PacketOutChatImpl packetHelper = new PacketOutChatImpl((PacketPlayOutChat) packet);
+            PlayerReceivesMessageScriptEvent result = DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), packetHelper);
+            return result != null && result.cancelled;
         }
         else if (packet instanceof PacketPlayOutEntityMetadata && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));

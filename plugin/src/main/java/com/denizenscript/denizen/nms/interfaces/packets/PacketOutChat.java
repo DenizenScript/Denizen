@@ -6,15 +6,9 @@ public interface PacketOutChat {
 
     boolean isActionbar();
 
-    int getPosition();
-
     String getMessage();
 
     String getRawJson();
-
-    void setPosition(int position);
-
-    void setMessage(String message);
 
     void setRawJson(String rawJson);
 }

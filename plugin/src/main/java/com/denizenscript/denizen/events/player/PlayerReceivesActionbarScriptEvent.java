@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class PlayerReceivesActionbarScriptEvent extends PlayerReceivesMessageScriptEvent {
 
     // <--[event]
@@ -32,8 +34,12 @@ public class PlayerReceivesActionbarScriptEvent extends PlayerReceivesMessageScr
         instance = this;
     }
 
+    @Override
+    public ChatColor baseColor() {
+        return ChatColor.WHITE;
+    }
+
     public static PlayerReceivesActionbarScriptEvent instance;
-    public boolean modified;
 
     @Override
     public boolean couldMatch(ScriptPath path) {

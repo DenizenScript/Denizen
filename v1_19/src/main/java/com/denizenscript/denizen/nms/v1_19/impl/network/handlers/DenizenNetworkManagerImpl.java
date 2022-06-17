@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_19.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
+import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_19.Handler;
@@ -44,6 +45,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
@@ -294,10 +296,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         packetsSent++;
         if (processAttachToForPacket(packet)
             || processHiddenEntitiesForPacket(packet)
-            || processPacketHandlerForPacket(packet)
             || processMirrorForPacket(packet)
             || processParticlesForPacket(packet)
             || processSoundPacket(packet)
+            || processPacketHandlerForPacket(packet, genericfuturelistener)
             || processTablistPacket(packet, genericfuturelistener)
             || processActionbarPacket(packet, genericfuturelistener)
             || processDisguiseForPacket(packet, genericfuturelistener)
@@ -396,27 +398,17 @@ public class DenizenNetworkManagerImpl extends Connection {
             ClientboundSetActionBarTextPacket actionbarPacket = (ClientboundSetActionBarTextPacket) packet;
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
             Component baseComponent = actionbarPacket.getText();
+            event.reset();
             event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE));
             event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
-            event.modifyMessage = (msg) -> {
-                event.message = new ElementTag(msg);
-                event.modified = true;
-            };
-            event.modifyRawJson = (json) -> {
-                event.message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(json), ChatColor.WHITE));
-                event.modified = true;
-            };
-            event.modifyCancellation = (c) -> event.cancelled = c;
-            event.cancelled = false;
-            event.modified = false;
-            event.fire();
+            event = (PlayerReceivesActionbarScriptEvent) event.fire();
             if (event.cancelled) {
                 return true;
             }
             if (event.modified) {
-                Component component = Handler.componentToNMS(FormattedTextHelper.parse(event.message.asString(), ChatColor.WHITE));
+                Component component = Handler.componentToNMS(ComponentSerializer.parse(event.rawJson.asString()));
                 ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
@@ -1090,13 +1082,29 @@ public class DenizenNetworkManagerImpl extends Connection {
         return false;
     }
 
-    public boolean processPacketHandlerForPacket(Packet<?> packet) {
-        // TODO: 1.19: New chat system, probably needs event changes?
-        /*
-        if (packet instanceof ClientboundChatPacket && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((ClientboundChatPacket) packet));
+    public boolean processPacketHandlerForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
+            PacketOutChatImpl packetHelper = null;
+            if (packet instanceof ClientboundSystemChatPacket) {
+                packetHelper = new PacketOutChatImpl((ClientboundSystemChatPacket) packet);
+            }
+            else if (packet instanceof ClientboundPlayerChatPacket) {
+                packetHelper = new PacketOutChatImpl((ClientboundPlayerChatPacket) packet);
+            }
+            if (packetHelper != null) {
+                PlayerReceivesMessageScriptEvent result = DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), packetHelper);
+                if (result != null) {
+                    if (result.cancelled) {
+                        return true;
+                    }
+                    if (result.modified) {
+                        oldManager.send(new ClientboundSystemChatPacket(ComponentSerializer.parse(result.rawJson.asString()), BuiltinRegistries.CHAT_TYPE.getId(packetHelper.position)), genericfuturelistener);
+                        return true;
+                    }
+                }
+            }
         }
-        else */if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
+        if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
         }
         return false;

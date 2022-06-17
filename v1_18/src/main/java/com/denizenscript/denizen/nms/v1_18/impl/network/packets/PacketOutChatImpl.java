@@ -54,11 +54,6 @@ public class PacketOutChatImpl implements PacketOutChat {
     }
 
     @Override
-    public int getPosition() {
-        return position.ordinal();
-    }
-
-    @Override
     public String getMessage() {
         return message;
     }
@@ -66,31 +61,6 @@ public class PacketOutChatImpl implements PacketOutChat {
     @Override
     public String getRawJson() {
         return rawJson;
-    }
-
-    @Override
-    public void setPosition(int position) {
-        try {
-            POSITION.set(internal, position);
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
-    }
-
-    @Override
-    public void setMessage(String message) {
-        try {
-            if (!bungee) {
-                MESSAGE.set(internal, Handler.componentToNMS(FormattedTextHelper.parse(message, ChatColor.WHITE)));
-            }
-            else {
-                internal.components = FormattedTextHelper.parse(message, ChatColor.WHITE);
-            }
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
     }
 
     @Override

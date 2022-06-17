@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
@@ -8,8 +9,8 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-
-import java.util.function.Consumer;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
@@ -25,7 +26,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     //
     // @Warning Using this will forcibly sync the chat thread.
     //
-    // @Triggers when a player receives any chat message from the server.
+    // @Triggers when a player receives any chat message from the server. This does not normally include *player* chat, instead prefer <@link event player chats> for that.
     //
     // @Context
     // <context.message> returns an ElementTag of the message.
@@ -48,16 +49,21 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public ElementTag message;
     public ElementTag rawJson;
     public ElementTag system;
+    public boolean modified;
     public PlayerTag player;
     public boolean loaded;
 
-    public Consumer<String> modifyMessage;
-    public Consumer<String> modifyRawJson;
-    public Consumer<Boolean> modifyCancellation;
+    public ChatColor baseColor() {
+        return ChatColor.BLACK;
+    }
 
-    @Override
-    public void cancellationChanged() {
-        modifyCancellation.accept(cancelled);
+    public void reset() {
+        player = null;
+        message = null;
+        rawJson = null;
+        system = null;
+        cancelled = false;
+        modified = false;
     }
 
     @Override
@@ -87,13 +93,15 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             String determination = determinationObj.toString();
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("message:")) {
-                message = new ElementTag(determination.substring("message:".length()));
-                modifyMessage.accept(message.asString());
+                message = new ElementTag(determination.substring("message:".length()), true);
+                rawJson = new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(message.asString(), baseColor())), true);
+                modified = true;
                 return true;
             }
             if (lower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
-                modifyRawJson.accept(rawJson.asString());
+                message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson.asString()), baseColor()), true);
+                modified = true;
                 return true;
             }
         }

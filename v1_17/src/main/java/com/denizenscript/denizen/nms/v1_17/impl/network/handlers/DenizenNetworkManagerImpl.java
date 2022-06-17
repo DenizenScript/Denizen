@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
+import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
@@ -23,6 +24,7 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.mojang.datafixers.util.Pair;
@@ -271,27 +273,17 @@ public class DenizenNetworkManagerImpl extends Connection {
             ClientboundSetActionBarTextPacket actionbarPacket = (ClientboundSetActionBarTextPacket) packet;
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
             Component baseComponent = actionbarPacket.getText();
+            event.reset();
             event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE));
             event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
-            event.modifyMessage = (msg) -> {
-                event.message = new ElementTag(msg);
-                event.modified = true;
-            };
-            event.modifyRawJson = (json) -> {
-                event.message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(json), ChatColor.WHITE));
-                event.modified = true;
-            };
-            event.modifyCancellation = (c) -> event.cancelled = c;
-            event.cancelled = false;
-            event.modified = false;
-            event.fire();
+            event = (PlayerReceivesActionbarScriptEvent) event.fire();
             if (event.cancelled) {
                 return true;
             }
             if (event.modified) {
-                Component component = Handler.componentToNMS(FormattedTextHelper.parse(event.message.asString(), ChatColor.WHITE));
+                Component component = Handler.componentToNMS(ComponentSerializer.parse(event.rawJson.asString()));
                 ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
@@ -951,7 +943,9 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     public boolean processPacketHandlerForPacket(Packet<?> packet) {
         if (packet instanceof ClientboundChatPacket && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutChatImpl((ClientboundChatPacket) packet));
+            PacketOutChatImpl packetHelper = new PacketOutChatImpl((ClientboundChatPacket) packet);
+            PlayerReceivesMessageScriptEvent result = DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), packetHelper);
+            return result != null && result.cancelled;
         }
         else if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
