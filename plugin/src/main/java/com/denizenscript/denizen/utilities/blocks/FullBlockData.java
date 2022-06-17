@@ -3,21 +3,67 @@ package com.denizenscript.denizen.utilities.blocks;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Axis;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.RedstoneWire;
 import org.bukkit.block.data.type.Wall;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class FullBlockData {
+
+    public static void init() {
+        HashSet<Class<? extends BlockData>> classesHandled = new HashSet<>();
+        for (Material material : Material.values()) {
+            if (!material.isBlock() || material.isLegacy()) {
+                continue;
+            }
+            BlockData data = material.createBlockData();
+            if (classesHandled.add(data.getClass())) {
+                initBlockDataClass(data);
+            }
+        }
+    }
+
+    /** Trigger a bunch of pointless block data changes, to cause the enum class cache CraftBlockData.ENUM_VALUES to be filled in, thus making it probably safe for async usage. */
+    private static void initBlockDataClass(BlockData data) {
+        try {
+            Class<? extends BlockData> dataClass = data.getClass();
+            HashMap<String, Method> setMethods = new HashMap<>();
+            for (Method m : dataClass.getMethods()) {
+                if (m.getName().startsWith("set") && m.getParameterCount() == 1 && m.getReturnType() == void.class) {
+                    setMethods.put(m.getName(), m);
+                }
+            }
+            for (Method m : dataClass.getMethods()) {
+                if (m.getName().startsWith("get") && m.getParameterCount() == 0 && m.getReturnType().isEnum()) {
+                    Method setter = setMethods.get("set" + m.getName().substring("get".length()));
+                    if (setter != null && setter.getParameterTypes()[0] == m.getReturnType()) {
+                        setter.setAccessible(true);
+                        m.setAccessible(true);
+                        Object curVal = m.invoke(data);
+                        setter.invoke(data, curVal);
+                    }
+                }
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError("Errored while trying to pre-load BlockData class '" + data.getClass().getName() + "'");
+            Debug.echoError(ex);
+        }
+    }
 
     public FullBlockData(Block block, boolean copyFlags) {
         this(block);

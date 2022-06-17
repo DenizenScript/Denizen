@@ -18,6 +18,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.tags.core.NPCTagBase;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
 import com.denizenscript.denizen.utilities.*;
+import com.denizenscript.denizen.utilities.blocks.FullBlockData;
 import com.denizenscript.denizen.utilities.command.*;
 import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
@@ -371,6 +372,7 @@ public class Denizen extends JavaPlugin {
         exCommand.enableFor(getCommand("ex"));
         ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
         exsCommand.enableFor(getCommand("exs"));
+        FullBlockData.init();
         // Load script files without processing.
         DenizenCore.preloadScripts();
         // Load the saves.yml into memory

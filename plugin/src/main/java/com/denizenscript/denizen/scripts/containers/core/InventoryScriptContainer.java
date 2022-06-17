@@ -53,7 +53,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //     inventory: inventory type
     //
     //     # The title can be anything you wish. Use color tags to make colored titles.
-    //     # Note that titles only work for some inventory types, including CHEST, DISPENSER, FURNACE, ENCHANTING, and HOPPER.
+    //     # Note that titles only work for some inventory types, including ANVIL, CHEST, DISPENSER, FURNACE, ENCHANTING, HOPPER, WORKBENCH
     //     # | MOST inventory scripts should have this key!
     //     title: custom title
     //
