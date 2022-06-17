@@ -103,6 +103,7 @@ public class Denizen extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        long startTime = System.currentTimeMillis();
         instance = this;
         try {
             versionTag = this.getDescription().getVersion();
@@ -365,7 +366,7 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
-        Debug.log("Loaded <A>" + commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types.");
+        Debug.log("Loaded <A>" + commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types, at <A>" + (System.currentTimeMillis() - startTime) + "<W>ms from start.");
         exCommand = new ExCommandHandler();
         exCommand.enableFor(getCommand("ex"));
         ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
@@ -381,6 +382,7 @@ public class Denizen extends JavaPlugin {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+        Debug.log("Final full init took <A>" + (System.currentTimeMillis() - startTime) + "<W>ms.");
         final boolean hadCitizensBork = citizensBork;
         // Run everything else on the first server tick
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
