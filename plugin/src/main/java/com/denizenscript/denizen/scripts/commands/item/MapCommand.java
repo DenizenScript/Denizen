@@ -45,11 +45,12 @@ public class MapCommand extends AbstractCommand {
     // @Description
     // This command modifies an existing map, or creates a new one. Using this will override existing non-Denizen map renderers with Denizen's custom map renderer.
     //
-    // You must specify at least one of 'reset', 'script', 'image', or 'pixel'. You can specify multiple at once if you prefer.
+    // You must specify at least one of 'reset', 'script', 'image'. You can specify multiple at once if you prefer.
     //
     // When using 'reset', you can specify optionally 'scale' and/or 'tracking'.
     // When using 'image' you can optionally specify 'resize'.
     // When using 'dot', you can specify any valid ColorTag (it will be compressed to map's color space), and you can optionally also specify 'radius' as a number.
+    //    Use "radius:0" with dot to set on a single pixel. 1 or higher will make a circle centered on the x/y given.
     //
     // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
     // images and texts on the map and show the default world map at the specified location.

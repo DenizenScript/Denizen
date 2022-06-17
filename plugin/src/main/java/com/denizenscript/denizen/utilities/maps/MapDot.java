@@ -37,17 +37,18 @@ public class MapDot extends MapObject {
             int radius = (int) Double.parseDouble(tag(radiusTag, player));
             ColorTag color = ColorTag.valueOf(tag(colorTag, player), getTagContext(player));
             byte colorId = MapImage.matchColor(color.getAWTColor());
-            for (int x = -radius; x < radius; x++) {
+            int max = radius == 0 ? 1 : radius;
+            for (int x = -radius; x < max; x++) {
                 int finalX = baseX + x;
                 if (finalX < 0 || finalX > 127) {
                     continue;
                 }
-                for (int y = -radius; y < radius; y++) {
+                for (int y = -radius; y < max; y++) {
                     int finalY = baseY + y;
                     if (finalY < 0 || finalY > 127) {
                         continue;
                     }
-                    if (((x + 0.5) * (x + 0.5)) + ((y + 0.5) * (y + 0.5)) <= (radius * radius)) {
+                    if (((x + 0.5) * (x + 0.5)) + ((y + 0.5) * (y + 0.5)) <= (max * max)) {
                         mapCanvas.setPixel(finalX, finalY, colorId);
                     }
                 }
