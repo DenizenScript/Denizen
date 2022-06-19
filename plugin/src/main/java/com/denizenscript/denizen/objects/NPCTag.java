@@ -1469,7 +1469,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.name>
         // -->
         if (mechanism.matches("name") || mechanism.matches("set_name")) {
-            getCitizen().setName(mechanism.getValue().asString().length() > 64 ? mechanism.getValue().asString().substring(0, 64) : mechanism.getValue().asString());
+            getCitizen().setName(mechanism.getValue().asString().length() > 256 ? mechanism.getValue().asString().substring(0, 256) : mechanism.getValue().asString());
         }
 
         // <--[mechanism]

@@ -243,6 +243,11 @@ Tags:
     Chat history:
         # How many player messages will be stored for each player (<player.chat_history>, etc.)
         Max messages: 10
+    List flags:
+        # The list_flags and flag_map tools are not meant for normal usage in real scripts.
+        # If you have a very specific use-case that requires this, it is recommended you ask on the Denizen Discord and verify it actually makes sense.
+        # If you've verified the idea makes sense, you can swap this option to 'true' to disable the default warning.
+        I know what im doing and need this: false
 
 Saves:
     # How long (in seconds) before the offline player flag cache times out.
