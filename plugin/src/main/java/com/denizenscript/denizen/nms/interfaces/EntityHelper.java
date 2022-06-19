@@ -4,9 +4,12 @@ import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
@@ -16,6 +19,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -107,14 +112,98 @@ public abstract class EntityHelper {
     // Taken from C2 NMS class for less dependency on C2
     public abstract void look(Entity entity, float yaw, float pitch);
 
-    public static class MapTraceResult {
-        public Location hitLocation;
-        public BlockFace angle;
+    public MapTag mapTrace(LivingEntity inputEntity) {
+        double range = 200;
+        Location start = inputEntity.getEyeLocation();
+        Vector startVec = start.toVector();
+        Vector direction = start.getDirection();
+        double bestDist = Double.MAX_VALUE;
+        ItemFrame best = null;
+        Vector bestHitPos = null;
+        BlockFace bestHitFace = null;
+        for (Entity entity : start.getWorld().getNearbyEntities(start.clone().add(direction.clone().multiply(50)), 100, 100, 100, (e) -> e instanceof ItemFrame && ((ItemFrame) e).getItem().getType() == Material.FILLED_MAP)) {
+            double centerDist = entity.getLocation().distanceSquared(start);
+            if (centerDist > bestDist) {
+                continue;
+            }
+            ItemFrame frame = (ItemFrame) entity;
+            double EXP_RATE = 0.125;
+            double expandX = 0, expandY = 0, expandZ = 0;
+            BlockFace face = frame.getFacing();
+            switch (face) {
+                case SOUTH: case NORTH: expandX = EXP_RATE; expandY = EXP_RATE; break;
+                case EAST: case WEST: expandZ = EXP_RATE; expandY = EXP_RATE; break;
+                case UP: case DOWN: expandX = EXP_RATE; expandZ = EXP_RATE; break;
+            }
+            RayTraceResult traced = frame.getBoundingBox().expand(expandX, expandY, expandZ).rayTrace(startVec, direction, range);
+            if (traced == null || traced.getHitBlockFace() == null || traced.getHitBlockFace() != face) {
+                continue;
+            }
+            bestDist = centerDist;
+            best = frame;
+            bestHitPos = traced.getHitPosition();
+            bestHitFace = face;
+        }
+        if (best == null) {
+            return null;
+        }
+        double x = 0;
+        double y = 0;
+        double basex = bestHitPos.getX() - Math.floor(bestHitPos.getX());
+        double basey = bestHitPos.getY() - Math.floor(bestHitPos.getY());
+        double basez = bestHitPos.getZ() - Math.floor(bestHitPos.getZ());
+        switch (bestHitFace) {
+            case NORTH:
+                x = 128f - (basex * 128f);
+                y = 128f - (basey * 128f);
+                break;
+            case SOUTH:
+                x = basex * 128f;
+                y = 128f - (basey * 128f);
+                break;
+            case WEST:
+                x = basez * 128f;
+                y = 128f - (basey * 128f);
+                break;
+            case EAST:
+                x = 128f - (basez * 128f);
+                y = 128f - (basey * 128f);
+                break;
+            case UP:
+                x = basex * 128f;
+                y = basez * 128f;
+                break;
+            case DOWN:
+                x = basex * 128f;
+                y = 128f - (basez * 128f);
+                break;
+        }
+        MapMeta map = (MapMeta) best.getItem().getItemMeta();
+        switch (best.getRotation()) {
+            case CLOCKWISE_45: case FLIPPED_45: // 90 deg
+                double origX = x;
+                x = y;
+                y = 128f - origX;
+                break;
+            case CLOCKWISE: case COUNTER_CLOCKWISE: // 180 deg
+                x = 128f - x;
+                y = 128f - y;
+                break;
+            case CLOCKWISE_135: case COUNTER_CLOCKWISE_45: // 270 deg
+                double origX2 = x;
+                x = 128f - y;
+                y = origX2;
+                break;
+        }
+        MapTag result = new MapTag();
+        result.putObject("x", new ElementTag(Math.round(x)));
+        result.putObject("y", new ElementTag(Math.round(y)));
+        result.putObject("entity", new EntityTag(best));
+        result.putObject("map", new ElementTag(map.hasMapId() ? map.getMapId() : 0));
+        return result;
     }
 
     public abstract boolean canTrace(World world, Vector start, Vector end);
-
-    public abstract MapTraceResult mapTrace(LivingEntity from, double range);
 
     public Location faceLocation(Location from, Location at) {
         Vector direction = from.toVector().subtract(at.toVector()).normalize();

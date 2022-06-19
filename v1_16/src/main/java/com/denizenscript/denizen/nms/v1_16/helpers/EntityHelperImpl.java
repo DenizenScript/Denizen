@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.*;
@@ -519,41 +518,6 @@ public class EntityHelperImpl extends EntityHelper {
             return true;
         }
         return pos.getType() == MovingObjectPosition.EnumMovingObjectType.MISS;
-    }
-
-    @Override
-    public MapTraceResult mapTrace(LivingEntity from, double range) {
-        Location start = from.getEyeLocation();
-        Vector startVec = start.toVector();
-        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
-        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI / 180));
-        double ny = Math.sin(start.getPitch() * (Math.PI / 180));
-        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
-        Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
-        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
-        if (!(l instanceof MovingObjectPositionBlock) || l.getPos() == null) {
-            return null;
-        }
-        Vector finalVec = new Vector(l.getPos().x, l.getPos().y, l.getPos().z);
-        MapTraceResult mtr = new MapTraceResult();
-        switch (((MovingObjectPositionBlock) l).getDirection()) {
-            case NORTH:
-                mtr.angle = BlockFace.NORTH;
-                break;
-            case SOUTH:
-                mtr.angle = BlockFace.SOUTH;
-                break;
-            case EAST:
-                mtr.angle = BlockFace.EAST;
-                break;
-            case WEST:
-                mtr.angle = BlockFace.WEST;
-                break;
-        }
-        // wallPosition - ((end - start).normalize() * 0.072)
-        Vector hit = finalVec.clone().subtract((endVec.clone().subtract(startVec)).normalize().multiply(0.072));
-        mtr.hitLocation = new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
-        return mtr;
     }
 
     @Override

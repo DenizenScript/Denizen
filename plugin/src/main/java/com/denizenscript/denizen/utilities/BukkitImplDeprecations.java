@@ -263,6 +263,9 @@ public class BukkitImplDeprecations {
     // Added 2021/06/17, deprecate officially by 2024.
     public static Warning debugBlockAlpha = new FutureWarning("debugBlockAlpha", "The 'alpha' argument for the 'debugblock' command is deprecated: put the alpha in the color input instead.");
 
+    // Added 2021/06/19, deprecate officially by 2024.
+    public static Warning entityMapTraceTag = new FutureWarning("entityMapTraceTag", "The tag 'EntityTag.map_trace' is deprecated in favor of EntityTag.trace_framed_map");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Added on 2019/10/13

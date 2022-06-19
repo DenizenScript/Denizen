@@ -45,6 +45,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
 import org.bukkit.potion.*;
@@ -1523,37 +1524,35 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         /////////////////
 
         // <--[tag]
+        // @attribute <EntityTag.trace_framed_map>
+        // @returns MapTag
+        // @group location
+        // @description
+        // Returns information at the framed item of a filled map that an entity is currently looking at, if any.
+        // The map contains key "x" and "y" as coordinates in the range of 0 to 128. These will automatically correct for rotation, if the framed item is rotated.
+        // The map contains "entity" as the EntityTag of the item frame.
+        // The map also contains "map" as the ID of the targeted map.
+        // Returns null if the entity is not looking at an item_frame holding a filled_map.
+        // -->
+        registerSpawnedOnlyTag(MapTag.class, "trace_framed_map", (attribute, object) -> {
+            return NMSHandler.entityHelper.mapTrace(object.getLivingEntity());
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.map_trace>
         // @returns LocationTag
         // @group location
+        // @deprecated use EntityTag.trace_framed_map
         // @description
-        // Returns a 2D location indicating where on the map the entity's looking at.
-        // Each coordinate is in the range of 0 to 128.
+        // Deprecated in favor of <@link tag EntityTag.trace_framed_map>
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "map_trace", (attribute, object) -> {
-            EntityHelper.MapTraceResult mtr = NMSHandler.entityHelper.mapTrace(object.getLivingEntity(), 200);
-            if (mtr != null) {
-                double x = 0;
-                double y;
-                double basex = mtr.hitLocation.getX() - Math.floor(mtr.hitLocation.getX());
-                double basey = mtr.hitLocation.getY() - Math.floor(mtr.hitLocation.getY());
-                double basez = mtr.hitLocation.getZ() - Math.floor(mtr.hitLocation.getZ());
-                if (mtr.angle == BlockFace.NORTH) {
-                    x = 128f - (basex * 128f);
-                }
-                else if (mtr.angle == BlockFace.SOUTH) {
-                    x = basex * 128f;
-                }
-                else if (mtr.angle == BlockFace.WEST) {
-                    x = basez * 128f;
-                }
-                else if (mtr.angle == BlockFace.EAST) {
-                    x = 128f - (basez * 128f);
-                }
-                y = 128f - (basey * 128f);
-                return new LocationTag(null, Math.round(x), Math.round(y));
+            BukkitImplDeprecations.entityMapTraceTag.warn(attribute.context);
+            MapTag result = NMSHandler.entityHelper.mapTrace(object.getLivingEntity());
+            if (result == null) {
+                return null;
             }
-            return null;
+            return new LocationTag(null, result.getElement("x").asDouble(), result.getElement("y").asDouble());
         });
 
         // <--[tag]
