@@ -119,4 +119,7 @@ public class ReflectionMappingsInfo {
     public static String FluidState_isEmpty = "c";
     public static String FluidState_createLegacyBlock = "g";
     public static String FluidState_animateTick = "a";
+
+    // net.minecraft.tags.TagNetworkSerialization$NetworkPayload
+    public static String TagNetworkSerialization_NetworkPayload_tags = "a";
 }

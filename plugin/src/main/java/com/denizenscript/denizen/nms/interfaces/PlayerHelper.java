@@ -113,4 +113,8 @@ public abstract class PlayerHelper {
     public void sendPlayerRemovePacket(Player player, UUID id) {
         throw new UnsupportedOperationException();
     }
+
+    public void sendClimbableMaterials(Player player, List<Material> materials) {
+        throw new UnsupportedOperationException();
+    }
 }
