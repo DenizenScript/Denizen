@@ -2504,6 +2504,37 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name send_climbable_materials
+        // @input ListTag(MaterialTag)
+        // @description
+        // Sends the player a list of climbable materials.
+        // To climb a block, the player has to stand in it, which means only non-full blocks can be climbed.
+        // Note that this gets reset once the player rejoins or once server resources are reloaded (which happens when the vanilla /reload command is used, or when a data pack gets enabled).
+        // @tags
+        // <server.vanilla_tagged_materials[<tag>]>
+        // @example
+        // # Lets the linked player climb iron_bars, while keeping other climbable materials climbable
+        // - adjust <player> send_climbable_materials:<server.vanilla_tagged_materials[climbable].include[iron_bars]>
+        // @example
+        // # Lets the linked player climb only acacia_buttons, making all other materials non-climbable.
+        // - adjust <player> send_climbable_materials:acacia_button
+        // -->
+        if (mechanism.matches("send_climbable_materials") && mechanism.requireObject(ListTag.class)) {
+            List<MaterialTag> materialTags = mechanism.valueAsType(ListTag.class).filter(MaterialTag.class, mechanism.context);
+            List<Material> materials = new ArrayList<>();
+            for (MaterialTag materialTag : materialTags) {
+                Material material = materialTag.getMaterial();
+                if (!material.isBlock()) {
+                    mechanism.echoError("Invalid material specified '" + material.name() + "': must be a block material.");
+                    continue;
+                }
+                materials.add(material);
+            }
+            NMSHandler.playerHelper.sendClimbableMaterials(getPlayerEntity(), materials);
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name noclip
         // @input ElementTag(Boolean)
         // @description

@@ -25,9 +25,12 @@ import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.properties.Property;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerEntity;
@@ -38,6 +41,8 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.ServerOpList;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.stats.ServerRecipeBook;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
@@ -46,6 +51,7 @@ import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_19_R1.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
@@ -422,5 +428,18 @@ public class PlayerHelperImpl extends PlayerHelper {
         GameProfile profile = new GameProfile(id, "name");
         packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, null, null, null));
         PacketHelperImpl.send(player, packet);
+    }
+
+    @Override
+    public void sendClimbableMaterials(Player player, List<Material> materials) {
+        Map<ResourceKey<? extends Registry<?>>, TagNetworkSerialization.NetworkPayload> packetInput = TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registryAccess());
+        TagNetworkSerialization.NetworkPayload payload = packetInput.get(Registry.BLOCK_REGISTRY);
+        Map<ResourceLocation, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerialization_NetworkPayload_tags, payload);
+        IntList intList = tags.get(BlockTags.CLIMBABLE.location());
+        intList.clear();
+        for (Material material : materials) {
+            intList.add(Registry.BLOCK.getId(((CraftBlockData) material.createBlockData()).getState().getBlock()));
+        }
+        PacketHelperImpl.send(player, new ClientboundUpdateTagsPacket(packetInput));
     }
 }
