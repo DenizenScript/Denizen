@@ -21,6 +21,8 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
 import org.bukkit.Bukkit;
@@ -286,13 +288,13 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         InventoryTrackerSystem.trackTemporaryInventory(event.getInventory(), newTag);
     }
 
-    public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination) {
+    public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination, TagContext context) {
         try {
             if (destination.getIdType().equals("script")) {
                 ScriptTag scriptTag = (ScriptTag) destination.getIdHolder();
                 if (scriptTag != null && scriptTag.getContainer() instanceof InventoryScriptContainer) {
                     InventoryScriptContainer script = (InventoryScriptContainer) scriptTag.getContainer();
-                    currentScriptInvTitle = script.getString("title", null);
+                    currentScriptInvTitle = script.contains("title") ? TagManager.tag(script.getString("title"), script.fixContext(context)) : null;
                     currentScriptInvHolder = destination.getIdHolder();
                     currentScriptInvPlayer = player;
                     currentScriptInvLocation = player.getLocation();
@@ -356,7 +358,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 case OPEN:
                     // Use special method to make opening workbenches and anvils work properly
                     if ((destination.getInventoryType() == InventoryType.WORKBENCH || (destination.getInventoryType() == InventoryType.ANVIL && Denizen.supportsPaper)) && destination.getInventory().getLocation() == null) {
-                        doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination);
+                        doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination, scriptEntry.context);
                     }
                     // Otherwise, open inventory as usual
                     else {

@@ -104,12 +104,16 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public boolean gui;
 
+    public TagContext fixContext(TagContext context) {
+        context = (context == null ? CoreUtilities.basicContext : context).clone();
+        context.script = new ScriptTag(this);
+        context.debug = context.debug && shouldDebug();
+        return context;
+    }
+
     public InventoryTag getInventoryFrom(TagContext context) {
         InventoryTag inventory;
-        context = (context == null ? CoreUtilities.basicContext : context).clone();
-        ScriptTag thisScript = new ScriptTag(this);
-        context.script = thisScript;
-        context.debug = context.debug && shouldDebug();
+        context = fixContext(context);
         try {
             InventoryType type = InventoryType.CHEST;
             if (contains("inventory", String.class)) {
@@ -174,7 +178,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
             }
             inventory.idType = "script";
-            inventory.idHolder = thisScript;
+            inventory.idHolder = new ScriptTag(this);
             boolean[] filledSlots = new boolean[size];
             if (contains("slots", List.class)) {
                 ItemStack[] finalItems = new ItemStack[size];
