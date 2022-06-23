@@ -294,6 +294,8 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 currentAltHolder = destination.getIdHolder();
                 currentAltPlayer = player;
                 currentAltLocation = player.getLocation();
+                currentAltLocation.setX(currentAltLocation.getBlockX());
+                currentAltLocation.setZ(currentAltLocation.getBlockZ());
                 currentAltLocation.setY(-1000);
             }
             InventoryView view;
