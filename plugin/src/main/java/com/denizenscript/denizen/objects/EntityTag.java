@@ -282,7 +282,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                if (context == null || context.debug) {
+                if (context == null || context.debug || CoreConfiguration.debugOverride) {
                     Debug.echoError("NPC '" + string + "' does not exist!");
                 }
             }

@@ -151,8 +151,8 @@ public class DenizenCommandHandler {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
-            Debug.debugOverride = !Debug.debugOverride;
-            Messaging.sendInfo(sender, (Debug.debugOverride ? "Denizen debugger is now overriding 'debug: false'."
+            CoreConfiguration.debugOverride = !CoreConfiguration.debugOverride;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugOverride ? "Denizen debugger is now overriding 'debug: false'."
                     : "Denizen debugger override has been disabled."));
         }
         if (args.hasFlag('b')) {

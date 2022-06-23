@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities.debugging;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Bukkit;
@@ -69,7 +70,7 @@ public class StatsRecord extends Thread {
             in.close();
         }
         catch (Exception e) {
-            if (Debug.debugOverride) {
+            if (CoreConfiguration.debugOverride) {
                 Debug.echoError(e);
             }
         }
@@ -80,7 +81,7 @@ public class StatsRecord extends Thread {
                 }
             }
             catch (Exception e) {
-                if (Debug.debugOverride) {
+                if (CoreConfiguration.debugOverride) {
                     Debug.echoError(e);
                 }
             }

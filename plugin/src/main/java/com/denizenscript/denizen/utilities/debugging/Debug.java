@@ -33,7 +33,6 @@ public class Debug {
     public static boolean showDebug = true;
     public static boolean showStackTraces = true;
     public static boolean showColor = true;
-    public static boolean debugOverride = false;
     public static boolean showSources = false;
 
     public static boolean shouldTrim = true;
@@ -408,7 +407,7 @@ public class Debug {
     }
 
     public static boolean shouldDebug(Debuggable caller) {
-        if (debugOverride) {
+        if (CoreConfiguration.debugOverride) {
             return true;
         }
         if (!showDebug) {

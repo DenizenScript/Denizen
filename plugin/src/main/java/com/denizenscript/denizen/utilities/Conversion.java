@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
@@ -75,7 +76,7 @@ public class Conversion {
                 int slot = new ElementTag(entry.getKey().str).asInt();
                 ItemTag item = ItemTag.getItemFor(entry.getValue(), context);
                 if (item == null) {
-                    if (context == null || context.debug) {
+                    if (context == null || context.debug || CoreConfiguration.debugOverride) {
                         Debug.echoError("Not a valid item: '" + entry.getValue() + "'");
                     }
                     continue;

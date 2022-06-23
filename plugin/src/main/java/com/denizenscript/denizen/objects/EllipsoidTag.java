@@ -346,11 +346,12 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     @Override
     public String identify() {
-        if (isUnique()) {
-            return "ellipsoid@" + noteName;
+        EllipsoidTag self = refreshState();
+        if (self.isUnique()) {
+            return "ellipsoid@" + self.noteName;
         }
         else {
-            return identifyFull();
+            return self.identifyFull();
         }
     }
 

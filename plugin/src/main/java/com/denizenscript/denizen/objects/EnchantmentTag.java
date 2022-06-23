@@ -17,6 +17,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -77,7 +78,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
             ench = ScriptRegistry.getScriptContainerAs(string, EnchantmentScriptContainer.class).enchantment;
         }
         if (ench == null) {
-            if (context == null || context.debug) {
+            if (context == null || context.debug || CoreConfiguration.debugOverride) {
                 Debug.echoError("Unknown enchantment '" + string + "'");
             }
             return null;
