@@ -939,6 +939,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 member = cuboid.pairs.size() + 1;
             }
             cuboid.pairs.remove(member - 1);
+            if (cuboid.pairs.isEmpty()) {
+                return null;
+            }
             return cuboid;
         });
 
@@ -1564,6 +1567,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <CuboidTag.remove_member[<#>]>
         // -->
         if (mechanism.matches("remove_member") && mechanism.requireInteger()) {
+            if (pairs.size() == 1) {
+                Debug.echoError("Cannot remove_member: CuboidTag only has 1 member left.");
+                return;
+            }
             if (noteName != null) {
                 NotedAreaTracker.remove(this);
             }

@@ -337,7 +337,7 @@ public interface AreaContainmentObject extends ObjectTag {
             AbstractFlagTracker tracker = ((FlaggableObject) this).getFlagTracker();
             return tracker != null && tracker.hasFlag(matcher.substring("area_flagged:".length()));
         }
-        if (BukkitScriptEvent.runGenericCheck(matcher, getNoteName())) {
+        if (getNoteName() != null && BukkitScriptEvent.runGenericCheck(matcher, getNoteName())) {
             return true;
         }
         return false;
