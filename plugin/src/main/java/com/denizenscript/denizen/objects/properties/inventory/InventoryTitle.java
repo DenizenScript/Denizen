@@ -95,6 +95,10 @@ public class InventoryTitle implements Property {
                 return;
             }
             String title = mechanism.getValue().asString();
+            if (inventory.getInventoryType() == InventoryType.ANVIL || inventory.getInventoryType() == InventoryType.WORKBENCH) {
+                inventory.customTitle = title;
+                return;
+            }
             if (inventory.getInventory() != null && AdvancedTextImpl.instance.getTitle(inventory.getInventory()).equals(title)) {
                 return;
             }

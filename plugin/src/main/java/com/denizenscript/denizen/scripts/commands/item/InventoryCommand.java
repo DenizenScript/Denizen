@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Conversion;
@@ -22,7 +21,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
 import org.bukkit.Bukkit;
@@ -265,48 +263,45 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         }
     }
 
-    public ObjectTag currentScriptInvHolder;
-    public Player currentScriptInvPlayer;
-    public Location currentScriptInvLocation;
-    public String currentScriptInvTitle;
+    public Player currentAltPlayer;
+    public Location currentAltLocation;
+    public String currentAltTitle, currentAltType;
+    public ObjectTag currentAltHolder;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onOpen(InventoryOpenEvent event) {
-        if (currentScriptInvHolder == null || currentScriptInvPlayer == null) {
+        if (currentAltHolder == null || currentAltPlayer == null) {
             return;
         }
-        if (event.getInventory().getLocation() == null || currentScriptInvLocation.distanceSquared(event.getInventory().getLocation()) > 1) {
+        if (event.getInventory().getLocation() == null || currentAltLocation.distanceSquared(event.getInventory().getLocation()) > 1) {
             return;
         }
-        if (!event.getPlayer().getUniqueId().equals(currentScriptInvPlayer.getUniqueId())) {
+        if (!event.getPlayer().getUniqueId().equals(currentAltPlayer.getUniqueId())) {
             return;
         }
-        if (currentScriptInvTitle != null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-            NMSHandler.getInstance().setInventoryTitle(event.getView(), currentScriptInvTitle);
+        if (currentAltTitle != null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            NMSHandler.getInstance().setInventoryTitle(event.getView(), currentAltTitle);
         }
-        InventoryTag newTag = new InventoryTag(event.getInventory(), "script", currentScriptInvHolder);
+        InventoryTag newTag = new InventoryTag(event.getInventory(), currentAltType, currentAltHolder);
         InventoryTrackerSystem.trackTemporaryInventory(event.getInventory(), newTag);
     }
 
-    public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination, TagContext context) {
+    public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination) {
         try {
-            if (destination.getIdType().equals("script")) {
-                ScriptTag scriptTag = (ScriptTag) destination.getIdHolder();
-                if (scriptTag != null && scriptTag.getContainer() instanceof InventoryScriptContainer) {
-                    InventoryScriptContainer script = (InventoryScriptContainer) scriptTag.getContainer();
-                    currentScriptInvTitle = script.contains("title") ? TagManager.tag(script.getString("title"), script.fixContext(context)) : null;
-                    currentScriptInvHolder = destination.getIdHolder();
-                    currentScriptInvPlayer = player;
-                    currentScriptInvLocation = player.getLocation();
-                    currentScriptInvLocation.setY(-1000);
-                }
+            if (destination.customTitle != null) {
+                currentAltType = destination.getIdType();
+                currentAltTitle = destination.customTitle;
+                currentAltHolder = destination.getIdHolder();
+                currentAltPlayer = player;
+                currentAltLocation = player.getLocation();
+                currentAltLocation.setY(-1000);
             }
             InventoryView view;
             if (type == InventoryType.ANVIL) {
-                view = AdvancedTextImpl.instance.openAnvil(player, currentScriptInvLocation);
+                view = AdvancedTextImpl.instance.openAnvil(player, currentAltLocation);
             }
             else if (type == InventoryType.WORKBENCH) {
-                view = player.openWorkbench(currentScriptInvLocation, true);
+                view = player.openWorkbench(currentAltLocation, true);
             }
             else {
                 return;
@@ -315,10 +310,11 @@ public class InventoryCommand extends AbstractCommand implements Listener {
             newInv.setContents(destination.getContents());
         }
         finally {
-            currentScriptInvHolder = null;
-            currentScriptInvPlayer = null;
-            currentScriptInvLocation = null;
-            currentScriptInvTitle = null;
+            currentAltHolder = null;
+            currentAltType = null;
+            currentAltPlayer = null;
+            currentAltLocation = null;
+            currentAltTitle = null;
         }
     }
 
@@ -358,7 +354,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 case OPEN:
                     // Use special method to make opening workbenches and anvils work properly
                     if ((destination.getInventoryType() == InventoryType.WORKBENCH || (destination.getInventoryType() == InventoryType.ANVIL && Denizen.supportsPaper)) && destination.getInventory().getLocation() == null) {
-                        doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination, scriptEntry.context);
+                        doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination);
                     }
                     // Otherwise, open inventory as usual
                     else {

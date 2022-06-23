@@ -496,6 +496,8 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
     public Inventory inventory = null;
 
+    public String customTitle = null;
+
     public String prefix = getObjectType();
 
     private InventoryTag(Inventory inventory) {

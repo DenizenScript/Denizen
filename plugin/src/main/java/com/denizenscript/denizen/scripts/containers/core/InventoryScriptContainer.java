@@ -169,6 +169,10 @@ public class InventoryScriptContainer extends ScriptContainer {
             if (type == InventoryType.CHEST) {
                 inventory = new InventoryTag(size, title != null ? title : "Chest");
             }
+            else if (type == InventoryType.ANVIL || type == InventoryType.WORKBENCH) {
+                inventory = new InventoryTag(type);
+                inventory.customTitle = title;
+            }
             else {
                 if (title == null) {
                     inventory = new InventoryTag(type);
