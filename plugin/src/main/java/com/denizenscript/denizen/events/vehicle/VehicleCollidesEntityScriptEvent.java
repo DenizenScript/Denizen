@@ -111,7 +111,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
             case "vehicle":
                 return vehicle;
             case "entity":
-                return entity;
+                return entity.getDenizenObject();
             case "pickup":
                 return new ElementTag(!event.isPickupCancelled());
         }

@@ -71,7 +71,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
-            return collidedWith;
+            return collidedWith.getDenizenObject();
         }
         else if (name.equals("projectile")) {
             return projectile;

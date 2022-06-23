@@ -107,7 +107,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
             return vehicle;
         }
         else if (name.equals("entity") && entity != null) {
-            return entity;
+            return entity.getDenizenObject();
         }
         return super.getContext(name);
     }
