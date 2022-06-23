@@ -645,11 +645,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public String debuggable() {
-        if (isUnique()) {
-            return "<LG>cu@<Y>" + noteName + " <GR>(" + identifyFull() + ")";
+        CuboidTag self = refreshState();
+        if (self.isUnique()) {
+            return "<LG>cu@<Y>" + self.noteName + " <GR>(" + self.identifyFull() + ")";
         }
         else {
-            return identifyFull();
+            return self.identifyFull();
         }
     }
 

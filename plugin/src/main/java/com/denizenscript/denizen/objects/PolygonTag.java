@@ -464,11 +464,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public String debuggable() {
-        if (isUnique()) {
-            return "<LG>polygon@<Y>" + noteName + " <GR>(" + identifyFull() + ")";
+        PolygonTag self = refreshState();
+        if (self.isUnique()) {
+            return "<LG>polygon@<Y>" + self.noteName + " <GR>(" + self.identifyFull() + ")";
         }
         else {
-            return identifyFull().replace(",", "<LG>, <Y>");
+            return self.identifyFull().replace(",", "<LG>, <Y>");
         }
     }
 
