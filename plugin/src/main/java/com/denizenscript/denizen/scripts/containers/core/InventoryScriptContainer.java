@@ -169,7 +169,7 @@ public class InventoryScriptContainer extends ScriptContainer {
             if (type == InventoryType.CHEST) {
                 inventory = new InventoryTag(size, title != null ? title : "Chest");
             }
-            else if (type == InventoryType.ANVIL || type == InventoryType.WORKBENCH) {
+            else if (InventoryScriptHelper.isPersonalSpecialInv(type)) {
                 inventory = new InventoryTag(type);
                 inventory.customTitle = title;
             }

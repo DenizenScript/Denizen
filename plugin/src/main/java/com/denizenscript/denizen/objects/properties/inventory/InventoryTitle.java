@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -95,7 +96,7 @@ public class InventoryTitle implements Property {
                 return;
             }
             String title = mechanism.getValue().asString();
-            if (inventory.getInventoryType() == InventoryType.ANVIL || inventory.getInventoryType() == InventoryType.WORKBENCH) {
+            if (InventoryScriptHelper.isPersonalSpecialInv(inventory.getInventory())) {
                 inventory.customTitle = title;
                 return;
             }
