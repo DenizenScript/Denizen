@@ -91,7 +91,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":
-                return entity;
+                return entity.getDenizenObject();
             case "duration":
                 return new DurationTag(event.getDuration());
             case "source":

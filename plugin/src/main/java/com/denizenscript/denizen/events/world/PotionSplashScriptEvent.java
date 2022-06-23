@@ -69,7 +69,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
             case "entities":
                 ListTag entities = new ListTag();
                 for (Entity e : event.getAffectedEntities()) {
-                    entities.addObject(new EntityTag(e));
+                    entities.addObject(new EntityTag(e).getDenizenObject());
                 }
                 return entities;
             case "location":
