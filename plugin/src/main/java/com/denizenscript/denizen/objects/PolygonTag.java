@@ -68,7 +68,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     public Corner boxMin = new Corner(), boxMax = new Corner();
 
-    public String noteName = null;
+    public String noteName = null, priorNoteName = null;
 
     public AbstractFlagTracker flagTracker = null;
 
@@ -422,10 +422,26 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public void forget() {
+        if (noteName == null) {
+            return;
+        }
+        priorNoteName = noteName;
         NotedAreaTracker.remove(this);
         NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
+    }
+
+    @Override
+    public PolygonTag refreshState() {
+        if (noteName == null && priorNoteName != null) {
+            Notable note = NoteManager.getSavedObject(priorNoteName);
+            if (note instanceof PolygonTag) {
+                return (PolygonTag) note;
+            }
+            priorNoteName = null;
+        }
+        return this;
     }
 
     String prefix = "Polygon";

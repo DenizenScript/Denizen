@@ -145,7 +145,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     public LocationTag size;
 
-    public String noteName = null;
+    public String noteName = null, priorNoteName = null;
 
     public AbstractFlagTracker flagTracker = null;
 
@@ -284,11 +284,28 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     @Override
     public void forget() {
+        if (noteName == null) {
+            return;
+        }
+        priorNoteName = noteName;
         NotedAreaTracker.remove(this);
         NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
     }
+
+    @Override
+    public EllipsoidTag refreshState() {
+        if (noteName == null && priorNoteName != null) {
+            Notable note = NoteManager.getSavedObject(priorNoteName);
+            if (note instanceof EllipsoidTag) {
+                return (EllipsoidTag) note;
+            }
+            priorNoteName = null;
+        }
+        return this;
+    }
+
     @Override
     public int hashCode() {
         if (noteName != null) {

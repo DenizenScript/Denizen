@@ -76,6 +76,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             cuboid = new CuboidTag();
         }
         cuboid.noteName = null;
+        cuboid.priorNoteName = null;
         cuboid.flagTracker = null;
         cuboid.pairs = new ArrayList<>(pairs.size());
         for (LocationPair pair : pairs) {
@@ -293,7 +294,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     public List<LocationPair> pairs = new ArrayList<>();
 
-    public String noteName = null;
+    public String noteName = null, priorNoteName = null;
 
     public AbstractFlagTracker flagTracker = null;
 
@@ -602,10 +603,26 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public void forget() {
+        if (noteName == null) {
+            return;
+        }
+        priorNoteName = noteName;
         NotedAreaTracker.remove(this);
         NoteManager.remove(this);
         noteName = null;
         flagTracker = null;
+    }
+
+    @Override
+    public CuboidTag refreshState() {
+        if (noteName == null && priorNoteName != null) {
+            Notable note = NoteManager.getSavedObject(priorNoteName);
+            if (note instanceof CuboidTag) {
+                return (CuboidTag) note;
+            }
+            priorNoteName = null;
+        }
+        return this;
     }
 
     String prefix = "Cuboid";

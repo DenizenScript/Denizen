@@ -176,7 +176,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         this.inventory = inventory;
     }
 
-    public String noteName;
+    public String noteName = null, priorNoteName = null;
 
     public void makeUnique(String id) {
         InventoryTag toNote = new InventoryTag(inventory, idType, idHolder);
@@ -205,10 +205,27 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
     @Override
     public void forget() {
+        if (noteName == null) {
+            return;
+        }
+        priorNoteName = noteName;
         NoteManager.remove(this);
         InventoryScriptHelper.notedInventories.remove(inventory);
         flagTracker = null;
         noteName = null;
+    }
+
+    @Override
+    public InventoryTag refreshState() {
+        if (noteName == null && priorNoteName != null) {
+            Notable note = NoteManager.getSavedObject(priorNoteName);
+            if (note instanceof InventoryTag) {
+                return (InventoryTag) note;
+            }
+            priorNoteName = null;
+        }
+        trackTemporaryInventory(this);
+        return this;
     }
 
     @Override
