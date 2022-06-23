@@ -195,10 +195,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
 
     @Override
     public CuboidTag duplicate() {
-        if (noteName != null) {
+        CuboidTag self = refreshState();
+        if (self.noteName != null) {
             return this;
         }
-        return clone();
+        return self.clone();
     }
 
     @Override

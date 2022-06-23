@@ -166,7 +166,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public ObjectTag duplicate() {
-        if (noteName != null) {
+        PolygonTag self = refreshState();
+        if (self.noteName != null) {
             return this;
         }
         return clone();

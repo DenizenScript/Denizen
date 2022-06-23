@@ -122,10 +122,11 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     @Override
     public ObjectTag duplicate() {
-        if (noteName != null) {
+        EllipsoidTag self = refreshState();
+        if (self.noteName != null) {
             return this;
         }
-        return clone();
+        return self.clone();
     }
 
     ///////////////
