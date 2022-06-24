@@ -397,15 +397,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return null;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
             }
             return super.getBlock();
@@ -419,15 +415,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return null;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
             }
             return super.getBlock().getBlockData();
@@ -441,15 +433,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return null;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
             }
             return super.getBlock().getType();
@@ -477,15 +465,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return null;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
             }
             return getBiome();
@@ -499,15 +483,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return null;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
             }
             return getWorld().getHighestBlockAt(this).getLocation();
@@ -521,15 +501,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return null;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return null;
             }
             return item == null ? super.getBlock().getDrops() : super.getBlock().getDrops(item);
@@ -543,15 +519,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NMSHandler.chunkHelper.changeChunkServerThread(getWorld());
         try {
             if (getWorld() == null) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because no world is specified.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because no world is specified.");
                 return 0;
             }
             if (!isChunkLoaded()) {
-                if (!attribute.hasAlternative()) {
-                    Debug.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
-                }
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
                 return 0;
             }
             return NMSHandler.blockHelper.getExpDrop(super.getBlock(), item);
@@ -2307,9 +2279,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     facingLoc = attribute.paramAsType(EntityTag.class).getLocation();
                 }
                 else {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Tag location.facing[...] was given an invalid facing target.");
-                    }
+                    attribute.echoError("Tag location.facing[...] was given an invalid facing target.");
                     return null;
                 }
 
@@ -3492,9 +3462,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     return new ElementTag(object.toVector().distanceSquared(toLocation.toVector()));
                 }
                 if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Can't measure distance between two different worlds!");
-                    }
+                    attribute.echoError("Can't measure distance between two different worlds!");
                     return null;
                 }
                 return new ElementTag(object.distanceSquared(toLocation));
@@ -3573,9 +3541,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     return new ElementTag(object.toVector().distance(toLocation.toVector()));
                 }
                 if (!object.getWorldName().equalsIgnoreCase(toLocation.getWorldName())) {
-                    if (!attribute.hasAlternative()) {
-                        Debug.echoError("Can't measure distance between two different worlds!");
-                    }
+                    attribute.echoError("Can't measure distance between two different worlds!");
                     return null;
                 }
                 return new ElementTag(object.distance(toLocation));
@@ -4117,9 +4083,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     return new LocationTag(object.clone().add(vec));
                 }
             }
-            if (!attribute.hasAlternative()) {
-                Debug.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
-            }
+            attribute.echoError("Block of type " + object.getBlockTypeForTag(attribute).name() + " isn't supported by other_block.");
             return null;
         });
 
@@ -4624,7 +4588,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             ListTag list = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(list);
             if (list.size() > 4) {
-                Debug.echoError("Sign can only hold four lines!");
+                mechanism.echoError("Sign can only hold four lines!");
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
@@ -4677,7 +4641,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 NMSHandler.blockHelper.setPlayerProfile((Skull) blockState, profile);
             }
             else {
-                Debug.echoError("Unable to set skull_skin on block of type " + material.name() + " with state " + blockState.getClass().getCanonicalName());
+                mechanism.echoError("Unable to set skull_skin on block of type " + material.name() + " with state " + blockState.getClass().getCanonicalName());
             }
         }
 
@@ -4916,7 +4880,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                             PatternType.valueOf(split.get(1).toUpperCase())));
                 }
                 catch (Exception e) {
-                    Debug.echoError("Could not apply pattern to banner: " + string);
+                    mechanism.echoError("Could not apply pattern to banner: " + string);
                 }
             }
             Banner banner = (Banner) getBlockState();
@@ -4952,7 +4916,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("generate_tree") && mechanism.requireEnum(TreeType.class)) {
             boolean generated = getWorld().generateTree(this, TreeType.valueOf(mechanism.getValue().asString().toUpperCase()));
             if (!generated) {
-                Debug.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
+                mechanism.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
             }
         }
 
@@ -5003,7 +4967,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 ((Dropper) state).drop();
             }
             else {
-                Debug.echoError("'activate' mechanism does not work for blocks of type: " + state.getType().name());
+                mechanism.echoError("'activate' mechanism does not work for blocks of type: " + state.getType().name());
             }
         }
 
@@ -5023,7 +4987,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'lectern_page' mechanism can only be called on a lectern block.");
+                mechanism.echoError("'lectern_page' mechanism can only be called on a lectern block.");
             }
         }
 
@@ -5043,18 +5007,19 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'clear_loot_table' mechanism can only be called on a lootable block (like a chest).");
+                mechanism.echoError("'clear_loot_table' mechanism can only be called on a lootable block (like a chest).");
             }
         }
 
         // <--[mechanism]
         // @object LocationTag
-        // @name loot_table
+        // @name loot_table_id
         // @input ElementTag
         // @description
         // Sets the loot table of a lootable container at this location.
         // This is the namespaced path of the loot table, provided by a datapack or Minecraft's default data.
         // @tags
+        // <LocationTag.loot_table_id>
         // <LocationTag.has_loot_table>
         // @Example
         // # Sets the chest's loot table to a bonus chest
@@ -5063,7 +5028,12 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("loot_table_id")) {
             BlockState state = getBlockState();
             if (state instanceof Lootable) {
-                ((Lootable) state).setLootTable(Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString())));
+                LootTable table = Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
+                if (table == null) {
+                    mechanism.echoError("Invalid loot table ID.");
+                    return;
+                }
+                ((Lootable) state).setLootTable(table);
                 state.update();
             }
             else {
@@ -5094,7 +5064,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'jukebox_record' mechanism can only be called on a jukebox block.");
+                mechanism.echoError("'jukebox_record' mechanism can only be called on a jukebox block.");
             }
         }
 
@@ -5114,7 +5084,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (mechanism.getValue().asBoolean()) {
                     Material mat = ((Jukebox) state).getRecord().getType();
                     if (mat == Material.AIR) {
-                        Debug.echoError("'jukebox_play' cannot play nothing.");
+                        mechanism.echoError("'jukebox_play' cannot play nothing.");
                         return;
                     }
                     ((Jukebox) state).setPlaying(mat);
@@ -5125,7 +5095,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'jukebox_play' mechanism can only be called on a jukebox block.");
+                mechanism.echoError("'jukebox_play' mechanism can only be called on a jukebox block.");
             }
         }
 
@@ -5145,7 +5115,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'age' mechanism can only be called on end gateway blocks.");
+                mechanism.echoError("'age' mechanism can only be called on end gateway blocks.");
             }
         }
 
@@ -5165,7 +5135,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'is_exact_teleport' mechanism can only be called on end gateway blocks.");
+                mechanism.echoError("'is_exact_teleport' mechanism can only be called on end gateway blocks.");
             }
         }
 
@@ -5186,7 +5156,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 state.update();
             }
             else {
-                Debug.echoError("'exit_location' mechanism can only be called on end gateway blocks.");
+                mechanism.echoError("'exit_location' mechanism can only be called on end gateway blocks.");
             }
         }
 
@@ -5225,14 +5195,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("campfire_items") && mechanism.requireObject(ListTag.class)) {
             BlockState state = getBlockState();
             if (!(state instanceof Campfire)) {
-                Debug.echoError("'campfire_items' mechanism can only be called on campfire blocks.");
+                mechanism.echoError("'campfire_items' mechanism can only be called on campfire blocks.");
             }
             else {
                 Campfire fire = (Campfire) state;
                 List<ItemTag> list = mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context);
                 for (int i = 0; i < list.size(); i++) {
                     if (i >= fire.getSize()) {
-                        Debug.echoError("Cannot add item for index " + (i + 1) + " as the campfire can only hold " + fire.getSize() + " items.");
+                        mechanism.echoError("Cannot add item for index " + (i + 1) + " as the campfire can only hold " + fire.getSize() + " items.");
                         break;
                     }
                     fire.setItem(i, list.get(i).getItemStack());
@@ -5251,7 +5221,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("ring_bell")) {
             BlockState state = getBlockState();
             if (!(state instanceof Bell)) {
-                Debug.echoError("'ring_bell' mechanism can only be called on Bell blocks.");
+                mechanism.echoError("'ring_bell' mechanism can only be called on Bell blocks.");
             }
             else {
                 NMSHandler.blockHelper.ringBell((Bell) state);
@@ -5271,7 +5241,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("sign_glowing") && mechanism.requireBoolean()) {
             BlockState state = getBlockState();
             if (!(state instanceof Sign)) {
-                Debug.echoError("'sign_glowing' mechanism can only be called on Sign blocks.");
+                mechanism.echoError("'sign_glowing' mechanism can only be called on Sign blocks.");
             }
             else {
                 Sign sign = (Sign) state;
@@ -5296,7 +5266,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("sign_glow_color") && mechanism.requireEnum(DyeColor.class)) {
             BlockState state = getBlockState();
             if (!(state instanceof Sign)) {
-                Debug.echoError("'sign_glow_color' mechanism can only be called on Sign blocks.");
+                mechanism.echoError("'sign_glow_color' mechanism can only be called on Sign blocks.");
             }
             else {
                 Sign sign = (Sign) state;

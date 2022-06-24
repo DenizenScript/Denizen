@@ -4117,7 +4117,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object EntityTag
-        // @name loot_table
+        // @name loot_table_id
         // @input ElementTag
         // @description
         // Sets the loot table of a lootable entity.
@@ -4133,7 +4133,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("'loot_table_id' is only valid for lootable entities.");
                 return;
             }
-            ((Lootable) getBukkitEntity()).setLootTable(Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString())));
+            LootTable table = Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
+            if (table == null) {
+                mechanism.echoError("Invalid loot table ID.");
+                return;
+            }
+            ((Lootable) getBukkitEntity()).setLootTable(table);
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
