@@ -5060,14 +5060,14 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // # Sets the chest's loot table to a bonus chest
         // - adjust <[location]> loot_table:chests/ancient_city
         // -->
-        if (mechanism.matches("loot_table")) {
+        if (mechanism.matches("loot_table_id")) {
             BlockState state = getBlockState();
             if (state instanceof Lootable) {
                 ((Lootable) state).setLootTable(Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString())));
                 state.update();
             }
             else {
-                Debug.echoError("'loot_table' mechanism can only be called on a lootable block (like a chest).");
+                mechanism.echoError("'loot_table_id' mechanism can only be called on a lootable block (like a chest).");
             }
         }
 
