@@ -5049,6 +5049,30 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[mechanism]
         // @object LocationTag
+        // @name loot_table
+        // @input ElementTag
+        // @description
+        // Sets the loot table of a lootable container at this location.
+        // This is the namespaced path of the loot table, provided by a datapack or Minecraft's default data.
+        // @tags
+        // <LocationTag.has_loot_table>
+        // @Example
+        // # Sets the chest's loot table to a bonus chest
+        // - adjust <[location]> loot_table:chests/ancient_city
+        // -->
+        if (mechanism.matches("loot_table_id")) {
+            BlockState state = getBlockState();
+            if (state instanceof Lootable) {
+                ((Lootable) state).setLootTable(Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString())));
+                state.update();
+            }
+            else {
+                mechanism.echoError("'loot_table_id' mechanism can only be called on a lootable block (like a chest).");
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
         // @name jukebox_record
         // @input ItemTag
         // @description
