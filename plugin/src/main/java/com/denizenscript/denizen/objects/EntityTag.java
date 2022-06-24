@@ -10,6 +10,7 @@ import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.*;
@@ -4112,6 +4113,27 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (isPlayer()) {
                 NMSHandler.packetHelper.sendCollectItemEntity((Player) getBukkitEntity(), getBukkitEntity(), ent, amount);
             }
+        }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name loot_table
+        // @input ElementTag
+        // @description
+        // Sets the loot table of a lootable entity.
+        // This is the namespaced path of the loot table, provided by a datapack or Minecraft's default data.
+        // @tags
+        // <LocationTag.loot_table_id>
+        // @Example
+        // # Sets the chest's loot table to a bonus chest
+        // - adjust <player.location.find_entities[zombie].within[5].first> loot_table:entities/phantom
+        // -->
+        if (mechanism.matches("loot_table")) {
+            if (!(getBukkitEntity() instanceof Lootable)) {
+                mechanism.echoError("'loot_table' is only valid for lootable entities.");
+                return;
+            }
+            ((Lootable) getBukkitEntity()).setLootTable(Bukkit.getLootTable(Utilities.parseNamespacedKey(mechanism.getValue().asString())));
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
