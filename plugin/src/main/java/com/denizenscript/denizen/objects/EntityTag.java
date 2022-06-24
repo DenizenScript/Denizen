@@ -4125,7 +4125,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @tags
         // <EntityTag.loot_table_id>
         // @Example
-        // # Sets the chest's loot table to a bonus chest
+        // # Sets the nearest zombie's loot table to a phantom's
         // - adjust <player.location.find_entities[zombie].within[5].first> loot_table:entities/phantom
         // -->
         if (mechanism.matches("loot_table_id")) {
