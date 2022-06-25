@@ -273,7 +273,9 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
                     if (area.getNoteName() == null) {
                         inAreas.remove(area);
                     }
-                    processSingle(area, entity, inAreas, pos, eventCause);
+                    else {
+                        processSingle(area, entity, inAreas, pos, eventCause);
+                    }
                 }
                 reusableClearList.clear();
             }
