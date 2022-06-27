@@ -266,6 +266,12 @@ public class BukkitImplDeprecations {
     // Added 2021/06/19, deprecate officially by 2024.
     public static Warning entityMapTraceTag = new FutureWarning("entityMapTraceTag", "The tag 'EntityTag.map_trace' is deprecated in favor of EntityTag.trace_framed_map");
 
+    // Added 2021/06/27, deprecate officially by 2025.
+    public static Warning serverUtilTags = new FutureWarning("serverUtilTags", "Some 'server.' tags for core features are deprecated in favor of 'util.' equivalents, including 'java_version', '*_file', 'ram_*', 'disk_*', 'notes', 'last_reload', 'scripts', 'sql_connections', '*_time_*', ...");
+
+    // Added 2021/06/27, deprecate officially by 2025.
+    public static Warning serverObjectExistsTags = new FutureWarning("serverObjectExistsTags", "The 'object_is_valid' tag is a historical version of modern '.exists' or '.is_truthy' fallback tags.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Added on 2019/10/13

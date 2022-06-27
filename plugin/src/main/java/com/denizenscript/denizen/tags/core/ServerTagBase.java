@@ -7,12 +7,12 @@ import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContain
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
+import com.denizenscript.denizencore.tags.core.UtilTagBase;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
-import com.denizenscript.denizencore.events.core.TickScriptEvent;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -88,7 +88,9 @@ public class ServerTagBase {
         });
     }
 
-    public static final long serverStartTimeMillis = CoreUtilities.monotonicMillis();
+    public static HashSet<String> deprecatedServerUtilTags = new HashSet<>(Arrays.asList("current_time_millis", "real_time_since_start",
+            "delta_time_since_start", "current_tick", "available_processors", "ram_usage", "ram_free", "ram_max", "ram_allocated", "disk_usage",
+            "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version"));
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server") || event.replaced()) {
@@ -462,10 +464,12 @@ public class ServerTagBase {
         // <--[tag]
         // @attribute <server.object_is_valid[<object>]>
         // @returns ElementTag(Boolean)
+        // @deprecated Use 'exists' or 'is_truthy'
         // @description
-        // Returns whether the object is a valid object (non-null), as well as not an ElementTag.
+        // Deprecated in favor of <@link tag ObjectTag.exists> or <@link tag ObjectTag.is_truthy>
         // -->
         if (attribute.startsWith("object_is_valid")) {
+            BukkitImplDeprecations.serverObjectExistsTags.warn(attribute.context);
             ObjectTag o = ObjectFetcher.pickObjectFor(attribute.getParam(), CoreUtilities.noDebugContext);
             event.setReplacedObject(new ElementTag(!(o == null || o instanceof ElementTag)).getObjectAttribute(attribute.fulfill(1)));
             return;
@@ -1056,36 +1060,6 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.notes[<type>]>
-        // @returns ListTag
-        // @description
-        // Lists all saved notable objects of a specific type currently on the server.
-        // Valid types: locations, cuboids, ellipsoids, inventories, polygons
-        // This is primarily intended for debugging purposes, and it's best to avoid using this in a live script if possible.
-        // -->
-        if (attribute.startsWith("notes") || attribute.startsWith("list_notables") || attribute.startsWith("notables")) {
-            listDeprecateWarn(attribute);
-            ListTag allNotables = new ListTag();
-            if (attribute.hasParam()) {
-                String type = CoreUtilities.toLowerCase(attribute.getParam());
-                for (Map.Entry<String, Class> typeClass : NoteManager.namesToTypes.entrySet()) {
-                    if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
-                        for (Object notable : NoteManager.getAllType(typeClass.getValue())) {
-                            allNotables.addObject((ObjectTag) notable);
-                        }
-                        break;
-                    }
-                }
-            }
-            else {
-                for (Notable notable : NoteManager.nameToObject.values()) {
-                    allNotables.addObject((ObjectTag) notable);
-                }
-            }
-            event.setReplacedObject(allNotables.getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
         // @attribute <server.statistic_type[<statistic>]>
         // @returns ElementTag
         // @description
@@ -1126,16 +1100,60 @@ public class ServerTagBase {
             event.setReplacedObject(new ElementTag(ench.enchantment.getStartLevel()).getObjectAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <server.started_time>
-        // @returns TimeTag
-        // @description
-        // Returns the time the server started.
-        // -->
-        if (attribute.startsWith("started_time")) {
-            event.setReplacedObject(new TimeTag(CoreUtilities.monotonicMillisToReal(DenizenCore.startTime))
-                    .getObjectAttribute(attribute.fulfill(1)));
+        // Historical variants of "notes" tag
+        if (attribute.startsWith("list_notables") || attribute.startsWith("notables")) {
+            BukkitImplDeprecations.serverUtilTags.warn(attribute.context);
+            listDeprecateWarn(attribute);
+            ListTag allNotables = new ListTag();
+            if (attribute.hasParam()) {
+                String type = CoreUtilities.toLowerCase(attribute.getParam());
+                for (Map.Entry<String, Class> typeClass : NoteManager.namesToTypes.entrySet()) {
+                    if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
+                        for (Object notable : NoteManager.getAllType(typeClass.getValue())) {
+                            allNotables.addObject((ObjectTag) notable);
+                        }
+                        break;
+                    }
+                }
+            }
+            else {
+                for (Notable notable : NoteManager.nameToObject.values()) {
+                    allNotables.addObject((ObjectTag) notable);
+                }
+            }
+            event.setReplacedObject(allNotables.getObjectAttribute(attribute.fulfill(1)));
         }
+        // Historical variant of "sql_connections" tag
+        if (attribute.startsWith("list_sql_connections")) {
+            listDeprecateWarn(attribute);
+            ListTag list = new ListTag();
+            for (Map.Entry<String, Connection> entry : SQLCommand.connections.entrySet()) {
+                try {
+                    if (!entry.getValue().isClosed()) {
+                        list.add(entry.getKey());
+                    }
+                    else {
+                        SQLCommand.connections.remove(entry.getKey());
+                    }
+                }
+                catch (SQLException e) {
+                    Debug.echoError(attribute.getScriptEntry(), e);
+                }
+            }
+            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+        // Historical variant of "scripts" tag
+        if (attribute.startsWith("list_scripts")) {
+            listDeprecateWarn(attribute);
+            ListTag scripts = new ListTag();
+            for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
+                scripts.addObject(new ScriptTag(script));
+            }
+            event.setReplacedObject(scripts.getObjectAttribute(attribute.fulfill(1)));
+            return;
+        }
+        // Pre-timetag-rewrite historical tag
         if (attribute.startsWith("start_time")) {
             Deprecations.timeTagRewrite.warn(attribute.context);
             event.setReplacedObject(new DurationTag(CoreUtilities.monotonicMillisToReal(DenizenCore.startTime) / 50)
@@ -1143,157 +1161,167 @@ public class ServerTagBase {
         }
 
         // <--[tag]
+        // @attribute <server.notes[<type>]>
+        // @returns ListTag
+        // @deprecated use util.notes
+        // @description
+        // Deprecated in favor of <@link tag util.notes>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.started_time>
+        // @returns TimeTag
+        // @deprecated use util.started_time
+        // @description
+        // Deprecated in favor of <@link tag util.started_time>
+        // -->
+
+        // <--[tag]
         // @attribute <server.disk_free>
         // @returns ElementTag(Number)
+        // @deprecated use util.disk_free
         // @description
-        // How much remaining disk space is available to this server, in bytes.
-        // This counts only the drive the server folder is on, not any other drives.
-        // This may be limited below the actual drive capacity by operating system settings.
+        // Deprecated in favor of <@link tag util.disk_free>
         // -->
-        if (attribute.startsWith("disk_free")) {
-            File folder = Denizen.getInstance().getDataFolder();
-            event.setReplacedObject(new ElementTag(folder.getUsableSpace())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.disk_total>
         // @returns ElementTag(Number)
+        // @deprecated use util.disk_total
         // @description
-        // How much total disk space is on the drive containing this server, in bytes.
-        // This counts only the drive the server folder is on, not any other drives.
+        // Deprecated in favor of <@link tag util.disk_total>
         // -->
-        if (attribute.startsWith("disk_total")) {
-            File folder = Denizen.getInstance().getDataFolder();
-            event.setReplacedObject(new ElementTag(folder.getTotalSpace())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.disk_usage>
         // @returns ElementTag(Number)
+        // @deprecated use util.disk_usage
         // @description
-        // How much space on the drive is already in use, in bytes.
-        // This counts only the drive the server folder is on, not any other drives.
-        // This is approximately equivalent to "disk_total" minus "disk_free", but is not always exactly the same,
-        // as this tag will not include space "used" by operating system settings that simply deny the server write access.
+        // Deprecated in favor of <@link tag util.disk_usage>
         // -->
-        if (attribute.startsWith("disk_usage")) {
-            File folder = Denizen.getInstance().getDataFolder();
-            event.setReplacedObject(new ElementTag(folder.getTotalSpace() - folder.getFreeSpace())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.ram_allocated>
         // @returns ElementTag(Number)
+        // @deprecated use util.ram_allocated
         // @description
-        // How much RAM is allocated to the server, in bytes (total memory).
-        // This is how much of the system memory is reserved by the Java process, NOT how much is actually in use
-        // by the minecraft server.
+        // Deprecated in favor of <@link tag util.ram_allocated>
         // -->
-        if (attribute.startsWith("ram_allocated")) {
-            event.setReplacedObject(new ElementTag(Runtime.getRuntime().totalMemory())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.ram_max>
         // @returns ElementTag(Number)
+        // @deprecated use util.ram_max
         // @description
-        // How much RAM is available to the server (total), in bytes (max memory).
+        // Deprecated in favor of <@link tag util.ram_max>
         // -->
-        if (attribute.startsWith("ram_max")) {
-            event.setReplacedObject(new ElementTag(Runtime.getRuntime().maxMemory())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.ram_free>
         // @returns ElementTag(Number)
+        // @deprecated use util.ram_free
         // @description
-        // How much RAM is unused but available on the server, in bytes (free memory).
+        // Deprecated in favor of <@link tag util.ram_free>
         // -->
-        if (attribute.startsWith("ram_free")) {
-            event.setReplacedObject(new ElementTag(Runtime.getRuntime().freeMemory())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.ram_usage>
         // @returns ElementTag(Number)
+        // @deprecated use util.ram_usage
         // @description
-        // How much RAM is used by the server, in bytes (free memory).
-        // Equivalent to ram_max minus ram_free
+        // Deprecated in favor of <@link tag util.ram_usage>
         // -->
-        if (attribute.startsWith("ram_usage")) {
-            event.setReplacedObject(new ElementTag(Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.available_processors>
         // @returns ElementTag(Number)
+        // @deprecated use util.available_processors
         // @description
-        // How many virtual processors are available to the server.
-        // (In general, Minecraft only uses one, unfortunately.)
+        // Deprecated in favor of <@link tag util.available_processors>
         // -->
-        if (attribute.startsWith("available_processors")) {
-            event.setReplacedObject(new ElementTag(Runtime.getRuntime().availableProcessors())
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.current_tick>
         // @returns ElementTag(Number)
+        // @deprecated use util.current_tick
         // @description
-        // Returns the number of ticks since the server was started.
-        // Note that this is NOT an accurate indicator for real server uptime, as ticks fluctuate based on server lag.
+        // Deprecated in favor of <@link tag util.current_tick>
         // -->
-        if (attribute.startsWith("current_tick")) {
-            event.setReplacedObject(new ElementTag(TickScriptEvent.instance.ticks)
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.delta_time_since_start>
         // @returns DurationTag
+        // @deprecated use util.delta_time_since_start
         // @description
-        // Returns the duration of delta time since the server started.
-        // Note that this is delta time, not real time, meaning it is calculated based on the server tick,
-        // which may change longer or shorter than expected due to lag or other influences.
-        // If you want real time instead of delta time, use <@link tag server.real_time_since_start>.
+        // Deprecated in favor of <@link tag util.delta_time_since_start>
         // -->
-        if (attribute.startsWith("delta_time_since_start")) {
-            event.setReplacedObject(new DurationTag(TickScriptEvent.instance.ticks)
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.real_time_since_start>
         // @returns DurationTag
+        // @deprecated use util.real_time_since_start
         // @description
-        // Returns the duration of real time since the server started.
-        // Note that this is real time, not delta time, meaning that the it is accurate to the system clock, not the server's tick.
-        // System clock changes may cause this value to become inaccurate.
-        // In many cases <@link tag server.delta_time_since_start> is preferable.
+        // Deprecated in favor of <@link tag util.real_time_since_start>
         // -->
-        if (attribute.startsWith("real_time_since_start")) {
-            event.setReplacedObject(new DurationTag((CoreUtilities.monotonicMillis() - serverStartTimeMillis) / 1000.0)
-                    .getObjectAttribute(attribute.fulfill(1)));
-        }
 
         // <--[tag]
         // @attribute <server.current_time_millis>
         // @returns ElementTag(Number)
+        // @deprecated use util.current_time_millis
         // @description
-        // Returns the number of milliseconds since Jan 1, 1970.
-        // Note that this can change every time the tag is read!
-        // Use <@link tag util.time_now> if you need stable time.
+        // Deprecated in favor of <@link tag util.current_time_millis>
         // -->
-        if (attribute.startsWith("current_time_millis")) {
-            event.setReplacedObject(new ElementTag(System.currentTimeMillis())
-                    .getObjectAttribute(attribute.fulfill(1)));
+
+        // <--[tag]
+        // @attribute <server.has_file[<name>]>
+        // @returns ElementTag(Boolean)
+        // @deprecated use util.has_file
+        // @description
+        // Deprecated in favor of <@link tag util.has_file>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.list_files[<path>]>
+        // @returns ListTag
+        // @deprecated use util.list_files
+        // @description
+        // Deprecated in favor of <@link tag util.list_files>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.java_version>
+        // @returns ElementTag
+        // @deprecated use util.java_version
+        // @description
+        // Deprecated in favor of <@link tag util.java_version>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.sql_connections>
+        // @returns ListTag
+        // @deprecated use util.sql_connections
+        // @description
+        // Deprecated in favor of <@link tag util.sql_connections>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.scripts>
+        // @returns ListTag(ScriptTag)
+        // @deprecated use util.scripts
+        // @description
+        // Deprecated in favor of <@link tag util.scripts>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.last_reload>
+        // @returns TimeTag
+        // @deprecated use util.last_reload
+        // @description
+        // Deprecated in favor of <@link tag util.last_reload>
+        // -->
+        if (deprecatedServerUtilTags.contains(attribute.getAttributeWithoutParam(1))) {
+            UtilTagBase.utilTag(event);
+            return;
         }
 
         // <--[tag]
@@ -1330,62 +1358,6 @@ public class ServerTagBase {
                 }
             }
             event.setReplacedObject(npcs.getObjectAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <server.has_file[<name>]>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns true if the specified file exists. The starting path is /plugins/Denizen.
-        // -->
-        if (attribute.startsWith("has_file") && attribute.hasParam()) {
-            File f = new File(Denizen.getInstance().getDataFolder(), attribute.getParam());
-            try {
-                if (!Utilities.canReadFile(f)) {
-                    Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
-                    return;
-                }
-            }
-            catch (Exception e) {
-                Debug.echoError(e);
-                return;
-            }
-            event.setReplacedObject(new ElementTag(f.exists()).getObjectAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <server.list_files[<path>]>
-        // @returns ListTag
-        // @description
-        // Returns a list of all files (and directories) in the specified directory. The starting path is /plugins/Denizen.
-        // -->
-        if (attribute.startsWith("list_files") && attribute.hasParam()) {
-            File folder = new File(Denizen.getInstance().getDataFolder(), attribute.getParam());
-            try {
-                if (!Utilities.canReadFile(folder)) {
-                    Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
-                    return;
-                }
-                if (!folder.exists() || !folder.isDirectory()) {
-                    attribute.echoError("Invalid path specified. No directory exists at that path.");
-                    return;
-                }
-            }
-            catch (Exception e) {
-                Debug.echoError(e);
-                return;
-            }
-            File[] files = folder.listFiles();
-            if (files == null) {
-                return;
-            }
-            ListTag list = new ListTag();
-            for (File file : files) {
-                list.add(file.getName());
-            }
-            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -1452,18 +1424,6 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.java_version>
-        // @returns ElementTag
-        // @description
-        // Returns the current Java version of the server.
-        // -->
-        if (attribute.startsWith("java_version")) {
-            event.setReplacedObject(new ElementTag(System.getProperty("java.version"))
-                    .getObjectAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
         // @attribute <server.max_players>
         // @returns ElementTag(Number)
         // @description
@@ -1472,32 +1432,6 @@ public class ServerTagBase {
         if (attribute.startsWith("max_players")) {
             event.setReplacedObject(new ElementTag(Bukkit.getServer().getMaxPlayers())
                     .getObjectAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <server.sql_connections>
-        // @returns ListTag
-        // @description
-        // Returns a list of all SQL connections opened by <@link command sql>.
-        // -->
-        if (attribute.startsWith("sql_connections") || attribute.startsWith("list_sql_connections")) {
-            listDeprecateWarn(attribute);
-            ListTag list = new ListTag();
-            for (Map.Entry<String, Connection> entry : SQLCommand.connections.entrySet()) {
-                try {
-                    if (!entry.getValue().isClosed()) {
-                        list.add(entry.getKey());
-                    }
-                    else {
-                        SQLCommand.connections.remove(entry.getKey());
-                    }
-                }
-                catch (SQLException e) {
-                    Debug.echoError(attribute.getScriptEntry(), e);
-                }
-            }
-            event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -1606,22 +1540,6 @@ public class ServerTagBase {
                 plugins.add(plugin.getName());
             }
             event.setReplacedObject(plugins.getObjectAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <server.scripts>
-        // @returns ListTag(ScriptTag)
-        // @description
-        // Gets a list of all scripts currently loaded into Denizen.
-        // -->
-        if (attribute.startsWith("scripts") || attribute.startsWith("list_scripts")) {
-            listDeprecateWarn(attribute);
-            ListTag scripts = new ListTag();
-            for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
-                scripts.addObject(new ScriptTag(script));
-            }
-            event.setReplacedObject(scripts.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -2205,16 +2123,6 @@ public class ServerTagBase {
         // -->
         else if (attribute.startsWith("debug_enabled")) {
             event.setReplacedObject(new ElementTag(com.denizenscript.denizen.utilities.debugging.Debug.showDebug).getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.last_reload>
-        // @returns TimeTag
-        // @description
-        // Returns the time that Denizen scripts were last reloaded.
-        // -->
-        else if (attribute.startsWith("last_reload")) {
-            event.setReplacedObject(new TimeTag(CoreUtilities.monotonicMillisToReal(DenizenCore.lastReloadTime)).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
