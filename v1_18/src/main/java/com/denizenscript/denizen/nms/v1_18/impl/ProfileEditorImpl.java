@@ -32,13 +32,14 @@ import java.util.UUID;
 public class ProfileEditorImpl extends ProfileEditor {
 
     @Override
-    protected void updatePlayer(Player player, final boolean isSkinChanging) {
+    protected void updatePlayer(final Player player, final boolean isSkinChanging) {
         final ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         final UUID uuid = player.getUniqueId();
         ClientboundRemoveEntitiesPacket destroyPacket = new ClientboundRemoveEntitiesPacket(entityPlayer.getId());
-        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            if (!p.getUniqueId().equals(uuid)) {
-                PacketHelperImpl.send(p, destroyPacket);
+        final List<Player> viewingPlayers = NMSHandler.entityHelper.getPlayersThatSee(player);
+        for (Player otherPlayer : viewingPlayers) {
+            if (!otherPlayer.getUniqueId().equals(uuid)) {
+                PacketHelperImpl.send(otherPlayer, destroyPacket);
             }
         }
         new BukkitRunnable() {
@@ -46,18 +47,18 @@ public class ProfileEditorImpl extends ProfileEditor {
             public void run() {
                 ClientboundPlayerInfoPacket playerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityPlayer);
                 ClientboundAddPlayerPacket spawnPacket = new ClientboundAddPlayerPacket(entityPlayer);
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    PacketHelperImpl.send(player, playerInfo);
-                    if (!player.getUniqueId().equals(uuid)) {
-                        PacketHelperImpl.send(player, spawnPacket);
-                    }
-                    else {
-                        if (isSkinChanging) {
-                            ((CraftServer) Bukkit.getServer()).getHandle().respawn(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
-                        }
-                        player.updateInventory();
+                for (Player otherPlayer : Bukkit.getServer().getOnlinePlayers()) {
+                    PacketHelperImpl.send(otherPlayer, playerInfo);
+                }
+                for (Player otherPlayer : viewingPlayers) {
+                    if (otherPlayer.isOnline() && !otherPlayer.getUniqueId().equals(uuid)) {
+                        PacketHelperImpl.send(otherPlayer, spawnPacket);
                     }
                 }
+                if (isSkinChanging) {
+                    ((CraftServer) Bukkit.getServer()).getHandle().respawn(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
+                }
+                player.updateInventory();
             }
         }.runTaskLater(NMSHandler.getJavaPlugin(), 5);
     }

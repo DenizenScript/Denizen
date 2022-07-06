@@ -2709,6 +2709,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.loot_table_id>
         // @returns ElementTag
+        // @mechanism EntityTag.loot_table_id
         // @description
         // Returns an element indicating the minecraft key for the loot-table for the entity (if any).
         // -->

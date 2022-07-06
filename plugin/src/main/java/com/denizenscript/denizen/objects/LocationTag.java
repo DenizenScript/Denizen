@@ -1806,6 +1806,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.ray_trace[(range=<#.#>/{200});(return=<{precise}/block/normal>);(default=<{null}/air>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>);(ignore=<entity>|...);(raysize=<#.#>/{0})]>
         // @returns LocationTag
+        // @synonyms LocationTag.raycast, LocationTag.raytrace, LocationTag.ray_cast
         // @group world
         // @description
         // Traces a line from this location, in the direction its facing, towards whatever block it hits first, and returns the location of where it hit.
@@ -3852,7 +3853,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <--[tag]
         // @attribute <LocationTag.loot_table_id>
         // @returns ElementTag
-        // @mechanism LocationTag.clear_loot_table
+        // @mechanism LocationTag.loot_table_id
         // @group world
         // @description
         // Returns an element indicating the minecraft key for the loot-table for the chest at this location (if any).
