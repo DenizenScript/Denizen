@@ -14,16 +14,13 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundAddPlayerPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.invoke.MethodHandle;
 import java.util.List;
@@ -35,32 +32,19 @@ public class ProfileEditorImpl extends ProfileEditor {
     protected void updatePlayer(final Player player, final boolean isSkinChanging) {
         final ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         final UUID uuid = player.getUniqueId();
-        ClientboundRemoveEntitiesPacket destroyPacket = new ClientboundRemoveEntitiesPacket(entityPlayer.getId());
-        final List<Player> viewingPlayers = NMSHandler.entityHelper.getPlayersThatSee(player);
-        for (Player otherPlayer : viewingPlayers) {
+        ClientboundPlayerInfoPacket playerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityPlayer);
+        for (Player otherPlayer : Bukkit.getServer().getOnlinePlayers()) {
+            PacketHelperImpl.send(otherPlayer, playerInfo);
+        }
+        for (Player otherPlayer : NMSHandler.entityHelper.getPlayersThatSee(player)) {
             if (!otherPlayer.getUniqueId().equals(uuid)) {
-                PacketHelperImpl.send(otherPlayer, destroyPacket);
+                PacketHelperImpl.forceRespawnPlayerEntity(player, otherPlayer);
             }
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ClientboundPlayerInfoPacket playerInfo = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, entityPlayer);
-                ClientboundAddPlayerPacket spawnPacket = new ClientboundAddPlayerPacket(entityPlayer);
-                for (Player otherPlayer : Bukkit.getServer().getOnlinePlayers()) {
-                    PacketHelperImpl.send(otherPlayer, playerInfo);
-                }
-                for (Player otherPlayer : viewingPlayers) {
-                    if (otherPlayer.isOnline() && !otherPlayer.getUniqueId().equals(uuid)) {
-                        PacketHelperImpl.send(otherPlayer, spawnPacket);
-                    }
-                }
-                if (isSkinChanging) {
-                    ((CraftServer) Bukkit.getServer()).getHandle().respawn(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
-                }
-                player.updateInventory();
-            }
-        }.runTaskLater(NMSHandler.getJavaPlugin(), 5);
+        if (isSkinChanging) {
+            ((CraftServer) Bukkit.getServer()).getHandle().respawn(entityPlayer, (ServerLevel) entityPlayer.level, true, player.getLocation(), false);
+        }
+        player.updateInventory();
     }
 
     public static boolean handleAlteredProfiles(ClientboundPlayerInfoPacket packet, DenizenNetworkManagerImpl manager) {

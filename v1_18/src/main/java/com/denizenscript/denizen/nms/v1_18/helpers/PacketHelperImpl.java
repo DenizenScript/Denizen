@@ -347,6 +347,23 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, new ClientboundSetCameraPacket(((CraftEntity) entity).getHandle()));
     }
 
+    public static void forceRespawnPlayerEntity(Entity entity, Player viewer) {
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
+        ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
+        if (entityTracker != null) {
+            try {
+                ServerEntity entry = (ServerEntity) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
+                if (entry != null) {
+                    entry.removePairing(((CraftPlayer) viewer).getHandle());
+                    entry.addPairing(((CraftPlayer) viewer).getHandle());
+                }
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+        }
+    }
+
     @Override
     public void sendRename(Player player, Entity entity, String name, boolean listMode) {
         try {
@@ -356,20 +373,7 @@ public class PacketHelperImpl implements PacketHelper {
                 }
                 else {
                     // For player entities, force a respawn packet and let the dynamic intercept correct the details
-                    ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
-                    ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
-                    if (entityTracker != null) {
-                        try {
-                            ServerEntity entry = (ServerEntity) ENTITY_TRACKER_ENTRY_GETTER.get(entityTracker);
-                            if (entry != null) {
-                                entry.removePairing(((CraftPlayer) player).getHandle());
-                                entry.addPairing(((CraftPlayer) player).getHandle());
-                            }
-                        }
-                        catch (Throwable ex) {
-                            Debug.echoError(ex);
-                        }
-                    }
+                    forceRespawnPlayerEntity(entity, player);
                 }
                 return;
             }
