@@ -577,6 +577,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // <--[tag]
         // @attribute <MaterialTag.vanilla_tags>
         // @returns ListTag
+        // @mechanism MaterialTag.vanilla_tags
         // @description
         // Returns a list of vanilla tags that apply to this material. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
         // -->
@@ -622,13 +623,13 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ListTag
         // @description
         // Sets a material's vanilla tags.
-        // Any tag name will be accepted. as in, any tag name inputted will be added to the material, regardless of whether it previously existed or not.
+        // Any tag name will be accepted - meaning, any tag name input will be added to the material, regardless of whether it previously existed or not.
         // Note that this gets reset once server resources are reloaded (which happens when the vanilla /reload command is used, or when a data pack gets enabled).
         // @tags
         // <MaterialTag.vanilla_tags>
         // @example
-        // # Adds the guarded_by_piglins tag to <[material]>, without removing it's other tags.
-        // - adjust <[material]> vanilla_tags:<[material].vanilla_tags.include[guarded_by_piglins]>
+        // # Adds the guarded_by_piglins tag to Netherrack, without removing its other tags.
+        // - adjust <material[netherrack]> vanilla_tags:<material[netherrack].vanilla_tags.include[guarded_by_piglins]>
         // @example
         // # Removes the dead_bush_may_place_on tag from <[material]>, while keeping it's other tags.
         // - adjust <[material]> vanilla_tags:<[material].vanilla_tags.exclude[dead_bush_may_place_on]>
