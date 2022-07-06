@@ -25,6 +25,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
@@ -614,6 +615,39 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object MaterialTag
+        // @name vanilla_tags
+        // @input ListTag
+        // @description
+        // Sets a material's vanilla tags.
+        // Any tag name will be accepted. as in, any tag name inputted will be added to the material, regardless of whether it previously existed or not.
+        // Note that this gets reset once server resources are reloaded (which happens when the vanilla /reload command is used, or when a data pack gets enabled).
+        // @tags
+        // <MaterialTag.vanilla_tags>
+        // @example
+        // # Adds the guarded_by_piglins tag to <[material]>, without removing it's other tags.
+        // - adjust <[material]> vanilla_tags:<[material].vanilla_tags.include[guarded_by_piglins]>
+        // @example
+        // # Removes the dead_bush_may_place_on tag from <[material]>, while keeping it's other tags.
+        // - adjust <[material]> vanilla_tags:<[material].vanilla_tags.exclude[dead_bush_may_place_on]>
+        // @example
+        // # Removes all vanilla tags from <[material]>, leaving it with only the wither_summon_base_blocks tag.
+        // - adjust <[material]> vanilla_tags:wither_summon_base_blocks
+        // -->
+        if (!mechanism.isProperty && mechanism.matches("vanilla_tags") && mechanism.requireObject(ListTag.class)) {
+            ListTag input = mechanism.valueAsType(ListTag.class);
+            Set<String> tags = new HashSet<>();
+            for (String tag : input) {
+                if (!VanillaTagHelper.isValidTagName(tag)) {
+                    mechanism.echoError("Invalid tag name '" + tag + "' inputted.");
+                    continue;
+                }
+                tags.add(tag);
+            }
+            NMSHandler.blockHelper.setVanillaTags(material, tags);
+        }
 
         // <--[mechanism]
         // @object MaterialTag

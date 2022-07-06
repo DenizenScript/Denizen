@@ -13,6 +13,7 @@ import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 
 public interface BlockHelper {
 
@@ -100,6 +101,10 @@ public interface BlockHelper {
     }
 
     default Color getMapColor(Block block) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void setVanillaTags(Material material, Set<String> tags) {
         throw new UnsupportedOperationException();
     }
 

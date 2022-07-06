@@ -2,14 +2,12 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class VanillaTagHelper {
 
@@ -21,10 +19,60 @@ public class VanillaTagHelper {
 
     public static HashMap<String, HashSet<EntityType>> entityTagsByKey = new HashMap<>();
 
+    public static void addOrUpdateMaterialTag(Tag<Material> tag) {
+        if (materialTagsByKey.containsKey(tag.getKey().getKey())) {
+            updateMaterialTag(tag);
+        }
+        else {
+            addMaterialTag(tag);
+        }
+    }
+
+    public static void addOrUpdateEntityTag(Tag<EntityType> tag) {
+        if (entityTagsByKey.containsKey(tag.getKey().getKey())) {
+            updateEntityTag(tag);
+        }
+        else {
+            addEntityTag(tag);
+        }
+    }
+
+    static <T extends Keyed> void update(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
+        String tagName = getTagName(tag);
+        Set<T> objs = objByTag.get(tagName);
+        if (objs == null) {
+            return;
+        }
+        for (T obj : objs) {
+            Set<String> tags = tagByObj.get(obj);
+            if (tags.size() == 1) {
+                tagByObj.remove(obj);
+            }
+            else {
+                tags.remove(tagName);
+            }
+        }
+        Set<T> newObjs = tag.getValues();
+        for (T obj : newObjs) {
+            tagByObj.computeIfAbsent(obj, k -> new HashSet<>()).add(tagName);
+        }
+        objs.clear();
+        objs.addAll(newObjs);
+    }
+
+    public static void updateMaterialTag(Tag<Material> tag) {
+        update(tag, tagsByMaterial, materialTagsByKey);
+    }
+
+    public static void updateEntityTag(Tag<EntityType> tag) {
+        update(tag, tagsByEntity, entityTagsByKey);
+    }
+
     static <T extends Keyed> void add(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
-        objByTag.computeIfAbsent(tag.getKey().getKey(), (k) -> new HashSet<>()).addAll(tag.getValues());
+        String tagName = getTagName(tag);
+        objByTag.computeIfAbsent(tagName, (k) -> new HashSet<>()).addAll(tag.getValues());
         for (T obj : tag.getValues()) {
-            tagByObj.computeIfAbsent(obj, (k) -> new HashSet<>()).add(tag.getKey().getKey());
+            tagByObj.computeIfAbsent(obj, (k) -> new HashSet<>()).add(tagName);
         }
     }
 
@@ -51,5 +99,14 @@ public class VanillaTagHelper {
         for (Tag<Material> tag : Bukkit.getTags("items", Material.class)) {
             addMaterialTag(tag);
         }
+    }
+
+    static String getTagName(Tag<?> tag) {
+        NamespacedKey key = tag.getKey();
+        return key.getNamespace().equals("minecraft") ? key.getKey() : key.toString();
+    }
+
+    public static boolean isValidTagName(String name) {
+        return name != null && !name.isEmpty() && NamespacedKey.fromString(name) != null;
     }
 }
