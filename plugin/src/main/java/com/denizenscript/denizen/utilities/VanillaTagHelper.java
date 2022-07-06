@@ -105,4 +105,8 @@ public class VanillaTagHelper {
         NamespacedKey key = tag.getKey();
         return key.getNamespace().equals("minecraft") ? key.getKey() : key.toString();
     }
+
+    public static boolean isValidTagName(String name) {
+        return name != null && !name.isEmpty() && NamespacedKey.fromString(name) != null;
+    }
 }

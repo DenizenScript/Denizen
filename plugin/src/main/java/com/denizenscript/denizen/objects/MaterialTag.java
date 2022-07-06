@@ -25,6 +25,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
@@ -636,7 +637,16 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // - adjust <[material]> vanilla_tags:wither_summon_base_blocks
         // -->
         if (!mechanism.isProperty && mechanism.matches("vanilla_tags") && mechanism.requireObject(ListTag.class)) {
-            NMSHandler.blockHelper.setVanillaTags(material, new HashSet<>(mechanism.valueAsType(ListTag.class)));
+            ListTag input = mechanism.valueAsType(ListTag.class);
+            Set<String> tags = new HashSet<>();
+            for (String tag : input) {
+                if (!VanillaTagHelper.isValidTagName(tag)) {
+                    mechanism.echoError("Invalid tag name '" + tag + "' inputted.");
+                    continue;
+                }
+                tags.add(tag);
+            }
+            NMSHandler.blockHelper.setVanillaTags(material, tags);
         }
 
         // <--[mechanism]
