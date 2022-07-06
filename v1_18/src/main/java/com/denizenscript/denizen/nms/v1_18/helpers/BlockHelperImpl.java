@@ -384,8 +384,8 @@ public class BlockHelperImpl implements BlockHelper {
         });
         List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
         for (String tag : tags) {
-            TagKey<net.minecraft.world.level.block.Block> newTag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(tag));
-            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getOrCreateTag(newTag);
+            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(tag));
+            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getOrCreateTag(newNmsTag);
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.add(nmsHolder);
             try {
@@ -394,8 +394,8 @@ public class BlockHelperImpl implements BlockHelper {
             catch (Throwable ex) {
                 Debug.echoError(ex);
             }
-            newNmsTags.add(newTag);
-            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(Registry.BLOCK, newTag));
+            newNmsTags.add(newNmsTag);
+            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(Registry.BLOCK, newNmsTag));
         }
         try {
             Holder_Reference_bindTags.invoke(nmsHolder, newNmsTags);
