@@ -2,10 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
@@ -41,8 +38,8 @@ public class VanillaTagHelper {
     }
 
     static <T extends Keyed> void update(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
-        String tagStr = tag.getKey().getKey();
-        Set<T> objs = objByTag.get(tagStr);
+        String tagName = getTagName(tag);
+        Set<T> objs = objByTag.get(tagName);
         if (objs == null) {
             return;
         }
@@ -52,12 +49,12 @@ public class VanillaTagHelper {
                 tagByObj.remove(obj);
             }
             else {
-                tags.remove(tagStr);
+                tags.remove(tagName);
             }
         }
         Set<T> newObjs = tag.getValues();
         for (T obj : newObjs) {
-            tagByObj.computeIfAbsent(obj, k -> new HashSet<>()).add(tagStr);
+            tagByObj.computeIfAbsent(obj, k -> new HashSet<>()).add(tagName);
         }
         objs.clear();
         objs.addAll(newObjs);
@@ -72,9 +69,10 @@ public class VanillaTagHelper {
     }
 
     static <T extends Keyed> void add(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
-        objByTag.computeIfAbsent(tag.getKey().getKey(), (k) -> new HashSet<>()).addAll(tag.getValues());
+        String tagName = getTagName(tag);
+        objByTag.computeIfAbsent(tagName, (k) -> new HashSet<>()).addAll(tag.getValues());
         for (T obj : tag.getValues()) {
-            tagByObj.computeIfAbsent(obj, (k) -> new HashSet<>()).add(tag.getKey().getKey());
+            tagByObj.computeIfAbsent(obj, (k) -> new HashSet<>()).add(tagName);
         }
     }
 
@@ -101,5 +99,10 @@ public class VanillaTagHelper {
         for (Tag<Material> tag : Bukkit.getTags("items", Material.class)) {
             addMaterialTag(tag);
         }
+    }
+
+    static String getTagName(Tag<?> tag) {
+        NamespacedKey key = tag.getKey();
+        return key.getNamespace().equals("minecraft") ? key.getKey() : key.toString();
     }
 }
