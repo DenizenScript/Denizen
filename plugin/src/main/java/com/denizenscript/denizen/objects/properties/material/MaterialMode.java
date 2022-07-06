@@ -31,7 +31,9 @@ public class MaterialMode implements Property {
                 || data instanceof DaylightDetector
                 || data instanceof CommandBlock
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof SculkSensor
-                                                                        || data instanceof BigDripleaf));
+                                                                        || data instanceof BigDripleaf))
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
+                                                                        || data instanceof  SculkShrieker));
     }
 
     public static MaterialMode getFrom(ObjectTag _material) {
@@ -70,6 +72,8 @@ public class MaterialMode implements Property {
         // For daylight_detectors, output is INVERTED or NORMAL.
         // For command_blocks, output is CONDITIONAL or NORMAL.
         // For big_dripleafs, output is FULL, NONE, PARTIAL, or UNSTABLE.
+        // For sculk_catalysts, output is BLOOM or NORMAL.
+        // For sculk_shriekers, output is SHRIEKING or NORMAL.
         // -->
         PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -92,10 +96,6 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof StructureBlock;
     }
 
-    public boolean isSculkSensor() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof SculkSensor;
-    }
-
     public boolean isDaylightDetector() {
         return material.getModernData() instanceof DaylightDetector;
     }
@@ -106,6 +106,18 @@ public class MaterialMode implements Property {
 
     public boolean isBigDripleaf() {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof BigDripleaf;
+    }
+
+    public boolean isSculkSensor() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof SculkSensor;
+    }
+
+    public boolean isSculkCatalyst() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof SculkCatalyst;
+    }
+
+    public boolean isSculkShrieker() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof SculkShrieker;
     }
 
     public Comparator getComparator() {
@@ -140,6 +152,14 @@ public class MaterialMode implements Property {
         return (BigDripleaf) material.getModernData();
     }*/
 
+    /*public SculkCatalyst getSculkCatalyst() { // TODO: 1.19
+        return (SculkCatalyst) material.getModernData();
+    }
+
+    public SculkShrieker getSculkShrieker() {
+        return (SculkShrieker) material.getModernData();
+    }*/
+
     @Override
     public String getPropertyString() {
         if (isComparator()) {
@@ -166,6 +186,12 @@ public class MaterialMode implements Property {
         else if (isBigDripleaf()) {
             return ((BigDripleaf) material.getModernData()).getTilt().name(); // TODO: 1.17
         }
+        else if (isSculkCatalyst()) {
+            return ((SculkCatalyst) material.getModernData()).isBloom() ? "BLOOM" : "NORMAL"; // TODO: 1.19
+        }
+        else if (isSculkShrieker()) {
+            return  ((SculkShrieker) material.getModernData()).isShrieking() ? "SHRIEKING" : "NORMAL"; // TODO: 1.19
+        }
         return null; // Unreachable
     }
 
@@ -191,6 +217,8 @@ public class MaterialMode implements Property {
         // For daylight_detectors, input is INVERTED or NORMAL.
         // For command_blocks, input is CONDITIONAL or NORMAL.
         // For big_dripleafs, input is FULL, NONE, PARTIAL, or UNSTABLE.
+        // For sculk_catalysts, input is BLOOM or NORMAL.
+        // For sculk_shriekers, input is SHRIEKING or NORMAL.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -215,6 +243,12 @@ public class MaterialMode implements Property {
             }
             else if (isSculkSensor() || isBigDripleaf()) {
                 MultiVersionHelper1_17.materialModeRunMech(mechanism, this);
+            }
+            else if (isSculkCatalyst()) {
+                ((SculkCatalyst) material.getModernData()).setBloom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bloom")); // TODO: 1.19
+            }
+            else if (isSculkShrieker()) {
+                ((SculkShrieker) material.getModernData()).setShrieking(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "shrieking")); // TODO: 1.19
             }
         }
     }
