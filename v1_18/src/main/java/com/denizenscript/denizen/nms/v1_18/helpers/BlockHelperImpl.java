@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
@@ -13,9 +14,13 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.*;
+import net.minecraft.core.Registry;
+import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
+import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.util.InclusiveRange;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.Entity;
@@ -30,23 +35,24 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.PushReaction;
-import org.bukkit.Color;
-import org.bukkit.Instrument;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_18_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R2.block.*;
 import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R2.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
+import org.bukkit.entity.Player;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BlockHelperImpl implements BlockHelper {
 
@@ -353,6 +359,54 @@ public class BlockHelperImpl implements BlockHelper {
     public Color getMapColor(Block block) {
         CraftBlock craftBlock = (CraftBlock) block;
         return Color.fromRGB(craftBlock.getNMS().getMapColor(craftBlock.getHandle(), craftBlock.getPosition()).col);
+    }
+
+    public static MethodHandle HolderSet_Named_bind = ReflectionHelper.getMethodHandle(HolderSet.Named.class, ReflectionMappingsInfo.HolderSet_Named_bind, List.class);
+    public static MethodHandle Holder_Reference_bindTags = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.Holder_Reference_bindTags, Collection.class);
+
+    @Override
+    public void setVanillaTags(Material material, Set<String> tags) {
+        Holder<net.minecraft.world.level.block.Block> nmsHolder = getMaterialBlock(material).builtInRegistryHolder();
+        nmsHolder.tags().forEach(nmsTag -> {
+            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getTag(nmsTag).orElse(null);
+            if (nmsHolderSet == null) {
+                return;
+            }
+            List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
+            nmsHolders.remove(nmsHolder);
+            try {
+                HolderSet_Named_bind.invoke(nmsHolderSet, nmsHolders);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+            VanillaTagHelper.updateMaterialTag(new CraftBlockTag(Registry.BLOCK, nmsTag));
+        });
+        List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
+        for (String tag : tags) {
+            TagKey<net.minecraft.world.level.block.Block> newTag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(tag));
+            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getOrCreateTag(newTag);
+            List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
+            nmsHolders.add(nmsHolder);
+            try {
+                HolderSet_Named_bind.invoke(nmsHolderSet, nmsHolders);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+            newNmsTags.add(newTag);
+            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(Registry.BLOCK, newTag));
+        }
+        try {
+            Holder_Reference_bindTags.invoke(nmsHolder, newNmsTags);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        ClientboundUpdateTagsPacket tagsPacket = new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registryAccess()));
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PacketHelperImpl.send(player, tagsPacket);
+        }
     }
 
 }

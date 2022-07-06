@@ -122,4 +122,10 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.tags.TagNetworkSerialization$NetworkPayload
     public static String TagNetworkSerialization_NetworkPayload_tags = "a";
+
+    // net.minecraft.core.HolderSet$Named
+    public static String HolderSet_Named_bind = "b";
+
+    // net.minecraft.core.Holder$Reference
+    public static String Holder_Reference_bindTags = "a";
 }

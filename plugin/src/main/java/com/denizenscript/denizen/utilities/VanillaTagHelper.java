@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class VanillaTagHelper {
 
@@ -20,6 +21,55 @@ public class VanillaTagHelper {
     public static HashMap<EntityType, HashSet<String>> tagsByEntity = new HashMap<>();
 
     public static HashMap<String, HashSet<EntityType>> entityTagsByKey = new HashMap<>();
+
+    public static void addOrUpdateMaterialTag(Tag<Material> tag) {
+        if (materialTagsByKey.containsKey(tag.getKey().getKey())) {
+            updateMaterialTag(tag);
+        }
+        else {
+            addMaterialTag(tag);
+        }
+    }
+
+    public static void addOrUpdateEntityTag(Tag<EntityType> tag) {
+        if (entityTagsByKey.containsKey(tag.getKey().getKey())) {
+            updateEntityTag(tag);
+        }
+        else {
+            addEntityTag(tag);
+        }
+    }
+
+    static <T extends Keyed> void update(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
+        String tagStr = tag.getKey().getKey();
+        Set<T> objs = objByTag.get(tagStr);
+        if (objs == null) {
+            return;
+        }
+        for (T obj : objs) {
+            Set<String> tags = tagByObj.get(obj);
+            if (tags.size() == 1) {
+                tagByObj.remove(obj);
+            }
+            else {
+                tags.remove(tagStr);
+            }
+        }
+        Set<T> newObjs = tag.getValues();
+        for (T obj : newObjs) {
+            tagByObj.computeIfAbsent(obj, k -> new HashSet<>()).add(tagStr);
+        }
+        objs.clear();
+        objs.addAll(newObjs);
+    }
+
+    public static void updateMaterialTag(Tag<Material> tag) {
+        update(tag, tagsByMaterial, materialTagsByKey);
+    }
+
+    public static void updateEntityTag(Tag<EntityType> tag) {
+        update(tag, tagsByEntity, entityTagsByKey);
+    }
 
     static <T extends Keyed> void add(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
         objByTag.computeIfAbsent(tag.getKey().getKey(), (k) -> new HashSet<>()).addAll(tag.getValues());
