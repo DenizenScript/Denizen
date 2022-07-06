@@ -13,7 +13,6 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;

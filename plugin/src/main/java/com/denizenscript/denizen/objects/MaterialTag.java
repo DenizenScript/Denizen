@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;

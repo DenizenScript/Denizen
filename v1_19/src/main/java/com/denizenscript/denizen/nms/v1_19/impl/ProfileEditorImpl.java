@@ -126,7 +126,9 @@ public class ProfileEditorImpl extends ProfileEditor {
 
     private static GameProfile getGameProfile(PlayerProfile playerProfile) {
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
-        gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+        if (playerProfile.hasTexture()) {
+            gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+        }
         return gameProfile;
     }
 

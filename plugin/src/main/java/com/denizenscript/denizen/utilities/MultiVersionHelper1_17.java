@@ -1,11 +1,17 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.material.MaterialBlockType;
 import com.denizenscript.denizen.objects.properties.material.MaterialMode;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Vibration;
 import org.bukkit.block.data.type.BigDripleaf;
 import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.block.data.type.SculkSensor;
@@ -65,5 +71,19 @@ public class MultiVersionHelper1_17 { // TODO: 1.17
         else if (object.isBigDripleaf() && mechanism.requireEnum(BigDripleaf.Tilt.class)) {
             ((BigDripleaf) object.material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
+    }
+
+    public static Object getPlayEffectVibrationObject(ListTag dataList, ScriptEntry scriptEntry) {
+        DurationTag duration = dataList.getObject(0).asType(DurationTag.class, scriptEntry.context);
+        LocationTag origin = dataList.getObject(1).asType(LocationTag.class, scriptEntry.context);
+        ObjectTag destination = dataList.getObject(2);
+        Vibration.Destination destObj;
+        if (destination.shouldBeType(EntityTag.class)) {
+            destObj = new Vibration.Destination.EntityDestination(destination.asType(EntityTag.class, scriptEntry.context).getBukkitEntity());
+        }
+        else {
+            destObj = new Vibration.Destination.BlockDestination(destination.asType(LocationTag.class, scriptEntry.context));
+        }
+        return new Vibration(origin, destObj, duration.getTicksAsInt());
     }
 }

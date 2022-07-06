@@ -26,7 +26,6 @@ import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
-import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
