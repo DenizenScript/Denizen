@@ -101,12 +101,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
+    public static HashSet<String> areaCouldMatchableText = new HashSet<>(Arrays.asList("area", "cuboid", "polygon", "ellipsoid"));
+    public static HashSet<String> areaCouldMatchPrefixes = new HashSet<>(Arrays.asList("area_flagged", "biome"));
+
     public static boolean couldMatchArea(String text) {
-        if (text.equals("area") || text.equals("cuboid") || text.equals("polygon") || text.equals("ellipsoid")) {
+        if (areaCouldMatchableText.contains(text)) {
             return true;
         }
-        if (text.startsWith("area_flagged:") || text.startsWith("biome:")) {
-            return true;
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (areaCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (NoteManager.getSavedObject(text) instanceof AreaContainmentObject) {
             return true;
@@ -153,12 +159,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
+    public static HashSet<String> inventoryCouldMatchableText = new HashSet<>(Arrays.asList("inventory", "notable", "note"));
+    public static HashSet<String> inventoryCouldMatchPrefixes = new HashSet<>(Arrays.asList("inventory_flagged"));
+
     public static boolean couldMatchInventory(String text) {
-        if (text.equals("inventory") || text.equals("notable") || text.equals("note")) {
+        if (inventoryCouldMatchableText.contains(text)) {
             return true;
         }
-        if (text.startsWith("inventory_flagged:")) {
-            return true;
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (inventoryCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (InventoryTag.matches(text)) {
             return true;
@@ -211,12 +223,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
+    public static HashSet<String> entityCouldMatchPrefixes = new HashSet<>(Arrays.asList("entity_flagged", "player_flagged", "npc_flagged"));
+
     public static boolean exactMatchEntity(String text) {
         if (EntityTag.specialEntityMatchables.contains(text)) {
             return true;
         }
-        if (text.startsWith("entity_flagged:") || text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
-            return true;
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (entityCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (EntityTag.matches(text)) {
             return true;
@@ -225,6 +242,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
+    public static HashSet<String> vehicleCouldMatchPrefixes = new HashSet<>(Arrays.asList("entity_flagged"));
+
     public static boolean exactMatchesVehicle(String text) {
         if (text.equals("vehicle")) {
             return true;
@@ -232,8 +251,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (EntityTag.specialEntityMatchables.contains(text)) {
             return false;
         }
-        if (text.startsWith("entity_flagged:")) {
-            return true;
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (vehicleCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (text.startsWith("player_flagged:") || text.startsWith("npc_flagged:")) {
             return false;
@@ -276,12 +298,15 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean couldMatchBlockOrItem(String text) {
-        if (text.equals("block") || text.equals("material") || text.equals("item") || text.equals("potion")) {
+        if (itemCouldMatchableText.contains(text) || materialCouldMatchableText.contains(text)) {
             return true;
         }
         int colon = text.indexOf(':');
         if (colon != -1) {
             if (itemCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
+            if (materialCouldMatchPrefixes.contains(text.substring(0, colon))) {
                 return true;
             }
         }
@@ -316,12 +341,21 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return couldMatchBlock(text, null);
     }
 
+    public static HashSet<String> materialCouldMatchableText = new HashSet<>(Arrays.asList("block", "material"));
+    public static HashSet<String> materialCouldMatchPrefixes = new HashSet<>(Arrays.asList("vanilla_tagged", "material_flagged"));
+
     public static boolean couldMatchBlock(String text, Function<Material, Boolean> requirement) {
-        if (text.equals("block") || text.equals("material") || text.startsWith("vanilla_tagged:") || text.startsWith("material_flagged:")) {
+        if (materialCouldMatchableText.contains(text)) {
             return true;
         }
         if (text.equals("item")) {
             return false;
+        }
+        int colon = text.indexOf(':');
+        if (colon != -1) {
+            if (materialCouldMatchPrefixes.contains(text.substring(0, colon))) {
+                return true;
+            }
         }
         if (MaterialTag.matches(text)) {
             MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
@@ -346,10 +380,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
+    public static HashSet<String> itemCouldMatchableText = new HashSet<>(Arrays.asList("item", "potion"));
     public static HashSet<String> itemCouldMatchPrefixes = new HashSet<>(Arrays.asList("item_flagged", "vanilla_tagged", "item_enchanted", "material_flagged", "raw_exact"));
 
     public static boolean couldMatchItem(String text) {
-        if (text.equals("item") || text.equals("potion")) {
+        if (itemCouldMatchableText.contains(text)) {
             return true;
         }
         int colon = text.indexOf(':');
