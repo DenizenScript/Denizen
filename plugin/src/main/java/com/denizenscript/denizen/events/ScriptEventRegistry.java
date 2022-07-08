@@ -29,11 +29,22 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(NPCStuckScriptEvent.class);
     }
 
+
     public static void registerMainEvents() {
         // Special data for matching to register
         ScriptEvent.extraMatchers.add((event, path) -> BukkitScriptEvent.runAutomaticPlayerSwitches(event, path) && BukkitScriptEvent.runAutomaticNPCSwitches(event, path));
+
+        // <--[data]
+        // @name not_switches
+        // @values item_flagged, world_flagged, area_flagged, inventory_flagged, player_flagged, npc_flagged, entity_flagged, vanilla_tagged, raw_exact, item_enchanted, material_flagged, location_in, block_flagged
+        // -->
         ScriptEvent.ScriptPath.notSwitches.addAll(Arrays.asList("item_flagged", "world_flagged", "area_flagged", "inventory_flagged",
                 "player_flagged", "npc_flagged", "entity_flagged", "vanilla_tagged", "raw_exact", "item_enchanted", "material_flagged", "location_in", "block_flagged"));
+
+        // <--[data]
+        // @name global_switches
+        // @values bukkit_priority, assigned, flagged, permission, location_flagged
+        // -->
         ScriptEvent.globalSwitches.addAll(Arrays.asList("bukkit_priority", "assigned", "flagged", "permission", "location_flagged"));
         ScriptEventCouldMatcher.knownValidatorTypes.put("entity", BukkitScriptEvent::couldMatchEntity);
         ScriptEventCouldMatcher.knownValidatorTypes.put("hanging", BukkitScriptEvent::couldMatchEntity);

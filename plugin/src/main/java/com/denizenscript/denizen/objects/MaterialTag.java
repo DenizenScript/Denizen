@@ -631,7 +631,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // # Adds the guarded_by_piglins tag to Netherrack, without removing its other tags.
         // - adjust <material[netherrack]> vanilla_tags:<material[netherrack].vanilla_tags.include[guarded_by_piglins]>
         // @example
-        // # Removes the dead_bush_may_place_on tag from <[material]>, while keeping it's other tags.
+        // # Removes the dead_bush_may_place_on tag from <[material]>, while keeping its other tags.
         // - adjust <[material]> vanilla_tags:<[material].vanilla_tags.exclude[dead_bush_may_place_on]>
         // @example
         // # Removes all vanilla tags from <[material]>, leaving it with only the wither_summon_base_blocks tag.
@@ -716,7 +716,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
-
 
     public static boolean advancedMatchesInternal(Material mat, String comparedto, boolean allowByMaterialName) {
         if (comparedto == null || comparedto.isEmpty() || mat == null) {

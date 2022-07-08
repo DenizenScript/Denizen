@@ -75,7 +75,7 @@ public class TabCompleteHelper {
             return;
         }
         String prefixPart = tab.arg.substring(0, lastSemicolon + 1);
-        PropertyParser.ClassPropertiesInfo properties = PropertyParser.propertiesByClass.get(object.getObjectTagClass());
+        PropertyParser.ClassPropertiesInfo properties = PropertyParser.propertiesByClass.get(object.getClass());
         for (Map.Entry<String, PropertyParser.PropertyGetter> property : properties.propertiesByMechanism.entrySet()) {
             if (property.getKey().startsWith(propertyPart) && property.getValue().get(object) != null) {
                 tab.add(prefixPart + property.getKey());
