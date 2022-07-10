@@ -2509,7 +2509,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Sends the player a list of climbable materials.
         // To climb a block, the player has to stand in it, which means only non-full blocks can be climbed.
-        // Note that this gets reset once the player rejoins or once server resources are reloaded (which happens when the vanilla /reload command is used, or when a data pack gets enabled).
+        // Note that this gets reset once the player rejoins or once server resources are reloaded (see <@link event server resources reloaded>).
         // @tags
         // <server.vanilla_tagged_materials[<tag>]>
         // @example
