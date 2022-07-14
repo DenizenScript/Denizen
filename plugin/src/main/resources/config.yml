@@ -119,6 +119,8 @@ Triggers:
     Click:
         Enabled: true
         Cooldown: 2s
+        # Set to a positive value to set a click radius limit. Cannot exceed player click range (hand reach).
+        Range: -1
     Damage:
         Enabled: false
         Cooldown: 0.5s

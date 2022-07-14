@@ -85,6 +85,11 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         if (!npc.getTriggerTrait().isEnabled(name)) {
             return;
         }
+        TriggerTrait triggerTrait = npc.getTriggerTrait();
+        double radius = triggerTrait.getRadius(name);
+        if (radius > 0 && event.getClicker().getLocation().distanceSquared(npc.getLocation()) > radius * radius) {
+            return;
+        }
         PlayerTag player = PlayerTag.mirrorBukkitPlayer(event.getClicker());
         TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, player);
         if (!trigger.wasTriggered()) {
