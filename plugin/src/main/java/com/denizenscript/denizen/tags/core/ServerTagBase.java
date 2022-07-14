@@ -292,7 +292,7 @@ public class ServerTagBase {
         // @returns ElementTag
         // @description
         // Returns the type of recipe that the given recipe ID is.
-        // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING.
+        // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, SMITHING.
         // -->
         if (attribute.startsWith("recipe_type") && attribute.hasParam()) {
             NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());

@@ -438,6 +438,23 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.hover_item[<item>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Adds a hover message to the element, which makes the element display the input ItemTag when the mouse is left over it.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <element[hover here].custom_color[emphasis].hover_item[<player.item_in_hand>]> to see what you held!"
+        // -->
+        PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "hover_item", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[hover=SHOW_ITEM;" + FormattedTextHelper.escape(attribute.getParam()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/hover]");
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.on_hover[<message>]>
         // @returns ElementTag
         // @group text manipulation
@@ -471,15 +488,32 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.click_url[<url>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Adds a click command to the element, which makes the element open the given URL when clicked.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <element[click here].custom_color[emphasis].on_hover[Click me!].click_url[https://denizenscript.com]> to learn about Denizen!"
+        // -->
+        PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "click_url", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[click=OPEN_URL;" + FormattedTextHelper.escape(attribute.getParam()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.on_click[<command>]>
         // @returns ElementTag
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element execute the input command when clicked.
-        // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
-        // For example: - narrate "You can <element[click here].on_click[wow]> to say wow!"
-        // For example: - narrate "You can <element[click here].on_click[/help]> for help!"
+        // To execute a command "/" should be used at the start. Prior to 1.19, leaving off the "/" would display the text as chat. This feature was removed as part of the 1.19 secure chat system.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <element[click here].on_click[/help]> for help!"
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "on_click", (attribute, object) -> { // non-static due to hacked sub-tag
             if (!attribute.hasParam()) {

@@ -82,6 +82,9 @@ public class Utilities {
         else if (recipe instanceof StonecuttingRecipe) {
             return "stonecutting";
         }
+        else if (recipe instanceof SmithingRecipe) {
+            return "smithing";
+        }
         Debug.echoError("Failed to determine recipe type for " + recipe.getClass().getName() + ": " + recipe);
         return null;
     }
