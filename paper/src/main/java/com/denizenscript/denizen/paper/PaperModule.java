@@ -49,6 +49,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
         ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);
+        ScriptEvent.registerScriptEvent(ServerResourcesReloadedScriptEvent.class);
         ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
 

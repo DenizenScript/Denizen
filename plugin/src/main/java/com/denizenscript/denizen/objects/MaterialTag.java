@@ -624,7 +624,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Sets a material's vanilla tags.
         // Any tag name will be accepted - meaning, any tag name input will be added to the material, regardless of whether it previously existed or not.
-        // Note that this gets reset once server resources are reloaded (which happens when the vanilla /reload command is used, or when a data pack gets enabled).
+        // Note that this gets reset once server resources are reloaded (see <@link event server resources reloaded>).
         // @tags
         // <MaterialTag.vanilla_tags>
         // @example
