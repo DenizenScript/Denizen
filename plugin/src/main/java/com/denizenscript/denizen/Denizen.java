@@ -14,6 +14,7 @@ import com.denizenscript.denizen.scripts.commands.player.ClickableCommand;
 import com.denizenscript.denizen.scripts.containers.ContainerRegistry;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.scripts.triggers.TriggerRegistry;
+import com.denizenscript.denizen.scripts.triggers.core.ChatTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.tags.core.NPCTagBase;
 import com.denizenscript.denizen.tags.core.ServerTagBase;
@@ -61,15 +62,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Denizen extends JavaPlugin {
 
@@ -561,7 +565,14 @@ public class Denizen extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
         if (cmd.getName().equals("denizenclickable")) {
-            if (args.length != 1 || !(sender instanceof Player)) {
+            if (!(sender instanceof Player)) {
+                return false;
+            }
+            if (args.length >= 2 && CoreUtilities.equalsIgnoreCase(args[0], "chat")) {
+                ChatTrigger.instance.syncChatTrigger(new PlayerChatEvent((Player) sender, Arrays.stream(args).skip(1).collect(Collectors.joining(" "))));
+                return true;
+            }
+            if (args.length != 1) {
                 return false;
             }
             UUID id;

@@ -42,7 +42,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     // @name Chat Triggers
     // @group NPC Interact Scripts
     // @description
-    // Chat Triggers are triggered when when a player chats to the NPC (usually while standing close to the NPC and facing the NPC).
+    // Chat Triggers are triggered when a player chats to the NPC (usually while standing close to the NPC and facing the NPC).
+    //
+    // They can also be triggered by the command "/denizenclickable chat hello" (where 'hello' is replaced with the chat message). This is used for clickable triggers.
+    // This option enforces all the same limitations as chatting directly, but unlike real chat, won't display the message in global chat when there's no match.
+    // This requires players have the permission "denizen.clickable".
     //
     // Interact scripts are allowed to define a list of possible messages a player may type and the scripts triggered in response.
     //
@@ -84,10 +88,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //     # If you hide the trigger message but not show as normal chat, you might want to fill that spot with something else.
     //     - narrate "[Player -> NPC]: I don't know how to type the right thing"
     //     - wait 1
-    //     - chat "Well type 'keyword' or any number!"
+    //     - chat "Well type 'hello' or any number!"
+    //     - narrate "Click <element[here].on_hover[click me!].on_click[/denizenclickable chat hello]> to auto-activate the 'hello' trigger!"
     // </code>
     //
     // -->
+
+    public static ChatTrigger instance;
+
+    @Override
+    public AbstractTrigger activate() {
+        instance = this;
+        return super.activate();
+    }
 
     @Override
     public void onEnable() {
@@ -324,27 +337,18 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
     @EventHandler
     public void asyncChatTrigger(final AsyncPlayerChatEvent event) {
-        if (CoreConfiguration.debugVerbose) {
-            Debug.log("Chat trigger seen, cancelled: " + event.isCancelled()
-                    + ", chatasync: " + Settings.chatAsynchronous());
-        }
         if (event.isCancelled()) {
             return;
         }
-
-        // Return if "Use asynchronous event" is false in config file
         if (!Settings.chatAsynchronous()) {
             return;
         }
-
         if (!event.isAsynchronous()) {
             syncChatTrigger(new PlayerChatEvent(event.getPlayer(), event.getMessage(), event.getFormat(), event.getRecipients()));
             return;
         }
         FutureTask<ChatContext> futureTask = new FutureTask<>(() -> process(event.getPlayer(), event.getMessage()));
-
         Bukkit.getScheduler().runTask(Denizen.getInstance(), futureTask);
-
         try {
             ChatContext context = futureTask.get();
             if (context.wasTriggered()) {
@@ -364,18 +368,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (event.isCancelled()) {
             return;
         }
-
-        // Return if "Use asynchronous event" is true in config file
         if (Settings.chatAsynchronous()) {
             return;
         }
-
         ChatContext chat = process(event.getPlayer(), event.getMessage());
-
         if (chat.wasTriggered()) {
             event.setCancelled(true);
         }
-
         if (chat.hasChanges()) {
             event.setMessage(chat.getChanges());
         }

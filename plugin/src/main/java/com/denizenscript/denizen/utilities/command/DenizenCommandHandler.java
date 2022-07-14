@@ -32,7 +32,7 @@ public class DenizenCommandHandler {
     // @description
     // The following is a list of all permission nodes Denizen uses within Bukkit.
     //
-    // denizen.clickable     # use the 'denizenclickable' command, which is automatically executed when using <@link command clickable>
+    // denizen.clickable     # use the 'denizenclickable' command, which is automatically executed when using <@link command clickable> and for clickable chat triggers
     // denizen.basic         # use the basics of the /denizen command
     // denizen.ex            # use the /ex command
     // denizen.debug         # use the /denizen debug command

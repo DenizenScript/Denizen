@@ -511,9 +511,12 @@ public class BukkitElementProperties implements Property {
         // @description
         // Adds a click command to the element, which makes the element execute the input command when clicked.
         // To execute a command "/" should be used at the start. Prior to 1.19, leaving off the "/" would display the text as chat. This feature was removed as part of the 1.19 secure chat system.
+        // For activating interact script chat triggers (<@link language Chat Triggers>), you can use the command "/denizenclickable chat SOME MESSAGE HERE" (requires players have permission "denizen.clickable")
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
         // - narrate "You can <element[click here].on_click[/help]> for help!"
+        // @example
+        // - narrate "You can <element[click here].on_click[/denizenclickable chat hello]> to say hello to an NPC's interact script!"
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerTag(ElementTag.class, "on_click", (attribute, object) -> { // non-static due to hacked sub-tag
             if (!attribute.hasParam()) {
