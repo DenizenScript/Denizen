@@ -1,6 +1,9 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.ColorTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementProperties;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -216,6 +219,20 @@ public class FormattedTextHelper {
         return parse(str, baseColor, true);
     }
 
+    public static int findNextNormalColorSymbol(String base, int startAt) {
+        while (true) {
+            int next = base.indexOf(ChatColor.COLOR_CHAR, startAt);
+            if (next == -1 || next + 1 >= base.length()) {
+                return -1;
+            }
+            char after = base.charAt(next + 1);
+            if (colorCodeInvalidator.isMatch(after)) {
+                return next;
+            }
+            startAt = next + 1;
+        }
+    }
+
     public static int findEndIndexFor(String base, String startSymbol, String endSymbol, int startAt) {
         int layers = 1;
         while (true) {
@@ -229,7 +246,7 @@ public class FormattedTextHelper {
             if (base.startsWith(startSymbol, next + 1)) {
                 layers++;
             }
-            else if (base.startsWith(endSymbol, next + 1)){
+            else if (base.startsWith(endSymbol, next + 1)) {
                 layers--;
                 if (layers == 0) {
                     return next;
@@ -589,6 +606,28 @@ public class FormattedTextHelper {
                                     lastText.addExtra(colorText);
                                     endBracket = endIndex + "&[reset=color".length();
                                 }
+                            }
+                        }
+                        else if (innardType.equals("gradient") && innardParts.size() == 2) {
+                            String from = innardBase.get(1), to = innardParts.get(0), style = innardParts.get(1);
+                            ColorTag fromColor = ColorTag.valueOf(from, CoreUtilities.noDebugContext);
+                            ColorTag toColor = ColorTag.valueOf(to, CoreUtilities.noDebugContext);
+                            BukkitElementProperties.GradientStyle styleEnum = new ElementTag(style).asEnum(BukkitElementProperties.GradientStyle.class);
+                            if (fromColor == null || toColor == null || styleEnum == null) {
+                                if (CoreConfiguration.debugVerbose) {
+                                    Debug.echoError("Text parse issue: cannot interpret gradient input '" + innards + "'.");
+                                }
+                            }
+                            else {
+                                int endIndex = findNextNormalColorSymbol(str, i + 1);
+                                if (endIndex == -1) {
+                                    endIndex = str.length();
+                                }
+                                String gradientText = BukkitElementProperties.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
+                                for (BaseComponent subComponent : parse(gradientText, baseColor, false)) {
+                                    lastText.addExtra(subComponent);
+                                }
+                                endBracket = endIndex - 1;
                             }
                         }
                         else if (innardType.equals("font")) {

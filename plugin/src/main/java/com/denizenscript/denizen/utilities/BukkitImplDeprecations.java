@@ -272,6 +272,9 @@ public class BukkitImplDeprecations {
     // Added 2021/06/27, deprecate officially by 2025.
     public static Warning serverObjectExistsTags = new FutureWarning("serverObjectExistsTags", "The 'object_is_valid' tag is a historical version of modern '.exists' or '.is_truthy' fallback tags.");
 
+    // Added 2021/06/27, deprecate officially by 2025.
+    public static Warning hsbColorGradientTag = new FutureWarning("hsbColorGradientTag", "The tag 'ElementTag.hsb_color_gradient' is deprecated: use 'color_gradient' with 'style=hsb'");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Added on 2019/10/13

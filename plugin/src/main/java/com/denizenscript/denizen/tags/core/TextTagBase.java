@@ -1,9 +1,11 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.ColorTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementProperties;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
@@ -494,6 +496,35 @@ public class TextTagBase {
                 }
             }
             return new ElementTag(colorOut);
+        });
+
+        // <--[tag]
+        // @attribute <&gradient[from=<color>;to=<color>;(style={RGB}/HSB)]>
+        // @returns ElementTag
+        // @description
+        // Returns a chat code that makes the following text be the specified color.
+        // Input works equivalently to <@link tag ElementTag.color_gradient>, return to that tag for more documentation detail and input examples.
+        // The gradient runs from whatever text is after this gradient, until the next color tag (0-9, a-f, 'r' reset, or an RGB code. Does not get stop at formatting codes, they will be included in the gradient).
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "<&gradient[from=black;to=white]>these are the shades of gray <white>that solidifies to pure white"
+        // -->
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&gradient", (attribute) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            MapTag inputMap = attribute.inputParameterMap();
+            ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
+            ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
+            ElementTag style = inputMap.getElement("style", "RGB");
+            if (fromColor == null || toColor == null) {
+                return null;
+            }
+            if (!style.matchesEnum(BukkitElementProperties.GradientStyle.class)) {
+                attribute.echoError("Invalid gradient style '" + style + "'");
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[gradient=" + fromColor + ";" + toColor + ";" + style + "]");
         });
 
         // <--[tag]

@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -776,60 +777,132 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ElementTag.color_gradient[from=<color>;to=<color>]>
+        // @attribute <ElementTag.color_gradient[from=<color>;to=<color>;(style={RGB}/HSB)]>
         // @returns ElementTag
         // @group text manipulation
         // @description
-        // Returns the element with an RGB color gradient applied - tends to produce smooth gradients, as opposed to <@link tag ElementTag.hsb_color_gradient>,
-        // with a unique color per character.
+        // Returns the element with an RGB color gradient applied, with a unique color per character.
         // Specify the input as a map with keys 'from' and 'to' both set to hex colors (or any valid ColorTag).
-        // For example: <element[these are the shades of gray].color_gradient[from=white;to=black]>
-        // Or: <element[this looks kinda like fire doesn't it].color_gradient[from=#FF0000;to=#FFFF00]>
+        // You can also choose a style (defaults to RGB):
+        // "style=RGB" tends to produce smooth gradients,
+        // "style=HSB" tends to produce bright rainbow-like color patterns.
+        // @example
+        // - narrate "<element[these are the shades of gray].color_gradient[from=white;to=black]>"
+        // @example
+        // - narrate "<element[this looks kinda like fire doesn't it].color_gradient[from=#FF0000;to=#FFFF00]>"
+        // @example
+        // - narrate "<element[this also looks like fire with a different spread].color_gradient[from=#FF0000;to=#FFFF00;style=hsb]>"
+        // @example
+        // - narrate "<element[what a beautiful rainbow this line is].color_gradient[from=#FF0000;to=#0000FF;style=hsb]>"
         // -->
         PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "color_gradient", (attribute, object) -> {
-            String str = object.asString();
-            int length = ChatColor.stripColor(str).length();
-            if (length == 0) {
-                return new ElementTag("");
+            MapTag inputMap = attribute.inputParameterMap();
+            ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
+            ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
+            ElementTag style = inputMap.getElement("style", "RGB");
+            if (fromColor == null || toColor == null) {
+                return null;
             }
+            if (!style.matchesEnum(BukkitElementProperties.GradientStyle.class)) {
+                attribute.echoError("Invalid gradient style '" + style + "'");
+                return null;
+            }
+            String res = doGradient(object.asString(), fromColor, toColor, style.asEnum(GradientStyle.class));
+            if (res == null) {
+                return null;
+            }
+            return new ElementTag(res);
+        });
+
+        // <--[tag]
+        // @attribute <ElementTag.hsb_color_gradient[from=<color>;to=<color>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @deprecated use color_gradient[from=color;to=color;style=HSB]
+        // @description
+        // Deprecated in favor of using <@link tag ElementTag.color_gradient> with "style=hsb"
+        // -->
+        PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "hsb_color_gradient", (attribute, object) -> {
+            BukkitImplDeprecations.hsbColorGradientTag.warn(attribute.context);
             MapTag inputMap = attribute.inputParameterMap();
             ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
             ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
             if (fromColor == null || toColor == null) {
                 return null;
             }
-            float red = ColorTag.fromSRGB(fromColor.getColor().getRed());
-            float green = ColorTag.fromSRGB(fromColor.getColor().getGreen());
-            float blue = ColorTag.fromSRGB(fromColor.getColor().getBlue());
-            float targetRed = ColorTag.fromSRGB(toColor.getColor().getRed());
-            float targetGreen = ColorTag.fromSRGB(toColor.getColor().getGreen());
-            float targetBlue = ColorTag.fromSRGB(toColor.getColor().getBlue());
-            float brightness = (float) Math.pow(red + green + blue, 0.43);
-            float toBrightness = (float) Math.pow(targetRed + targetGreen + targetBlue, 0.43);
-            float brightnessMove = (toBrightness - brightness) / length;
-            float redMove = (targetRed - red) / length;
-            float greenMove = (targetGreen - green) / length;
-            float blueMove = (targetBlue - blue) / length;
-            String addedFormat = "";
-            StringBuilder output = new StringBuilder(str.length() * 15);
-            for (int i = 0; i < str.length(); i++) {
-                char c = str.charAt(i);
-                if (c == ChatColor.COLOR_CHAR && i + 1 < str.length()) {
-                    char c2 = str.charAt(i + 1);
-                    if (FORMAT_CODES_MATCHER.isMatch(c2)) {
-                        addedFormat += String.valueOf(ChatColor.COLOR_CHAR) + c2;
-                    }
-                    else {
-                        addedFormat = "";
-                    }
-                    i++;
-                    continue;
+            String res = doGradient(object.asString(), fromColor, toColor, GradientStyle.HSB);
+            if (res == null) {
+                return null;
+            }
+            return new ElementTag(res);
+        });
+    }
+
+    public enum GradientStyle { RGB, HSB }
+
+    public static String doGradient(String str, ColorTag fromColor, ColorTag toColor, GradientStyle style) {
+        int length = FormattedTextHelper.parse(str, ChatColor.WHITE)[0].toPlainText().length();
+        if (length == 0) {
+            return "";
+        }
+        if (fromColor == null || toColor == null) {
+            return null;
+        }
+        float r, g, b, x = 0, rMove, gMove, bMove, xMove = 0, toR, toG, toB;
+        int[] hsbHelper = null;
+        if (style == GradientStyle.RGB) {
+            r = ColorTag.fromSRGB(fromColor.getColor().getRed());
+            g = ColorTag.fromSRGB(fromColor.getColor().getGreen());
+            b = ColorTag.fromSRGB(fromColor.getColor().getBlue());
+            x = (float) Math.pow(r + g + b, 0.43);
+            toR = ColorTag.fromSRGB(toColor.getColor().getRed());
+            toG = ColorTag.fromSRGB(toColor.getColor().getGreen());
+            toB = ColorTag.fromSRGB(toColor.getColor().getBlue());
+            float toBrightness = (float) Math.pow(toR + toG + toB, 0.43);
+            xMove = (toBrightness - x) / length;
+        }
+        else {
+            hsbHelper = fromColor.toHSB();
+            int[] toHSB = toColor.toHSB();
+            r = hsbHelper[0];
+            g = hsbHelper[1];
+            b = hsbHelper[2];
+            toR = toHSB[0];
+            toG = toHSB[1];
+            toB = toHSB[2];
+        }
+        rMove = (toR - r) / length;
+        gMove = (toG - g) / length;
+        bMove = (toB - b) / length;
+        String addedFormat = "";
+        StringBuilder output = new StringBuilder(str.length() * 15);
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == ChatColor.COLOR_CHAR && i + 1 < str.length()) {
+                char c2 = str.charAt(i + 1);
+                if (FORMAT_CODES_MATCHER.isMatch(c2)) {
+                    addedFormat += String.valueOf(ChatColor.COLOR_CHAR) + c2;
                 }
+                else if (c2 == '[') {
+                    int endBracket = str.indexOf(']', i);
+                    if (endBracket != -1) {
+                        addedFormat += str.substring(i, endBracket + 1);
+                        i = endBracket - 1;
+                    }
+                }
+                else {
+                    addedFormat = "";
+                }
+                i++;
+                continue;
+            }
+            String hex;
+            if (style == GradientStyle.RGB) {
                 // Based on https://stackoverflow.com/questions/22607043/color-gradient-algorithm/49321304#49321304
-                float newRed = red, newGreen = green, newBlue = blue;
+                float newRed = r, newGreen = g, newBlue = b;
                 float sum = newRed + newGreen + newBlue;
                 if (sum > 0) {
-                    float multiplier = (float) Math.pow(brightness, 1f / 0.43f) / sum;
+                    float multiplier = (float) Math.pow(x, 1f / 0.43f) / sum;
                     newRed *= multiplier;
                     newGreen *= multiplier;
                     newBlue *= multiplier;
@@ -837,75 +910,22 @@ public class BukkitElementProperties implements Property {
                 newRed = ColorTag.toSRGB(newRed);
                 newGreen = ColorTag.toSRGB(newGreen);
                 newBlue = ColorTag.toSRGB(newBlue);
-                String hex = Integer.toHexString((((int) newRed) << 16) | (((int) newGreen) << 8) | ((int) newBlue));
-                output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(addedFormat).append(str.charAt(i));
-                brightness += brightnessMove;
-                red += redMove;
-                green += greenMove;
-                blue += blueMove;
+                hex = Integer.toHexString((((int) newRed) << 16) | (((int) newGreen) << 8) | ((int) newBlue));
+                x += xMove;
             }
-            return new ElementTag(output.toString());
-        });
-
-        // <--[tag]
-        // @attribute <ElementTag.hsb_color_gradient[from=<color>;to=<color>]>
-        // @returns ElementTag
-        // @group text manipulation
-        // @description
-        // Returns the element with an HSB color gradient applied - tends to produce bright rainbow-like color patterns, as opposed to <@link tag ElementTag.color_gradient>,
-        // with a unique color per character.
-        // Specify the input as a map with keys 'from' and 'to' both set to hex colors (or any valid ColorTag).
-        // -->
-        PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "hsb_color_gradient", (attribute, object) -> {
-            String str = object.asString();
-            int length = ChatColor.stripColor(str).length();
-            if (length == 0) {
-                return new ElementTag("");
+            else {
+                hsbHelper[0] = (int)r;
+                hsbHelper[1] = (int)g;
+                hsbHelper[2] = (int)b;
+                ColorTag currentColor = ColorTag.fromHSB(hsbHelper);
+                hex = Integer.toHexString(currentColor.getColor().asRGB());
             }
-            MapTag inputMap = attribute.inputParameterMap();
-            ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
-            ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
-            if (fromColor == null || toColor == null) {
-                return null;
-            }
-            int[] fromHSB = fromColor.toHSB();
-            int[] toHSB = toColor.toHSB();
-            float hue = fromHSB[0];
-            float saturation = fromHSB[1];
-            float brightness = fromHSB[2];
-            float targetHue = toHSB[0];
-            float targetSaturation = toHSB[1];
-            float targetBrightness = toHSB[2];
-            float hueMove = (targetHue - hue) / length;
-            float saturationMove = (targetSaturation - saturation) / length;
-            float brightnessMove = (targetBrightness - brightness) / length;
-            String addedFormat = "";
-            StringBuilder output = new StringBuilder(str.length() * 15);
-            for (int i = 0; i < str.length(); i++) {
-                char c = str.charAt(i);
-                if (c == ChatColor.COLOR_CHAR && i + 1 < str.length()) {
-                    char c2 = str.charAt(i + 1);
-                    if (FORMAT_CODES_MATCHER.isMatch(c2)) {
-                        addedFormat += String.valueOf(ChatColor.COLOR_CHAR) + c2;
-                    }
-                    else {
-                        addedFormat = "";
-                    }
-                    i++;
-                    continue;
-                }
-                fromHSB[0] = (int)hue;
-                fromHSB[1] = (int)saturation;
-                fromHSB[2] = (int)brightness;
-                ColorTag currentColor = ColorTag.fromHSB(fromHSB);
-                String hex = Integer.toHexString(currentColor.getColor().asRGB());
-                output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(addedFormat).append(c);
-                hue += hueMove;
-                saturation += saturationMove;
-                brightness += brightnessMove;
-            }
-            return new ElementTag(output.toString());
-        });
+            output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(addedFormat).append(str.charAt(i));
+            r += rMove;
+            g += gMove;
+            b += bMove;
+        }
+        return output.toString();
     }
 
     public static AsciiMatcher FORMAT_CODES_MATCHER = new AsciiMatcher("klmnoKLMNO");
