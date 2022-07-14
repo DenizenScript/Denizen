@@ -142,9 +142,11 @@ public class ItemSkullskin implements Property {
         // @input ElementTag(|ElementTag(|ElementTag))
         // @description
         // Sets the player skin on a player_head.
-        // The first ElementTag is a UUID.
-        // Optionally, use the second ElementTag for the skin texture cache.
-        // Optionally, use the third ElementTag for a player name.
+        // A head should have a Texture blob, the player's UUID, and the player's Name.
+        // The most-correct input is UUID|Texture|Name.
+        // You can alternately input Name|Texture|UUID and the order will be automatically corrected.
+        // You can alternately input just a UUID, or just a Name, or just UUID|Texture, or just Name|Texture, and the missing data will be downloaded.
+        // You can alternately input just a Texture and the remaining data will be filled as name "null" and UUID "000-000". Doing this may cause side effects with Minecraft internals or external plugins, use with caution.
         // See also <@link language Player Entity Skins (Skin Blobs)>.
         // @tags
         // <ItemTag.skull_skin>
@@ -155,20 +157,29 @@ public class ItemSkullskin implements Property {
             ListTag list = mechanism.valueAsType(ListTag.class);
             String idString = list.get(0);
             String texture = null;
+            if (list.size() == 1 && idString.length() > 64) {
+                texture = idString;
+                idString = null;
+            }
             if (list.size() > 1) {
                 texture = list.get(1);
             }
             PlayerProfile profile;
-            if (CoreUtilities.contains(idString, '-')) {
-                UUID uuid = UUID.fromString(idString);
-                String name = null;
-                if (list.size() > 2) {
-                    name = list.get(2);
-                }
-                profile = new PlayerProfile(name, uuid, texture);
+            if (idString == null) {
+                profile = new PlayerProfile("null", new UUID(0, 0), texture);
             }
             else {
-                profile = new PlayerProfile(idString, null, texture);
+                if (CoreUtilities.contains(idString, '-')) {
+                    UUID uuid = UUID.fromString(idString);
+                    String name = null;
+                    if (list.size() > 2) {
+                        name = list.get(2);
+                    }
+                    profile = new PlayerProfile(name, uuid, texture);
+                }
+                else {
+                    profile = new PlayerProfile(idString, null, texture);
+                }
             }
             if (texture == null || profile.getUniqueId() == null) { // Load if needed
                 profile = NMSHandler.instance.fillPlayerProfile(profile);
