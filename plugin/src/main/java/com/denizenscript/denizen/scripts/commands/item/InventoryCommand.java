@@ -287,7 +287,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
 
     public void doSpecialOpen(InventoryType type, Player player, InventoryTag destination) {
         try {
-            if (destination.customTitle != null) {
+            if (destination.customTitle != null || destination.idType.equals("script")) {
                 currentAltType = destination.getIdType();
                 currentAltTitle = destination.customTitle;
                 currentAltHolder = destination.getIdHolder();
