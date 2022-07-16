@@ -15,6 +15,7 @@ import net.citizensnpcs.api.util.DataKey;
 import org.bukkit.event.EventHandler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AssignmentTrait extends Trait {
 
@@ -36,7 +37,7 @@ public class AssignmentTrait extends Trait {
     @Override
     public void load(DataKey key) {
         if (legacyAssignment != null && !legacyAssignment.isEmpty()) {
-            assignments.add(legacyAssignment);
+            assignments.add(CoreUtilities.toLowerCase(legacyAssignment));
             legacyAssignment = "";
         }
         buildCache();
@@ -45,6 +46,10 @@ public class AssignmentTrait extends Trait {
             npc.removeTrait(AssignmentTrait.class);
             return;
         }
+        // Fix legacy assignments that might not be lowercased
+        List<String> fixedAssignments = assignments.stream().map(CoreUtilities::toLowerCase).collect(Collectors.toList());
+        assignments.clear();
+        assignments.addAll(fixedAssignments);
         npc.getOrAddTrait(ConstantsTrait.class).rebuildAssignmentConstants();
     }
 
