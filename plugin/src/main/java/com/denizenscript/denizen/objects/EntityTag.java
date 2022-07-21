@@ -515,7 +515,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public long cleanRateProtect = -60000;
     public DenizenEntityType entity_type = null;
     private String data1 = null;
-    private DespawnedEntity despawned_entity = null;
     private NPCTag npc = null;
     public UUID uuid = null;
     private String entityScript = null;
@@ -818,151 +817,107 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is already spawned, teleport it.
         if (isCitizensNPC() || (isUnique() && entity != null)) {
             teleport(location, cause);
+            return;
         }
-        else {
-            if (entity_type != null) {
-                if (despawned_entity != null) {
-                    // If entity had a custom_script, use the script to rebuild the base entity.
-                    if (despawned_entity.custom_script != null) {
-                        // TODO: Build entity from custom script
-                    }
-                    // Else, use the entity_type specified/remembered
-                    else {
-                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
-                    }
-                    getLivingEntity().teleport(location);
-                    getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
-                    getLivingEntity().setHealth(despawned_entity.health);
-
-                    despawned_entity = null;
-                }
-                else {
-                    if (entity_type.getBukkitEntityType() == EntityType.PLAYER && !entity_type.isCustom()) {
-                        if (Depends.citizens == null) {
-                            Debug.echoError("Cannot spawn entity of type PLAYER!");
-                            return;
-                        }
-                        else {
-                            NPCTag npc = new NPCTag(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1));
-                            npc.getCitizen().spawn(location);
-                            entity = npc.getEntity();
-                            uuid = entity.getUniqueId();
-                        }
-                    }
-                    else if (entity_type.getBukkitEntityType() == EntityType.FALLING_BLOCK) {
-                        MaterialTag material = null;
-                        if (data1 != null && MaterialTag.matches(data1)) {
-                            material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
-                            // If we did not get a block with "RANDOM", or we got
-                            // air or portals, keep trying
-                            while (data1.equalsIgnoreCase("RANDOM") &&
-                                    ((!material.getMaterial().isBlock()) ||
-                                            material.getMaterial() == Material.AIR ||
-                                            material.getMaterial() == Material.NETHER_PORTAL ||
-                                            material.getMaterial() == Material.END_PORTAL)) {
-                                material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
-                            }
-                        }
-                        else {
-                            for (Mechanism mech : mechanisms) {
-                                if (mech.getName().equals("fallingblock_type")) {
-                                    material = mech.valueAsType(MaterialTag.class);
-                                    mechanisms.remove(mech);
-                                    break;
-                                }
-                            }
-                        }
-                        // If material is null or not a block, default to SAND
-                        if (material == null || !material.getMaterial().isBlock() || !material.hasModernData()) {
-                            material = new MaterialTag(Material.SAND);
-                        }
-                        // This is currently the only way to spawn a falling block
-                        entity = location.getWorld().spawnFallingBlock(location, material.getModernData());
-                        uuid = entity.getUniqueId();
-                    }
-                    else if (entity_type.getBukkitEntityType() == EntityType.PAINTING) {
-                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
-                        location = location.clone();
-                        Painting painting = (Painting) entity;
-                        Art art = null;
-                        BlockFace face = null;
-                        try {
-                            for (Mechanism mech : mechanisms) {
-                                if (mech.getName().equals("painting")) {
-                                    art = Art.valueOf(mech.getValue().asString().toUpperCase());
-                                }
-                                else if (mech.getName().equals("rotation")) {
-                                    face = BlockFace.valueOf(mech.getValue().asString().toUpperCase());
-                                }
-                            }
-                        }
-                        catch (Exception ex) {
-                            // ignore
-                        }
-                        if (art != null && face != null) { // Paintings are the worst
-                            if (art.getBlockHeight() % 2 == 0) {
-                                location.subtract(0, 1, 0);
-                            }
-                            if (art.getBlockWidth() % 2 == 0) {
-                                if (face == BlockFace.WEST) {
-                                    location.subtract(0, 0, 1);
-                                }
-                                else if (face == BlockFace.SOUTH) {
-                                    location.subtract(1, 0, 0);
-                                }
-                            }
-                            painting.teleport(location);
-                            painting.setFacingDirection(face, true);
-                            painting.setArt(art, true);
-                        }
-                    }
-                    else {
-                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
-                        if (entity == null) {
-                            if (CoreConfiguration.debugVerbose) {
-                                Debug.echoError("Failed to spawn entity of type " + entity_type.getName());
-                            }
-                            return;
-                        }
-                        uuid = entity.getUniqueId();
-                        if (entityScript != null) {
-                            EntityScriptHelper.setEntityScript(entity, entityScript);
-                        }
-                    }
+        else if (entity_type == null) {
+            Debug.echoError("Cannot spawn a null EntityTag!");
+            return;
+        }
+        if (entity_type.getBukkitEntityType() == EntityType.PLAYER && !entity_type.isCustom()) {
+            if (Depends.citizens == null) {
+                Debug.echoError("Cannot spawn entity of type PLAYER!");
+                return;
+            }
+            NPCTag npc = new NPCTag(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1));
+            npc.getCitizen().spawn(location);
+            entity = npc.getEntity();
+        }
+        else if (entity_type.getBukkitEntityType() == EntityType.FALLING_BLOCK) {
+            MaterialTag material = null;
+            if (data1 != null && MaterialTag.matches(data1)) {
+                material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
+                // If we did not get a block with "RANDOM", or we got
+                // air or portals, keep trying
+                while (data1.equalsIgnoreCase("RANDOM") &&
+                        ((!material.getMaterial().isBlock()) ||
+                                material.getMaterial() == Material.AIR ||
+                                material.getMaterial() == Material.NETHER_PORTAL ||
+                                material.getMaterial() == Material.END_PORTAL)) {
+                    material = MaterialTag.valueOf(data1, CoreUtilities.basicContext);
                 }
             }
             else {
-                Debug.echoError("Cannot spawn a null EntityTag!");
-            }
-            if (!isUnique()) {
-                if (new LocationTag(location).isChunkLoaded()) {
-                    Debug.echoError("Error spawning entity - tried to spawn in an unloaded chunk.");
+                for (Mechanism mech : mechanisms) {
+                    if (mech.getName().equals("fallingblock_type")) {
+                        material = mech.valueAsType(MaterialTag.class);
+                        mechanisms.remove(mech);
+                        break;
+                    }
                 }
-                else {
-                    Debug.echoError("Error spawning entity - bad entity type, blocked by another plugin?");
+            }
+            // If material is null or not a block, default to SAND
+            if (material == null || !material.getMaterial().isBlock() || !material.hasModernData()) {
+                material = new MaterialTag(Material.SAND);
+            }
+            // This is currently the only way to spawn a falling block
+            entity = location.getWorld().spawnFallingBlock(location, material.getModernData());
+        }
+        else if (entity_type.getBukkitEntityType() == EntityType.PAINTING) {
+            entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
+            location = location.clone();
+            Painting painting = (Painting) entity;
+            Art art = null;
+            BlockFace face = null;
+            try {
+                for (Mechanism mech : mechanisms) {
+                    if (mech.getName().equals("painting")) {
+                        art = Art.valueOf(mech.getValue().asString().toUpperCase());
+                    }
+                    else if (mech.getName().equals("rotation")) {
+                        face = BlockFace.valueOf(mech.getValue().asString().toUpperCase());
+                    }
                 }
-                return;
             }
-            for (Mechanism mechanism : mechanisms) {
-                safeAdjust(new Mechanism(mechanism.getName(), mechanism.value, mechanism.context));
+            catch (Exception ex) {
+                // ignore
             }
-            mechanisms.clear();
+            if (art != null && face != null) { // Paintings are the worst
+                if (art.getBlockHeight() % 2 == 0) {
+                    location.subtract(0, 1, 0);
+                }
+                if (art.getBlockWidth() % 2 == 0) {
+                    if (face == BlockFace.WEST) {
+                        location.subtract(0, 0, 1);
+                    }
+                    else if (face == BlockFace.SOUTH) {
+                        location.subtract(1, 0, 0);
+                    }
+                }
+                painting.teleport(location);
+                painting.setFacingDirection(face, true);
+                painting.setArt(art, true);
+            }
         }
-    }
-
-    public void despawn() {
-        despawned_entity = new DespawnedEntity(this);
-        getLivingEntity().remove();
-    }
-
-    public void respawn() {
-        if (despawned_entity != null) {
-            spawnAt(despawned_entity.location);
+        else {
+            entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
         }
-        else if (entity == null) {
-            Debug.echoError("Cannot respawn a null EntityTag!");
+        if (entity == null) {
+            if (!new LocationTag(location).isChunkLoaded()) {
+                Debug.echoError("Error spawning entity - tried to spawn in an unloaded chunk.");
+            }
+            else {
+                Debug.echoError("Error spawning entity - bad entity type, or blocked by another plugin?");
+            }
+            return;
         }
-
+        uuid = entity.getUniqueId();
+        if (entityScript != null) {
+            EntityScriptHelper.setEntityScript(entity, entityScript);
+        }
+        for (Mechanism mechanism : mechanisms) {
+            safeAdjust(new Mechanism(mechanism.getName(), mechanism.value, mechanism.context));
+        }
+        mechanisms.clear();
     }
 
     public boolean isSpawnedOrValidForTag() {
@@ -1061,28 +1016,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public void setEntity(Entity entity) {
         this.entity = entity;
-    }
-
-    // Used to store some information about a livingEntity while it's despawned
-    private static class DespawnedEntity {
-
-        Double health = null;
-        Location location = null;
-        ItemStack[] equipment = null;
-        String custom_script = null;
-
-        public DespawnedEntity(EntityTag entity) {
-            if (entity != null) {
-                // Save some important info to rebuild the entity
-                health = entity.getLivingEntity().getHealth();
-                location = entity.getLivingEntity().getLocation();
-                equipment = entity.getLivingEntity().getEquipment().getArmorContents();
-
-                if (CustomNBT.hasCustomNBT(entity.getLivingEntity(), "denizen-script-id")) {
-                    custom_script = CustomNBT.getCustomNBT(entity.getLivingEntity(), "denizen-script-id");
-                }
-            }
-        }
     }
 
     public int comparesTo(EntityTag entity) {

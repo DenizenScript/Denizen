@@ -91,7 +91,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // <context.clicked_inventory> returns the InventoryTag that was clicked in.
     // <context.cursor_item> returns the item the Player is clicking with.
     // <context.click> returns an ElementTag with the name of the click type. Click type list: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/inventory/ClickType.html>
-    // <context.slot_type> returns an ElementTag with the name of the slot type that was clicked.
+    // <context.slot_type> returns an ElementTag with the name of the slot type that was clicked. Slot type list: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/inventory/InventoryType.SlotType.html>
     // <context.slot> returns an ElementTag with the number of the slot that was clicked.
     // <context.raw_slot> returns an ElementTag with the raw number of the slot that was clicked.
     // <context.is_shift_click> returns true if 'shift' was used while clicking.

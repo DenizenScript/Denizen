@@ -711,7 +711,7 @@ public class NPCCommandHandler {
     }
 
     @Command(
-            aliases = {"npc"}, usage = "health --set # (-r)",
+            aliases = {"npc"}, usage = "health (--set #) (--max #) (-r)",
             desc = "Sets the max health for an NPC.", modifiers = {"health", "he", "hp"},
             min = 1, max = 3, permission = "denizen.npc.health", flags = "sra")
     @Requirements(selected = true, ownership = true)
