@@ -21,9 +21,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class DebugSubmit extends Thread {
+
+    /**
+     * Available for Denizen addons to add more lines to debug log submissions.
+     */
+    public static List<Supplier<String>> additionalDebugLines = new ArrayList<>();
 
     public String recording;
     public String result = null;
@@ -117,6 +125,15 @@ public class DebugSubmit extends Thread {
                     proxied = true;
                 }
             }
+            StringBuilder addedLines = new StringBuilder();
+            for (Supplier<String> line : additionalDebugLines) {
+                try {
+                    addedLines.append('\n').append(line.get());
+                }
+                catch (Throwable ex) {
+                    Debug.echoError(ex);
+                }
+            }
             String onlineMode = (Bukkit.getServer().getOnlineMode() ? ChatColor.GREEN + "online" : (proxied ? ChatColor.YELLOW : ChatColor.RED) + "offline") + modeSuffix;
             prefix = "pastetype=log"
                     + "&response=micro&v=200&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(ChatColor.stripColor(Bukkit.getServer().getMotd()))
@@ -131,6 +148,7 @@ public class DebugSubmit extends Thread {
                     + "\nTotal Players Ever: " + PlayerTag.getAllPlayers().size() + " (" + playerSet + ")"
                     + "\nMode: " + onlineMode
                     + "\nLast reload: " + new DurationTag((CoreUtilities.monotonicMillis() - DenizenCore.lastReloadTime) / 1000.0).formatted(false) + " ago"
+                    + addedLines
                     + "\n\n", "UTF-8");
         }
         catch (Throwable ex) {
