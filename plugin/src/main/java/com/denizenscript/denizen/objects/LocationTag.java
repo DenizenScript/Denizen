@@ -4137,7 +4137,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
         // <--[tag]
         // @attribute <LocationTag.jukebox_is_playing>
-        // @returns ElementTag
+        // @returns ElementTag(Boolean)
         // @mechanism LocationTag.jukebox_play
         // @group world
         // @description

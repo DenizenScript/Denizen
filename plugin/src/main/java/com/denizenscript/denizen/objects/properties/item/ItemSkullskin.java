@@ -168,6 +168,9 @@ public class ItemSkullskin implements Property {
             if (idString == null) {
                 profile = new PlayerProfile("null", new UUID(0, 0), texture);
             }
+            else if (idString.length() < 3 && list.size() == 2) {
+                profile = new PlayerProfile(idString, new UUID(0, 0), texture);
+            }
             else {
                 if (CoreUtilities.contains(idString, '-')) {
                     UUID uuid = UUID.fromString(idString);
