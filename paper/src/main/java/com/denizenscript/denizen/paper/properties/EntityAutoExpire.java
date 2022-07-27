@@ -44,6 +44,7 @@ public class EntityAutoExpire implements Property {
         // @Plugin Paper
         // @description
         // Returns whether a falling_block will auto-expire (after 30 seconds, or 5 when outside the world).
+        // See also <@link tag EntityTag.time_lived>
         // -->
         PropertyParser.<EntityAutoExpire, ElementTag>registerTag(ElementTag.class, "auto_expire", (attribute, object) -> {
             return new ElementTag(object.doesAutoExpire());
@@ -79,6 +80,7 @@ public class EntityAutoExpire implements Property {
         // @Plugin Paper
         // @description
         // Sets whether a falling_block will auto-expire (after 30 seconds, or 5 when outside the world).
+        // See also <@link mechanism EntityTag.time_lived>
         // @tags
         // <EntityTag.auto_expire>
         // -->

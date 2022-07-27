@@ -80,7 +80,8 @@ public class ItemRawNBT implements Property {
                 // Stew specific
                 "Effects",
                 // Lodestone compass specific
-                "LodestoneDimension", "LodestonePos", "LodestoneTracked",
+                //"LodestoneDimension", "LodestonePos", // Temporarily sent through due to "Dimension" inconsistency, and compatibility with unloaded worlds
+                "LodestoneTracked",
                 // Bundle specific
                 "Items"
         };

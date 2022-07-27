@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.CompassMeta;
 
@@ -68,7 +69,8 @@ public class ItemLodestoneLocation implements Property {
 
     public LocationTag getTarget() {
         CompassMeta meta = (CompassMeta) item.getItemMeta();
-        if (meta.getLodestone() == null) {
+        Location loc = meta.getLodestone();
+        if (loc == null || loc.getWorld() == null) {
             return null;
         }
         return new LocationTag(meta.getLodestone());
@@ -105,7 +107,11 @@ public class ItemLodestoneLocation implements Property {
         if (mechanism.matches("lodestone_location")) {
             CompassMeta meta = (CompassMeta) item.getItemMeta();
             if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
-                meta.setLodestone(mechanism.valueAsType(LocationTag.class).clone());
+                LocationTag loc = mechanism.valueAsType(LocationTag.class).clone();
+                if (loc.getWorldName() != null && loc.getWorld() == null) {
+                    return; // This edge case is handled by RawNBT
+                }
+                meta.setLodestone(loc);
             }
             else {
                 meta.setLodestone(null);
