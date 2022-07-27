@@ -62,6 +62,7 @@ public class Settings {
         }
         // Spigot
         skipChunkFlagCleaning = config.getBoolean("Saves.Skip chunk flag cleaning", false);
+        nullifySkullSkinIds = config.getBoolean("Tags.Nullify skull skin ids", false);
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
         cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
@@ -125,6 +126,8 @@ public class Settings {
     }
 
     public static boolean skipChunkFlagCleaning = false;
+
+    public static boolean nullifySkullSkinIds = false;
 
     public static boolean cache_overrideHelp, cache_useDefaultScriptPath,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,

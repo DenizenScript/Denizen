@@ -250,6 +250,11 @@ Tags:
         # If you have a very specific use-case that requires this, it is recommended you ask on the Denizen Discord and verify it actually makes sense.
         # If you've verified the idea makes sense, you can swap this option to 'true' to disable the default warning.
         I know what im doing and need this: false
+    # If the 'nullify skull skin ids' option is changed to 'true', any skull_skin that has a valid texture but is missing a UUID or name, will automatically supply null values for the UUID and Name.
+    # Skulls that are missing *both* name and id will be nullified regardless of this setting. Skulls that contain *both* an ID and name will retain their set values regardless of this setting.
+    # The benefit of enabling this is it prevents locking the server thread to download the data from Mojang servers.
+    # The risk is that it may interfere with other plugins or systems that expect correct data to be set.
+    Nullify skull skin ids: false
 
 Saves:
     # How long (in seconds) before the offline player flag cache times out.

@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -181,7 +182,7 @@ public class ItemSkullskin implements Property {
                     profile = new PlayerProfile(name, uuid, texture);
                 }
                 else {
-                    profile = new PlayerProfile(idString, null, texture);
+                    profile = new PlayerProfile(idString, Settings.nullifySkullSkinIds ? new UUID(0, 0) : null, texture);
                 }
             }
             if (texture == null || profile.getUniqueId() == null) { // Load if needed
