@@ -32,7 +32,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -2571,7 +2570,7 @@ public class ServerTagBase {
         // Immediately saves the Citizens saves files.
         // -->
         if (Depends.citizens != null && mechanism.matches("save_citizens")) {
-            Depends.citizens.storeNPCs(new CommandContext(new String[0]));
+            Depends.citizens.storeNPCs();
         }
 
         // <--[mechanism]

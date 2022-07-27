@@ -3151,8 +3151,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @object EntityTag
         // @name time_lived
         // @input DurationTag
+        // @synonyms EntityTag.age_nbt,EntityTag.time_nbt
         // @description
         // Sets the amount of time this entity has lived for.
+        // For entities that automatically despawn such as dropped_items or falling_blocks, it can be useful to set this value to "-2147483648t" (the minimum valid number of ticks) to cause it to persist indefinitely.
         // @tags
         // <EntityTag.time_lived>
         // -->
