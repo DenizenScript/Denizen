@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
+import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
@@ -38,7 +39,11 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
@@ -76,6 +81,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     // "item_flagged:<flag>": A Flag Matcher for item flags.
     // "item_enchanted:<enchantment>": matches if the item is enchanted with the given enchantment name. Allows advanced matchers.
     // "raw_exact:<item>": matches based on exact raw item data comparison (almost always a bad idea to use).
+    // Item property format: will validate that the item material matches and all directly specified properties also match. Any properties not specified won't be checked.
+    //                       for example "stick[display=Hi]" will match any 'stick' with a displayname of 'hi', regardless of whether that stick has lore or not, or has enchantments or not, or etc.
     // Item script names: matches if the item is a script item with the given item script name, using advanced matchers.
     // If none of the above are used, uses MaterialTag matchables. Refer to MaterialTag matchable list above.
     // Note that "item" plaintext is always true.
@@ -799,6 +806,116 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
+    public static class ItemPropertyMatchHelper {
+
+        public ItemTag properItem;
+
+        public static class PropertyComparison {
+
+            public String compareValue;
+
+            public PropertyParser.PropertyGetter getter;
+
+            public PropertyComparison(String compareValue, PropertyParser.PropertyGetter getter) {
+                this.compareValue = compareValue;
+                this.getter = getter;
+            }
+        }
+
+        public List<PropertyComparison> comparisons = new ArrayList<>();
+
+        public final boolean doesMatch(ItemTag item) {
+            if (item == null) {
+                return false;
+            }
+            if (item.getBukkitMaterial() != properItem.getBukkitMaterial()) {
+                Debug.verboseLog("[ItemPropertyMatchHelper] deny because material mismatch");
+                return false;
+            }
+            for (PropertyComparison comparison : comparisons) {
+                Property p = comparison.getter.get(item);
+                if (p == null) {
+                    Debug.verboseLog("[ItemPropertyMatchHelper] deny because property is null");
+                    return false;
+                }
+                String val = p.getPropertyString();
+                if (comparison.compareValue == null) {
+                    if (val != null) {
+                        Debug.verboseLog("[ItemPropertyMatchHelper] deny because nullity");
+                        return false;
+                    }
+                }
+                else {
+                    if (val == null || !CoreUtilities.equalsIgnoreCase(comparison.compareValue, val)) {
+                        Debug.verboseLog("[ItemPropertyMatchHelper] deny because unequal");
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "item=" + properItem + ", comparisons=" + comparisons.stream().map(c -> c.compareValue).collect(Collectors.joining(", "));
+        }
+    }
+
+    public static LinkedHashMap<String, ItemPropertyMatchHelper> matchHelperCache = new LinkedHashMap<>();
+
+    public static int MAX_MATCH_HELPER_CACHE = 1024;
+
+    public static ItemPropertyMatchHelper getPropertyMatchHelper(String text) {
+        if (CoreConfiguration.debugVerbose) {
+            Debug.verboseLog("[ItemPropertyMatchHelper] getting helper for " + text);
+        }
+        ItemPropertyMatchHelper matchHelper = matchHelperCache.get(text);
+        if (matchHelper != null) {
+            return matchHelper;
+        }
+        ItemTag item = valueOf(text, CoreUtilities.noDebugContext);
+        if (item == null) {
+            Debug.verboseLog("[ItemPropertyMatchHelper] rejecting item because it's null");
+            return null;
+        }
+        matchHelper = new ItemPropertyMatchHelper();
+        matchHelper.properItem = item;
+        List<String> propertiesGiven = ObjectFetcher.separateProperties(text);
+        if (propertiesGiven == null) {
+            return matchHelper;
+        }
+        PropertyParser.ClassPropertiesInfo itemInfo = PropertyParser.propertiesByClass.get(ItemTag.class);
+        for (int i = 1; i < propertiesGiven.size(); i++) {
+            String property = propertiesGiven.get(i);
+            int equalSign = property.indexOf('=');
+            if (equalSign == -1) {
+                if (CoreConfiguration.debugVerbose) {
+                    Debug.verboseLog("[ItemPropertyMatchHelper] rejecting item because " + property + " lacks an equal sign");
+                }
+                return null;
+            }
+            String label = ObjectFetcher.unescapeProperty(property.substring(0, equalSign));
+            PropertyParser.PropertyGetter getter = itemInfo.propertiesByMechanism.get(label);
+            if (getter == null) {
+                continue;
+            }
+            Property realProp = getter.get(item);
+            if (realProp == null) {
+                continue;
+            }
+            matchHelper.comparisons.add(new ItemPropertyMatchHelper.PropertyComparison(realProp.getPropertyString(), getter));
+        }
+        if (matchHelperCache.size() > MAX_MATCH_HELPER_CACHE) {
+            String firstMost = matchHelperCache.keySet().iterator().next();
+            matchHelperCache.remove(firstMost);
+        }
+        if (CoreConfiguration.debugVerbose) {
+            Debug.verboseLog("[ItemPropertyMatchHelper] stored final result as " + matchHelper);
+        }
+        matchHelperCache.put(text, matchHelper);
+        return matchHelper;
+    }
+
     @Override
     public boolean advancedMatches(String matcher) {
         String matcherLow = CoreUtilities.toLowerCase(matcher);
@@ -828,6 +945,13 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         }
         if (matcherLow.equals("potion") && CoreUtilities.toLowerCase(getBukkitMaterial().name()).contains("potion")) {
             return true;
+        }
+        if (matcher.contains("[") && matcher.endsWith("]")) {
+            ItemPropertyMatchHelper helper = getPropertyMatchHelper(matcher);
+            if (helper == null) {
+                return false;
+            }
+            return helper.doesMatch(this);
         }
         boolean isItemScript = isItemscript();
         if (isItemScript) {

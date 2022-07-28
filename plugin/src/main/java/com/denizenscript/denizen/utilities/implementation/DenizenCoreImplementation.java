@@ -128,6 +128,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void preScriptReload() {
         // Remove all recipes added by Denizen item scripts
         ItemScriptHelper.removeDenizenRecipes();
+        ItemTag.matchHelperCache.clear();
         // Remove all registered commands added by Denizen command scripts
         CommandScriptHelper.removeDenizenCommands();
         // Remove all registered economy scripts if needed

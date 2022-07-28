@@ -393,6 +393,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
+        int bracketIndex = text.indexOf('[');
+        if (bracketIndex != -1) {
+            return ItemTag.matches(text);
+        }
         if (MaterialTag.matches(text)) {
             MaterialTag mat = MaterialTag.valueOf(text, CoreUtilities.noDebugContext);
             if (mat == null || !mat.getMaterial().isItem()) {
