@@ -207,10 +207,12 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerReceivesActionbarScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesCommandsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesMessageScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerReceivesPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesTablistUpdateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRespawnsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRightClicksEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRiptideScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerSendPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayersPrepareSmithingTableScriptEvent.class);

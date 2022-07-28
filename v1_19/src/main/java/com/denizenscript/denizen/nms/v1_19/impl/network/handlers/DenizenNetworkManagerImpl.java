@@ -1,9 +1,6 @@
 package com.denizenscript.denizen.nms.v1_19.impl.network.handlers;
 
-import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
-import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
-import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
-import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScriptEvent;
+import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_19.Handler;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
@@ -305,6 +302,14 @@ public class DenizenNetworkManagerImpl extends Connection {
                 doPacketOutput("DENIED PACKET " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName());
             }
             return;
+        }
+        if (PlayerReceivesPacketScriptEvent.enabled) {
+            if (PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
+                if (NMSHandler.debugPackets) {
+                    doPacketOutput("DENIED PACKET " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName() + " due to event");
+                }
+                return;
+            }
         }
         processBlockLightForPacket(packet);
         processFakePlayerSpawnForPacket(packet);
