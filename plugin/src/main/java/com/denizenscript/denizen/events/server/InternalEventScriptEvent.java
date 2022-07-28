@@ -2,10 +2,13 @@ package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.JavaReflectedObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.VerySlowWarning;
@@ -32,11 +35,7 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when the specified internal Bukkit event fires. Useful for testing/debugging, or for interoperation with external plugins that have their own Bukkit events.
-    //
-    // @Context
-    // <context.fields> returns a ListTag of all field names applicable to the event.
-    // <context.field_(name)> returns the value of the event class field of the specified name, auto-converted to the relevant object type where possible. Use with caution.
+    // @Triggers when the specified internal Bukkit event fires. Useful for testing/debugging, or for interoperation with external plugins that have their own Bukkit events. Get the raw event via 'context.reflect_event'.
     //
     // -->
 
@@ -72,25 +71,31 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
         return "InternalBukkitEvent";
     }
 
-    public static Warning depFieldContext = new VerySlowWarning("internalEventFieldContext", "The context.field_<name> special tag for 'internal bukkit event' is experimental and subject to be removed or replace in the future");
-
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("fields")) {
-            ListTag result = new ListTag();
-            Class c = currentEvent.getClass();
-            while (c != null && c != Object.class) {
-                for (Map.Entry<String, Field> field : ReflectionHelper.getFields(c).entrySet()) {
-                    if (!Modifier.isStatic(field.getValue().getModifiers())) {
-                        result.addObject(new ElementTag(field.getKey(), true));
-                    }
+        switch (name) {
+            case "fields":
+                if (!CoreConfiguration.allowReflectionFieldReads) {
+                    return null;
                 }
-                c = c.getSuperclass();
-            }
-            return result;
+                BukkitImplDeprecations.internalEventReflectionContext.warn();
+                ListTag result = new ListTag();
+                Class c = currentEvent.getClass();
+                while (c != null && c != Object.class) {
+                    for (Map.Entry<String, Field> field : ReflectionHelper.getFields(c).entrySet()) {
+                        if (!Modifier.isStatic(field.getValue().getModifiers())) {
+                            result.addObject(new ElementTag(field.getKey(), true));
+                        }
+                    }
+                    c = c.getSuperclass();
+                }
+                return result;
         }
         if (name.startsWith("field_")) {
-            depFieldContext.warn();
+            if (!CoreConfiguration.allowReflectionFieldReads) {
+                return null;
+            }
+            BukkitImplDeprecations.internalEventReflectionContext.warn();
             String fName = CoreUtilities.toLowerCase(name.substring("field_".length()));
             Class c = currentEvent.getClass();
             while (c != null && c != Object.class) {

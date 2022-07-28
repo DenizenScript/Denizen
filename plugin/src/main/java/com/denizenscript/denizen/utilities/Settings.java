@@ -48,6 +48,8 @@ public class Settings {
         CoreConfiguration.queueIdNumeric = config.getBoolean("Queues.Id parts.Numeric", true);
         CoreConfiguration.queueIdWords = config.getBoolean("Queues.Id parts.Words", true);
         CoreConfiguration.listFlagsAllowed = config.getBoolean("Tags.List flags.I know what im doing and need this", false);
+        CoreConfiguration.allowReflectionFieldReads = config.getBoolean("Reflection.Allow reading fields", true);
+        CoreConfiguration.allowReflectedCoreMethods = config.getBoolean("Reflection.Allow core methods", true);
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;

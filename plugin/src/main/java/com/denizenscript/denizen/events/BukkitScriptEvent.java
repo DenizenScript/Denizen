@@ -11,6 +11,8 @@ import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.JavaReflectedObjectTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -552,6 +554,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             cancelled = false;
         }
         fire();
+    }
+
+    @Override
+    public ObjectTag getContext(String name) {
+        switch (name) {
+            case "reflect_event": return currentEvent == null ? null : new JavaReflectedObjectTag(currentEvent);
+        }
+        return super.getContext(name);
     }
 
     @Override

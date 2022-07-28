@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.JavaReflectedObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.entity.Player;
 
@@ -23,8 +24,11 @@ public class PlayerReceivesPacketScriptEvent extends BukkitScriptEvent {
     //
     // @Switch class:<classname-matcher> to only process the event when the packet class name matches a given classname matcher.
     //
+    // @Warning This event will fire extremely rapidly. Use with caution.
+    //
     // @Context
     // <context.class> returns an ElementTag of the packet's class name. Note that these are spigot-mapped names, not Mojang-mapped.
+    // <context.reflect_packet> returns a JavaReflectedObjectTag of the packet object.
     //
     // @Player Always.
     //
@@ -40,6 +44,7 @@ public class PlayerReceivesPacketScriptEvent extends BukkitScriptEvent {
 
     public ElementTag className;
     public PlayerTag player;
+    public Object packet;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -71,6 +76,7 @@ public class PlayerReceivesPacketScriptEvent extends BukkitScriptEvent {
     public ObjectTag getContext(String name) {
         switch (name) {
             case "class": return className;
+            case "reflect_packet": return new JavaReflectedObjectTag(packet);
         }
         return super.getContext(name);
     }
@@ -83,6 +89,7 @@ public class PlayerReceivesPacketScriptEvent extends BukkitScriptEvent {
     public static boolean fireFor(Player player, Object packet) {
         instance.player = new PlayerTag(player);
         instance.className = new ElementTag(packet.getClass().getSimpleName());
+        instance.packet = packet;
         return instance.fire().cancelled;
     }
 }

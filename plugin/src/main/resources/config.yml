@@ -256,6 +256,18 @@ Tags:
     # The risk is that it may interfere with other plugins or systems that expect correct data to be set.
     Nullify skull skin ids: false
 
+# Java Reflection is the toolkit for accessing raw underlying Java data.
+# Denizen partially exposes this, for example in 'JavaReflectedObjectTag', as some scripts may have use for this.
+# This however often isn't needed, and sometimes can be abused to access things a script shouldn't have access to.
+# Accordingly, security-minded server owners might prefer to lock all reflection-allow options to 'false' to be safe.
+# However, the default settings of allowing reads but not writes or executions is safe for most servers.
+# Only servers that really need it should enable write/execute options.
+Reflection:
+    # Whether to allow tags to read raw field data in scripts. This is generally safe.
+    Allow reading fields: true
+    # Whether to allow scripts to reflect into core object methods like "toString" or "equals". This is usually safe, but might be abusable in certain edge edges, if for example some object somewhere improperly handles the "equals" method to execute logic or similar.
+    Allow core methods: true
+
 Saves:
     # How long (in seconds) before the offline player flag cache times out.
     # Set to -1 to keep offline player flags loaded perpetually, or to 0 to never cache.

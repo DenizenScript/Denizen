@@ -170,6 +170,9 @@ public class BukkitImplDeprecations {
     // Added 2022/05/07.
     public static Warning armorStandRawSlot = new SlowWarning("armorStandRawSlot", "The EntityTag.disabled_slots.raw tag and EntityTag.disabled_slots_raw mechanism are deprecated, use the EntityTag.disabled_slots_data tag and EntityTag.disabled_slots mechanism instead.");
 
+    // Added 2022/07/28
+    public static Warning internalEventReflectionContext = new SlowWarning("internalEventReflectionContext", "The context.field_<name> and fields special tags for 'internal bukkit event' are deprecated in favor of the 'reflect_event' global context.");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 
