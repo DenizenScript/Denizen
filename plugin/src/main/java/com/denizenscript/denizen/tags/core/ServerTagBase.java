@@ -61,6 +61,7 @@ import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.permissions.DefaultPermissions;
@@ -419,6 +420,29 @@ public class ServerTagBase {
                         return;
                     }
                     event.setReplacedObject(new ElementTag(objective.getDisplaySlot().name()).getObjectAttribute(attribute.fulfill(1)));
+                }
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].objective[<name>].score[<input>]>
+                // @returns ElementTag(Number)
+                // @description
+                // Returns the current score in the objective for the given input.
+                // Input can be a PlayerTag (translates to name internally), EntityTag (translates to UUID internally) or any plaintext score holder label.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("score")) {
+                    String value = attribute.getParam();
+                    if (value.startsWith("p@")) {
+                        value = PlayerTag.valueOf(value, attribute.context).getName();
+                    }
+                    else if (value.startsWith("e@")) {
+                        value = EntityTag.valueOf(value, attribute.context).getUUID().toString();
+                    }
+                    Score score = objective.getScore(value);
+                    if (!score.isScoreSet()) {
+                        return;
+                    }
+                    event.setReplacedObject(new ElementTag(score.getScore()).getObjectAttribute(attribute.fulfill(1)));
                 }
             }
 
