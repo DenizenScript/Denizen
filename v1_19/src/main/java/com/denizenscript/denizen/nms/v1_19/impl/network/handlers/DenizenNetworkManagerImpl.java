@@ -34,8 +34,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -46,10 +44,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.network.Connection;
-import net.minecraft.network.ConnectionProtocol;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.PacketListener;
+import net.minecraft.network.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
@@ -273,7 +268,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public void send(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (!Bukkit.isPrimaryThread()) {
             if (Settings.cache_warnOnAsyncPackets
                     && !(packet instanceof ClientboundSystemChatPacket) && !(packet instanceof ClientboundPlayerChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
@@ -316,7 +311,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         oldManager.send(packet, genericfuturelistener);
     }
 
-    public boolean processTablistPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processTablistPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
             return false;
         }
@@ -390,7 +385,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         return false;
     }
 
-    public boolean processActionbarPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processActionbarPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (!PlayerReceivesActionbarScriptEvent.instance.loaded) {
             return false;
         }
@@ -443,7 +438,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         return false;
     }
 
-    public boolean processEquipmentForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processEquipmentForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (FakeEquipCommand.overrides.isEmpty()) {
             return false;
         }
@@ -610,7 +605,7 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     private boolean antiDuplicate = false;
 
-    public boolean processDisguiseForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processDisguiseForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (DisguiseCommand.disguises.isEmpty() || antiDuplicate) {
             return false;
         }
@@ -759,7 +754,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
     }
 
-    public boolean processMetadataChangesForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (!(packet instanceof ClientboundSetEntityDataPacket)) {
             return false;
         }
@@ -1082,10 +1077,12 @@ public class DenizenNetworkManagerImpl extends Connection {
         return false;
     }
 
-    public boolean processPacketHandlerForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processPacketHandlerForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
             PacketOutChatImpl packetHelper = null;
+            boolean overlay = false;
             if (packet instanceof ClientboundSystemChatPacket) {
+                overlay = ((ClientboundSystemChatPacket) packet).overlay();
                 packetHelper = new PacketOutChatImpl((ClientboundSystemChatPacket) packet);
             }
             else if (packet instanceof ClientboundPlayerChatPacket) {
@@ -1098,7 +1095,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                         return true;
                     }
                     if (result.modified) {
-                        oldManager.send(new ClientboundSystemChatPacket(ComponentSerializer.parse(result.rawJson.asString()), BuiltinRegistries.CHAT_TYPE.getId(packetHelper.position)), genericfuturelistener);
+                        // TODO: 1.19.1: What is overlay? what value should it have?
+                        oldManager.send(new ClientboundSystemChatPacket(ComponentSerializer.parse(result.rawJson.asString()), overlay), genericfuturelistener);
                         return true;
                     }
                 }
@@ -1110,7 +1108,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         return false;
     }
 
-    public boolean processShowFakeForPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+    public boolean processShowFakeForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (FakeBlock.blocks.isEmpty()) {
             return false;
         }

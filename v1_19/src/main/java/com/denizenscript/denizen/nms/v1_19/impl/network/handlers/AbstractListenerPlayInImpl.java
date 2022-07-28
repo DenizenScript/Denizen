@@ -1,10 +1,11 @@
 package com.denizenscript.denizen.nms.v1_19.impl.network.handlers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.Connection;
+import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.network.chat.SignedMessageChain;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
@@ -83,11 +84,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void chat(String s, boolean async) {
-        oldListener.chat(s, async);
-    }
-
-    @Override
     public CraftPlayer getCraftPlayer() {
         return oldListener.getCraftPlayer();
     }
@@ -118,8 +114,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void send(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
-        oldListener.send(packet, genericfuturelistener);
+    public void send(Packet<?> packet, PacketSendListener listener) {
+        oldListener.send(packet, listener);
     }
 
     public void handlePacketIn(Packet<ServerGamePacketListener> packet) {
@@ -133,6 +129,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleChatPreview(ServerboundChatPreviewPacket packet) {
         handlePacketIn(packet);
         oldListener.handleChatPreview(packet);
+    }
+
+    @Override
+    public void handleChatAck(ServerboundChatAckPacket serverboundchatackpacket) {
+        oldListener.handleChatAck(serverboundchatackpacket);
     }
 
     @Override
@@ -316,6 +317,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public void chat(String s, PlayerChatMessage original, boolean async) {
+        oldListener.chat(s, original, async);
+    }
+
+    @Override
     public void handleAnimate(ServerboundSwingPacket packet) {
         handlePacketIn(packet);
         oldListener.handleAnimate(packet);
@@ -325,6 +331,16 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handlePlayerCommand(ServerboundPlayerCommandPacket packet) {
         handlePacketIn(packet);
         oldListener.handlePlayerCommand(packet);
+    }
+
+    @Override
+    public SignedMessageChain.Decoder signedMessageDecoder() {
+        return oldListener.signedMessageDecoder();
+    }
+
+    @Override
+    public void addPendingMessage(PlayerChatMessage playerchatmessage) {
+        oldListener.addPendingMessage(playerchatmessage);
     }
 
     @Override
@@ -414,5 +430,10 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public ServerPlayer getPlayer() {
         return oldListener.getPlayer();
+    }
+
+    @Override
+    public boolean shouldPropagateHandlingExceptions() {
+        return oldListener.shouldPropagateHandlingExceptions();
     }
 }

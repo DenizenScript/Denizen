@@ -193,7 +193,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     public static final MethodHandle LIVINGENTITY_AUTOSPINATTACK_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_autoSpinAttackTicks);
-    public static final MethodHandle LIVINGENTITY_SETLIVINGENTITYFLAG = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_setLivingEntityFlag, int.class, boolean.class);
+    public static final MethodHandle LIVINGENTITY_SETLIVINGENTITYFLAG = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_setLivingEntityFlag_method, int.class, boolean.class);
 
     @Override
     public void setRiptide(Entity entity, boolean state) {

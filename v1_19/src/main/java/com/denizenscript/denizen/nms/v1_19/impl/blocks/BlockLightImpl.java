@@ -40,7 +40,7 @@ public class BlockLightImpl extends BlockLight {
     static {
         Object preObj = null;
         try {
-            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_TASKTYPE).get(ReflectionMappingsInfo.ThreadedLevelLightEngine_TaskType_PRE_UPDATE).get(null);
+            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_TASKTYPE).get(ReflectionMappingsInfo.ThreadedLevelLightEngineTaskType_PRE_UPDATE).get(null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();
@@ -48,7 +48,7 @@ public class BlockLightImpl extends BlockLight {
         LIGHTENGINETHREADED_TASKTYPE_PRE = preObj;
     }
 
-    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, ReflectionMappingsInfo.ThreadedLevelLightEngine_addTask,
+    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, ReflectionMappingsInfo.ThreadedLevelLightEngine_addTask_method,
             int.class, int.class,  LIGHTENGINETHREADED_TASKTYPE, Runnable.class);
 
     public static void enqueueRunnable(LevelChunk chunk, Runnable runnable) {

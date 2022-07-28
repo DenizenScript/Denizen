@@ -47,7 +47,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         @Override public boolean removeProperty(@Nullable String s) { return false; }
         @Override public void clearProperties() { }
         @Override public boolean isComplete() { return false; }
-        @Override public @NotNull CompletableFuture<org.bukkit.profile.PlayerProfile> update() { return null; }
+        @Override public @NotNull CompletableFuture<PlayerProfile> update() { return null; }
         @Override public org.bukkit.profile.@NotNull PlayerProfile clone() { return null; }
         @Override public boolean completeFromCache() { return false; }
         @Override public boolean completeFromCache(boolean b) { return false; }

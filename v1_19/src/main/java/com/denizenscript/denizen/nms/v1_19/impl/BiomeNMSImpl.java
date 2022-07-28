@@ -87,13 +87,13 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setHumidity(float humidity) {
         Object climate = getClimate();
-        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_downfall, climate, humidity);
+        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.BiomeClimateSettings_downfall, climate, humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
         Object climate = getClimate();
-        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_temperature, climate, temperature);
+        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.BiomeClimateSettings_temperature, climate, temperature);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class BiomeNMSImpl extends BiomeNMS {
                 throw new UnsupportedOperationException();
         }
         Object climate = getClimate();
-        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_precipitation, climate, nmsType);
+        ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.BiomeClimateSettings_precipitation, climate, nmsType);
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {

@@ -434,7 +434,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void sendClimbableMaterials(Player player, List<Material> materials) {
         Map<ResourceKey<? extends Registry<?>>, TagNetworkSerialization.NetworkPayload> packetInput = TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registryAccess());
         TagNetworkSerialization.NetworkPayload payload = packetInput.get(Registry.BLOCK_REGISTRY);
-        Map<ResourceLocation, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerialization_NetworkPayload_tags, payload);
+        Map<ResourceLocation, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerializationNetworkPayload_tags, payload);
         IntList intList = tags.get(BlockTags.CLIMBABLE.location());
         intList.clear();
         for (Material material : materials) {
