@@ -414,10 +414,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 return;
             }
         }
+        location = location.getBlockLocation();
         World world = location.getWorld();
-        location.setX(location.getBlockX());
-        location.setY(location.getBlockY());
-        location.setZ(location.getBlockZ());
         if (source != null) {
             Event event;
             if (material.getMaterial() == Material.AIR) {
