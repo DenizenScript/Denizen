@@ -160,7 +160,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("remove")) {
             trait.removeConstant(args.getFlag("remove"));
-            Messaging.sendInfo(sender, npc.getName() + " has had constant '" + args.getFlag("remove") + "' removed.");
+            Messaging.sendInfo(sender, "Removed constant '" + args.getFlag("remove") + "' from " + npc.getName() + ".");
             return;
         }
         Messaging.send(sender, "");

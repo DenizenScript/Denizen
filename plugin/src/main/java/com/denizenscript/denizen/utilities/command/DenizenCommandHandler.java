@@ -23,9 +23,9 @@ import java.util.Set;
 
 public class DenizenCommandHandler {
 
-    public static final String discordLink = "https://discord.gg/Q6pZGSR";
-    public static final String websiteLink = "https://denizenscript.com";
-    public static final String guideLink = "https://guide.denizenscript.com/";
+    public static final String DISCORD_LINK = "https://discord.gg/Q6pZGSR";
+    public static final String WEBSITE_LINK = "https://denizenscript.com";
+    public static final String GUIDE_LINK = "https://guide.denizenscript.com/";
 
     public DenizenCommandHandler() {
     }
@@ -273,8 +273,8 @@ public class DenizenCommandHandler {
         Messaging.sendInfo(sender, "<2>DENIZEN<7>: A high-power scripting engine for Spigot!");
         Messaging.send(sender, "");
         Messaging.send(sender, "<7>by: <f>the DenizenScript team, with help from many skilled contributors!");
-        Messaging.send(sender, "<7>chat with us at: <f> " + discordLink);
-        Messaging.send(sender, "<7>or learn more at: <f> " + websiteLink);
+        Messaging.send(sender, "<7>chat with us at: <f> " + DISCORD_LINK);
+        Messaging.send(sender, "<7>or learn more at: <f> " + WEBSITE_LINK);
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION);
     }
 
@@ -341,7 +341,7 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTES, CONFIG, SCRIPTS");
         Messaging.send(sender, "<b>Example: /denizen reload saves");
         Messaging.send(sender, "<f>Use '-a' to reload all parts at once.");
-        Messaging.send(sender, "<f>Note that you shouldn't use this command generally, instead use '/ex reload' - see also the Beginner's Guide at " + guideLink);
+        Messaging.send(sender, "<f>Note that you shouldn't use this command generally, instead use '/ex reload' - see also the Beginner's Guide at " + GUIDE_LINK);
         Messaging.send(sender, "");
     }
 
