@@ -525,6 +525,7 @@ public class NPCCommandHandler {
         }
         if (args.hasValueFlag("percent")) {
             trait.setCatchPercent(args.getFlagInteger("percent"));
+            Messaging.send(sender, npc.getName() + " will now catch " + args.getFlagInteger("percent") + "% of the fish.");
         }
         if (args.hasValueFlag("reel_time")) {
             DurationTag duration = DurationTag.valueOf(args.getFlag("reel_time"), CoreUtilities.basicContext);
@@ -546,6 +547,8 @@ public class NPCCommandHandler {
         }
         if (args.hasFlag('c')) {
             trait.startFishing(args.getSenderTargetBlockLocation());
+            Messaging.send(sender, npc.getName() + " is now fishing at your cursor.");
+            return;
         }
         else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
@@ -560,9 +563,14 @@ public class NPCCommandHandler {
                 Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.startFishing(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                } else {
+                    Messaging.sendError(sender, "Anchor '" + args.getFlag("anchor") + "' is invalid! Did you make a typo?");
+                    return;
                 }
+            } else {
+                Messaging.sendError(sender, "NPC " + npc.getName() + " does not have the anchor '" + args.getFlag("anchor") + "'!");
+                return;
             }
-            Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         }
         else {
             trait.startFishing();
@@ -579,7 +587,7 @@ public class NPCCommandHandler {
         FishingTrait trait = npc.getOrAddTrait(FishingTrait.class);
         if (!trait.isFishing()) {
             npc.removeTrait(FishingTrait.class);
-            Messaging.sendError(sender, npc.getName() + " isn't fishing!");
+            Messaging.sendError(sender, npc.getName() + " isn't currently fishing!");
             return;
         }
         trait.stopFishing();
