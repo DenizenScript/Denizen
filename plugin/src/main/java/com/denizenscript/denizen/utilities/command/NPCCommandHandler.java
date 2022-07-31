@@ -82,12 +82,11 @@ public class NPCCommandHandler {
                 trait.setReturnable(true);
                 Messaging.sendInfo(sender, npc.getName() + " will return after '" + args.getFlag("delay") + "' seconds"
                         + (trait.isPushable() ? "." : ", but is currently not pushable."));
-                return;
             }
             else {
                 Messaging.sendError(sender, "Delay must be a valid number of seconds!");
-                return;
             }
+            return;
         }
         else if (args.hasFlag('t') && !args.hasValueFlag("delay") && !args.hasFlag('r')) {
             trait.toggle();
@@ -110,7 +109,7 @@ public class NPCCommandHandler {
         else if (args.length() > 2) {
             Messaging.send(sender, "");
             Messaging.send(sender, "<f>Use '-t' to toggle pushable state. <b>Example: /npc pushable -t");
-            Messaging.send(sender, "<f>To have the NPC return when pushed, use '-r'.");
+            Messaging.send(sender, "<f>To have the NPC return to their position when pushed, use '-r'.");
             Messaging.send(sender, "<f>Change the return delay with '--delay #'.");
             Messaging.send(sender, "");
         }
@@ -161,7 +160,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("remove")) {
             trait.removeConstant(args.getFlag("remove"));
-            Messaging.sendInfo(sender, npc.getName() + " has removed constant '" + args.getFlag("remove") + "'.");
+            Messaging.sendInfo(sender, npc.getName() + " has had constant '" + args.getFlag("remove") + "' removed.");
             return;
         }
         Messaging.send(sender, "");
@@ -277,7 +276,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "'" + triggerName.toUpperCase() + "' trigger does not exist.");
                 Messaging.send(sender, "<f>Usage: /npc trigger [trigger_name] [(--cooldown #)|(--radius #)|(-t)]");
                 Messaging.send(sender, "");
-                Messaging.send(sender, "<f>Use '--name trigger_name' to specify a specific trigger, and '-t' to toggle.");
+                Messaging.send(sender, "<f>Use '--name trigger_name' to specify the trigger, and '-t' to toggle it.");
                 Messaging.send(sender, "<b>Example: /npc trigger --name damage -t");
                 Messaging.send(sender, "<f>You may also use '--cooldown #' to specify a new cooldown time, and '--radius #' to specify a specific radius, when applicable.");
                 Messaging.send(sender, "");
@@ -294,7 +293,7 @@ public class NPCCommandHandler {
             // If specifying radius
             if (args.hasValueFlag("radius")) {
                 trait.setLocalRadius(triggerName, args.getFlagInteger("radius"));
-                Messaging.sendInfo(sender, triggerName.toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
+                Messaging.sendInfo(sender, triggerName.toUpperCase() + " trigger radius is now " + args.getFlag("radius") + ".");
             }
             // Show current status of the trigger
             Messaging.sendInfo(sender, triggerName.toUpperCase() + " trigger " + (trait.isEnabled(triggerName) ? "is" : "is not") + " currently enabled" +
