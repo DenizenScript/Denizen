@@ -243,7 +243,7 @@ public class NPCCommandHandler {
                 }
             }
             else {
-                Messaging.sendError(sender, "That NPC was already not assigned that script.");
+                Messaging.sendError(sender, npc.getName() + " was already not assigned to " + script + ".");
             }
             return;
         }
@@ -318,7 +318,7 @@ public class NPCCommandHandler {
         NicknameTrait trait = npc.getOrAddTrait(NicknameTrait.class);
         if (args.hasValueFlag("set")) {
             trait.setNickname(args.getFlag("set"));
-            Messaging.send(sender, "Nickname set.");
+            Messaging.send(sender, "Nickname set to '" + args.getFlag("set") + "'.");
             return;
         }
         else if (args.hasFlag('r')) {
@@ -367,7 +367,7 @@ public class NPCCommandHandler {
                     return;
                 }
             }
-            Messaging.sendError(sender, "The NPC does not have the specified anchor!");
+            Messaging.sendError(sender, "NPC " + npc.getName() + " does not have the anchor '" + args.getFlag("anchor") + "'!");
             return;
         }
         Location targetLocation;
@@ -483,7 +483,7 @@ public class NPCCommandHandler {
                     return;
                 }
             }
-            Messaging.sendError(sender, "The NPC does not have the specified anchor!");
+            Messaging.sendError(sender, "NPC " + npc.getName() + " does not have the anchor '" + args.getFlag("anchor") + "'!");
             return;
         }
         else {
@@ -529,7 +529,7 @@ public class NPCCommandHandler {
         if (args.hasValueFlag("reel_time")) {
             DurationTag duration = DurationTag.valueOf(args.getFlag("reel_time"), CoreUtilities.basicContext);
             if (duration == null) {
-                Messaging.sendError(sender, "Invalid reel duration.");
+                Messaging.sendError(sender, "Invalid reel duration!");
                 return;
             }
             trait.reelTickRate = duration.getTicksAsInt();
@@ -538,11 +538,11 @@ public class NPCCommandHandler {
         if (args.hasValueFlag("cast_time")) {
             DurationTag duration = DurationTag.valueOf(args.getFlag("cast_time"), CoreUtilities.basicContext);
             if (duration == null) {
-                Messaging.sendError(sender, "Invalid cast duration.");
+                Messaging.sendError(sender, "Invalid cast duration!");
                 return;
             }
             trait.reelTickRate = duration.getTicksAsInt();
-            Messaging.send(sender, "Set cast rate to " + duration.formatted(true));
+            Messaging.send(sender, "Set cast rate to " + duration.formatted(true) + ".");
         }
         if (args.hasFlag('c')) {
             trait.startFishing(args.getSenderTargetBlockLocation());
