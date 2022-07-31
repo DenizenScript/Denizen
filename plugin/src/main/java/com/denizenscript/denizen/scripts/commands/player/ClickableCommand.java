@@ -46,6 +46,9 @@ public class ClickableCommand extends BracedCommand {
     // @Description
     // Generates a clickable command for players.
     //
+    // Generally, prefer to write a command script and simply "on_click[/yourcommandhere]" rather than using generated clickables.
+    // Generated clickables are a utility intended to enable clickables that are restricted from being normally accessed without receiving a clickable message.
+    //
     // Specify a task script to run, or put an executable script section as sub-commands.
     //
     // When running a task, optionally any definitions to pass.
@@ -60,7 +63,10 @@ public class ClickableCommand extends BracedCommand {
     // WARNING: if you use clickables very often without a duration limit, this can lead to a memory leak.
     // Clickables that have a specified max duration will occasionally be cleaned from memory.
     //
-    // Optionally specify what players are allowed to use it. Defaults to unrestricted (any player may use it).
+    // Optionally specify what players are allowed to use it. Defaults to unrestricted (any player that sees the click message may use it).
+    // Note that it is possible for a player to find the generated command ID in their logs and send it to another player to "/" execute, so if you don't restrict player access it may be abused in that way.
+    //
+    // This internally generates a command of the form "/denizenclickable <generated_id>".
     //
     // Players will need the permission "denizen.clickable" to be able to use this.
     //

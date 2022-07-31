@@ -350,15 +350,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
     }
 
-    public PlayerInventory getBukkitInventory() {
-        if (isOnline()) {
-            return getPlayerEntity().getInventory();
-        }
-        else {
-            return getNBTEditor().getInventory();
-        }
-    }
-
     public InventoryTag getInventory() {
         if (isOnline()) {
             return InventoryTag.mirrorBukkitInventory(getPlayerEntity().getInventory());
@@ -388,21 +379,21 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return null;
     }
 
-    public Inventory getBukkitEnderChest() {
-        if (isOnline()) {
-            return getPlayerEntity().getEnderChest();
-        }
-        else {
-            return getNBTEditor().getEnderChest();
-        }
-    }
-
     public InventoryTag getEnderChest() {
         if (isOnline()) {
             return new InventoryTag(getPlayerEntity().getEnderChest(), getPlayerEntity());
         }
         else {
             return new InventoryTag(getNBTEditor(), true);
+        }
+    }
+
+    public WorldTag getWorldTag() {
+        if (isOnline()) {
+            return new WorldTag(getPlayerEntity().getWorld());
+        }
+        else {
+            return new WorldTag(getLocation().getWorldName());
         }
     }
 
@@ -815,7 +806,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         tagProcessor.registerTag(WorldTag.class, "world", (attribute, object) -> {
-            return new WorldTag(object.getWorld());
+            return object.getWorldTag();
         });
 
         /////////////////////

@@ -25,11 +25,11 @@ public class ChunkUnloadEntitiesScriptEvent extends BukkitScriptEvent implements
     // @Switch entity_type:<type-matcher> to only fire in the chunk contains an entity that matches the given entity matcher.
     // @Switch include_empty:<true/false> defaults to false, set to 'true' to include chunks loading an empty set of entities.
     //
-    // @Triggers when a chunk unloads in its entities.
+    // @Triggers when a chunk unloads in its entities. Note that this is basically a notification - it's already too late to change entity data.
     //
     // @Context
     // <context.chunk> returns the unloading chunk.
-    // <context.entities> returns a ListTag of all entities to be unloaded.
+    // <context.entities> returns a ListTag of all entities being unloaded.
     //
     // -->
 
