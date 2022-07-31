@@ -25,6 +25,7 @@ public class DenizenCommandHandler {
 
     public static final String discordLink = "https://discord.gg/Q6pZGSR";
     public static final String websiteLink = "https://denizenscript.com";
+    public static final String guideLink = "https://guide.denizenscript.com/";
 
     public DenizenCommandHandler() {
     }
@@ -340,7 +341,7 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTES, CONFIG, SCRIPTS");
         Messaging.send(sender, "<b>Example: /denizen reload saves");
         Messaging.send(sender, "<f>Use '-a' to reload all parts at once.");
-        Messaging.send(sender, "<f>Note that you shouldn't use this command generally, instead use '/ex reload' - see also the Beginner's Guide @ https://guide.denizenscript.com/");
+        Messaging.send(sender, "<f>Note that you shouldn't use this command generally, instead use '/ex reload' - see also the Beginner's Guide at " + guideLink);
         Messaging.send(sender, "");
     }
 
