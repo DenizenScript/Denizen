@@ -141,15 +141,15 @@ public class DenizenCommandHandler {
             }
             Debug.showStackTraces = !Debug.showStackTraces;
             Messaging.sendInfo(sender, (Debug.showStackTraces ? "Denizen debugger is now showing caught " +
-                    "exception stack traces." : "Denizen debugger is now hiding caught stacktraces."));
+                    "exception stack traces." : "Denizen debugger is no longer showing caught stack traces."));
         }
         if (args.hasFlag('c')) {
             if (!Debug.showDebug) {
                 Debug.toggle();
             }
             Debug.showColor = !Debug.showColor;
-            Messaging.sendInfo(sender, (Debug.showColor ? "Denizen debugger is now showing color."
-                    : "Denizen debugger color has been disabled."));
+            Messaging.sendInfo(sender, (Debug.showColor ? "Denizen debugger will now show color."
+                    : "Denizen debugger color will no longer show color."));
         }
         if (args.hasFlag('o')) {
             if (!Debug.showDebug) {
@@ -157,7 +157,7 @@ public class DenizenCommandHandler {
             }
             CoreConfiguration.debugOverride = !CoreConfiguration.debugOverride;
             Messaging.sendInfo(sender, (CoreConfiguration.debugOverride ? "Denizen debugger is now overriding 'debug: false'."
-                    : "Denizen debugger override has been disabled."));
+                    : "Denizen debugger will no longer override 'debug: false'."));
         }
         if (args.hasFlag('b')) {
             if (!Debug.showDebug) {
@@ -182,7 +182,7 @@ public class DenizenCommandHandler {
             }
             CoreConfiguration.debugExtraInfo = !CoreConfiguration.debugExtraInfo;
             Messaging.sendInfo(sender, (CoreConfiguration.debugExtraInfo ? "Denizen debugger is now showing extra internal information." :
-                    "Denizen debugger extra-info disabled."));
+                    "Denizen debugger is no longer showing extra internal information."));
         }
         if (args.hasFlag('v')) {
             if (!Debug.showDebug) {
@@ -190,7 +190,7 @@ public class DenizenCommandHandler {
             }
             CoreConfiguration.debugVerbose = !CoreConfiguration.debugVerbose;
             Messaging.sendInfo(sender, (CoreConfiguration.debugVerbose ? "Denizen debugger is now verbose." :
-                    "Denizen debugger verbosity disabled."));
+                    "Denizen debugger is no longer verbose."));
         }
         if (args.hasFlag('f')) {
             if (!Debug.showDebug) {
@@ -198,7 +198,7 @@ public class DenizenCommandHandler {
             }
             CoreConfiguration.futureWarningsEnabled = !CoreConfiguration.futureWarningsEnabled;
             Messaging.sendInfo(sender, (CoreConfiguration.futureWarningsEnabled ? "Denizen debugger is now showing future warnings." :
-                    "Denizen debugger future-warnings disabled."));
+                    "Denizen debugger will no longer show future warnings."));
         }
         if (args.hasFlag('n')) {
             if (!Debug.showDebug) {
@@ -246,7 +246,7 @@ public class DenizenCommandHandler {
         }
         if (args.getFlags().isEmpty()) {
             Debug.toggle();
-            Messaging.sendInfo(sender, "Denizen debugger is now: " + (Debug.showDebug ? "<a>ENABLED" : "<c>DISABLED"));
+            Messaging.sendInfo(sender, "Denizen debugger is now: " + (Debug.showDebug ? "<a>ENABLED" : "<c>DISABLED") + "<f>.");
         }
 
     }
@@ -256,7 +256,7 @@ public class DenizenCommandHandler {
      */
     @Command(
             aliases = {"denizen"}, usage = "do_nothing",
-            desc = "Does nothing, for better server command handling", modifiers = {"do_nothing"},
+            desc = "Does nothing, for better server command handling.", modifiers = {"do_nothing"},
             min = 1, max = 3, permission = "denizen.basic")
     public void do_nothing(CommandContext args, CommandSender sender) throws CommandException {
         // Do nothing
@@ -283,7 +283,7 @@ public class DenizenCommandHandler {
      */
     @Command(
             aliases = {"denizen"}, usage = "save",
-            desc = "Saves the current Denizen save data to file as needed.", modifiers = {"save"},
+            desc = "Saves the current Denizen save data to disk as needed.", modifiers = {"save"},
             min = 1, max = 3, permission = "denizen.basic")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
         DenizenCore.saveAll();
@@ -333,7 +333,7 @@ public class DenizenCommandHandler {
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
                 }
-                Messaging.sendError(sender, "'/denizen reload scripts' is the old way of doing things ... use '/ex reload' instead!");
+                Messaging.sendError(sender, "'/denizen reload scripts' is deprecated, use '/ex reload' instead.");
                 return;
             }
         }
@@ -350,7 +350,7 @@ public class DenizenCommandHandler {
      */
     @Command(
             aliases = {"denizen"}, usage = "scripts (--type assignment|task|...) (--filter string)",
-            desc = "Lists currently loaded dScripts.", modifiers = {"scripts"},
+            desc = "Lists the currently loaded scripts.", modifiers = {"scripts"},
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender) throws CommandException {
         String type = null;
@@ -388,7 +388,7 @@ public class DenizenCommandHandler {
             }
         }
         if (!paginator.sendPage(sender, args.getInteger(1, 1))) {
-            throw new CommandException("The page " + args.getInteger(1, 1) + " does not exist.");
+            throw new CommandException("The page " + args.getInteger(1, 1) + " does not exist!");
         }
     }
 }
