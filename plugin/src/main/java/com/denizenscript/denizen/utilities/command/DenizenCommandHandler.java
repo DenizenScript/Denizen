@@ -149,7 +149,7 @@ public class DenizenCommandHandler {
             }
             Debug.showColor = !Debug.showColor;
             Messaging.sendInfo(sender, (Debug.showColor ? "Denizen debugger will now show color."
-                    : "Denizen debugger color will no longer show color."));
+                    : "Denizen debugger will no longer show color."));
         }
         if (args.hasFlag('o')) {
             if (!Debug.showDebug) {
