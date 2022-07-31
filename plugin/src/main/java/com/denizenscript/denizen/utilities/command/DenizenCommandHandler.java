@@ -23,6 +23,9 @@ import java.util.Set;
 
 public class DenizenCommandHandler {
 
+    public static final String discordLink = "https://discord.gg/Q6pZGSR";
+    public static final String websiteLink = "https://denizenscript.com";
+
     public DenizenCommandHandler() {
     }
 
@@ -266,11 +269,11 @@ public class DenizenCommandHandler {
             desc = "Shows the currently loaded version of Denizen.", modifiers = {"version"},
             min = 1, max = 3, permission = "denizen.basic")
     public void version(CommandContext args, CommandSender sender) throws CommandException {
-        Messaging.sendInfo(sender, "<2>DENIZEN<7>: scriptable Minecraft!"); // TODO: "It's Scriptable!"?
+        Messaging.sendInfo(sender, "<2>DENIZEN<7>: A high-power scripting engine for Spigot!");
         Messaging.send(sender, "");
         Messaging.send(sender, "<7>by: <f>the DenizenScript team, with help from many skilled contributors!");
-        Messaging.send(sender, "<7>chat with us at: <f> https://discord.gg/Q6pZGSR");
-        Messaging.send(sender, "<7>or learn more at: <f> https://denizenscript.com");
+        Messaging.send(sender, "<7>chat with us at: <f> " + discordLink);
+        Messaging.send(sender, "<7>or learn more at: <f> " + websiteLink);
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION);
     }
 
