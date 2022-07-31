@@ -250,7 +250,13 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(VehicleMoveScriptEvent.class);
 
         // World events
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            ScriptEvent.registerScriptEvent(ChunkLoadEntitiesScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(ChunkLoadScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            ScriptEvent.registerScriptEvent(ChunkUnloadEntitiesScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(ChunkUnloadScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
             ScriptEvent.registerScriptEvent(GenericGameEventScriptEvent.class);
