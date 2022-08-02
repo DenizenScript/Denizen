@@ -1323,11 +1323,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (object.entityScript == null) {
                 return null;
             }
-            ScriptTag tag = new ScriptTag(object.entityScript);
-            if (tag.isValid()) {
-                return tag;
-            }
-            return null;
+            return ScriptTag.valueOf(object.entityScript, CoreUtilities.noDebugContext);
         });
 
         // <--[tag]
@@ -1353,7 +1349,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerSpawnedOnlyTag(ObjectTag.class, "custom_id", (attribute, object) -> {
             BukkitImplDeprecations.entityCustomIdTag.warn(attribute.context);
             if (CustomNBT.hasCustomNBT(object.getLivingEntity(), "denizen-script-id")) {
-                return new ScriptTag(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"));
+                return ScriptTag.valueOf(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"), CoreUtilities.noDebugContext);
             }
             else {
                 return new ElementTag(object.getBukkitEntity().getType().name());
