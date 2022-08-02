@@ -70,7 +70,7 @@ public class InventoryHolder implements Property {
         PropertyParser.<InventoryHolder, ScriptTag>registerTag(ScriptTag.class, "script", (attribute, object) -> {
             ObjectTag holder = object.inventory.getIdHolder();
             if (holder instanceof ScriptTag) {
-                return (ScriptTag) holder;
+                return ((ScriptTag) holder).validate();
             }
             return null;
         });
