@@ -181,8 +181,8 @@ public class ClickableCommand extends BracedCommand {
                     scriptEntry.addObject("path", new ElementTag(scriptName.substring(dotIndex + 1)));
                     scriptName = scriptName.substring(0, dotIndex);
                 }
-                ScriptTag script = new ScriptTag(scriptName);
-                if (!script.isValid()) {
+                ScriptTag script = ScriptTag.valueOf(scriptName, CoreUtilities.noDebugContext);
+                if (script == null) {
                     arg.reportUnhandled();
                 }
                 else {
