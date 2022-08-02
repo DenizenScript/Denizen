@@ -242,7 +242,7 @@ public class NPCCommandHandler {
                 }
             }
             else {
-                Messaging.sendError(sender, npc.getName() + " was already not assigned to " + script + ".");
+                Messaging.sendError(sender, npc.getName() + "<f> was already not assigned to " + script + ".");
             }
             return;
         }
