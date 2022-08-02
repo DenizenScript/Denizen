@@ -160,7 +160,7 @@ public class NPCCommandHandler {
         }
         else if (args.hasValueFlag("remove")) {
             trait.removeConstant(args.getFlag("remove"));
-            Messaging.sendInfo(sender, "Removed constant '" + args.getFlag("remove") + "' from " + npc.getName() + ".");
+            Messaging.sendInfo(sender, "Removed constant '" + args.getFlag("remove") + "' from " + npc.getName() + "<f>.");
             return;
         }
         Messaging.send(sender, "");
@@ -366,7 +366,7 @@ public class NPCCommandHandler {
                     return;
                 }
             }
-            Messaging.sendError(sender, "NPC " + npc.getName() + " does not have the anchor '" + args.getFlag("anchor") + "'!");
+            Messaging.sendError(sender, "NPC " + npc.getName() + "<f> does not have the anchor '" + args.getFlag("anchor") + "'!");
             return;
         }
         Location targetLocation;
@@ -482,7 +482,7 @@ public class NPCCommandHandler {
                     return;
                 }
             }
-            Messaging.sendError(sender, "NPC " + npc.getName() + " does not have the anchor '" + args.getFlag("anchor") + "'!");
+            Messaging.sendError(sender, "NPC " + npc.getName() + "<f> does not have the anchor '" + args.getFlag("anchor") + "'!");
             return;
         }
         else {
@@ -567,7 +567,7 @@ public class NPCCommandHandler {
                     return;
                 }
             } else {
-                Messaging.sendError(sender, "NPC " + npc.getName() + " does not have the anchor '" + args.getFlag("anchor") + "'!");
+                Messaging.sendError(sender, "NPC " + npc.getName() + "<f> does not have the anchor '" + args.getFlag("anchor") + "'!");
                 return;
             }
         }
