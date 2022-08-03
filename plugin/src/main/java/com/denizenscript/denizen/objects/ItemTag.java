@@ -485,6 +485,11 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
+    public Object getJavaObject() {
+        return getItemStack();
+    }
+
+    @Override
     public boolean isUnique() {
         return false;
     }

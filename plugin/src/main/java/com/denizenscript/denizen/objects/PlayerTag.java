@@ -608,6 +608,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
+    public Object getJavaObject() {
+        return getOfflinePlayer();
+    }
+
+    @Override
     public int hashCode() {
         return getUUID().hashCode();
     }

@@ -302,6 +302,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return identify();
     }
 
+    @Override
+    public Object getJavaObject() {
+        return getCitizen();
+    }
+
     public boolean isSpawned() {
         return npc.isSpawned();
     }

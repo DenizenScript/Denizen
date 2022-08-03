@@ -239,6 +239,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
+    public Object getJavaObject() {
+        return getWorld();
+    }
+
+    @Override
     public ObjectTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;

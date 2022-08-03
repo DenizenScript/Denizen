@@ -240,6 +240,11 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         return identify();
     }
 
+    @Override
+    public Object getJavaObject() {
+        return getChunk();
+    }
+
     public boolean isLoaded() {
         if (getBukkitWorld() == null) {
             return false;

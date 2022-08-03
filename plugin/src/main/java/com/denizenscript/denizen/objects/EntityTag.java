@@ -1199,6 +1199,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
+    public Object getJavaObject() {
+        return entity == null ? getBukkitEntityType() : entity;
+    }
+
+    @Override
     public boolean isUnique() {
         return entity != null || uuid != null || isFake || npc != null;
     }

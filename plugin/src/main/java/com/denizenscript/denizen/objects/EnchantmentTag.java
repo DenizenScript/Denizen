@@ -133,6 +133,11 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     }
 
     @Override
+    public Object getJavaObject() {
+        return enchantment;
+    }
+
+    @Override
     public EnchantmentTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;

@@ -232,6 +232,11 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
+    public Object getJavaObject() {
+        return modernData == null ? material : modernData;
+    }
+
+    @Override
     public ObjectTag setPrefix(String prefix) {
         if (prefix != null) {
             this.prefix = prefix;

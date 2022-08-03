@@ -130,6 +130,11 @@ public class TradeTag implements ObjectTag, Adjustable {
         return identify();
     }
 
+    @Override
+    public Object getJavaObject() {
+        return recipe;
+    }
+
     public static void registerTags() {
         PropertyParser.registerPropertyTagHandlers(TradeTag.class, tagProcessor);
     }

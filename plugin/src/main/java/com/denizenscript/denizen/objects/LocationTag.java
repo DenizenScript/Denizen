@@ -919,6 +919,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return identify();
     }
 
+    @Override
+    public Object getJavaObject() {
+        return clone();
+    }
+
     public static void registerTags() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
