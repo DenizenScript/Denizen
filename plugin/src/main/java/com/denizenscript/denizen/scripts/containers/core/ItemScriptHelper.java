@@ -55,7 +55,7 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.clearDenizenRecipes();
     }
 
-    public String getIdFor(ItemScriptContainer container, String type, int id) {
+    public static String getIdFor(ItemScriptContainer container, String type, int id) {
         String basicId = type + "_" + Utilities.cleanseNamespaceID(container.getName()) + "_" + id;
         if (!recipeIdToItemScript.containsKey(basicId)) {
             recipeIdToItemScript.put("denizen:" + basicId, container);
@@ -91,7 +91,7 @@ public class ItemScriptHelper implements Listener {
         return output;
     }
 
-    public ItemStack[] textToItemArray(ItemScriptContainer container, String text, boolean exact) {
+    public static ItemStack[] textToItemArray(ItemScriptContainer container, String text, boolean exact) {
         if (CoreUtilities.toLowerCase(text).equals("air")) {
             return new ItemStack[0];
         }
@@ -132,7 +132,7 @@ public class ItemScriptHelper implements Listener {
         return outputItems.toArray(new ItemStack[0]);
     }
 
-    public void registerShapedRecipe(ItemScriptContainer container, ItemStack item, List<String> recipeList, String internalId, String group) {
+    public static void registerShapedRecipe(ItemScriptContainer container, ItemStack item, List<String> recipeList, String internalId, String group) {
         for (int n = 0; n < recipeList.size(); n++) {
             recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(null, null, new ScriptTag(container))));
         }
@@ -185,7 +185,7 @@ public class ItemScriptHelper implements Listener {
         Bukkit.addRecipe(recipe);
     }
 
-    public void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
+    public static void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
         TagContext context = new BukkitTagContext(null, null, new ScriptTag(container));
         String list = TagManager.tag(shapelessString, context);
         List<ItemStack[]> ingredients = new ArrayList<>();
@@ -210,7 +210,7 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerShapelessRecipe(internalId, group, item, ingredients, bools);
     }
 
-    public void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
+    public static void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
         boolean exact = true;
         if (furnaceItemString.startsWith("material:")) {
             exact = false;
@@ -223,7 +223,7 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
     }
 
-    public void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {
+    public static void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {
         boolean exact = true;
         if (inputItemString.startsWith("material:")) {
             exact = false;
@@ -236,7 +236,7 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerStonecuttingRecipe(internalId, group, item, items, exact);
     }
 
-    public void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String baseItemString, String upgradeItemString, String internalId, String retain) {
+    public static void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String baseItemString, String upgradeItemString, String internalId, String retain) {
         boolean baseExact = true;
         if (baseItemString.startsWith("material:")) {
             baseExact = false;
@@ -259,7 +259,7 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
     }
 
-    public void rebuildRecipes() {
+    public static void rebuildRecipes() {
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
                 if (container.contains("recipes", Map.class)) {

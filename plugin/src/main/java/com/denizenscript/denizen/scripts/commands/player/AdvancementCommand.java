@@ -64,6 +64,8 @@ public class AdvancementCommand extends AbstractCommand {
     //
     // WARNING: Failure to re-create advancements on every server start may result in loss of data - use <@link event server prestart>.
     //
+    // If you mess with datapacks, you will also need to re-create advancements during <@link event server resources reloaded>
+    //
     // @Tags
     // <PlayerTag.has_advancement[<advancement>]>
     // <PlayerTag.advancements>

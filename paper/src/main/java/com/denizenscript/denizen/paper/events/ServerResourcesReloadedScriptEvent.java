@@ -19,7 +19,7 @@ public class ServerResourcesReloadedScriptEvent extends BukkitScriptEvent implem
     //
     // @Switch cause:<cause> to only process the event if the cause of the resource reload matches the specified cause.
     //
-    // @Triggers when vanilla resources (such as datapacks) are reloaded (by vanilla commands or by plugins).
+    // @Triggers when vanilla resources (such as datapacks) are reloaded (by vanilla commands or by plugins). If you mess with datapacks often, it may be helpful to run <@link command reload> in this event.
     //
     // @Context
     // <context.cause> Returns the cause of the resource reload. Refer to <@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/event/server/ServerResourcesReloadedEvent.Cause.html>
