@@ -267,6 +267,19 @@ Reflection:
     Allow reading fields: true
     # Whether to allow scripts to reflect into core object methods like "toString" or "equals". This is usually safe, but might be abusable in certain edge edges, if for example some object somewhere improperly handles the "equals" method to execute logic or similar.
     Allow core methods: true
+    #
+    # ==== WARNING ====
+    # If a scripter or script's documentation has told you to enable access to reflection methods in your config, that script should be scrutinized very carefully.
+    # Make sure either you know exactly what it's going to do, or you very much trust whoever gave you it.
+    # These tools are very powerful and dangerous.
+    # =================
+    #
+    # Whether to allow the 'reflectionset' command. This command is highly abusable and should be left disabled.
+    Allow set command: false
+    # Whether the 'reflectionset' command may set to 'private' fields. This is very likely to be dangerous if enabled.
+    Allow set private fields: false
+    # Whether the 'reflectionset' command may set to 'final' fields. This is very likely to be dangerous if enabled.
+    Allow set final fields: false
 
 Saves:
     # How long (in seconds) before the offline player flag cache times out.

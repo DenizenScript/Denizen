@@ -52,6 +52,9 @@ public class Settings {
         CoreConfiguration.listFlagsAllowed = config.getBoolean("Tags.List flags.I know what im doing and need this", false);
         CoreConfiguration.allowReflectionFieldReads = config.getBoolean("Reflection.Allow reading fields", true);
         CoreConfiguration.allowReflectedCoreMethods = config.getBoolean("Reflection.Allow core methods", true);
+        CoreConfiguration.allowReflectionSet = config.getBoolean("Reflection.Allow set command", false);
+        CoreConfiguration.allowReflectionSetPrivate = config.getBoolean("Reflection.Allow set private fields", false);
+        CoreConfiguration.allowReflectionSetFinal = config.getBoolean("Reflection.Allow set final fields", false);
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;
