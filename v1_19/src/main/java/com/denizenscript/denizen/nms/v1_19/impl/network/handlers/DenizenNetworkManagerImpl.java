@@ -1088,6 +1088,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             boolean overlay = false;
             if (packet instanceof ClientboundSystemChatPacket) {
                 overlay = ((ClientboundSystemChatPacket) packet).overlay();
+                if (((ClientboundSystemChatPacket) packet).content() == null) { // Makes no sense but this can be null in weird edge cases
+                    return false;
+                }
                 packetHelper = new PacketOutChatImpl((ClientboundSystemChatPacket) packet);
             }
             else if (packet instanceof ClientboundPlayerChatPacket) {
