@@ -74,6 +74,8 @@ public class ReflectionMappingsInfo {
     public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "G";
     public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "I";
     public static String ServerGamePacketListenerImpl_connection = "b";
+    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "C";
+    public static String ServerGamePacketListenerImpl_awaitingTeleport = "D";
 
     // net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
     public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "j";

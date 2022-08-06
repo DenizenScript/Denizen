@@ -2,6 +2,9 @@ package com.denizenscript.denizen.nms.v1_19.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerSendPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
@@ -12,10 +15,12 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.lang.reflect.Field;
 import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
@@ -119,10 +124,37 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         oldListener.send(packet, listener);
     }
 
+    public static Field AWAITING_POS_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingPositionFromClient, Vec3.class);
+    public static Field AWAITING_TELEPORT_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingTeleport, int.class);
+
+    public void debugPacketOutput(Packet<ServerGamePacketListener> packet) {
+        try {
+            if (packet instanceof ServerboundMovePlayerPacket) {
+                ServerboundMovePlayerPacket movePacket = (ServerboundMovePlayerPacket) packet;
+                DenizenNetworkManagerImpl.doPacketOutput("Packet ServerboundMovePlayerPacket sent from " + player.getScoreboardName() + " with XYZ="
+                        + movePacket.x + ", " + movePacket.y + ", " + movePacket.z + ", yRot=" + movePacket.yRot + ", xRot=" + movePacket.xRot
+                        + ", onGround=" + movePacket.isOnGround() + ", hasPos=" + movePacket.hasPos + ", hasRot=" + movePacket.hasRot);
+            }
+            else if (packet instanceof ServerboundAcceptTeleportationPacket) {
+                Vec3 awaitPos = (Vec3) AWAITING_POS_FIELD.get(oldListener);
+                int awaitTeleportId = AWAITING_TELEPORT_FIELD.getInt(oldListener);
+                ServerboundAcceptTeleportationPacket acceptPacket = (ServerboundAcceptTeleportationPacket) packet;
+                DenizenNetworkManagerImpl.doPacketOutput("Packet ServerboundAcceptTeleportationPacket sent from " + player.getScoreboardName()
+                        + " with ID=" + acceptPacket.getId() + ", awaitingTeleport=" + awaitTeleportId + ", awaitPos=" + awaitPos);
+            }
+            else {
+                DenizenNetworkManagerImpl.doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getScoreboardName());
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
     public boolean handlePacketIn(Packet<ServerGamePacketListener> packet) {
         denizenNetworkManager.packetsReceived++;
         if (NMSHandler.debugPackets) {
-            DenizenNetworkManagerImpl.doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getScoreboardName());
+            debugPacketOutput(packet);
         }
         if (PlayerSendPacketScriptEvent.enabled) {
             if (PlayerSendPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {

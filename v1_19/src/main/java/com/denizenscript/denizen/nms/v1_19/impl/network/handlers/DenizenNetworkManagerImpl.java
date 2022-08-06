@@ -23,6 +23,7 @@ import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -40,7 +41,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -100,7 +100,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
-        this.packetListener = new DenizenPacketListenerImpl(this, entityPlayer);
+        this.packetListener = (DenizenPacketListenerImpl) NetworkInterceptCodeGen.generateAppropriateInterceptor(this, entityPlayer, DenizenPacketListenerImpl.class, AbstractListenerPlayInImpl.class, ServerGamePacketListenerImpl.class);
         oldManager.setListener(packetListener);
         this.player = this.packetListener.player;
     }
