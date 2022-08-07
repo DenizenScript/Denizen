@@ -1,32 +1,32 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
-import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeResult implements Property {
+public class TradeDemand implements Property {
 
     public static boolean describes(ObjectTag recipe) {
         return recipe instanceof TradeTag;
     }
 
-    public static TradeResult getFrom(ObjectTag recipe) {
+    public static TradeDemand getFrom(ObjectTag recipe) {
         if (!describes(recipe)) {
             return null;
         }
-        return new TradeResult((TradeTag) recipe);
+        return new TradeDemand((TradeTag) recipe);
     }
 
     public static final String[] handledMechs = new String[] {
-            "result"
+            "demand"
     };
 
     private TradeTag recipe;
 
-    public TradeResult(TradeTag recipe) {
+    public TradeDemand(TradeTag recipe) {
         this.recipe = recipe;
     }
 
@@ -34,24 +34,24 @@ public class TradeResult implements Property {
         if (recipe.getRecipe() == null) {
             return null;
         }
-        return (new ItemTag(recipe.getRecipe().getResult())).identify();
+        return String.valueOf(recipe.getRecipe().getDemand());
     }
 
     public String getPropertyId() {
-        return "result";
+        return "demand";
     }
 
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <TradeTag.result>
-        // @returns ItemTag
-        // @mechanism TradeTag.result
+        // @attribute <TradeTag.demand>
+        // @returns ElementTag(Number)
+        // @mechanism TradeTag.demand
         // @description
-        // Returns what the trade will give the player.
+        // Returns the demand level of the trade.
         // -->
-        PropertyParser.<TradeResult, ItemTag>registerTag(ItemTag.class, "result", (attribute, recipe) -> {
-            return new ItemTag(recipe.recipe.getRecipe().getResult());
+        PropertyParser.<TradeDemand, ElementTag>registerTag(ElementTag.class, "demand", (attribute, recipe) -> {
+            return new ElementTag(recipe.recipe.getRecipe().getDemand());
         });
     }
 
@@ -59,15 +59,15 @@ public class TradeResult implements Property {
 
         // <--[mechanism]
         // @object TradeTag
-        // @name result
-        // @input ItemTag
+        // @name demand
+        // @input ElementTag(Number)
         // @description
-        // Sets what the trade will give the player.
+        // Sets the demand level of the trade.
         // @tags
-        // <TradeTag.result>
+        // <TradeTag.demand>
         // -->
-        if (mechanism.matches("result") && mechanism.requireObject(ItemTag.class)) {
-            recipe.setRecipe(TradeTag.duplicateRecipe(mechanism.valueAsType(ItemTag.class).getItemStack(), recipe.getRecipe()));
+        if (mechanism.matches("demand") && mechanism.requireInteger()) {
+            recipe.getRecipe().setDemand(mechanism.getValue().asInt());
         }
     }
 }

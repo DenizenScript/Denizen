@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -73,10 +75,25 @@ public class TradeTag implements ObjectTag, Adjustable {
         this.recipe = recipe;
     }
 
+    public static MerchantRecipe duplicateRecipe(MerchantRecipe oldRecipe) {
+        return duplicateRecipe(oldRecipe.getResult(), oldRecipe);
+    }
+
+    public static MerchantRecipe duplicateRecipe(ItemStack result, MerchantRecipe oldRecipe) {
+        MerchantRecipe newRecipe;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            newRecipe = new MerchantRecipe(result, oldRecipe.getUses(), oldRecipe.getMaxUses(), oldRecipe.hasExperienceReward(), oldRecipe.getVillagerExperience(), oldRecipe.getPriceMultiplier(), oldRecipe.getDemand(), oldRecipe.getSpecialPrice());
+        }
+        else {
+            newRecipe = new MerchantRecipe(result, oldRecipe.getUses(), oldRecipe.getMaxUses(), oldRecipe.hasExperienceReward(), oldRecipe.getVillagerExperience(), oldRecipe.getPriceMultiplier());
+        }
+        newRecipe.setIngredients(oldRecipe.getIngredients());
+        return newRecipe;
+    }
+
     @Override
     public TradeTag duplicate() {
-        MerchantRecipe result = new MerchantRecipe(recipe.getResult(), recipe.getUses(), recipe.getMaxUses(), recipe.hasExperienceReward(), recipe.getVillagerExperience(), recipe.getPriceMultiplier());
-        result.setIngredients(recipe.getIngredients());
+        MerchantRecipe result = duplicateRecipe(recipe);
         return new TradeTag(result);
     }
 

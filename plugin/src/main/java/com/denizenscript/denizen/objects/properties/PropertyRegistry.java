@@ -205,11 +205,17 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
 
         // register core TradeTag properties
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            PropertyParser.registerProperty(TradeDemand.class, TradeTag.class);
+        }
         PropertyParser.registerProperty(TradeHasXp.class, TradeTag.class);
         PropertyParser.registerProperty(TradeInputs.class, TradeTag.class);
         PropertyParser.registerProperty(TradeMaxUses.class, TradeTag.class);
         PropertyParser.registerProperty(TradePriceMultiplier.class, TradeTag.class);
         PropertyParser.registerProperty(TradeResult.class, TradeTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            PropertyParser.registerProperty(TradeSpecialPrice.class, TradeTag.class);
+        }
         PropertyParser.registerProperty(TradeUses.class, TradeTag.class);
         PropertyParser.registerProperty(TradeVillagerXP.class, TradeTag.class);
     }
