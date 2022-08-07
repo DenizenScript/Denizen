@@ -58,7 +58,7 @@ public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        if (path.switches.containsKey("item") && !new ItemTag(event.getPlayer().getInventory().getItem(event.getNewSlot())).tryAdvancedMatcher(path.switches.get("item"))) {
+        if (!path.tryObjectSwitch("item", new ItemTag(event.getPlayer().getInventory().getItem(event.getNewSlot())))) {
             return false;
         }
         return super.matches(path);

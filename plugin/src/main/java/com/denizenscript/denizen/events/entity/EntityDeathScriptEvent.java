@@ -86,7 +86,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
-        if (path.switches.containsKey("by") && (damager == null || !damager.tryAdvancedMatcher(path.switches.get("by")))) {
+        if (!path.tryObjectSwitch("by", damager)) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "cause", cause == null ? null : cause.asString())) {

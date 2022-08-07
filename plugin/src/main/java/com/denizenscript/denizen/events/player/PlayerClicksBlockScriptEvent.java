@@ -143,7 +143,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, location != null ? location : event.getPlayer().getLocation())) {
             return false;
         }
-        if (path.switches.containsKey("type") && !blockMaterial.tryAdvancedMatcher(path.switches.get("type"))) {
+        if (!path.tryObjectSwitch("type", blockMaterial)) {
             return false;
         }
         return super.matches(path);

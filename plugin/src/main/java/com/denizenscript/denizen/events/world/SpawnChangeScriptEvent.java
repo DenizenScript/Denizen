@@ -38,7 +38,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.switches.containsKey("world") && !new WorldTag(event.getWorld()).tryAdvancedMatcher(path.switches.get("world"))) {
+        if (!path.tryObjectSwitch("world", new WorldTag(event.getWorld()))) {
             return false;
         }
         return super.matches(path);

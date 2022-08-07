@@ -78,7 +78,7 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
         if (!hitEntity.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
             return false;
         }
-        if (path.switches.containsKey("shooter") && (shooter == null || !shooter.tryAdvancedMatcher(path.switches.get("shooter")))) {
+        if (!path.tryObjectSwitch("shooter", shooter)) {
             return false;
         }
         if (!runInCheck(path, location)) {

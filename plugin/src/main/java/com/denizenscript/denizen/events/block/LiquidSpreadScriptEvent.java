@@ -71,7 +71,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
                 return false;
             }
         }
-        if (path.switches.containsKey("type") && !material.tryAdvancedMatcher(path.switches.get("type"))) {
+        if (!path.tryObjectSwitch("type", material)) {
             return false;
         }
         if (!runInCheck(path, location) && !runInCheck(path, destination)) {

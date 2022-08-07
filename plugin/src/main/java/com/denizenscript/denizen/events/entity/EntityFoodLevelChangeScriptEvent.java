@@ -60,7 +60,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
         if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
-        if (path.switches.containsKey("item") && !item.tryAdvancedMatcher(path.switches.get("item"))) {
+        if (!path.tryObjectSwitch("item", item)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

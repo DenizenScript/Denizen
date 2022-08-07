@@ -56,7 +56,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        if (path.switches.containsKey("result") && !new ItemTag(event.getTrade().getResult()).tryAdvancedMatcher(path.switches.get("result"))) {
+        if (!path.tryObjectSwitch("result", new ItemTag(event.getTrade().getResult()))) {
             return false;
         }
         return super.matches(path);

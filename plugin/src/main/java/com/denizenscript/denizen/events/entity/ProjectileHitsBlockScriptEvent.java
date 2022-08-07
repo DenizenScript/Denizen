@@ -119,7 +119,7 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
         if (!pTest.isEmpty() && !pTest.equals("projectile") && !projectile.tryAdvancedMatcher(pTest)) {
             return false;
         }
-        if (path.switches.containsKey("with") && !projectile.tryAdvancedMatcher(path.switches.get("with"))) {
+        if (!path.tryObjectSwitch("with", projectile)) {
             return false;
         }
         if (!material.tryAdvancedMatcher(path.eventArgLowerAt(2))) {

@@ -63,8 +63,7 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, event.getLoc(), "to")) {
             return false;
         }
-        String at = path.switches.get("at");
-        if (at != null && (target == null || !target.tryAdvancedMatcher(at))) {
+        if (!path.tryObjectSwitch("at", target)) {
             return false;
         }
         return super.matches(path);

@@ -56,10 +56,10 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.switches.containsKey("main") && !new ItemTag(event.getMainHandItem()).tryAdvancedMatcher(path.switches.get("main"))) {
+        if (!path.tryObjectSwitch("main", new ItemTag(event.getMainHandItem()))) {
             return false;
         }
-        if (path.switches.containsKey("offhand") && !new ItemTag(event.getOffHandItem()).tryAdvancedMatcher(path.switches.get("offhand"))) {
+        if (!path.tryObjectSwitch("offhand", new ItemTag(event.getOffHandItem()))) {
             return false;
         }
         return super.matches(path);

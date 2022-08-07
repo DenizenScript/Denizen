@@ -63,10 +63,10 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         if (!runInCheck(path, to) && !runInCheck(path, from)) {
             return false;
         }
-        if (path.switches.containsKey("from") && !from.tryAdvancedMatcher(path.switches.get("from"))) {
+        if (!path.tryObjectSwitch("from", from)) {
             return false;
         }
-        if (path.switches.containsKey("to") && (to == null || !to.tryAdvancedMatcher(path.switches.get("to")))) {
+        if (!path.tryObjectSwitch("to", to)) {
             return false;
         }
         return super.matches(path);

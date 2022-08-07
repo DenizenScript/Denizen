@@ -41,6 +41,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // @Location true
     //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
+    // @Switch type:<entity> to only run if the entity damaged matches the entity input.
     //
     // @Cancellable true
     //
@@ -71,7 +72,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         registerCouldMatcher("<entity> damaged (by <'cause'>)");
         registerCouldMatcher("<entity> damaged by <entity>");
         registerCouldMatcher("<entity> damages <entity>");
-        registerSwitches("with");
+        registerSwitches("with", "type");
     }
 
     public static EntityDamagedScriptEvent instance;
@@ -123,7 +124,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (!entity.tryAdvancedMatcher(target)) {
+        if (!entity.tryAdvancedMatcher(target) || !path.tryObjectSwitch("type", entity)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

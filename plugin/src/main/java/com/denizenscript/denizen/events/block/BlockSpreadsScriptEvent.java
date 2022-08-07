@@ -66,7 +66,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (path.switches.containsKey("type") && !material.tryAdvancedMatcher(path.switches.get("type"))) {
+        if (!path.tryObjectSwitch("type", material)) {
             return false;
         }
         return super.matches(path);

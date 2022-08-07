@@ -63,8 +63,7 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
         if (!runWithCheck(path, firework)) {
             return false;
         }
-        if (path.switches.containsKey("elytra")
-                && !new ItemTag(player.getPlayerEntity().getEquipment().getChestplate()).tryAdvancedMatcher(path.switches.get("elytra"))) {
+        if (!path.tryObjectSwitch("elytra", new ItemTag(player.getPlayerEntity().getEquipment().getChestplate()))) {
             return false;
         }
         return super.matches(path);
