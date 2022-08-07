@@ -65,6 +65,24 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @NPC when the damager or damaged entity is an NPC. Cannot be both.
     //
+    // @Example
+    // on entity damaged:
+    // - announce "A <context.entity.entity_type> took damage!"
+    //
+    // @Example
+    // on player damages cow:
+    // - announce "<player.name> damaged a cow at <context.entity.location.simple>"
+    //
+    // @Example
+    // on player damages cow|sheep|chicken with:*_hoe:
+    // - narrate "Whoa there farmer, you almost hurt your farm animals with that farmin' tool!"
+    // - determine cancelled
+    //
+    // @Example
+    // # This example disambiguates this event from the "vehicle damaged" event for specific vehicle entity types.
+    // on entity damaged type:minecart:
+    // - announce "A minecart took non-vehicular damage!"
+    //
     // -->
 
     public EntityDamagedScriptEvent() {

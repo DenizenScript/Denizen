@@ -14,11 +14,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // vehicle damaged
     // <vehicle> damaged
-    // entity damages vehicle
-    // <entity> damages vehicle
-    // entity damages <vehicle>
     // <entity> damages <vehicle>
     //
     // @Group Vehicle
@@ -26,6 +22,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // @Regex ^on [^\s]+ damages [^\s]+$
     //
     // @Location true
+    //
+    // @Switch type:<vehicle> to only run if the vehicle damaged matches the EntityTag matcher input.
     //
     // @Cancellable true
     //
@@ -43,10 +41,25 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     //
     // @NPC when the entity that damaged the vehicle is an NPC.
     //
+    // @Example
+    // on vehicle damaged:
+    // - announce "A <context.vehicle.entity_type> took a hit!"
+    //
+    // @Example
+    // # This example disambiguates this event from the "entity damaged" event for specific vehicle entity types.
+    // on vehicle damaged type:minecart:
+    // - announce "<context.vehicle.entity_type> took vehicular damage!"
+    //
+    // @Example
+    // on player damages minecart:
+    // - announce "<player.name> caused damage to a minecart!"
     // -->
 
     public VehicleDamagedScriptEvent() {
         instance = this;
+        registerCouldMatcher("<vehicle> damaged");
+        registerCouldMatcher("<entity> damages <vehicle>");
+        registerSwitches("type");
     }
 
     public static VehicleDamagedScriptEvent instance;
@@ -56,13 +69,6 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        String cmd = path.eventArgAt(1);
-        if (!cmd.equals("damaged") && !cmd.equals("damages")) {
-            return false;
-        }
-        if (path.eventArgLowerAt(2).equals("by")) {
-            return false;
-        }
         if (!exactMatchesVehicle(path.eventArgLowerAt(0)) && !exactMatchesVehicle(path.eventArgLowerAt(2))) {
             return false;
         }
