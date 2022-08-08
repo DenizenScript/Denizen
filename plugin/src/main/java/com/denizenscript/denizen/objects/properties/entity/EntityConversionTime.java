@@ -77,7 +77,7 @@ public class EntityConversionTime implements Property {
         // @returns ElementTag(Boolean)
         // @group properties
         // @description
-        // Returns whether an entity is currently underoing a conversion process. This can be:
+        // Returns whether an entity is currently undergoing a conversion process. This can be:
         // A zombie villager being cured,
         // A zombie becoming a drowned (See also <@link tag EntityTag.in_water_duration>),
         // A husk becoming a zombie, or
