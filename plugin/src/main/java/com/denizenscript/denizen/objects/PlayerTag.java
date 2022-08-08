@@ -208,11 +208,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     /////////////////
 
     public PlayerTag(OfflinePlayer player) {
-        offlinePlayer = player;
+        this(player.getUniqueId());
     }
 
     public PlayerTag(UUID uuid) {
-        offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        this.uuid = uuid;
     }
 
     public PlayerTag(Player player) {
@@ -236,28 +236,22 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Nothing to do.
     }
 
-    OfflinePlayer offlinePlayer;
+    UUID uuid;
 
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;
     }
 
     public Player getPlayerEntity() {
-        if (offlinePlayer == null) {
-            return null;
-        }
-        return Bukkit.getPlayer(offlinePlayer.getUniqueId());
+        return Bukkit.getPlayer(uuid);
     }
 
     public UUID getUUID() {
-        if (offlinePlayer == null) {
-            return null;
-        }
-        return offlinePlayer.getUniqueId();
+        return uuid;
     }
 
     public OfflinePlayer getOfflinePlayer() {
-        return offlinePlayer;
+        return Bukkit.getOfflinePlayer(uuid);
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
@@ -280,10 +274,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public String getName() {
-        if (offlinePlayer == null) {
-            return null;
-        }
-        return offlinePlayer.getName();
+        return getOfflinePlayer().getName();
     }
 
     @Override
@@ -579,7 +570,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public String debuggable() {
-        return "<LG>p@<Y>" + offlinePlayer.getUniqueId() + "<GR> (" + offlinePlayer.getName() + ")";
+        return "<LG>p@<Y>" + uuid + "<GR> (" + getOfflinePlayer().getName() + ")";
     }
 
     @Override
@@ -594,12 +585,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public String identify() {
-        return "p@" + offlinePlayer.getUniqueId();
+        return "p@" + uuid;
     }
 
     @Override
     public String identifySimple() {
-        return "p@" + offlinePlayer.getName();
+        return "p@" + getOfflinePlayer().getName();
     }
 
     @Override
