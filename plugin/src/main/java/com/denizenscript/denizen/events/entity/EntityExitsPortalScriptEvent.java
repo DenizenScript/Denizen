@@ -14,10 +14,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // entity exits portal
     // <entity> exits portal
-    //
-    // @Regex ^on [^\s]+ exits portal$
     //
     // @Group Entity
     //
@@ -37,23 +34,13 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
 
     public EntityExitsPortalScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> exits portal");
     }
 
     public static EntityExitsPortalScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityPortalExitEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains("exits portal")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

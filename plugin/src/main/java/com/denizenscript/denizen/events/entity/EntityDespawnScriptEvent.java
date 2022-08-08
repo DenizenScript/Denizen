@@ -12,16 +12,14 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     // <--[event]
     // @Events
-    // entity despawns
     // <entity> despawns
-    //
-    // @Regex ^on [^\s]+ despawns$
     //
     // @Group Entity
     //
     // @Warning this event fires very rapidly.
     //
     // @Location true
+    //
     // @Switch cause:<cause> to only process the event when it came from a specified cause.
     //
     // @Triggers when an entity despawns permanently from the world. May fire repeatedly for one entity.
@@ -36,22 +34,13 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     public EntityDespawnScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> despawns");
+        registerSwitches("cause");
     }
 
     public static EntityDespawnScriptEvent instance;
     public EntityTag entity;
     public ElementTag cause;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("despawns")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

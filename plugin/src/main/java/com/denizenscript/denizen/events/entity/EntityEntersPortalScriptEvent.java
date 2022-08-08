@@ -14,10 +14,7 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity enters portal
     // <entity> enters portal
-    //
-    // @Regex ^on [^\s]+ enters portal$
     //
     // @Group Entity
     //
@@ -37,23 +34,13 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     public EntityEntersPortalScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> enters portal");
     }
 
     public static EntityEntersPortalScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityPortalEnterEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgAt(1).equals("enters") || !path.eventArgAt(2).equals("portal")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

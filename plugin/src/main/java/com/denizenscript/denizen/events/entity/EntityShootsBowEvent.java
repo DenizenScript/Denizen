@@ -26,11 +26,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // <--[event]
     // @Events
     // entity shoots bow
-    // <entity> shoots bow
-    // entity shoots <item>
     // <entity> shoots <item>
-    //
-    // @Regex ^on [^\s]+ shoots [^\s]+$
     //
     // @Group Entity
     //
@@ -59,6 +55,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     public EntityShootsBowEvent() {
         instance = this;
+        registerCouldMatcher("<entity> shoots <item>");
     }
 
     public static EntityShootsBowEvent instance;
@@ -67,17 +64,6 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     public ItemTag bow;
     public EntityTag projectile;
     public EntityShootBowEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("shoots")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

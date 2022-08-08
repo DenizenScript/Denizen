@@ -15,12 +15,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // <entity> interacts with <material>
-    // entity interacts with <material>
-    // <entity> interacts with block
-    // entity interacts with block
-    //
-    // @Regex ^on [^\s]+ interacts with [^\s]+$
+    // <entity> interacts with <block>
     //
     // @Group Entity
     //
@@ -38,6 +33,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     public EntityInteractScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> interacts with <block>");
     }
 
     public static EntityInteractScriptEvent instance;
@@ -45,20 +41,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public LocationTag location;
     private MaterialTag material;
     public EntityInteractEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.contains("interacts with")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(3))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

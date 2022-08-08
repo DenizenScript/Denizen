@@ -17,10 +17,7 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // entity drops item
     // <entity> drops <item>
-    //
-    // @Regex ^on [^\s]+ drops [^\s]+$
     //
     // @Group Entity
     //
@@ -42,6 +39,7 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     public EntityDropsItemScriptEvent() {
         instance = this;
+        registerCouldMatcher("<entity> drops <item>");
     }
 
     public static EntityDropsItemScriptEvent instance;
@@ -49,23 +47,6 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     public LocationTag location;
     public EntityTag itemEntity;
     public EntityTag dropper;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("drops")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        if (path.eventArgLowerAt(2).equals("from")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

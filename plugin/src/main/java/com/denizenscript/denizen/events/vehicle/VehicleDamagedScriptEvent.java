@@ -19,8 +19,6 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     //
     // @Group Vehicle
     //
-    // @Regex ^on [^\s]+ damages [^\s]+$
-    //
     // @Location true
     //
     // @Switch type:<vehicle> to only run if the vehicle damaged matches the EntityTag matcher input.
@@ -69,6 +67,9 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptPath path) {
+        if (!super.couldMatch(path)) {
+            return false;
+        }
         if (!exactMatchesVehicle(path.eventArgLowerAt(0)) && !exactMatchesVehicle(path.eventArgLowerAt(2))) {
             return false;
         }

@@ -15,10 +15,7 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // spawner spawns entity
     // spawner spawns <entity>
-    //
-    // @Regex ^on spawner spawns [^\s]+$
     //
     // @Group Entity
     //
@@ -37,6 +34,7 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
 
     public EntitySpawnerSpawnScriptEvent() {
         instance = this;
+        registerCouldMatcher("spawner spawns <entity>");
     }
 
     public static EntitySpawnerSpawnScriptEvent instance;
@@ -44,17 +42,6 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     private LocationTag location;
     private LocationTag spawnerLocation;
     public SpawnerSpawnEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("spawner spawns")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
