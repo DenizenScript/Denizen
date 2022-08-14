@@ -53,10 +53,6 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public PlayerTag player;
     public boolean loaded;
 
-    public ChatColor baseColor() {
-        return ChatColor.BLACK;
-    }
-
     public void reset() {
         player = null;
         message = null;
@@ -94,13 +90,13 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("message:")) {
                 message = new ElementTag(determination.substring("message:".length()), true);
-                rawJson = new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(message.asString(), baseColor())), true);
+                rawJson = new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(message.asString(), ChatColor.WHITE)), true);
                 modified = true;
                 return true;
             }
             if (lower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
-                message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson.asString()), baseColor()), true);
+                message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson.asString()), ChatColor.WHITE), true);
                 modified = true;
                 return true;
             }
