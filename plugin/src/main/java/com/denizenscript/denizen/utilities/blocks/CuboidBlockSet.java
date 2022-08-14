@@ -375,7 +375,7 @@ public class CuboidBlockSet implements BlockSet {
     public void flipY() {
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
-        center_x = x_width - center_x;
+        center_y = y_length - center_y;
         for (int x = 0; x < x_width; x++) {
             for (int y = y_length - 1; y >= 0; y--) {
                 for (int z = 0; z < z_height; z++) {
@@ -389,7 +389,7 @@ public class CuboidBlockSet implements BlockSet {
     public void flipZ() {
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
-        center_x = x_width - center_x;
+        center_z = z_height - center_z;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = z_height - 1; z >= 0; z--) {
