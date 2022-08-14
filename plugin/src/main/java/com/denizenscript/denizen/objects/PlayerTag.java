@@ -842,9 +842,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new DurationTag(object.getOfflinePlayer().getFirstPlayed() / 50);
         });
 
+        // <--[tag]
+        // @attribute <PlayerTag.has_played_before>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns true if the player has played before, or is currently online. Returns false if this PlayerTag refers to a UUID that has never been on the server.
+        // Works with offline players.
+        // -->
         tagProcessor.registerTag(ElementTag.class, "has_played_before", (attribute, object) -> {
-            Deprecations.playerHasPlayedBefore.warn(attribute.context);
-            return new ElementTag(true);
+            return new ElementTag(object.isValid());
         });
 
         // <--[tag]
