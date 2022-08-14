@@ -17,6 +17,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -119,9 +120,9 @@ public class DebugSubmit extends Thread {
                 proxied = true;
             }
             else if (Denizen.supportsPaper) {
-                if (getPaperConfigKey("settings.velocity-support.enabled")) {
-                    boolean velocityOnline = getPaperConfigKey("settings.velocity-support.online-mode");
-                    modeSuffix = velocityOnline ? ChatColor.GREEN + " (Velocity: online)" : ChatColor.RED + " (Velocity: offline)";
+                String paperMode = getPaperOnlineMode();
+                if (paperMode != null) {
+                    modeSuffix = paperMode;
                     proxied = true;
                 }
             }
@@ -157,6 +158,34 @@ public class DebugSubmit extends Thread {
     }
 
     public static YamlConfiguration paperConfig;
+
+    public static String getPaperOnlineMode() {
+        boolean isEnabled, isOnline;
+        try {
+            Class config = Class.forName("io.papermc.paper.configuration.GlobalConfiguration");
+            Object instance = ReflectionHelper.getFieldValue(config, "instance", null);
+            Object proxies = ReflectionHelper.getFieldValue(config, "proxies", instance);
+            Object velocity = ReflectionHelper.getFieldValue(proxies.getClass(), "velocity", proxies);
+            Field velField = ReflectionHelper.getFields(velocity.getClass()).get("enabled");
+            velField.setAccessible(true);
+            isEnabled = velField.getBoolean(velocity);
+            Field onlineField = ReflectionHelper.getFields(velocity.getClass()).get("onlineMode");
+            onlineField.setAccessible(true);
+            isOnline = onlineField.getBoolean(velocity);
+        }
+        catch (ClassNotFoundException ignore) {
+            isEnabled = getPaperConfigKey("settings.velocity-support.enabled");
+            isOnline = getPaperConfigKey("settings.velocity-support.online-mode");
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return null;
+        }
+        if (isEnabled) {
+            return isOnline ? ChatColor.GREEN + " (Velocity: online)" : ChatColor.RED + " (Velocity: offline)";
+        }
+        return null;
+    }
 
     public static boolean getPaperConfigKey(String key) {
         if (!Denizen.supportsPaper) {
