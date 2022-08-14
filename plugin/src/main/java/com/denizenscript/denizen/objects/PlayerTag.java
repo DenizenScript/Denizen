@@ -239,7 +239,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     UUID uuid;
 
     public boolean isValid() {
-        return getPlayerEntity() != null || getOfflinePlayer() != null;
+        OfflinePlayer pl = getOfflinePlayer();
+        if (pl != null && pl.hasPlayedBefore()) {
+            return true;
+        }
+        return getPlayerEntity() != null;
     }
 
     public Player getPlayerEntity() {
@@ -781,7 +785,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // it doesn't exist.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
+        registerOfflineTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
             try {
                 NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
                 if (object.getOfflinePlayer().getBedSpawnLocation() == null) {
@@ -794,14 +798,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         });
 
-        tagProcessor.registerTag(ObjectTag.class, "location", (attribute, object) -> {
+        registerOfflineTag(ObjectTag.class, "location", (attribute, object) -> {
             if (object.isOnline() && !object.getPlayerEntity().isDead()) {
                 return new EntityTag(object.getPlayerEntity()).doLocationTag(attribute);
             }
             return object.getLocation();
         });
 
-        tagProcessor.registerTag(WorldTag.class, "world", (attribute, object) -> {
+        registerOfflineTag(WorldTag.class, "world", (attribute, object) -> {
             return object.getWorldTag();
         });
 
@@ -852,7 +856,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This can reach a maximum value of 40, and decreases by 4 every tick.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "exhaustion", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "exhaustion", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(object.getPlayerEntity().getExhaustion());
             }
@@ -862,11 +866,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // Handle EntityTag oxygen tags here to allow getting them when the player is offline
-        tagProcessor.registerTag(DurationTag.class, "max_oxygen", (attribute, object) -> {
+        registerOfflineTag(DurationTag.class, "max_oxygen", (attribute, object) -> {
             return new DurationTag((long) object.getMaximumAir());
         });
 
-        tagProcessor.registerTag(DurationTag.class, "oxygen", (attribute, object) -> {
+        registerOfflineTag(DurationTag.class, "oxygen", (attribute, object) -> {
             if (attribute.startsWith("max", 2)) {
                 BukkitImplDeprecations.entityMaxOxygenTag.warn(attribute.context);
                 attribute.fulfill(1);
@@ -881,7 +885,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns whether the player's health bar is currently being scaled.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "health_is_scaled", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "health_is_scaled", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().isHealthScaled());
         });
 
@@ -892,17 +896,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the current scale for the player's health bar
         // -->
-        tagProcessor.registerTag(ElementTag.class, "health_scale", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "health_scale", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getHealthScale());
         });
 
         // Handle EntityTag health tags here to allow getting them when the player is offline
-        tagProcessor.registerTag(ElementTag.class, "formatted_health", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "formatted_health", (attribute, object) -> {
             Double maxHealth = attribute.hasParam() ? attribute.getDoubleParam() : null;
             return EntityHealth.getHealthFormatted(new EntityTag(object.getPlayerEntity()), maxHealth);
         });
 
-        tagProcessor.registerTag(ElementTag.class, "health_percentage", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "health_percentage", (attribute, object) -> {
             double maxHealth = object.getPlayerEntity().getMaxHealth();
             if (attribute.hasParam()) {
                 maxHealth = attribute.getIntParam();
@@ -910,11 +914,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new ElementTag((object.getPlayerEntity().getHealth() / maxHealth) * 100);
         });
 
-        tagProcessor.registerTag(ElementTag.class, "health_max", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "health_max", (attribute, object) -> {
             return new ElementTag(object.getMaxHealth());
         });
 
-        tagProcessor.registerTag(ElementTag.class, "health", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "health", (attribute, object) -> {
             if (attribute.startsWith("is_scaled", 2)) {
                 attribute.fulfill(1);
                 BukkitImplDeprecations.entityHealthTags.warn(attribute.context);
@@ -1431,7 +1435,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns a InventoryTag of the player's current inventory.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(InventoryTag.class, "inventory", (attribute, object) -> {
+        registerOfflineTag(InventoryTag.class, "inventory", (attribute, object) -> {
             return object.getInventory();
         });
 
@@ -1442,7 +1446,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Gets the player's enderchest inventory.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(InventoryTag.class, "enderchest", (attribute, object) -> {
+        registerOfflineTag(InventoryTag.class, "enderchest", (attribute, object) -> {
             return object.getEnderChest();
         });
 
@@ -1824,7 +1828,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the player is allowed to fly.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "can_fly", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "can_fly", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(object.getPlayerEntity().getAllowFlight());
             }
@@ -1842,7 +1846,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Default value is '0.2'.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "fly_speed", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "fly_speed", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(object.getPlayerEntity().getFlySpeed());
             }
@@ -1859,7 +1863,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the speed the player can walk at.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "walk_speed", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "walk_speed", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(object.getPlayerEntity().getWalkSpeed());
             }
@@ -1876,7 +1880,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the current food saturation of the player.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "saturation", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "saturation", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(object.getPlayerEntity().getSaturation());
             }
@@ -1960,7 +1964,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the name of the gamemode the player is currently set to.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "gamemode", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "gamemode", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(object.getPlayerEntity().getGameMode().name());
             }
@@ -2368,7 +2372,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns whether the player's bed spawn location is forced (ie still valid even if a bed is missing).
         // -->
-        tagProcessor.registerTag(ElementTag.class, "spawn_forced", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "spawn_forced", (attribute, object) -> {
             if (object.isOnline()) {
                 return new ElementTag(NMSHandler.playerHelper.getSpawnForced(object.getPlayerEntity()));
             }
@@ -2455,11 +2459,26 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
 
+    /**
+     * Needed for validation on tags that mess with 'getNBTEditor' or similar special calls for offline-player-compatibility logic.
+     */
+    public static <R extends ObjectTag> void registerOfflineTag(Class<R> returnType, String name, TagRunnable.ObjectInterface<PlayerTag, R> runnable, String... variants) {
+        tagProcessor.registerTag(returnType, name, (attribute, object) -> {
+            if (!object.isValid()) {
+                if (!attribute.hasAlternative()) {
+                    attribute.echoError("Player is not considered valid in tag '" + attribute.getAttributeWithoutParam(1) + "' for player: " + object.debuggable());
+                }
+                return null;
+            }
+            return runnable.run(attribute, object);
+        }, variants);
+    }
+
     public static <R extends ObjectTag> void registerOnlineOnlyTag(Class<R> returnType, String name, TagRunnable.ObjectInterface<PlayerTag, R> runnable, String... variants) {
         tagProcessor.registerTag(returnType, name, (attribute, object) -> {
             if (!object.isOnline()) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("Player is not online, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the player be online, for player: " + object.debuggable());
+                    attribute.echoError("Player is not online, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the player be online, for player: " + object.debuggable());
                 }
                 return null;
             }
