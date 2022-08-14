@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -14,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -103,7 +105,7 @@ public class LookCommand extends AbstractCommand {
             scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, false));
         }
         if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel") && !scriptEntry.hasObject("yaw")) {
-            throw new InvalidArgumentsException("Must specify a location or 'cancel'!");
+            throw new InvalidArgumentsException("Must specify a location, a yaw and pitch, or 'cancel'!");
         }
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify an entity!");
@@ -145,7 +147,15 @@ public class LookCommand extends AbstractCommand {
                     NMSHandler.entityHelper.faceLocation(entity.getBukkitEntity(), loc);
                 }
                 else {
-                    NMSHandler.entityHelper.rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
+                    if (entity.isPlayer()) {
+                        Location playerTeleDest = entity.getLocation().clone();
+                        playerTeleDest.setYaw(yawRaw);
+                        playerTeleDest.setPitch(pitchRaw);
+                        AdvancedTextImpl.instance.teleportPlayerRelative(entity.getPlayer(), playerTeleDest);
+                    }
+                    else {
+                        NMSHandler.entityHelper.rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);
+                    }
                 }
             }
         }

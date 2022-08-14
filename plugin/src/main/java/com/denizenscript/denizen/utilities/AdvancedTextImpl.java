@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -99,5 +100,9 @@ public class AdvancedTextImpl {
 
     public InventoryView openAnvil(Player player, Location loc) {
         throw new UnsupportedOperationException();
+    }
+
+    public void teleportPlayerRelative(Player player, Location loc) {
+        player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 }

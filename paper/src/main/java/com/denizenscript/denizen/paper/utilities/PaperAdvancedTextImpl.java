@@ -1,9 +1,11 @@
 package com.denizenscript.denizen.paper.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import io.papermc.paper.entity.RelativeTeleportFlag;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -14,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -122,5 +125,15 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public InventoryView openAnvil(Player player, Location loc) {
         return player.openAnvil(loc, true);
+    }
+
+    @Override
+    public void teleportPlayerRelative(Player player, Location loc) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, true, false, RelativeTeleportFlag.values());
+        }
+        else {
+            super.teleportPlayerRelative(player, loc);
+        }
     }
 }
