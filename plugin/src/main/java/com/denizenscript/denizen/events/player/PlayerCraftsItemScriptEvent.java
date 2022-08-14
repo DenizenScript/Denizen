@@ -108,7 +108,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         }
         else if (name.equals("amount")) {
             int amount = event.getRecipe().getResult().getAmount();
-            if (event.getClick() == ClickType.SHIFT_LEFT) {
+            if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT) {
                 amount *= RecipeHelper.getMaximumOutputQuantity(event.getRecipe(), event.getInventory());
             }
             return new ElementTag(amount);
