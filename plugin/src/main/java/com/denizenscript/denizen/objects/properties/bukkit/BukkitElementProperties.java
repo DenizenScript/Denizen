@@ -478,6 +478,8 @@ public class BukkitElementProperties implements Property {
             // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+            // For show_text, prefer <@link tag ElementTag.on_hover>
+            // For show_item, prefer <@link tag ElementTag.hover_item>
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
@@ -505,6 +507,24 @@ public class BukkitElementProperties implements Property {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.click_chat[<message>]>
+        // @returns ElementTag
+        // @group text manipulation
+        // @description
+        // Adds a click command to the element, which makes the element pseudo-chat the input message when clicked, for activating interact script chat triggers (<@link language Chat Triggers>).
+        // This internally uses the command "/denizenclickable chat SOME MESSAGE HERE" (requires players have permission "denizen.clickable")
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <element[click here].click_chat[hello]> to say hello to an NPC's interact script!"
+        // -->
+        PropertyParser.<BukkitElementProperties, ElementTag>registerStaticTag(ElementTag.class, "click_chat", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[click=RUN_COMMAND;/denizenclickable chat " + FormattedTextHelper.escape(attribute.getParam()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.on_click[<command>]>
         // @returns ElementTag
         // @group text manipulation
@@ -512,6 +532,7 @@ public class BukkitElementProperties implements Property {
         // Adds a click command to the element, which makes the element execute the input command when clicked.
         // To execute a command "/" should be used at the start. Prior to 1.19, leaving off the "/" would display the text as chat. This feature was removed as part of the 1.19 secure chat system.
         // For activating interact script chat triggers (<@link language Chat Triggers>), you can use the command "/denizenclickable chat SOME MESSAGE HERE" (requires players have permission "denizen.clickable")
+        // For that, instead prefer <@link tag ElementTag.click_chat>
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
         // - narrate "You can <element[click here].on_click[/help]> for help!"
@@ -534,6 +555,9 @@ public class BukkitElementProperties implements Property {
             // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, COPY_TO_CLIPBOARD, or CHANGE_PAGE.
             // For example: - narrate "You can <element[click here].on_click[https://denizenscript.com].type[OPEN_URL]> to learn about Denizen!"
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+            // For run_command, prefer <@link tag ElementTag.on_click>
+            // For chat, prefer <@link tag ElementTag.click_chat>
+            // For URLs, prefer <@link tag ElementTag.click_url>
             // -->
             if (attribute.startsWith("type", 2)) {
                 type = attribute.getContext(2);
