@@ -13,11 +13,13 @@ public class PacketOutChatImpl implements PacketOutChat {
     public ClientboundSystemChatPacket systemPacket;
     public String message;
     public String rawJson;
+    public boolean isOverlayActionbar;
 
     public PacketOutChatImpl(ClientboundSystemChatPacket internal) {
         systemPacket = internal;
         rawJson = internal.content();
         message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson), ChatColor.BLACK);
+        isOverlayActionbar = internal.overlay();
     }
 
     public PacketOutChatImpl(ClientboundPlayerChatPacket internal) {
@@ -26,7 +28,6 @@ public class PacketOutChatImpl implements PacketOutChat {
         message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson), ChatColor.BLACK);
     }
 
-
     @Override
     public boolean isSystem() {
         return systemPacket != null;
@@ -34,7 +35,7 @@ public class PacketOutChatImpl implements PacketOutChat {
 
     @Override
     public boolean isActionbar() {
-        return false;
+        return isOverlayActionbar;
     }
 
     @Override

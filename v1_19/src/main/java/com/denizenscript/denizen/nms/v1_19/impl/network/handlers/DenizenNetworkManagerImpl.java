@@ -1085,9 +1085,9 @@ public class DenizenNetworkManagerImpl extends Connection {
     public boolean processPacketHandlerForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
             PacketOutChatImpl packetHelper = null;
-            boolean overlay = false;
+            boolean isActionbar = false;
             if (packet instanceof ClientboundSystemChatPacket) {
-                overlay = ((ClientboundSystemChatPacket) packet).overlay();
+                isActionbar = ((ClientboundSystemChatPacket) packet).overlay();
                 if (((ClientboundSystemChatPacket) packet).content() == null) { // Makes no sense but this can be null in weird edge cases
                     return false;
                 }
@@ -1103,8 +1103,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                         return true;
                     }
                     if (result.modified) {
-                        // TODO: 1.19.1: What is overlay? what value should it have?
-                        oldManager.send(new ClientboundSystemChatPacket(ComponentSerializer.parse(result.rawJson.asString()), overlay), genericfuturelistener);
+                        oldManager.send(new ClientboundSystemChatPacket(ComponentSerializer.parse(result.rawJson.asString()), isActionbar), genericfuturelistener);
                         return true;
                     }
                 }

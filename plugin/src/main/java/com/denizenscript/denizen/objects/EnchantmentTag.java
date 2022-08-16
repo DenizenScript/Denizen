@@ -232,7 +232,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @attribute <EnchantmentTag.max_level>
         // @returns ElementTag(Number)
         // @description
-        // Returns the minimum level of this enchantment. Usually between 1 and 5.
+        // Returns the maximum level of this enchantment. Usually between 1 and 5.
         // -->
         tagProcessor.registerTag(ElementTag.class, "max_level", (attribute, object) -> {
             return new ElementTag(object.enchantment.getMaxLevel());
