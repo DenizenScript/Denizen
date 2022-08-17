@@ -48,7 +48,7 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
         if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
-        if (!path.checkSwitch("cause", CoreUtilities.toLowerCase(cause.asString()))) {
+        if (!path.checkSwitch("cause", cause.asLowerString())) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

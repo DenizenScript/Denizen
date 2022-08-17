@@ -45,7 +45,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
         if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
             return false;
         }
-        if (path.eventArgAt(2).equals("because") && !path.eventArgLowerAt(3).equals(CoreUtilities.toLowerCase(reason.asString()))) {
+        if (path.eventArgAt(2).equals("because") && !path.eventArgLowerAt(3).equals(reason.asLowerString())) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

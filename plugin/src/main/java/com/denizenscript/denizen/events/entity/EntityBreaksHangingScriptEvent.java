@@ -79,7 +79,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (path.eventArgLowerAt(3).equals("because") && !path.eventArgLowerAt(4).equals(CoreUtilities.toLowerCase(cause.asString()))) {
+        if (path.eventArgLowerAt(3).equals("because") && !path.eventArgLowerAt(4).equals(cause.asLowerString())) {
             return false;
         }
         return super.matches(path);

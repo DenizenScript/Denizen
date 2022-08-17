@@ -167,7 +167,7 @@ public class MapCommand extends AbstractCommand {
             DenizenMapRenderer dmr = DenizenMapManager.getDenizenRenderer(map);
             int wide = width != null ? width.asInt() : resize ? 128 : 0;
             int high = height != null ? height.asInt() : resize ? 128 : 0;
-            if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
+            if (image.asLowerString().endsWith(".gif")) {
                 dmr.autoUpdate = true;
             }
             dmr.addObject(new MapImage(dmr, x.asString(), y.asString(), "true", false, image.asString(), wide, high));

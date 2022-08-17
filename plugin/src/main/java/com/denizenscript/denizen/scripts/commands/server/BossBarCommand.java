@@ -156,7 +156,7 @@ public class BossBarCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), id, action, players, title, progress, color, style, options);
         }
-        String idString = CoreUtilities.toLowerCase(id.asString());
+        String idString = id.asLowerString();
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case CREATE: {
                 if (bossBarMap.containsKey(idString)) {

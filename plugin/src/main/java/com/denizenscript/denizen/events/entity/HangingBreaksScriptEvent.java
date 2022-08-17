@@ -50,7 +50,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         if (!hanging.tryAdvancedMatcher(hangCheck)) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("because") && !path.eventArgLowerAt(3).equals(CoreUtilities.toLowerCase(cause.asString()))) {
+        if (path.eventArgLowerAt(2).equals("because") && !path.eventArgLowerAt(3).equals(cause.asLowerString())) {
             return false;
         }
         if (!runInCheck(path, hanging.getLocation())) {

@@ -187,7 +187,7 @@ public class TeamCommand extends AbstractCommand {
         }
         Team team = board.getTeam(name.asString());
         if (team == null) {
-            String low = CoreUtilities.toLowerCase(name.asString());
+            String low = name.asLowerString();
             team = board.getTeams().stream().filter(t -> CoreUtilities.toLowerCase(t.getName()).equals(low)).findFirst().orElse(null);
             if (team == null) {
                 team = board.registerNewTeam(name.asString());
@@ -210,8 +210,8 @@ public class TeamCommand extends AbstractCommand {
             }
         }
         if (option != null) {
-            String optName = CoreUtilities.toLowerCase(option.asString());
-            String statusName = CoreUtilities.toLowerCase(status.asString());
+            String optName = option.asLowerString();
+            String statusName = status.asLowerString();
             if (optName.equals("friendly_fire")) {
                 team.setAllowFriendlyFire(statusName.equals("always"));
             }

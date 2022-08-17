@@ -139,7 +139,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             }
         }
         else if (!Settings.cache_createWorldWeirdPaths) {
-            String cleaned = CoreUtilities.toLowerCase(worldName.asString()).replace('\\', '/');
+            String cleaned = worldName.asLowerString().replace('\\', '/');
             while (cleaned.contains("//")) {
                 cleaned = cleaned.replace("//", "/");
             }
