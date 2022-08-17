@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -1061,12 +1062,15 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Require config setting 'Commands.Delete.Allow file deletion'.
         // -->
         if (mechanism.matches("destroy")) {
-            if (!Settings.allowDelete()) {
-                Debug.echoError("Unable to delete due to config.");
+            File folder = getWorld().getWorldFolder();
+            unloadWorldClean(mechanism, false);
+            if (getWorld() == null) {
                 return;
             }
-            File folder = getWorld().getWorldFolder();
-            Bukkit.getServer().unloadWorld(getWorld(), false);
+            if (!Settings.allowDelete()) {
+                mechanism.echoError("Unable to destroy world due to config setting, refer to 'WorldTag.destroy' meta documentation.");
+                return;
+            }
             try {
                 CoreUtilities.deleteDirectory(folder);
             }
@@ -1084,7 +1088,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Unloads the world from the server without saving chunks.
         // -->
         if (mechanism.matches("force_unload")) {
-            Bukkit.getServer().unloadWorld(getWorld(), false);
+            unloadWorldClean(mechanism, false);
             return;
         }
 
@@ -1240,7 +1244,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Unloads the world from the server and saves chunks.
         // -->
         if (mechanism.matches("unload")) {
-            Bukkit.getServer().unloadWorld(getWorld(), true);
+            unloadWorldClean(mechanism, true);
             return;
         }
 
@@ -1271,6 +1275,18 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);
+    }
+
+    public void unloadWorldClean(Mechanism mechanism, boolean doSave) {
+        for (Player pl : new ArrayList<>(getWorld().getPlayers())) {
+            if (pl.isOnline()) {
+                mechanism.echoError("For WorldTag." + mechanism.getName() + " mechanism, Player " + pl.getUniqueId() + "/" + pl.getName() + " is inside world and will be kicked.");
+                pl.kickPlayer("World being destroyed.");
+            }
+        }
+        if (!Bukkit.getServer().unloadWorld(getWorld(), doSave)) {
+            mechanism.echoError("WorldTag." + mechanism.getName() + " for world " + world_name + " was refused by the System. Are you sure (A) this world is even loaded, (B) all players have been removed, and (C) this is not the default world?");
+        }
     }
 
     @Override
