@@ -1064,7 +1064,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         if (mechanism.matches("destroy")) {
             File folder = getWorld().getWorldFolder();
             unloadWorldClean(mechanism, false);
-            if (getWorld() == null) {
+            if (getWorld() != null) {
                 return;
             }
             if (!Settings.allowDelete()) {
