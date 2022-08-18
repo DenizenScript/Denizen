@@ -333,6 +333,13 @@ public class FullBlockData {
                     case WEST:
                         return BlockFace.SOUTH;
                 }
+            case STRAIGHT:
+                switch (face) {
+                    case EAST:
+                        return BlockFace.WEST;
+                    case WEST:
+                        return BlockFace.EAST;
+                }
         }
         return face;
     }
@@ -505,6 +512,13 @@ public class FullBlockData {
                     case SOUTH:
                         return BlockFace.EAST;
                     case WEST:
+                        return BlockFace.NORTH;
+                }
+            case STRAIGHT:
+                switch (face) {
+                    case NORTH:
+                        return BlockFace.SOUTH;
+                    case SOUTH:
                         return BlockFace.NORTH;
                 }
         }
