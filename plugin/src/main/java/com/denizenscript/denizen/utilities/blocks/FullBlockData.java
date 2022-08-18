@@ -19,13 +19,13 @@ import org.bukkit.block.data.type.Wall;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.Chest;
+import org.bukkit.block.data.Bisected;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import static org.bukkit.block.data.Bisected.Half;
 
 public class FullBlockData {
 
@@ -244,9 +244,9 @@ public class FullBlockData {
     public static Bisected.Half flipBisectedHalf(Bisected.Half half) {
         switch (half) {
             case TOP:
-                return Half.BOTTOM;
+                return Bisected.Half.BOTTOM;
             case BOTTOM:
-                return Half.TOP;
+                return Bisected.Half.TOP;
         }
         return half;
     }
@@ -338,10 +338,7 @@ public class FullBlockData {
     }
 
     public FullBlockData flipX() {
-        if (data instanceof Orientable) {
-            return this;
-        }
-        else if (data instanceof Rotatable) {
+        if (data instanceof Rotatable) {
             BlockData newData = data.clone();
             ((Rotatable) newData).setRotation(flipFaceX(((Rotatable) data).getRotation()));
             return new FullBlockData(newData, tileEntityData, flags);
