@@ -44,6 +44,7 @@ import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizen.utilities.world.VoidGenerator1_17;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.core.SecretTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
@@ -502,6 +503,7 @@ public class Denizen extends JavaPlugin {
     public void reloadConfig() {
         super.reloadConfig();
         Settings.refillCache();
+        SecretTag.load();
         if (!CoreConfiguration.defaultDebugMode) {
             getLogger().warning("Debug is disabled in the Denizen config. This is almost always a mistake, and should not be done in the majority of cases.");
         }
