@@ -351,8 +351,9 @@ public class DenizenNetworkManagerImpl extends Connection {
                     texture = property.getValue();
                     signature = property.getSignature();
                 }
+                String modeText = update.getGameMode() == null ? null : update.getGameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), profile.getName(),
-                        update.getDisplayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.getDisplayName()), ChatColor.WHITE), update.getGameMode().name(), texture, signature, update.getLatency());
+                        update.getDisplayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.getDisplayName()), ChatColor.WHITE), modeText, texture, signature, update.getLatency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
@@ -374,7 +375,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                         if (data.texture != null) {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
-                        newPacket.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(newProfile, data.latency, GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
+                        newPacket.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(newProfile, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
                                 data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.getProfilePublicKey()));
                         oldManager.send(newPacket, genericfuturelistener);
                     }

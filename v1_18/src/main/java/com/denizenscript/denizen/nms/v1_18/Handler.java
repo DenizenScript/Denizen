@@ -357,11 +357,17 @@ public class Handler extends NMSHandler {
     }
 
     public static BaseComponent[] componentToSpigot(Component nms) {
+        if (nms == null) {
+            return null;
+        }
         String json = Component.Serializer.toJson(nms);
         return ComponentSerializer.parse(json);
     }
 
     public static MutableComponent componentToNMS(BaseComponent[] spigot) {
+        if (spigot == null) {
+            return null;
+        }
         String json = ComponentSerializer.toString(spigot);
         return Component.Serializer.fromJson(json);
     }
