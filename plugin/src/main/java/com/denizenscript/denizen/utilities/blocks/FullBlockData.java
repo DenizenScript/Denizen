@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-
 public class FullBlockData {
 
     public static void init() {
@@ -221,8 +220,8 @@ public class FullBlockData {
         return this;
     }
 
-    public static Door.Hinge flipDoorHinge(Door.Hinge hinge){
-        switch (hinge){
+    public static Door.Hinge flipDoorHinge(Door.Hinge hinge) {
+        switch (hinge) {
             case LEFT:
                 return Door.Hinge.RIGHT;
             case RIGHT:
@@ -231,8 +230,8 @@ public class FullBlockData {
         return hinge;
     }
 
-    public static Chest.Type flipChestType(Chest.Type type){
-        switch (type){
+    public static Chest.Type flipChestType(Chest.Type type) {
+        switch (type) {
             case LEFT:
                 return Chest.Type.RIGHT;
             case RIGHT:
@@ -541,11 +540,11 @@ public class FullBlockData {
         else if (data instanceof Directional) {
             BlockData newData = data.clone();
             ((Directional) newData).setFacing(flipFaceZ(((Directional) data).getFacing()));
-            if (data instanceof Chest){
+            if (data instanceof Chest) {
                 ((Chest) newData).setType(flipChestType(((Chest) data).getType()));
             }
-            else if (data instanceof Door){
-                switch (((Door) data).getFacing()){
+            else if (data instanceof Door) {
+                switch (((Door) data).getFacing()) {
                     case EAST:
                     case WEST:
                         ((Door) newData).setHinge(flipDoorHinge(((Door) data).getHinge()));
