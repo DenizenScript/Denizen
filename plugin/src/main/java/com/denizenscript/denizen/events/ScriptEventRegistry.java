@@ -171,7 +171,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerClicksBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInInventoryScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClosesInvScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.class);
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerConsumesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerCraftsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerDamagesBlockScriptEvent.class);

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.events.player;
+package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -6,44 +6,22 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
-public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent implements Listener {
+import static com.denizenscript.denizen.paper.PaperModule.stringifyComponent;
 
-    // <--[event]
-    // @Events
-    // player completes advancement
-    //
-    // @Regex ^on player completes advancement$
-    //
-    // @Group Player
-    //
-    // @Switch name:<name> to only fire if the advancement has the specified name.
-    //
-    // @Triggers when a player has completed all criteria in an advancement.
-    //
-    // @Context
-    // <context.criteria> returns all the criteria present in this advancement.
-    // <context.advancement> returns the completed advancement's minecraft ID key.
-    // <context.message> returns an ElementTag of the advancement message (only on Paper).
-    //
-    // @Determine
-    // ElementTag to change the advancement message (only on Paper).
-    // "NO_MESSAGE" to hide the advancement message (only on Paper).
-    //
-    // @Player Always.
-    //
-    // -->
+public class PlayerCompletesAdvancementScriptEventPaperImpl extends BukkitScriptEvent implements Listener {
 
-    public PlayerCompletesAdvancementScriptEvent() {
+    public PlayerCompletesAdvancementScriptEventPaperImpl() {
         instance = this;
     }
-
-    public static PlayerCompletesAdvancementScriptEvent instance;
+    public static PlayerCompletesAdvancementScriptEventPaperImpl instance;
     public PlayerAdvancementDoneEvent event;
-
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("player completes advancement");
@@ -77,7 +55,26 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
         else if (name.equals("advancement")) {
             return new ElementTag(event.getAdvancement().getKey().getKey());
         }
+        else if (name.equals("message")) {
+            return new ElementTag(stringifyComponent(event.message(), ChatColor.WHITE));
+        }
         return super.getContext(name);
+    }
+    @Override
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        String determination = determinationObj.toString();
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (lower.startsWith("no_message")) {
+            event.message(null);
+            return true;
+        }
+        else if (event instanceof PlayerAdvancementDoneEvent) {
+            event.message(Component.text(determination));
+            return true;
+        }
+        else {
+            return super.applyDetermination(path, determinationObj);
+        }
     }
 
     @EventHandler
@@ -87,3 +84,4 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
         fire(event);
     }
 }
+
