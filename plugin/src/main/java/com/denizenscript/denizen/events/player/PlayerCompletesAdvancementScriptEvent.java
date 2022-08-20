@@ -79,11 +79,13 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
         }
         return super.getContext(name);
     }
+    public static class PlayerCompletesAdvancementSpigotScriptEvent extends PlayerCompletesAdvancementScriptEvent {
 
-    @EventHandler
-    public void onPlayerCompletesAdvancement(PlayerAdvancementDoneEvent event) {
-        // TODO: Should this not fire if it's a 'fake' advancement created by Denizen?
-        this.event = event;
-        fire(event);
+        @EventHandler
+        public void onPlayerCompletesAdvancement(PlayerAdvancementDoneEvent event) {
+            // TODO: Should this not fire if it's a 'fake' advancement created by Denizen?
+            this.event = event;
+            fire(event);
+        }
     }
 }
