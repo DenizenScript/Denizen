@@ -1,60 +1,78 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.potion.PotionEffect;
+import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class InvisibleCommand extends AbstractCommand {
 
     public InvisibleCommand() {
         setName("invisible");
-        setSyntax("invisible [<entity>] (state:true/false/toggle)");
-        setRequiredArguments(1, 2);
+        setSyntax("invisible [<entity>] (state:true/false/toggle/reset) (for:<player>|...)");
+        setPrefixesHandled("for");
+        setRequiredArguments(0, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Invisible
-    // @Syntax invisible [<entity>] (state:true/false/toggle)
-    // @Required 1
-    // @Maximum 2
-    // @Short Makes an NPC or entity go invisible.
+    // @Syntax invisible [<entity>] (state:true/false/toggle/reset) (for:<player>|...)
+    // @Required 0
+    // @Maximum 3
+    // @Short Sets whether an NPC or entity are invisible.
     // @Group entity
     //
     // @Description
-    // For living entities (other than armor_stand), applies a maximum duration invisibility potion.
-    // For armor_stands or item_frame, toggles them invisible.
-    // Applies the 'invisible' trait to NPCs.
+    // Makes the specified entity invisible, defaults to the linked player/NPC if one wasn't specified.
+    // If an NPC was specified, the 'invisible' trait is applied.
     //
-    // NPCs can't be made invisible if not added to the playerlist.
-    // (The invisible trait adds the NPC to the playerlist when set)
-    // See <@link language invisible trait>)
+    // Optionally specify 'for:' with a list of players to fake the entity's visibility state for these players.
+    // Note that using the 'for:' argument won't apply the 'invisible' trait to NPCs.
+    // If unspecified, will be set globally.
+    //
+    // To reset an entity's fake visibility (for all players) use the 'reset' state.
+    //
+    // NPCs can't be made invisible if not added to the playerlist (the invisible trait adds the NPC to the playerlist when set).
+    // See <@link language invisible trait>
     //
     // @Tags
     // None
     //
     // @Usage
-    // Use to makes the player invisible.
-    // - invisible <player> state:true
+    // Use to make the linked player (or NPC, if there isn't one) invisible.
+    // - invisible
     //
     // @Usage
-    // Use to make the attached NPC visible if previously invisible, and invisible if not
+    // Use to make the linked NPC visible if previously invisible, and invisible if not
     // - invisible <npc> state:toggle
+    //
+    // @Usage
+    // Use to make an entity visible for specific players, without changing the way other players see it.
+    // - invisible <[entity]> state:false for:<[player1]>|<[player2]>
     // -->
 
-    enum Action {TRUE, FALSE, TOGGLE}
+    @Override
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("state:", Action.values());
+    }
+
+    enum Action {TRUE, FALSE, TOGGLE, RESET}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -62,6 +80,10 @@ public class InvisibleCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("state")
                     && arg.matchesEnum(Action.class)) {
                 scriptEntry.addObject("state", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("target")
+                    && arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("player")
@@ -73,87 +95,129 @@ public class InvisibleCommand extends AbstractCommand {
                     && Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("target", Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
             }
-            else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                scriptEntry.addObject("target", arg.asType(EntityTag.class));
-            }
             else {
                 arg.reportUnhandled();
             }
         }
-        if (!scriptEntry.hasObject("state")) {
-            scriptEntry.addObject("state", new ElementTag("TRUE"));
+        scriptEntry.defaultObject("state", new ElementTag("true"));
+        scriptEntry.defaultObject("target", Utilities.entryDefaultEntity(scriptEntry, true));
+    }
+
+    public static HashMap<UUID, HashMap<UUID, Boolean>> invisibleEntities = new HashMap<>();
+
+    public static void setInvisibleForPlayer(EntityTag target, PlayerTag player, boolean invisible) {
+        if (target == null || target.getUUID() == null || player == null) {
+            return;
         }
-        if (!scriptEntry.hasObject("target") || !((EntityTag) scriptEntry.getObjectTag("target")).isValid()) {
-            throw new InvalidArgumentsException("Must specify a valid target!");
+        NetworkInterceptHelper.enable();
+        boolean wasModified = !invisibleEntities.containsKey(target.getUUID());
+        HashMap<UUID, Boolean> playerMap = invisibleEntities.computeIfAbsent(target.getUUID(), k -> new HashMap<>());
+        wasModified = !playerMap.containsKey(player.getUUID()) || playerMap.get(player.getUUID()) != invisible || wasModified;
+        playerMap.put(player.getUUID(), invisible);
+        if (wasModified) {
+            NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), target.getBukkitEntity());
         }
     }
 
-    public void setInvisible(EntityTag entity, boolean visible) {
-        if (entity.getBukkitEntity() instanceof ArmorStand) {
-            ((ArmorStand) entity.getBukkitEntity()).setVisible(visible);
+    public void setInvisible(EntityTag entity, boolean invisible) {
+        if (entity.isCitizensNPC()) {
+            entity.getDenizenNPC().getCitizen().getOrAddTrait(InvisibleTrait.class).setInvisible(invisible);
+        }
+        else if (entity.getBukkitEntity() instanceof ArmorStand) {
+            ((ArmorStand) entity.getBukkitEntity()).setVisible(!invisible);
         }
         else if (entity.getBukkitEntity() instanceof ItemFrame) {
-            ((ItemFrame) entity.getBukkitEntity()).setVisible(visible);
+            ((ItemFrame) entity.getBukkitEntity()).setVisible(!invisible);
         }
         else if (entity.isLivingEntity() && !entity.isFake) {
-            if (visible) {
+            entity.getLivingEntity().setInvisible(invisible);
+            if (!invisible) {
+                // Remove the invisibility potion effect for compact with old uses (the command used to add the potion effect)
                 entity.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
-            }
-            else {
-                new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(entity.getLivingEntity());
             }
         }
         else {
-            NMSHandler.entityHelper.setInvisible(entity.getBukkitEntity(), !visible);
+            NMSHandler.entityHelper.setInvisible(entity.getBukkitEntity(), invisible);
         }
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        ElementTag state = scriptEntry.getElement("state");
         EntityTag target = scriptEntry.getObjectTag("target");
+        if (target == null || target.isFake) {
+            Debug.echoError(scriptEntry, "Must specify a valid target.");
+            return;
+        }
+        ElementTag state = scriptEntry.getElement("state");
+        List<PlayerTag> forPlayers = scriptEntry.argForPrefixList("for", PlayerTag.class, true);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), state, target);
+            Debug.report(scriptEntry, getName(), target, state, db("for", forPlayers));
         }
-        if (target.isCitizensNPC()) {
-            NPC npc = target.getDenizenNPC().getCitizen();
-            if (!npc.hasTrait(InvisibleTrait.class)) {
-                npc.addTrait(InvisibleTrait.class);
-            }
-            InvisibleTrait trait = npc.getOrAddTrait(InvisibleTrait.class);
-            switch (Action.valueOf(state.asString().toUpperCase())) {
-                case FALSE:
-                    trait.setInvisible(false);
-                    break;
-                case TRUE:
-                    trait.setInvisible(true);
-                    break;
-                case TOGGLE:
-                    trait.toggle();
-                    break;
-            }
-        }
-        else {
-            switch (Action.valueOf(state.asString().toUpperCase())) {
-                case FALSE:
-                    setInvisible(target, true);
-                    break;
-                case TRUE:
-                    setInvisible(target, false);
-                    break;
-                case TOGGLE:
-                    if (target.getBukkitEntity() instanceof ArmorStand) {
-                        setInvisible(target, !((ArmorStand) target.getBukkitEntity()).isVisible());
+        switch (state.asEnum(Action.class)) {
+            case TRUE:
+            case FALSE:
+                if (forPlayers == null) {
+                    setInvisible(target, state.asBoolean());
+                }
+                else {
+                    boolean invisible = state.asBoolean();
+                    for (PlayerTag player : forPlayers) {
+                        setInvisibleForPlayer(target, player, invisible);
                     }
-                    else if (target.getBukkitEntity() instanceof ItemFrame) {
-                        setInvisible(target, !((ItemFrame) target.getBukkitEntity()).isVisible());
+                }
+                break;
+            case TOGGLE:
+                if (forPlayers == null) {
+                    setInvisible(target, !isInvisible(target.getBukkitEntity(), null, false));
+                }
+                else {
+                    for (PlayerTag player : forPlayers) {
+                        setInvisibleForPlayer(target, player, !isInvisible(target.getBukkitEntity(), player.getUUID(), false));
                     }
-                    else {
-                        setInvisible(target, target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY));
+                }
+                break;
+            case RESET:
+                HashMap<UUID, Boolean> playerMap = invisibleEntities.remove(target.getUUID());
+                if (playerMap != null) {
+                    for (Player player : NMSHandler.entityHelper.getPlayersThatSee(target.getBukkitEntity())) {
+                        if (playerMap.containsKey(player.getUniqueId())) {
+                            NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, target.getBukkitEntity());
+                        }
                     }
-                    break;
-            }
+                }
+                break;
         }
     }
+
+    public static Boolean isInvisible(Entity entity, UUID player, boolean fakeOnly) {
+        if (entity == null) {
+            return null;
+        }
+        if (player != null) {
+            HashMap<UUID, Boolean> playerMap = invisibleEntities.get(entity.getUniqueId());
+            if (playerMap != null && playerMap.containsKey(player)) {
+                return playerMap.get(player);
+            }
+        }
+        if (fakeOnly) {
+            return null;
+        }
+        if (EntityTag.isCitizensNPC(entity)) {
+            InvisibleTrait invisibleTrait = NPCTag.fromEntity(entity).getCitizen().getTraitNullable(InvisibleTrait.class);
+            return invisibleTrait != null && invisibleTrait.isInvisible();
+        }
+        else if (entity instanceof ArmorStand) {
+            return !((ArmorStand) entity).isVisible();
+        }
+        else if (entity instanceof ItemFrame) {
+            return !((ItemFrame) entity).isVisible();
+        }
+        else if (entity instanceof LivingEntity) {
+            return ((LivingEntity) entity).isInvisible();
+        }
+        else {
+            return NMSHandler.entityHelper.isInvisible(entity);
+        }
+    }
+
 }
