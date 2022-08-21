@@ -133,7 +133,7 @@ public class InvisibleCommand extends AbstractCommand {
         else if (entity.isLivingEntity() && !entity.isFake) {
             entity.getLivingEntity().setInvisible(invisible);
             if (!invisible) {
-                // Remove the invisibility potion effect for compact with old uses (the command used to add the potion effect)
+                // Remove the invisibility potion effect for compact with old uses (the command used to add it)
                 entity.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
             }
         }
@@ -214,7 +214,8 @@ public class InvisibleCommand extends AbstractCommand {
             return !((ItemFrame) entity).isVisible();
         }
         else if (entity instanceof LivingEntity) {
-            return ((LivingEntity) entity).isInvisible();
+            // Check for the invisibility potion effect for compact with old uses (the command used to add it)
+            return ((LivingEntity) entity).isInvisible() || ((LivingEntity) entity).hasPotionEffect(PotionEffectType.INVISIBILITY);
         }
         else {
             return NMSHandler.entityHelper.isInvisible(entity);
