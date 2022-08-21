@@ -43,6 +43,7 @@ public class InvisibleCommand extends AbstractCommand {
     // If an NPC was specified, the 'invisible' trait is applied.
     //
     // Optionally specify 'for:' with a list of players to fake the entity's visibility state for these players.
+    // When using the 'toggle' state with the 'for:' argument, the visibility state will be toggled for each player separately.
     // Note that using the 'for:' argument won't apply the 'invisible' trait to NPCs.
     // If unspecified, will be set globally.
     //
