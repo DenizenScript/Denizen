@@ -60,7 +60,7 @@ public class MaterialCount implements Property {
         // @description
         // Returns the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
         // -->
-        PropertyParser.<MaterialCount, ElementTag>registerStaticTag(ElementTag.class, "count", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         }, "pickle_count");
 
@@ -72,7 +72,7 @@ public class MaterialCount implements Property {
         // @description
         // Returns the maximum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
         // -->
-        PropertyParser.<MaterialCount, ElementTag>registerStaticTag(ElementTag.class, "count_max", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count_max", (attribute, material) -> {
             return new ElementTag(material.getMax());
         }, "pickle_max");
 
@@ -84,7 +84,7 @@ public class MaterialCount implements Property {
         // @description
         // Returns the minimum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
         // -->
-        PropertyParser.<MaterialCount, ElementTag>registerStaticTag(ElementTag.class, "count_min", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
         }, "pickle_min");
     }

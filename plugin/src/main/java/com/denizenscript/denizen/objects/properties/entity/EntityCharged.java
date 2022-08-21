@@ -57,7 +57,7 @@ public class EntityCharged implements Property {
         // If the entity is wither_skull, returns whether the skull is charged. Charged skulls are blue.
         // If the entity is a vex, returns whether the vex is charging. Charging vexes have red lines.
         // -->
-        PropertyParser.<EntityCharged, ElementTag>registerTag(ElementTag.class, "charged", (attribute, object) -> {
+        PropertyParser.registerTag(EntityCharged.class, ElementTag.class, "charged", (attribute, object) -> {
             return new ElementTag(object.isCharged());
         });
     }

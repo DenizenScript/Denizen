@@ -46,7 +46,7 @@ public class MaterialNote implements Property {
         // @description
         // Returns the octave of note played from this note block, as 0, 1, or 2.
         // -->
-        PropertyParser.<MaterialNote, ElementTag>registerStaticTag(ElementTag.class, "note_octave", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialNote.class, ElementTag.class, "note_octave", (attribute, material) -> {
             return new ElementTag(material.getNoteBlock().getNote().getOctave());
         });
 
@@ -59,7 +59,7 @@ public class MaterialNote implements Property {
         // Returns the tone of note played from this note block, as a letter from A to F, sometimes with a # to indicate sharp.
         // Like A or A#.
         // -->
-        PropertyParser.<MaterialNote, ElementTag>registerStaticTag(ElementTag.class, "note_tone", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialNote.class, ElementTag.class, "note_tone", (attribute, material) -> {
             Note note = material.getNoteBlock().getNote();
             return new ElementTag(note.getTone().name() + (note.isSharped() ? "#" : ""));
         });
@@ -72,7 +72,7 @@ public class MaterialNote implements Property {
         // @description
         // Returns the note played from this note block, as an ID number from 0 to 24.
         // -->
-        PropertyParser.<MaterialNote, ElementTag>registerStaticTag(ElementTag.class, "note", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialNote.class, ElementTag.class, "note", (attribute, material) -> {
             return new ElementTag(material.getNoteBlock().getNote().getId());
         });
     }

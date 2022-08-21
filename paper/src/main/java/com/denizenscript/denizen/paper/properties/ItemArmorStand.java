@@ -74,7 +74,7 @@ public class ItemArmorStand implements Property {
         // Returns a map of basic armor stand data, with keys matching EntityTag property names.
         // Keys: base_plate, visible, marker, is_small, arms
         // -->
-        PropertyParser.<ItemArmorStand, MapTag>registerTag(MapTag.class, "armor_stand_data", (attribute, item) -> {
+        PropertyParser.registerTag(ItemArmorStand.class, MapTag.class, "armor_stand_data", (attribute, item) -> {
             return item.getDataMap();
         });
     }

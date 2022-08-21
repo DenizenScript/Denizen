@@ -63,7 +63,7 @@ public class TradeInputs implements Property {
         // @description
         // Returns the list of items required to make the trade.
         // -->
-        PropertyParser.<TradeInputs, ListTag>registerTag(ListTag.class, "inputs", (attribute, recipe) -> {
+        PropertyParser.registerTag(TradeInputs.class, ListTag.class, "inputs", (attribute, recipe) -> {
             return recipe.getIngredientsList();
         });
     }

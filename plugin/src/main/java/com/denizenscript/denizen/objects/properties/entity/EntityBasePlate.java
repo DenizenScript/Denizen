@@ -58,7 +58,7 @@ public class EntityBasePlate implements Property {
         // @description
         // If the entity is an armor stand, returns whether the armor stand has a base plate.
         // -->
-        PropertyParser.<EntityBasePlate, ElementTag>registerTag(ElementTag.class, "base_plate", (attribute, object) -> {
+        PropertyParser.registerTag(EntityBasePlate.class, ElementTag.class, "base_plate", (attribute, object) -> {
             return new ElementTag(object.getStand().hasBasePlate());
         });
     }

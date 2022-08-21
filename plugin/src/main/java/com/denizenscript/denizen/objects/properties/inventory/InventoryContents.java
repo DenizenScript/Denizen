@@ -119,7 +119,7 @@ public class InventoryContents implements Property {
         // @description
         // Returns a map of inventory slots to the items in those slots (excludes air).
         // -->
-        PropertyParser.<InventoryContents, MapTag>registerTag(MapTag.class, "map_slots", (attribute, contents) -> {
+        PropertyParser.registerTag(InventoryContents.class, MapTag.class, "map_slots", (attribute, contents) -> {
             MapTag map = new MapTag();
             ItemStack[] items = contents.inventory.getContents();
             for (int i = 0; i < items.length; i++) {
@@ -139,7 +139,7 @@ public class InventoryContents implements Property {
         // @description
         // Returns a list of all items in the inventory.
         // -->
-        PropertyParser.<InventoryContents, ListTag>registerTag(ListTag.class, "list_contents", (attribute, contents) -> {
+        PropertyParser.registerTag(InventoryContents.class, ListTag.class, "list_contents", (attribute, contents) -> {
 
             // <--[tag]
             // @attribute <InventoryTag.list_contents.simple>

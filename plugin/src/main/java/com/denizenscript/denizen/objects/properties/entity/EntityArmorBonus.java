@@ -60,7 +60,7 @@ public class EntityArmorBonus implements Property {
         // @description
         // Returns the entity's base armor bonus.
         // -->
-        PropertyParser.<EntityArmorBonus, ElementTag>registerTag(ElementTag.class, "armor_bonus", (attribute, object) -> {
+        PropertyParser.registerTag(EntityArmorBonus.class, ElementTag.class, "armor_bonus", (attribute, object) -> {
             return new ElementTag(object.getAttribute().getValue());
         });
     }

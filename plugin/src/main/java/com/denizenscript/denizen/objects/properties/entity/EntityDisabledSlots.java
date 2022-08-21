@@ -103,7 +103,7 @@ public class EntityDisabledSlots implements Property {
         // @description
         // Deprecated in favor of <@link tag EntityTag.disabled_slots_data>.
         // -->
-        PropertyParser.<EntityDisabledSlots, ObjectTag>registerTag(ObjectTag.class, "disabled_slots", (attribute, object) -> {
+        PropertyParser.registerTag(EntityDisabledSlots.class, ObjectTag.class, "disabled_slots", (attribute, object) -> {
 
             // <--[tag]
             // @attribute <EntityTag.disabled_slots.raw>
@@ -132,7 +132,7 @@ public class EntityDisabledSlots implements Property {
         // @description
         // If the entity is an armor stand, returns its disabled slots as a map of slot names to list of actions.
         // -->
-        PropertyParser.<EntityDisabledSlots, MapTag>registerTag(MapTag.class, "disabled_slots_data", (attribute, object) -> {
+        PropertyParser.registerTag(EntityDisabledSlots.class, MapTag.class, "disabled_slots_data", (attribute, object) -> {
             return object.getDisabledSlotsMap();
         });
     }

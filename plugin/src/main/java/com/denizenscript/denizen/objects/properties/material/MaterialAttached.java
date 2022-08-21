@@ -54,7 +54,7 @@ public class MaterialAttached implements Property {
         // For a gate, this returns whether it is lowered to attach to a wall block.
         // For a mangrove_propagule, this returns whether it is hanging from the block above it.
         // -->
-        PropertyParser.<MaterialAttached, ElementTag>registerStaticTag(ElementTag.class, "attached", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialAttached.class, ElementTag.class, "attached", (attribute, material) -> {
             if (material.isGate()) {
                 return new ElementTag(material.getGate().isInWall());
             }

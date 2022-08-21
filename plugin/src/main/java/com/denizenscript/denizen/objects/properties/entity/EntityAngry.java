@@ -74,7 +74,7 @@ public class EntityAngry implements Property {
         // If the entity is a wolf or PigZombie, returns whether the entity is angry.
         // If the entity is a Vindicator, returns whether it is in "Johnny" mode.
         // -->
-        PropertyParser.<EntityAngry, ElementTag>registerTag(ElementTag.class, "angry", (attribute, entity) -> {
+        PropertyParser.registerTag(EntityAngry.class, ElementTag.class, "angry", (attribute, entity) -> {
             if (entity.isWolf()) {
                 return new ElementTag(entity.getWolf().isAngry());
             }

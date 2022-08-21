@@ -67,7 +67,7 @@ public class MaterialBlockType implements Property {
         // For cave vines, output is NORMAL or BERRIES.
         // For scaffolding, output is NORMAL or BOTTOM.
         // -->
-        PropertyParser.<MaterialBlockType, ElementTag>registerStaticTag(ElementTag.class, "type", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialBlockType.class, ElementTag.class, "type", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
         }, "slab_type");
     }

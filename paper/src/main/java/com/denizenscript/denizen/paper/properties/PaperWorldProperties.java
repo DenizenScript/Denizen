@@ -54,7 +54,7 @@ public class PaperWorldProperties implements Property {
         // @description
         // Deprecated: replaced by Minecraft's simulation_distance and view_distance config pairing
         // -->
-        PropertyParser.<PaperWorldProperties, ElementTag>registerTag(ElementTag.class, "no_tick_view_distance", (attribute, world) -> {
+        PropertyParser.registerTag(PaperWorldProperties.class, ElementTag.class, "no_tick_view_distance", (attribute, world) -> {
             BukkitImplDeprecations.paperNoTickViewDistance.warn(attribute.context);
             return new ElementTag(world.world.getWorld().getNoTickViewDistance());
         });

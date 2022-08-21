@@ -227,11 +227,11 @@ public class EntityAttributeModifiers implements Property {
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
         // See also <@link language attribute modifiers>.
         // -->
-        PropertyParser.<EntityAttributeModifiers, MapTag>registerTag(MapTag.class, "attribute_modifiers", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAttributeModifiers.class, MapTag.class, "attribute_modifiers", (attribute, object) -> {
             return object.getAttributeModifiers();
         });
 
-        PropertyParser.<EntityAttributeModifiers, ListTag>registerTag(ListTag.class, "attributes", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAttributeModifiers.class, ListTag.class, "attributes", (attribute, object) -> {
             BukkitImplDeprecations.legacyAttributeProperties.warn(attribute.context);
             return object.getAttributes();
         });

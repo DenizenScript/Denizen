@@ -58,7 +58,7 @@ public class EntityFireworkLifetime implements Property {
         // @description
         // Returns the duration that a firework will live for (before detonating).
         // -->
-        PropertyParser.<EntityFireworkLifetime, DurationTag>registerTag(DurationTag.class, "firework_lifetime", (attribute, object) -> {
+        PropertyParser.registerTag(EntityFireworkLifetime.class, DurationTag.class, "firework_lifetime", (attribute, object) -> {
             return object.getDuration();
         });
     }

@@ -47,7 +47,7 @@ public class MaterialFaces implements Property {
         // Returns a list of faces that are valid for a material that has multiple faces.
         // See also <@link tag MaterialTag.faces>
         // -->
-        PropertyParser.<MaterialFaces, ListTag>registerStaticTag(ListTag.class, "valid_faces", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialFaces.class, ListTag.class, "valid_faces", (attribute, material) -> {
             ListTag toReturn = new ListTag();
             for (BlockFace face : material.getFaces().getAllowedFaces()) {
                 toReturn.add(face.name());
@@ -64,7 +64,7 @@ public class MaterialFaces implements Property {
         // Returns a list of the current faces for a material that has multiple faces (like a mushroom block).
         // Output is a direction name like "NORTH".
         // -->
-        PropertyParser.<MaterialFaces, ListTag>registerStaticTag(ListTag.class, "faces", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialFaces.class, ListTag.class, "faces", (attribute, material) -> {
             return material.getFaceList();
         });
     }

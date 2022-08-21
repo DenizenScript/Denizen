@@ -59,7 +59,7 @@ public class MaterialLevel implements Property {
         // @description
         // Returns the maximum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, or farmland.
         // -->
-        PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "maximum_level", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialLevel.class, ElementTag.class, "maximum_level", (attribute, material) -> {
             return new ElementTag(material.getMax());
         });
 
@@ -71,7 +71,7 @@ public class MaterialLevel implements Property {
         // Returns the minimum level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, or farmland.
         // This will return 0 for all valid materials aside from snow.
         // -->
-        PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "minimum_level", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialLevel.class, ElementTag.class, "minimum_level", (attribute, material) -> {
             return new ElementTag(material.getMin());
         });
 
@@ -91,7 +91,7 @@ public class MaterialLevel implements Property {
         // For snow, this is the number of partial layers, or the height, of a snow block.
         // For farmland, this is the moisture level.
         // -->
-        PropertyParser.<MaterialLevel, ElementTag>registerStaticTag(ElementTag.class, "level", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialLevel.class, ElementTag.class, "level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
         });
     }

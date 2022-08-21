@@ -54,7 +54,7 @@ public class EntityMaterial implements Property {
         // For endermen, returns the material the enderman is holding.
         // For minecarts, returns the material the minecart is carrying.
         // -->
-        PropertyParser.<EntityMaterial, MaterialTag>registerTag(MaterialTag.class, "material", (attribute, object) -> {
+        PropertyParser.registerTag(EntityMaterial.class, MaterialTag.class, "material", (attribute, object) -> {
             return object.getMaterial();
         });
     }

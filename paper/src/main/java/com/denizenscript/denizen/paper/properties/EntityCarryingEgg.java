@@ -45,7 +45,7 @@ public class EntityCarryingEgg implements Property {
         // @description
         // If the entity is a turtle, returns whether it is carrying an egg. A turtle that is carrying an egg isn't visually different, but can't breed and will eventually lay the egg.
         // -->
-        PropertyParser.<EntityCarryingEgg, ElementTag>registerTag(ElementTag.class, "carrying_egg", (attribute, entity) -> {
+        PropertyParser.registerTag(EntityCarryingEgg.class, ElementTag.class, "carrying_egg", (attribute, entity) -> {
             return new ElementTag(((Turtle) entity.entity.getBukkitEntity()).hasEgg());
         });
     }

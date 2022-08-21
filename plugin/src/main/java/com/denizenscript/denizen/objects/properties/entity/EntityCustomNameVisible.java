@@ -52,7 +52,7 @@ public class EntityCustomNameVisible implements Property {
         // @description
         // Returns whether the entity's custom name is visible.
         // -->
-        PropertyParser.<EntityCustomNameVisible, ElementTag>registerTag(ElementTag.class, "custom_name_visible", (attribute, object) -> {
+        PropertyParser.registerTag(EntityCustomNameVisible.class, ElementTag.class, "custom_name_visible", (attribute, object) -> {
             return new ElementTag(object.entity.getBukkitEntity().isCustomNameVisible());
         });
     }

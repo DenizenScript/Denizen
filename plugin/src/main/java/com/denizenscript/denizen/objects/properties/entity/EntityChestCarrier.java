@@ -58,7 +58,7 @@ public class EntityChestCarrier implements Property {
         // @description
         // Returns whether a horse-like entity is carrying a chest.
         // -->
-        PropertyParser.<EntityChestCarrier, ElementTag>registerTag(ElementTag.class, "carries_chest", (attribute, object) -> {
+        PropertyParser.registerTag(EntityChestCarrier.class, ElementTag.class, "carries_chest", (attribute, object) -> {
             return new ElementTag(object.getChestedHorse().isCarryingChest());
         });
     }

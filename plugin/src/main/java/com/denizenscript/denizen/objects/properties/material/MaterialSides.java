@@ -69,7 +69,7 @@ public class MaterialSides implements Property {
         // For wall blocks: For n/e/s/w, can be "tall", "low", or "none". For vertical, can be "tall" or "none".
         // For redstone wires: For n/e/s/w, can be "none", "side", or "up". No vertical.
         // -->
-        PropertyParser.<MaterialSides, ListTag>registerStaticTag(ListTag.class, "sides", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialSides.class, ListTag.class, "sides", (attribute, material) -> {
             return material.getSidesList();
         }, "heights");
     }

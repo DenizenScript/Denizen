@@ -58,7 +58,7 @@ public class EntityDirection implements Property {
         // @description
         // Returns the movement/acceleration direction of a fireball entity, as a LocationTag vector.
         // -->
-        PropertyParser.<EntityDirection, LocationTag>registerTag(LocationTag.class, "direction", (attribute, object) -> {
+        PropertyParser.registerTag(EntityDirection.class, LocationTag.class, "direction", (attribute, object) -> {
             return new LocationTag(object.getFireball().getDirection());
         });
     }

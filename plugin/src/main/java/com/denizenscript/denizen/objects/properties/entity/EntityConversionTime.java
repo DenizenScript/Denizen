@@ -64,7 +64,7 @@ public class EntityConversionTime implements Property {
         // When this value hits 0, the conversion completes.
         // See also <@link tag EntityTag.in_water_duration>
         // -->
-        PropertyParser.<EntityConversionTime, DurationTag>registerTag(DurationTag.class, "conversion_duration", (attribute, object) -> {
+        PropertyParser.registerTag(EntityConversionTime.class, DurationTag.class, "conversion_duration", (attribute, object) -> {
             if (!object.isConverting()) {
                 attribute.echoError("This entity is not converting!");
                 return null;
@@ -83,7 +83,7 @@ public class EntityConversionTime implements Property {
         // A husk becoming a zombie, or
         // A skeleton becoming a stray.
         // -->
-        PropertyParser.<EntityConversionTime, ElementTag>registerTag(ElementTag.class, "is_converting", (attribute, object) -> {
+        PropertyParser.registerTag(EntityConversionTime.class, ElementTag.class, "is_converting", (attribute, object) -> {
             return new ElementTag(object.isConverting());
         });
     }

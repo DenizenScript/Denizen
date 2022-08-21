@@ -78,7 +78,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, BiomeTag>registerStaticTag(BiomeTag.class, "as_biome", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitElementProperties.class, BiomeTag.class, "as_biome", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), BiomeTag.valueOf(object.asString(), attribute.context), "BiomeTag", attribute.hasAlternative());
         });
@@ -91,7 +91,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, ChunkTag>registerTag(ChunkTag.class, "as_chunk", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, ChunkTag.class, "as_chunk", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), ChunkTag.valueOf(object.asString(), attribute.context), "ChunkTag", attribute.hasAlternative());
         }, "aschunk");
@@ -104,7 +104,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, ColorTag>registerStaticTag(ColorTag.class, "as_color", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitElementProperties.class, ColorTag.class, "as_color", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(), attribute.context), "ColorTag", attribute.hasAlternative());
         }, "ascolor");
@@ -117,7 +117,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, CuboidTag>registerTag(CuboidTag.class, "as_cuboid", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, CuboidTag.class, "as_cuboid", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(), attribute.context), "CuboidTag", attribute.hasAlternative());
         }, "ascuboid");
@@ -130,7 +130,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, EllipsoidTag>registerTag(EllipsoidTag.class, "as_ellipsoid", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, EllipsoidTag.class, "as_ellipsoid", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), EllipsoidTag.valueOf(object.asString(), attribute.context), "EllipsoidTag", attribute.hasAlternative());
         });
@@ -143,7 +143,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, EnchantmentTag>registerStaticTag(EnchantmentTag.class, "as_enchantment", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitElementProperties.class, EnchantmentTag.class, "as_enchantment", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), EnchantmentTag.valueOf(object.asString(), attribute.context), "EnchantmentTag", attribute.hasAlternative());
         });
@@ -156,7 +156,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, EntityTag>registerTag(EntityTag.class, "as_entity", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, EntityTag.class, "as_entity", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), EntityTag.valueOf(object.asString(), attribute.context), "EntityTag", attribute.hasAlternative());
         }, "asentity");
@@ -169,7 +169,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, InventoryTag>registerTag(InventoryTag.class, "as_inventory", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, InventoryTag.class, "as_inventory", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), InventoryTag.valueOf(object.asString(), attribute.context), "InventoryTag", attribute.hasAlternative());
         }, "asinventory");
@@ -182,7 +182,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, ItemTag>registerTag(ItemTag.class, "as_item", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, ItemTag.class, "as_item", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), ItemTag.valueOf(object.asString(), attribute.context), "ItemTag", attribute.hasAlternative());
         }, "asitem");
@@ -195,7 +195,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, LocationTag>registerTag(LocationTag.class, "as_location", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, LocationTag.class, "as_location", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), LocationTag.valueOf(object.asString(), attribute.context), "LocationTag", attribute.hasAlternative());
         }, "aslocation");
@@ -208,7 +208,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, MaterialTag>registerStaticTag(MaterialTag.class, "as_material", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitElementProperties.class, MaterialTag.class, "as_material", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), MaterialTag.valueOf(object.asString(), attribute.context), "MaterialTag", attribute.hasAlternative());
         }, "asmaterial");
@@ -221,7 +221,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, NPCTag>registerTag(NPCTag.class, "as_npc", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, NPCTag.class, "as_npc", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), NPCTag.valueOf(object.asString(), attribute.context), "NPCTag", attribute.hasAlternative());
         }, "asnpc");
@@ -234,7 +234,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, PlayerTag>registerTag(PlayerTag.class, "as_player", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, PlayerTag.class, "as_player", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), PlayerTag.valueOf(object.asString(), attribute.context), "PlayerTag", attribute.hasAlternative());
         }, "asplayer");
@@ -247,7 +247,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, PluginTag>registerStaticTag(PluginTag.class, "as_plugin", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitElementProperties.class, PluginTag.class, "as_plugin", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(), attribute.context), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
@@ -260,7 +260,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.<BukkitElementProperties, PolygonTag>registerTag(PolygonTag.class, "as_polygon", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitElementProperties.class, PolygonTag.class, "as_polygon", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), PolygonTag.valueOf(object.asString(), attribute.context), "PolygonTag", attribute.hasAlternative());
         });

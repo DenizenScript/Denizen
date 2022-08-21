@@ -50,7 +50,7 @@ public class TradeSpecialPrice implements Property {
         // @description
         // Returns the special price for this trade.
         // -->
-        PropertyParser.<TradeSpecialPrice, ElementTag>registerTag(ElementTag.class, "special_price", (attribute, recipe) -> {
+        PropertyParser.registerTag(TradeSpecialPrice.class, ElementTag.class, "special_price", (attribute, recipe) -> {
             return new ElementTag(recipe.recipe.getRecipe().getSpecialPrice());
         });
     }

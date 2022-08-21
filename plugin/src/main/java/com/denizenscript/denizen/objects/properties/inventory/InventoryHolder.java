@@ -56,7 +56,7 @@ public class InventoryHolder implements Property {
         // @description
         // Returns Denizen's holder ID for this inventory. (player object, location object, etc.)
         // -->
-        PropertyParser.<InventoryHolder, ObjectTag>registerTag(ObjectTag.class, "id_holder", (attribute, object) -> {
+        PropertyParser.registerTag(InventoryHolder.class, ObjectTag.class, "id_holder", (attribute, object) -> {
             return object.inventory.getIdHolder();
         });
 
@@ -67,7 +67,7 @@ public class InventoryHolder implements Property {
         // @description
         // Returns the script that this inventory came from (if any).
         // -->
-        PropertyParser.<InventoryHolder, ScriptTag>registerTag(ScriptTag.class, "script", (attribute, object) -> {
+        PropertyParser.registerTag(InventoryHolder.class, ScriptTag.class, "script", (attribute, object) -> {
             ObjectTag holder = object.inventory.getIdHolder();
             if (holder instanceof ScriptTag) {
                 return ((ScriptTag) holder).validate();

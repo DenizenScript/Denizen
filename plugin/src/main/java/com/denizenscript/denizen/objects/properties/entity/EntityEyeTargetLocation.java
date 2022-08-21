@@ -44,7 +44,7 @@ public class EntityEyeTargetLocation implements Property {
         // @description
         // Returns a thrown eye of ender's target location - the location it's moving towards, which in vanilla is a stronghold location.
         // -->
-        PropertyParser.<EntityEyeTargetLocation, LocationTag>registerTag(LocationTag.class, "ender_eye_target_location", (attribute, entity) -> {
+        PropertyParser.registerTag(EntityEyeTargetLocation.class, LocationTag.class, "ender_eye_target_location", (attribute, entity) -> {
             return new LocationTag(((EnderSignal) entity.entity.getBukkitEntity()).getTargetLocation());
         });
     }

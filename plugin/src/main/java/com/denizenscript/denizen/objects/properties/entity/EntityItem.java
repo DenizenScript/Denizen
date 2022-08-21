@@ -139,7 +139,7 @@ public class EntityItem implements Property {
         // If the entity is an eye-of-ender, returns the item to be displayed and dropped by it.
         // If the entity is a fireball, returns the fireball's display item.
         // -->
-        PropertyParser.<EntityItem, ItemTag>registerTag(ItemTag.class, "item", (attribute, object) -> {
+        PropertyParser.registerTag(EntityItem.class, ItemTag.class, "item", (attribute, object) -> {
             return object.getItem(true, attribute.context);
         });
     }

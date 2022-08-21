@@ -118,7 +118,7 @@ public class ItemFirework implements Property {
         // Returns the firework's property value as a list, matching the non-MapTag format of the mechanism.
         // Consider instead using <@link tag ItemTag.firework_data>
         // -->
-        PropertyParser.<ItemFirework, ListTag>registerTag(ListTag.class, "firework", (attribute, object) -> {
+        PropertyParser.registerTag(ItemFirework.class, ListTag.class, "firework", (attribute, object) -> {
             return object.getFireworkData();
         });
 
@@ -130,7 +130,7 @@ public class ItemFirework implements Property {
         // @description
         // Returns the firework's property value as a ListTag of MapTags, matching the MapTag format of the mechanism.
         // -->
-        PropertyParser.<ItemFirework, ListTag>registerTag(ListTag.class, "firework_data", (attribute, object) -> {
+        PropertyParser.registerTag(ItemFirework.class, ListTag.class, "firework_data", (attribute, object) -> {
             return object.getFireworkDataMap();
         });
 
@@ -143,7 +143,7 @@ public class ItemFirework implements Property {
         // Returns the firework's power.
         // Power primarily affects how high the firework flies, with each level of power corresponding to approximately half a second of additional flight them.
         // -->
-        PropertyParser.<ItemFirework, ElementTag>registerTag(ElementTag.class, "firework_power", (attribute, object) -> {
+        PropertyParser.registerTag(ItemFirework.class, ElementTag.class, "firework_power", (attribute, object) -> {
             ItemMeta meta = object.item.getItemMeta();
             return meta instanceof FireworkMeta ? new ElementTag(((FireworkMeta) meta).getPower()) : null;
         });

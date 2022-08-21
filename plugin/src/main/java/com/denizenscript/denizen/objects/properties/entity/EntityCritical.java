@@ -58,7 +58,7 @@ public class EntityCritical implements Property {
         // @description
         // If the entity is an arrow or trident, returns whether the arrow/trident is critical.
         // -->
-        PropertyParser.<EntityCritical, ElementTag>registerTag(ElementTag.class, "critical", (attribute, object) -> {
+        PropertyParser.registerTag(EntityCritical.class, ElementTag.class, "critical", (attribute, object) -> {
             return new ElementTag(object.getAbstractArrow().isCritical());
         });
     }

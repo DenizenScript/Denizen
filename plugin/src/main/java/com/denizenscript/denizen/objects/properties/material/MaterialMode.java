@@ -75,7 +75,7 @@ public class MaterialMode implements Property {
         // For sculk_catalysts, output is BLOOM or NORMAL.
         // For sculk_shriekers, output is SHRIEKING or NORMAL.
         // -->
-        PropertyParser.<MaterialMode, ElementTag>registerStaticTag(ElementTag.class, "mode", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialMode.class, ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
         });
     }

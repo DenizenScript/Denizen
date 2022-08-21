@@ -60,7 +60,7 @@ public class EntityBeamTarget implements Property {
         // @description
         // Returns the target location of the ender crystal's beam, if any.
         // -->
-        PropertyParser.<EntityBeamTarget, LocationTag>registerTag(LocationTag.class, "beam_target", (attribute, object) -> {
+        PropertyParser.registerTag(EntityBeamTarget.class, LocationTag.class, "beam_target", (attribute, object) -> {
             Location beamTarget = object.getCrystal().getBeamTarget();
             if (beamTarget != null) {
                 return new LocationTag(beamTarget);
