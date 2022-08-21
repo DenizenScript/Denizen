@@ -172,7 +172,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerClicksInInventoryScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClosesInvScriptEvent.class);
         if (!Denizen.supportsPaper) {
-            ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.PlayerCompletesAdvancementSpigotScriptEvent.class);
+            ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerConsumesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerCraftsItemScriptEvent.class);

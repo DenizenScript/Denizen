@@ -3,13 +3,9 @@ package com.denizenscript.denizen.paper.events;
 import com.denizenscript.denizen.events.player.PlayerCompletesAdvancementScriptEvent;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerCompletesAdvancementScriptEvent {
 
@@ -19,42 +15,27 @@ public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerComple
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("criteria")) {
-            ListTag criteria = new ListTag();
-            criteria.addAll(event.getAdvancement().getCriteria());
-            return criteria;
-        }
-        else if (name.equals("advancement")) {
-            return new ElementTag(event.getAdvancement().getKey().getKey());
-        }
-        else if (name.equals("message")) {
-            return new ElementTag(PaperModule.stringifyComponent(event.message(), ChatColor.WHITE));
+        switch (name) {
+            case "message": return new ElementTag(PaperModule.stringifyComponent(event.message(), ChatColor.WHITE));
         }
         return super.getContext(name);
     }
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("no_message")) {
-            event.message(null);
-            return true;
-        }
-        else if (event instanceof PlayerAdvancementDoneEvent) {
-            event.message(Component.text(determination));
+        if (determinationObj instanceof ElementTag) {
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.equals("no_message")) {
+                event.message(null);
+                return true;
+            }
+            event.message(PaperModule.parseFormattedText(determination, ChatColor.WHITE));
             return true;
         }
         else {
             return super.applyDetermination(path, determinationObj);
         }
-    }
-
-    @EventHandler
-    public void onPlayerCompletesAdvancement(PlayerAdvancementDoneEvent event) {
-        // TODO: Should this not fire if it's a 'fake' advancement created by Denizen?
-        this.event = event;
-        fire(event);
     }
 }
 
