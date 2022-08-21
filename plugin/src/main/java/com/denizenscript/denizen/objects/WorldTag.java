@@ -219,11 +219,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public String getObjectType() {
-        return "World";
-    }
-
-    @Override
     public String identify() {
         return "w@" + world_name;
 

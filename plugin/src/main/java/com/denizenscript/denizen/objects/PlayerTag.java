@@ -583,11 +583,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
-    public String getObjectType() {
-        return "Player";
-    }
-
-    @Override
     public String identify() {
         return "p@" + uuid;
     }

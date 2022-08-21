@@ -137,11 +137,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public String getObjectType() {
-        return "Biome";
-    }
-
-    @Override
     public String identify() {
         return "b@" + biome.world.getName() + "," + biome.getName();
     }

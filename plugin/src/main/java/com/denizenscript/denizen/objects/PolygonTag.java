@@ -448,11 +448,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     String prefix = "Polygon";
 
     @Override
-    public String getObjectType() {
-        return "polygon";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

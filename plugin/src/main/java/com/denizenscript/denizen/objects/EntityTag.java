@@ -1072,11 +1072,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     private String prefix = "Entity";
 
     @Override
-    public String getObjectType() {
-        return "Entity";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

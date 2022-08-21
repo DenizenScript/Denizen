@@ -103,11 +103,6 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     private String prefix = "Enchantment";
 
     @Override
-    public String getObjectType() {
-        return "Enchantment";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

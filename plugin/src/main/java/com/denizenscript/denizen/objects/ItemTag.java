@@ -428,7 +428,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     //  DSCRIPT ARGUMENT METHODS
     /////////////////////////
 
-    private String prefix = getObjectType();
+    private String prefix = "Item";
 
     @Override
     public String getPrefix() {
@@ -439,11 +439,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     public ItemTag setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
-    }
-
-    @Override
-    public String getObjectType() {
-        return "Item";
     }
 
     @Override

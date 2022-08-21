@@ -219,11 +219,6 @@ public class ColorTag implements ObjectTag {
     }
 
     @Override
-    public String getObjectType() {
-        return "Color";
-    }
-
-    @Override
     public String identify() {
         String name = nameByColor.get(this);
         if (name != null) {

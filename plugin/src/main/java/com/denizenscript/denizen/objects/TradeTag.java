@@ -128,11 +128,6 @@ public class TradeTag implements ObjectTag, Adjustable {
     }
 
     @Override
-    public String getObjectType() {
-        return "Trade";
-    }
-
-    @Override
     public String debuggable() {
         return "<LG>trade@trade<Y>" + PropertyParser.getPropertiesDebuggable(this);
     }
