@@ -35,10 +35,8 @@ public class PlayerPickupArrowScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerPickupArrowScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPickupArrowScriptEvent instance;
 
     public PlayerPickupArrowEvent event;
 

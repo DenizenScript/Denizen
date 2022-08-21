@@ -34,12 +34,10 @@ public class ChunkLoadEntitiesScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public ChunkLoadEntitiesScriptEvent() {
-        instance = this;
         registerCouldMatcher("chunk loads entities");
         registerSwitches("entity_type", "include_empty");
     }
 
-    public static ChunkLoadEntitiesScriptEvent instance;
 
     public ChunkTag chunk;
     public EntitiesLoadEvent event;

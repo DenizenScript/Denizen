@@ -23,11 +23,9 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public WorldInitsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<world> initializes");
     }
 
-    public static WorldInitsScriptEvent instance;
     public WorldTag world;
     public WorldInitEvent event;
 

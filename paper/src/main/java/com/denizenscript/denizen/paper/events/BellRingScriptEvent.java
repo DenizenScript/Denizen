@@ -35,11 +35,9 @@ public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public BellRingScriptEvent() {
-        instance = this;
         registerCouldMatcher("bell rings");
     }
 
-    public static BellRingScriptEvent instance;
     public BellRingEvent event;
     public LocationTag location;
 

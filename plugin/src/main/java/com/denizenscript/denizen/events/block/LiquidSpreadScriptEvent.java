@@ -34,14 +34,12 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public LiquidSpreadScriptEvent() {
-        instance = this;
         registerCouldMatcher("liquid spreads");
         registerCouldMatcher("<block> spreads"); // NOTE: exists for historical compat reasons.
         registerCouldMatcher("dragon egg moves"); // TODO: this should just be a separate event?
         registerSwitches("type");
     }
 
-    public static LiquidSpreadScriptEvent instance;
     public MaterialTag material;
     public LocationTag location;
     public LocationTag destination;

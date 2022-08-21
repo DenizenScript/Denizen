@@ -44,12 +44,10 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public EntityKnocksbackEntityScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> knocks back <entity>");
         registerSwitches("with");
     }
 
-    public static EntityKnocksbackEntityScriptEvent instance;
 
     public EntityTag entity;
     public EntityTag hitBy;

@@ -31,11 +31,9 @@ public class EntityAddToWorldScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public EntityAddToWorldScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> added to world");
     }
 
-    public static EntityAddToWorldScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityAddToWorldEvent event;

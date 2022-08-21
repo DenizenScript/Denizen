@@ -47,12 +47,10 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public LootGenerateScriptEvent() {
-        instance = this;
         registerCouldMatcher("loot generates");
         registerSwitches("for");
     }
 
-    public static LootGenerateScriptEvent instance;
     public LootGenerateEvent event;
 
     @Override

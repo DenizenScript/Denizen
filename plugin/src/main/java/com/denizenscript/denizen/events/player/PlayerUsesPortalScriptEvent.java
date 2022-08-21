@@ -49,10 +49,8 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     public PlayerUsesPortalScriptEvent() {
         registerCouldMatcher("player uses portal");
         registerSwitches("from", "to");
-        instance = this;
     }
 
-    public static PlayerUsesPortalScriptEvent instance;
     public LocationTag to;
     public LocationTag from;
     public PlayerPortalEvent event;

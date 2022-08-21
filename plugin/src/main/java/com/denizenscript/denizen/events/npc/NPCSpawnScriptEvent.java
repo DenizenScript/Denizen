@@ -32,11 +32,9 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public NPCSpawnScriptEvent() {
-        instance = this;
         registerCouldMatcher("npc spawns");
     }
 
-    public static NPCSpawnScriptEvent instance;
     public NPCTag npc;
     public LocationTag location;
     public NPCSpawnEvent event;

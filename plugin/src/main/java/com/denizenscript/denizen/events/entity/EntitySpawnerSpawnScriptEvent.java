@@ -33,11 +33,9 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public EntitySpawnerSpawnScriptEvent() {
-        instance = this;
         registerCouldMatcher("spawner spawns <entity>");
     }
 
-    public static EntitySpawnerSpawnScriptEvent instance;
     private EntityTag entity;
     private LocationTag location;
     private LocationTag spawnerLocation;

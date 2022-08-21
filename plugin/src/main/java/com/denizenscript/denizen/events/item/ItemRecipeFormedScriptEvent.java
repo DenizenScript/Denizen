@@ -41,11 +41,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public ItemRecipeFormedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> recipe formed");
     }
 
-    public static ItemRecipeFormedScriptEvent instance;
 
     public PrepareItemCraftEvent event;
     public ItemTag result;

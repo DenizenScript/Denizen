@@ -30,11 +30,9 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public PlayerChangesGamemodeScriptEvent() {
-        instance = this;
         registerCouldMatcher("player changes gamemode (to <'gamemode'>)");
     }
 
-    public static PlayerChangesGamemodeScriptEvent instance;
     public ElementTag gamemode;
     public PlayerGameModeChangeEvent event;
 

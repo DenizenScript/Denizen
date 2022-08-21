@@ -33,10 +33,8 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public PlayerChangesWorldScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerChangesWorldScriptEvent instance;
     public WorldTag origin_world;
     public WorldTag destination_world;
     public PlayerChangedWorldEvent event;

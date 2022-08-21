@@ -55,12 +55,10 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public CommandScriptEvent() {
-        instance = this;
         registerCouldMatcher("command");
         registerCouldMatcher("<'command_name'> command");
     }
 
-    public static CommandScriptEvent instance;
     public String commandName;
     public String fullMessage;
     public String sourceType;

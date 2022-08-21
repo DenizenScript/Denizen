@@ -44,10 +44,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public PlayerPreparesAnvilCraftScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPreparesAnvilCraftScriptEvent instance;
     public PrepareAnvilEvent event;
     public ItemTag result;
     public PlayerTag player;

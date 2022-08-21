@@ -53,10 +53,8 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerPreLoginScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPreLoginScriptEvent instance;
     public AsyncPlayerPreLoginEvent event;
     public PlayerTag player;
     public List<QueueTag> waitForQueues = new ArrayList<>();

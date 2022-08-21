@@ -35,11 +35,9 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public EntityExitsVehicleScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> exits <entity>");
     }
 
-    public static EntityExitsVehicleScriptEvent instance;
     public EntityTag vehicle;
     public EntityTag entity;
     public EntityDismountEvent event;

@@ -38,10 +38,8 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerChangesXPScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerChangesXPScriptEvent instance;
     public PlayerExpChangeEvent event;
     public PlayerTag player;
 

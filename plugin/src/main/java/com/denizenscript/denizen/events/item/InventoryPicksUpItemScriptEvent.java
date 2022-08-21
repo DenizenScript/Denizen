@@ -31,11 +31,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public InventoryPicksUpItemScriptEvent() {
-        instance = this;
         registerCouldMatcher("<inventory> picks up <item>");
     }
 
-    public static InventoryPicksUpItemScriptEvent instance;
     public InventoryTag inventory;
     public ItemTag item;
     public InventoryPickupItemEvent event;

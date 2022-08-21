@@ -45,10 +45,8 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
     //
     // -->
     public ProjectileHitsEntityScriptEvent() {
-        instance = this;
     }
 
-    public static ProjectileHitsEntityScriptEvent instance;
     public EntityTag projectile;
     public EntityTag shooter;
     public EntityTag hitEntity;

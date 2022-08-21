@@ -33,11 +33,9 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public HangingBreaksScriptEvent() {
-        instance = this;
         registerCouldMatcher("<hanging> breaks (because <'cause'>)");
     }
 
-    public static HangingBreaksScriptEvent instance;
     public ElementTag cause;
     public EntityTag entity;
     public EntityTag hanging;

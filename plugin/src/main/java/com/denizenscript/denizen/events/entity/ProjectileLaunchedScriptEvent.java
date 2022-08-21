@@ -32,10 +32,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public ProjectileLaunchedScriptEvent() {
-        instance = this;
     }
 
-    public static ProjectileLaunchedScriptEvent instance;
     public EntityTag projectile;
     private LocationTag location;
     public ProjectileLaunchEvent event;

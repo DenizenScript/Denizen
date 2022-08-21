@@ -52,11 +52,9 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public UnknownCommandScriptEvent() {
-        instance = this;
         registerCouldMatcher("command unknown");
     }
 
-    public static UnknownCommandScriptEvent instance;
     public UnknownCommandEvent event;
     public String command;
     public String rawArgs;

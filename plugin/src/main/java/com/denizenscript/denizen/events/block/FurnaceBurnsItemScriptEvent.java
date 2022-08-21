@@ -34,11 +34,9 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public FurnaceBurnsItemScriptEvent() {
-        instance = this;
         registerCouldMatcher("furnace burns <item>");
     }
 
-    public static FurnaceBurnsItemScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public FurnaceBurnEvent event;

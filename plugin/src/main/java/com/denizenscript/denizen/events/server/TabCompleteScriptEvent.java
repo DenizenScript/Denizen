@@ -40,11 +40,9 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public TabCompleteScriptEvent() {
-        instance = this;
         registerCouldMatcher("tab complete");
     }
 
-    public static TabCompleteScriptEvent instance;
     public TabCompleteEvent event;
 
     public String getCommand() {

@@ -34,10 +34,8 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerOpensInvScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
 
     public InventoryTag inventory;
     public InventoryOpenEvent event;

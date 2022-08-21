@@ -41,13 +41,11 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     //
     // -->
 
-    public static PlayerRightClicksEntityScriptEvent instance;
     PlayerInteractEntityEvent event;
     EntityTag entity;
     ItemTag item;
 
     public PlayerRightClicksEntityScriptEvent() {
-        instance = this;
         registerCouldMatcher("player right clicks <entity>");
         registerSwitches("with", "type");
     }

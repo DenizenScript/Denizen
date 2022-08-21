@@ -25,11 +25,9 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public WorldUnloadsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<world> unloads");
     }
 
-    public static WorldUnloadsScriptEvent instance;
     public WorldTag world;
     public WorldUnloadEvent event;
 

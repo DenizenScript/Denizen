@@ -30,11 +30,9 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public ChunkLoadScriptEvent() {
-        instance = this;
         registerCouldMatcher("chunk loads (for the first time)");
     }
 
-    public static ChunkLoadScriptEvent instance;
 
     public ChunkTag chunk;
     public ChunkLoadEvent event;

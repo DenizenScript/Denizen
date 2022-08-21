@@ -32,11 +32,9 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public ItemSpawnsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> spawns");
     }
 
-    public static ItemSpawnsScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public EntityTag entity;

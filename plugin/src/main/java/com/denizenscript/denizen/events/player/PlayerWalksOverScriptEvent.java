@@ -36,12 +36,10 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerWalksOverScriptEvent() {
-        instance = this;
         registerCouldMatcher("player walks over notable");
         registerCouldMatcher("player walks over <'location'>");
     }
 
-    public static PlayerWalksOverScriptEvent instance;
     public String notable;
     public PlayerMoveEvent event;
 

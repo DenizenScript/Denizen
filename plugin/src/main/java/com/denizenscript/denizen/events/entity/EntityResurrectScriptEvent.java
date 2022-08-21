@@ -31,11 +31,9 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityResurrectScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> resurrected");
     }
 
-    public static EntityResurrectScriptEvent instance;
     public EntityTag entity;
     public EntityResurrectEvent event;
 

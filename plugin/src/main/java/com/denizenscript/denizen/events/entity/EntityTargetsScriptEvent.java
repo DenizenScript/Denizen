@@ -39,11 +39,9 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public EntityTargetsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> targets (<entity>) (because <'cause'>)");
     }
 
-    public static EntityTargetsScriptEvent instance;
     public EntityTag entity;
     public ElementTag reason;
     public EntityTag target;

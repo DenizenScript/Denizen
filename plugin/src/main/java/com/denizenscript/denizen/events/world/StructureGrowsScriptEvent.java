@@ -42,12 +42,10 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public StructureGrowsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<'structure/plant'> grows (naturally)");
         registerCouldMatcher("<'structure/plant'> grows from bonemeal");
     }
 
-    public static StructureGrowsScriptEvent instance;
     public StructureGrowEvent event;
 
     @Override

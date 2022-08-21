@@ -50,11 +50,9 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public AreaEnterExitScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> enters|exits <area>");
     }
 
-    public static AreaEnterExitScriptEvent instance;
 
     public EntityTag currentEntity;
     public AreaContainmentObject area;

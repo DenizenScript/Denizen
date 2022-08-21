@@ -29,11 +29,9 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public BlockFormsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> forms");
     }
 
-    public static BlockFormsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockFormEvent event;

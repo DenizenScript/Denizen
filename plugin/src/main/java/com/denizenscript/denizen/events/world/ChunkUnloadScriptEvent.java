@@ -31,11 +31,9 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public ChunkUnloadScriptEvent() {
-        instance = this;
         registerCouldMatcher("chunk unloads");
     }
 
-    public static ChunkUnloadScriptEvent instance;
 
     public ChunkTag chunk;
     public ChunkUnloadEvent event;

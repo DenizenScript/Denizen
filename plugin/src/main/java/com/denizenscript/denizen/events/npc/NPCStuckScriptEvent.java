@@ -36,11 +36,9 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public NPCStuckScriptEvent() {
-        instance = this;
         registerCouldMatcher("npc stuck");
     }
 
-    public static NPCStuckScriptEvent instance;
     public NavigationStuckEvent event;
     public NPCTag npc;
 

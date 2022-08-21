@@ -35,10 +35,8 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
     // -->
 
     public VillagerChangesProfessionScriptEvent() {
-        instance = this;
     }
 
-    public static VillagerChangesProfessionScriptEvent instance;
     public EntityTag entity;
     public VillagerCareerChangeEvent event;
 

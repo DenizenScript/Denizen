@@ -37,11 +37,9 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public HorseJumpsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> jumps");
     }
 
-    public static HorseJumpsScriptEvent instance;
     public EntityTag entity;
     public ElementTag color;
     public HorseJumpEvent event;

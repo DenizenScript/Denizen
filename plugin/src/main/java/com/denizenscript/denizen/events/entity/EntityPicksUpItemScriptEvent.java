@@ -46,12 +46,10 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public EntityPicksUpItemScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> picks up <item>");
         registerCouldMatcher("<entity> takes <item>");
     }
 
-    public static EntityPicksUpItemScriptEvent instance;
     public ItemTag item;
     public EntityTag entity;
     public LocationTag location;

@@ -33,10 +33,8 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public VehicleMoveScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleMoveScriptEvent instance;
     public EntityTag vehicle;
     public LocationTag from;
     public LocationTag to;

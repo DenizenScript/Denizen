@@ -38,10 +38,8 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     // -->
 
     public PlayerCompletesAdvancementScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerCompletesAdvancementScriptEvent instance;
     public PlayerAdvancementDoneEvent event;
 
     @Override

@@ -36,10 +36,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PlayerFlyingScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerFlyingScriptEvent instance;
     public boolean state;
     public PlayerToggleFlightEvent event;
 

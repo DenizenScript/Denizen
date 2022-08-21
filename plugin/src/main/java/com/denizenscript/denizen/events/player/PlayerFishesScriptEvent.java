@@ -52,13 +52,11 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PlayerFishesScriptEvent() {
-        instance = this;
         registerCouldMatcher("player fishes (<entity>) (while <'state'>)");
         registerCouldMatcher("player fishes (<item>) (while <'state'>)");
         registerSwitches("with");
     }
 
-    public static PlayerFishesScriptEvent instance;
     public EntityTag hook;
     public ElementTag state;
     public EntityTag entity;

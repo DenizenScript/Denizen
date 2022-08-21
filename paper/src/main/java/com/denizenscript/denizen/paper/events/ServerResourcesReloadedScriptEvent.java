@@ -27,12 +27,10 @@ public class ServerResourcesReloadedScriptEvent extends BukkitScriptEvent implem
     // -->
 
     public ServerResourcesReloadedScriptEvent() {
-        instance = this;
         registerCouldMatcher("server resources reloaded");
         registerSwitches("cause");
     }
 
-    public static ServerResourcesReloadedScriptEvent instance;
     public ElementTag cause;
 
     @Override

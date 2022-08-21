@@ -40,10 +40,8 @@ public class PlayersPrepareSmithingTableScriptEvent extends BukkitScriptEvent im
     // -->
 
     public PlayersPrepareSmithingTableScriptEvent() {
-        instance = this;
     }
 
-    public static PlayersPrepareSmithingTableScriptEvent instance;
     public PrepareSmithingEvent event;
     public ItemTag result;
     public PlayerTag player;

@@ -10,7 +10,6 @@ import net.md_5.bungee.api.ChatColor;
 public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerCompletesAdvancementScriptEvent {
 
     public PlayerCompletesAdvancementScriptEventPaperImpl() {
-        instance = this;
     }
 
     @Override
@@ -38,4 +37,3 @@ public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerComple
         }
     }
 }
-

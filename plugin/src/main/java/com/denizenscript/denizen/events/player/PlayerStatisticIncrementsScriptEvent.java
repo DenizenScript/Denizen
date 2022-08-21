@@ -37,12 +37,10 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     // -->
 
     public PlayerStatisticIncrementsScriptEvent() {
-        instance = this;
         registerCouldMatcher("player statistic increments");
         registerCouldMatcher("player statistic <'statistic'> increments");
     }
 
-    public static PlayerStatisticIncrementsScriptEvent instance;
     public Statistic statistic;
     public PlayerStatisticIncrementEvent event;
 

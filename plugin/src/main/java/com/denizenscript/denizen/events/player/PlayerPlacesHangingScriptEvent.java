@@ -41,12 +41,10 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public PlayerPlacesHangingScriptEvent() {
-        instance = this;
         registerCouldMatcher("player places <hanging>");
         registerSwitches("item");
     }
 
-    public static PlayerPlacesHangingScriptEvent instance;
     public EntityTag hanging;
     public ItemTag item;
     public LocationTag location;

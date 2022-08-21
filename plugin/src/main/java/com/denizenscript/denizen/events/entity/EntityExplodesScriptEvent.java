@@ -42,11 +42,9 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public EntityExplodesScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> explodes");
     }
 
-    public static EntityExplodesScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityExplodeEvent event;

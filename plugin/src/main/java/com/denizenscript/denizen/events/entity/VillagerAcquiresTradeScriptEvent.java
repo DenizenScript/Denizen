@@ -33,10 +33,8 @@ public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public VillagerAcquiresTradeScriptEvent() {
-        instance = this;
     }
 
-    public static VillagerAcquiresTradeScriptEvent instance;
     public EntityTag entity;
     public VillagerAcquireTradeEvent event;
 

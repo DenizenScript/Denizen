@@ -35,11 +35,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public BlockBuiltScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> being built (on <block>)");
     }
 
-    public static BlockBuiltScriptEvent instance;
     public LocationTag location;
     public MaterialTag old_material;
     public MaterialTag new_material;

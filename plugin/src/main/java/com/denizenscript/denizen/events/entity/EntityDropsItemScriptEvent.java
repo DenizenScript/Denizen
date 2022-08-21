@@ -38,11 +38,9 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityDropsItemScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> drops <item>");
     }
 
-    public static EntityDropsItemScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public EntityTag itemEntity;

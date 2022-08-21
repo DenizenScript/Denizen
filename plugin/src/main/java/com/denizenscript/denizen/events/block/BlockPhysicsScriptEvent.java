@@ -40,12 +40,10 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public BlockPhysicsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> physics");
         registerSwitches("adjacent");
     }
 
-    public static BlockPhysicsScriptEvent instance;
 
     public LocationTag location;
     public MaterialTag material;

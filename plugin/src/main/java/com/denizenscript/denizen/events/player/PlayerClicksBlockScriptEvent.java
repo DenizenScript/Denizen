@@ -49,7 +49,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerClicksBlockScriptEvent() {
-        instance = this;
         registerCouldMatcher("player (right|left) clicks <block>");
         registerSwitches("with", "using", "type");
     }

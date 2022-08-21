@@ -41,10 +41,8 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public BlockDropsItemScriptEvent() {
-        instance = this;
     }
 
-    public static BlockDropsItemScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockDropItemEvent event;

@@ -40,11 +40,9 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PreEntitySpawnScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> prespawns (because <'cause'>)");
     }
 
-    public static PreEntitySpawnScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public PreCreatureSpawnEvent event;

@@ -37,12 +37,10 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public DragonPhaseChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> changes phase");
         registerSwitches("from", "to");
     }
 
-    public static DragonPhaseChangeScriptEvent instance;
     public EntityTag entity;
     public EnderDragonChangePhaseEvent event;
 

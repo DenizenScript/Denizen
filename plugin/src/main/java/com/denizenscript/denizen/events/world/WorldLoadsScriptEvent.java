@@ -23,11 +23,9 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public WorldLoadsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<world> loads");
     }
 
-    public static WorldLoadsScriptEvent instance;
     public WorldTag world;
     public WorldLoadEvent event;
 

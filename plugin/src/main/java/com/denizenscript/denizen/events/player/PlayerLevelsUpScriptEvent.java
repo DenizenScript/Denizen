@@ -32,11 +32,9 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerLevelsUpScriptEvent() {
-        instance = this;
         registerCouldMatcher("player levels up (from <'level'>) (to <'level'>)");
     }
 
-    public static PlayerLevelsUpScriptEvent instance;
     public int new_level;
     public int old_level;
     public PlayerTag player;

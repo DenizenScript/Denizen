@@ -45,12 +45,10 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerElytraBoostScriptEvent() {
-        instance = this;
         registerCouldMatcher("player boosts elytra");
         registerSwitches("with", "elytra");
     }
 
-    public static PlayerElytraBoostScriptEvent instance;
     public PlayerElytraBoostEvent event;
     public ItemTag firework;
     public PlayerTag player;

@@ -37,10 +37,8 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public ExperienceBottleBreaksScriptEvent() {
-        instance = this;
     }
 
-    public static ExperienceBottleBreaksScriptEvent instance;
     public ExpBottleEvent event;
 
     @Override

@@ -35,11 +35,9 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityGlideScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> toggles|starts|stops gliding");
     }
 
-    public static EntityGlideScriptEvent instance;
     public EntityTag entity;
     public boolean state;
 

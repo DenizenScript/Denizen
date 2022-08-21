@@ -29,11 +29,9 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public PlayerChangesMainHandScriptEvent() {
-        instance = this;
         registerCouldMatcher("player changes main hand");
     }
 
-    public static PlayerChangesMainHandScriptEvent instance;
     public PlayerChangedMainHandEvent event;
 
     @Override

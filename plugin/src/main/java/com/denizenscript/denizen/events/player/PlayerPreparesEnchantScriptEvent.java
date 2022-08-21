@@ -42,10 +42,8 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public PlayerPreparesEnchantScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPreparesEnchantScriptEvent instance;
     public PrepareItemEnchantEvent event;
 
     @Override

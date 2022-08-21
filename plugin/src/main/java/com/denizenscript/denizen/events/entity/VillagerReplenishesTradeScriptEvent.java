@@ -36,10 +36,8 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public VillagerReplenishesTradeScriptEvent() {
-        instance = this;
     }
 
-    public static VillagerReplenishesTradeScriptEvent instance;
     public EntityTag entity;
     public VillagerReplenishTradeEvent event;
 

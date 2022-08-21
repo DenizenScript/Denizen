@@ -42,10 +42,8 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerBreaksItemScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerBreaksItemScriptEvent instance;
     public ItemTag item;
     public PlayerItemBreakEvent event;
 

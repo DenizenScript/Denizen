@@ -37,10 +37,8 @@ public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public HotbarScrollScriptEvent() {
-        instance = this;
     }
 
-    public static HotbarScrollScriptEvent instance;
 
     public PlayerItemHeldEvent event;
 

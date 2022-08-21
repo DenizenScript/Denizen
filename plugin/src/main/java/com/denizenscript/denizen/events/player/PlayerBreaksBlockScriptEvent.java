@@ -52,10 +52,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerBreaksBlockScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerBreaksBlockScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockBreakEvent event;

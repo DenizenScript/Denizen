@@ -37,12 +37,10 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public PlayerEmptiesBucketScriptEvent() {
-        instance = this;
         registerCouldMatcher("player empties bucket");
         registerCouldMatcher("player empties <item>");
     }
 
-    public static PlayerEmptiesBucketScriptEvent instance;
 
     public ItemTag item;
     public MaterialTag material;

@@ -64,12 +64,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityDeathScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> dies|death");
         registerSwitches("by", "cause");
     }
 
-    public static EntityDeathScriptEvent instance;
 
     public EntityTag entity;
     public EntityTag damager;

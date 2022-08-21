@@ -32,12 +32,10 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public BlockGrowsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> grows");
         registerSwitches("from", "to");
     }
 
-    public static BlockGrowsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockGrowEvent event;

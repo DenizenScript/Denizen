@@ -37,11 +37,9 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public EntityChangesBlockScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> changes <block> (into <block>)");
     }
 
-    public static EntityChangesBlockScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public MaterialTag old_material;

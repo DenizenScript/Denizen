@@ -23,11 +23,9 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public WorldSavesScriptEvent() {
-        instance = this;
         registerCouldMatcher("<world> saves");
     }
 
-    public static WorldSavesScriptEvent instance;
     public WorldTag world;
     public WorldSaveEvent event;
 

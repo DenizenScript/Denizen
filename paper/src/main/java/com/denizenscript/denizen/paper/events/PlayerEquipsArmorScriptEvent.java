@@ -50,7 +50,6 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     }
 
     public PlayerEquipsArmorScriptEvent() {
-        instance = this;
         registerSlot("helmet", PlayerArmorChangeEvent.SlotType.HEAD);
         registerSlot("chestplate", PlayerArmorChangeEvent.SlotType.CHEST);
         registerSlot("leggings", PlayerArmorChangeEvent.SlotType.LEGS);
@@ -59,7 +58,6 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         registerCouldMatcher("player (equips|unequips) <item>");
     }
 
-    public static PlayerEquipsArmorScriptEvent instance;
     public ItemTag oldItem;
     public ItemTag newItem;
     public PlayerArmorChangeEvent.SlotType slot;

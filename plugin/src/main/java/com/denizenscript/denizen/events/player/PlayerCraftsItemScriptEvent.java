@@ -50,10 +50,8 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerCraftsItemScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerCraftsItemScriptEvent instance;
     public CraftItemEvent event;
     public ItemTag result;
     public PlayerTag player;

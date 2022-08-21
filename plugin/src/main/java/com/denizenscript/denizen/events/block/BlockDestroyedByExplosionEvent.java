@@ -42,7 +42,6 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     // -->
 
     public BlockDestroyedByExplosionEvent() {
-        instance = this;
         registerCouldMatcher("<block> destroyed by explosion");
     }
 

@@ -39,11 +39,9 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityBreedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> breeds");
     }
 
-    public static EntityBreedScriptEvent instance;
     private EntityTag entity;
     private EntityTag breeder;
     private EntityTag father;

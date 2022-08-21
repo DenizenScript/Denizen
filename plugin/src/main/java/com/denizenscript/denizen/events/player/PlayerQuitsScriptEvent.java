@@ -38,10 +38,8 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public PlayerQuitsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerQuitsScriptEvent instance;
     public PlayerQuitEvent event;
 
     @Override

@@ -52,10 +52,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerDragsInInvScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerDragsInInvScriptEvent instance;
 
     public Inventory inventory;
     public ItemTag item;

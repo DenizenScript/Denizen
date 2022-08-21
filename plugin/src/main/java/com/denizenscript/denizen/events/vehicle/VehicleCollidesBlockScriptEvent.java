@@ -33,10 +33,8 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public VehicleCollidesBlockScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleCollidesBlockScriptEvent instance;
 
     public EntityTag vehicle;
     public LocationTag location;

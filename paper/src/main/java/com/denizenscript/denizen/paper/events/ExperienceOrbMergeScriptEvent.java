@@ -33,11 +33,9 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public ExperienceOrbMergeScriptEvent() {
-        instance = this;
         registerCouldMatcher("experience orbs merge");
     }
 
-    public static ExperienceOrbMergeScriptEvent instance;
     public ExperienceOrbMergeEvent event;
 
     @Override

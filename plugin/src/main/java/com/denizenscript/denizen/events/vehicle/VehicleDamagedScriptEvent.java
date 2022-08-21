@@ -54,13 +54,11 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public VehicleDamagedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<vehicle> damaged");
         registerCouldMatcher("<entity> damages <vehicle>");
         registerSwitches("type");
     }
 
-    public static VehicleDamagedScriptEvent instance;
     public EntityTag vehicle;
     public EntityTag entity;
     public VehicleDamageEvent event;

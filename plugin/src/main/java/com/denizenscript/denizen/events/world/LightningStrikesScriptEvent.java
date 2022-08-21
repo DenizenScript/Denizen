@@ -31,11 +31,9 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public LightningStrikesScriptEvent() {
-        instance = this;
         registerCouldMatcher("lightning strikes");
     }
 
-    public static LightningStrikesScriptEvent instance;
     public LocationTag location;
     public LightningStrikeEvent event;
 

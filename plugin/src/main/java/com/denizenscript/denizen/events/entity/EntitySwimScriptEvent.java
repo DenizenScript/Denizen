@@ -35,11 +35,9 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public EntitySwimScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> toggles|starts|stops swimming");
     }
 
-    public static EntitySwimScriptEvent instance;
     public EntityTag entity;
     public boolean state;
 

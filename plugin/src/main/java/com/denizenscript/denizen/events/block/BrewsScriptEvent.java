@@ -29,11 +29,9 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public BrewsScriptEvent() {
-        instance = this;
         registerCouldMatcher("brewing stand brews");
     }
 
-    public static BrewsScriptEvent instance;
     public LocationTag location;
     public BrewEvent event;
 

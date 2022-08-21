@@ -54,13 +54,11 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public EntityKilledScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> killed (by <'cause'>)");
         registerCouldMatcher("<entity> killed (by <entity>)");
         registerCouldMatcher("<entity> kills <entity>");
     }
 
-    public static EntityKilledScriptEvent instance;
 
     public EntityTag entity;
     public ElementTag cause;

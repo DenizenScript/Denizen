@@ -32,11 +32,9 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public EntityInteractScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> interacts with <block>");
     }
 
-    public static EntityInteractScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     private MaterialTag material;

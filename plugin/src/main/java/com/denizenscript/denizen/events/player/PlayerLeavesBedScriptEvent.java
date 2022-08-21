@@ -34,10 +34,8 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerLeavesBedScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerLeavesBedScriptEvent instance;
     public LocationTag location;
     public PlayerBedLeaveEvent event;
 

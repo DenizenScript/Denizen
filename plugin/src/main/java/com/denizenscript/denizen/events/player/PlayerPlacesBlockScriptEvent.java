@@ -40,10 +40,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerPlacesBlockScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPlacesBlockScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public ElementTag hand;

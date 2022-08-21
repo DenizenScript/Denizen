@@ -31,10 +31,8 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public VehicleCreatedScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleCreatedScriptEvent instance;
     public EntityTag vehicle;
     public VehicleCreateEvent event;
 

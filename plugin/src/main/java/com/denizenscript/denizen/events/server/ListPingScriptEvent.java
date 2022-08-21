@@ -51,11 +51,9 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public ListPingScriptEvent() {
-        instance = this;
         registerCouldMatcher("server list ping");
     }
 
-    public static ListPingScriptEvent instance;
 
     public ServerListPingEvent event;
 

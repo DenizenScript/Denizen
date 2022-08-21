@@ -37,11 +37,9 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public BlockDispensesScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> dispenses <item>");
     }
 
-    public static BlockDispensesScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     private MaterialTag material;

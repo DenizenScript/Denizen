@@ -38,11 +38,9 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public EntityEntersVehicleScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> enters <entity>");
     }
 
-    public static EntityEntersVehicleScriptEvent instance;
     public EntityTag vehicle;
     public EntityTag entity;
     public EntityMountEvent event;

@@ -34,12 +34,10 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public BlockIgnitesScriptEvent() {
-        instance = this;
         registerCouldMatcher("block ignites");
         registerSwitches("cause");
     }
 
-    public static BlockIgnitesScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public ElementTag cause;

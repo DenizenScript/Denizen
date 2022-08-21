@@ -62,10 +62,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public EntityTeleportScriptEvent() {
-        instance = this;
     }
 
-    public static EntityTeleportScriptEvent instance;
     public EntityTag entity;
     public LocationTag from;
     public LocationTag to;

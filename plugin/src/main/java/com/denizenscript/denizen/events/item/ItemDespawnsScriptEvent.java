@@ -31,11 +31,9 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public ItemDespawnsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> despawns");
     }
 
-    public static ItemDespawnsScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public EntityTag entity;

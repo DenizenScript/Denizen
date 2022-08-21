@@ -39,11 +39,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntitySpawnScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> spawns (because <'cause'>)");
     }
 
-    public static EntitySpawnScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public ElementTag reason;

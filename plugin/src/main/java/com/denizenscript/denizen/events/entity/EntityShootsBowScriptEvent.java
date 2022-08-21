@@ -21,7 +21,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 
 import java.util.List;
 
-public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener {
+public class EntityShootsBowScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -53,12 +53,9 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     //
     // -->
 
-    public EntityShootsBowEvent() {
-        instance = this;
+    public EntityShootsBowScriptEvent() {
         registerCouldMatcher("<entity> shoots <item>");
     }
-
-    public static EntityShootsBowEvent instance;
 
     public EntityTag entity;
     public ItemTag bow;

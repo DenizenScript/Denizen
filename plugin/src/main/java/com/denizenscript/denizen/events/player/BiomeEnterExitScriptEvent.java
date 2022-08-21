@@ -44,12 +44,10 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public BiomeEnterExitScriptEvent() {
-        instance = this;
         registerCouldMatcher("player enters|exits <biome>");
         registerSwitches("biome");
     }
 
-    public static BiomeEnterExitScriptEvent instance;
 
     public LocationTag from;
     public LocationTag to;

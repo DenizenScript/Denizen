@@ -29,11 +29,9 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public BlockFadesScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> fades");
     }
 
-    public static BlockFadesScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockFadeEvent event;

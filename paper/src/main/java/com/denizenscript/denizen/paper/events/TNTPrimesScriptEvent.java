@@ -37,11 +37,9 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public TNTPrimesScriptEvent() {
-        instance = this;
         registerCouldMatcher("tnt primes");
     }
 
-    public static TNTPrimesScriptEvent instance;
     public TNTPrimeEvent event;
     public LocationTag location;
 

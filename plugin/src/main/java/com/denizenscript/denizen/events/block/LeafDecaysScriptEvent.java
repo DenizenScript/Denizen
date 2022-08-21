@@ -30,12 +30,10 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public LeafDecaysScriptEvent() {
-        instance = this;
         registerCouldMatcher("leaves decay");
         registerCouldMatcher("<block> decay");
     }
 
-    public static LeafDecaysScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public LeavesDecayEvent event;

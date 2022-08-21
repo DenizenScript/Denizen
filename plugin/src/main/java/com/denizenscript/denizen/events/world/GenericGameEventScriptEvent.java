@@ -36,12 +36,10 @@ public class GenericGameEventScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public GenericGameEventScriptEvent() {
-        instance = this;
         registerCouldMatcher("generic game event");
         registerSwitches("type");
     }
 
-    public static GenericGameEventScriptEvent instance;
     public LocationTag location;
     public GenericGameEvent event;
 

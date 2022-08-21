@@ -38,10 +38,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerTakesFromFurnaceScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerTakesFromFurnaceScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     public FurnaceExtractEvent event;

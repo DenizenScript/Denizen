@@ -40,10 +40,8 @@ public class PlayerSmithsItemScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerSmithsItemScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerSmithsItemScriptEvent instance;
     public SmithItemEvent event;
     public ItemTag result;
     public PlayerTag player;

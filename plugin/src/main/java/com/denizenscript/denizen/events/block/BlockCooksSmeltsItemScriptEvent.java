@@ -33,11 +33,9 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public BlockCooksSmeltsItemScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> cooks|smelts <item> (into <item>)");
     }
 
-    public static BlockCooksSmeltsItemScriptEvent instance;
     public ItemTag source_item;
     public ItemTag result_item;
     public LocationTag location;

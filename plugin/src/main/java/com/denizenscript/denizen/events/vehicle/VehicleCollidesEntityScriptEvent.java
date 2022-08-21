@@ -46,10 +46,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public VehicleCollidesEntityScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleCollidesEntityScriptEvent instance;
 
     public EntityTag vehicle;
     public EntityTag entity;

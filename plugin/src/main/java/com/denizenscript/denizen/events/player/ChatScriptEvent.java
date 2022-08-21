@@ -60,10 +60,8 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public ChatScriptEvent() {
-        instance = this;
     }
 
-    public static ChatScriptEvent instance;
 
     public PlayerChatEvent pcEvent;
     public AsyncPlayerChatEvent apcEvent;

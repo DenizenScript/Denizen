@@ -37,12 +37,10 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PistonRetractsScriptEvent() {
-        instance = this;
         registerCouldMatcher("piston retracts");
         registerCouldMatcher("<block> retracts");
     }
 
-    public static PistonRetractsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockPistonRetractEvent event;

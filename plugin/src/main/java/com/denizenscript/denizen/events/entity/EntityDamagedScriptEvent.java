@@ -86,14 +86,12 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public EntityDamagedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> damaged (by <'cause'>)");
         registerCouldMatcher("<entity> damaged by <entity>");
         registerCouldMatcher("<entity> damages <entity>");
         registerSwitches("with", "type");
     }
 
-    public static EntityDamagedScriptEvent instance;
 
     public EntityTag entity;
     public ElementTag cause;

@@ -38,10 +38,8 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public PlayerJoinsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerJoinsScriptEvent instance;
     public PlayerJoinEvent event;
 
     @Override

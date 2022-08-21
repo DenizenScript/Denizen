@@ -36,10 +36,8 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityTransformScriptEvent() {
-        instance = this;
     }
 
-    public static EntityTransformScriptEvent instance;
     public EntityTransformEvent event;
     public EntityTag originalEntity;
 

@@ -31,11 +31,9 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public CreeperPoweredScriptEvent() {
-        instance = this;
         registerCouldMatcher("creeper powered (because <'cause'>)");
     }
 
-    public static CreeperPoweredScriptEvent instance;
     public EntityTag lightning;
     public EntityTag entity;
     public ElementTag cause;

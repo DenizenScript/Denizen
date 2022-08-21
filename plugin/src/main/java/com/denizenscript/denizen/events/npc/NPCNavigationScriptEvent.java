@@ -32,11 +32,9 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public NPCNavigationScriptEvent() {
-        instance = this;
         registerCouldMatcher("npc begins|completes|cancels navigation");
     }
 
-    public static NPCNavigationScriptEvent instance;
     public NPCTag npc;
     public String type;
 

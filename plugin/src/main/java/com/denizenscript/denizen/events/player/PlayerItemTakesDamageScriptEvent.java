@@ -46,13 +46,11 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // -->
 
-    public static PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
     ItemTag item;
     LocationTag location;
 
     public PlayerItemTakesDamageScriptEvent() {
-        instance = this;
     }
 
     @Override

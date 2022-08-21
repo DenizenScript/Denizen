@@ -31,11 +31,9 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public EntityExplosionPrimesScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> explosion primes");
     }
 
-    public static EntityExplosionPrimesScriptEvent instance;
     public EntityTag entity;
     public ExplosionPrimeEvent event;
 

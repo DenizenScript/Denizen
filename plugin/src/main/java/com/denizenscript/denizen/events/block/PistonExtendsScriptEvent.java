@@ -37,12 +37,10 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public PistonExtendsScriptEvent() {
-        instance = this;
         registerCouldMatcher("piston extends");
         registerCouldMatcher("<block> extends");
     }
 
-    public static PistonExtendsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockPistonExtendEvent event;

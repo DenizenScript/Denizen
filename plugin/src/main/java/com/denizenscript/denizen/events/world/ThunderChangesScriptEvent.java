@@ -29,12 +29,10 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public ThunderChangesScriptEvent() {
-        instance = this;
         registerCouldMatcher("thunder changes|begins|clears");
         registerSwitches("in");
     }
 
-    public static ThunderChangesScriptEvent instance;
     public ThunderChangeEvent event;
 
     @Override

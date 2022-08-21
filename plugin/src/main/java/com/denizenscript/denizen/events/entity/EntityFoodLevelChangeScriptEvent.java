@@ -44,12 +44,10 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public EntityFoodLevelChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> changes food level");
         registerSwitches("item");
     }
 
-    public static EntityFoodLevelChangeScriptEvent instance;
     public EntityTag entity;
     public ItemTag item;
     public FoodLevelChangeEvent event;

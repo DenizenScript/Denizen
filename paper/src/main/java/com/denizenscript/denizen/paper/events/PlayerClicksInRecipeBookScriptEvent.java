@@ -34,11 +34,9 @@ public class PlayerClicksInRecipeBookScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public PlayerClicksInRecipeBookScriptEvent() {
-        instance = this;
         registerCouldMatcher("player uses recipe book");
     }
 
-    public static PlayerClicksInRecipeBookScriptEvent instance;
     public PlayerRecipeBookClickEvent event;
 
     @Override

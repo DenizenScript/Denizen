@@ -37,11 +37,9 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public BrewingStandFueledScriptEvent() {
-        instance = this;
         registerCouldMatcher("brewing stand fueled (with <item>)");
     }
 
-    public static BrewingStandFueledScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     public BrewingStandFuelEvent event;

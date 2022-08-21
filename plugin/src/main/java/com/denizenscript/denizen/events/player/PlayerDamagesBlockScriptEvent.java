@@ -41,10 +41,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public PlayerDamagesBlockScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerDamagesBlockScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockDamageEvent event;

@@ -41,10 +41,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public VehicleDestroyedScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleDestroyedScriptEvent instance;
     public EntityTag vehicle;
     public EntityTag entity;
     public VehicleDestroyEvent event;

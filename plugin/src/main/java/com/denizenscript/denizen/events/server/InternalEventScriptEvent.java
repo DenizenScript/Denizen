@@ -37,12 +37,10 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public InternalEventScriptEvent() {
-        instance = this;
         registerCouldMatcher("internal bukkit event");
         registerSwitches("event");
     }
 
-    public static InternalEventScriptEvent instance;
 
     @Override
     public boolean couldMatch(ScriptPath path) {

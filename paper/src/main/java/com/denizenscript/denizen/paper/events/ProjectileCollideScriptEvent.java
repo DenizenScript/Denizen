@@ -35,11 +35,9 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public ProjectileCollideScriptEvent() {
-        instance = this;
         registerCouldMatcher("<projectile> collides with <entity>");
     }
 
-    public static ProjectileCollideScriptEvent instance;
     public ProjectileCollideEvent event;
     public EntityTag projectile;
     public EntityTag collidedWith;

@@ -48,12 +48,10 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerEditsBookScriptEvent() {
-        instance = this;
         registerCouldMatcher("player edits book");
         registerCouldMatcher("player signs book");
     }
 
-    public static PlayerEditsBookScriptEvent instance;
     public PlayerEditBookEvent event;
     public PlayerTag player;
 

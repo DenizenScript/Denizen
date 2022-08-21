@@ -37,12 +37,10 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public NoteBlockPlaysNoteScriptEvent() {
-        instance = this;
         registerCouldMatcher("noteblock plays note");
         registerSwitches("instrument");
     }
 
-    public static NoteBlockPlaysNoteScriptEvent instance;
     public NotePlayEvent event;
     public LocationTag location;
 

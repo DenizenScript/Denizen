@@ -41,12 +41,10 @@ public class EntityPathfindScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public EntityPathfindScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> pathfinds");
         registerSwitches("to", "at");
     }
 
-    public static EntityPathfindScriptEvent instance;
 
     public EntityTag entity;
     public EntityTag target;

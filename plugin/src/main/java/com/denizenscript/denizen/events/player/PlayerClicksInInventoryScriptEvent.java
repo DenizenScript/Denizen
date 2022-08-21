@@ -106,12 +106,10 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // -->
 
     public PlayerClicksInInventoryScriptEvent() {
-        instance = this;
         registerCouldMatcher("player (<'click_type'>) clicks (<item>) in <inventory>");
         registerSwitches("with", "in_area", "action", "slot");
     }
 
-    public static PlayerClicksInInventoryScriptEvent instance;
 
     public InventoryTag inventory;
     public ItemTag item;

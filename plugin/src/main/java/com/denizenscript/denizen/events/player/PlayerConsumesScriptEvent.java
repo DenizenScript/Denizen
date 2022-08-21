@@ -41,10 +41,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerConsumesScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerConsumesScriptEvent instance;
 
     public ItemTag item;
     public PlayerItemConsumeEvent event;

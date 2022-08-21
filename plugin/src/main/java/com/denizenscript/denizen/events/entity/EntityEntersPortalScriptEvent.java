@@ -33,11 +33,9 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public EntityEntersPortalScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> enters portal");
     }
 
-    public static EntityEntersPortalScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityPortalEnterEvent event;

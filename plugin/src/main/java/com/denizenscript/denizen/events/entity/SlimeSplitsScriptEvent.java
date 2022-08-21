@@ -32,11 +32,9 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public SlimeSplitsScriptEvent() {
-        instance = this;
         registerCouldMatcher("slime splits (into <'#'>)");
     }
 
-    public static SlimeSplitsScriptEvent instance;
     public EntityTag entity;
     public SlimeSplitEvent event;
 

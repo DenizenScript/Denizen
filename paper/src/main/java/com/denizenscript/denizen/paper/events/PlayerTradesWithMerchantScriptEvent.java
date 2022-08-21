@@ -43,12 +43,10 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public PlayerTradesWithMerchantScriptEvent() {
-        instance = this;
         registerCouldMatcher("player trades with merchant");
         registerSwitches("result");
     }
 
-    public static PlayerTradesWithMerchantScriptEvent instance;
     public PlayerPurchaseEvent event;
 
     @Override

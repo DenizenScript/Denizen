@@ -33,10 +33,8 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerReceivesCommandsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerReceivesCommandsScriptEvent instance;
     public PlayerCommandSendEvent event;
 
     @Override

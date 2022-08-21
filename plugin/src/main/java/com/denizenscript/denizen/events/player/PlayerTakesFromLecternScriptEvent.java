@@ -38,10 +38,8 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerTakesFromLecternScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerTakesFromLecternScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     public PlayerTakeLecternBookEvent event;

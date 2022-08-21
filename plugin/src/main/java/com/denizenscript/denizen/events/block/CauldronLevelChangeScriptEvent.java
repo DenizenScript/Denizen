@@ -37,12 +37,10 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public CauldronLevelChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("cauldron level changes|raises|lowers");
         registerSwitches("cause");
     }
 
-    public static CauldronLevelChangeScriptEvent instance;
     public LocationTag location;
     public CauldronLevelChangeEvent event;
 

@@ -30,11 +30,9 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityUnleashedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> unleashed (because <'reason'>)");
     }
 
-    public static EntityUnleashedScriptEvent instance;
     public EntityTag entity;
     public ElementTag reason;
     public EntityUnleashEvent event;

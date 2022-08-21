@@ -118,7 +118,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityPicksUpItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityPotionEffectScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityResurrectScriptEvent.class);
-        ScriptEvent.registerScriptEvent(EntityShootsBowEvent.class);
+        ScriptEvent.registerScriptEvent(EntityShootsBowScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnerSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySwimScriptEvent.class);

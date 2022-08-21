@@ -36,10 +36,8 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerClosesInvScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerClosesInvScriptEvent instance;
 
     public InventoryTag inventory;
     private PlayerTag player;

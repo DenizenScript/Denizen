@@ -42,10 +42,8 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerSwapsItemsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerSwapsItemsScriptEvent instance;
     public PlayerTag player;
     public PlayerSwapHandItemsEvent event;
 

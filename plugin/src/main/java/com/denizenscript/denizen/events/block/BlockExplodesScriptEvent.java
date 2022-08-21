@@ -40,11 +40,9 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public BlockExplodesScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> explodes");
     }
 
-    public static BlockExplodesScriptEvent instance;
     public BlockExplodeEvent event;
     public List<Block> blocks;
     public LocationTag location;
