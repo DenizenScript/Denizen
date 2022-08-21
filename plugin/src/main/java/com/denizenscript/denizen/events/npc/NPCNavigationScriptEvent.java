@@ -52,11 +52,6 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public String getName() {
-        return "NPCNavigation";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(null, npc);
     }

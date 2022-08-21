@@ -58,11 +58,6 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public String getName() {
-        return "BrewingStandFueled";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String val = ((ElementTag) determinationObj).asString();

@@ -75,11 +75,6 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public String getName() {
-        return "EntitySpawn";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(entity);
     }

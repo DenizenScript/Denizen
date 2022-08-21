@@ -53,11 +53,6 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public String getName() {
-        return "LeafDecays";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;

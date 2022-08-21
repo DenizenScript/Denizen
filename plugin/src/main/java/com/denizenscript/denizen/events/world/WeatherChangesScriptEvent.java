@@ -49,11 +49,6 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "WeatherChanges";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("world")) {
             return world;

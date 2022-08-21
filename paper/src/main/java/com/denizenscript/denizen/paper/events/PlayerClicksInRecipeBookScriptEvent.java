@@ -50,11 +50,6 @@ public class PlayerClicksInRecipeBookScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
-    public String getName() {
-        return "PlayerClicksInRecipeBook";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

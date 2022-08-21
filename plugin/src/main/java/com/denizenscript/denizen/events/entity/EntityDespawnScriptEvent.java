@@ -57,11 +57,6 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public String getName() {
-        return "EntityDespawn";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(entity);
     }

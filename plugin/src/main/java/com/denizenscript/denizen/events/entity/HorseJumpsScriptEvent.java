@@ -79,11 +79,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public String getName() {
-        return "HorseJumps";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isFloat()) {
             event.setPower(((ElementTag) determinationObj).asFloat());

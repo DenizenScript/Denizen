@@ -27,6 +27,7 @@ public class PaperModule {
     public static void init() {
         Debug.log("Loading Paper support module...");
 
+        ScriptEvent.notNameParts.add(0, "PaperImpl");
         // Events
         ScriptEvent.registerScriptEvent(AreaEnterExitScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);

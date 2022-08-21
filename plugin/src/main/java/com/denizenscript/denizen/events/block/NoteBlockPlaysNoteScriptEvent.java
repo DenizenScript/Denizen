@@ -57,11 +57,6 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
         return super.matches(path);
     }
 
-    @Override
-    public String getName() {
-        return "NoteBlockPlaysNote";
-    }
-
     public Sound getSound() {
         switch (event.getInstrument()) {
             case PIANO:

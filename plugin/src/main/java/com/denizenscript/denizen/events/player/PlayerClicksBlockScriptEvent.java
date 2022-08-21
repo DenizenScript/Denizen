@@ -149,11 +149,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return super.matches(path);
     }
 
-    @Override
-    public String getName() {
-        return "PlayerClicksBlock";
-    }
-
     public boolean wasCancellationAltered;
 
     @Override

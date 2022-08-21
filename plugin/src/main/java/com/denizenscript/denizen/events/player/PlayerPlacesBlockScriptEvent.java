@@ -77,11 +77,6 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "PlayerPlacesBlock";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

@@ -63,11 +63,6 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public String getName() {
-        return "AirLevelChanged";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setAmount(((ElementTag) determinationObj).asInt());

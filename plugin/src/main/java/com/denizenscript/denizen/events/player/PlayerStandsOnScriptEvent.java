@@ -69,11 +69,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "PlayerStandsOn";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getPlayer()), null);
     }

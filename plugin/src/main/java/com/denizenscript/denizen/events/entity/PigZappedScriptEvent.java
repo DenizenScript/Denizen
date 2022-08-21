@@ -58,11 +58,6 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public String getName() {
-        return "PigZapped";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "pig":

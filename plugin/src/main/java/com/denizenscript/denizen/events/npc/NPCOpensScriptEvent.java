@@ -54,11 +54,6 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public String getName() {
-        return "NPCOpensDoor";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(null, npc);
     }

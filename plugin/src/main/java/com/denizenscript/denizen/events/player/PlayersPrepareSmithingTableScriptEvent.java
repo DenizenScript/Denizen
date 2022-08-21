@@ -68,11 +68,6 @@ public class PlayersPrepareSmithingTableScriptEvent extends BukkitScriptEvent im
     }
 
     @Override
-    public String getName() {
-        return "PlayerPreparesSmithingTable";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ItemTag.matches(determination)) {

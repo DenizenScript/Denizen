@@ -65,11 +65,6 @@ public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "PlayerScrollsItem";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

@@ -97,11 +97,6 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "VehicleDamaged";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
             event.setDamage(((ElementTag) determinationObj).asDouble());

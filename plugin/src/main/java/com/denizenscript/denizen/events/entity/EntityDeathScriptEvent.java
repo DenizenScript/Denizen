@@ -96,11 +96,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public String getName() {
-        return "EntityDies";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);

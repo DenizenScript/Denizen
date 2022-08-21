@@ -60,11 +60,6 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "ThunderChanges";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch(name) {
             case "world":

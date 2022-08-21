@@ -60,11 +60,6 @@ public class ResourcePackStatusScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public String getName() {
-        return "ResourcePackStatus";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("status")) {
             return status;

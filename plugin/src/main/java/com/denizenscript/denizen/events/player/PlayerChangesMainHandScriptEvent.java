@@ -37,11 +37,6 @@ public class PlayerChangesMainHandScriptEvent extends BukkitScriptEvent implemen
     public PlayerChangedMainHandEvent event;
 
     @Override
-    public String getName() {
-        return "PlayerChangesMainHand";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

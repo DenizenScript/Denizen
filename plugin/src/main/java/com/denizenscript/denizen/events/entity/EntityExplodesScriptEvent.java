@@ -64,11 +64,6 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "EntityExplodes";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {

@@ -63,11 +63,6 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     public String sourceType;
 
     @Override
-    public String getName() {
-        return "CommandUnknown";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String determination = determinationObj.toString();

@@ -72,11 +72,6 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public String getName() {
-        return "VehicleCollidesBlock";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("vehicle")) {
             return vehicle;

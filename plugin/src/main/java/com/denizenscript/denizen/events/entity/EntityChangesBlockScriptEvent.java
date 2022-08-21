@@ -74,11 +74,6 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public String getName() {
-        return "EntityChangesBlock";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(entity);
     }

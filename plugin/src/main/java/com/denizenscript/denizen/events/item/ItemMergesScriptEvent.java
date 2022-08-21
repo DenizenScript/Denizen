@@ -55,11 +55,6 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public String getName() {
-        return "ItemMerges";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;

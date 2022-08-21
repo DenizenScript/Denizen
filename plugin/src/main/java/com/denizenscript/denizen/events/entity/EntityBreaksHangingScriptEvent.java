@@ -85,11 +85,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "EntityBreaksHanging";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(breaker);
     }

@@ -60,11 +60,6 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public String getName() {
-        return "PistonExtends";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;

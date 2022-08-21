@@ -59,11 +59,6 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "EntityFormsBlock";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(entity);
     }

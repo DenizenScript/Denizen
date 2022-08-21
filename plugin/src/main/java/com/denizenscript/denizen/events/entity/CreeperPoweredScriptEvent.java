@@ -54,11 +54,6 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "CreeperPowered";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;

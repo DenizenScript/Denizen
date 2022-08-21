@@ -63,11 +63,6 @@ public class LiquidLevelChangeScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "LiquidLevelChange";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;

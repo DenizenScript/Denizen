@@ -78,11 +78,6 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "PlayerCraftsItem";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ItemTag.matches(determination)) {

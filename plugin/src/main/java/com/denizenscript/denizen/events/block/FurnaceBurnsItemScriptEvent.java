@@ -55,11 +55,6 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "FurnaceBurns";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setBurnTime(((ElementTag) determinationObj).asInt());

@@ -67,11 +67,6 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // TODO: Can the vehicle be an NPC?
 
     @Override
-    public String getName() {
-        return "VehicleMoves";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "from":

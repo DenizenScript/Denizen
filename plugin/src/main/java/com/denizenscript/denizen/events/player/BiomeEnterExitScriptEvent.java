@@ -90,11 +90,6 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "BiomeEnterExit";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getPlayer()), null);
     }

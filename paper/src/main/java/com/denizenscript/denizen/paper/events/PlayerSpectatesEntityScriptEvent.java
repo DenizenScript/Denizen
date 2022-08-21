@@ -53,11 +53,6 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public String getName() {
-        return "PlayerSpectates";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

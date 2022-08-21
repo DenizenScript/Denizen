@@ -192,13 +192,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     }
 
     @Override
-    public String getName() {
-        return "PlayerClicksInInventory";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag((Player) event.getWhoClicked()), null);
+        return new BukkitScriptEntryData(event.getWhoClicked());
     }
 
     @Override

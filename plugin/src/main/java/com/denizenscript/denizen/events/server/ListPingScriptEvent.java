@@ -59,11 +59,6 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     public ServerListPingEvent event;
 
-    @Override
-    public String getName() {
-        return "ServerListPing";
-    }
-
     // Despite the 'cached' class name, there's no actual internal cache.
     public static HashMap<String, CachedServerIcon> iconCache = new HashMap<>();
 

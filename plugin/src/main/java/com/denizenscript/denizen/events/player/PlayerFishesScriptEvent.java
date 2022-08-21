@@ -127,11 +127,6 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "PlayerFishes";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(EntityTag.isPlayer(event.getPlayer()) ? EntityTag.getPlayerFrom(event.getPlayer()) :
                 EntityTag.isPlayer(event.getCaught()) ? EntityTag.getPlayerFrom(event.getCaught()) : null,

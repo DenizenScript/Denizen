@@ -61,11 +61,6 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public String getName() {
-        return "BlockExplodes";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ArgumentHelper.matchesDouble(determination)) {

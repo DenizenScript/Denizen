@@ -70,11 +70,6 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public String getName() {
-        return "PlayerEditsBook";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (CoreUtilities.toLowerCase(determination).equals("not_signing")) {

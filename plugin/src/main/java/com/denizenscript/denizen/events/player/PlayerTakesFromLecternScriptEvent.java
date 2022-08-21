@@ -69,11 +69,6 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public String getName() {
-        return "PlayerTakesFromLectern";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

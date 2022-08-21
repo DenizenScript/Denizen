@@ -64,11 +64,6 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public String getName() {
-        return "InternalBukkitEvent";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "fields":

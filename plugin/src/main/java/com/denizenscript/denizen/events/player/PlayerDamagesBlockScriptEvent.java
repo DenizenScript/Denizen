@@ -76,11 +76,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public String getName() {
-        return "PlayerDamagesBlock";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             if (CoreUtilities.equalsIgnoreCase(determinationObj.toString(), "instabreak")) {

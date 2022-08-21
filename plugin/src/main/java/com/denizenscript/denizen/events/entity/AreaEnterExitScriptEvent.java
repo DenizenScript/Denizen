@@ -83,11 +83,6 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public String getName() {
-        return "AreaEnterExit";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(currentEntity);
     }

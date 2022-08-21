@@ -69,11 +69,6 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "PlayerOpensInventory";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
         return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);

@@ -68,11 +68,6 @@ public class PlayerSendPacketScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public String getName() {
-        return "PlayerSendsPacket";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "class": return className;

@@ -79,11 +79,6 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "PlayerChangesSign";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determination.length() > 0) {

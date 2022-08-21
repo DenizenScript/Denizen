@@ -62,11 +62,6 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "PlayerKicked";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());

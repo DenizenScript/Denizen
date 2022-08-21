@@ -54,11 +54,6 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public String getName() {
-        return "NPCStuck";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(null, npc);
     }

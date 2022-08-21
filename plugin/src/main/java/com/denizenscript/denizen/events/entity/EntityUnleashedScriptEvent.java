@@ -54,11 +54,6 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public String getName() {
-        return "EntityUnleashed";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;

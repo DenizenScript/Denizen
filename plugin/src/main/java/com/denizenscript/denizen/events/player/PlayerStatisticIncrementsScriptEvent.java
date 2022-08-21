@@ -71,11 +71,6 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     }
 
     @Override
-    public String getName() {
-        return "PlayerStatisticIncrements";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

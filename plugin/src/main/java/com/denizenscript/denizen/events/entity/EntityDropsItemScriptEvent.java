@@ -64,11 +64,6 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public String getName() {
-        return "EntityDropsItem";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(dropper);
     }

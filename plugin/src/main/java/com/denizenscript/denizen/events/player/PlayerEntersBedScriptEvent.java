@@ -55,11 +55,6 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public String getName() {
-        return "PlayerEntersBed";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

@@ -133,11 +133,6 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "ProjectileHitsBlock";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(shooter);
     }

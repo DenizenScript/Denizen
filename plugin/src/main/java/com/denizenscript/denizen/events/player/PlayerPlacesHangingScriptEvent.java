@@ -68,11 +68,6 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "PlayerPlacesHanging";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

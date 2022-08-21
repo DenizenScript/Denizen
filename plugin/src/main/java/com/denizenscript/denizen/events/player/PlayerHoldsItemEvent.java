@@ -87,11 +87,6 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
         return super.matches(path);
     }
 
-    @Override
-    public String getName() {
-        return "PlayerHoldsItem";
-    }
-
     public boolean enabled = false;
 
     @Override

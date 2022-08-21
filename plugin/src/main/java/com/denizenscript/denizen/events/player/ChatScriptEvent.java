@@ -92,11 +92,6 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public String getName() {
-        return "Chat";
-    }
-
-    @Override
     public void init() {
         initListener(Settings.worldScriptChatEventAsynchronous() ? asch : sch);
     }

@@ -60,11 +60,6 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "PlayerFillsBucket";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
         return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null,

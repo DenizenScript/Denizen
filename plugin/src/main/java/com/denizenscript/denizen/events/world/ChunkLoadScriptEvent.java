@@ -51,11 +51,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public String getName() {
-        return "ChunkLoads";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("chunk")) {
             return chunk;

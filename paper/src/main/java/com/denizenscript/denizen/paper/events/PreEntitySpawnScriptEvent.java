@@ -65,11 +65,6 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "PreEntitySpawn";
-    }
-
-    @Override
     public void cancellationChanged() {
         event.setShouldAbortSpawn(cancelled);
         super.cancellationChanged();

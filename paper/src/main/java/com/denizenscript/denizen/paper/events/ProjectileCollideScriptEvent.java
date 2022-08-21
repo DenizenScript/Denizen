@@ -59,11 +59,6 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "ProjectileCollides";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(collidedWith);
     }

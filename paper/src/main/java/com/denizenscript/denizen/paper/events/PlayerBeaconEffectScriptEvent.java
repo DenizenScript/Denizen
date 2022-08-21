@@ -59,11 +59,6 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public String getName() {
-        return "PlayerBeaconEffect";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         try {
             event.setEffect(ItemPotion.parseEffect(determinationObj.toString(), getTagContext(path)));

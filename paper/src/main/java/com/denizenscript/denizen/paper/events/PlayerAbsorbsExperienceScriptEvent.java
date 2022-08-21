@@ -50,11 +50,6 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
     }
 
     @Override
-    public String getName() {
-        return "PlayerAbsorbsExperience";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

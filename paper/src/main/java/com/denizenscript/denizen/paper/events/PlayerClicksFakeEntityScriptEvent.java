@@ -58,11 +58,6 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public String getName() {
-        return "PlayerClicksFakeEntity";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

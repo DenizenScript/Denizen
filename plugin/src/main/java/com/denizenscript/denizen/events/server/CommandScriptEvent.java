@@ -69,11 +69,6 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     public ServerCommandEvent serverEvent;
 
     @Override
-    public String getName() {
-        return "Command";
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, playerEvent == null ? null : playerEvent.getPlayer().getLocation())) {
             return false;

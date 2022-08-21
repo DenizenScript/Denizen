@@ -59,11 +59,6 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "ItemRecipeFormed";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj.canBeType(ItemTag.class)) {
             ItemTag result = determinationObj.asType(ItemTag.class, getTagContext(path));

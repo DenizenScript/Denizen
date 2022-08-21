@@ -51,11 +51,6 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public String getName() {
-        return "NPCSpawn";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(null, npc);
     }

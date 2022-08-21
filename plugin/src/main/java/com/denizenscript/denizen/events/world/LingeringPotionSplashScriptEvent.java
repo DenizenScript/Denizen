@@ -57,11 +57,6 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public String getName() {
-        return "LingeringPotionSplash";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location":

@@ -72,11 +72,6 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
-    public String getName() {
-        return "PlayerTradesWithMerchant";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }

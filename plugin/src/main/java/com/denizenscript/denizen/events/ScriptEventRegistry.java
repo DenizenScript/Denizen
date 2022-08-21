@@ -58,6 +58,8 @@ public class ScriptEventRegistry {
         ScriptEventCouldMatcher.knownValidatorTypes.put("world", (t) -> true); // TODO: ?
         ScriptEventCouldMatcher.knownValidatorTypes.put("biome", (t) -> true); // TODO: ?
 
+        ScriptEvent.notNameParts.add(0, "SpigotImpl");
+
         // Block events
         ScriptEvent.registerScriptEvent(BlockBuiltScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);

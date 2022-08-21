@@ -60,11 +60,6 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "FireworkBursts";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":

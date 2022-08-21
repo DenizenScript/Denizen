@@ -57,11 +57,6 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "PotionSplash";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":

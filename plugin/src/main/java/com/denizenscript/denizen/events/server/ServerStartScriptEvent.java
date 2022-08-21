@@ -20,9 +20,4 @@ public class ServerStartScriptEvent extends BukkitScriptEvent {
     }
 
     public static ServerStartScriptEvent instance;
-
-    @Override
-    public String getName() {
-        return "ServerStart";
-    }
 }

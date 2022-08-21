@@ -63,11 +63,6 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public String getName() {
-        return "BlockCooksSmelts";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj.canBeType(ItemTag.class)) {
             result_item = determinationObj.asType(ItemTag.class, getTagContext(path));

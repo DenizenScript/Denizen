@@ -54,11 +54,6 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public String getName() {
-        return "TNTPrimes";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPrimerEntity());
     }

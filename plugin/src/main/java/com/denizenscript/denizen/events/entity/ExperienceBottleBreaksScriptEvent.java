@@ -60,11 +60,6 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public String getName() {
-        return "ExperienceBottleBreaks";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String lower = determinationObj.toString().toLowerCase();
         if (lower.startsWith("experience:")) {

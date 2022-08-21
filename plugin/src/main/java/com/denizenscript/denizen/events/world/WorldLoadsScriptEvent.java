@@ -51,11 +51,6 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public String getName() {
-        return "WorldLoads";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("world")) {
             return world;

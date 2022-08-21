@@ -88,11 +88,6 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public String getName() {
-        return "ProjectileHitsEntity";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(hitEntity);
     }

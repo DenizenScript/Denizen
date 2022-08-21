@@ -68,11 +68,6 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public String getName() {
-        return "PlayerPreparesEnchant";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String determineLow = CoreUtilities.toLowerCase(determinationObj.toString());
@@ -100,7 +95,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag(event.getEnchanter()), null);
+        return new BukkitScriptEntryData(event.getEnchanter());
     }
 
     @Override

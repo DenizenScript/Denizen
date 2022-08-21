@@ -59,11 +59,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "PlayerEmptiesBucket";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event != null ? EntityTag.getPlayerFrom(event.getPlayer()) : null, null);
     }

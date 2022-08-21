@@ -72,11 +72,6 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public String getName() {
-        return "EntityTransforms";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":

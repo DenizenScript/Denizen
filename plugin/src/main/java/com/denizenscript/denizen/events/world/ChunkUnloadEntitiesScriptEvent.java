@@ -69,11 +69,6 @@ public class ChunkUnloadEntitiesScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "ChunkUnloadsEntities";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "chunk": return chunk;

@@ -72,11 +72,6 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public String getName() {
-        return "PlayerClosesInventory";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(player, null);
     }

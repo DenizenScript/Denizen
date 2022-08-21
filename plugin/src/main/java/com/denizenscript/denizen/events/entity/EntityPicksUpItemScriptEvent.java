@@ -74,11 +74,6 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "EntityPicksUpItem";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         String lower = CoreUtilities.toLowerCase(determination);

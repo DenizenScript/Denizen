@@ -76,11 +76,6 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         return super.matches(path);
     }
 
-    @Override
-    public String getName() {
-        return "BlockPhysics";
-    }
-
     public static Field PHYSICS_EVENT_DATA = ReflectionHelper.getFields(BlockPhysicsEvent.class).getFirstOfType(BlockData.class);
 
     @Override

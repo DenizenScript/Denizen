@@ -68,11 +68,6 @@ public class PlayerSmithsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "PlayerSmithsItem";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (ItemTag.matches(determination)) {

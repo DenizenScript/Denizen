@@ -56,11 +56,6 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "PlayerRespawns";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (!CoreUtilities.equalsIgnoreCase(determination, "none")) {

@@ -60,11 +60,6 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public String getName() {
-        return "SheepDyed";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (exactMatchesEnum(determinationObj.toString(), DyeColor.values())) {
             color = DyeColor.valueOf(determinationObj.toString().toUpperCase());

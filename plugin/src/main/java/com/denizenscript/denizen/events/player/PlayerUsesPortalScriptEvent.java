@@ -73,11 +73,6 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "PlayerUsesPortal";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             String determination = CoreUtilities.toLowerCase(determinationObj.toString());

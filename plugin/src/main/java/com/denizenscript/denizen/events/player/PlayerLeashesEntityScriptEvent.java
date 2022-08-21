@@ -67,11 +67,6 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "PlayerLeashesEntity";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(holder, null);
     }

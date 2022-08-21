@@ -66,11 +66,6 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "PlayerLevelsUp";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(player, null);
     }

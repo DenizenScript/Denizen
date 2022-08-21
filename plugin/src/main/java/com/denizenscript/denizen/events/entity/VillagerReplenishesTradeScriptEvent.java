@@ -56,11 +56,6 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
         return super.matches(path);
     }
 
-    @Override
-    public String getName() {
-        return "VillagerReplenishesTrade";
-    }
-
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {

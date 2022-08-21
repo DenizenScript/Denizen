@@ -69,11 +69,6 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "LootGenerates";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getEntity() != null ? new EntityTag(event.getEntity()) : null);
     }

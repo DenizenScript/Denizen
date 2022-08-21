@@ -73,11 +73,6 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public String getName() {
-        return "EntityKnocksbackEntity";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj.canBeType(LocationTag.class)) {
             event.getAcceleration().copy(determinationObj.asType(LocationTag.class, getTagContext(path)).toVector());

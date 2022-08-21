@@ -57,11 +57,6 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "SheepRegrows";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("entity")) {
             return entity;

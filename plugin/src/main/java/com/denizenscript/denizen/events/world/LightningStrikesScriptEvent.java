@@ -48,11 +48,6 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "LightningStrikes";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "lightning":

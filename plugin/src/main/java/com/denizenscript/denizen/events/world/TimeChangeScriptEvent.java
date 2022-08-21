@@ -48,11 +48,6 @@ public class TimeChangeScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public String getName() {
-        return "TimeChanges";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("time")) {
             return new ElementTag(hour);

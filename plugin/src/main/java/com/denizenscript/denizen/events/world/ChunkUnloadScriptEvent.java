@@ -49,11 +49,6 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public String getName() {
-        return "ChunkUnloads";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("chunk")) {
             return chunk;

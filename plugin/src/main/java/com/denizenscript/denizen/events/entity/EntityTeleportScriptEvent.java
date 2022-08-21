@@ -99,11 +99,6 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "EntityTeleports";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         String dlow = CoreUtilities.toLowerCase(determination);

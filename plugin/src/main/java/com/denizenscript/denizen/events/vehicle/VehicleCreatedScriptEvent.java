@@ -63,11 +63,6 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     // TODO: Can the vehicle be an NPC?
 
     @Override
-    public String getName() {
-        return "VehicleCreated";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         if (name.equals("vehicle")) {
             return vehicle;

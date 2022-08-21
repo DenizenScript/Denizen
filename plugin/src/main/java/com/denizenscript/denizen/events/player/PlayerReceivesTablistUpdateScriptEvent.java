@@ -119,11 +119,6 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public String getName() {
-        return "PlayerReceivesTablistUpdate";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         String determinationLow = CoreUtilities.toLowerCase(determination);

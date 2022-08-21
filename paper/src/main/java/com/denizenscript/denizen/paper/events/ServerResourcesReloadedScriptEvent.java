@@ -44,11 +44,6 @@ public class ServerResourcesReloadedScriptEvent extends BukkitScriptEvent implem
     }
 
     @Override
-    public String getName() {
-        return "ServerResourcesReloaded";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "cause": return cause;

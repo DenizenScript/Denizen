@@ -63,11 +63,6 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public String getName() {
-        return "ItemMoves";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj.canBeType(ItemTag.class)) {
             item = determinationObj.asType(ItemTag.class, getTagContext(path));

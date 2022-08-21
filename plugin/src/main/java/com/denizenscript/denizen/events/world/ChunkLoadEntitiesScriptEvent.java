@@ -69,11 +69,6 @@ public class ChunkLoadEntitiesScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "ChunkLoadsEntities";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "chunk": return chunk;

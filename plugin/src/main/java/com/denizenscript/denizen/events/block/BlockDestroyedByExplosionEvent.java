@@ -70,11 +70,6 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "BlockDestroyedByExplosion";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "block": return location;

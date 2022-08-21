@@ -76,11 +76,6 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public String getName() {
-        return "EntityEntersVehicle";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(entity);
     }

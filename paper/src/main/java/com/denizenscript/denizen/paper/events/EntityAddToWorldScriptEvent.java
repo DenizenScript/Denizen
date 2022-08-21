@@ -52,11 +52,6 @@ public class EntityAddToWorldScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public String getName() {
-        return "EntityAddToWorld";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(null, null);
     }

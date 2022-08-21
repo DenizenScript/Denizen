@@ -69,11 +69,6 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public String getName() {
-        return "PlayerTakesFromFurnace";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             int xp = ((ElementTag) determinationObj).asInt();

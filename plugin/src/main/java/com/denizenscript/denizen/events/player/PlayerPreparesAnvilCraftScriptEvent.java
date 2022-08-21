@@ -72,11 +72,6 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
-    public String getName() {
-        return "PlayerPreparesAnvilCraft";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.getInventory().setRepairCost(((ElementTag) determinationObj).asInt());

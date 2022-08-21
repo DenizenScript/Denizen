@@ -97,11 +97,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "PlayerBreaksBlock";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         Block block = event.getBlock();

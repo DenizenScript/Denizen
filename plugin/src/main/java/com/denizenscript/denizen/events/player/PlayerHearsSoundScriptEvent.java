@@ -60,11 +60,6 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     public float volume, pitch;
 
     @Override
-    public String getName() {
-        return "PlayerHearsSound";
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, location)) {
             return false;

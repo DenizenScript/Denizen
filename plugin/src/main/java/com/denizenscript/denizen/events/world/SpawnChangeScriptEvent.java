@@ -45,11 +45,6 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public String getName() {
-        return "SpawnChange";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "world":

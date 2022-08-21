@@ -84,11 +84,6 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public String getName() {
-        return "VehicleCollidesEntity";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
             Argument arg = Argument.valueOf(determinationObj.toString());

@@ -62,11 +62,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "BlockDispenses";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj.canBeType(LocationTag.class)) {
             LocationTag vel = determinationObj.asType(LocationTag.class, getTagContext(path));

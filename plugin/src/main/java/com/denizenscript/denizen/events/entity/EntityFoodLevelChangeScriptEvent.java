@@ -70,11 +70,6 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public String getName() {
-        return "FoodLevelChanged";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && determinationObj.asElement().isInt()) {
             event.setFoodLevel(determinationObj.asElement().asInt());

@@ -48,11 +48,6 @@ public class CreeperIgnitesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public String getName() {
-        return "CreeperIgnites";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":

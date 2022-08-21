@@ -38,9 +38,4 @@ public class PlayerReceivesActionbarScriptEvent extends PlayerReceivesMessageScr
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("player receives actionbar");
     }
-
-    @Override
-    public String getName() {
-        return "PlayerReceivesActionbar";
-    }
 }

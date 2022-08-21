@@ -97,11 +97,6 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public String getName() {
-        return "PlayerEquipsArmor";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(player, null);
     }

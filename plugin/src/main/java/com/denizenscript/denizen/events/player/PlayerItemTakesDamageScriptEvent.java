@@ -81,11 +81,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public String getName() {
-        return "PlayerItemTakesDamage";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setDamage(((ElementTag) determinationObj).asInt());

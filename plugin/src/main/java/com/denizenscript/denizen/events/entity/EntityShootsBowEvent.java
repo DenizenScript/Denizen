@@ -83,11 +83,6 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public String getName() {
-        return "EntityShootsBow";
-    }
-
-    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         String determination = determinationObj.toString();
         if (determinationObj instanceof ElementTag) {

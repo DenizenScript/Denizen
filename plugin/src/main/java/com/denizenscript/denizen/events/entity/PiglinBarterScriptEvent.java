@@ -51,11 +51,6 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public String getName() {
-        return "PiglinBarter";
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity": return entity;

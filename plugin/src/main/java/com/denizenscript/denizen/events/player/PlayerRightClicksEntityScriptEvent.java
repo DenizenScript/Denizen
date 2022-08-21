@@ -75,11 +75,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     }
 
     @Override
-    public String getName() {
-        return "PlayerRightClicksEntity";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(PlayerTag.mirrorBukkitPlayer(event.getPlayer()), entity.isNPC() ? entity.getDenizenNPC() : null);
     }
