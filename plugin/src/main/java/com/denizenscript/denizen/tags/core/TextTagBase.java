@@ -509,11 +509,7 @@ public class TextTagBase {
         // @example
         // - narrate "<&gradient[from=black;to=white]>these are the shades of gray <white>that solidifies to pure white"
         // -->
-        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&gradient", (attribute) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            MapTag inputMap = attribute.inputParameterMap();
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, MapTag.class, "&gradient", (attribute, inputMap) -> {
             ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
             ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
             ElementTag style = inputMap.getElement("style", "RGB");
