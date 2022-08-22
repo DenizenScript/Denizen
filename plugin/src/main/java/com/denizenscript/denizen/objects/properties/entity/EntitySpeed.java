@@ -85,6 +85,7 @@ public class EntitySpeed implements Property {
         // @group attributes
         // @description
         // Returns how fast the entity can move.
+        // Compatible with minecarts, boats, and living entities.
         // -->
         if (attribute.startsWith("speed")) {
             return getSpeed().getObjectAttribute(attribute.fulfill(1));
@@ -102,6 +103,7 @@ public class EntitySpeed implements Property {
         // @input ElementTag(Decimal)
         // @description
         // Sets how fast the entity can move.
+        // Compatible with minecarts, boats, and living entities.
         // @tags
         // <EntityTag.speed>
         // -->
