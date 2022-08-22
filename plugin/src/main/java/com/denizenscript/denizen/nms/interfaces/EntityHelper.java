@@ -31,6 +31,10 @@ public abstract class EntityHelper {
         // Do nothing on older versions
     }
 
+    public boolean isInvisible(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract double getAbsorption(LivingEntity entity);
 
     public abstract void setAbsorption(LivingEntity entity, double value);

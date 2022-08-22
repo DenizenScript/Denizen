@@ -14,6 +14,7 @@ import com.denizenscript.denizen.nms.v1_18.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
+import com.denizenscript.denizen.scripts.commands.entity.InvisibleCommand;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
@@ -708,7 +709,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
-        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty()) {
+        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
             return null;
         }
         try {
@@ -719,6 +720,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
             Boolean forceSneak = SneakCommand.shouldSneak(ent.getUUID(), player.getUUID());
+            Boolean isInvisible = InvisibleCommand.isInvisible(ent.getBukkitEntity(), player.getUUID(), true);
             if (nameToApply == null && forceSneak == null) {
                 return null;
             }
@@ -728,13 +730,23 @@ public class DenizenNetworkManagerImpl extends Connection {
                 SynchedEntityData.DataItem<?> item = data.get(i);
                 EntityDataAccessor<?> watcherObject = item.getAccessor();
                 int watcherId = watcherObject.getId();
-                if (watcherId == 0 && forceSneak != null) { // 0: Entity flags
+                if (watcherId == 0 && (forceSneak != null || isInvisible != null)) { // 0: Entity flags
                     byte val = (Byte) item.getValue();
-                    if (forceSneak) {
-                        val |= 0x02; // 8: Crouching
+                    if (forceSneak != null) {
+                        if (forceSneak) {
+                            val |= 0x02; // 8: Crouching
+                        }
+                        else {
+                            val &= ~0x02;
+                        }
                     }
-                    else {
-                        val &= ~0x02;
+                    if (isInvisible != null) {
+                        if (isInvisible) {
+                            val |= 0x20;
+                        }
+                        else {
+                            val &= ~0x20;
+                        }
                     }
                     data.set(i, new SynchedEntityData.DataItem(watcherObject, val));
                     any = true;
