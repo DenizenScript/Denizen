@@ -17,6 +17,7 @@ import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -178,10 +179,27 @@ public class InvisibleCommand extends AbstractCommand {
                 }
                 break;
             case RESET:
-                HashMap<UUID, Boolean> playerMap = invisibleEntities.remove(target.getUUID());
-                if (playerMap != null) {
+                HashMap<UUID, Boolean> playerMap = invisibleEntities.get(target.getUUID());
+                if (playerMap == null) {
+                    return;
+                }
+                HashSet<UUID> playersToUpdate = new HashSet<>();
+                if (forPlayers == null) {
+                    playersToUpdate.addAll(playerMap.keySet());
+                    invisibleEntities.remove(target.getUUID());
+                }
+                else {
+                    for (PlayerTag player : forPlayers) {
+                        playerMap.remove(player.getUUID());
+                        playersToUpdate.add(player.getUUID());
+                    }
+                    if (playerMap.isEmpty()) {
+                        invisibleEntities.remove(target.getUUID());
+                    }
+                }
+                if (!playersToUpdate.isEmpty()) {
                     for (Player player : NMSHandler.entityHelper.getPlayersThatSee(target.getBukkitEntity())) {
-                        if (playerMap.containsKey(player.getUniqueId())) {
+                        if (playersToUpdate.contains(player.getUniqueId())) {
                             NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, target.getBukkitEntity());
                         }
                     }
