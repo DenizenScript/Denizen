@@ -237,7 +237,6 @@ public class InvisibleCommand extends AbstractCommand {
             return !((ItemFrame) entity).isVisible();
         }
         else if (entity instanceof LivingEntity) {
-            // Check for the invisibility potion effect for compact with old uses (the command used to add it)
             return ((LivingEntity) entity).isInvisible() || ((LivingEntity) entity).hasPotionEffect(PotionEffectType.INVISIBILITY);
         }
         else {
