@@ -840,7 +840,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         for (String permName : CoreUtilities.split(perm, '|')) {
-            if (!player.getPlayerEntity().hasPermission(permName)) {
+            boolean expect = true;
+            if (permName.startsWith("!")) {
+                permName = permName.substring(1);
+                expect = false;
+            }
+            if (player.getPlayerEntity().hasPermission(permName) != expect) {
                 return false;
             }
         }
