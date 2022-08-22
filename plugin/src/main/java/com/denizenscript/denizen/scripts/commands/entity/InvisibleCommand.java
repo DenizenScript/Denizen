@@ -24,7 +24,7 @@ public class InvisibleCommand extends AbstractCommand {
 
     public InvisibleCommand() {
         setName("invisible");
-        setSyntax("invisible [<entity>] (state:true/false/toggle/reset) (for:<player>|...)");
+        setSyntax("invisible (<entity>) (state:true/false/toggle/reset) (for:<player>|...)");
         setPrefixesHandled("for");
         setRequiredArguments(0, 3);
         isProcedural = false;
@@ -32,7 +32,7 @@ public class InvisibleCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Invisible
-    // @Syntax invisible [<entity>] (state:true/false/toggle/reset) (for:<player>|...)
+    // @Syntax invisible (<entity>) (state:true/false/toggle/reset) (for:<player>|...)
     // @Required 0
     // @Maximum 3
     // @Short Sets whether an NPC or entity are invisible.
@@ -60,7 +60,7 @@ public class InvisibleCommand extends AbstractCommand {
     // - invisible
     //
     // @Usage
-    // Use to make the linked NPC visible if previously invisible, and invisible if not
+    // Use to make the linked NPC visible if previously invisible, and invisible if not.
     // - invisible <npc> state:toggle
     //
     // @Usage
@@ -83,10 +83,6 @@ public class InvisibleCommand extends AbstractCommand {
                 scriptEntry.addObject("state", arg.asElement());
             }
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                scriptEntry.addObject("target", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("target")
                     && arg.matches("player")
                     && Utilities.entryHasPlayer(scriptEntry)) {
                 scriptEntry.addObject("target", Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
@@ -95,6 +91,10 @@ public class InvisibleCommand extends AbstractCommand {
                     && arg.matches("npc")
                     && Utilities.entryHasNPC(scriptEntry)) {
                 scriptEntry.addObject("target", Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
+            }
+            else if (!scriptEntry.hasObject("target")
+                    && arg.matchesArgumentType(EntityTag.class)) {
+                scriptEntry.addObject("target", arg.asType(EntityTag.class));
             }
             else {
                 arg.reportUnhandled();
@@ -145,7 +145,7 @@ public class InvisibleCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         EntityTag target = scriptEntry.getObjectTag("target");
-        if (target == null || target.isFake) {
+        if (target == null) {
             Debug.echoError(scriptEntry, "Must specify a valid target.");
             return;
         }
