@@ -9,9 +9,6 @@ import net.md_5.bungee.api.ChatColor;
 
 public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerCompletesAdvancementScriptEvent {
 
-    public PlayerCompletesAdvancementScriptEventPaperImpl() {
-    }
-
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {

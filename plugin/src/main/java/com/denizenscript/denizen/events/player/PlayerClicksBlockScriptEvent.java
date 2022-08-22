@@ -53,7 +53,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         registerSwitches("with", "using", "type");
     }
 
-    public PlayerClicksBlockScriptEvent instance;
     public PlayerInteractEvent event;
     public ItemTag item;
     public LocationTag location;

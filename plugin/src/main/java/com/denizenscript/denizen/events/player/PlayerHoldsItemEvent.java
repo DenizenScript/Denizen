@@ -46,6 +46,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
 
     public PlayerHoldsItemEvent() {
         registerCouldMatcher("player raises|lowers|toggles <item>");
+        instance = this;
     }
 
     public static PlayerHoldsItemEvent instance;
