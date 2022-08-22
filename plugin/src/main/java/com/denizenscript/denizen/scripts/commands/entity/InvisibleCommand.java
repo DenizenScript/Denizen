@@ -48,7 +48,8 @@ public class InvisibleCommand extends AbstractCommand {
     // Note that using the 'for:' argument won't apply the 'invisible' trait to NPCs.
     // If unspecified, will be set globally.
     //
-    // To reset an entity's fake visibility (for all players) use the 'reset' state.
+    // To reset an entity's fake visibility use the 'reset' state.
+    // A reset is global by default, use the 'for:' argument to reset specific players.
     //
     // NPCs can't be made invisible if not added to the playerlist (the invisible trait adds the NPC to the playerlist when set).
     // See <@link language invisible trait>
@@ -67,6 +68,10 @@ public class InvisibleCommand extends AbstractCommand {
     // @Usage
     // Use to make an entity visible for specific players, without changing the way other players see it.
     // - invisible <[entity]> state:false for:<[player1]>|<[player2]>
+    //
+    // @Usage
+    // Use to reset an entity's fake visibility state for the linked player.
+    // - invisible <[entity]> state:reset for:<player>
     // -->
 
     @Override
