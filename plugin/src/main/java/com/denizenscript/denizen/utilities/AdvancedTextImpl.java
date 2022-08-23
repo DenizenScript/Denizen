@@ -107,15 +107,15 @@ public class AdvancedTextImpl {
         player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
-    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact){
+    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {
         throw new UnsupportedOperationException();
     }
 
-    public void clearBrewingRecipes(){
+    public void clearBrewingRecipes() {
         throw new UnsupportedOperationException();
     }
 
-    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient){
+    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
         return false;
     }
 }

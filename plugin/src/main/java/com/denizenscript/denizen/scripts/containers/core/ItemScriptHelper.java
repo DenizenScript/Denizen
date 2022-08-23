@@ -610,9 +610,9 @@ public class ItemScriptHelper implements Listener {
         ItemStack ingredient = event.getContents().getIngredient();
         ItemStack currInput;
 
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             currInput = event.getContents().getItem(i);
-            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !AdvancedTextImpl.instance.isDenizenMix(currInput, ingredient)){
+            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !AdvancedTextImpl.instance.isDenizenMix(currInput, ingredient)) {
                 if (!isAllowedToCraftWith(currInput)) {
                     event.setCancelled(true);
                 }

@@ -150,8 +150,8 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     public static HashMap<NamespacedKey, PotionMix> potionMixes = new HashMap<>();
 
     @Override
-    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact){
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)){
+    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             throw new UnsupportedOperationException();
         }
         NamespacedKey key = new NamespacedKey(Denizen.getInstance(), keyName);
@@ -163,19 +163,19 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     }
 
     @Override
-    public void clearBrewingRecipes(){
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)){
+    public void clearBrewingRecipes() {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             return;
         }
         PotionBrewer brewer = Bukkit.getPotionBrewer();
-        for (NamespacedKey mix : potionMixes.keySet()){
+        for (NamespacedKey mix : potionMixes.keySet()) {
             brewer.removePotionMix(mix);
             potionMixes.remove(mix);
         }
     }
 
-    public static RecipeChoice itemArrayToChoice (ItemStack[] item, boolean exact){
-        if (exact){
+    public static RecipeChoice itemArrayToChoice (ItemStack[] item, boolean exact) {
+        if (exact) {
             return new RecipeChoice.ExactChoice(item);
         }
         Material[] mats = new Material[item.length];
@@ -186,9 +186,9 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     }
 
     @Override
-    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient){
-        for(PotionMix mix : potionMixes.values()){
-            if(mix.getInput().getItemStack().isSimilar(currInput) && mix.getIngredient().getItemStack().isSimilar(ingredient)){
+    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
+        for(PotionMix mix : potionMixes.values()) {
+            if(mix.getInput().getItemStack().isSimilar(currInput) && mix.getIngredient().getItemStack().isSimilar(ingredient)) {
                 return true;
             }
         }
