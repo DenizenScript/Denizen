@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -73,7 +72,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
             ench = Enchantment.getByName(string.toUpperCase());
         }
         if (ench == null) {
-            ench = Enchantment.getByKey(new NamespacedKey(Denizen.getInstance(), Utilities.cleanseNamespaceID(string)));
+            ench = Enchantment.getByKey(new NamespacedKey("denizen", Utilities.cleanseNamespaceID(string)));
         }
         if (ench == null && ScriptRegistry.containsScript(string, EnchantmentScriptContainer.class)) {
             ench = ScriptRegistry.getScriptContainerAs(string, EnchantmentScriptContainer.class).enchantment;
