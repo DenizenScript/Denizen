@@ -164,7 +164,7 @@ public class ItemScriptHelper implements Listener {
                 ingredients.add(items);
             }
         }
-        NamespacedKey key = new NamespacedKey(Denizen.getInstance(), internalId);
+        NamespacedKey key = new NamespacedKey("denizen", internalId);
         ShapedRecipe recipe = new ShapedRecipe(key, item);
         recipe.setGroup(group);
         String shape1 = "ABC".substring(0, width);
