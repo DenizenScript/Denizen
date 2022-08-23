@@ -1,28 +1,38 @@
 package com.denizenscript.denizen.paper.utilities;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.entity.RelativeTeleportFlag;
+import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Nameable;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.potion.PotionBrewer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
@@ -135,5 +145,53 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
         else {
             super.teleportPlayerRelative(player, loc);
         }
+    }
+
+    public static HashMap<NamespacedKey, PotionMix> potionMixes = new HashMap<>();
+
+    @Override
+    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact){
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)){
+            throw new UnsupportedOperationException();
+        }
+        NamespacedKey key = new NamespacedKey(Denizen.getInstance(), keyName);
+        RecipeChoice inputChoice = itemArrayToChoice(inputItem, inputExact);
+        RecipeChoice ingredientChoice = itemArrayToChoice(ingredientItem, ingredientExact);
+        PotionMix mix = new PotionMix(key, result, inputChoice, ingredientChoice);
+        potionMixes.put(key, mix);
+        Bukkit.getPotionBrewer().addPotionMix(mix);
+    }
+
+    @Override
+    public void clearBrewingRecipes(){
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)){
+            return;
+        }
+        PotionBrewer brewer = Bukkit.getPotionBrewer();
+        for (NamespacedKey mix : potionMixes.keySet()){
+            brewer.removePotionMix(mix);
+            potionMixes.remove(mix);
+        }
+    }
+
+    public static RecipeChoice itemArrayToChoice (ItemStack[] item, boolean exact){
+        if (exact){
+            return new RecipeChoice.ExactChoice(item);
+        }
+        Material[] mats = new Material[item.length];
+        for (int i = 0; i < item.length; i++) {
+            mats[i] = item[i].getType();
+        }
+        return new RecipeChoice.MaterialChoice(mats);
+    }
+
+    @Override
+    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient){
+        for(PotionMix mix : potionMixes.values()){
+            if(mix.getInput().getItemStack().isSimilar(currInput) && mix.getIngredient().getItemStack().isSimilar(ingredient)){
+                return true;
+            }
+        }
+        return false;
     }
 }

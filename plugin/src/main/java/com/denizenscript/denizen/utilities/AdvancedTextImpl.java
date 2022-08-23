@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 
 public class AdvancedTextImpl {
 
@@ -104,5 +105,17 @@ public class AdvancedTextImpl {
 
     public void teleportPlayerRelative(Player player, Location loc) {
         player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+    }
+
+    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact){
+        throw new UnsupportedOperationException();
+    }
+
+    public void clearBrewingRecipes(){
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient){
+        return false;
     }
 }

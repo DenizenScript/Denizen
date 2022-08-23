@@ -178,6 +178,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //            retain: display|enchantments
     //            upgrade: ItemTag
     //
+    //        7:
+    //            # Brewing recipes take one base item and one ingredient item.
+    //            type: brewing
+    //            input: ItemTag
+    //            ingredient: ItemTag
+    //
     //     # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //     # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
     //     # | Most item scripts should exclude this key!

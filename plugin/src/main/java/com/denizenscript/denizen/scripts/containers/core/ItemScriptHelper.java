@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -54,6 +55,7 @@ public class ItemScriptHelper implements Listener {
         recipeCache.clear();
         recipeIdToItemScript.clear();
         NMSHandler.itemHelper.clearDenizenRecipes();
+        AdvancedTextImpl.instance.clearBrewingRecipes();
     }
 
     public static String getIdFor(ItemScriptContainer container, String type, int id) {
@@ -259,6 +261,28 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
     }
 
+    public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
+        boolean inputExact = true;
+        if (inputItemString.startsWith("material:")) {
+            inputExact = false;
+            inputItemString = inputItemString.substring("material:".length());
+        }
+        ItemStack[] inputItems = textToItemArray(container, inputItemString, inputExact);
+        if (inputItems == null) {
+            return;
+        }
+        boolean ingredientExact = true;
+        if (ingredientItemString.startsWith("material:")) {
+            ingredientExact = false;
+            ingredientItemString = ingredientItemString.substring("material:".length());
+        }
+        ItemStack[] ingredientItems = textToItemArray(container, ingredientItemString, ingredientExact);
+        if (ingredientItems == null) {
+            return;
+        }
+        AdvancedTextImpl.instance.registerBrewingRecipe(internalId, item, inputItems, inputExact, ingredientItems, ingredientExact);
+    }
+
     public static void rebuildRecipes() {
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
@@ -314,6 +338,9 @@ public class ItemScriptHelper implements Listener {
                                     retain = getString.apply("retain");
                                 }
                                 registerSmithingRecipe(container, item, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
+                                break;
+                            case "brewing":
+                                registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
                                 break;
                         }
                     }
@@ -580,10 +607,15 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onBrewingStandBrews(BrewEvent event) {
-        for (ItemStack item : event.getContents()) {
-            if (!isAllowedToCraftWith(item)) {
-                event.setCancelled(true);
-                return;
+        ItemStack ingredient = event.getContents().getIngredient();
+        ItemStack currInput;
+
+        for (int i = 0; i < 3; i++){
+            currInput = event.getContents().getItem(i);
+            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !AdvancedTextImpl.instance.isDenizenMix(currInput, ingredient)){
+                if (!isAllowedToCraftWith(currInput)) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
