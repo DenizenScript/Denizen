@@ -112,7 +112,6 @@ public class AdvancedTextImpl {
     }
 
     public void clearBrewingRecipes() {
-        throw new UnsupportedOperationException();
     }
 
     public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
