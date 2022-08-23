@@ -121,7 +121,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //             # Note that the internal rules for Recipe IDs are very strict (limited to "a-z", "0-9", "/", ".", "_", or "-").
     //             # | Most recipes should exclude this key.
     //             recipe_id: my_custom_item_id
-    //             # You can optional add a group as well. If unspecified, the item will have no group.
+    //             # You can optionally add a group as well. If unspecified, the item will have no group.
     //             # Groups are used to merge together similar recipes in the recipe book (in particular, multiple recipes for one item).
     //             # | Most recipes should exclude this key.
     //             group: my_custom_group
@@ -162,10 +162,10 @@ public class ItemScriptContainer extends ScriptContainer {
     //            # Furnace, blast, smoker, and campfire recipes take one input and have additional options.
     //            type: furnace
     //            # Optionally specify the cook time as a duration (default 2s).
-    //             # | Only some recipes should have this key.
+    //            # | Only some recipes should have this key.
     //            cook_time: 1s
     //            # Optionally specify experience reward amount (default 0).
-    //             # | Only some recipes should have this key.
+    //            # | Only some recipes should have this key.
     //            experience: 5
     //            input: ItemTag
     //        6:
@@ -180,6 +180,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //        7:
     //            # Brewing recipes take one base item and one ingredient item.
+    //            # | Brewing recipes are only available on Paper versions 1.18 and up.
     //            type: brewing
     //            input: ItemTag
     //            ingredient: ItemTag
