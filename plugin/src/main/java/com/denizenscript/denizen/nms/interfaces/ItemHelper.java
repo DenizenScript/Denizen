@@ -84,4 +84,6 @@ public abstract class ItemHelper {
     public BlockData getPlacedBlock(Material material) {
         throw new UnsupportedOperationException();
     }
+
+    public abstract boolean isValidMix(ItemStack input, ItemStack ingredient);
 }

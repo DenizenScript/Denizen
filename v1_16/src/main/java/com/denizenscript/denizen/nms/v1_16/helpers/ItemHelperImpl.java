@@ -336,4 +336,11 @@ public class ItemHelperImpl extends ItemHelper {
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
+
+    @Override
+    public boolean isValidMix(ItemStack input, ItemStack ingredient) {
+        net.minecraft.server.v1_16_R3.ItemStack nmsInput = CraftItemStack.asNMSCopy(input);
+        net.minecraft.server.v1_16_R3.ItemStack nmsIngredient = CraftItemStack.asNMSCopy(ingredient);
+        return net.minecraft.server.v1_16_R3.PotionBrewer.a(nmsInput, nmsIngredient);
+    }
 }
