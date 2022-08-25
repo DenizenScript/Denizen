@@ -1,17 +1,16 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.events.world.RaidScriptEvent;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.utilities.world.RaidData;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.raid.RaidTriggerEvent;
 
-public class PlayerTriggersRaidScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerTriggersRaidScriptEvent extends RaidScriptEvent<RaidTriggerEvent> implements Listener {
 
     public PlayerTriggersRaidScriptEvent() {
+        super(false);
         registerCouldMatcher("player triggers raid");
     }
 
@@ -23,14 +22,6 @@ public class PlayerTriggersRaidScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public ObjectTag getContext(String name) {
-        if (name.equals("raid")) {
-            return RaidData.toMap(event.getRaid());
-        }
-        return super.getContext(name);
     }
 
     @Override
