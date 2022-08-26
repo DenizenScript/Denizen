@@ -558,8 +558,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // This is a representation of how much time mining is needed to break a block.
         // -->
         tagProcessor.registerTag(ElementTag.class, "block_strength", (attribute, object) -> {
-            float res = NMSHandler.blockHelper.getBlockStength(object.material);
-            return new ElementTag(res);
+            return new ElementTag(NMSHandler.blockHelper.getBlockStrength(object.material));
         });
 
         tagProcessor.registerTag(ElementTag.class, "has_vanilla_data_tag", (attribute, object) -> {
