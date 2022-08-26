@@ -154,7 +154,13 @@ public class TimeCommand extends AbstractCommand {
                         Bukkit.getScheduler().cancelTask(existingTask);
                         resetTasks.remove(player.getUniqueId());
                     }
-                    player.setPlayerTime(value.getTicks(), freeze == null || !freeze.asBoolean());
+                    if (freeze == null || !freeze.asBoolean()) {
+                        // sets a relative time, so subtract by the world time to keep the command absolute
+                        player.setPlayerTime(value.getTicks() - player.getWorld().getTime(), true);
+                    }
+                    else {
+                        player.setPlayerTime(value.getTicks(), false);
+                    }
                     if (resetAfter != null) {
                         int newTask = Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), player::resetPlayerTime, resetAfter.getTicks());
                         resetTasks.put(player.getUniqueId(), newTask);
