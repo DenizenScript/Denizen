@@ -175,6 +175,14 @@ public class CuboidBlockSet implements BlockSet {
                 return BlockFace.EAST;
             case WEST:
                 return BlockFace.SOUTH;
+            case NORTH_EAST:
+                return BlockFace.NORTH_WEST;
+            case NORTH_WEST:
+                return BlockFace.SOUTH_WEST;
+            case SOUTH_WEST:
+                return BlockFace.SOUTH_EAST;
+            case SOUTH_EAST:
+                return BlockFace.NORTH_EAST;
             default:
                 return BlockFace.SELF;
         }
@@ -358,14 +366,46 @@ public class CuboidBlockSet implements BlockSet {
         blocks = bd;
     }
 
+    public void flipEntities(int offsetMultiplier_X, int offsetMultiplier_Z) {
+        if (entities == null) {
+            return;
+        }
+        ListTag outEntities = new ListTag();
+        for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
+            int rotation = data.getElement("rotation").asInt();
+            LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
+            float newYaw = offset.getYaw();
+            if (offsetMultiplier_X == -1) {
+                newYaw = -1 * (offset.getYaw() - 90) + 270;
+            } else if (offsetMultiplier_Z == -1) {
+                newYaw = 180 - offset.getYaw();
+            }
+            while (newYaw < 0 || newYaw >= 360) {
+                if (newYaw >= 360) {
+                    newYaw -= 360;
+                } else {
+                    newYaw += 360;
+                }
+            }
+            rotation += (offset.getYaw() - newYaw);
+            offset = new LocationTag((String) null, offset.getX() * offsetMultiplier_X, offset.getY(), offset.getZ() * offsetMultiplier_Z, newYaw, offset.getPitch());
+            data = data.duplicate();
+            data.putObject("offset", offset);
+            data.putObject("rotation", new ElementTag(rotation));
+            outEntities.addObject(data);
+        }
+        entities = outEntities;
+    }
+
     public void flipX() {
+        flipEntities(-1, 1);
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
-        center_x = x_width - center_x;
+        center_x = x_width - center_x - 1;
         for (int x = x_width - 1; x >= 0; x--) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    bd[index++] = blockAt(x, y, z);
+                    bd[index++] = blockAt(x, y, z).flipX();
                 }
             }
         }
@@ -375,11 +415,11 @@ public class CuboidBlockSet implements BlockSet {
     public void flipY() {
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
-        center_y = y_length - center_y;
+        center_y = y_length - center_y - 1;
         for (int x = 0; x < x_width; x++) {
             for (int y = y_length - 1; y >= 0; y--) {
                 for (int z = 0; z < z_height; z++) {
-                    bd[index++] = blockAt(x, y, z);
+                    bd[index++] = blockAt(x, y, z).flipY();
                 }
             }
         }
@@ -387,13 +427,14 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipZ() {
+        flipEntities(1, -1);
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
-        center_z = z_height - center_z;
+        center_z = z_height - center_z - 1;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = z_height - 1; z >= 0; z--) {
-                    bd[index++] = blockAt(x, y, z);
+                    bd[index++] = blockAt(x, y, z).flipZ();
                 }
             }
         }
