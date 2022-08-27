@@ -1366,6 +1366,19 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
         // <--[mechanism]
         // @object WorldTag
+        // @name advance_ticks
+        // @input ElementTag(Number)
+        // @description
+        // Advances this world's day the specified number of ticks WITHOUT firing any events.
+        // Useful for manually adjusting the daylight cycle without firing an event every tick, for example.
+        // -->
+        if (mechanism.matches("advance_ticks") && mechanism.requireInteger()) {
+            World world = getWorld();
+            NMSHandler.worldHelper.setDayTime(world, world.getFullTime() + mechanism.getValue().asInt());
+        }
+
+        // <--[mechanism]
+        // @object WorldTag
         // @name skip_night
         // @input None
         // @description
