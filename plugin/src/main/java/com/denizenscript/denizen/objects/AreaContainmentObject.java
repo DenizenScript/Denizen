@@ -190,11 +190,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a boolean indicating whether the specified location is inside this area.
         // -->
-        processor.registerTag(ElementTag.class, "contains", (attribute, area) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            LocationTag loc = attribute.paramAsType(LocationTag.class);
+        processor.registerTag(ElementTag.class, LocationTag.class, "contains", (attribute, area, loc) -> {
             if (loc == null) {
                 return null;
             }
@@ -253,11 +249,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // Gets a list of all block locations with a specified flag within the area.
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
-        processor.registerTag(ListTag.class, "blocks_flagged", (attribute, area) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return area.getBlocksFlagged(CoreUtilities.toLowerCase(attribute.getParam()), attribute);
+        processor.registerTag(ListTag.class, ElementTag.class, "blocks_flagged", (attribute, area, flagName) -> {
+            return area.getBlocksFlagged(CoreUtilities.toLowerCase(flagName.toString()), attribute);
         });
 
         // <--[tag]
@@ -276,11 +269,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns whether this area is fully inside another cuboid.
         // -->
-        processor.registerTag(ElementTag.class, "is_within", (attribute, area) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
+        processor.registerTag(ElementTag.class, CuboidTag.class, "is_within", (attribute, area, cub2) -> {
             if (cub2 == null) {
                 return null;
             }
@@ -319,11 +308,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a copy of the area, with the specified world.
         // -->
-        processor.registerTag(type, "with_world", (attribute, area) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            WorldTag world = attribute.paramAsType(WorldTag.class);
+        processor.registerTag(type, WorldTag.class, "with_world", (attribute, area, world) -> {
             if (world == null) {
                 return null;
             }
