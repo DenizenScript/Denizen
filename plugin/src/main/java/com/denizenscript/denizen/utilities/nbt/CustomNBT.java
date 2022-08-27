@@ -189,7 +189,7 @@ public class CustomNBT {
         if (compoundTag.getValue().containsKey(key)) {
             List<StringTag> temp = (List<StringTag>) compoundTag.getValue().get(key).getValue();
             for (StringTag tag : temp) {
-                materials.add(NMSHandler.itemHelper.getMaterialFromInternalName(tag.getValue()));
+                materials.add(Material.matchMaterial(tag.getValue()));
             }
         }
         return materials;
@@ -206,7 +206,7 @@ public class CustomNBT {
         }
         List<StringTag> internalMaterials = new ArrayList<>();
         for (Material material : materials) {
-            internalMaterials.add(new StringTag(NMSHandler.itemHelper.getInternalNameFromMaterial(material)));
+            internalMaterials.add(new StringTag(material.getKey().toString()));
         }
         JNBTListTag lt = new JNBTListTag(StringTag.class, internalMaterials);
         compoundTag = compoundTag.createBuilder().put(key, lt).build();
