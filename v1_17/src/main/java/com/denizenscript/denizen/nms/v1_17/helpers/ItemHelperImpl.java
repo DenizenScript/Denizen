@@ -15,7 +15,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -49,7 +48,6 @@ import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -71,7 +69,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            ReflectionHelper.getFinalSetter(Item.class, ReflectionMappingsInfo.Item_maxStackSize).invoke(Registry.ITEM.get(ResourceLocation.tryParse(material.getKey().getKey())), size);
+            ReflectionHelper.getFinalSetter(Item.class, ReflectionMappingsInfo.Item_maxStackSize).invoke(Registry.ITEM.get(CraftNamespacedKey.toMinecraft(material.getKey())), size);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -81,15 +79,6 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public Integer burnTime(Material material) {
         return AbstractFurnaceBlockEntity.getFuel().get(CraftMagicNumbers.getItem(material));
-    }
-
-    @Override
-    public Recipe getRecipeById(NamespacedKey key) {
-        net.minecraft.world.item.crafting.Recipe<?> recipe = getNMSRecipe(key);
-        if (recipe == null) {
-            return null;
-        }
-        return recipe.toBukkitRecipe();
     }
 
     @Override
@@ -184,17 +173,6 @@ public class ItemHelperImpl extends ItemHelper {
         }
         ShapelessRecipe recipe = new ShapelessRecipe(key, group, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
-    }
-
-    @Override
-    public String getInternalNameFromMaterial(Material material) {
-        // In 1.13+ Material names match their internal name
-        return "minecraft:" + CoreUtilities.toLowerCase(material.name());
-    }
-
-    @Override
-    public Material getMaterialFromInternalName(String internalName) {
-        return Material.matchMaterial(internalName);
     }
 
     @Override

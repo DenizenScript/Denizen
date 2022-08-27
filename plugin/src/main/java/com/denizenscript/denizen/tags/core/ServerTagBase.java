@@ -232,8 +232,7 @@ public class ServerTagBase {
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // -->
         if (attribute.startsWith("recipe_items") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (recipe == null) {
                 return;
             }
@@ -277,8 +276,7 @@ public class ServerTagBase {
         // Returns the shape of a shaped recipe, like '2x2' or '3x3'.
         // -->
         if (attribute.startsWith("recipe_shape") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (!(recipe instanceof ShapedRecipe)) {
                 return;
             }
@@ -295,8 +293,7 @@ public class ServerTagBase {
         // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, SMITHING.
         // -->
         if (attribute.startsWith("recipe_type") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (recipe == null) {
                 return;
             }
@@ -311,8 +308,7 @@ public class ServerTagBase {
         // Returns the item that a recipe will create when crafted.
         // -->
         if (attribute.startsWith("recipe_result") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (recipe == null) {
                 return;
             }

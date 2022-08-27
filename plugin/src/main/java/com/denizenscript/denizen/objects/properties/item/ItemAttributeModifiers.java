@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAttributeModifiers;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -103,15 +104,15 @@ public class ItemAttributeModifiers implements Property {
         // Slot must be one of: HAND, OFF_HAND, FEET, LEGS, CHEST, or HEAD
         // -->
         PropertyParser.registerTag(ItemAttributeModifiers.class, MapTag.class, "default_attribute_modifiers", (attribute, object) -> {
-            if (!attribute.hasParam()) {
+            if (!attribute.hasParam() || !NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
                 return null;
             }
             EquipmentSlot slot = attribute.getParamElement().asEnum(EquipmentSlot.class);
             if (slot == null) {
-                attribute.echoError("Invalid slot.");
+                attribute.echoError("Invalid slot specified: " + attribute.getParam());
                 return null;
             }
-            return getAttributeModifiersFor(NMSHandler.itemHelper.getDefaultAttributes(object.item.getItemStack(), slot));
+            return getAttributeModifiersFor(object.item.getBukkitMaterial().getDefaultAttributeModifiers(slot));
         });
     }
 
