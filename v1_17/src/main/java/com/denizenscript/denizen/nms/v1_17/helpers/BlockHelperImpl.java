@@ -27,19 +27,15 @@ import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.block.*;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
-import org.bukkit.event.world.PortalCreateEvent;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -63,20 +59,6 @@ public class BlockHelperImpl implements BlockHelper {
     public void applyPhysics(Location location) {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         ((CraftWorld) location.getWorld()).getHandle().updateNeighborsAt(pos, CraftMagicNumbers.getBlock(location.getBlock().getType()));
-    }
-
-    @Override
-    public BlockData parseBlockData(Material material, String otherData) {
-        return CraftBlockData.newData(material, otherData);
-    }
-
-    @Override
-    public List<Location> getBlocksList(PortalCreateEvent event) {
-        List<Location> blocks = new ArrayList<>();
-        for (org.bukkit.block.BlockState block : event.getBlocks()) {
-            blocks.add(block.getLocation());
-        }
-        return blocks;
     }
 
     public static <T extends BlockEntity> T getTE(CraftBlockEntityState<T> cbs) {
@@ -213,7 +195,7 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public float getBlockStength(Material mat) {
+    public float getBlockStrength(Material mat) {
         return getMaterialBlock(mat).defaultBlockState().destroySpeed;
     }
 

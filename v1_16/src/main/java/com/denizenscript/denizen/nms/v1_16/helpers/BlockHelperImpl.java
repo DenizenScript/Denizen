@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_16_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlockEntityState;
@@ -24,12 +23,9 @@ import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_16_R3.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
-import org.bukkit.event.world.PortalCreateEvent;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class BlockHelperImpl implements BlockHelper {
@@ -52,20 +48,6 @@ public class BlockHelperImpl implements BlockHelper {
     public void applyPhysics(Location location) {
         BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         ((CraftWorld) location.getWorld()).getHandle().applyPhysics(pos, CraftMagicNumbers.getBlock(location.getBlock().getType()));
-    }
-
-    @Override
-    public BlockData parseBlockData(Material material, String otherData) {
-        return CraftBlockData.newData(material, otherData);
-    }
-
-    @Override
-    public List<Location> getBlocksList(PortalCreateEvent event) {
-        List<Location> blocks = new ArrayList<>();
-        for (org.bukkit.block.BlockState block : event.getBlocks()) {
-            blocks.add(block.getLocation());
-        }
-        return blocks;
     }
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
@@ -195,7 +177,7 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public float getBlockStength(Material mat) {
+    public float getBlockStrength(Material mat) {
         return getMaterialBlock(mat).getBlockData().strength;
     }
 

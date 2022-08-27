@@ -9,10 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.Set;
 
 public interface BlockHelper {
@@ -34,13 +32,11 @@ public interface BlockHelper {
 
     BlockState generateBlockState(Block block, Material mat);
 
-    List<Location> getBlocksList(PortalCreateEvent event);
-
     String getPushReaction(Material mat);
 
     void setPushReaction(Material mat, String reaction);
 
-    float getBlockStength(Material mat);
+    float getBlockStrength(Material mat);
 
     void setBlockStrength(Material mat, float strength);
 
@@ -64,13 +60,8 @@ public interface BlockHelper {
             material = text.substring(0, openBracket);
             otherData = text.substring(openBracket);
         }
-        if (material.startsWith("minecraft:")) {
-            material = material.substring("minecraft:".length());
-        }
-        return parseBlockData(Material.getMaterial(material.toUpperCase()), otherData);
+        return Material.matchMaterial(material).createBlockData(otherData);
     }
-
-    BlockData parseBlockData(Material material, String otherData);
 
     default void makeBlockStateRaw(BlockState state) {
         throw new UnsupportedOperationException();
