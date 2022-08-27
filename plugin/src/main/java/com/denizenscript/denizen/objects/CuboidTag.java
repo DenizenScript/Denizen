@@ -629,11 +629,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     String prefix = "Cuboid";
 
     @Override
-    public String getObjectType() {
-        return "cuboid";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

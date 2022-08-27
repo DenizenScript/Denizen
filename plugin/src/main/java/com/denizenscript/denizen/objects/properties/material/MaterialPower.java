@@ -45,7 +45,7 @@ public class MaterialPower implements Property {
         // @description
         // Returns the redstone power level of an analogue-powerable block.
         // -->
-        PropertyParser.<MaterialPower, ElementTag>registerStaticTag(ElementTag.class, "power", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialPower.class, ElementTag.class, "power", (attribute, material) -> {
             return new ElementTag(((AnaloguePowerable) material.material.getModernData()).getPower());
         });
 
@@ -57,7 +57,7 @@ public class MaterialPower implements Property {
         // @description
         // Returns the maximum redstone power an analogue-powerable block can have.
         // -->
-        PropertyParser.<MaterialPower, ElementTag>registerStaticTag(ElementTag.class, "max_power", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialPower.class, ElementTag.class, "max_power", (attribute, material) -> {
             return new ElementTag(((AnaloguePowerable) material.material.getModernData()).getMaximumPower());
         });
     }

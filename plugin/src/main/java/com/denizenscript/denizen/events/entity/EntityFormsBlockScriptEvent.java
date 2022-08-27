@@ -34,11 +34,9 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public EntityFormsBlockScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> forms <block>");
     }
 
-    public static EntityFormsBlockScriptEvent instance;
     public MaterialTag material;
     public LocationTag location;
     public EntityTag entity;
@@ -56,11 +54,6 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityFormsBlock";
     }
 
     @Override

@@ -36,11 +36,9 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PortalCreateScriptEvent() {
-        instance = this;
         registerCouldMatcher("portal created (because <'reason'>)");
     }
 
-    public static PortalCreateScriptEvent instance;
     public ElementTag reason;
     public PortalCreateEvent event;
 
@@ -53,11 +51,6 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PortalCreate";
     }
 
     @Override

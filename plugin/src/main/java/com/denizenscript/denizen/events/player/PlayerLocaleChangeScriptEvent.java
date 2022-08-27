@@ -29,20 +29,13 @@ public class PlayerLocaleChangeScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public PlayerLocaleChangeScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerLocaleChangeScriptEvent instance;
     public PlayerLocaleChangeEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("player locale change");
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerLocaleChange";
     }
 
     @Override

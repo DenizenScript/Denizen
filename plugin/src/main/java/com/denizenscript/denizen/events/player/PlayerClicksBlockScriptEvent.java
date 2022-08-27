@@ -49,12 +49,10 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerClicksBlockScriptEvent() {
-        instance = this;
         registerCouldMatcher("player (right|left) clicks <block>");
         registerSwitches("with", "using", "type");
     }
 
-    public PlayerClicksBlockScriptEvent instance;
     public PlayerInteractEvent event;
     public ItemTag item;
     public LocationTag location;
@@ -147,11 +145,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerClicksBlock";
     }
 
     public boolean wasCancellationAltered;

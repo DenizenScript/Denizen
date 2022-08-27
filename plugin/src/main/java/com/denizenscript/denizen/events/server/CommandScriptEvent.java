@@ -55,23 +55,16 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public CommandScriptEvent() {
-        instance = this;
         registerCouldMatcher("command");
         registerCouldMatcher("<'command_name'> command");
     }
 
-    public static CommandScriptEvent instance;
     public String commandName;
     public String fullMessage;
     public String sourceType;
     public Location location;
     public PlayerCommandPreprocessEvent playerEvent;
     public ServerCommandEvent serverEvent;
-
-    @Override
-    public String getName() {
-        return "Command";
-    }
 
     @Override
     public boolean matches(ScriptPath path) {

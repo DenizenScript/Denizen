@@ -27,16 +27,19 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     // @Context
     // <context.criteria> returns all the criteria present in this advancement.
     // <context.advancement> returns the completed advancement's minecraft ID key.
+    // <context.message> returns an ElementTag of the advancement message (only on Paper).
+    //
+    // @Determine
+    // ElementTag to change the advancement message (only on Paper).
+    // "NO_MESSAGE" to hide the advancement message (only on Paper).
     //
     // @Player Always.
     //
     // -->
 
     public PlayerCompletesAdvancementScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerCompletesAdvancementScriptEvent instance;
     public PlayerAdvancementDoneEvent event;
 
     @Override
@@ -50,11 +53,6 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerCompletesAdvancement";
     }
 
     @Override

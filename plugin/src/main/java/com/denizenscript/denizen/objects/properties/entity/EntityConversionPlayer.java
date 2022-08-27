@@ -63,7 +63,7 @@ public class EntityConversionPlayer implements Property {
         // @description
         // Returns the player that caused a zombie villager to start converting back to a villager, if any.
         // -->
-        PropertyParser.<EntityConversionPlayer, PlayerTag>registerTag(PlayerTag.class, "conversion_player", (attribute, object) -> {
+        PropertyParser.registerTag(EntityConversionPlayer.class, PlayerTag.class, "conversion_player", (attribute, object) -> {
             OfflinePlayer player = object.getZombieVillager().getConversionPlayer();
             if (player != null && player.hasPlayedBefore()) {
                 return new PlayerTag(player);

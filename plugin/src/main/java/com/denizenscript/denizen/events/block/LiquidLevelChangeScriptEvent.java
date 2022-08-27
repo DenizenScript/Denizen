@@ -30,11 +30,9 @@ public class LiquidLevelChangeScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public LiquidLevelChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("liquid|lava|water level changes");
     }
 
-    public static LiquidLevelChangeScriptEvent instance;
     public LocationTag location;
     public MaterialTag old_material;
     public FluidLevelChangeEvent event;
@@ -60,11 +58,6 @@ public class LiquidLevelChangeScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "LiquidLevelChange";
     }
 
     @Override

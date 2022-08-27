@@ -38,10 +38,8 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public PlayerJoinsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerJoinsScriptEvent instance;
     public PlayerJoinEvent event;
 
     @Override
@@ -55,11 +53,6 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerJoins";
     }
 
     @Override

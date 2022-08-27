@@ -37,7 +37,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerStandsOnScriptEvent() {
-        instance = this;
     }
 
     PlayerStandsOnScriptEvent instance;
@@ -66,11 +65,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerStandsOn";
     }
 
     @Override

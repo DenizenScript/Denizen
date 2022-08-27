@@ -51,7 +51,7 @@ public class ItemMap implements Property {
         // @description
         // Returns the ID number of the map item's map.
         // -->
-        PropertyParser.<ItemMap, ElementTag>registerTag(ElementTag.class, "map", (attribute, object) -> {
+        PropertyParser.registerTag(ItemMap.class, ElementTag.class, "map", (attribute, object) -> {
             if (!object.hasMapId()) {
                 return null;
             }
@@ -66,7 +66,7 @@ public class ItemMap implements Property {
         // @description
         // Returns the scale of the map, from 0 (smallest) to 4 (largest).
         // -->
-        PropertyParser.<ItemMap, ElementTag>registerTag(ElementTag.class, "map_scale", (attribute, object) -> {
+        PropertyParser.registerTag(ItemMap.class, ElementTag.class, "map_scale", (attribute, object) -> {
             if (!object.hasMapId()) {
                 return null;
             }
@@ -85,7 +85,7 @@ public class ItemMap implements Property {
         // @description
         // Returns whether maps with the same ID as this map are locked.
         // -->
-        PropertyParser.<ItemMap, ElementTag>registerTag(ElementTag.class, "map_locked", (attribute, object) -> {
+        PropertyParser.registerTag(ItemMap.class, ElementTag.class, "map_locked", (attribute, object) -> {
             if (!object.hasMapId()) {
                 return null;
             }
@@ -105,7 +105,7 @@ public class ItemMap implements Property {
         // Returns the center location on the map's display.
         // Note that there is no Y value (it's always 0), only X, Z, and a World.
         // -->
-        PropertyParser.<ItemMap, LocationTag>registerTag(LocationTag.class, "map_center", (attribute, object) -> {
+        PropertyParser.registerTag(ItemMap.class, LocationTag.class, "map_center", (attribute, object) -> {
             if (!object.hasMapId()) {
                 return null;
             }

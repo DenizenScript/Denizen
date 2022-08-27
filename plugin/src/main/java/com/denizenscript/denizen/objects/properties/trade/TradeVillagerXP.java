@@ -50,7 +50,7 @@ public class TradeVillagerXP implements Property {
         // @description
         // Returns the amount of experience a villager gains from this trade.
         // -->
-        PropertyParser.<TradeVillagerXP, ElementTag>registerTag(ElementTag.class, "villager_xp", (attribute, recipe) -> {
+        PropertyParser.registerTag(TradeVillagerXP.class, ElementTag.class, "villager_xp", (attribute, recipe) -> {
             return new ElementTag(recipe.recipe.getRecipe().getVillagerExperience());
         });
     }

@@ -34,11 +34,9 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
     // -->
 
     public PlayerAbsorbsExperienceScriptEvent() {
-        instance = this;
         registerCouldMatcher("player absorbs experience");
     }
 
-    public static PlayerAbsorbsExperienceScriptEvent instance;
     public PlayerPickupExperienceEvent event;
 
     @Override
@@ -47,11 +45,6 @@ public class PlayerAbsorbsExperienceScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerAbsorbsExperience";
     }
 
     @Override

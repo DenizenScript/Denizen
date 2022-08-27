@@ -35,10 +35,8 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public FireworkBurstsScriptEvent() {
-        instance = this;
     }
 
-    public static FireworkBurstsScriptEvent instance;
     public FireworkExplodeEvent event;
     public EntityTag entity;
     public LocationTag location;
@@ -57,11 +55,6 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "FireworkBursts";
     }
 
     @Override

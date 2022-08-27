@@ -36,11 +36,9 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerClicksFakeEntityScriptEvent() {
-        instance = this;
         registerCouldMatcher("player (right|left) clicks fake entity");
     }
 
-    public static PlayerClicksFakeEntityScriptEvent instance;
     public PlayerUseUnknownEntityEvent event;
 
     @Override
@@ -55,11 +53,6 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerClicksFakeEntity";
     }
 
     @Override

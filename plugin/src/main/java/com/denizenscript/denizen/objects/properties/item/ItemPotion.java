@@ -218,7 +218,7 @@ public class ItemPotion implements Property {
         // Returns the base potion type name for this potion item.
         // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // -->
-        PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_base_type", (attribute, object) -> {
+        PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_base_type", (attribute, object) -> {
             return new ElementTag(object.getMeta().getBasePotionData().getType().name());
         });
 
@@ -231,7 +231,7 @@ public class ItemPotion implements Property {
         // @description
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
-        PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_base", (attribute, object) -> {
+        PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_base", (attribute, object) -> {
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             PotionMeta meta = object.getMeta();
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
@@ -248,7 +248,7 @@ public class ItemPotion implements Property {
         // @description
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
-        PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "potion_effects", (attribute, object) -> {
+        PropertyParser.registerTag(ItemPotion.class, ListTag.class, "potion_effects", (attribute, object) -> {
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             ListTag result = new ListTag();
             for (PotionEffect pot : object.getMeta().getCustomEffects()) {
@@ -264,7 +264,7 @@ public class ItemPotion implements Property {
         // @description
         // Returns whether the potion has a potion effect.
         // -->
-        PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "has_potion_effect", (attribute, object) -> {
+        PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "has_potion_effect", (attribute, object) -> {
             return new ElementTag(object.getMeta().hasCustomEffects());
         });
 
@@ -277,7 +277,7 @@ public class ItemPotion implements Property {
         // @description
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
-        PropertyParser.<ItemPotion, ElementTag>registerTag(ElementTag.class, "potion_effect", (attribute, object) -> {
+        PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_effect", (attribute, object) -> {
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             PotionMeta meta = object.getMeta();
             int potN = attribute.hasParam() ? attribute.getIntParam() - 1 : 0;
@@ -339,7 +339,7 @@ public class ItemPotion implements Property {
         // Returns a list of all potion effects on this item, in the same format as the MapTag input to the mechanism.
         // Note that the first value in the list is the potion's base type, and all subsequent entries are effect data.
         // -->
-        PropertyParser.<ItemPotion, ListTag>registerTag(ListTag.class, "effects_data", (attribute, object) -> {
+        PropertyParser.registerTag(ItemPotion.class, ListTag.class, "effects_data", (attribute, object) -> {
             return object.getMapTagData();
         });
     }

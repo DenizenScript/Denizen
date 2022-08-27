@@ -31,11 +31,9 @@ public class CreeperIgnitesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public CreeperIgnitesScriptEvent() {
-        instance = this;
         registerCouldMatcher("creeper ignites");
     }
 
-    public static CreeperIgnitesScriptEvent instance;
     public EntityTag entity;
     public CreeperIgniteEvent event;
 
@@ -45,11 +43,6 @@ public class CreeperIgnitesScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "CreeperIgnites";
     }
 
     @Override

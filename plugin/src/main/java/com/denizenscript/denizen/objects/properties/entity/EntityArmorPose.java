@@ -84,7 +84,7 @@ public class EntityArmorPose implements Property {
         // For example, head=4.5,3,4.5;body=5.4,3.2,1
         // Angles are in radians!
         // -->
-        PropertyParser.<EntityArmorPose, MapTag>registerTag(MapTag.class, "armor_pose_map", (attribute, entity) -> {
+        PropertyParser.registerTag(EntityArmorPose.class, MapTag.class, "armor_pose_map", (attribute, entity) -> {
             return entity.getPoseMap();
         });
 
@@ -97,7 +97,7 @@ public class EntityArmorPose implements Property {
         // @description
         // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
         // -->
-        PropertyParser.<EntityArmorPose, ListTag>registerTag(ListTag.class, "armor_pose_list", (attribute, entity) -> {
+        PropertyParser.registerTag(EntityArmorPose.class, ListTag.class, "armor_pose_list", (attribute, entity) -> {
             BukkitImplDeprecations.entityArmorPose.warn(attribute.context);
             return entity.getPoseList();
         });
@@ -111,7 +111,7 @@ public class EntityArmorPose implements Property {
         // @description
         // Deprecated in favor of <@link tag EntityTag.armor_pose_map>
         // -->
-        PropertyParser.<EntityArmorPose, LocationTag>registerTag(LocationTag.class, "armor_pose", (attribute, entity) -> {
+        PropertyParser.registerTag(EntityArmorPose.class, LocationTag.class, "armor_pose", (attribute, entity) -> {
             BukkitImplDeprecations.entityArmorPose.warn(attribute.context);
             if (!attribute.hasParam()) {
                 return null;

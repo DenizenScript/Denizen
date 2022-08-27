@@ -42,10 +42,8 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerMendsItemScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerMendsItemScriptEvent instance;
     public ItemTag item;
     public PlayerItemMendEvent event;
     public LocationTag location;
@@ -70,11 +68,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerMendsItem";
     }
 
     @Override

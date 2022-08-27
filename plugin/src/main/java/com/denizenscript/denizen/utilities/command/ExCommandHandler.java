@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.ObjectType;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -205,7 +206,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                             }
                             else if (typesApplicable != null) {
                                 for (Class<? extends ObjectTag> possibleType : typesApplicable) {
-                                    ObjectFetcher.ObjectType<? extends ObjectTag> typeData = ObjectFetcher.objectsByClass.get(possibleType);
+                                    ObjectType<? extends ObjectTag> typeData = ObjectFetcher.getType(possibleType);
                                     if (typeData != null && typeData.tagProcessor != null) {
                                         ObjectTagProcessor.TagData data = typeData.tagProcessor.registeredObjectTags.get(part);
                                         if (data != null && data.returnType != null) {
@@ -240,7 +241,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                     if (lastDot > 0 && !CoreUtilities.contains(subComponent, '[')) {
                         ArrayList<String> output = new ArrayList<>();
                         for (Class<? extends ObjectTag> possibleType : typesApplicable) {
-                            ObjectFetcher.ObjectType<? extends ObjectTag> typeData = ObjectFetcher.objectsByClass.get(possibleType);
+                            ObjectType<? extends ObjectTag> typeData = ObjectFetcher.getType(possibleType);
                             if (typeData != null && typeData.tagProcessor != null) {
                                 for (String tag : typeData.tagProcessor.registeredObjectTags.keySet()) {
                                     if (tag.startsWith(subComponent)) {

@@ -33,11 +33,9 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public BlockFallsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> falls");
     }
 
-    public static BlockFallsScriptEvent instance;
 
     public LocationTag location;
     public MaterialTag material;
@@ -52,11 +50,6 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "BlockFalls";
     }
 
     @Override

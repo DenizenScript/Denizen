@@ -118,11 +118,6 @@ public class PluginTag implements ObjectTag, FlaggableObject {
     private String prefix = "Plugin";
 
     @Override
-    public String getObjectType() {
-        return "Plugin";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

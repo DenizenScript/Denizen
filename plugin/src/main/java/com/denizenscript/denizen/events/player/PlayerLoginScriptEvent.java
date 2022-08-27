@@ -39,10 +39,8 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public PlayerLoginScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerLoginScriptEvent instance;
     public PlayerLoginEvent event;
 
     @Override
@@ -57,11 +55,6 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerLogin";
     }
 
     @Override

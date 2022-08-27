@@ -47,7 +47,7 @@ public class BukkitListProperties implements Property {
         // EG, a list of "<npc>|<player>|potato" will return "GuardNPC, bob, and potato".
         // The exact formatting rules that will be followed are not guaranteed, other than that it will be a semi-clean human-readable format.
         // -->
-        PropertyParser.<BukkitListProperties, ElementTag>registerTag(ElementTag.class, "formatted", (attribute, listObj) -> {
+        PropertyParser.registerTag(BukkitListProperties.class, ElementTag.class, "formatted", (attribute, listObj) -> {
             ListTag list = listObj.list;
             if (list.isEmpty()) {
                 return new ElementTag("");
@@ -115,7 +115,7 @@ public class BukkitListProperties implements Property {
         // Converts a list of locations to a PolygonTag.
         // The Y-Min and Y-Max values will be assigned based the range of Y values in the locations given.
         // -->
-        PropertyParser.<BukkitListProperties, PolygonTag>registerTag(PolygonTag.class, "to_polygon", (attribute, listObj) -> {
+        PropertyParser.registerTag(BukkitListProperties.class, PolygonTag.class, "to_polygon", (attribute, listObj) -> {
             List<LocationTag> locations = listObj.list.filter(LocationTag.class, attribute.context);
             if (locations == null || locations.isEmpty()) {
                 return null;

@@ -37,11 +37,9 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public HorseJumpsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> jumps");
     }
 
-    public static HorseJumpsScriptEvent instance;
     public EntityTag entity;
     public ElementTag color;
     public HorseJumpEvent event;
@@ -76,11 +74,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "HorseJumps";
     }
 
     @Override

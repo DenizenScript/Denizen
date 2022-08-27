@@ -33,11 +33,9 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerAnimatesScriptEvent() {
-        instance = this;
         registerCouldMatcher("player animates (<'animation'>)");
     }
 
-    public static PlayerAnimatesScriptEvent instance;
     public String animation;
     public PlayerAnimationEvent event;
 
@@ -62,11 +60,6 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerAnimates";
     }
 
     @Override

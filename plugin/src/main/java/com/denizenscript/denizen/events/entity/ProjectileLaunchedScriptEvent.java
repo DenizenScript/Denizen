@@ -32,10 +32,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public ProjectileLaunchedScriptEvent() {
-        instance = this;
     }
 
-    public static ProjectileLaunchedScriptEvent instance;
     public EntityTag projectile;
     private LocationTag location;
     public ProjectileLaunchEvent event;
@@ -61,11 +59,6 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ProjectileLaunched";
     }
 
     @Override

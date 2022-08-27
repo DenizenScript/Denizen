@@ -28,12 +28,10 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public SpawnChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("spawn changes");
         registerSwitches("for");
     }
 
-    public static SpawnChangeScriptEvent instance;
     public SpawnChangeEvent event;
 
     @Override
@@ -42,11 +40,6 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "SpawnChange";
     }
 
     @Override

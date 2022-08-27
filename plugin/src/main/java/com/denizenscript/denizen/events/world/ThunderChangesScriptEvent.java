@@ -29,12 +29,10 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public ThunderChangesScriptEvent() {
-        instance = this;
         registerCouldMatcher("thunder changes|begins|clears");
         registerSwitches("in");
     }
 
-    public static ThunderChangesScriptEvent instance;
     public ThunderChangeEvent event;
 
     @Override
@@ -57,11 +55,6 @@ public class ThunderChangesScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ThunderChanges";
     }
 
     @Override

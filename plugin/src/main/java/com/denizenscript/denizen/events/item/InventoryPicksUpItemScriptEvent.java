@@ -31,11 +31,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public InventoryPicksUpItemScriptEvent() {
-        instance = this;
         registerCouldMatcher("<inventory> picks up <item>");
     }
 
-    public static InventoryPicksUpItemScriptEvent instance;
     public InventoryTag inventory;
     public ItemTag item;
     public InventoryPickupItemEvent event;
@@ -63,11 +61,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "InventoryPicksUpItem";
     }
 
     @Override

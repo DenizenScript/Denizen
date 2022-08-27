@@ -35,10 +35,8 @@ public class PlayerPickupArrowScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerPickupArrowScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPickupArrowScriptEvent instance;
 
     public PlayerPickupArrowEvent event;
 
@@ -56,11 +54,6 @@ public class PlayerPickupArrowScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerPicksUpArrow";
     }
 
     @Override

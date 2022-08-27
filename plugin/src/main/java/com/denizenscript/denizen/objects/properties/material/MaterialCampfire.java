@@ -38,7 +38,7 @@ public class MaterialCampfire implements Property {
     MaterialTag material;
 
     public static void registerTags() {
-        PropertyParser.<MaterialCampfire, ElementTag>registerTag(ElementTag.class, "signal_fire", (attribute, material) -> {
+        PropertyParser.registerTag(MaterialCampfire.class, ElementTag.class, "signal_fire", (attribute, material) -> {
             BukkitImplDeprecations.materialCampfire.warn(attribute.context);
             return new ElementTag(material.getCampfire().isSignalFire());
         });

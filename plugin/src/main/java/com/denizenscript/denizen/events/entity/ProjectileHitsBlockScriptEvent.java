@@ -76,10 +76,8 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
     //
     // -->
     public ProjectileHitsBlockScriptEvent() {
-        instance = this;
     }
 
-    public static ProjectileHitsBlockScriptEvent instance;
     public EntityTag projectile;
     public EntityTag shooter;
     public LocationTag location;
@@ -130,11 +128,6 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
         }
         return super.matches(path);
 
-    }
-
-    @Override
-    public String getName() {
-        return "ProjectileHitsBlock";
     }
 
     @Override

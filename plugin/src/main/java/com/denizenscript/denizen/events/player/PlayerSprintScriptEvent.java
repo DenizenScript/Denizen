@@ -32,11 +32,9 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PlayerSprintScriptEvent() {
-        instance = this;
         registerCouldMatcher("player toggles|starts|stops sprinting");
     }
 
-    public static PlayerSprintScriptEvent instance;
     public boolean state;
     public PlayerToggleSprintEvent event;
 
@@ -53,11 +51,6 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerSprints";
     }
 
     @Override

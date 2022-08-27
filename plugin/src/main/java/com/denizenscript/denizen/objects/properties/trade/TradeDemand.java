@@ -50,7 +50,7 @@ public class TradeDemand implements Property {
         // @description
         // Returns the demand level of the trade.
         // -->
-        PropertyParser.<TradeDemand, ElementTag>registerTag(ElementTag.class, "demand", (attribute, recipe) -> {
+        PropertyParser.registerTag(TradeDemand.class, ElementTag.class, "demand", (attribute, recipe) -> {
             return new ElementTag(recipe.recipe.getRecipe().getDemand());
         });
     }

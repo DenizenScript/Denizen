@@ -56,7 +56,7 @@ public class EntityAI implements Property {
         // This generally shouldn't be used with NPCs. NPCs do not have vanilla AI, regardless of what this tag returns.
         // Other programmatic methods of blocking AI might also not be accounted for by this tag.
         // -->
-        PropertyParser.<EntityAI, ElementTag>registerTag(ElementTag.class, "has_ai", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAI.class, ElementTag.class, "has_ai", (attribute, object) -> {
             return new ElementTag(object.entity.getLivingEntity().hasAI());
         });
     }

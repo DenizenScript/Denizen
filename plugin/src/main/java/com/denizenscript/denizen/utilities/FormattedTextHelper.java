@@ -421,9 +421,6 @@ public class FormattedTextHelper {
         }
         str = cleanRedundantCodes(str);
         if (cleanBase && str.length() < 512) {
-            if (str.equals("jeb_")) { // attempted compat with rainbow sheep, does not actually work but doesn't hurt to keep
-                return new BaseComponent[] { new TextComponent("jeb_") };
-            }
             if (!str.contains(ChatColor.COLOR_CHAR + "[") && !str.contains("://")) {
                 return parseSimpleColorsOnly(str);
             }
@@ -730,7 +727,7 @@ public class FormattedTextHelper {
             else if (i + "https://a.".length() < chars.length && chars[i] == 'h' && chars[i + 1] == 't' && chars[i + 2] == 't' && chars[i  + 3] == 'p') {
                 String subStr = str.substring(i, i + "https://a.".length());
                 if (subStr.startsWith("https://") || subStr.startsWith("http://")) {
-                    int nextSpace = CoreUtilities.indexOfAny(str, i, ' ', '\t', '\n');
+                    int nextSpace = CoreUtilities.indexOfAny(str, i, ' ', '\t', '\n', ChatColor.COLOR_CHAR);
                     if (nextSpace == -1) {
                         nextSpace = str.length();
                     }
@@ -743,7 +740,7 @@ public class FormattedTextHelper {
                     TextComponent clickableText = new TextComponent(url);
                     clickableText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
                     lastText.addExtra(clickableText);
-                    i = nextSpace;
+                    i = nextSpace - 1;
                     started = nextSpace;
                     continue;
                 }

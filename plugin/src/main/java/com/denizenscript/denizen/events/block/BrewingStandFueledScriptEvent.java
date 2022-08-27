@@ -37,11 +37,9 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public BrewingStandFueledScriptEvent() {
-        instance = this;
         registerCouldMatcher("brewing stand fueled (with <item>)");
     }
 
-    public static BrewingStandFueledScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     public BrewingStandFuelEvent event;
@@ -55,11 +53,6 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "BrewingStandFueled";
     }
 
     @Override

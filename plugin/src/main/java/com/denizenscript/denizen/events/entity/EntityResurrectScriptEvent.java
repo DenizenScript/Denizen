@@ -31,11 +31,9 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityResurrectScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> resurrected");
     }
 
-    public static EntityResurrectScriptEvent instance;
     public EntityTag entity;
     public EntityResurrectEvent event;
 
@@ -48,11 +46,6 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityResurrected";
     }
 
     @Override

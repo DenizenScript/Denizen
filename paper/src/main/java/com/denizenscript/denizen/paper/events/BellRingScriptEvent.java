@@ -35,11 +35,9 @@ public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public BellRingScriptEvent() {
-        instance = this;
         registerCouldMatcher("bell rings");
     }
 
-    public static BellRingScriptEvent instance;
     public BellRingEvent event;
     public LocationTag location;
 
@@ -49,11 +47,6 @@ public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "BellRing";
     }
 
     @Override

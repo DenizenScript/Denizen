@@ -58,7 +58,7 @@ public class EntityCanJoinRaid implements Property {
         // @description
         // If the entity is raider mob (like a pillager), returns whether the entity is allowed to join active raids.
         // -->
-        PropertyParser.<EntityCanJoinRaid, ElementTag>registerTag(ElementTag.class, "can_join_raid", (attribute, object) -> {
+        PropertyParser.registerTag(EntityCanJoinRaid.class, ElementTag.class, "can_join_raid", (attribute, object) -> {
             return new ElementTag(object.getRaider().isCanJoinRaid());
         });
     }

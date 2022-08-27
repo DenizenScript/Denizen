@@ -42,10 +42,8 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public PlayerPreparesEnchantScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPreparesEnchantScriptEvent instance;
     public PrepareItemEnchantEvent event;
 
     @Override
@@ -65,11 +63,6 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerPreparesEnchant";
     }
 
     @Override
@@ -100,7 +93,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag(event.getEnchanter()), null);
+        return new BukkitScriptEntryData(event.getEnchanter());
     }
 
     @Override

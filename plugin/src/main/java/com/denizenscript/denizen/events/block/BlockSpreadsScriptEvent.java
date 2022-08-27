@@ -33,13 +33,11 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public BlockSpreadsScriptEvent() {
-        instance = this;
         registerCouldMatcher("block spreads");
         registerCouldMatcher("<block> spreads"); // NOTE: exists for historical compat reasons.
         registerSwitches("type");
     }
 
-    public static BlockSpreadsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockSpreadEvent event;
@@ -71,11 +69,6 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         }
         return super.matches(path);
 
-    }
-
-    @Override
-    public String getName() {
-        return "BlockSpreads";
     }
 
     @Override

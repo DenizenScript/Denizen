@@ -32,11 +32,9 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public NPCNavigationScriptEvent() {
-        instance = this;
         registerCouldMatcher("npc begins|completes|cancels navigation");
     }
 
-    public static NPCNavigationScriptEvent instance;
     public NPCTag npc;
     public String type;
 
@@ -49,11 +47,6 @@ public class NPCNavigationScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "NPCNavigation";
     }
 
     @Override

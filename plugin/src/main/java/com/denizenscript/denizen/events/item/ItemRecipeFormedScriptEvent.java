@@ -41,11 +41,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public ItemRecipeFormedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> recipe formed");
     }
 
-    public static ItemRecipeFormedScriptEvent instance;
 
     public PrepareItemCraftEvent event;
     public ItemTag result;
@@ -56,11 +54,6 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ItemRecipeFormed";
     }
 
     @Override

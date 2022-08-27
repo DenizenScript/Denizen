@@ -72,7 +72,7 @@ public class MaterialDirectional implements Property {
         // Returns a list of directions that are valid for a directional material.
         // See also <@link tag MaterialTag.direction>
         // -->
-        PropertyParser.<MaterialDirectional, ListTag>registerStaticTag(ListTag.class, "valid_directions", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialDirectional.class, ListTag.class, "valid_directions", (attribute, material) -> {
             ListTag toReturn = new ListTag();
             if (material.isOrientable()) {
                 for (Axis axis : material.getOrientable().getAxes()) {
@@ -120,7 +120,7 @@ public class MaterialDirectional implements Property {
         // This includes materials that Spigot classifies as "directional", "orientable", or "rotatable", as well as rails, dripstone, and jigsaw blocks.
         // Output is a direction name like "NORTH", or an axis like "X", or a rail direction like "ASCENDING_NORTH".
         // -->
-        PropertyParser.<MaterialDirectional, ElementTag>registerStaticTag(ElementTag.class, "direction", (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialDirectional.class, ElementTag.class, "direction", (attribute, material) -> {
             return new ElementTag(material.getDirectionName());
         });
     }

@@ -81,7 +81,7 @@ public class EntityAnger implements Property {
         // @description
         // Returns the remaining anger time of a PigZombie or Bee.
         // -->
-        PropertyParser.<EntityAnger, DurationTag>registerTag(DurationTag.class, "anger", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAnger.class, DurationTag.class, "anger", (attribute, object) -> {
             return new DurationTag((long) object.getAnger());
         });
     }

@@ -41,10 +41,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerConsumesScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerConsumesScriptEvent instance;
 
     public ItemTag item;
     public PlayerItemConsumeEvent event;
@@ -69,11 +67,6 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerConsumes";
     }
 
     @Override

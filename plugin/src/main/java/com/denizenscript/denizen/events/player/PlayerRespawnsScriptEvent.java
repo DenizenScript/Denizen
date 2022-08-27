@@ -35,12 +35,10 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerRespawnsScriptEvent() {
-        instance = this;
         registerCouldMatcher("player respawns (at bed)");
         registerCouldMatcher("player respawns elsewhere");
     }
 
-    public static PlayerRespawnsScriptEvent instance;
     public PlayerRespawnEvent event;
 
     @Override
@@ -53,11 +51,6 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerRespawns";
     }
 
     @Override

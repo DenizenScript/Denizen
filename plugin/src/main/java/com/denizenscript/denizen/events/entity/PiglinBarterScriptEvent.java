@@ -34,11 +34,9 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PiglinBarterScriptEvent() {
-        instance = this;
         registerCouldMatcher("piglin barter");
     }
 
-    public static PiglinBarterScriptEvent instance;
     public EntityTag entity;
     public PiglinBarterEvent event;
 
@@ -48,11 +46,6 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PiglinBarter";
     }
 
     @Override

@@ -48,12 +48,10 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerEditsBookScriptEvent() {
-        instance = this;
         registerCouldMatcher("player edits book");
         registerCouldMatcher("player signs book");
     }
 
-    public static PlayerEditsBookScriptEvent instance;
     public PlayerEditBookEvent event;
     public PlayerTag player;
 
@@ -67,11 +65,6 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerEditsBook";
     }
 
     @Override

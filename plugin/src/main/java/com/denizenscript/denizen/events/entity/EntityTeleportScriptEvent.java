@@ -62,10 +62,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public EntityTeleportScriptEvent() {
-        instance = this;
     }
 
-    public static EntityTeleportScriptEvent instance;
     public EntityTag entity;
     public LocationTag from;
     public LocationTag to;
@@ -96,11 +94,6 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityTeleports";
     }
 
     @Override

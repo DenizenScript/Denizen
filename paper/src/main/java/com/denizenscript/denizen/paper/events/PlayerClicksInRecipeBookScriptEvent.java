@@ -34,11 +34,9 @@ public class PlayerClicksInRecipeBookScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public PlayerClicksInRecipeBookScriptEvent() {
-        instance = this;
         registerCouldMatcher("player uses recipe book");
     }
 
-    public static PlayerClicksInRecipeBookScriptEvent instance;
     public PlayerRecipeBookClickEvent event;
 
     @Override
@@ -47,11 +45,6 @@ public class PlayerClicksInRecipeBookScriptEvent extends BukkitScriptEvent imple
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerClicksInRecipeBook";
     }
 
     @Override

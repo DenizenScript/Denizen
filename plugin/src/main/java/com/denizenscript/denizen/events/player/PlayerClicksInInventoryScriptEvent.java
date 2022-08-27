@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -106,12 +105,10 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // -->
 
     public PlayerClicksInInventoryScriptEvent() {
-        instance = this;
         registerCouldMatcher("player (<'click_type'>) clicks (<item>) in <inventory>");
         registerSwitches("with", "in_area", "action", "slot");
     }
 
-    public static PlayerClicksInInventoryScriptEvent instance;
 
     public InventoryTag inventory;
     public ItemTag item;
@@ -192,13 +189,8 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     }
 
     @Override
-    public String getName() {
-        return "PlayerClicksInInventory";
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag((Player) event.getWhoClicked()), null);
+        return new BukkitScriptEntryData(event.getWhoClicked());
     }
 
     @Override

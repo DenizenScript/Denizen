@@ -50,7 +50,7 @@ public class TradeHasXp implements Property {
         // @description
         // Returns whether the trade has an experience reward.
         // -->
-        PropertyParser.<TradeHasXp, ElementTag>registerTag(ElementTag.class, "has_xp", (attribute, recipe) -> {
+        PropertyParser.registerTag(TradeHasXp.class, ElementTag.class, "has_xp", (attribute, recipe) -> {
             return new ElementTag(recipe.recipe.getRecipe().hasExperienceReward());
         });
     }

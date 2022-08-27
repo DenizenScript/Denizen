@@ -44,13 +44,12 @@ import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizen.utilities.world.VoidGenerator1_17;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.core.SecretTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
-import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.queue.RunLaterCommand;
-import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
@@ -164,7 +163,6 @@ public class Denizen extends JavaPlugin {
                     + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
             getLogger().warning("-------------------------------------");
         }
-        BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
         triggerRegistry = new TriggerRegistry();
         boolean citizensBork = false;
         try {
@@ -244,15 +242,7 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            DenizenCore.commandRegistry = commandRegistry;
-            commandRegistry.registerCommands();
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
-        try {
-            // Register script-container types
-            ScriptRegistry._registerCoreTypes();
+            BukkitCommandRegistry.registerCommands();
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -330,12 +320,8 @@ public class Denizen extends JavaPlugin {
         }
         try {
             AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
-            // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();
-            // Register Core ObjectTags with the ObjectFetcher
-            ObjectFetcher.registerCoreObjects();
             CommonRegistries.registerMainObjects();
-            TagManager.registerCoreTags();
             CommonRegistries.registerMainTagHandlers();
         }
         catch (Exception e) {
@@ -370,7 +356,7 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
-        Debug.log("Loaded <A>" + commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types, at <A>" + (System.currentTimeMillis() - startTime) + "<W>ms from start.");
+        Debug.log("Loaded <A>" + DenizenCore.commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types, at <A>" + (System.currentTimeMillis() - startTime) + "<W>ms from start.");
         exCommand = new ExCommandHandler();
         exCommand.enableFor(getCommand("ex"));
         ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
@@ -401,7 +387,7 @@ public class Denizen extends JavaPlugin {
                         Depends.citizens.registerCommandClass(NPCCommandHandler.class);
                         TraitRegistry.registerMainTraits();
                         triggerRegistry.registerCoreMembers();
-                        commandRegistry.registerCitizensCommands();
+                        BukkitCommandRegistry.registerCitizensCommands();
                         ScriptEventRegistry.registerCitizensEvents();
                         new NPCTagBase();
                         ObjectFetcher.registerWithObjectFetcher(NPCTag.class, NPCTag.tagProcessor);
@@ -502,6 +488,7 @@ public class Denizen extends JavaPlugin {
     public void reloadConfig() {
         super.reloadConfig();
         Settings.refillCache();
+        SecretTag.load();
         if (!CoreConfiguration.defaultDebugMode) {
             getLogger().warning("Debug is disabled in the Denizen config. This is almost always a mistake, and should not be done in the majority of cases.");
         }

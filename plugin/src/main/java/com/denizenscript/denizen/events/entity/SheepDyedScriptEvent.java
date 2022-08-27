@@ -36,12 +36,10 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public SheepDyedScriptEvent() {
-        instance = this;
         registerCouldMatcher("sheep dyed (<'color'>)");
         registerCouldMatcher("player dyes sheep (<'color'>)"); // historical
     }
 
-    public static SheepDyedScriptEvent instance;
     public EntityTag entity;
     public DyeColor color;
     public SheepDyeWoolEvent event;
@@ -57,11 +55,6 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "SheepDyed";
     }
 
     @Override

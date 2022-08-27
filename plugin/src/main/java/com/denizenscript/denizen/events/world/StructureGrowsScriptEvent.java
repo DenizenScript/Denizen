@@ -42,12 +42,10 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public StructureGrowsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<'structure/plant'> grows (naturally)");
         registerCouldMatcher("<'structure/plant'> grows from bonemeal");
     }
 
-    public static StructureGrowsScriptEvent instance;
     public StructureGrowEvent event;
 
     @Override
@@ -78,11 +76,6 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "StructureGrow";
     }
 
     @Override

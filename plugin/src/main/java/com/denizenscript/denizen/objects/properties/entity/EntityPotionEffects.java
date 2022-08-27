@@ -101,7 +101,7 @@ public class EntityPotionEffects implements Property {
         // @description
         // Deprecated in favor of <@link tag EntityTag.effects_data>
         // -->
-        PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "list_effects", (attribute, object) -> {
+        PropertyParser.registerTag(EntityPotionEffects.class, ListTag.class, "list_effects", (attribute, object) -> {
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             return object.getEffectsListTag();
         });
@@ -114,7 +114,7 @@ public class EntityPotionEffects implements Property {
         // @description
         // Returns the active potion effects on the entity, in the MapTag format of the mechanism.
         // -->
-        PropertyParser.<EntityPotionEffects, ListTag>registerTag(ListTag.class, "effects_data", (attribute, object) -> {
+        PropertyParser.registerTag(EntityPotionEffects.class, ListTag.class, "effects_data", (attribute, object) -> {
             return object.getEffectsMapTag();
         });
 
@@ -128,7 +128,7 @@ public class EntityPotionEffects implements Property {
         // If no effect is specified, returns whether the entity has any effect.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
-        PropertyParser.<EntityPotionEffects, ElementTag>registerTag(ElementTag.class, "has_effect", (attribute, object) -> {
+        PropertyParser.registerTag(EntityPotionEffects.class, ElementTag.class, "has_effect", (attribute, object) -> {
             boolean returnElement = false;
             if (attribute.hasParam()) {
                 PotionEffectType effectType = PotionEffectType.getByName(attribute.getParam());

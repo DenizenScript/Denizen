@@ -37,11 +37,9 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public TNTPrimesScriptEvent() {
-        instance = this;
         registerCouldMatcher("tnt primes");
     }
 
-    public static TNTPrimesScriptEvent instance;
     public TNTPrimeEvent event;
     public LocationTag location;
 
@@ -51,11 +49,6 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "TNTPrimes";
     }
 
     @Override

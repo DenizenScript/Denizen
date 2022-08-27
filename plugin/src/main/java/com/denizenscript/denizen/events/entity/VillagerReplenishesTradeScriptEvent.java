@@ -36,10 +36,8 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public VillagerReplenishesTradeScriptEvent() {
-        instance = this;
     }
 
-    public static VillagerReplenishesTradeScriptEvent instance;
     public EntityTag entity;
     public VillagerReplenishTradeEvent event;
 
@@ -54,11 +52,6 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "VillagerReplenishesTrade";
     }
 
 

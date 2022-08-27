@@ -31,11 +31,9 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public CreeperPoweredScriptEvent() {
-        instance = this;
         registerCouldMatcher("creeper powered (because <'cause'>)");
     }
 
-    public static CreeperPoweredScriptEvent instance;
     public EntityTag lightning;
     public EntityTag entity;
     public ElementTag cause;
@@ -51,11 +49,6 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "CreeperPowered";
     }
 
     @Override

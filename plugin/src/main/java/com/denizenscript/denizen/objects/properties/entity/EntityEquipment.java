@@ -61,7 +61,7 @@ public class EntityEquipment implements Property {
         // Returns a ListTag containing the entity's equipment.
         // Output list is boots|leggings|chestplate|helmet
         // -->
-        PropertyParser.<EntityEquipment, ObjectTag>registerTag(ObjectTag.class, "equipment", (attribute, object) -> {
+        PropertyParser.registerTag(EntityEquipment.class, ObjectTag.class, "equipment", (attribute, object) -> {
             org.bukkit.inventory.EntityEquipment equipment = object.entity.getLivingEntity().getEquipment();
             if (attribute.startsWith("equipment.boots")) {
                 BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
@@ -100,7 +100,7 @@ public class EntityEquipment implements Property {
         // Output keys are boots, leggings, chestplate, helmet.
         // Air items will be left out of the map.
         // -->
-        PropertyParser.<EntityEquipment, MapTag>registerTag(MapTag.class, "equipment_map", (attribute, object) -> {
+        PropertyParser.registerTag(EntityEquipment.class, MapTag.class, "equipment_map", (attribute, object) -> {
             MapTag output = new MapTag();
             org.bukkit.inventory.EntityEquipment equip = object.entity.getLivingEntity().getEquipment();
             InventoryTag.addToMapIfNonAir(output, "boots", equip.getBoots());

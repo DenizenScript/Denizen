@@ -46,13 +46,11 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // -->
 
-    public static PlayerItemTakesDamageScriptEvent instance;
     PlayerItemDamageEvent event;
     ItemTag item;
     LocationTag location;
 
     public PlayerItemTakesDamageScriptEvent() {
-        instance = this;
     }
 
     @Override
@@ -78,11 +76,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerItemTakesDamage";
     }
 
     @Override

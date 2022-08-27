@@ -47,6 +47,11 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
+    public boolean isInvisible(Entity entity) {
+        return ((CraftEntity) entity).getHandle().isInvisible();
+    }
+
+    @Override
     public double getAbsorption(LivingEntity entity) {
         return entity.getAbsorptionAmount();
     }

@@ -36,10 +36,8 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerClosesInvScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerClosesInvScriptEvent instance;
 
     public InventoryTag inventory;
     private PlayerTag player;
@@ -69,11 +67,6 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerClosesInventory";
     }
 
     @Override

@@ -38,10 +38,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerTakesFromFurnaceScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerTakesFromFurnaceScriptEvent instance;
     public LocationTag location;
     public ItemTag item;
     public FurnaceExtractEvent event;
@@ -66,11 +64,6 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerTakesFromFurnace";
     }
 
     @Override

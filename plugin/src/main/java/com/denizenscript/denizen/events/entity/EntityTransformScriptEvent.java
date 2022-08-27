@@ -36,10 +36,8 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityTransformScriptEvent() {
-        instance = this;
     }
 
-    public static EntityTransformScriptEvent instance;
     public EntityTransformEvent event;
     public EntityTag originalEntity;
 
@@ -69,11 +67,6 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityTransforms";
     }
 
     @Override

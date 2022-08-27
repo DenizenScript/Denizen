@@ -33,10 +33,8 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public VehicleMoveScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleMoveScriptEvent instance;
     public EntityTag vehicle;
     public LocationTag from;
     public LocationTag to;
@@ -65,11 +63,6 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     // TODO: Can the vehicle be an NPC?
-
-    @Override
-    public String getName() {
-        return "VehicleMoves";
-    }
 
     @Override
     public ObjectTag getContext(String name) {

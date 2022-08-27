@@ -36,10 +36,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PlayerFlyingScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerFlyingScriptEvent instance;
     public boolean state;
     public PlayerToggleFlightEvent event;
 
@@ -70,11 +68,6 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerFlying";
     }
 
     @Override

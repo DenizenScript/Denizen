@@ -52,10 +52,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerBreaksBlockScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerBreaksBlockScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockBreakEvent event;
@@ -94,11 +92,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerBreaksBlock";
     }
 
     @Override

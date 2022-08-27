@@ -64,7 +64,7 @@ public class EntityBodyArrows implements Property {
         // Returns the number of arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.
         // -->
-        PropertyParser.<EntityBodyArrows, ElementTag>registerTag(ElementTag.class, "body_arrows", (attribute, object) -> {
+        PropertyParser.registerTag(EntityBodyArrows.class, ElementTag.class, "body_arrows", (attribute, object) -> {
             return new ElementTag(object.getBodyArrows());
         });
     }

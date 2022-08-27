@@ -38,11 +38,9 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerThrowsEggScriptEvent() {
-        instance = this;
         registerCouldMatcher("player throws (hatching|non-hatching) egg");
     }
 
-    public static PlayerThrowsEggScriptEvent instance;
     public EntityTag egg;
     public PlayerEggThrowEvent event;
 
@@ -59,11 +57,6 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerThrowsEgg";
     }
 
     @Override

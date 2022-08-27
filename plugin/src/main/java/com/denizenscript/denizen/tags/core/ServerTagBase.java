@@ -1343,7 +1343,7 @@ public class ServerTagBase {
         // Deprecated in favor of <@link tag util.last_reload>
         // -->
         if (deprecatedServerUtilTags.contains(attribute.getAttributeWithoutParam(1))) {
-            UtilTagBase.utilTag(event);
+            event.setReplacedObject(UtilTagBase.instance.getObjectAttribute(attribute));
             return;
         }
 

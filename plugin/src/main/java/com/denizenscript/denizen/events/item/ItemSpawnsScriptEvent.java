@@ -32,11 +32,9 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public ItemSpawnsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> spawns");
     }
 
-    public static ItemSpawnsScriptEvent instance;
     public ItemTag item;
     public LocationTag location;
     public EntityTag entity;
@@ -51,11 +49,6 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ItemSpawns";
     }
 
     @Override

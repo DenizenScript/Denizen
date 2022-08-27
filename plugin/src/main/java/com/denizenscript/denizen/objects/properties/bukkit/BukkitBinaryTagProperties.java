@@ -52,7 +52,7 @@ public class BukkitBinaryTagProperties implements Property {
         // - define data <entry[x].data.gzip_decompress.nbt_to_map>
         // # Now do something with "<[data]>"
         // -->
-        PropertyParser.<BukkitBinaryTagProperties, ObjectTag>registerStaticTag(ObjectTag.class, "nbt_to_map", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitBinaryTagProperties.class, ObjectTag.class, "nbt_to_map", (attribute, object) -> {
             try {
                 ByteArrayInputStream stream = new ByteArrayInputStream(object.data.data);
                 NBTInputStream nbtStream = new NBTInputStream(stream);

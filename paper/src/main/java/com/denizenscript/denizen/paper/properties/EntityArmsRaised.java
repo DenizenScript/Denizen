@@ -45,7 +45,7 @@ public class EntityArmsRaised implements Property {
         // @description
         // Returns whether a ranged mob (skeleton, stray, wither skeleton, drowned, illusioner, or piglin) is "charging" up an attack (its arms are raised).
         // -->
-        PropertyParser.<EntityArmsRaised, ElementTag>registerTag(ElementTag.class, "arms_raised", (attribute, object) -> {
+        PropertyParser.registerTag(EntityArmsRaised.class, ElementTag.class, "arms_raised", (attribute, object) -> {
             return new ElementTag(object.getRanged().isChargingAttack());
         });
     }

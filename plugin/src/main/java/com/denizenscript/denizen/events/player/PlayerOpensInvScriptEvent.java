@@ -34,10 +34,8 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerOpensInvScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
 
     public InventoryTag inventory;
     public InventoryOpenEvent event;
@@ -66,11 +64,6 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerOpensInventory";
     }
 
     @Override

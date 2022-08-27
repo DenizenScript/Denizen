@@ -43,11 +43,9 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public PlayerBeaconEffectScriptEvent() {
-        instance = this;
         registerCouldMatcher("player beacon effect applied");
     }
 
-    public static PlayerBeaconEffectScriptEvent instance;
     public BeaconEffectEvent event;
 
     @Override
@@ -56,11 +54,6 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerBeaconEffect";
     }
 
     @Override

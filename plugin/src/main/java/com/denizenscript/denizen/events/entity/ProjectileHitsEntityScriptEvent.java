@@ -45,10 +45,8 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
     //
     // -->
     public ProjectileHitsEntityScriptEvent() {
-        instance = this;
     }
 
-    public static ProjectileHitsEntityScriptEvent instance;
     public EntityTag projectile;
     public EntityTag shooter;
     public EntityTag hitEntity;
@@ -85,11 +83,6 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ProjectileHitsEntity";
     }
 
     @Override

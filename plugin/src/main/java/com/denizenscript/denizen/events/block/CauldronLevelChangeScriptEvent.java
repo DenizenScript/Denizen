@@ -37,12 +37,10 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public CauldronLevelChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("cauldron level changes|raises|lowers");
         registerSwitches("cause");
     }
 
-    public static CauldronLevelChangeScriptEvent instance;
     public LocationTag location;
     public CauldronLevelChangeEvent event;
 
@@ -69,11 +67,6 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "CauldronLevelChange";
     }
 
     @Override

@@ -279,7 +279,15 @@ public class Debug {
             while (thrown.getCause() != null) {
                 thrown = thrown.getCause();
             }
-            boolean cancel = ServerGeneratesExceptionScriptEvent.instance.handle(thrown, errorMessage, source == null || source.queue == null ? CommandExecutor.currentQueue : source.queue);
+            ScriptQueue sourceQueue = CommandExecutor.currentQueue;
+            if (source != null && source.queue != null) {
+                sourceQueue = source.queue;
+            }
+            ScriptTag sourceScript = null;
+            if (source != null) {
+                sourceScript = source.getScript();
+            }
+            boolean cancel = ServerGeneratesExceptionScriptEvent.instance.handle(thrown, errorMessage, sourceQueue, sourceScript, source == null ? - 1 : source.internal.lineNumber);
             throwErrorEvent = true;
             if (cancel) {
                 return;

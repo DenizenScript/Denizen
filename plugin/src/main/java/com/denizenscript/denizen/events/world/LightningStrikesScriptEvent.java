@@ -31,11 +31,9 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public LightningStrikesScriptEvent() {
-        instance = this;
         registerCouldMatcher("lightning strikes");
     }
 
-    public static LightningStrikesScriptEvent instance;
     public LocationTag location;
     public LightningStrikeEvent event;
 
@@ -45,11 +43,6 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "LightningStrikes";
     }
 
     @Override

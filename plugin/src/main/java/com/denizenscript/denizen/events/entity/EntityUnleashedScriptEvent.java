@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityUnleashEvent;
@@ -31,11 +30,9 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public EntityUnleashedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> unleashed (because <'reason'>)");
     }
 
-    public static EntityUnleashedScriptEvent instance;
     public EntityTag entity;
     public ElementTag reason;
     public EntityUnleashEvent event;
@@ -52,11 +49,6 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityUnleashed";
     }
 
     @Override

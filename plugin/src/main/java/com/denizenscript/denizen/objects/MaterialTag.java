@@ -195,11 +195,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public String getObjectType() {
-        return "Material";
-    }
-
-    @Override
     public String identify() {
         return "m@" + identifyNoIdentifier();
     }

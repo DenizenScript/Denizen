@@ -38,10 +38,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityTamesScriptEvent() {
-        instance = this;
     }
 
-    public static EntityTamesScriptEvent instance;
     public EntityTag entity;
     public EntityTag owner;
     public EntityTameEvent event;
@@ -69,11 +67,6 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityTames";
     }
 
     @Override

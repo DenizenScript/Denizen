@@ -44,10 +44,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     // -->
 
     public PlayerPreparesAnvilCraftScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerPreparesAnvilCraftScriptEvent instance;
     public PrepareAnvilEvent event;
     public ItemTag result;
     public PlayerTag player;
@@ -69,11 +67,6 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerPreparesAnvilCraft";
     }
 
     @Override

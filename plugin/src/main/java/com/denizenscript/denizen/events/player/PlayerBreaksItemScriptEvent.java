@@ -42,10 +42,8 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerBreaksItemScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerBreaksItemScriptEvent instance;
     public ItemTag item;
     public PlayerItemBreakEvent event;
 
@@ -69,11 +67,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerItemBreak";
     }
 
     @Override

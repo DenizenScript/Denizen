@@ -68,11 +68,6 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public String getName() {
-        return "PlayerReceivesMessage";
-    }
-
-    @Override
     public void init() {
         NetworkInterceptHelper.enable();
         loaded = true;

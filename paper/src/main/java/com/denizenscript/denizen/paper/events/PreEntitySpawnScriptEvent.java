@@ -40,11 +40,9 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PreEntitySpawnScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> prespawns (because <'cause'>)");
     }
 
-    public static PreEntitySpawnScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public PreCreatureSpawnEvent event;
@@ -62,11 +60,6 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PreEntitySpawn";
     }
 
     @Override

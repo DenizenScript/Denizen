@@ -35,10 +35,8 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
     // -->
 
     public VillagerChangesProfessionScriptEvent() {
-        instance = this;
     }
 
-    public static VillagerChangesProfessionScriptEvent instance;
     public EntityTag entity;
     public VillagerCareerChangeEvent event;
 
@@ -53,11 +51,6 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "VillagerChangesProfession";
     }
 
 

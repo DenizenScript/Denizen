@@ -34,10 +34,8 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerEntersBedScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerEntersBedScriptEvent instance;
     public LocationTag location;
     public PlayerBedEnterEvent event;
 
@@ -52,11 +50,6 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerEntersBed";
     }
 
     @Override

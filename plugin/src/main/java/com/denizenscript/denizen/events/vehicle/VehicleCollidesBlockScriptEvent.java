@@ -33,10 +33,8 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public VehicleCollidesBlockScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleCollidesBlockScriptEvent instance;
 
     public EntityTag vehicle;
     public LocationTag location;
@@ -69,11 +67,6 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "VehicleCollidesBlock";
     }
 
     @Override

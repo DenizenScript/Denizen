@@ -46,10 +46,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public VehicleCollidesEntityScriptEvent() {
-        instance = this;
     }
 
-    public static VehicleCollidesEntityScriptEvent instance;
 
     public EntityTag vehicle;
     public EntityTag entity;
@@ -81,11 +79,6 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "VehicleCollidesEntity";
     }
 
     @Override

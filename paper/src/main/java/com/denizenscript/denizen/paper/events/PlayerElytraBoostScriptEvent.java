@@ -45,12 +45,10 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerElytraBoostScriptEvent() {
-        instance = this;
         registerCouldMatcher("player boosts elytra");
         registerSwitches("with", "elytra");
     }
 
-    public static PlayerElytraBoostScriptEvent instance;
     public PlayerElytraBoostEvent event;
     public ItemTag firework;
     public PlayerTag player;
@@ -67,11 +65,6 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerBoostsElytra";
     }
 
     @Override

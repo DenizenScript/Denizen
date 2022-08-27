@@ -6,13 +6,10 @@ import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.JavaReflectedObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.VerySlowWarning;
-import com.denizenscript.denizencore.utilities.debugging.Warning;
 import org.bukkit.event.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -40,12 +37,10 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public InternalEventScriptEvent() {
-        instance = this;
         registerCouldMatcher("internal bukkit event");
         registerSwitches("event");
     }
 
-    public static InternalEventScriptEvent instance;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -64,11 +59,6 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String getName() {
-        return "InternalBukkitEvent";
     }
 
     @Override

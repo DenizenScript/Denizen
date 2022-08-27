@@ -35,11 +35,9 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public EntitySwimScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> toggles|starts|stops swimming");
     }
 
-    public static EntitySwimScriptEvent instance;
     public EntityTag entity;
     public boolean state;
 
@@ -59,11 +57,6 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntitySwim";
     }
 
     @Override

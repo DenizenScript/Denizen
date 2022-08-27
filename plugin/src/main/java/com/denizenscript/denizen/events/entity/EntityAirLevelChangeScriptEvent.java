@@ -42,11 +42,9 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public EntityAirLevelChangeScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> changes air level");
     }
 
-    public static EntityAirLevelChangeScriptEvent instance;
     public EntityTag entity;
     public EntityAirChangeEvent event;
 
@@ -60,11 +58,6 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "AirLevelChanged";
     }
 
     @Override

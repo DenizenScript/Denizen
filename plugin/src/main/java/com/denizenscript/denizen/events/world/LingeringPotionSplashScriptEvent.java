@@ -36,11 +36,9 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public LingeringPotionSplashScriptEvent() {
-        instance = this;
         registerCouldMatcher("lingering <item> splash|splashes");
     }
 
-    public static LingeringPotionSplashScriptEvent instance;
     public LingeringPotionSplashEvent event;
     public LocationTag location;
     public ItemTag item;
@@ -54,11 +52,6 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "LingeringPotionSplash";
     }
 
     @Override

@@ -9,17 +9,15 @@ import com.denizenscript.denizen.scripts.commands.npc.*;
 import com.denizenscript.denizen.scripts.commands.player.*;
 import com.denizenscript.denizen.scripts.commands.server.*;
 import com.denizenscript.denizen.scripts.commands.world.*;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.scripts.commands.CommandRegistry;
 
-public class BukkitCommandRegistry extends CommandRegistry {
-
-    public static BukkitCommandRegistry instance;
+public class BukkitCommandRegistry {
 
     public static class AutoNoCitizensCommand extends AbstractCommand {
 
@@ -33,7 +31,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand cmd = new AutoNoCitizensCommand();
             cmd.name = name;
             cmd.syntax = "(Citizens Required)";
-            instance.register(cmd.name, cmd);
+            DenizenCore.commandRegistry.register(cmd.name, cmd);
         }
 
         public String name;
@@ -48,7 +46,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
     }
 
-    public void registerCitizensCommands() {
+    public static void registerCommand(Class<? extends AbstractCommand> commandInstance) {
+        DenizenCore.commandRegistry.registerCommand(commandInstance);
+    }
+
+    public static void registerCitizensCommands() {
         // entity
         registerCommand(AnimateCommand.class);
         // npc
@@ -76,11 +78,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCommand(ChatCommand.class);
     }
 
-    public void registerCommands() {
-        instance = this;
-
-        registerCoreCommands();
-
+    public static void registerCommands() {
         //core
         registerCommand(CooldownCommand.class);
         registerCommand(ResetCommand.class);
@@ -189,7 +187,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
                     "DISENGAGE", "ENGAGE", "FISH", "LOOKCLOSE", "PAUSE", "RESUME", "POSE", "PUSHABLE", "RENAME", "SIT", "STAND", "TRAIT", "TRIGGER", "VULNERABLE");
         }
         if (CoreConfiguration.debugVerbose) {
-            Debug.echoApproval("Loaded core commands: " + instances.keySet());
+            Debug.echoApproval("Loaded core commands: " + DenizenCore.commandRegistry.instances.keySet());
         }
     }
 }

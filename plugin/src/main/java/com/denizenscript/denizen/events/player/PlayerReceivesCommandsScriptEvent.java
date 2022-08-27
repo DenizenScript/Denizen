@@ -33,20 +33,13 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerReceivesCommandsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerReceivesCommandsScriptEvent instance;
     public PlayerCommandSendEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("player receives commands");
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerReceivesCommands";
     }
 
     @Override

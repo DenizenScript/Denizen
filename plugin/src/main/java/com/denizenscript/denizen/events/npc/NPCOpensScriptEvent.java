@@ -34,11 +34,9 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public NPCOpensScriptEvent() {
-        instance = this;
         registerCouldMatcher("npc opens <block>");
     }
 
-    public static NPCOpensScriptEvent instance;
     public NPCTag npc;
     public LocationTag location;
 
@@ -51,11 +49,6 @@ public class NPCOpensScriptEvent extends BukkitScriptEvent implements Listener {
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "NPCOpensDoor";
     }
 
     @Override

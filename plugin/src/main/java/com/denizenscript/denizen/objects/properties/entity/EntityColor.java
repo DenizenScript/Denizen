@@ -230,7 +230,7 @@ public class EntityColor implements Property {
         // If the entity can have a color, returns the list of allowed colors.
         // See also <@link language Entity Color Types>.
         // -->
-        PropertyParser.<EntityColor, ListTag>registerTag(ListTag.class, "allowed_colors", (attribute, object) -> {
+        PropertyParser.registerTag(EntityColor.class, ListTag.class, "allowed_colors", (attribute, object) -> {
             return object.getAllowedColors();
         });
 
@@ -243,7 +243,7 @@ public class EntityColor implements Property {
         // If the entity can have a color, returns the entity's color.
         // For the available color options, refer to <@link language Entity Color Types>.
         // -->
-        PropertyParser.<EntityColor, ElementTag>registerTag(ElementTag.class, "color", (attribute, object) -> {
+        PropertyParser.registerTag(EntityColor.class, ElementTag.class, "color", (attribute, object) -> {
             String color = object.getColor(true);
             if (color == null) {
                 return null;

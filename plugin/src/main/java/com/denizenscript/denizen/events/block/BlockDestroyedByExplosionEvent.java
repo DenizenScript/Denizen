@@ -42,11 +42,9 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
     // -->
 
     public BlockDestroyedByExplosionEvent() {
-        instance = this;
         registerCouldMatcher("<block> destroyed by explosion");
     }
 
-    public static BlockDestroyedByExplosionEvent instance;
     public BlockExplodeEvent blockEvent;
     public EntityExplodeEvent entityEvent;
     public LocationTag location;
@@ -67,11 +65,6 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "BlockDestroyedByExplosion";
     }
 
     @Override

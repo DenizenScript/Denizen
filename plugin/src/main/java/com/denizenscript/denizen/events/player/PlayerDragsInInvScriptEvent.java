@@ -52,10 +52,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerDragsInInvScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerDragsInInvScriptEvent instance;
 
     public Inventory inventory;
     public ItemTag item;
@@ -87,11 +85,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerDragsInInventory";
     }
 
     @Override

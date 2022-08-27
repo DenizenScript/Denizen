@@ -73,7 +73,7 @@ public class InventoryTitle implements Property {
         // @description
         // Returns the title of the inventory.
         // -->
-        PropertyParser.<InventoryTitle, ElementTag>registerTag(ElementTag.class, "title", (attribute, inventory) -> {
+        PropertyParser.registerTag(InventoryTitle.class, ElementTag.class, "title", (attribute, inventory) -> {
             return new ElementTag(inventory.getTitle(), true);
         });
     }

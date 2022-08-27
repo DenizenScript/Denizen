@@ -37,10 +37,8 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public PlayerWalkScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerWalkScriptEvent instance;
 
     public LocationTag old_location;
     public LocationTag new_location;
@@ -60,11 +58,6 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerWalks";
     }
 
     @Override

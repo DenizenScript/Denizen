@@ -41,11 +41,9 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PlayerKickedScriptEvent() {
-        instance = this;
         registerCouldMatcher("player kicked (for flying)");
     }
 
-    public static PlayerKickedScriptEvent instance;
     public PlayerTag player;
     public PlayerKickEvent event;
 
@@ -59,11 +57,6 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             return isFlying();
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerKicked";
     }
 
     @Override

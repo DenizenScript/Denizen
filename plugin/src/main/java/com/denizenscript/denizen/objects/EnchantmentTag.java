@@ -103,11 +103,6 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     private String prefix = "Enchantment";
 
     @Override
-    public String getObjectType() {
-        return "Enchantment";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }
@@ -361,8 +356,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // The input is a MapTag with a level value and a monster type specified, where the type can be any of: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
         // For example, <[my_enchantment].damage_bonus[level=3;type=undead]>
         // -->
-        tagProcessor.registerTag(ElementTag.class, "damage_bonus", (attribute, object) -> {
-            MapTag map = attribute.inputParameterMap();
+        tagProcessor.registerTag(ElementTag.class, MapTag.class, "damage_bonus", (attribute, object, map) -> {
             ElementTag level = map.getElement("level");
             ElementTag type = map.getElement("type");
             if (level == null || type == null) {
@@ -381,8 +375,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For entity damage causes, optionally specify the entity attacker.
         // For example, <[my_enchantment].damage_protection[level=3;type=undead]>
         // -->
-        tagProcessor.registerTag(ElementTag.class, "damage_protection", (attribute, object) -> {
-            MapTag map = attribute.inputParameterMap();
+        tagProcessor.registerTag(ElementTag.class, MapTag.class, "damage_protection", (attribute, object, map) -> {
             ElementTag level = map.getRequiredObjectAs("level", ElementTag.class, attribute);
             ElementTag type = map.getRequiredObjectAs("type", ElementTag.class, attribute);
             if (level == null || type == null) {

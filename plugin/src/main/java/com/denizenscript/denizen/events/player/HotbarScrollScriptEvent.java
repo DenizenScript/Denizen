@@ -37,10 +37,8 @@ public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public HotbarScrollScriptEvent() {
-        instance = this;
     }
 
-    public static HotbarScrollScriptEvent instance;
 
     public PlayerItemHeldEvent event;
 
@@ -62,11 +60,6 @@ public class HotbarScrollScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerScrollsItem";
     }
 
     @Override

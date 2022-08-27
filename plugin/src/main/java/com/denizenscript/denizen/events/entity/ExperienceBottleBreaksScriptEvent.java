@@ -37,10 +37,8 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public ExperienceBottleBreaksScriptEvent() {
-        instance = this;
     }
 
-    public static ExperienceBottleBreaksScriptEvent instance;
     public ExpBottleEvent event;
 
     @Override
@@ -57,11 +55,6 @@ public class ExperienceBottleBreaksScriptEvent extends BukkitScriptEvent impleme
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ExperienceBottleBreaks";
     }
 
     @Override

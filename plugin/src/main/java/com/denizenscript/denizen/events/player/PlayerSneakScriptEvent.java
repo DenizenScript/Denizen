@@ -32,11 +32,9 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public PlayerSneakScriptEvent() {
-        instance = this;
         registerCouldMatcher("player toggles|starts|stops sneaking");
     }
 
-    public static PlayerSneakScriptEvent instance;
     public boolean state;
     public PlayerToggleSneakEvent event;
 
@@ -53,11 +51,6 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerSneak";
     }
 
     @Override

@@ -29,11 +29,9 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public BlockBurnsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<block> burns");
     }
 
-    public static BlockBurnsScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockBurnEvent event;
@@ -47,11 +45,6 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "BlockBurns";
     }
 
     @Override

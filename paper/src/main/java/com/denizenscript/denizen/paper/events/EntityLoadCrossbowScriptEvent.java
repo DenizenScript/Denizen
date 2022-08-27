@@ -46,12 +46,10 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public EntityLoadCrossbowScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> loads crossbow");
         registerSwitches("crossbow");
     }
 
-    public static EntityLoadCrossbowScriptEvent instance;
 
     public EntityLoadCrossbowEvent event;
     public EntityTag entity;
@@ -65,11 +63,6 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityLoadsCrossbow";
     }
 
     @Override

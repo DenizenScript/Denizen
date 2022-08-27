@@ -498,7 +498,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
     public String customTitle = null;
 
-    public String prefix = getObjectType();
+    public String prefix = "Inventory";
 
     private InventoryTag(Inventory inventory) {
         this.inventory = inventory;
@@ -1124,11 +1124,6 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         if (inventory != null) {
             inventory.clear();
         }
-    }
-
-    @Override
-    public String getObjectType() {
-        return "Inventory";
     }
 
     @Override

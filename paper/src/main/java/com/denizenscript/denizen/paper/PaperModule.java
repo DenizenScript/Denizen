@@ -27,6 +27,7 @@ public class PaperModule {
     public static void init() {
         Debug.log("Loading Paper support module...");
 
+        ScriptEvent.notNameParts.add(0, "PaperImpl");
         // Events
         ScriptEvent.registerScriptEvent(AreaEnterExitScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
@@ -40,6 +41,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerElytraBoostScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEquipsArmorScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);

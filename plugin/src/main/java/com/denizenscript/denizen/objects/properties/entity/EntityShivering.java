@@ -44,7 +44,7 @@ public class EntityShivering implements Property {
         // @description
         // Returns whether the strider is shivering.
         // -->
-        PropertyParser.<EntityShivering, ElementTag>registerTag(ElementTag.class, "shivering", (attribute, object) -> {
+        PropertyParser.registerTag(EntityShivering.class, ElementTag.class, "shivering", (attribute, object) -> {
             return new ElementTag(object.getStrider().isShivering());
         });
     }

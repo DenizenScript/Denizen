@@ -23,11 +23,9 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
     // -->
 
     public WorldLoadsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<world> loads");
     }
 
-    public static WorldLoadsScriptEvent instance;
     public WorldTag world;
     public WorldLoadEvent event;
 
@@ -48,11 +46,6 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "WorldLoads";
     }
 
     @Override

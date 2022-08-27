@@ -35,12 +35,10 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PlayerShearsScriptEvent() {
-        instance = this;
         registerCouldMatcher("player shears <entity>");
         registerCouldMatcher("player shears <'color'> sheep");
     }
 
-    public static PlayerShearsScriptEvent instance;
     public EntityTag entity;
     public PlayerShearEntityEvent event;
 
@@ -73,11 +71,6 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
         }
 
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerShears";
     }
 
     @Override

@@ -34,12 +34,10 @@ public class ChunkLoadEntitiesScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public ChunkLoadEntitiesScriptEvent() {
-        instance = this;
         registerCouldMatcher("chunk loads entities");
         registerSwitches("entity_type", "include_empty");
     }
 
-    public static ChunkLoadEntitiesScriptEvent instance;
 
     public ChunkTag chunk;
     public EntitiesLoadEvent event;
@@ -66,11 +64,6 @@ public class ChunkLoadEntitiesScriptEvent extends BukkitScriptEvent implements L
             }
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ChunkLoadsEntities";
     }
 
     @Override

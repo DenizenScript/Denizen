@@ -35,11 +35,9 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityGlideScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> toggles|starts|stops gliding");
     }
 
-    public static EntityGlideScriptEvent instance;
     public EntityTag entity;
     public boolean state;
 
@@ -59,11 +57,6 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityGlide";
     }
 
     @Override

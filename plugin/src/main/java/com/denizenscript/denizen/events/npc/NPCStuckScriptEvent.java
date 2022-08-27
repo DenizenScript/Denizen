@@ -36,11 +36,9 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public NPCStuckScriptEvent() {
-        instance = this;
         registerCouldMatcher("npc stuck");
     }
 
-    public static NPCStuckScriptEvent instance;
     public NavigationStuckEvent event;
     public NPCTag npc;
 
@@ -51,11 +49,6 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
         }
 
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "NPCStuck";
     }
 
     @Override

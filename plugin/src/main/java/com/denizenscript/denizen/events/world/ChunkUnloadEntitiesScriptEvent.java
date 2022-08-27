@@ -34,12 +34,10 @@ public class ChunkUnloadEntitiesScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public ChunkUnloadEntitiesScriptEvent() {
-        instance = this;
         registerCouldMatcher("chunk unloads entities");
         registerSwitches("entity_type", "include_empty");
     }
 
-    public static ChunkUnloadEntitiesScriptEvent instance;
 
     public ChunkTag chunk;
     public EntitiesUnloadEvent event;
@@ -66,11 +64,6 @@ public class ChunkUnloadEntitiesScriptEvent extends BukkitScriptEvent implements
             }
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ChunkUnloadsEntities";
     }
 
     @Override

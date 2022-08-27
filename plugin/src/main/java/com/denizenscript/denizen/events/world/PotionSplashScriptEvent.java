@@ -35,11 +35,9 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public PotionSplashScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> splash|splashes");
     }
 
-    public static PotionSplashScriptEvent instance;
     public ItemTag potion;
     public LocationTag location;
     public PotionSplashEvent event;
@@ -54,11 +52,6 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PotionSplash";
     }
 
     @Override

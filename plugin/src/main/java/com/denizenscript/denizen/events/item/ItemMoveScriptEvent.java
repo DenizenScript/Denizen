@@ -34,11 +34,9 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public ItemMoveScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> moves from <inventory> (to <inventory>)");
     }
 
-    public static ItemMoveScriptEvent instance;
 
     public InventoryTag origin;
     public InventoryTag destination;
@@ -60,11 +58,6 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ItemMoves";
     }
 
     @Override

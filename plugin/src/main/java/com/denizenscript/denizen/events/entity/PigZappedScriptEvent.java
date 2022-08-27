@@ -32,10 +32,8 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public PigZappedScriptEvent() {
-        instance = this;
     }
 
-    public static PigZappedScriptEvent instance;
     public EntityTag pig;
     public EntityTag pig_zombie;
     private EntityTag lightning;
@@ -55,11 +53,6 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PigZapped";
     }
 
     @Override

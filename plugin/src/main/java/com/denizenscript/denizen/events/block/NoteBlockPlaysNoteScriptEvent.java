@@ -37,12 +37,10 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public NoteBlockPlaysNoteScriptEvent() {
-        instance = this;
         registerCouldMatcher("noteblock plays note");
         registerSwitches("instrument");
     }
 
-    public static NoteBlockPlaysNoteScriptEvent instance;
     public NotePlayEvent event;
     public LocationTag location;
 
@@ -55,11 +53,6 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "NoteBlockPlaysNote";
     }
 
     public Sound getSound() {

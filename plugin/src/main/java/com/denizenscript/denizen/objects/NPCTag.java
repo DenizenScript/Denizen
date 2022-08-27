@@ -387,11 +387,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     @Override
-    public String getObjectType() {
-        return "NPC";
-    }
-
-    @Override
     public String identify() {
         if (npc.getOwningRegistry() == CitizensAPI.getNPCRegistry()) {
             return "n@" + npc.getId();

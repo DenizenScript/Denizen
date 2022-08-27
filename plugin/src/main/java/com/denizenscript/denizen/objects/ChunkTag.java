@@ -205,11 +205,6 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     String prefix = "Chunk";
 
     @Override
-    public String getObjectType() {
-        return "Chunk";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

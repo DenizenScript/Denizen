@@ -57,7 +57,7 @@ public class EntityShotAtAngle implements Property {
         // @description
         // Returns true if the Firework entity is 'shot at angle', meaning it should render facing the direction it's moving. If false, will be angled straight up.
         // -->
-        PropertyParser.<EntityShotAtAngle, ElementTag>registerTag(ElementTag.class, "shot_at_angle", (attribute, object) -> {
+        PropertyParser.registerTag(EntityShotAtAngle.class, ElementTag.class, "shot_at_angle", (attribute, object) -> {
             return new ElementTag(object.getFirework().isShotAtAngle());
         });
     }

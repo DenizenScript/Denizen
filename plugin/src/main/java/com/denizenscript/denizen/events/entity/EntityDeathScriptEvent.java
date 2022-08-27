@@ -64,12 +64,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityDeathScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> dies|death");
         registerSwitches("by", "cause");
     }
 
-    public static EntityDeathScriptEvent instance;
 
     public EntityTag entity;
     public EntityTag damager;
@@ -93,11 +91,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityDies";
     }
 
     @Override

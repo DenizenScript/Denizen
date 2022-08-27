@@ -86,14 +86,12 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public EntityDamagedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> damaged (by <'cause'>)");
         registerCouldMatcher("<entity> damaged by <entity>");
         registerCouldMatcher("<entity> damages <entity>");
         registerSwitches("with", "type");
     }
 
-    public static EntityDamagedScriptEvent instance;
 
     public EntityTag entity;
     public ElementTag cause;
@@ -152,11 +150,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityDamaged";
     }
 
     @Override

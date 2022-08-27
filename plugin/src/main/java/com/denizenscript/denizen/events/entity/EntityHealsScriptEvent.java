@@ -39,11 +39,9 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public EntityHealsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> heals (because <'cause'>)");
     }
 
-    public static EntityHealsScriptEvent instance;
     public EntityTag entity;
     public ElementTag reason;
     public EntityRegainHealthEvent event;
@@ -60,11 +58,6 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityHeals";
     }
 
     @Override

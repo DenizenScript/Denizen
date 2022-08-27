@@ -60,10 +60,8 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // -->
 
     public ChatScriptEvent() {
-        instance = this;
     }
 
-    public static ChatScriptEvent instance;
 
     public PlayerChatEvent pcEvent;
     public AsyncPlayerChatEvent apcEvent;
@@ -89,11 +87,6 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "Chat";
     }
 
     @Override

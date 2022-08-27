@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,11 +41,9 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public EntityBreaksHangingScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> breaks <hanging> (because <'cause'>)");
     }
 
-    public static EntityBreaksHangingScriptEvent instance;
     public ElementTag cause;
     public EntityTag breaker;
     public EntityTag hanging;
@@ -83,11 +80,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityBreaksHanging";
     }
 
     @Override

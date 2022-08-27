@@ -83,11 +83,6 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public String getName() {
-        return "PlayerSteersEntity";
-    }
-
-    @Override
     public void init() {
         NetworkInterceptHelper.enable();
         enabled = true;

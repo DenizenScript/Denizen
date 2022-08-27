@@ -58,6 +58,8 @@ public class ScriptEventRegistry {
         ScriptEventCouldMatcher.knownValidatorTypes.put("world", (t) -> true); // TODO: ?
         ScriptEventCouldMatcher.knownValidatorTypes.put("biome", (t) -> true); // TODO: ?
 
+        ScriptEvent.notNameParts.add(0, "SpigotImpl");
+
         // Block events
         ScriptEvent.registerScriptEvent(BlockBuiltScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);
@@ -116,7 +118,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityPicksUpItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityPotionEffectScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityResurrectScriptEvent.class);
-        ScriptEvent.registerScriptEvent(EntityShootsBowEvent.class);
+        ScriptEvent.registerScriptEvent(EntityShootsBowScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnerSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySwimScriptEvent.class);
@@ -171,7 +173,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerClicksBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInInventoryScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClosesInvScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.class);
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerConsumesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerCraftsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerDamagesBlockScriptEvent.class);

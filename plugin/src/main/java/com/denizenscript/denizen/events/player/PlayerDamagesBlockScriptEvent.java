@@ -41,10 +41,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public PlayerDamagesBlockScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerDamagesBlockScriptEvent instance;
     public LocationTag location;
     public MaterialTag material;
     public BlockDamageEvent event;
@@ -73,11 +71,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerDamagesBlock";
     }
 
     @Override

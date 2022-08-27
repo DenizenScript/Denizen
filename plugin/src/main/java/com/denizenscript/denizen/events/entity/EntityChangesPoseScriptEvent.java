@@ -36,12 +36,10 @@ public class EntityChangesPoseScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public EntityChangesPoseScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> changes pose");
         registerSwitches("old", "new");
     }
 
-    public static EntityChangesPoseScriptEvent instance;
     public EntityTag entity;
     public Pose oldPose;
     public EntityPoseChangeEvent event;
@@ -61,11 +59,6 @@ public class EntityChangesPoseScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityChangesPose";
     }
 
     @Override

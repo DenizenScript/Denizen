@@ -40,11 +40,9 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public TabCompleteScriptEvent() {
-        instance = this;
         registerCouldMatcher("tab complete");
     }
 
-    public static TabCompleteScriptEvent instance;
     public TabCompleteEvent event;
 
     public String getCommand() {
@@ -59,11 +57,6 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
     public String getCurrentArg() {
         int i = event.getBuffer().lastIndexOf(' ');
         return i > 0 ? event.getBuffer().substring(i + 1) : getCommand();
-    }
-
-    @Override
-    public String getName() {
-        return "TabComplete";
     }
 
     @Override

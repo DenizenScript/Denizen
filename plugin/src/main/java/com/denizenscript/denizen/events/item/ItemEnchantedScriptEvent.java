@@ -52,12 +52,10 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public ItemEnchantedScriptEvent() {
-        instance = this;
         registerCouldMatcher("<item> enchanted");
         registerSwitches("enchant");
     }
 
-    public static ItemEnchantedScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public InventoryTag inventory;
@@ -87,11 +85,6 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
             }
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ItemEnchanted";
     }
 
     @Override

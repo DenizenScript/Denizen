@@ -34,10 +34,8 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public PlayerRiptideScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerRiptideScriptEvent instance;
     public PlayerRiptideEvent event;
     private ItemTag item;
 
@@ -52,11 +50,6 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerActivatesRiptide";
     }
 
     @Override

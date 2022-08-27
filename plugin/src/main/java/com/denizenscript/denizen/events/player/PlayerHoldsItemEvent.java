@@ -45,8 +45,8 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public PlayerHoldsItemEvent() {
-        instance = this;
         registerCouldMatcher("player raises|lowers|toggles <item>");
+        instance = this;
     }
 
     public static PlayerHoldsItemEvent instance;
@@ -85,11 +85,6 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerHoldsItem";
     }
 
     public boolean enabled = false;

@@ -38,20 +38,13 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
     public PlayerQuitsScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerQuitsScriptEvent instance;
     public PlayerQuitEvent event;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
         return path.eventLower.startsWith("player quit");
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerQuits";
     }
 
     @Override

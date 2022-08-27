@@ -41,10 +41,8 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public PlayerStepsOnScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerStepsOnScriptEvent instance;
     public LocationTag location;
     public LocationTag previous_location;
     public LocationTag new_location;
@@ -72,11 +70,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerStepsOn";
     }
 
     @Override

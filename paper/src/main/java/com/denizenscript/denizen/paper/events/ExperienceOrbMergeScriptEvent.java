@@ -33,11 +33,9 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public ExperienceOrbMergeScriptEvent() {
-        instance = this;
         registerCouldMatcher("experience orbs merge");
     }
 
-    public static ExperienceOrbMergeScriptEvent instance;
     public ExperienceOrbMergeEvent event;
 
     @Override
@@ -46,11 +44,6 @@ public class ExperienceOrbMergeScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ExperienceOrbsMerge";
     }
 
     @Override

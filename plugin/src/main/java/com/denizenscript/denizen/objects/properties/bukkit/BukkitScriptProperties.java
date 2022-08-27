@@ -41,14 +41,14 @@ public class BukkitScriptProperties implements Property {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <ScriptTag.cooled_down[<player>]>
+        // @attribute <ScriptTag.cooled_down[(<player>)]>
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether the script is currently cooled down for the player. Any global
         // cooldown present on the script will also be taken into account. Not specifying a player will result in
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
-        PropertyParser.<BukkitScriptProperties, ElementTag>registerTag(ElementTag.class, "cooled_down", (attribute, script) -> {
+        PropertyParser.registerTag(BukkitScriptProperties.class, ElementTag.class, "cooled_down", (attribute, script) -> {
             PlayerTag player = (attribute.hasParam() ? attribute.paramAsType(PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid()) {
@@ -60,12 +60,12 @@ public class BukkitScriptProperties implements Property {
         });
 
         // <--[tag]
-        // @attribute <ScriptTag.cooldown[<player>]>
+        // @attribute <ScriptTag.cooldown[(<player>)]>
         // @returns DurationTag
         // @description
         // Returns the time left for the player to cooldown for the script.
         // -->
-        PropertyParser.<BukkitScriptProperties, DurationTag>registerTag(DurationTag.class, "cooldown", (attribute, script) -> {
+        PropertyParser.registerTag(BukkitScriptProperties.class, DurationTag.class, "cooldown", (attribute, script) -> {
             PlayerTag player = (attribute.hasParam() ? attribute.paramAsType(PlayerTag.class)
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.script.getName());
@@ -78,7 +78,7 @@ public class BukkitScriptProperties implements Property {
         // Returns the name of a script step that the player is currently on.
         // Must be an INTERACT script.
         // -->
-        PropertyParser.<BukkitScriptProperties, ElementTag>registerTag(ElementTag.class, "step", (attribute, script) -> {
+        PropertyParser.registerTag(BukkitScriptProperties.class, ElementTag.class, "step", (attribute, script) -> {
             PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer();
             if (player != null && player.isValid()) {
                 return new ElementTag(InteractScriptHelper.getCurrentStep(player, script.script.getContainer().getName()));
@@ -94,7 +94,7 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the time that an interact script step expires at, if applied by <@link command zap> with a duration limit.
         // -->
-        PropertyParser.<BukkitScriptProperties, TimeTag>registerTag(TimeTag.class, "step_expiration", (attribute, script) -> {
+        PropertyParser.registerTag(BukkitScriptProperties.class, TimeTag.class, "step_expiration", (attribute, script) -> {
             PlayerTag player = attribute.hasParam() ? attribute.paramAsType(PlayerTag.class) : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer();
             if (player != null && player.isValid()) {
                 return InteractScriptHelper.getStepExpiration(player, script.script.getContainer().getName());
@@ -110,7 +110,7 @@ public class BukkitScriptProperties implements Property {
         // @description
         // Returns the name of the default step of an interact script.
         // -->
-        PropertyParser.<BukkitScriptProperties, ElementTag>registerStaticTag(ElementTag.class, "default_step", (attribute, script) -> {
+        PropertyParser.registerStaticTag(BukkitScriptProperties.class, ElementTag.class, "default_step", (attribute, script) -> {
             String step = ((InteractScriptContainer) script.script.getContainer()).getDefaultStepName();
             return new ElementTag(step);
         });

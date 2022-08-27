@@ -89,7 +89,7 @@ public class ItemAttributeModifiers implements Property {
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
         // See also <@link language attribute modifiers>.
         // -->
-        PropertyParser.<ItemAttributeModifiers, MapTag>registerTag(MapTag.class, "attribute_modifiers", (attribute, object) -> {
+        PropertyParser.registerTag(ItemAttributeModifiers.class, MapTag.class, "attribute_modifiers", (attribute, object) -> {
             return object.getAttributeModifiers();
         });
 
@@ -102,7 +102,7 @@ public class ItemAttributeModifiers implements Property {
         // in the same format as <@link tag ItemTag.attribute_modifiers>
         // Slot must be one of: HAND, OFF_HAND, FEET, LEGS, CHEST, or HEAD
         // -->
-        PropertyParser.<ItemAttributeModifiers, MapTag>registerTag(MapTag.class, "default_attribute_modifiers", (attribute, object) -> {
+        PropertyParser.registerTag(ItemAttributeModifiers.class, MapTag.class, "default_attribute_modifiers", (attribute, object) -> {
             if (!attribute.hasParam()) {
                 return null;
             }

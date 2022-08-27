@@ -80,7 +80,7 @@ public class EntityBoundingBox implements Property {
         // @description
         // Returns the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
         // -->
-        PropertyParser.<EntityBoundingBox, ListTag>registerTag(ListTag.class, "bounding_box", (attribute, object) -> {
+        PropertyParser.registerTag(EntityBoundingBox.class, ListTag.class, "bounding_box", (attribute, object) -> {
             return object.getBoundingBox();
         });
     }

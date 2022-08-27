@@ -38,7 +38,7 @@ public class MaterialDrags implements Property {
     MaterialTag material;
 
     public static void registerTags() {
-        PropertyParser.<MaterialDrags, ElementTag>registerTag(ElementTag.class, "drags", (attribute, material) -> {
+        PropertyParser.registerTag(MaterialDrags.class, ElementTag.class, "drags", (attribute, material) -> {
             BukkitImplDeprecations.materialDrags.warn(attribute.context);
             return new ElementTag(material.isDrag());
         });

@@ -47,12 +47,10 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     // -->
 
     public LootGenerateScriptEvent() {
-        instance = this;
         registerCouldMatcher("loot generates");
         registerSwitches("for");
     }
 
-    public static LootGenerateScriptEvent instance;
     public LootGenerateEvent event;
 
     @Override
@@ -66,11 +64,6 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
             }
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "LootGenerates";
     }
 
     @Override
@@ -118,7 +111,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @EventHandler
-    public void onLightningStrikes(LootGenerateEvent event) {
+    public void onLootGenerate(LootGenerateEvent event) {
         this.event = event;
         fire(event);
     }

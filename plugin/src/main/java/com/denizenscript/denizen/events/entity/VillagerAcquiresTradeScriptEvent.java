@@ -33,10 +33,8 @@ public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public VillagerAcquiresTradeScriptEvent() {
-        instance = this;
     }
 
-    public static VillagerAcquiresTradeScriptEvent instance;
     public EntityTag entity;
     public VillagerAcquireTradeEvent event;
 
@@ -51,11 +49,6 @@ public class VillagerAcquiresTradeScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "VillagerAcquiresTrade";
     }
 
 

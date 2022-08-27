@@ -27,12 +27,10 @@ public class ServerResourcesReloadedScriptEvent extends BukkitScriptEvent implem
     // -->
 
     public ServerResourcesReloadedScriptEvent() {
-        instance = this;
         registerCouldMatcher("server resources reloaded");
         registerSwitches("cause");
     }
 
-    public static ServerResourcesReloadedScriptEvent instance;
     public ElementTag cause;
 
     @Override
@@ -41,11 +39,6 @@ public class ServerResourcesReloadedScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "ServerResourcesReloaded";
     }
 
     @Override

@@ -48,11 +48,9 @@ public class MaterialAge implements Property {
         // @description
         // Returns the maximum age for an ageable material. This includes plant growth.
         // -->
-        PropertyParser.PropertyTagWithReturn<MaterialAge, ElementTag> runnable = (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "maximum_age", (attribute, material) -> {
             return new ElementTag(material.getMax());
-        };
-        PropertyParser.registerStaticTag(ElementTag.class, "maximum_age", runnable);
-        PropertyParser.registerStaticTag(ElementTag.class, "maximum_plant_growth", runnable);
+        }, "maximum_plant_growth");
 
         // <--[tag]
         // @attribute <MaterialTag.age>
@@ -62,11 +60,9 @@ public class MaterialAge implements Property {
         // @description
         // Returns the current age for an ageable material. This includes plant growth.
         // -->
-        runnable = (attribute, material) -> {
+        PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "age", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
-        };
-        PropertyParser.registerStaticTag(ElementTag.class, "age", runnable);
-        PropertyParser.registerStaticTag(ElementTag.class, "plant_growth", runnable);
+        }, "plant_growth");
     }
 
     public TurtleEgg getTurtleEgg() {

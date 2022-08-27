@@ -45,7 +45,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the NPCTag linked to a queue.
         // -->
-        PropertyParser.<BukkitQueueProperties, NPCTag>registerTag(NPCTag.class, "npc", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitQueueProperties.class, NPCTag.class, "npc", (attribute, object) -> {
             NPCTag npc = null;
             if (object.queue.getLastEntryExecuted() != null) {
                 npc = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getNPC();
@@ -66,7 +66,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the PlayerTag linked to a queue.
         // -->
-        PropertyParser.<BukkitQueueProperties, PlayerTag>registerTag(PlayerTag.class, "player", (attribute, object) -> {
+        PropertyParser.registerTag(BukkitQueueProperties.class, PlayerTag.class, "player", (attribute, object) -> {
             PlayerTag player = null;
             if (object.queue.getLastEntryExecuted() != null) {
                 player = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getPlayer();

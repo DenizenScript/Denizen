@@ -50,10 +50,8 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public PlayerCraftsItemScriptEvent() {
-        instance = this;
     }
 
-    public static PlayerCraftsItemScriptEvent instance;
     public CraftItemEvent event;
     public ItemTag result;
     public PlayerTag player;
@@ -75,11 +73,6 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerCraftsItem";
     }
 
     @Override

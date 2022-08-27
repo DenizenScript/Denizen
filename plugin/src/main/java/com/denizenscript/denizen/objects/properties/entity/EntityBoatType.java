@@ -60,7 +60,7 @@ public class EntityBoatType implements Property {
         // Returns the wood type of the boat.
         // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.
         // -->
-        PropertyParser.<EntityBoatType, ElementTag>registerTag(ElementTag.class, "boat_type", (attribute, object) -> {
+        PropertyParser.registerTag(EntityBoatType.class, ElementTag.class, "boat_type", (attribute, object) -> {
             return new ElementTag(object.getBoat().getWoodType().name());
         });
     }

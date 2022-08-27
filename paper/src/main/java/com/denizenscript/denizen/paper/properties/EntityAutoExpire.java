@@ -46,7 +46,7 @@ public class EntityAutoExpire implements Property {
         // Returns whether a falling_block will auto-expire (after 30 seconds, or 5 when outside the world).
         // See also <@link tag EntityTag.time_lived>
         // -->
-        PropertyParser.<EntityAutoExpire, ElementTag>registerTag(ElementTag.class, "auto_expire", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAutoExpire.class, ElementTag.class, "auto_expire", (attribute, object) -> {
             return new ElementTag(object.doesAutoExpire());
         });
     }

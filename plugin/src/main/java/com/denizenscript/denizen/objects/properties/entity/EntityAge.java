@@ -93,7 +93,7 @@ public class EntityAge implements Property {
         // A standard adult is 0.
         // An adult that just bred is 6000.
         // -->
-        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "age", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "age", (attribute, object) -> {
             return new ElementTag(object.getAgeable().getAge());
         });
 
@@ -105,7 +105,7 @@ public class EntityAge implements Property {
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
         // -->
-        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "is_age_locked", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "is_age_locked", (attribute, object) -> {
             return new ElementTag(object.getLock());
         });
 
@@ -117,7 +117,7 @@ public class EntityAge implements Property {
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
         // -->
-        PropertyParser.<EntityAge, ElementTag>registerTag(ElementTag.class, "is_baby", (attribute, object) -> {
+        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "is_baby", (attribute, object) -> {
             return new ElementTag(!object.getAgeable().isAdult());
         });
     }

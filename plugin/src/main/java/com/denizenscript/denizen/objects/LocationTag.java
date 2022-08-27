@@ -846,11 +846,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     String prefix = "Location";
 
     @Override
-    public String getObjectType() {
-        return "Location";
-    }
-
-    @Override
     public String getPrefix() {
         return prefix;
     }

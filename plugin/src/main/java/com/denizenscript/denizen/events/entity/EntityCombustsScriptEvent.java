@@ -45,11 +45,9 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public EntityCombustsScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> combusts");
     }
 
-    public static EntityCombustsScriptEvent instance;
     public EntityTag entity;
     public EntityCombustEvent event;
 
@@ -62,11 +60,6 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityCombusts";
     }
 
     @Override

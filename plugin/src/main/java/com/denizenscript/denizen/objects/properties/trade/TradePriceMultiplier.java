@@ -50,7 +50,7 @@ public class TradePriceMultiplier implements Property {
         // @description
         // Returns the price multiplier for this trade.
         // -->
-        PropertyParser.<TradePriceMultiplier, ElementTag>registerTag(ElementTag.class, "price_multiplier", (attribute, recipe) -> {
+        PropertyParser.registerTag(TradePriceMultiplier.class, ElementTag.class, "price_multiplier", (attribute, recipe) -> {
             return new ElementTag(recipe.recipe.getRecipe().getPriceMultiplier());
         });
     }

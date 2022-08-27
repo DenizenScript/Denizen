@@ -33,11 +33,9 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public PlayerStopsSpectatingScriptEvent() {
-        instance = this;
         registerCouldMatcher("player stops spectating (<entity>)");
     }
 
-    public static PlayerStopsSpectatingScriptEvent instance;
     public PlayerStopSpectatingEntityEvent event;
 
     @Override
@@ -49,11 +47,6 @@ public class PlayerStopsSpectatingScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerStopsSpectating";
     }
 
     @Override

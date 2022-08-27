@@ -37,12 +37,10 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public PlayerEmptiesBucketScriptEvent() {
-        instance = this;
         registerCouldMatcher("player empties bucket");
         registerCouldMatcher("player empties <item>");
     }
 
-    public static PlayerEmptiesBucketScriptEvent instance;
 
     public ItemTag item;
     public MaterialTag material;
@@ -56,11 +54,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "PlayerEmptiesBucket";
     }
 
     @Override

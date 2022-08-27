@@ -53,7 +53,7 @@ public class BukkitMapTagProperties implements Property {
         // - define data <[something].map_to_nbt.gzip_compress>
         // - ~filewrite path:data/<player.uuid>.dat data:<[data]>
         // -->
-        PropertyParser.<BukkitMapTagProperties, BinaryTag>registerStaticTag(BinaryTag.class, "map_to_nbt", (attribute, object) -> {
+        PropertyParser.registerStaticTag(BukkitMapTagProperties.class, BinaryTag.class, "map_to_nbt", (attribute, object) -> {
             try {
                 Tag tag = ItemRawNBT.convertObjectToNbt(object.map.toString(), attribute.context, "(root).");
                 ByteArrayOutputStream output = new ByteArrayOutputStream();

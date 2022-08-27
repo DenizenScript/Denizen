@@ -90,7 +90,7 @@ public class ItemArmorPose implements Property {
         // Returns the pose of this armor stand item, if any.
         // Map has keys: head, body, left_arm, right_arm, left_leg, right_leg
         // -->
-        PropertyParser.<ItemArmorPose, MapTag>registerTag(MapTag.class, "armor_pose", (attribute, item) -> {
+        PropertyParser.registerTag(ItemArmorPose.class, MapTag.class, "armor_pose", (attribute, item) -> {
             return item.getPoseMap();
         });
     }

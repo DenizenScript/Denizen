@@ -33,11 +33,9 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public EntityExitsPortalScriptEvent() {
-        instance = this;
         registerCouldMatcher("<entity> exits portal");
     }
 
-    public static EntityExitsPortalScriptEvent instance;
     public EntityTag entity;
     public LocationTag location;
     public EntityPortalExitEvent event;
@@ -52,11 +50,6 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public String getName() {
-        return "EntityExitsPortal";
     }
 
     @Override
