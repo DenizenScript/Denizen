@@ -366,16 +366,20 @@ public class CuboidBlockSet implements BlockSet {
         blocks = bd;
     }
 
-    public void flipEntitiesX() {
+    public void flipEntities(int offsetMultiplier_X, int offsetMultiplier_Z) {
         if (entities == null) {
             return;
         }
         ListTag outEntities = new ListTag();
         for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
-            EntityTag entity = data.getObjectAs("entity", EntityTag.class, CoreUtilities.noDebugContext);
-            ArrayList<Mechanism> mechs = new ArrayList<>(entity.getWaitingMechanisms().size());
+            int rotation = data.getElement("rotation").asInt();
             LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
-            float newYaw = -1 * (offset.getYaw() - 90) + 270;
+            float newYaw = offset.getYaw();
+            if (offsetMultiplier_X == -1) {
+                newYaw = -1 * (offset.getYaw() - 90) + 270;
+            } else if (offsetMultiplier_Z == -1) {
+                newYaw = 180 - offset.getYaw();
+            }
             while (newYaw < 0 || newYaw >= 360) {
                 if (newYaw >= 360) {
                     newYaw -= 360;
@@ -383,29 +387,18 @@ public class CuboidBlockSet implements BlockSet {
                     newYaw += 360;
                 }
             }
-            offset = new LocationTag((String) null, -offset.getX(), offset.getY(), offset.getZ(), newYaw, offset.getPitch());
+            rotation += (offset.getYaw() - newYaw);
+            offset = new LocationTag((String) null, offset.getX() * offsetMultiplier_X, offset.getY(), offset.getZ() * offsetMultiplier_Z, newYaw, offset.getPitch());
             data = data.duplicate();
-            for (Mechanism mech : entity.getWaitingMechanisms()) {
-                if (mech.getName().equals("rotation")) {
-                    String rotationName = mech.getValue().asString();
-                    BlockFace face = BlockFace.valueOf(rotationName.toUpperCase());
-                    face = FullBlockData.flipFaceX(face);
-                    mechs.add(new Mechanism("rotation", new ElementTag(face.name()), CoreUtilities.noDebugContext));
-                }
-                else {
-                    mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));
-                }
-            }
-            entity.mechanisms = mechs;
-            data.putObject("entity", entity.describe(null));
             data.putObject("offset", offset);
+            data.putObject("rotation", new ElementTag(rotation));
             outEntities.addObject(data);
         }
         entities = outEntities;
     }
 
     public void flipX() {
-        flipEntitiesX();
+        flipEntities(-1, 1);
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_x = x_width - center_x - 1;
@@ -433,46 +426,8 @@ public class CuboidBlockSet implements BlockSet {
         blocks = bd;
     }
 
-    public void flipEntitiesZ() {
-        if (entities == null) {
-            return;
-        }
-        ListTag outEntities = new ListTag();
-        for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
-            EntityTag entity = data.getObjectAs("entity", EntityTag.class, CoreUtilities.noDebugContext);
-            ArrayList<Mechanism> mechs = new ArrayList<>(entity.getWaitingMechanisms().size());
-            LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
-            float newYaw = 180 - offset.getYaw();
-            while (newYaw < 0 || newYaw >= 360) {
-                if (newYaw >= 360) {
-                    newYaw -= 360;
-                } else {
-                    newYaw += 360;
-                }
-            }
-            offset = new LocationTag((String) null, offset.getX(), offset.getY(), -offset.getZ() + 1, newYaw, offset.getPitch());
-            for (Mechanism mech : entity.getWaitingMechanisms()) {
-                if (mech.getName().equals("rotation")) {
-                    String rotationName = mech.getValue().asString();
-                    BlockFace face = BlockFace.valueOf(rotationName.toUpperCase());
-                    face = FullBlockData.flipFaceZ(face);
-                    mechs.add(new Mechanism("rotation", new ElementTag(face.name()), CoreUtilities.noDebugContext));
-                }
-                else {
-                    mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));
-                }
-            }
-            entity.mechanisms = mechs;
-            data.putObject("entity", entity.describe(null));
-            data = data.duplicate();
-            data.putObject("offset", offset);
-            outEntities.addObject(data);
-        }
-        entities = outEntities;
-    }
-
     public void flipZ() {
-        flipEntitiesZ();
+        flipEntities(1, -1);
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_z = z_height - center_z - 1;
