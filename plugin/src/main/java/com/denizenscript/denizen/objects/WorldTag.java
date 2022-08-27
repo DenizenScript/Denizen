@@ -27,6 +27,7 @@ import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.util.BoundingBox;
 
 import java.io.File;
@@ -1361,6 +1362,33 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         if (mechanism.matches("weather_duration") && mechanism.requireObject(DurationTag.class)) {
             getWorld().setWeatherDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name skip_night
+        // @input None
+        // @description
+        // Skips to the next day as if enough players slept through the night.
+        // NOTE: This ignores the doDaylightCycle gamerule!
+        // -->
+        if (mechanism.matches("skip_night")) {
+            // general logic from NMS world tick
+            World world = getWorld();
+            long worldTime = world.getFullTime();
+            long nextDay = worldTime + 24000L;
+            TimeSkipEvent event = new TimeSkipEvent(world, TimeSkipEvent.SkipReason.NIGHT_SKIP, nextDay - nextDay % 24000L - worldTime);
+            Bukkit.getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                NMSHandler.worldHelper.setDayTime(world, worldTime + event.getSkipAmount());
+            }
+            if (!event.isCancelled()) {
+                NMSHandler.worldHelper.wakeUpAllPlayers(world);
+            }
+            // minor change: prior to 1.18, hasStorm/isRaining was not checked
+            if (getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
+                NMSHandler.worldHelper.clearWeather(world);
+            }
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

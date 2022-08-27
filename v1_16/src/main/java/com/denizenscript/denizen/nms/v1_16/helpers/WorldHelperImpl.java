@@ -9,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 
+import java.util.stream.Collectors;
+
 public class WorldHelperImpl implements WorldHelper {
 
     @Override
@@ -65,5 +67,32 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public boolean isNight(World world) {
         return ((CraftWorld) world).getHandle().isNight();
+    }
+
+    @Override
+    public void setDayTime(World world, long time) {
+        ((CraftWorld) world).getHandle().setDayTime(time);
+    }
+
+    // net.minecraft.server.WorldServer#wakeupPlayers()
+    @Override
+    public void wakeUpAllPlayers(World world) {
+        WorldServer nmsWorld = ((CraftWorld) world).getHandle();
+        ReflectionHelper.setFieldValue(WorldServer.class, "everyoneSleeping", nmsWorld, false);
+        nmsWorld.getPlayers().stream().filter(EntityLiving::isSleeping).collect(Collectors.toList()).forEach((player) -> player.wakeup(false, false));
+    }
+
+    // net.minecraft.server.WorldServer#clearWeather()
+    @Override
+    public void clearWeather(World world) {
+        WorldDataServer data = ((CraftWorld) world).getHandle().worldDataServer;
+        data.setStorm(false);
+        if (!data.hasStorm()) {
+            data.setWeatherDuration(0);
+        }
+        data.setThundering(false);
+        if (!data.isThundering()) {
+            data.setThunderDuration(0);
+        }
     }
 }
