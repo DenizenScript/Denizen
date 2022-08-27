@@ -81,4 +81,6 @@ public class ReflectionMappingsInfo {
     public static String FishingHook_nibble = "aq";
     public static String FishingHook_timeUntilLured = "ar";
     public static String FishingHook_timeUntilHooked = "as";
+
+    public static String ServerLevel_sleepStatus = "H";
 }

@@ -133,4 +133,6 @@ public class ReflectionMappingsInfo {
     // net.minecraft.core.Holder$Reference
     public static String HolderReference_bindTags_method = "a";
 
+    // net.minecraft.server.level.ServerLevel
+    public static String ServerLevel_sleepStatus = "Q";
 }

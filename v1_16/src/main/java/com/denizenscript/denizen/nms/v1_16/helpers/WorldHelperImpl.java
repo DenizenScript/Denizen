@@ -37,4 +37,33 @@ public class WorldHelperImpl implements WorldHelper {
         }
         return new Location(start.getWorld(), result.getX(), result.getY(), result.getZ());
     }
+
+    @Override
+    public boolean areEnoughSleeping(World world, int percentage) {
+        // percentage is ignored -- prior to 1.17, all players must be sleeping
+        return ReflectionHelper.getFieldValue(WorldServer.class, "everyoneSleeping", ((CraftWorld) world).getHandle());
+    }
+
+    @Override
+    public boolean areEnoughDeepSleeping(World world, int percentage) {
+        // percentage is ignored -- prior to 1.17, all players must be sleeping
+        return ((CraftWorld) world).getHandle().getPlayers().stream().noneMatch((player) -> {
+            return !player.isSpectator() && !player.isDeeplySleeping() && !player.fauxSleeping;
+        });
+    }
+
+    @Override
+    public int getSkyDarken(World world) {
+        return ((CraftWorld) world).getHandle().c();
+    }
+
+    @Override
+    public boolean isDay(World world) {
+        return ((CraftWorld) world).getHandle().isDay();
+    }
+
+    @Override
+    public boolean isNight(World world) {
+        return ((CraftWorld) world).getHandle().isNight();
+    }
 }

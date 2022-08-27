@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
@@ -184,6 +185,18 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         finally {
             NMSHandler.chunkHelper.restoreServerThread(getWorld());
         }
+    }
+
+    public <T> T getGameRuleOrDefault(GameRule<T> gameRule) {
+        World world = getWorld();
+        T value = world.getGameRuleValue(gameRule);
+        if (value == null) {
+            value = world.getGameRuleDefault(gameRule);
+            if (value == null) {
+                throw new IllegalStateException("World " + world_name + " contains no GameRule " + gameRule.getName());
+            }
+        }
+        return value;
     }
 
     private String prefix;
@@ -937,6 +950,87 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             return new ElementTag(world.getWorld().getSimulationDistance());
         });
 
+        // <--[tag]
+        // @attribute <WorldTag.enough_sleeping[(<#>)]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether enough players are sleeping to prepare for the night to advance.
+        // Typically used before checking <@link tag WorldTag.enough_deep_sleeping>
+        // By default, automatically checks the playersSleepingPercentage gamerule,
+        // but this can optionally be overridden by specifying a percentage integer.
+        // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
+        // NOTE: In 1.16, input is ignored and assumed to be 100%.
+        // -->
+        registerTag(ElementTag.class, "enough_sleeping", (attribute, world) -> {
+            int percentage = 100;
+            if (attribute.hasParam()) {
+                percentage = attribute.getIntParam();
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                percentage = world.getGameRuleOrDefault(GameRule.PLAYERS_SLEEPING_PERCENTAGE);
+            }
+            return new ElementTag(NMSHandler.worldHelper.areEnoughSleeping(world.getWorld(), percentage));
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.enough_deep_sleeping[(<#>)]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether enough players have been in bed long enough for the night to advance (generally 100 ticks).
+        // Loops through all online players, so is typically used after checking <@link tag WorldTag.enough_sleeping>
+        // By default, automatically checks the playersSleepingPercentage gamerule,
+        // but this can optionally be overridden by specifying a percentage integer.
+        // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
+        // NOTE: In 1.16, input is ignored and assumed to be 100%.
+        // -->
+        registerTag(ElementTag.class, "enough_deep_sleeping", (attribute, world) -> {
+            int percentage = 100;
+            if (attribute.hasParam()) {
+                percentage = attribute.getIntParam();
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                percentage = world.getGameRuleOrDefault(GameRule.PLAYERS_SLEEPING_PERCENTAGE);
+            }
+            return new ElementTag(NMSHandler.worldHelper.areEnoughDeepSleeping(world.getWorld(), percentage));
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.sky_darkness>
+        // @returns ElementTag(Integer)
+        // @description
+        // Returns the current darkness level of the sky in this world.
+        // This is determined by an equation that factors in rain, thunder, and time of day.
+        // When 4 or higher, players are typically allowed to sleep through the night.
+        // -->
+        registerTag(ElementTag.class, "sky_darkness", (attribute, world) -> {
+            return new ElementTag(NMSHandler.worldHelper.getSkyDarken(world.getWorld()));
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.is_day>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether it is considered day in this world. Players are not allowed to sleep at this time.
+        // Note that in certain worlds, this and <@link tag WorldTag.is_night> can both be 'false'! (The nether, for example!)
+        // In typical worlds, this is 'true' if <@link tag WorldTag.sky_darkness> is less than 4.
+        // To check the current time without storm interference, see <@link tag WorldTag.time> and related tags.
+        // -->
+        registerTag(ElementTag.class, "is_day", (attribute, world) -> {
+            return new ElementTag(NMSHandler.worldHelper.isDay(world.getWorld()));
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.is_night>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether it is considered night in this world. Players are typically allowed to sleep at this time.
+        // Note that in certain worlds, this and <@link tag WorldTag.is_day> can both be 'false'! (The nether, for example!)
+        // In typical worlds, this is 'true' if <@link tag WorldTag.sky_darkness> is 4 or higher.
+        // To check the current time without storm interference, see <@link tag WorldTag.time> and related tags.
+        // -->
+        registerTag(ElementTag.class, "is_night", (attribute, world) -> {
+            return new ElementTag(NMSHandler.worldHelper.isNight(world.getWorld()));
+        });
     }
 
     public static ObjectTagProcessor<WorldTag> tagProcessor = new ObjectTagProcessor<>();

@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.SleepStatus;
 import net.minecraft.world.DifficultyInstance;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -39,5 +40,33 @@ public class WorldHelperImpl implements WorldHelper {
             return null;
         }
         return new Location(start.getWorld(), result.getX(), result.getY(), result.getZ());
+    }
+
+    @Override
+    public boolean areEnoughSleeping(World world, int percentage) {
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, ((CraftWorld) world).getHandle());
+        return status.areEnoughSleeping(percentage);
+    }
+
+    @Override
+    public boolean areEnoughDeepSleeping(World world, int percentage) {
+        ServerLevel level = ((CraftWorld) world).getHandle();
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, level);
+        return status.areEnoughDeepSleeping(percentage, level.players());
+    }
+
+    @Override
+    public int getSkyDarken(World world) {
+        return ((CraftWorld) world).getHandle().getSkyDarken();
+    }
+
+    @Override
+    public boolean isDay(World world) {
+        return ((CraftWorld) world).getHandle().isDay();
+    }
+
+    @Override
+    public boolean isNight(World world) {
+        return ((CraftWorld) world).getHandle().isNight();
     }
 }

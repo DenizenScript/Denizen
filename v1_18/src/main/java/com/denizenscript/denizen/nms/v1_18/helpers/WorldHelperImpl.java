@@ -9,6 +9,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.SleepStatus;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Location;
@@ -43,5 +44,33 @@ public class WorldHelperImpl implements WorldHelper {
             return null;
         }
         return new Location(start.getWorld(), result.getFirst().getX(), result.getFirst().getY(), result.getFirst().getZ());
+    }
+
+    @Override
+    public boolean areEnoughSleeping(World world, int percentage) {
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, ((CraftWorld) world).getHandle());
+        return status.areEnoughSleeping(percentage);
+    }
+
+    @Override
+    public boolean areEnoughDeepSleeping(World world, int percentage) {
+        ServerLevel level = ((CraftWorld) world).getHandle();
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, level);
+        return status.areEnoughDeepSleeping(percentage, level.players());
+    }
+
+    @Override
+    public int getSkyDarken(World world) {
+        return ((CraftWorld) world).getHandle().getSkyDarken();
+    }
+
+    @Override
+    public boolean isDay(World world) {
+        return ((CraftWorld) world).getHandle().isDay();
+    }
+
+    @Override
+    public boolean isNight(World world) {
+        return ((CraftWorld) world).getHandle().isNight();
     }
 }

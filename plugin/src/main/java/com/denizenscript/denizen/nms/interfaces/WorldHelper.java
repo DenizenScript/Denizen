@@ -15,4 +15,14 @@ public interface WorldHelper {
     default Location getNearestBiomeLocation(Location start, BiomeTag biome) {
         throw new UnsupportedOperationException();
     }
+
+    boolean areEnoughSleeping(World world, int percentage);
+
+    boolean areEnoughDeepSleeping(World world, int percentage);
+
+    int getSkyDarken(World world);
+
+    boolean isDay(World world);
+
+    boolean isNight(World world);
 }
