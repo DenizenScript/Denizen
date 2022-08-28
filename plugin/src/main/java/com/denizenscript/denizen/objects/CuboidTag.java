@@ -1602,6 +1602,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

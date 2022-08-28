@@ -713,6 +713,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             NMSHandler.blockHelper.setPushReaction(material, mechanism.getValue().asString().toUpperCase());
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

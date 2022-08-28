@@ -1404,6 +1404,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             }
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

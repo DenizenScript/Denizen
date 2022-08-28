@@ -803,6 +803,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             item.setType(mechanism.valueAsType(MaterialTag.class).getMaterial());
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

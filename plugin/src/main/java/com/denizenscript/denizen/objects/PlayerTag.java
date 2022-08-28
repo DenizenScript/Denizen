@@ -3927,6 +3927,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             NMSHandler.packetHelper.sendBrand(getPlayerEntity(), mechanism.getValue().asString());
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to EntityTag mechanism handler if not already handled.

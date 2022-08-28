@@ -4065,6 +4065,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             ((Lootable) getBukkitEntity()).setLootTable(table);
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

@@ -831,6 +831,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
             NMSHandler.chunkHelper.setAllBiomes(getChunk(), mechanism.valueAsType(BiomeTag.class).getBiome());
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

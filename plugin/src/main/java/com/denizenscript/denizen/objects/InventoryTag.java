@@ -2369,6 +2369,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     public void adjust(Mechanism mechanism) {
 
         AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // <--[mechanism]

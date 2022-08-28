@@ -5427,6 +5427,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             structure.update();
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
