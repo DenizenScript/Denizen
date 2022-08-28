@@ -694,8 +694,6 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
         // <--[mechanism]
         // @object ChunkTag
         // @name inhabited_time
@@ -832,6 +830,5 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

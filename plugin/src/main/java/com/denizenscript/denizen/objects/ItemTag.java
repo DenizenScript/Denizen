@@ -496,7 +496,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     public static void registerTags() {
 
-        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         PropertyParser.registerPropertyTagHandlers(ItemTag.class, tagProcessor);
 
         // <--[tag]
@@ -719,6 +718,21 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         tagProcessor.registerTag(ElementTag.class, "formatted", (attribute, object) -> {
             return new ElementTag(object.formattedName());
         });
+
+        // <--[mechanism]
+        // @object ItemTag
+        // @name material
+        // @input MaterialTag
+        // @description
+        // Changes the item's material to the given material.
+        // Only copies the base material type, not any advanced block-data material properties.
+        // Note that this may cause some properties of the item to be lost.
+        // @tags
+        // <ItemTag.material>
+        // -->
+        tagProcessor.registerMechanism("material", true, MaterialTag.class, (object, mechanism, material) -> {
+            object.item.setType(material.getMaterial());
+        });
     }
 
     public String formattedName() {
@@ -785,26 +799,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
-        // <--[mechanism]
-        // @object ItemTag
-        // @name material
-        // @input MaterialTag
-        // @description
-        // Changes the item's material to the given material.
-        // Only copies the base material type, not any advanced block-data material properties.
-        // Note that this may cause some properties of the item to be lost.
-        // @tags
-        // <ItemTag.material>
-        // -->
-        if (mechanism.matches("material") && mechanism.requireObject(MaterialTag.class)) {
-            item.setType(mechanism.valueAsType(MaterialTag.class).getMaterial());
-        }
-
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
     public static class ItemPropertyMatchHelper {

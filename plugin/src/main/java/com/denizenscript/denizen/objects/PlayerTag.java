@@ -2506,8 +2506,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     @Override
     public void adjust(Mechanism mechanism) {
 
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
         // <--[mechanism]
         // @object PlayerTag
         // @name send_climbable_materials
@@ -3928,7 +3926,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to EntityTag mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {

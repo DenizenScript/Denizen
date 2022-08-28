@@ -1303,8 +1303,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     @Override
     public void adjust(Mechanism mechanism) {
 
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
         // TODO: For all the mechanism tags, add the @Mechanism link!
 
         // <--[mechanism]
@@ -1877,7 +1875,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to EntityTag mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {

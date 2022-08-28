@@ -2938,8 +2938,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     @Override
     public void adjust(Mechanism mechanism) {
 
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
         if (isGeneric()) {
             mechanisms.add(mechanism);
             mechanism.fulfill();
@@ -4066,7 +4064,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
     public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));

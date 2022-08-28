@@ -716,6 +716,27 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         tagProcessor.registerTag(ListTag.class, "outline", (attribute, polygon) -> {
             return polygon.getOutline();
         });
+
+        // <--[mechanism]
+        // @object PolygonTag
+        // @name add_corner
+        // @input LocationTag
+        // @description
+        // Adds a corner to the end of the polygon's corner list.
+        // @tags
+        // <PolygonTag.with_corner[<location>]>
+        // -->
+        tagProcessor.registerMechanism("add_corner", false, LocationTag.class, (object, mechanism, location) -> {
+            if (object.noteName != null) {
+                NotedAreaTracker.remove(object);
+            }
+            Corner newCorner = new Corner(location.getX(), location.getZ());
+            object.corners.add(newCorner);
+            object.recalculateToFit(newCorner);
+            if (object.noteName != null) {
+                NotedAreaTracker.add(object);
+            }
+        });
     }
 
     public static ObjectTagProcessor<PolygonTag> tagProcessor = new ObjectTagProcessor<>();
@@ -735,30 +756,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
-        // <--[mechanism]
-        // @object PolygonTag
-        // @name add_corner
-        // @input LocationTag
-        // @description
-        // Adds a corner to the end of the polygon's corner list.
-        // @tags
-        // <PolygonTag.with_corner[<location>]>
-        // -->
-        if (mechanism.matches("add_corner") && mechanism.requireObject(LocationTag.class)) {
-            if (noteName != null) {
-                NotedAreaTracker.remove(this);
-            }
-            LocationTag loc = mechanism.valueAsType(LocationTag.class);
-            Corner newCorner = new Corner(loc.getX(), loc.getZ());
-            corners.add(newCorner);
-            recalculateToFit(newCorner);
-            if (noteName != null) {
-                NotedAreaTracker.add(this);
-            }
-        }
+        tagProcessor.processMechanism(this, mechanism);
     }
 
     @Override

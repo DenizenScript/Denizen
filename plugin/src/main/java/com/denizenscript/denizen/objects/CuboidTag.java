@@ -1495,8 +1495,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     @Override
     public void adjust(Mechanism mechanism) {
 
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
         // <--[mechanism]
         // @object CuboidTag
         // @name set_member
@@ -1603,7 +1601,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
     @Override

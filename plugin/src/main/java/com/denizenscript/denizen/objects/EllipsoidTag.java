@@ -623,8 +623,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
+        tagProcessor.processMechanism(this, mechanism);
     }
 
     @Override

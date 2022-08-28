@@ -333,5 +333,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             biome.setPrecipitation(BiomeNMS.DownfallType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
+        tagProcessor.processMechanism(this, mechanism);
     }
 }

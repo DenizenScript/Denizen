@@ -1058,8 +1058,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        AbstractFlagTracker.tryFlagAdjusts(this, mechanism);
-
         // <--[mechanism]
         // @object WorldTag
         // @name ambient_spawn_limit
@@ -1405,7 +1403,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
     public void unloadWorldClean(Mechanism mechanism, boolean doSave) {

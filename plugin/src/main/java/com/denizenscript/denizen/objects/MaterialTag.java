@@ -714,7 +714,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         }
 
         tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
     public static boolean advancedMatchesInternal(Material mat, String comparedto, boolean allowByMaterialName) {
