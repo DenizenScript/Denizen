@@ -10,6 +10,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
@@ -116,5 +117,13 @@ public class AdvancedTextImpl {
 
     public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
         return false;
+    }
+
+    public String getDeathMessage(PlayerDeathEvent event) {
+        return event.getDeathMessage();
+    }
+
+    public void setDeathMessage(PlayerDeathEvent event, String message) {
+        event.setDeathMessage(message);
     }
 }
