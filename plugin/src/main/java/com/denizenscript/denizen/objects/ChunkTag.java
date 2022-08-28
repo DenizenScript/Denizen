@@ -290,12 +290,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // -->
-        tagProcessor.registerTag(ChunkTag.class, "add", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
-                return null;
-            }
-            List<String> coords = CoreUtilities.split(attribute.getParam(), ',');
+        tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "add", (attribute, object, addCoords) -> {
+            List<String> coords = CoreUtilities.split(addCoords.toString(), ',');
             if (coords.size() < 2) {
                 attribute.echoError("The tag ChunkTag.add[<#>,<#>] requires two values!");
                 return null;
@@ -317,12 +313,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // -->
-        tagProcessor.registerTag(ChunkTag.class, "sub", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("The tag ChunkTag.add[<#>,<#>] must have a value.");
-                return null;
-            }
-            List<String> coords = CoreUtilities.split(attribute.getParam(), ',');
+        tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "sub", (attribute, object, subCoords) -> {
+            List<String> coords = CoreUtilities.split(subCoords.toString(), ',');
             if (coords.size() < 2) {
                 attribute.echoError("The tag ChunkTag.sub[<#>,<#>] requires two values!");
                 return null;
@@ -644,16 +636,12 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Gets a list of all block locations with a specified flag within the CuboidTag.
         // Searches the internal flag lists, rather than through all possible blocks.
         // -->
-        tagProcessor.registerTag(ListTag.class, "blocks_flagged", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("ChunkTag.blocks_flagged[...] must have an input value.");
-                return null;
-            }
+        tagProcessor.registerTag(ListTag.class, ElementTag.class, "blocks_flagged", (attribute, object, flagNameInput) -> {
             Chunk chunk = object.getChunkForTag(attribute);
             if (chunk == null) {
                 return null;
             }
-            String flagName = CoreUtilities.toLowerCase(attribute.getParam());
+            String flagName = CoreUtilities.toLowerCase(flagNameInput.toString());
             ListTag blocks = new ListTag();
             LocationFlagSearchHelper.getFlaggedLocations(chunk, flagName, (loc) -> {
                 blocks.addObject(new LocationTag(loc));
