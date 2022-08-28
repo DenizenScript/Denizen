@@ -174,15 +174,16 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             scriptEntry.setFinished(true);
             return;
         }
+        if (copy_from != null && !Settings.cache_createWorldSymbols && forbiddenSymbols.containsAnyMatch(copy_from.asString())) {
+            Debug.echoError("Cannot use copy_from world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
+            scriptEntry.setFinished(true);
+            return;
+        }
         Supplier<Boolean> copyRunnable = () -> {
             try {
-                if (!Settings.cache_createWorldSymbols && forbiddenSymbols.containsAnyMatch(copy_from.asString())) {
-                    Debug.echoError("Cannot use copy_from world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
-                    return false;
-                }
                 File folder = new File(Bukkit.getWorldContainer(), copy_from.asString().replace("w@", ""));
                 if (!Utilities.canReadFile(folder)) {
-                    Debug.echoError("Cannot copy from that folder path due to security settings in Denizen/config.yml.");
+                    Debug.echoError(scriptEntry, "Cannot copy from that folder path due to security settings in Denizen/config.yml.");
                     return false;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
@@ -190,7 +191,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                     return false;
                 }
                 if (newFolder.exists()) {
-                    Debug.echoError("Cannot copy to new world - that folder already exists.");
+                    Debug.echoError(scriptEntry, "Cannot copy to new world - that folder already exists.");
                     return false;
                 }
                 CoreUtilities.copyDirectory(folder, newFolder, excludedExtensionsForCopyFrom);
@@ -205,7 +206,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 }
             }
             catch (Throwable ex) {
-                Debug.echoError(ex);
+                Debug.echoError(scriptEntry, ex);
                 return false;
             }
             return true;
