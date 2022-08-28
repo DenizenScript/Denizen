@@ -7,8 +7,8 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
+import com.denizenscript.denizen.utilities.debugging.DebugConsoleSender;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
@@ -27,17 +27,14 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class DenizenCoreImplementation implements DenizenImplementation {
 
@@ -57,66 +54,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public String getImplementationVersion() {
         return Denizen.versionTag;
-    }
-
-    @Override
-    public void debugMessage(String message) {
-        Debug.log(message);
-    }
-
-    @Override
-    public void debugMessage(String caller, String message) {
-        Debug.log(caller, message);
-    }
-
-    @Override
-    public void debugException(Throwable ex) {
-        Debug.echoError(ex);
-    }
-
-    @Override
-    public void debugError(String addedContext, String error) {
-        Debug.echoError(null, addedContext, error, true);
-    }
-
-    @Override
-    public void debugError(ScriptEntry entry, String addedContext, String error) {
-        Debug.echoError(entry, addedContext, error, true);
-    }
-
-    @Override
-    public void debugError(ScriptEntry entry, Throwable throwable) {
-        Debug.echoError(entry, throwable);
-    }
-
-    @Override
-    public void debugReport(Debuggable debuggable, String s, String s1) {
-        Debug.report(debuggable, s, s1);
-    }
-
-    @Override
-    public void debugReport(Debuggable debuggable, String s, Object... values) {
-        Debug.report(debuggable, s, values);
-    }
-
-    @Override
-    public void debugApproval(String message) {
-        Debug.echoApproval(message);
-    }
-
-    @Override
-    public void debugEntry(Debuggable debuggable, String s) {
-        Debug.echoDebug(debuggable, s);
-    }
-
-    @Override
-    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement debugElement, String s) {
-        Debug.echoDebug(debuggable, debugElement, s);
-    }
-
-    @Override
-    public void debugEntry(Debuggable debuggable, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement debugElement) {
-        Debug.echoDebug(debuggable, debugElement);
     }
 
     @Override
@@ -143,20 +80,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void onScriptReload() {
         Depends.setupEconomy();
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
-    }
-
-    @Override
-    public boolean shouldDebug(Debuggable debug) {
-        return Debug.shouldDebug(debug);
-    }
-
-    @Override
-    public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
-        Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
-        entry.getResidingQueue().debugOutput = null;
-        Debug.echoDebug(entry, com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement.Header,
-                ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + ChatColor.WHITE + execute);
-        entry.getResidingQueue().debugOutput = altDebug;
     }
 
     @Override
@@ -312,18 +235,10 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return input;
     }
 
-    public static Thread tagThread = null;
-
-    @Override
-    public boolean isSafeThread() {
-        return Bukkit.isPrimaryThread() || Thread.currentThread().equals(tagThread);
-    }
-
     @Override
     public void preTagExecute() {
         try {
             NMSHandler.instance.disableAsyncCatcher();
-            tagThread = Thread.currentThread();
         }
         catch (Throwable e) {
             Debug.echoError("Running not-Spigot?!");
@@ -334,7 +249,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void postTagExecute() {
         try {
             NMSHandler.instance.undisableAsyncCatcher();
-            tagThread = null;
         }
         catch (Throwable e) {
             Debug.echoError("Running not-Spigot?!");
@@ -365,41 +279,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public File getDataFolder() {
         return Denizen.getInstance().getDataFolder();
-    }
-
-    @Override
-    public void startRecording() {
-        Debug.record = true;
-        Debug.recording = new StringBuilder();
-    }
-
-    @Override
-    public void stopRecording() {
-        Debug.record = false;
-        Debug.recording = new StringBuilder();
-    }
-
-    @Override
-    public void submitRecording(Consumer<String> processResult) {
-        if (!Debug.record) {
-            processResult.accept("disabled");
-            return;
-        }
-        Debug.record = false;
-        final DebugSubmit submit = new DebugSubmit();
-        submit.recording = Debug.recording.toString();
-        Debug.recording = new StringBuilder();
-        submit.build();
-        submit.start();
-        BukkitRunnable task = new BukkitRunnable() {
-            public void run() {
-                if (!submit.isAlive()) {
-                    this.cancel();
-                    processResult.accept(submit.result);
-                }
-            }
-        };
-        task.runTaskTimer(Denizen.getInstance(), 0, 5);
     }
 
     @Override
@@ -485,24 +364,17 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return false;
     }
 
-    @Override
-    public String getTextColor() {
-        return ChatColor.WHITE.toString();
-    }
-
-    @Override
-    public String getEmphasisColor() {
-        return ChatColor.AQUA.toString();
-    }
-
-    public static ClassLoader loader = DenizenCoreImplementation.class.getClassLoader();
-    public static Class pluginClassLoaderClass;
-    public static boolean isPluginLoader;
+    public static boolean isPluginLoader, hasProcessedLoader;
     public static Map<String, Class<?>> classMap;
 
-    static {
+    public static void initClassLoaderRef() {
+        if (hasProcessedLoader) {
+            return;
+        }
+        hasProcessedLoader = true;
         try {
-            pluginClassLoaderClass = Class.forName("org.bukkit.plugin.java.PluginClassLoader");
+            ClassLoader loader = DenizenCoreImplementation.class.getClassLoader();
+            Class<?> pluginClassLoaderClass = Class.forName("org.bukkit.plugin.java.PluginClassLoader");
             isPluginLoader = pluginClassLoaderClass.isAssignableFrom(loader.getClass());
             if (isPluginLoader) {
                 classMap = ReflectionHelper.getFieldValue(pluginClassLoaderClass, "classes", loader);
@@ -515,6 +387,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public void saveClassToLoader(Class<?> clazz) {
+        initClassLoaderRef();
         if (!isPluginLoader) {
             return;
         }
@@ -522,5 +395,44 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             Debug.echoError("Class " + clazz.getName() + " already defined?");
         }
         classMap.put(clazz.getName(), clazz);
+    }
+
+    @Override
+    public void addExtraErrorHeaders(StringBuilder headerBuilder, ScriptEntry source) {
+        BukkitScriptEntryData data = Utilities.getEntryData(source);
+        if (data.hasPlayer()) {
+            headerBuilder.append(" with player '<A>").append(data.getPlayer().getName()).append("<LR>'");
+        }
+        if (data.hasNPC()) {
+            headerBuilder.append(" with NPC '<A>").append(data.getNPC().debuggable()).append("<LR>'");
+        }
+    }
+
+    @Override
+    public String applyDebugColors(String uncolored) {
+        if (uncolored.indexOf('<') == -1) {
+            return uncolored;
+        }
+        return uncolored
+                .replace("<Y>", ChatColor.YELLOW.toString())
+                .replace("<O>", ChatColor.GOLD.toString()) // 'orange'
+                .replace("<G>", ChatColor.DARK_GRAY.toString())
+                .replace("<LG>", ChatColor.GRAY.toString())
+                .replace("<GR>", ChatColor.GREEN.toString())
+                .replace("<A>", ChatColor.AQUA.toString())
+                .replace("<R>", ChatColor.DARK_RED.toString())
+                .replace("<LR>", ChatColor.RED.toString())
+                .replace("<LP>", ChatColor.LIGHT_PURPLE.toString())
+                .replace("<W>", ChatColor.WHITE.toString());
+    }
+
+    @Override
+    public void doFinalDebugOutput(String rawText) {
+        DebugConsoleSender.sendMessage(rawText);
+    }
+
+    @Override
+    public String stripColor(String text) {
+        return ChatColor.stripColor(text);
     }
 }

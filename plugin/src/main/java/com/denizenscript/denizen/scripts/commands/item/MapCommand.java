@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.scripts.containers.core.MapScriptContainer;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizen.utilities.maps.DenizenMapRenderer;
 import com.denizenscript.denizen.utilities.maps.MapDot;

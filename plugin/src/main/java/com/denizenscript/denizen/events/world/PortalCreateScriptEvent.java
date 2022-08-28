@@ -4,11 +4,10 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import org.bukkit.Location;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.PortalCreateEvent;
@@ -55,21 +54,16 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity") && event.getEntity() != null) {
-            return new EntityTag(event.getEntity()).getDenizenObject();
-        }
-        else if (name.equals("world")) {
-            return new WorldTag(event.getWorld());
-        }
-        else if (name.equals("reason")) {
-            return reason;
-        }
-        else if (name.equals("blocks")) {
-            ListTag blocks = new ListTag();
-            for (Location location : NMSHandler.blockHelper.getBlocksList(event)) {
-                blocks.addObject(new LocationTag(location));
-            }
-            return blocks;
+        switch (name) {
+            case "entity": return event.getEntity() != null ? new EntityTag(event.getEntity()).getDenizenObject() : null;
+            case "world": return new WorldTag(event.getWorld());
+            case "reason": return reason;
+            case "blocks":
+                ListTag blocks = new ListTag();
+                for (BlockState blockState : event.getBlocks()) {
+                    blocks.addObject(new LocationTag(blockState.getLocation()));
+                }
+                return blocks;
         }
         return super.getContext(name);
     }

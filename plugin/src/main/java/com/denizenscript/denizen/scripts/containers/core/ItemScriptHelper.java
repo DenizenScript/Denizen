@@ -5,8 +5,9 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -36,6 +37,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 
 public class ItemScriptHelper implements Listener {
 
@@ -53,6 +55,7 @@ public class ItemScriptHelper implements Listener {
         recipeCache.clear();
         recipeIdToItemScript.clear();
         NMSHandler.itemHelper.clearDenizenRecipes();
+        AdvancedTextImpl.instance.clearBrewingRecipes();
     }
 
     public static String getIdFor(ItemScriptContainer container, String type, int id) {
@@ -134,7 +137,7 @@ public class ItemScriptHelper implements Listener {
 
     public static void registerShapedRecipe(ItemScriptContainer container, ItemStack item, List<String> recipeList, String internalId, String group) {
         for (int n = 0; n < recipeList.size(); n++) {
-            recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(null, null, new ScriptTag(container))));
+            recipeList.set(n, TagManager.tag(ScriptBuilder.stripLinePrefix(recipeList.get(n)), new BukkitTagContext(container)));
         }
         List<ItemStack[]> ingredients = new ArrayList<>();
         List<Boolean> exacts = new ArrayList<>();
@@ -186,11 +189,10 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
-        TagContext context = new BukkitTagContext(null, null, new ScriptTag(container));
-        String list = TagManager.tag(shapelessString, context);
+        TagContext context = new BukkitTagContext(container);
         List<ItemStack[]> ingredients = new ArrayList<>();
         List<Boolean> exacts = new ArrayList<>();
-        for (String element : ListTag.valueOf(list, context)) {
+        for (String element : ListTag.valueOf(shapelessString, context)) {
             String itemText = element;
             boolean isExact = !itemText.startsWith("material:");
             if (!isExact) {
@@ -259,10 +261,33 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
     }
 
+    public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
+        boolean inputExact = true;
+        if (inputItemString.startsWith("material:")) {
+            inputExact = false;
+            inputItemString = inputItemString.substring("material:".length());
+        }
+        ItemStack[] inputItems = textToItemArray(container, inputItemString, inputExact);
+        if (inputItems == null) {
+            return;
+        }
+        boolean ingredientExact = true;
+        if (ingredientItemString.startsWith("material:")) {
+            ingredientExact = false;
+            ingredientItemString = ingredientItemString.substring("material:".length());
+        }
+        ItemStack[] ingredientItems = textToItemArray(container, ingredientItemString, ingredientExact);
+        if (ingredientItems == null) {
+            return;
+        }
+        AdvancedTextImpl.instance.registerBrewingRecipe(internalId, item, inputItems, inputExact, ingredientItems, ingredientExact);
+    }
+
     public static void rebuildRecipes() {
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
                 if (container.contains("recipes", Map.class)) {
+                    TagContext context = new BukkitTagContext(container);
                     YamlConfiguration section = container.getConfigurationSection("recipes");
                     int id = 0;
                     for (StringHolder key : section.getKeys(false)) {
@@ -270,27 +295,28 @@ public class ItemScriptHelper implements Listener {
                         YamlConfiguration subSection = section.getConfigurationSection(key.str);
                         String type = CoreUtilities.toLowerCase(subSection.getString("type"));
                         String internalId;
+                        Function<String, String> getString = (s) -> TagManager.tag(subSection.getString(s), context);
                         if (subSection.contains("recipe_id")) {
-                            internalId = subSection.getString("recipe_id");
+                            internalId = getString.apply("recipe_id");
                             recipeIdToItemScript.put("denizen:" + internalId, container);
                         }
                         else {
                             internalId = getIdFor(container, type + "_recipe", id);
                         }
-                        String group = subSection.contains("group") ? subSection.getString("group") : "";
+                        String group = subSection.contains("group") ? getString.apply("group") : "";
                         ItemStack item = container.getCleanReference().getItemStack().clone();
                         if (subSection.contains("output_quantity")) {
-                            item.setAmount(Integer.parseInt(subSection.getString("output_quantity")));
+                            item.setAmount(Integer.parseInt(getString.apply("output_quantity")));
                         }
                         switch (type) {
                             case "shaped":
-                                registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group);
+                                registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group); // tagged in register code
                                 break;
                             case "shapeless":
-                                registerShapelessRecipe(container, item, subSection.getString("input"), internalId, group);
+                                registerShapelessRecipe(container, item, getString.apply("input"), internalId, group);
                                 break;
                             case "stonecutting":
-                                registerStonecuttingRecipe(container, item, subSection.getString("input"), internalId, group);
+                                registerStonecuttingRecipe(container, item, getString.apply("input"), internalId, group);
                                 break;
                             case "furnace":
                             case "blast":
@@ -299,19 +325,22 @@ public class ItemScriptHelper implements Listener {
                                 float exp = 0;
                                 int cookTime = 40;
                                 if (subSection.contains("experience")) {
-                                    exp = Float.parseFloat(subSection.getString("experience"));
+                                    exp = Float.parseFloat(getString.apply("experience"));
                                 }
                                 if (subSection.contains("cook_time")) {
-                                    cookTime = DurationTag.valueOf(subSection.getString("cook_time"), new BukkitTagContext(container)).getTicksAsInt();
+                                    cookTime = DurationTag.valueOf(getString.apply("cook_time"), context).getTicksAsInt();
                                 }
-                                registerFurnaceRecipe(container, item, subSection.getString("input"), exp, cookTime, type, internalId, group);
+                                registerFurnaceRecipe(container, item, getString.apply("input"), exp, cookTime, type, internalId, group);
                                 break;
                             case "smithing":
                                 String retain = null;
                                 if (subSection.contains("retain")) {
-                                    retain = subSection.getString("retain");
+                                    retain = getString.apply("retain");
                                 }
-                                registerSmithingRecipe(container, item, subSection.getString("base"), subSection.getString("upgrade"), internalId, retain);
+                                registerSmithingRecipe(container, item, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
+                                break;
+                            case "brewing":
+                                registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
                                 break;
                         }
                     }
@@ -578,10 +607,14 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onBrewingStandBrews(BrewEvent event) {
-        for (ItemStack item : event.getContents()) {
-            if (!isAllowedToCraftWith(item)) {
-                event.setCancelled(true);
-                return;
+        ItemStack ingredient = event.getContents().getIngredient();
+        ItemStack currInput;
+        for (int i = 0; i < 3; i++) {
+            currInput = event.getContents().getItem(i);
+            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !AdvancedTextImpl.instance.isDenizenMix(currInput, ingredient)) {
+                if (!isAllowedToCraftWith(currInput)) {
+                    event.setCancelled(true);
+                }
             }
         }
     }

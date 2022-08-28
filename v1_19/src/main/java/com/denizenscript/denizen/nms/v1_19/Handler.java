@@ -305,7 +305,7 @@ public class Handler extends NMSHandler {
             try {
                 net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
                 tag.putString("id", item.getId());
-                tag.putByte("Count", (byte) item.getCount());
+                tag.putByte("Count", item.getCount() == -1 ? 1 : (byte) item.getCount());
                 if (item.getTag() != null && item.getTag().getNbt() != null) {
                     tag.put("tag", TagParser.parseTag(item.getTag().getNbt()));
                 }

@@ -11,11 +11,13 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class PlayerHelper {
 
-    public abstract void stopSound(Player player, String sound, SoundCategory category);
+    public abstract void stopSound(Player player, String sound, SoundCategory category); // TODO: 1.19 - remove the category param
 
     public FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
         throw new UnsupportedOperationException();
@@ -37,13 +39,9 @@ public abstract class PlayerHelper {
 
     public abstract float getMaxAttackCooldownTicks(Player player);
 
-    public abstract float getAttackCooldownPercent(Player player);
-
     public abstract void setAttackCooldown(Player player, int ticks);
 
     public abstract boolean hasChunkLoaded(Player player, Chunk chunk);
-
-    public abstract int getPing(Player player);
 
     public abstract void setTemporaryOp(Player player, boolean op);
 
@@ -86,10 +84,6 @@ public abstract class PlayerHelper {
 
     public void setBossBarTitle(BossBar bar, String title) {
         bar.setTitle(title);
-    }
-
-    public void doAttack(Player attacker, Entity victim) {
-        throw new UnsupportedOperationException();
     }
 
     public boolean getSpawnForced(Player player) {

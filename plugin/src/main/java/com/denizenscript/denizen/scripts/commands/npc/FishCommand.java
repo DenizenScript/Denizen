@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizen.npc.traits.FishingTrait;
 import com.denizenscript.denizen.objects.LocationTag;

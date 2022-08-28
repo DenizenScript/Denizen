@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -92,7 +93,7 @@ public class CommonRegistries {
         if (CoreConfiguration.debugVerbose) {
             StringBuilder debug = new StringBuilder(256);
             for (ObjectType<?> objectType : ObjectFetcher.objectsByPrefix.values()) {
-                debug.append(objectType.clazz.getSimpleName()).append(" as ").append(objectType.prefix).append(", ");
+                debug.append(DebugInternals.getClassNameOpti(objectType.clazz)).append(" as ").append(objectType.prefix).append(", ");
             }
             Debug.echoApproval("Loaded core object types: [" + debug.substring(0, debug.length() - 2) + "]");
         }

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
@@ -2865,7 +2864,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new ElementTag(NMSHandler.playerHelper.getAttackCooldownPercent((Player) object.getLivingEntity()) * 100);
+            return new ElementTag(((Player) object.getLivingEntity()).getAttackCooldown() * 100);
         });
 
         // <--[tag]
@@ -2907,7 +2906,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(returnType, name, (attribute, object) -> {
             if (!object.isSpawnedOrValidForTag()) {
                 if (!attribute.hasAlternative()) {
-                    com.denizenscript.denizen.utilities.debugging.Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
+                    Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
                 }
                 return null;
             }
@@ -3751,13 +3750,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Does not work with passive mobs, non-living entities, etc.
         // -->
         if (mechanism.matches("melee_attack") && mechanism.requireObject(EntityTag.class)) {
-            Entity target = mechanism.valueAsType(EntityTag.class).getBukkitEntity();
-            if (getLivingEntity() instanceof Player && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                NMSHandler.playerHelper.doAttack((Player) getLivingEntity(), target);
-            }
-            else {
-                getLivingEntity().attack(target);
-            }
+            getLivingEntity().attack(mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3970,7 +3963,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 NMSHandler.playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity()) * mechanism.getValue().asFloat()));
             }
             else {
-                com.denizenscript.denizen.utilities.debugging.Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
+                Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
             }
         }
 
@@ -4072,6 +4065,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             ((Lootable) getBukkitEntity()).setLootTable(table);
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 

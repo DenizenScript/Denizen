@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
 

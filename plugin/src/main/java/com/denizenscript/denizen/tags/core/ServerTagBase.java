@@ -90,7 +90,7 @@ public class ServerTagBase {
 
     public static HashSet<String> deprecatedServerUtilTags = new HashSet<>(Arrays.asList("current_time_millis", "real_time_since_start",
             "delta_time_since_start", "current_tick", "available_processors", "ram_usage", "ram_free", "ram_max", "ram_allocated", "disk_usage",
-            "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version"));
+            "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version", "stack_trace"));
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server") || event.replaced()) {
@@ -232,8 +232,7 @@ public class ServerTagBase {
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // -->
         if (attribute.startsWith("recipe_items") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (recipe == null) {
                 return;
             }
@@ -277,8 +276,7 @@ public class ServerTagBase {
         // Returns the shape of a shaped recipe, like '2x2' or '3x3'.
         // -->
         if (attribute.startsWith("recipe_shape") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (!(recipe instanceof ShapedRecipe)) {
                 return;
             }
@@ -295,8 +293,7 @@ public class ServerTagBase {
         // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, SMITHING.
         // -->
         if (attribute.startsWith("recipe_type") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (recipe == null) {
                 return;
             }
@@ -311,8 +308,7 @@ public class ServerTagBase {
         // Returns the item that a recipe will create when crafted.
         // -->
         if (attribute.startsWith("recipe_result") && attribute.hasParam()) {
-            NamespacedKey key = Utilities.parseNamespacedKey(attribute.getParam());
-            Recipe recipe = NMSHandler.itemHelper.getRecipeById(key);
+            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
             if (recipe == null) {
                 return;
             }
@@ -1342,6 +1338,14 @@ public class ServerTagBase {
         // @description
         // Deprecated in favor of <@link tag util.last_reload>
         // -->
+
+        // <--[tag]
+        // @attribute <server.stack_trace>
+        // @returns ElementTag
+        // @deprecated use util.stack_trace
+        // @description
+        // Deprecated in favor of <@link tag util.stack_trace>
+        // -->
         if (deprecatedServerUtilTags.contains(attribute.getAttributeWithoutParam(1))) {
             event.setReplacedObject(UtilTagBase.instance.getObjectAttribute(attribute));
             return;
@@ -2145,7 +2149,7 @@ public class ServerTagBase {
         // Returns whether script debug is currently globally enabled on the server.
         // -->
         else if (attribute.startsWith("debug_enabled")) {
-            event.setReplacedObject(new ElementTag(com.denizenscript.denizen.utilities.debugging.Debug.showDebug).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(CoreConfiguration.shouldShowDebug).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -2330,20 +2334,6 @@ public class ServerTagBase {
                 }
             }
             event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.stack_trace>
-        // @returns ElementTag
-        // @description
-        // Generates and shows a stack trace for the current context.
-        // This tag is strictly for internal debugging reasons.
-        // WARNING: Different Java versions generate different stack trace formats and details.
-        // WARNING: Java internally limits stack trace generation in a variety of ways. This tag cannot be relied on to output anything.
-        // -->
-        else if (attribute.startsWith("stack_trace")) {
-            String trace = com.denizenscript.denizen.utilities.debugging.Debug.getFullExceptionMessage(new RuntimeException("TRACE"), false);
-            event.setReplacedObject(new ElementTag(trace).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

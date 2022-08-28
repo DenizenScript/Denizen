@@ -13,7 +13,7 @@ import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.utilities.PaperAdvancedTextImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import net.kyori.adventure.text.Component;

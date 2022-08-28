@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.JavaReflectedObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import org.bukkit.entity.Player;
 
 public class PlayerSendPacketScriptEvent extends BukkitScriptEvent {
@@ -83,7 +84,7 @@ public class PlayerSendPacketScriptEvent extends BukkitScriptEvent {
 
     public static boolean fireFor(Player player, Object packet) {
         instance.player = new PlayerTag(player);
-        instance.className = new ElementTag(packet.getClass().getSimpleName());
+        instance.className = new ElementTag(DebugInternals.getClassNameOpti(packet.getClass()));
         instance.packet = packet;
         return instance.fire().cancelled;
     }

@@ -1,8 +1,9 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.codegen.CodeGenUtil;
+import com.denizenscript.denizencore.utilities.codegen.MethodGenerator;
 import org.objectweb.asm.*;
 
 import java.lang.invoke.MethodHandle;
@@ -10,6 +11,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 
 public class NetworkInterceptCodeGen {
 
@@ -24,19 +26,18 @@ public class NetworkInterceptCodeGen {
             cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, Type.getInternalName(denClass), new String[0]);
             cw.visitSource("GENERATED_INTERCEPTOR", null);
             // ====== Build constructor ======
-            MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", Type.getConstructorDescriptor(origConstructor), null, null);
-            mv.visitCode();
-            Label startLabel = new Label();
-            mv.visitLabel(startLabel);
-            mv.visitLineNumber(0, startLabel);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitVarInsn(Opcodes.ALOAD, 1);
-            mv.visitVarInsn(Opcodes.ALOAD, 2);
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(denClass), "<init>", Type.getConstructorDescriptor(origConstructor), false);
-            mv.visitInsn(Opcodes.RETURN);
-            mv.visitLocalVariable("this", "L" + className + ";", null, startLabel, startLabel, 0);
-            mv.visitMaxs(0, 0);
-            mv.visitEnd();
+            {
+                MethodGenerator gen = MethodGenerator.generateMethod(className, cw, Opcodes.ACC_PUBLIC, "<init>", Type.getConstructorDescriptor(origConstructor));
+                gen.loadThis();
+                int p = 0;
+                for (Parameter param : origConstructor.getParameters()) {
+                    MethodGenerator.Local local = gen.addLocal("arg" + (p++), param.getType());
+                    gen.loadLocal(local);
+                }
+                gen.invokeSpecial(origConstructor);
+                gen.returnNone();
+                gen.end();
+            }
             // ====== Find public methods ======
             for (Method method : nmsClass.getDeclaredMethods()) {
                 int modifier = method.getModifiers();
@@ -52,45 +53,20 @@ public class NetworkInterceptCodeGen {
                             Debug.log("Must override " + method + " --- " + method.getName() + ", returns " + method.getReturnType() + " is " + modifier
                                     + ", Public=" + Modifier.isPublic(modifier) + ", final=" + Modifier.isFinal(modifier));
                         }
-                        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, method.getName(), Type.getMethodDescriptor(method), null, null);
-                        mv.visitCode();
-                        startLabel = new Label();
-                        mv.visitLabel(startLabel);
-                        mv.visitLineNumber(0, startLabel);
-                        mv.visitVarInsn(Opcodes.ALOAD, 0);
-                        mv.visitFieldInsn(Opcodes.GETFIELD, Type.getInternalName(abstractClass), "oldListener", Type.getDescriptor(nmsClass));
+                        MethodGenerator gen = MethodGenerator.generateMethod(className, cw, Opcodes.ACC_PUBLIC, method.getName(), Type.getMethodDescriptor(method));
+                        gen.loadThis();
+                        gen.loadInstanceField(Type.getInternalName(abstractClass), "oldListener", Type.getDescriptor(nmsClass));
                         int id = 1;
                         for (Class<?> type : method.getParameterTypes()) {
                             if (NMSHandler.debugPackets) {
                                 Debug.log("Var " + id + " is type " + type.getName());
                             }
-                            int index = id++;
-                            if (type == int.class || type == boolean.class || type == short.class || type == char.class) { mv.visitVarInsn(Opcodes.ILOAD, index); } // Everything sub-integer-width is secretly integers
-                            else if (type == long.class) { mv.visitVarInsn(Opcodes.LLOAD, index); id++; }
-                            else if (type == float.class) { mv.visitVarInsn(Opcodes.FLOAD, index); }
-                            else if (type == double.class) { mv.visitVarInsn(Opcodes.DLOAD, index); id++; } // Doubles and longs have two vars secretly for some reason
-                            else { mv.visitVarInsn(Opcodes.ALOAD, index); }
+                            MethodGenerator.Local local = gen.addLocal("arg_" + (id++), type);
+                            gen.loadLocal(local);
                         }
-                        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(nmsClass), method.getName(), Type.getMethodDescriptor(method), false);
-                        int returnCode = Opcodes.ARETURN;
-                        Class<?> returnType = method.getReturnType();
-                        if (returnType == int.class || returnType == boolean.class || returnType == short.class || returnType == char.class) { returnCode = Opcodes.IRETURN; }
-                        else if (returnType == long.class) { returnCode = Opcodes.LRETURN; }
-                        else if (returnType == float.class) { returnCode = Opcodes.FRETURN; }
-                        else if (returnType == double.class) { returnCode = Opcodes.DRETURN; }
-                        else if (returnType == void.class) { returnCode = Opcodes.RETURN; }
-                        mv.visitInsn(returnCode);
-                        mv.visitLocalVariable("this", "L" + className + ";", null, startLabel, startLabel, 0);
-                        id = 1;
-                        for (Class<?> type : method.getParameterTypes()) {
-                            mv.visitLocalVariable("var" + id, Type.getDescriptor(type), null, startLabel, startLabel, id);
-                            if (type == double.class || type == long.class) {
-                                id++;
-                            }
-                            id++;
-                        }
-                        mv.visitMaxs(0, 0);
-                        mv.visitEnd();
+                        gen.invokeVirtual(method);
+                        gen.returnValue(method.getReturnType());
+                        gen.end();
                     }
                 }
             }

@@ -4,7 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenAliasHelpTopic;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommand;
 import com.denizenscript.denizen.utilities.command.scripted.DenizenCommandHelpTopic;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Predicate;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;

@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -194,7 +193,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         Player player = damager.getPlayer();
-        if (NMSHandler.playerHelper.getAttackCooldownPercent(player) < 0.999) { // attack cooldown is also checked in that method earlier
+        if (player.getAttackCooldown() < 0.999) { // attack cooldown is also checked in that method earlier
             return false;
         }
         if (player.getFallDistance() <= 0 || player.isOnGround() || player.isClimbing() || player.isInWater()) {

@@ -111,7 +111,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @EventHandler
-    public void onLightningStrikes(LootGenerateEvent event) {
+    public void onLootGenerate(LootGenerateEvent event) {
         this.event = event;
         fire(event);
     }

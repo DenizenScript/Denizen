@@ -2,8 +2,8 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.v1_18.impl.BiomeNMSImpl;
-import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.Holder;
@@ -43,7 +43,7 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void changeChunkServerThread(World world) {
-        if (DenizenCoreImplementation.tagThread == null) {
+        if (TagManager.tagThread == null) {
             return;
         }
         if (resetServerThread != null) {
@@ -63,7 +63,7 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void restoreServerThread(World world) {
-        if (DenizenCoreImplementation.tagThread == null) {
+        if (TagManager.tagThread == null) {
             return;
         }
         if (resetServerThread == null) {

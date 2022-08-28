@@ -25,8 +25,9 @@ import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.BStatsMetricsLite;
+import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
 import com.denizenscript.denizen.utilities.debugging.StatsRecord;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
@@ -48,10 +49,8 @@ import com.denizenscript.denizencore.objects.core.SecretTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptHelper;
-import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.queue.RunLaterCommand;
-import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
@@ -132,9 +131,9 @@ public class Denizen extends JavaPlugin {
             PlayerFlagHandler.dataFolder.mkdir();
         }
         String javaVersion = System.getProperty("java.version");
-        getLogger().info("Running on java version: " + javaVersion);
+        Debug.log("Running on java version: " + javaVersion);
         if (javaVersion.startsWith("8") || javaVersion.startsWith("1.8")) {
-            getLogger().info("Running on fully supported Java 8. Updating to Java 17+ is recommended.");
+            Debug.log("Running on fully supported Java 8. Updating to Java 17+ is recommended.");
         }
         else if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10")
                 || javaVersion.startsWith("11")
@@ -142,13 +141,13 @@ public class Denizen extends JavaPlugin {
             getLogger().warning("Running unreliable Java version. Old Minecraft is built for Java 8, modern Minecraft is built for Java 17. Other Java versions are not guaranteed to function properly.");
         }
         else if (javaVersion.startsWith("16")) {
-            getLogger().info("Running on fully supported Java 16.");
+            Debug.log("Running on fully supported Java 16.");
         }
         else if (javaVersion.startsWith("17")) {
-            getLogger().info("Running on fully supported Java 17.");
+            Debug.log("Running on fully supported Java 17.");
         }
         else {
-            getLogger().info("Running on unrecognized (future?) Java version. May or may not work.");
+            Debug.log("Running on unrecognized (future?) Java version. May or may not work.");
         }
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
@@ -165,7 +164,6 @@ public class Denizen extends JavaPlugin {
                     + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
             getLogger().warning("-------------------------------------");
         }
-        BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
         triggerRegistry = new TriggerRegistry();
         boolean citizensBork = false;
         try {
@@ -221,6 +219,7 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
+            DebugSubmit.init();
             // If Citizens is enabled, Create the NPC Helper
             if (Depends.citizens != null) {
                 npcHelper = new DenizenNPCHelper();
@@ -245,15 +244,7 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            DenizenCore.commandRegistry = commandRegistry;
-            commandRegistry.registerCommands();
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
-        try {
-            // Register script-container types
-            ScriptRegistry._registerCoreTypes();
+            BukkitCommandRegistry.registerCommands();
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -331,12 +322,8 @@ public class Denizen extends JavaPlugin {
         }
         try {
             AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
-            // Register all the modern script events
             ScriptEventRegistry.registerMainEvents();
-            // Register Core ObjectTags with the ObjectFetcher
-            ObjectFetcher.registerCoreObjects();
             CommonRegistries.registerMainObjects();
-            TagManager.registerCoreTags();
             CommonRegistries.registerMainTagHandlers();
         }
         catch (Exception e) {
@@ -371,7 +358,7 @@ public class Denizen extends JavaPlugin {
             supportsPaper = false;
             Debug.echoError(ex);
         }
-        Debug.log("Loaded <A>" + commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types, at <A>" + (System.currentTimeMillis() - startTime) + "<W>ms from start.");
+        Debug.log("Loaded <A>" + DenizenCore.commandRegistry.instances.size() + "<W> core commands and <A>" + ObjectFetcher.objectsByPrefix.size() + "<W> core object types, at <A>" + (System.currentTimeMillis() - startTime) + "<W>ms from start.");
         exCommand = new ExCommandHandler();
         exCommand.enableFor(getCommand("ex"));
         ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
@@ -402,7 +389,7 @@ public class Denizen extends JavaPlugin {
                         Depends.citizens.registerCommandClass(NPCCommandHandler.class);
                         TraitRegistry.registerMainTraits();
                         triggerRegistry.registerCoreMembers();
-                        commandRegistry.registerCitizensCommands();
+                        BukkitCommandRegistry.registerCitizensCommands();
                         ScriptEventRegistry.registerCitizensEvents();
                         new NPCTagBase();
                         ObjectFetcher.registerWithObjectFetcher(NPCTag.class, NPCTag.tagProcessor);
@@ -425,7 +412,6 @@ public class Denizen extends JavaPlugin {
                     Bukkit.shutdown();
                 }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, () -> {
-                    Debug.onTick();
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();

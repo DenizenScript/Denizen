@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
@@ -85,7 +85,7 @@ public class ExSustainedCommandHandler implements CommandExecutor, TabCompleter,
                 sender.sendMessage(ChatColor.YELLOW + "Sustained queue is currently paused or waiting, adding command to queue for later execution.");
             }
             else if (Settings.showExHelp()) {
-                if (Debug.showDebug) {
+                if (CoreConfiguration.shouldShowDebug) {
                     if (quiet) {
                         sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
                     }

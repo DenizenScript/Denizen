@@ -5,15 +5,11 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.google.common.collect.Multimap;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.List;
@@ -24,8 +20,6 @@ public abstract class ItemHelper {
     public abstract void setMaxStackSize(Material material, int size);
 
     public abstract Integer burnTime(Material material);
-
-    public abstract Recipe getRecipeById(NamespacedKey key);
 
     public abstract void removeRecipe(NamespacedKey key);
 
@@ -38,10 +32,6 @@ public abstract class ItemHelper {
     public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact);
 
     public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact);
-
-    public abstract String getInternalNameFromMaterial(Material material);
-
-    public abstract Material getMaterialFromInternalName(String internalName);
 
     public abstract String getJsonString(ItemStack itemStack);
 
@@ -77,11 +67,9 @@ public abstract class ItemHelper {
         throw new UnsupportedOperationException();
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributes(ItemStack item, org.bukkit.inventory.EquipmentSlot slot) {
-        throw new UnsupportedOperationException();
-    }
-
     public BlockData getPlacedBlock(Material material) {
         throw new UnsupportedOperationException();
     }
+
+    public abstract boolean isValidMix(ItemStack input, ItemStack ingredient);
 }

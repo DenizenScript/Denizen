@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -95,7 +95,7 @@ public class BukkitListProperties implements Property {
                         output.append(val.replaceAll("\\w+@", ""));
                     }
                     else {
-                        output.append(ChatColor.stripColor(Debug.cleanTextForDebugOutput(object.debuggable())));
+                        output.append(ChatColor.stripColor(DenizenCore.implementation.applyDebugColors(object.debuggable())));
                     }
                 }
                 if (i == list.size() - 2) {

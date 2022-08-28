@@ -10,11 +10,13 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 
 public class AdvancedTextImpl {
 
@@ -104,5 +106,24 @@ public class AdvancedTextImpl {
 
     public void teleportPlayerRelative(Player player, Location loc) {
         player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+    }
+
+    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void clearBrewingRecipes() {
+    }
+
+    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
+        return false;
+    }
+
+    public String getDeathMessage(PlayerDeathEvent event) {
+        return event.getDeathMessage();
+    }
+
+    public void setDeathMessage(PlayerDeathEvent event, String message) {
+        event.setDeathMessage(message);
     }
 }

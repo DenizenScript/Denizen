@@ -1876,6 +1876,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to EntityTag mechanism handler if not already handled.

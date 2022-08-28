@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.midi;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 
@@ -88,4 +88,3 @@ public class MidiUtil {
         }
     }
 }
-

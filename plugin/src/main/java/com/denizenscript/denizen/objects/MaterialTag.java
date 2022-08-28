@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -558,8 +558,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // This is a representation of how much time mining is needed to break a block.
         // -->
         tagProcessor.registerTag(ElementTag.class, "block_strength", (attribute, object) -> {
-            float res = NMSHandler.blockHelper.getBlockStength(object.material);
-            return new ElementTag(res);
+            return new ElementTag(NMSHandler.blockHelper.getBlockStrength(object.material));
         });
 
         tagProcessor.registerTag(ElementTag.class, "has_vanilla_data_tag", (attribute, object) -> {
@@ -714,6 +713,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             NMSHandler.blockHelper.setPushReaction(material, mechanism.getValue().asString().toUpperCase());
         }
 
+        tagProcessor.processMechanism(this, mechanism);
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 
