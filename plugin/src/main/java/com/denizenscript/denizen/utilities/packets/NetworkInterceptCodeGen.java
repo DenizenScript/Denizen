@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.codegen.CodeGenUtil;
 import com.denizenscript.denizencore.utilities.codegen.MethodGenerator;
 import org.objectweb.asm.*;

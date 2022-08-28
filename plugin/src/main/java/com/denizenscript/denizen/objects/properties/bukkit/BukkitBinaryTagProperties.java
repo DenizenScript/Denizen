@@ -3,7 +3,7 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.nms.util.jnbt.NBTInputStream;
 import com.denizenscript.denizen.nms.util.jnbt.NamedTag;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.BinaryTag;

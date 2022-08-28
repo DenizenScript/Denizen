@@ -30,17 +30,14 @@ import java.util.function.Consumer;
 
 public class Debug {
 
-    public static boolean showDebug = true;
     public static boolean showStackTraces = true;
     public static boolean showColor = true;
     public static boolean showSources = false;
 
     public static boolean shouldTrim = true;
-    public static boolean record = false;
-    public static StringBuilder recording = new StringBuilder();
 
     public static void toggle() {
-        showDebug = !showDebug;
+        CoreConfiguration.shouldShowDebug = !CoreConfiguration.shouldShowDebug;
     }
 
     public static void onTick() {
@@ -76,7 +73,7 @@ public class Debug {
     }
 
     public static void report(Debuggable caller, String name, Object... values) {
-        if (!showDebug || !shouldDebug(caller)) {
+        if (!CoreConfiguration.shouldShowDebug || !shouldDebug(caller)) {
             return;
         }
         StringBuilder output = new StringBuilder();
@@ -105,14 +102,14 @@ public class Debug {
      * @param report all the debug information related to the command
      */
     public static void report(Debuggable caller, String name, String report) {
-        if (!showDebug || !shouldDebug(caller)) {
+        if (!CoreConfiguration.shouldShowDebug || !shouldDebug(caller)) {
             return;
         }
         echo("<Y>+> <G>Executing '<Y>" + name + "<G>': " + trimMessage(report), caller);
     }
 
     public static void echoDebug(Debuggable caller, DebugElement element) {
-        if (!showDebug || !shouldDebug(caller)) {
+        if (!CoreConfiguration.shouldShowDebug || !shouldDebug(caller)) {
             return;
         }
         echoDebug(caller, element, null);
@@ -122,7 +119,7 @@ public class Debug {
     // to help scripters see what is going on. Debugging an element is usually
     // for formatting debug information.
     public static void echoDebug(Debuggable caller, DebugElement element, String string) {
-        if (!showDebug || !shouldDebug(caller)) {
+        if (!CoreConfiguration.shouldShowDebug || !shouldDebug(caller)) {
             return;
         }
         StringBuilder sb = new StringBuilder(24);
@@ -143,7 +140,7 @@ public class Debug {
     // Used by the various parts of Denizen that output debuggable information
     // to help scripters see what is going on.
     public static void echoDebug(Debuggable caller, String message) {
-        if (!showDebug || !shouldDebug(caller)) {
+        if (!CoreConfiguration.shouldShowDebug || !shouldDebug(caller)) {
             return;
         }
         echo(ChatColor.WHITE + trimMessage(message), caller);
@@ -163,7 +160,7 @@ public class Debug {
      * @param message the message to debug
      */
     public static void echoApproval(String message) {
-        if (!showDebug) {
+        if (!CoreConfiguration.shouldShowDebug) {
             return;
         }
         finalOutputDebugText(ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message, null);
@@ -205,7 +202,7 @@ public class Debug {
                 return;
             }
         }
-        if (!showDebug) {
+        if (!CoreConfiguration.shouldShowDebug) {
             errorDuplicatePrevention = false;
             return;
         }
@@ -293,7 +290,7 @@ public class Debug {
                 return;
             }
         }
-        if (!showDebug) {
+        if (!CoreConfiguration.shouldShowDebug) {
             return;
         }
         boolean wasThrown = throwErrorEvent;
@@ -347,7 +344,7 @@ public class Debug {
     private static boolean canGetClass = true;
 
     public static void log(String message) {
-        if (!showDebug) {
+        if (!CoreConfiguration.shouldShowDebug) {
             return;
         }
         String callerName = "<JVM-Block>";
@@ -372,14 +369,14 @@ public class Debug {
     }
 
     public static void log(String caller, String message) {
-        if (!showDebug) {
+        if (!CoreConfiguration.shouldShowDebug) {
             return;
         }
         finalOutputDebugText(ChatColor.YELLOW + "+> [" + caller + "] " + ChatColor.WHITE + trimMessage(message), null);
     }
 
     public static void log(DebugElement element, String message) {
-        if (!showDebug) {
+        if (!CoreConfiguration.shouldShowDebug) {
             return;
         }
         StringBuilder sb = new StringBuilder(24);
@@ -414,17 +411,9 @@ public class Debug {
         return message;
     }
 
+    @Deprecated
     public static boolean shouldDebug(Debuggable caller) {
-        if (CoreConfiguration.debugOverride) {
-            return true;
-        }
-        if (!showDebug) {
-            return false;
-        }
-        if (caller != null) {
-            return caller.shouldDebug();
-        }
-        return true;
+        return com.denizenscript.denizencore.utilities.debugging.Debug.shouldDebug(caller);
     }
 
     // Handles checking whether the provided debuggable should submit to the debugger
@@ -568,11 +557,11 @@ public class Debug {
             }
 
             // Record current buffer to the to-be-submitted buffer
-            if (Debug.record) {
+            if (CoreConfiguration.shouldRecordDebug) {
                 try {
                     //                                                      "HH:mm:ss"
                     String toRecord = " " + string.replace("<FORCE_ALIGN>", "        ")+ "\n";
-                    Debug.recording.append(URLEncoder.encode(dateFormat.format(new Date()) + toRecord, "UTF-8"));
+                    com.denizenscript.denizencore.utilities.debugging.Debug.debugRecording.append(URLEncoder.encode(dateFormat.format(new Date()) + toRecord, "UTF-8"));
                 }
                 catch (Throwable ex) {
                     Debug.echoError(ex);

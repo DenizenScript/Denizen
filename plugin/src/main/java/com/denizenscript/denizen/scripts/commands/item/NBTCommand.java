@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;

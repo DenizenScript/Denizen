@@ -4,7 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Registry;

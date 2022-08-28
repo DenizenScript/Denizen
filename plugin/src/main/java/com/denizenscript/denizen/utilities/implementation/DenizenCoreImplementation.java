@@ -25,6 +25,7 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
@@ -67,6 +68,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public void debugMessage(String caller, String message) {
         Debug.log(caller, message);
+    }
+
+    @Override
+    public void debugMessage(com.denizenscript.denizencore.utilities.debugging.Debug.DebugElement element, String message) {
+        Debug.log(element, message);
     }
 
     @Override
@@ -368,27 +374,15 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void startRecording() {
-        Debug.record = true;
-        Debug.recording = new StringBuilder();
-    }
-
-    @Override
-    public void stopRecording() {
-        Debug.record = false;
-        Debug.recording = new StringBuilder();
-    }
-
-    @Override
     public void submitRecording(Consumer<String> processResult) {
-        if (!Debug.record) {
+        if (!CoreConfiguration.shouldRecordDebug) {
             processResult.accept("disabled");
             return;
         }
-        Debug.record = false;
+        CoreConfiguration.shouldRecordDebug = false;
         final DebugSubmit submit = new DebugSubmit();
-        submit.recording = Debug.recording.toString();
-        Debug.recording = new StringBuilder();
+        submit.recording = com.denizenscript.denizencore.utilities.debugging.Debug.debugRecording.toString();
+        com.denizenscript.denizencore.utilities.debugging.Debug.debugRecording = new StringBuilder();
         submit.build();
         submit.start();
         BukkitRunnable task = new BukkitRunnable() {

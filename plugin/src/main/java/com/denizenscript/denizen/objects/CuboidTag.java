@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;

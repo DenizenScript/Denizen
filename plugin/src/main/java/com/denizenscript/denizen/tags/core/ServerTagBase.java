@@ -2141,7 +2141,7 @@ public class ServerTagBase {
         // Returns whether script debug is currently globally enabled on the server.
         // -->
         else if (attribute.startsWith("debug_enabled")) {
-            event.setReplacedObject(new ElementTag(com.denizenscript.denizen.utilities.debugging.Debug.showDebug).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(CoreConfiguration.shouldShowDebug).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

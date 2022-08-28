@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.command.manager;
 
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

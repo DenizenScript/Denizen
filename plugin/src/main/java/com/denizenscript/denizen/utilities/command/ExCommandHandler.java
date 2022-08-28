@@ -4,7 +4,8 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.DenizenCore;
@@ -84,7 +85,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
                 return true;
             }
             if (Settings.showExHelp()) {
-                if (Debug.showDebug) {
+                if (CoreConfiguration.shouldShowDebug) {
                     if (quiet) {
                         sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
                     }
