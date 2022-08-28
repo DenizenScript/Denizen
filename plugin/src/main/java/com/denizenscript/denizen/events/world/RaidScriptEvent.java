@@ -58,7 +58,7 @@ public class RaidScriptEvent<T extends RaidEvent> extends BukkitScriptEvent {
             raiders.addObject(new EntityTag(raider));
         }
         data.putObject("raiders", raiders);
-        data.putObject("status", new ElementTag(CoreUtilities.toLowerCase(raid.getStatus().name()), true));
+        data.putObject("status", new ElementTag(raid.getStatus().name(), true));
         data.putObject("ticks", new ElementTag(raid.getActiveTicks()));
         data.putObject("level", new ElementTag(raid.getBadOmenLevel()));
         data.putObject("total_groups", new ElementTag(raid.getTotalGroups()));

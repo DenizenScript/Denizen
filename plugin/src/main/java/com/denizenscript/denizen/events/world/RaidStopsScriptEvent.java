@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.world;
 
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.raid.RaidStopEvent;
@@ -45,7 +44,7 @@ public class RaidStopsScriptEvent extends RaidScriptEvent<RaidStopEvent> impleme
     public ObjectTag getContext(String name) {
         switch (name) {
             case "reason":
-                return new ElementTag(CoreUtilities.toLowerCase(event.getReason().name()), true);
+                return new ElementTag(event.getReason().name(), true);
         }
         return super.getContext(name);
     }
