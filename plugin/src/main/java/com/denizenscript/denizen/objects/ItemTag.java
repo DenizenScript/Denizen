@@ -496,6 +496,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     public static void registerTags() {
 
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         PropertyParser.registerPropertyTagHandlers(ItemTag.class, tagProcessor);
 
         // <--[tag]
