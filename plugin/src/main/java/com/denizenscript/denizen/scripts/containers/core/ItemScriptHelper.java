@@ -7,7 +7,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -609,7 +609,6 @@ public class ItemScriptHelper implements Listener {
     public void onBrewingStandBrews(BrewEvent event) {
         ItemStack ingredient = event.getContents().getIngredient();
         ItemStack currInput;
-
         for (int i = 0; i < 3; i++) {
             currInput = event.getContents().getItem(i);
             if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !AdvancedTextImpl.instance.isDenizenMix(currInput, ingredient)) {

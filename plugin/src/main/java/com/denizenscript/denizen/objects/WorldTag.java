@@ -4,7 +4,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -997,7 +997,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
         // <--[tag]
         // @attribute <WorldTag.sky_darkness>
-        // @returns ElementTag(Integer)
+        // @returns ElementTag(Number)
         // @description
         // Returns the current darkness level of the sky in this world.
         // This is determined by an equation that factors in rain, thunder, and time of day.

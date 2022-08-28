@@ -26,7 +26,7 @@ import com.denizenscript.denizen.utilities.command.manager.Injector;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.BStatsMetricsLite;
 import com.denizenscript.denizen.utilities.debugging.StatsRecord;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
@@ -410,7 +410,7 @@ public class Denizen extends JavaPlugin {
                     Bukkit.shutdown();
                 }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, () -> {
-                    Debug.onTick();
+                    com.denizenscript.denizen.utilities.debugging.Debug.onTick();
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();

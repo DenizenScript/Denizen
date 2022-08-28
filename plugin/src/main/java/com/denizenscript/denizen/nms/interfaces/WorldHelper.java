@@ -26,11 +26,11 @@ public interface WorldHelper {
 
     boolean isNight(World world);
 
-    // for setting the time without firing a CUSTOM TimeSkipEvent
+    /** for setting the time without firing a CUSTOM TimeSkipEvent */
     void setDayTime(World world, long time);
 
     void wakeUpAllPlayers(World world);
 
-    // for clearing weather without ignoring possible raised event results
+    /** for clearing weather without ignoring possible raised event results */
     void clearWeather(World world);
 }

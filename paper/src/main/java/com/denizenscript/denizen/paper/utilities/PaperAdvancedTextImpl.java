@@ -18,7 +18,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -32,7 +31,6 @@ import org.bukkit.potion.PotionBrewer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
@@ -174,7 +172,7 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
         }
     }
 
-    public static RecipeChoice itemArrayToChoice (ItemStack[] item, boolean exact) {
+    public static RecipeChoice itemArrayToChoice(ItemStack[] item, boolean exact) {
         if (exact) {
             return new RecipeChoice.ExactChoice(item);
         }
@@ -187,8 +185,8 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
     @Override
     public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
-        for(PotionMix mix : potionMixes.values()) {
-            if(mix.getInput().getItemStack().isSimilar(currInput) && mix.getIngredient().getItemStack().isSimilar(ingredient)) {
+        for (PotionMix mix : potionMixes.values()) {
+            if (mix.getInput().getItemStack().isSimilar(currInput) && mix.getIngredient().getItemStack().isSimilar(ingredient)) {
                 return true;
             }
         }
