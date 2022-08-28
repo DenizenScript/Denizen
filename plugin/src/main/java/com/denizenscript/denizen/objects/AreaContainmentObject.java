@@ -191,9 +191,6 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns a boolean indicating whether the specified location is inside this area.
         // -->
         processor.registerTag(ElementTag.class, LocationTag.class, "contains", (attribute, area, loc) -> {
-            if (loc == null) {
-                return null;
-            }
             return new ElementTag(area.doesContainLocation(loc));
         }, "contains_location");
 
@@ -270,9 +267,6 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns whether this area is fully inside another cuboid.
         // -->
         processor.registerTag(ElementTag.class, CuboidTag.class, "is_within", (attribute, area, cub2) -> {
-            if (cub2 == null) {
-                return null;
-            }
             CuboidTag cuboid = area instanceof CuboidTag ? (CuboidTag) area : area.getCuboidBoundary();
             if (cub2 != null) {
                 boolean contains = true;
@@ -309,9 +303,6 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns a copy of the area, with the specified world.
         // -->
         processor.registerTag(type, WorldTag.class, "with_world", (attribute, area, world) -> {
-            if (world == null) {
-                return null;
-            }
             return (T) area.withWorld(world);
         });
     }
