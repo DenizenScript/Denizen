@@ -17,6 +17,26 @@ import java.util.UUID;
 
 public class RaidScriptEvent<T extends RaidEvent> extends BukkitScriptEvent {
 
+    // <--[language]
+    // @name Raid Event Data
+    // @group Useful Lists
+    // @description
+    // Every event related to village raids has a <context.raid> property, a MapTag wrapper around raid data (see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Raid.html>).
+    // These events are <@link event player triggers raid>, <@link event raid finishes>, <@link event raid spawns wave>, and <@link event raid stops>.
+    //
+    // The data format is as follows:
+    // location: a LocationTag of the raid's center
+    // heroes: a list of PlayerTags that have participated in the raid
+    // raiders: a list of raider EntityTags that remain in the current wave
+    // status: the current status of the raid. See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Raid.RaidStatus.html>
+    // ticks: the raid's age in ticks
+    // level: the Bad Omen level that the raid was started with
+    // spawned_groups: the amount of raider groups spawned
+    // total_groups: the number of groups planned to spawn or already spawned
+    // health: the combined health of all current raiders
+    // waves: the number of waves in the raid
+    // -->
+
     public boolean checkRaidLocation;
 
     public RaidScriptEvent(boolean checkRaidLocation) {

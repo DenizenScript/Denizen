@@ -10,6 +10,23 @@ import org.bukkit.event.raid.RaidSpawnWaveEvent;
 
 public class RaidSpawnsWaveScriptEvent extends RaidScriptEvent<RaidSpawnWaveEvent> implements Listener {
 
+    // <--[event]
+    // @Events
+    // raid spawns wave
+    //
+    // @Group World
+    //
+    // @Location true
+    //
+    // @Triggers when a village raid spawns a new wave of raiders.
+    //
+    // @Context
+    // <context.raid> returns the raid data. See <@link language Raid Event Data>.
+    // <context.leader> returns the EntityTag of the patrol leader of the wave.
+    // <context.new_raiders> returns the ListTag of all new raiders.
+    //
+    // -->
+
     public RaidSpawnsWaveScriptEvent() {
         super(true);
         registerCouldMatcher("raid spawns wave");

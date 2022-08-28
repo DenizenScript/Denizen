@@ -9,6 +9,24 @@ import org.bukkit.event.raid.RaidStopEvent;
 
 public class RaidStopsScriptEvent extends RaidScriptEvent<RaidStopEvent> implements Listener {
 
+    // <--[event]
+    // @Events
+    // raid stops
+    //
+    // @Group World
+    //
+    // @Location true
+    //
+    // @Switch reason:<reason> to only process the event if the raid stopped for a certain reason.
+    //
+    // @Triggers when a village raid stops for any reason.
+    //
+    // @Context
+    // <context.raid> returns the raid data. See <@link language Raid Event Data>.
+    // <context.reason> returns the reason for stopping. See <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/raid/RaidStopEvent.Reason.html>.
+    //
+    // -->
+
     public RaidStopsScriptEvent() {
         super(true);
         registerCouldMatcher("raid stops");

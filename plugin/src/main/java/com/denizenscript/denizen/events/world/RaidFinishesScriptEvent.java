@@ -10,6 +10,22 @@ import org.bukkit.event.raid.RaidFinishEvent;
 
 public class RaidFinishesScriptEvent extends RaidScriptEvent<RaidFinishEvent> implements Listener {
 
+    // <--[event]
+    // @Events
+    // raid finishes
+    //
+    // @Group World
+    //
+    // @Location true
+    //
+    // @Triggers when a village raid finishes normally.
+    //
+    // @Context
+    // <context.raid> returns the raid data. See <@link language Raid Event Data>.
+    // <context.winners> returns the ListTag of players who completed the raid. This is separate from the raid's heroes in that the winners are guaranteed to be online.
+    //
+    // -->
+
     public RaidFinishesScriptEvent() {
         super(true);
         registerCouldMatcher("raid finishes");

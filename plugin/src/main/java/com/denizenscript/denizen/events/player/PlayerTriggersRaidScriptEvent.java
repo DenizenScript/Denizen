@@ -9,6 +9,25 @@ import org.bukkit.event.raid.RaidTriggerEvent;
 
 public class PlayerTriggersRaidScriptEvent extends RaidScriptEvent<RaidTriggerEvent> implements Listener {
 
+    // <--[event]
+    // @Events
+    // player triggers raid
+    //
+    // @Group Player
+    //
+    // @Location true
+    //
+    // @Cancellable true
+    //
+    // @Triggers when a player triggers a village raid.
+    //
+    // @Context
+    // <context.raid> returns the raid data. See <@link language Raid Event Data>.
+    //
+    // @Player Always.
+    //
+    // -->
+
     public PlayerTriggersRaidScriptEvent() {
         super(false);
         registerCouldMatcher("player triggers raid");
