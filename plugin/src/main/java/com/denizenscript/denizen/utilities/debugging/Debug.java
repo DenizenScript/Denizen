@@ -280,6 +280,9 @@ public class Debug {
                 thrown = thrown.getCause();
             }
             ScriptQueue sourceQueue = CommandExecutor.currentQueue;
+            if (source == null && sourceQueue != null) {
+                source = sourceQueue.getLastEntryExecuted();
+            }
             if (source != null && source.queue != null) {
                 sourceQueue = source.queue;
             }
