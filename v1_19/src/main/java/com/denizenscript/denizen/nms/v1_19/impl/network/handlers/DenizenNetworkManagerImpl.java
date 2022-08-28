@@ -87,7 +87,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             return copier;
         }
         catch (Throwable ex) {
-            com.denizenscript.denizen.utilities.debugging.Debug.echoError(ex);
+            Debug.echoError(ex);
             return null;
         }
     }

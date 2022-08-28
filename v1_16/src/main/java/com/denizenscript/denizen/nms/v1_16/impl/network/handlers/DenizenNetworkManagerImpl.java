@@ -58,7 +58,7 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
             newPacket.a(copier);
         }
         catch (IOException ex) {
-            com.denizenscript.denizen.utilities.debugging.Debug.echoError(ex);
+            Debug.echoError(ex);
         }
     }
 

@@ -19,7 +19,6 @@ import org.bukkit.block.data.type.Wall;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.Chest;
-import org.bukkit.block.data.Bisected;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

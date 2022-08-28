@@ -25,6 +25,7 @@ import com.denizenscript.denizen.utilities.command.manager.CommandManager;
 import com.denizenscript.denizen.utilities.command.manager.Injector;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.BStatsMetricsLite;
+import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
 import com.denizenscript.denizen.utilities.debugging.StatsRecord;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -130,9 +131,9 @@ public class Denizen extends JavaPlugin {
             PlayerFlagHandler.dataFolder.mkdir();
         }
         String javaVersion = System.getProperty("java.version");
-        getLogger().info("Running on java version: " + javaVersion);
+        Debug.log("Running on java version: " + javaVersion);
         if (javaVersion.startsWith("8") || javaVersion.startsWith("1.8")) {
-            getLogger().info("Running on fully supported Java 8. Updating to Java 17+ is recommended.");
+            Debug.log("Running on fully supported Java 8. Updating to Java 17+ is recommended.");
         }
         else if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10")
                 || javaVersion.startsWith("11")
@@ -140,13 +141,13 @@ public class Denizen extends JavaPlugin {
             getLogger().warning("Running unreliable Java version. Old Minecraft is built for Java 8, modern Minecraft is built for Java 17. Other Java versions are not guaranteed to function properly.");
         }
         else if (javaVersion.startsWith("16")) {
-            getLogger().info("Running on fully supported Java 16.");
+            Debug.log("Running on fully supported Java 16.");
         }
         else if (javaVersion.startsWith("17")) {
-            getLogger().info("Running on fully supported Java 17.");
+            Debug.log("Running on fully supported Java 17.");
         }
         else {
-            getLogger().info("Running on unrecognized (future?) Java version. May or may not work.");
+            Debug.log("Running on unrecognized (future?) Java version. May or may not work.");
         }
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
@@ -218,6 +219,7 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
+            DebugSubmit.init();
             // If Citizens is enabled, Create the NPC Helper
             if (Depends.citizens != null) {
                 npcHelper = new DenizenNPCHelper();
@@ -410,7 +412,6 @@ public class Denizen extends JavaPlugin {
                     Bukkit.shutdown();
                 }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(Denizen.this, () -> {
-                    com.denizenscript.denizen.utilities.debugging.Debug.onTick();
                     DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
                 }, 1, 1);
                 InventoryTag.setupInventoryTracker();

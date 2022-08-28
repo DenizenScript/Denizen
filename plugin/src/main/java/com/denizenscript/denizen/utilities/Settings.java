@@ -19,6 +19,7 @@ public class Settings {
     public static void refillCache() {
         FileConfiguration config = Denizen.getInstance().getConfig();
         // Core
+        CoreConfiguration.debugRecordingAllowed = true;
         CoreConfiguration.defaultDebugMode = config.getBoolean("Debug.Show", true);
         CoreConfiguration.shouldShowDebug = CoreConfiguration.defaultDebugMode;
         CoreConfiguration.debugExtraInfo = config.getBoolean("Debug.Extra info", false);
@@ -55,6 +56,10 @@ public class Settings {
         CoreConfiguration.allowReflectionSet = config.getBoolean("Reflection.Allow set command", false);
         CoreConfiguration.allowReflectionSetPrivate = config.getBoolean("Reflection.Allow set private fields", false);
         CoreConfiguration.allowReflectionSetFinal = config.getBoolean("Reflection.Allow set final fields", false);
+        CoreConfiguration.debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
+        CoreConfiguration.debugTrimLength = config.getInt("Debug.Trim length limit", 1024);
+        CoreConfiguration.debugPrefix = config.getString("Debug.Prefix", "");
+        CoreConfiguration.debugLineLength = config.getInt("Debug.Line length", 300);
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;
@@ -75,12 +80,8 @@ public class Settings {
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
         cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
         cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
-        cache_consoleWidth = config.getInt("Debug.Line length", 128);
-        cache_trimLength = config.getInt("Debug.Trim length limit", 1024);
         cache_canRecordStats = config.getBoolean("Debug.Stats", true);
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
-        cache_debugLimitPerTick = config.getInt("Debug.Limit per tick", 5000);
-        cache_debugPrefix = config.getString("Debug.Prefix", "");
         cache_warnOnAsyncPackets = config.getBoolean("Debug.Warn on async packets", false);
         cache_interactQueueSpeed = config.getString("Scripts.Interact.Queue speed", "0.5s");
         cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
@@ -150,11 +151,9 @@ public class Settings {
     public static String cache_getAlternateScriptPath, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
-            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath,
-            cache_debugPrefix;
+            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath;
 
-    public static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_blockTagsMaxBlocks,
-            cache_chatHistoryMaxMessages, cache_debugLimitPerTick;
+    public static int cache_blockTagsMaxBlocks, cache_chatHistoryMaxMessages;
 
     public static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
 
@@ -172,14 +171,6 @@ public class Settings {
         return cache_overrideHelp;
     }
 
-    public static int consoleWidth() {
-        return cache_consoleWidth;
-    }
-
-    public static int trimLength() {
-        return cache_trimLength;
-    }
-
     public static boolean showExHelp() {
         return cache_showExHelp;
     }
@@ -190,14 +181,6 @@ public class Settings {
 
     public static boolean canRecordStats() {
         return cache_canRecordStats;
-    }
-
-    public static int debugLimitPerTick() {
-        return cache_debugLimitPerTick;
-    }
-
-    public static String debugPrefix() {
-        return cache_debugPrefix;
     }
 
     public static String interactQueueSpeed() {

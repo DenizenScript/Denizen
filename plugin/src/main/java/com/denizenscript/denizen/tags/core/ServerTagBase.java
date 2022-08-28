@@ -90,7 +90,7 @@ public class ServerTagBase {
 
     public static HashSet<String> deprecatedServerUtilTags = new HashSet<>(Arrays.asList("current_time_millis", "real_time_since_start",
             "delta_time_since_start", "current_tick", "available_processors", "ram_usage", "ram_free", "ram_max", "ram_allocated", "disk_usage",
-            "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version"));
+            "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version", "stack_trace"));
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server") || event.replaced()) {
@@ -1338,6 +1338,14 @@ public class ServerTagBase {
         // @description
         // Deprecated in favor of <@link tag util.last_reload>
         // -->
+
+        // <--[tag]
+        // @attribute <server.stack_trace>
+        // @returns ElementTag
+        // @deprecated use util.stack_trace
+        // @description
+        // Deprecated in favor of <@link tag util.stack_trace>
+        // -->
         if (deprecatedServerUtilTags.contains(attribute.getAttributeWithoutParam(1))) {
             event.setReplacedObject(UtilTagBase.instance.getObjectAttribute(attribute));
             return;
@@ -2326,20 +2334,6 @@ public class ServerTagBase {
                 }
             }
             event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <server.stack_trace>
-        // @returns ElementTag
-        // @description
-        // Generates and shows a stack trace for the current context.
-        // This tag is strictly for internal debugging reasons.
-        // WARNING: Different Java versions generate different stack trace formats and details.
-        // WARNING: Java internally limits stack trace generation in a variety of ways. This tag cannot be relied on to output anything.
-        // -->
-        else if (attribute.startsWith("stack_trace")) {
-            String trace = com.denizenscript.denizen.utilities.debugging.Debug.getFullExceptionMessage(new RuntimeException("TRACE"), false);
-            event.setReplacedObject(new ElementTag(trace).getObjectAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

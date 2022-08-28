@@ -2906,7 +2906,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(returnType, name, (attribute, object) -> {
             if (!object.isSpawnedOrValidForTag()) {
                 if (!attribute.hasAlternative()) {
-                    com.denizenscript.denizen.utilities.debugging.Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
+                    Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
                 }
                 return null;
             }
@@ -3963,7 +3963,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 NMSHandler.playerHelper.setAttackCooldown((Player) getLivingEntity(), Math.round(NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) getLivingEntity()) * mechanism.getValue().asFloat()));
             }
             else {
-                com.denizenscript.denizen.utilities.debugging.Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
+                Debug.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
             }
         }
 

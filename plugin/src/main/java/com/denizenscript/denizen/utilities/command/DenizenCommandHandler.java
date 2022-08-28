@@ -7,7 +7,7 @@ import com.denizenscript.denizen.utilities.command.manager.CommandContext;
 import com.denizenscript.denizen.utilities.command.manager.Paginator;
 import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
-import com.denizenscript.denizen.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.debugging.DebugConsoleSender;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
@@ -17,6 +17,8 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugSubmitter;
 import org.bukkit.command.CommandSender;
 
 import java.util.Set;
@@ -76,9 +78,12 @@ public class DenizenCommandHandler {
             return;
         }
         Messaging.send(sender, "Submitting...");
-        DenizenCore.implementation.submitRecording((s) -> {
+        DebugSubmitter.submitCurrentRecording((s) -> {
             if (s == null) {
                 Messaging.sendError(sender, "Error while submitting.");
+            }
+            else if (s.equals("disabled")) {
+                Messaging.sendError(sender, "Submit failed: not recording.");
             }
             else {
                 Messaging.send(sender, "Successfully submitted to " + s);
@@ -133,14 +138,14 @@ public class DenizenCommandHandler {
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             CoreConfiguration.shouldShowDebug = true;
-            Debug.showStackTraces = !Debug.showStackTraces;
-            Messaging.sendInfo(sender, (Debug.showStackTraces ? "Denizen debugger is now showing caught " +
+            CoreConfiguration.debugStackTraces = !CoreConfiguration.debugStackTraces;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugStackTraces ? "Denizen debugger is now showing caught " +
                     "exception stack traces." : "Denizen debugger is no longer showing caught stack traces."));
         }
         if (args.hasFlag('c')) {
             CoreConfiguration.shouldShowDebug = true;
-            Debug.showColor = !Debug.showColor;
-            Messaging.sendInfo(sender, (Debug.showColor ? "Denizen debugger will now show color."
+            DebugConsoleSender.showColor = !DebugConsoleSender.showColor;
+            Messaging.sendInfo(sender, (DebugConsoleSender.showColor ? "Denizen debugger will now show color."
                     : "Denizen debugger will no longer show color."));
         }
         if (args.hasFlag('o')) {
@@ -151,14 +156,18 @@ public class DenizenCommandHandler {
         }
         if (args.hasFlag('b')) {
             CoreConfiguration.shouldShowDebug = true;
-            com.denizenscript.denizencore.utilities.debugging.Debug.showScriptBuilder = !com.denizenscript.denizencore.utilities.debugging.Debug.showScriptBuilder;
-            Messaging.sendInfo(sender, (com.denizenscript.denizencore.utilities.debugging.Debug.showScriptBuilder ? "Denizen debugger is now logging the " +
+            CoreConfiguration.debugScriptBuilder = !CoreConfiguration.debugScriptBuilder;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugScriptBuilder ? "Denizen debugger is now logging the " +
                     "ScriptBuilder." : "Denizen debugger is now hiding ScriptBuilder logging."));
         }
         if (args.hasFlag('r')) {
+            if (!CoreConfiguration.debugRecordingAllowed) {
+                Messaging.sendError(sender, "Not allowed to record debug currently.");
+                return;
+            }
             CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.shouldRecordDebug = !CoreConfiguration.shouldRecordDebug;
-            com.denizenscript.denizencore.utilities.debugging.Debug.debugRecording = new StringBuilder();
+            Debug.debugRecording = new StringBuilder();
             Messaging.sendInfo(sender, (CoreConfiguration.shouldRecordDebug ? "Denizen debugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen debugger recording disabled."));
         }
@@ -182,14 +191,14 @@ public class DenizenCommandHandler {
         }
         if (args.hasFlag('n')) {
             CoreConfiguration.shouldShowDebug = true;
-            Debug.shouldTrim = !Debug.shouldTrim;
-            Messaging.sendInfo(sender, (Debug.shouldTrim ? "Denizen debugger is now trimming long messages."
+            CoreConfiguration.debugShouldTrim = !CoreConfiguration.debugShouldTrim;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugShouldTrim ? "Denizen debugger is now trimming long messages."
                     : "Denizen debugger is no longer trimming long messages."));
         }
         if (args.hasFlag('i')) {
             CoreConfiguration.shouldShowDebug = true;
-            Debug.showSources = !Debug.showSources;
-            Messaging.sendInfo(sender, (Debug.showSources ? "Denizen debugger is now showing source information."
+            CoreConfiguration.debugShowSources = !CoreConfiguration.debugShowSources;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugShowSources ? "Denizen debugger is now showing source information."
                     : "Denizen debugger is no longer showing source information."));
         }
         if (args.hasFlag('p')) {
@@ -215,7 +224,7 @@ public class DenizenCommandHandler {
                     : "Denizen debugger is no longer showing script loading information."));
         }
         if (args.getFlags().isEmpty()) {
-            Debug.toggle();
+            CoreConfiguration.shouldShowDebug = !CoreConfiguration.shouldShowDebug;
             Messaging.sendInfo(sender, "Denizen debugger is now: " + (CoreConfiguration.shouldShowDebug ? "<a>ENABLED" : "<c>DISABLED") + "<f>.");
         }
 

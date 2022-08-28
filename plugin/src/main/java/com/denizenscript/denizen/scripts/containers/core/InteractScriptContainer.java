@@ -9,6 +9,7 @@ import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 
 import java.util.*;
@@ -231,7 +232,7 @@ public class InteractScriptContainer extends ScriptContainer {
                 }
             }
             catch (Exception ex) {
-                Debug.echoError("Warning: improperly defined " + trigger.getSimpleName() + " trigger for script '" + getName() + "' (basic formatting error?)!");
+                Debug.echoError("Warning: improperly defined " + DebugInternals.getClassNameOpti(trigger) + " trigger for script '" + getName() + "' (basic formatting error?)!");
                 Debug.echoError(ex);
             }
             return idMap;

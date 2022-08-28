@@ -137,7 +137,7 @@ public class DenizenPacketHandler {
                 return result;
             };
             try {
-                if (DenizenCore.implementation.isSafeThread()) {
+                if (DenizenCore.isMainThread()) {
                     return eventCall.call();
                 }
                 else {
