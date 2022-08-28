@@ -29,11 +29,17 @@ public class DebugSubmit {
     public static void init() {
         DebugSubmitter.pasteTitleGetter = () -> "Denizen Debug Logs From " + ChatColor.stripColor(Bukkit.getServer().getMotd());
         DebugSubmitter.debugHeaderLines.add(DebugSubmit::getCoreHeader);
+        DebugSubmitter.debugHeaderLines.addAll(additionalDebugLines);
+        additionalDebugLines.clear();
     }
 
     public static String getCoreHeader() {
-        DebugSubmitter.debugHeaderLines.addAll(additionalDebugLines);
-        additionalDebugLines.clear();
+        if (!DebugSubmitter.debugHeaderLines.isEmpty()) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.instance, () -> {
+                DebugSubmitter.debugHeaderLines.addAll(additionalDebugLines);
+                additionalDebugLines.clear();
+            }, 0);
+        }
         try {
             // Build a list of plugins
             StringBuilder pluginlist = new StringBuilder();
