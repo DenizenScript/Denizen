@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
+import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.ImprovedOfflinePlayerImpl;
-import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityItemProjectileImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.entities.CraftFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_16.impl.entities.EntityItemProjectileImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.AbstractListenerPlayInImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -16,17 +18,15 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.mojang.authlib.GameProfile;
-import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.authlib.GameProfile;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_16_R3.*;
-import org.bukkit.*;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
@@ -245,11 +245,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public float getAttackCooldownPercent(Player player) {
-        return ((CraftPlayer) player).getHandle().getAttackCooldown(0.5f);
-    }
-
-    @Override
     public void setAttackCooldown(Player player, int ticks) {
         // Theoretically the a(EnumHand) method sets the ATTACK_COOLDOWN_TICKS field to 0 and performs an
         // animation, but I'm unable to confirm if the animation actually triggers.
@@ -268,11 +263,6 @@ public class PlayerHelperImpl extends PlayerHelper {
         return ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().playerChunkMap
                 .a(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()), false)
                 .anyMatch(entityPlayer -> entityPlayer.getUniqueID().equals(player.getUniqueId()));
-    }
-
-    @Override
-    public int getPing(Player player) {
-        return ((CraftPlayer) player).getHandle().ping;
     }
 
     @Override
