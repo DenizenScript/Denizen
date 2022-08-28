@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
+import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.ImprovedOfflinePlayerImpl;
@@ -17,20 +19,18 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.mojang.authlib.GameProfile;
-import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.authlib.GameProfile;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.ServerOpList;
 import net.minecraft.server.players.ServerOpListEntry;
@@ -43,7 +43,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -261,11 +260,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public float getAttackCooldownPercent(Player player) {
-        return ((CraftPlayer) player).getHandle().getAttackStrengthScale(0.5f);
-    }
-
-    @Override
     public void setAttackCooldown(Player player, int ticks) {
         try {
             ATTACK_COOLDOWN_TICKS.setInt(((CraftPlayer) player).getHandle(), ticks);
@@ -281,11 +275,6 @@ public class PlayerHelperImpl extends PlayerHelper {
         return ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().chunkMap
                 .getPlayers(new ChunkPos(chunk.getX(), chunk.getZ()), false)
                 .anyMatch(entityPlayer -> entityPlayer.getUUID().equals(player.getUniqueId()));
-    }
-
-    @Override
-    public int getPing(Player player) {
-        return ((CraftPlayer) player).getHandle().latency;
     }
 
     @Override
@@ -363,11 +352,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void setBossBarTitle(BossBar bar, String title) {
         ((CraftBossBar) bar).getHandle().name = Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE));
         ((CraftBossBar) bar).getHandle().broadcast(ClientboundBossEventPacket::createUpdateNamePacket);
-    }
-
-    @Override
-    public void doAttack(Player attacker, Entity victim) {
-        ((CraftPlayer) attacker).getHandle().attack(((CraftEntity) victim).getHandle());
     }
 
     @Override

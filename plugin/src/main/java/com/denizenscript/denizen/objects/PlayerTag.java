@@ -1674,8 +1674,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
             else if (attribute.startsWith("percent", 2)) {
                 attribute.fulfill(1);
-                return new ElementTag(NMSHandler.playerHelper
-                        .getAttackCooldownPercent(object.getPlayerEntity()) * 100);
+                return new ElementTag(object.getPlayerEntity().getAttackCooldown() * 100);
             }
 
             Debug.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
@@ -1989,7 +1988,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the player's current ping.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "ping", (attribute, object) -> {
-            return new ElementTag(NMSHandler.playerHelper.getPing(object.getPlayerEntity()));
+            return new ElementTag(object.getPlayerEntity().getPing());
         });
 
         // <--[tag]
@@ -3703,19 +3702,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             SoundCategory category = null;
             String key = null;
             if (mechanism.hasValue()) {
-                try {
-                    if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
-                        category = SoundCategory.valueOf(mechanism.getValue().asString().toUpperCase());
-                    }
-                    else {
-                        key = mechanism.getValue().asString();
+                if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
+                    category = mechanism.getValue().asEnum(SoundCategory.class);
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) { // TODO: 1.19
+                        getPlayerEntity().stopSound(category);
+                        return;
                     }
                 }
-                catch (Exception e) {
+                else {
+                    key = mechanism.getValue().asString();
                 }
-            }
-            else {
-                category = SoundCategory.MASTER;
             }
             NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);
         }
