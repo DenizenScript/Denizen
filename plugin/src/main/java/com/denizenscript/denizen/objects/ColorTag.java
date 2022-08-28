@@ -476,13 +476,7 @@ public class ColorTag implements ObjectTag {
         // Returns the color that results if you mix this color with another.
         // -->
         tagProcessor.registerTag(ColorTag.class, ColorTag.class, "mix", (attribute, object, mixWith) -> { // Temporarily non-static because the input could be 'random'
-            if (mixWith != null) {
-                return new ColorTag(object.mixWith(mixWith));
-            }
-            else {
-                Debug.echoError("'" + attribute.getParam() + "' is not a valid color!");
-                return null;
-            }
+            return new ColorTag(object.mixWith(mixWith));
         });
 
         // <--[tag]
