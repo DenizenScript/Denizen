@@ -32,6 +32,8 @@ public class DebugSubmit {
     }
 
     public static String getCoreHeader() {
+        DebugSubmitter.debugHeaderLines.addAll(additionalDebugLines);
+        additionalDebugLines.clear();
         try {
             // Build a list of plugins
             StringBuilder pluginlist = new StringBuilder();
