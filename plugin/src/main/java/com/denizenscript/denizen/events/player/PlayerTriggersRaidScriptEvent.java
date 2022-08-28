@@ -33,8 +33,6 @@ public class PlayerTriggersRaidScriptEvent extends RaidScriptEvent<RaidTriggerEv
         registerCouldMatcher("player triggers raid");
     }
 
-    public RaidTriggerEvent event;
-
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, event.getPlayer().getLocation())) {
