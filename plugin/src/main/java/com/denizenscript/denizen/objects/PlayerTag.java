@@ -45,6 +45,8 @@ import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
@@ -2662,7 +2664,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Forces the player to respawn if they are on the death screen.
         // -->
         if (mechanism.matches("respawn")) {
-            NMSHandler.packetHelper.respawn(getPlayerEntity());
+            getPlayerEntity().spigot().respawn();
         }
 
         // <--[mechanism]
@@ -3292,12 +3294,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
-                        NMSHandler.packetHelper.showExperience(getPlayerEntity(),
-                                new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
+                        getPlayerEntity().sendExperienceChange(new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
                     }
                     else {
-                        NMSHandler.packetHelper.showExperience(getPlayerEntity(),
-                                new ElementTag(split[0]).asFloat(), getPlayerEntity().getLevel());
+                        getPlayerEntity().sendExperienceChange(new ElementTag(split[0]).asFloat());
                     }
                 }
                 else {
@@ -3305,7 +3305,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                NMSHandler.packetHelper.resetExperience(getPlayerEntity());
+                getPlayerEntity().sendExperienceChange(getPlayerEntity().getExp());
             }
         }
 
@@ -3451,10 +3451,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             else if (slot.equals("BOOTS")) {
                                 slot = "FEET";
                             }
-                            NMSHandler.packetHelper.showEquipment(getPlayerEntity(),
-                                    new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity(),
-                                    EquipmentSlot.valueOf(slot),
-                                    new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack());
+                            LivingEntity livingEntity = new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity();
+                            ItemStack itemStack = new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack();
+                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                                getPlayerEntity().sendEquipmentChange(livingEntity, EquipmentSlot.valueOf(slot), itemStack);
+                            }
+                            else {
+                                NMSHandler.packetHelper.showEquipment(getPlayerEntity(), livingEntity, EquipmentSlot.valueOf(slot), itemStack); // TODO: 1.18 - Player#sendEquipmentChange
+                            }
                         }
                         else if (split.length > 2) {
                             Debug.echoError("'" + split[2] + "' is not a valid ItemTag!");
@@ -3570,7 +3574,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's hand without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.HAND);
+            getPlayerEntity().openBook(getPlayerEntity().getEquipment().getItemInMainHand());
         }
 
         // <--[mechanism]
@@ -3582,7 +3586,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's offhand without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            getPlayerEntity().openBook(getPlayerEntity().getEquipment().getItemInOffHand());
         }
 
         // <--[mechanism]
@@ -3600,11 +3604,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 Debug.echoError("show_book mechanism must have a book as input.");
                 return;
             }
-            NMSHandler.packetHelper.showEquipment(getPlayerEntity(), getPlayerEntity(),
-                    EquipmentSlot.OFF_HAND, book.getItemStack());
-            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
-            NMSHandler.packetHelper.showEquipment(getPlayerEntity(), getPlayerEntity(),
-                    EquipmentSlot.OFF_HAND, getPlayerEntity().getEquipment().getItemInOffHand());
+            getPlayerEntity().openBook(book.getItemStack());
         }
 
         // <--[mechanism]
@@ -3688,8 +3688,19 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Give no input to make a fake edit interface.
         // -->
         if (mechanism.matches("edit_sign")) {
-            if (!NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.hasValue() ? mechanism.valueAsType(LocationTag.class) : null)) {
-                Debug.echoError("Can't edit non-sign materials!");
+            if (mechanism.hasValue()) {
+                if (!mechanism.requireObject(LocationTag.class)) {
+                    return;
+                }
+                BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
+                if (!(state instanceof Sign)) {
+                    mechanism.echoError("Invalid location specified: must be a sign.");
+                    return;
+                }
+                getPlayerEntity().openSign((Sign) state);
+            }
+            else {
+                NMSHandler.packetHelper.showFakeSignEditor(getPlayerEntity());
             }
         }
 
@@ -3717,7 +3728,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                NMSHandler.packetHelper.resetTabListHeaderFooter(getPlayerEntity());
+                getPlayerEntity().setPlayerListHeaderFooter("", "");
             }
         }
 

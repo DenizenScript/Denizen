@@ -34,7 +34,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.CaveSpider;
@@ -43,8 +42,6 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
@@ -155,11 +152,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void respawn(Player player) {
-        ((CraftPlayer) player).getHandle().connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
-    }
-
-    @Override
     public void setVision(Player player, EntityType entityType) {
         final net.minecraft.world.entity.LivingEntity entity;
         if (entityType == EntityType.CREEPER) {
@@ -237,11 +229,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void resetTabListHeaderFooter(Player player) {
-        showTabListHeaderFooter(player, "", "");
-    }
-
-    @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         send(player, new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
@@ -274,11 +261,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void openBook(Player player, EquipmentSlot hand) {
-        send(player, new ClientboundOpenBookPacket(hand == EquipmentSlot.OFF_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
-    }
-
-    @Override
     public void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth) {
         AttributeInstance attr = new AttributeInstance(Attributes.MAX_HEALTH, (a) -> { });
         attr.setBaseValue(maxHealth);
@@ -303,39 +285,13 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showExperience(Player player, float experience, int level) {
-        send(player, new ClientboundSetExperiencePacket(experience, 0, level));
-    }
-
-    @Override
-    public void resetExperience(Player player) {
-        showExperience(player, player.getExp(), player.getLevel());
-    }
-
-    @Override
-    public boolean showSignEditor(Player player, Location location) {
-        if (location == null) {
-            LocationTag fakeSign = new LocationTag(player.getLocation());
-            fakeSign.setY(0);
-            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
-            BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
-            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
-            send(player, new ClientboundOpenSignEditorPacket(pos));
-            return true;
-        }
-        BlockEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), true);
-        if (tileEntity instanceof SignBlockEntity) {
-            SignBlockEntity sign = (SignBlockEntity) tileEntity;
-            // Prevent client crashing by sending current state of the sign
-            send(player, sign.getUpdatePacket());
-            sign.isEditable = true;
-            sign.setAllowedPlayerEditor(player.getUniqueId());
-            send(player, new ClientboundOpenSignEditorPacket(sign.getBlockPos()));
-            return true;
-        }
-        else {
-            return false;
-        }
+    public void showFakeSignEditor(Player player) {
+        LocationTag fakeSign = new LocationTag(player.getLocation());
+        fakeSign.setY(0);
+        FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
+        BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
+        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
+        send(player, new ClientboundOpenSignEditorPacket(pos));
     }
 
     @Override

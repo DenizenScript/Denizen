@@ -22,15 +22,17 @@ public interface PacketHelper {
 
     void setFakeAbsorption(Player player, float value);
 
-    void resetWorldBorder(Player player);
+    default void resetWorldBorder(Player player) { // TODO: 1.18 - Player#setWorldBorder(null) resets the player's world border
+        throw new UnsupportedOperationException();
+    }
 
-    void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime);
+    default void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime) { // TODO: 1.18 - Player#setWorldBorder
+        throw new UnsupportedOperationException();
+    }
 
     void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly);
 
     void setFieldOfView(Player player, float fov);
-
-    void respawn(Player player);
 
     void setVision(Player player, EntityType entityType);
 
@@ -48,15 +50,13 @@ public interface PacketHelper {
 
     void showTabListHeaderFooter(Player player, String header, String footer);
 
-    void resetTabListHeaderFooter(Player player);
-
     void showTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
-    void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack);
+    default void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack) { // TODO: 1.18 - Player#sendEquipmentChange
+        throw new UnsupportedOperationException();
+    }
 
     void resetEquipment(Player player, LivingEntity entity);
-
-    void openBook(Player player, EquipmentSlot hand);
 
     void showHealth(Player player, float health, int food, float saturation);
 
@@ -66,11 +66,7 @@ public interface PacketHelper {
 
     void resetHealth(Player player);
 
-    void showExperience(Player player, float experience, int level);
-
-    void resetExperience(Player player);
-
-    boolean showSignEditor(Player player, Location location);
+    void showFakeSignEditor(Player player);
 
     void forceSpectate(Player player, Entity entity);
 

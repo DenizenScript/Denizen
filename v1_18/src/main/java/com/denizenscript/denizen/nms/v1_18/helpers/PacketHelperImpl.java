@@ -34,7 +34,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.CaveSpider;
@@ -43,10 +42,7 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
@@ -54,7 +50,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
-import org.bukkit.craftbukkit.v1_18_R2.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
@@ -67,7 +62,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -115,28 +109,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void resetWorldBorder(Player player) {
-        WorldBorder wb = ((CraftWorld) player.getWorld()).getHandle().getWorldBorder();
-        send(player, new ClientboundInitializeBorderPacket(wb));
-    }
-
-    @Override
-    public void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime) {
-        WorldBorder wb = new WorldBorder();
-        wb.world = ((CraftWorld) player.getWorld()).getHandle();
-        wb.setCenter(center.getX(), center.getZ());
-        wb.setWarningBlocks(warningDistance);
-        wb.setWarningTime(warningTime);
-        if (time > 0) {
-            wb.lerpSizeBetween(currSize, size, time);
-        }
-        else {
-            wb.setSize(size);
-        }
-        send(player, new ClientboundInitializeBorderPacket(wb));
-    }
-
-    @Override
     public void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly) {
         AbstractContainerMenu menu = ((CraftPlayer) player).getHandle().containerMenu;
         int windowId = playerOnly ? 0 : menu.containerId;
@@ -155,11 +127,6 @@ public class PacketHelperImpl implements PacketHelper {
             }
         }
         send(player, packet);
-    }
-
-    @Override
-    public void respawn(Player player) {
-        ((CraftPlayer) player).getHandle().connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
     }
 
     @Override
@@ -241,11 +208,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void resetTabListHeaderFooter(Player player) {
-        showTabListHeaderFooter(player, "", "");
-    }
-
-    @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         send(player, new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
@@ -254,14 +216,6 @@ public class PacketHelperImpl implements PacketHelper {
         if (subtitle != null) {
             send(player, new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
         }
-    }
-
-    @Override
-    public void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
-        Pair<net.minecraft.world.entity.EquipmentSlot, net.minecraft.world.item.ItemStack> pair = new Pair<>(CraftEquipmentSlot.getNMS(equipmentSlot), CraftItemStack.asNMSCopy(itemStack));
-        ArrayList<Pair<net.minecraft.world.entity.EquipmentSlot, net.minecraft.world.item.ItemStack>> pairList = new ArrayList<>();
-        pairList.add(pair);
-        send(player, new ClientboundSetEquipmentPacket(entity.getEntityId(), pairList));
     }
 
     @Override
@@ -275,11 +229,6 @@ public class PacketHelperImpl implements PacketHelper {
         pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.LEGS, CraftItemStack.asNMSCopy(equipment.getLeggings())));
         pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.FEET, CraftItemStack.asNMSCopy(equipment.getBoots())));
         send(player, new ClientboundSetEquipmentPacket(entity.getEntityId(), pairList));
-    }
-
-    @Override
-    public void openBook(Player player, EquipmentSlot hand) {
-        send(player, new ClientboundOpenBookPacket(hand == EquipmentSlot.OFF_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
     }
 
     @Override
@@ -307,39 +256,13 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showExperience(Player player, float experience, int level) {
-        send(player, new ClientboundSetExperiencePacket(experience, 0, level));
-    }
-
-    @Override
-    public void resetExperience(Player player) {
-        showExperience(player, player.getExp(), player.getLevel());
-    }
-
-    @Override
-    public boolean showSignEditor(Player player, Location location) {
-        if (location == null) {
-            LocationTag fakeSign = new LocationTag(player.getLocation());
-            fakeSign.setY(0);
-            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
-            BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
-            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
-            send(player, new ClientboundOpenSignEditorPacket(pos));
-            return true;
-        }
-        BlockEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getBlockEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), true);
-        if (tileEntity instanceof SignBlockEntity) {
-            SignBlockEntity sign = (SignBlockEntity) tileEntity;
-            // Prevent client crashing by sending current state of the sign
-            send(player, sign.getUpdatePacket());
-            sign.isEditable = true;
-            sign.setAllowedPlayerEditor(player.getUniqueId());
-            send(player, new ClientboundOpenSignEditorPacket(sign.getBlockPos()));
-            return true;
-        }
-        else {
-            return false;
-        }
+    public void showFakeSignEditor(Player player) {
+        LocationTag fakeSign = new LocationTag(player.getLocation());
+        fakeSign.setY(0);
+        FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
+        BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
+        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
+        send(player, new ClientboundOpenSignEditorPacket(pos));
     }
 
     @Override
