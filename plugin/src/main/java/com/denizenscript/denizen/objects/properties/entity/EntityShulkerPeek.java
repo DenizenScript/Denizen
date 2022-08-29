@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -41,12 +40,16 @@ public class EntityShulkerPeek implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(NMSHandler.entityHelper.getShulkerPeek(entity.getBukkitEntity()));
+        return String.valueOf(getPeek());
     }
 
     @Override
     public String getPropertyId() {
         return "shulker_peek";
+    }
+
+    public int getPeek() {
+        return (int) (((Shulker) entity.getBukkitEntity()).getPeek() * 100);
     }
 
     @Override
@@ -65,8 +68,7 @@ public class EntityShulkerPeek implements Property {
         // Returns the peek value of a shulker box (where 0 is fully closed, 100 is fully open).
         // -->
         if (attribute.startsWith("shulker_peek")) {
-            return new ElementTag(NMSHandler.entityHelper.getShulkerPeek(entity.getBukkitEntity()))
-                    .getObjectAttribute(attribute.fulfill(1));
+            return new ElementTag(getPeek()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -85,7 +87,7 @@ public class EntityShulkerPeek implements Property {
         // <EntityTag.shulker_peek>
         // -->
         if (mechanism.matches("shulker_peek") && mechanism.requireInteger()) {
-            NMSHandler.entityHelper.setShulkerPeek(entity.getBukkitEntity(), mechanism.getValue().asInt());
+            ((Shulker) entity.getBukkitEntity()).setPeek(mechanism.getValue().asFloat() / 100);
         }
     }
 }

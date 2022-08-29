@@ -1,12 +1,11 @@
 package com.denizenscript.denizen.nms.interfaces;
 
-import com.denizenscript.denizen.nms.util.BoundingBox;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,63 +16,32 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class EntityHelper {
 
-    public void setInvisible(Entity entity, boolean invisible) {
-        // Do nothing on older versions
-    }
+    public abstract void setInvisible(Entity entity, boolean invisible);
 
-    public boolean isInvisible(Entity entity) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract boolean isInvisible(Entity entity);
 
-    public abstract double getAbsorption(LivingEntity entity);
+    public abstract void setPose(Entity entity, Pose pose);
 
-    public abstract void setAbsorption(LivingEntity entity, double value);
-
-    public abstract void setSneaking(Entity player, boolean sneak);
-
-    public void setSleeping(Entity player, boolean sleep) {
-        throw new UnsupportedOperationException();
+    public void setSneaking(Entity player, boolean sneak) {
+        if (player instanceof  Player) {
+            ((Player) player).setSneaking(sneak);
+        }
+        NMSHandler.entityHelper.setPose(player, sneak ? Pose.SNEAKING : Pose.STANDING);
     }
 
     public abstract double getDamageTo(LivingEntity attacker, Entity target);
 
-    public abstract String getRawHoverText(Entity entity);
-
-    public List<String> getDiscoveredRecipes(Player player) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setRiptide(Entity entity, boolean state) {
-        Debug.echoError("Riptide control not available on this server version.");
-    }
-
-    public int getBodyArrows(Entity entity) {
-        return ((LivingEntity) entity).getArrowsInBody();
-    }
-
-    public void setBodyArrows(Entity entity, int numArrows) {
-        ((LivingEntity) entity).setArrowsInBody(numArrows);
-    }
-
-    public abstract String getArrowPickupStatus(Entity entity);
-
-    public abstract void setArrowPickupStatus(Entity entity, String status);
-
-    public abstract Entity getFishHook(PlayerFishEvent event);
-
-    public abstract ItemStack getItemFromTrident(Entity entity);
-
-    public abstract void setItemForTrident(Entity entity, ItemStack item);
+    public abstract void setRiptide(Entity entity, boolean state);
 
     public abstract void forceInteraction(Player player, Location location);
 
@@ -88,10 +56,6 @@ public abstract class EntityHelper {
     public abstract void stopFollowing(Entity follower);
 
     public abstract void stopWalking(Entity entity);
-
-    public abstract double getSpeed(Entity entity);
-
-    public abstract void setSpeed(Entity entity, double speed);
 
     public abstract void follow(final Entity target, final Entity follower, final double speed, final double lead,
                                 final double maxRange, final boolean allowWander, final boolean teleport);
@@ -408,41 +372,23 @@ public abstract class EntityHelper {
 
     public abstract void teleport(Entity entity, Location loc);
 
-    public abstract BoundingBox getBoundingBox(Entity entity);
+    public abstract void setBoundingBox(Entity entity, BoundingBox box);
 
-    public abstract void setBoundingBox(Entity entity, BoundingBox boundingBox);
-
-    public List<Player> getPlayersThatSee(Entity entity) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract List<Player> getPlayersThatSee(Entity entity);
 
     public void sendAllUpdatePackets(Entity entity) {
         throw new UnsupportedOperationException();
     }
 
-    public void setTicksLived(Entity entity, int ticks) {
-        entity.setTicksLived(ticks);
-    }
+    public abstract void setTicksLived(Entity entity, int ticks);
 
-    public int getShulkerPeek(Entity entity) {
+    public abstract void setHeadAngle(Entity entity, float angle);
+
+    public void setGhastAttacking(Entity entity, boolean attacking) { // TODO: 1.19 - Ghast#setCharging
         throw new UnsupportedOperationException();
     }
 
-    public void setShulkerPeek(Entity entity, int peek) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setHeadAngle(Entity entity, float angle) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setGhastAttacking(Entity entity, boolean attacking) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setEndermanAngry(Entity entity, boolean angry) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void setEndermanAngry(Entity entity, boolean angry);
 
     public static EntityDamageEvent fireFakeDamageEvent(Entity target, Entity source, EntityDamageEvent.DamageCause cause, float amount) {
         EntityDamageEvent ede = source == null ? new EntityDamageEvent(target, cause, amount) : new EntityDamageByEntityEvent(source, target, cause, amount);
@@ -450,29 +396,7 @@ public abstract class EntityHelper {
         return ede;
     }
 
-    public void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause) {
-        if (cause == null) {
-            if (source == null) {
-                target.damage(amount);
-            }
-            else {
-                target.damage(amount, source);
-            }
-        }
-        else {
-            EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
-            if (!ede.isCancelled()) {
-                target.setLastDamageCause(ede);
-                if (source == null) {
-                    target.damage(ede.getFinalDamage());
-                }
-                else {
-                    target.damage(ede.getFinalDamage(), source);
-                }
-                target.setLastDamageCause(ede);
-            }
-        }
-    }
+    public abstract void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause);
 
     public void setLastHurtBy(LivingEntity mob, LivingEntity damager) {
         throw new UnsupportedOperationException();

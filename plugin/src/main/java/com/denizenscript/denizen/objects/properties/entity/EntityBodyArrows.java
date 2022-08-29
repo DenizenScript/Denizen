@@ -1,10 +1,9 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
@@ -35,11 +34,11 @@ public class EntityBodyArrows implements Property {
     EntityTag entity;
 
     private int getBodyArrows() {
-        return NMSHandler.entityHelper.getBodyArrows(entity.getBukkitEntity());
+        return entity.getLivingEntity().getArrowsInBody();
     }
 
     private void setBodyArrows(int numArrows) {
-        NMSHandler.entityHelper.setBodyArrows(entity.getBukkitEntity(), numArrows);
+        entity.getLivingEntity().setArrowsInBody(numArrows);
     }
 
     @Override

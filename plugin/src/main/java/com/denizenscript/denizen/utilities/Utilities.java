@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
-import com.denizenscript.denizen.scripts.commands.world.SignCommand;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
+import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -27,6 +27,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -311,8 +312,14 @@ public class Utilities {
         if (!checkLocation(baseLocation, entity.getLocation(), theLeeway + 16)) {
             return false;
         }
-        double distanceSq = NMSHandler.entityHelper.getBoundingBox(entity).distanceSquared(baseLocation.toVector());
-        return distanceSq < theLeeway * theLeeway;
+        BoundingBox box = entity.getBoundingBox();
+        double x = Math.max(box.getMinX(), Math.min(baseLocation.getX(), box.getMaxX()));
+        double y = Math.max(box.getMinY(), Math.min(baseLocation.getY(), box.getMaxY()));
+        double z = Math.max(box.getMinZ(), Math.min(baseLocation.getZ(), box.getMaxZ()));
+        double xOff = x - baseLocation.getX();
+        double yOff = y - baseLocation.getY();
+        double zOff = z - baseLocation.getZ();
+        return xOff * xOff + yOff * yOff + zOff * zOff < theLeeway * theLeeway;
     }
 
     public static boolean checkLocation(LivingEntity entity, Location theLocation, double theLeeway) {

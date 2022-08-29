@@ -2,14 +2,13 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
-import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
-import com.denizenscript.denizen.nms.util.BoundingBox;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -20,20 +19,17 @@ import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
-import net.minecraft.stats.RecipeBook;
-import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -63,14 +59,11 @@ import org.bukkit.craftbukkit.v1_18_R2.entity.*;
 import org.bukkit.craftbukkit.v1_18_R2.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandle;
@@ -78,8 +71,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
-
-    public static final Field RECIPE_BOOK_DISCOVERED_SET = ReflectionHelper.getFields(RecipeBook.class).get(ReflectionMappingsInfo.RecipeBook_known, Set.class);
 
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround, boolean.class);
 
@@ -96,28 +87,8 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public double getAbsorption(LivingEntity entity) {
-        return entity.getAbsorptionAmount();
-    }
-
-    @Override
-    public void setAbsorption(LivingEntity entity, double value) {
-        entity.setAbsorptionAmount(value);
-    }
-
-    @Override
-    public void setSneaking(Entity player, boolean sneak) {
-        if (player instanceof Player) {
-            ((Player) player).setSneaking(sneak);
-        }
-        Pose pose = sneak ? Pose.CROUCHING : Pose.STANDING;
-        ((CraftEntity) player).getHandle().setPose(pose);
-    }
-
-    @Override
-    public void setSleeping(Entity player, boolean sleep) {
-        Pose pose = sleep ? Pose.SLEEPING : Pose.STANDING;
-        ((CraftEntity) player).getHandle().setPose(pose);
+    public void setPose(Entity entity, Pose pose) {
+        ((CraftEntity) entity).getHandle().setPose(net.minecraft.world.entity.Pose.values()[pose.ordinal()]);
     }
 
     @Override
@@ -165,37 +136,6 @@ public class EntityHelperImpl extends EntityHelper {
         return damage;
     }
 
-    @Override
-    public String getRawHoverText(Entity entity) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<String> getDiscoveredRecipes(Player player) {
-        try {
-            ServerRecipeBook book = ((CraftPlayer) player).getHandle().getRecipeBook();
-            Set<ResourceLocation> set = (Set<ResourceLocation>) RECIPE_BOOK_DISCOVERED_SET.get(book);
-            List<String> output = new ArrayList<>();
-            for (ResourceLocation key : set) {
-                output.add(key.toString());
-            }
-            return output;
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
-        return null;
-    }
-
-    @Override
-    public String getArrowPickupStatus(Entity entity) {
-        return ((Arrow) entity).getPickupStatus().name();
-    }
-
-    @Override
-    public void setArrowPickupStatus(Entity entity, String status) {
-        ((Arrow) entity).setPickupStatus(AbstractArrow.PickupStatus.valueOf(status));
-    }
-
     public static final MethodHandle LIVINGENTITY_AUTOSPINATTACK_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_autoSpinAttackTicks);
     public static final MethodHandle LIVINGENTITY_SETLIVINGENTITYFLAG = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_setLivingEntityFlag, int.class, boolean.class);
 
@@ -209,21 +149,6 @@ public class EntityHelperImpl extends EntityHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-    }
-
-    @Override
-    public Entity getFishHook(PlayerFishEvent event) {
-        return event.getHook();
-    }
-
-    @Override
-    public ItemStack getItemFromTrident(Entity entity) {
-        return CraftItemStack.asBukkitCopy(((CraftTrident) entity).getHandle().tridentItem);
-    }
-
-    @Override
-    public void setItemForTrident(Entity entity, ItemStack item) {
-        ((CraftTrident) entity).getHandle().tridentItem = CraftItemStack.asNMSCopy(item);
     }
 
     @Override
@@ -284,26 +209,6 @@ public class EntityHelperImpl extends EntityHelper {
             return;
         }
         ((Mob) nmsEntity).getNavigation().stop();
-    }
-
-    @Override
-    public double getSpeed(Entity entity) {
-        net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof Mob)) {
-            return 0.0;
-        }
-        Mob nmsEntity = (Mob) nmsEntityEntity;
-        return nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
-    }
-
-    @Override
-    public void setSpeed(Entity entity, double speed) {
-        net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof Mob)) {
-            return;
-        }
-        Mob nmsEntity = (Mob) nmsEntityEntity;
-        nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
     }
 
     @Override
@@ -660,18 +565,8 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public BoundingBox getBoundingBox(Entity entity) {
-        AABB boundingBox = ((CraftEntity) entity).getHandle().getBoundingBox();
-        Vector position = new Vector(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
-        Vector size = new Vector(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-        return new BoundingBox(position, size);
-    }
-
-    @Override
-    public void setBoundingBox(Entity entity, BoundingBox boundingBox) {
-        Vector low = boundingBox.getLow();
-        Vector high = boundingBox.getHigh();
-        ((CraftEntity) entity).getHandle().setBoundingBox(new AABB(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ()));
+    public void setBoundingBox(Entity entity, BoundingBox box) {
+        ((CraftEntity) entity).getHandle().setBoundingBox(new AABB(box.getMinX(), box.getMinY(), box.getMinZ(), box.getMaxX(), box.getMaxY(), box.getMaxZ()));
     }
 
     @Override
@@ -684,16 +579,6 @@ public class EntityHelperImpl extends EntityHelper {
         else if (entity instanceof CraftItem) {
             ((ItemEntity) ((CraftItem) entity).getHandle()).age = ticks;
         }
-    }
-
-    @Override
-    public int getShulkerPeek(Entity entity) {
-        return ((CraftShulker) entity).getHandle().getRawPeekAmount();
-    }
-
-    @Override
-    public void setShulkerPeek(Entity entity, int peek) {
-        ((CraftShulker) entity).getHandle().setRawPeekAmount(peek);
     }
 
     @Override
