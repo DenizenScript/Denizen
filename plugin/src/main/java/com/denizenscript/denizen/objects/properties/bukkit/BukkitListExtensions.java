@@ -4,39 +4,15 @@ import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.ChatColor;
 
 import java.util.List;
 
-public class BukkitListProperties implements Property {
-    public static boolean describes(ObjectTag list) {
-        return list instanceof ListTag;
-    }
+public class BukkitListExtensions {
 
-    public static BukkitListProperties getFrom(ObjectTag list) {
-        if (!describes(list)) {
-            return null;
-        }
-        else {
-            return new BukkitListProperties((ListTag) list);
-        }
-    }
-
-    private BukkitListProperties(ListTag list) {
-        this.list = list;
-    }
-
-    public static final String[] handledMechs = new String[] {
-    }; // None
-
-    ListTag list;
-
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ListTag.formatted>
@@ -47,8 +23,7 @@ public class BukkitListProperties implements Property {
         // EG, a list of "<npc>|<player>|potato" will return "GuardNPC, bob, and potato".
         // The exact formatting rules that will be followed are not guaranteed, other than that it will be a semi-clean human-readable format.
         // -->
-        PropertyParser.registerTag(BukkitListProperties.class, ElementTag.class, "formatted", (attribute, listObj) -> {
-            ListTag list = listObj.list;
+        ListTag.tagProcessor.registerTag(ElementTag.class, "formatted", (attribute, list) -> {
             if (list.isEmpty()) {
                 return new ElementTag("");
             }
@@ -115,8 +90,8 @@ public class BukkitListProperties implements Property {
         // Converts a list of locations to a PolygonTag.
         // The Y-Min and Y-Max values will be assigned based the range of Y values in the locations given.
         // -->
-        PropertyParser.registerTag(BukkitListProperties.class, PolygonTag.class, "to_polygon", (attribute, listObj) -> {
-            List<LocationTag> locations = listObj.list.filter(LocationTag.class, attribute.context);
+        ListTag.tagProcessor.registerTag(PolygonTag.class, "to_polygon", (attribute, list) -> {
+            List<LocationTag> locations = list.filter(LocationTag.class, attribute.context);
             if (locations == null || locations.isEmpty()) {
                 return null;
             }
@@ -134,20 +109,5 @@ public class BukkitListProperties implements Property {
             polygon.recalculateBox();
             return polygon;
         });
-    }
-
-    @Override
-    public String getPropertyString() {
-        return null;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "BukkitListProperties";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-        // None
     }
 }

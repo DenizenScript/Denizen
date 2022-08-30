@@ -3,41 +3,15 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.nms.util.jnbt.NBTOutputStream;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.BinaryTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.objects.core.BinaryTag;
 
 import java.io.ByteArrayOutputStream;
 
-public class BukkitMapTagProperties implements Property {
+public class BukkitMapTagExtensions {
 
-    public static boolean describes(ObjectTag map) {
-        return map instanceof MapTag;
-    }
-
-    public static BukkitMapTagProperties getFrom(ObjectTag map) {
-        if (!describes(map)) {
-            return null;
-        }
-        else {
-            return new BukkitMapTagProperties((MapTag) map);
-        }
-    }
-
-    private BukkitMapTagProperties(MapTag map) {
-        this.map = map;
-    }
-
-    public static final String[] handledMechs = new String[] {
-    }; // None
-
-    public MapTag map;
-
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <MapTag.map_to_nbt>
@@ -53,9 +27,9 @@ public class BukkitMapTagProperties implements Property {
         // - define data <[something].map_to_nbt.gzip_compress>
         // - ~filewrite path:data/<player.uuid>.dat data:<[data]>
         // -->
-        PropertyParser.registerStaticTag(BukkitMapTagProperties.class, BinaryTag.class, "map_to_nbt", (attribute, object) -> {
+        MapTag.tagProcessor.registerStaticTag(BinaryTag.class, "map_to_nbt", (attribute, object) -> {
             try {
-                Tag tag = ItemRawNBT.convertObjectToNbt(object.map.toString(), attribute.context, "(root).");
+                Tag tag = ItemRawNBT.convertObjectToNbt(object.toString(), attribute.context, "(root).");
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 NBTOutputStream nbtStream = new NBTOutputStream(output);
                 nbtStream.writeNamedTag("", tag);
@@ -69,20 +43,5 @@ public class BukkitMapTagProperties implements Property {
                 return null;
             }
         });
-    }
-
-    @Override
-    public String getPropertyString() {
-        return null;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "BukkitMapTagProperties";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-        // None
     }
 }

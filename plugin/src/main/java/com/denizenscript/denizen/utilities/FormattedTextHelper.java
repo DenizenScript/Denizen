@@ -2,7 +2,7 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ColorTag;
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementProperties;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -609,7 +609,7 @@ public class FormattedTextHelper {
                             String from = innardBase.get(1), to = innardParts.get(0), style = innardParts.get(1);
                             ColorTag fromColor = ColorTag.valueOf(from, CoreUtilities.noDebugContext);
                             ColorTag toColor = ColorTag.valueOf(to, CoreUtilities.noDebugContext);
-                            BukkitElementProperties.GradientStyle styleEnum = new ElementTag(style).asEnum(BukkitElementProperties.GradientStyle.class);
+                            BukkitElementExtensions.GradientStyle styleEnum = new ElementTag(style).asEnum(BukkitElementExtensions.GradientStyle.class);
                             if (fromColor == null || toColor == null || styleEnum == null) {
                                 if (CoreConfiguration.debugVerbose) {
                                     Debug.echoError("Text parse issue: cannot interpret gradient input '" + innards + "'.");
@@ -620,7 +620,7 @@ public class FormattedTextHelper {
                                 if (endIndex == -1) {
                                     endIndex = str.length();
                                 }
-                                String gradientText = BukkitElementProperties.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
+                                String gradientText = BukkitElementExtensions.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
                                 for (BaseComponent subComponent : parse(gradientText, baseColor, false)) {
                                     lastText.addExtra(subComponent);
                                 }

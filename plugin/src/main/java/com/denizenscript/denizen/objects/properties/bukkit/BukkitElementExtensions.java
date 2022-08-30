@@ -11,14 +11,10 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -26,29 +22,7 @@ import org.bukkit.Color;
 
 import java.nio.charset.StandardCharsets;
 
-public class BukkitElementProperties implements Property {
-
-    public static boolean describes(ObjectTag element) {
-        return element instanceof ElementTag;
-    }
-
-    public static BukkitElementProperties getFrom(ObjectTag element) {
-        if (!describes(element)) {
-            return null;
-        }
-        else {
-            return new BukkitElementProperties((ElementTag) element);
-        }
-    }
-
-    private BukkitElementProperties(ElementTag element) {
-        this.element = element;
-    }
-
-    public static final String[] handledMechs = new String[] {
-    }; // None
-
-    ElementTag element;
+public class BukkitElementExtensions {
 
     public static String replaceEssentialsHexColors(char prefix, String input) {
         int hex = input.indexOf(prefix + "#");
@@ -68,7 +42,7 @@ public class BukkitElementProperties implements Property {
         return input;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ElementTag.as_biome>
@@ -78,7 +52,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, BiomeTag.class, "as_biome", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(BiomeTag.class, "as_biome", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), BiomeTag.valueOf(object.asString(), attribute.context), "BiomeTag", attribute.hasAlternative());
         });
@@ -91,7 +65,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, ChunkTag.class, "as_chunk", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(ChunkTag.class, "as_chunk", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), ChunkTag.valueOf(object.asString(), attribute.context), "ChunkTag", attribute.hasAlternative());
         }, "aschunk");
@@ -104,7 +78,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ColorTag.class, "as_color", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ColorTag.class, "as_color", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), ColorTag.valueOf(object.asString(), attribute.context), "ColorTag", attribute.hasAlternative());
         }, "ascolor");
@@ -117,7 +91,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, CuboidTag.class, "as_cuboid", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(CuboidTag.class, "as_cuboid", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), CuboidTag.valueOf(object.asString(), attribute.context), "CuboidTag", attribute.hasAlternative());
         }, "ascuboid");
@@ -130,7 +104,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, EllipsoidTag.class, "as_ellipsoid", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(EllipsoidTag.class, "as_ellipsoid", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), EllipsoidTag.valueOf(object.asString(), attribute.context), "EllipsoidTag", attribute.hasAlternative());
         });
@@ -143,7 +117,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, EnchantmentTag.class, "as_enchantment", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(EnchantmentTag.class, "as_enchantment", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), EnchantmentTag.valueOf(object.asString(), attribute.context), "EnchantmentTag", attribute.hasAlternative());
         });
@@ -156,7 +130,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, EntityTag.class, "as_entity", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(EntityTag.class, "as_entity", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), EntityTag.valueOf(object.asString(), attribute.context), "EntityTag", attribute.hasAlternative());
         }, "asentity");
@@ -169,7 +143,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, InventoryTag.class, "as_inventory", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(InventoryTag.class, "as_inventory", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), InventoryTag.valueOf(object.asString(), attribute.context), "InventoryTag", attribute.hasAlternative());
         }, "asinventory");
@@ -182,7 +156,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, ItemTag.class, "as_item", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(ItemTag.class, "as_item", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), ItemTag.valueOf(object.asString(), attribute.context), "ItemTag", attribute.hasAlternative());
         }, "asitem");
@@ -195,7 +169,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, LocationTag.class, "as_location", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(LocationTag.class, "as_location", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), LocationTag.valueOf(object.asString(), attribute.context), "LocationTag", attribute.hasAlternative());
         }, "aslocation");
@@ -208,7 +182,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, MaterialTag.class, "as_material", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(MaterialTag.class, "as_material", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), MaterialTag.valueOf(object.asString(), attribute.context), "MaterialTag", attribute.hasAlternative());
         }, "asmaterial");
@@ -221,7 +195,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, NPCTag.class, "as_npc", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(NPCTag.class, "as_npc", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), NPCTag.valueOf(object.asString(), attribute.context), "NPCTag", attribute.hasAlternative());
         }, "asnpc");
@@ -234,7 +208,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, PlayerTag.class, "as_player", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(PlayerTag.class, "as_player", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), PlayerTag.valueOf(object.asString(), attribute.context), "PlayerTag", attribute.hasAlternative());
         }, "asplayer");
@@ -247,7 +221,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, PluginTag.class, "as_plugin", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(PluginTag.class, "as_plugin", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), PluginTag.valueOf(object.asString(), attribute.context), "PluginTag", attribute.hasAlternative());
         }, "asplugin");
@@ -260,7 +234,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, PolygonTag.class, "as_polygon", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(PolygonTag.class, "as_polygon", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), PolygonTag.valueOf(object.asString(), attribute.context), "PolygonTag", attribute.hasAlternative());
         });
@@ -273,7 +247,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, TradeTag.class, "as_trade", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(TradeTag.class, "as_trade", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), TradeTag.valueOf(object.asString(), attribute.context), "TradeTag", attribute.hasAlternative());
         });
@@ -286,7 +260,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of <@link tag ObjectTag.as>
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, WorldTag.class, "as_world", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(WorldTag.class, "as_world", (attribute, object) -> {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(), attribute.context), "WorldTag", attribute.hasAlternative());
         }, "asworld");
@@ -298,7 +272,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the text re-formatted according to a format script.
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, ElementTag.class, ScriptTag.class, "format", (attribute, object, format) -> {
+        ElementTag.tagProcessor.registerTag(ElementTag.class, ScriptTag.class, "format", (attribute, object, format) -> {
             if (!(format.getContainer() instanceof FormatScriptContainer)) {
                 attribute.echoError("Script '" + format + "' is not a format script.");
                 return null;
@@ -321,7 +295,7 @@ public class BukkitElementProperties implements Property {
         // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
         // Spaces will be preferred to become newlines, unless a line does not contain any spaces.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "split_lines_by_width", (attribute, object, widthText) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "split_lines_by_width", (attribute, object, widthText) -> {
             return new ElementTag(TextWidthHelper.splitLines(object.asString(), widthText.asInt()));
         });
 
@@ -335,7 +309,7 @@ public class BukkitElementProperties implements Property {
         // This only currently supports ASCII symbols properly. Unicode symbols will be estimated as 6 pixels.
         // If the element contains newlines, will return the widest line width.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "text_width", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "text_width", (attribute, object) -> {
             return new ElementTag(TextWidthHelper.getWidth(object.asString()));
         });
 
@@ -347,7 +321,7 @@ public class BukkitElementProperties implements Property {
         // Returns a list of lines in the element, with colors spread over the lines manually.
         // Useful for things like item lore.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ListTag.class, "lines_to_colored_list", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ListTag.class, "lines_to_colored_list", (attribute, object) -> {
             ListTag output = new ListTag();
             String colors = "";
             for (String line : CoreUtilities.split(object.asString(), '\n')) {
@@ -364,7 +338,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the ChatColors used last in an element.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "last_color", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "last_color", (attribute, object) -> {
             return new ElementTag(org.bukkit.ChatColor.getLastColors(object.asString()));
         });
 
@@ -375,7 +349,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element with all color encoding stripped.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "strip_color", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "strip_color", (attribute, object) -> {
             return new ElementTag(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)[0].toPlainText());
         });
 
@@ -388,7 +362,7 @@ public class BukkitElementProperties implements Property {
         // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.
         // This allows old-style colors like '&b', or Essentials-style hex codes like '&#ff00ff'
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "parse_color", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "parse_color", (attribute, object) -> {
             char prefix = '&';
             if (attribute.hasParam()) {
                 prefix = attribute.getParam().charAt(0);
@@ -406,7 +380,7 @@ public class BukkitElementProperties implements Property {
         // Shortens the element down to an itemscript hash ID, made of invisible color codes.
         // This is considered a historical system, no longer relevant to modern Denizen.
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, ElementTag.class, "to_itemscript_hash", (attribute, object) -> {
+        ElementTag.tagProcessor.registerTag(ElementTag.class, "to_itemscript_hash", (attribute, object) -> {
             return new ElementTag(ItemScriptHelper.createItemScriptID(object.asString()));
         });
 
@@ -418,7 +392,7 @@ public class BukkitElementProperties implements Property {
         // Hides the element's text in invisible color codes.
         // Inverts <@link tag ElementTag.from_secret_colors>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "to_secret_colors", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "to_secret_colors", (attribute, object) -> {
             String text = object.asString();
             byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
             String hex = CoreUtilities.hexEncode(bytes);
@@ -437,7 +411,7 @@ public class BukkitElementProperties implements Property {
         // Un-hides the element's text from invisible color codes back to normal text.
         // Inverts <@link tag ElementTag.to_secret_colors>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "from_secret_colors", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "from_secret_colors", (attribute, object) -> {
             String text = object.asString().replace(String.valueOf(ChatColor.COLOR_CHAR), "");
             byte[] bytes = CoreUtilities.hexDecode(text);
             return new ElementTag(new String(bytes, StandardCharsets.UTF_8));
@@ -451,7 +425,7 @@ public class BukkitElementProperties implements Property {
         // Converts normal colored text to Minecraft-style "raw JSON" format.
         // Inverts <@link tag ElementTag.from_raw_json>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "to_raw_json", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "to_raw_json", (attribute, object) -> {
             return new ElementTag(ComponentSerializer.toString(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)));
         });
 
@@ -463,7 +437,7 @@ public class BukkitElementProperties implements Property {
         // Un-hides the element's text from invisible color codes back to normal text.
         // Inverts <@link tag ElementTag.to_raw_json>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "from_raw_json", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "from_raw_json", (attribute, object) -> {
             return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString()), ChatColor.WHITE));
         });
 
@@ -477,7 +451,7 @@ public class BukkitElementProperties implements Property {
         // @example
         // - narrate "You can <element[hover here].custom_color[emphasis].hover_item[<player.item_in_hand>]> to see what you held!"
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ItemTag.class, "hover_item", (attribute, object, item) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ItemTag.class, "hover_item", (attribute, object, item) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[hover=SHOW_ITEM;" + FormattedTextHelper.escape(item.identify()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/hover]");
         });
 
@@ -489,7 +463,7 @@ public class BukkitElementProperties implements Property {
         // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "on_hover", (attribute, object, hoverText) -> { // non-static due to hacked sub-tag
+        ElementTag.tagProcessor.registerTag(ElementTag.class, ElementTag.class, "on_hover", (attribute, object, hoverText) -> { // non-static due to hacked sub-tag
             String type = "SHOW_TEXT";
 
             // <--[tag]
@@ -522,7 +496,7 @@ public class BukkitElementProperties implements Property {
         // @example
         // - narrate "You can <element[click here].custom_color[emphasis].on_hover[Click me!].click_url[https://denizenscript.com]> to learn about Denizen!"
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "click_url", (attribute, object, url) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "click_url", (attribute, object, url) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[click=OPEN_URL;" + FormattedTextHelper.escape(url.toString()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
         });
 
@@ -537,7 +511,7 @@ public class BukkitElementProperties implements Property {
         // @example
         // - narrate "You can <element[click here].click_chat[hello]> to say hello to an NPC's interact script!"
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "click_chat", (attribute, object, chat) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "click_chat", (attribute, object, chat) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[click=RUN_COMMAND;/denizenclickable chat " + FormattedTextHelper.escape(chat.toString()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
         });
 
@@ -556,7 +530,7 @@ public class BukkitElementProperties implements Property {
         // @example
         // - narrate "You can <element[click here].on_click[/denizenclickable chat hello]> to say hello to an NPC's interact script!"
         // -->
-        PropertyParser.registerTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "on_click", (attribute, object, command) -> { // non-static due to hacked sub-tag
+        ElementTag.tagProcessor.registerTag(ElementTag.class, ElementTag.class, "on_click", (attribute, object, command) -> { // non-static due to hacked sub-tag
             String type = "RUN_COMMAND";
 
             // <--[tag]
@@ -588,7 +562,7 @@ public class BukkitElementProperties implements Property {
         // Adds an insertion message to the element, which makes the element insert the input message to chat when shift-clicked.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "with_insertion", (attribute, object, insertion) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "with_insertion", (attribute, object, insertion) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[insertion="  + FormattedTextHelper.escape(insertion.asString()) + "]"
                     + object.asString() + ChatColor.COLOR_CHAR + "[/insertion]");
         });
@@ -602,7 +576,7 @@ public class BukkitElementProperties implements Property {
         // Use like '<&c.no_reset>' or '<red.no_reset>'.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "no_reset", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "no_reset", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
                 return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + object.asString().charAt(1) + "]");
             }
@@ -618,7 +592,7 @@ public class BukkitElementProperties implements Property {
         // Use like '<&o.end_format>' or '<italic.end_format>'.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "end_format", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "end_format", (attribute, object) -> {
             if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
                 return new ElementTag(ChatColor.COLOR_CHAR + "[reset=" + object.asString().charAt(1) + "]");
             }
@@ -636,7 +610,7 @@ public class BukkitElementProperties implements Property {
         // Makes the input text italic. Equivalent to "<&o><ELEMENT_HERE><&o.end_format>"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "italicize", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "italicize", (attribute, object) -> {
             return new ElementTag(ChatColor.ITALIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=o]");
         });
 
@@ -648,7 +622,7 @@ public class BukkitElementProperties implements Property {
         // Makes the input text bold. Equivalent to "<&l><ELEMENT_HERE><&l.end_format>"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "bold", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "bold", (attribute, object) -> {
             return new ElementTag(ChatColor.BOLD + object.asString() + ChatColor.COLOR_CHAR + "[reset=l]");
         });
 
@@ -660,7 +634,7 @@ public class BukkitElementProperties implements Property {
         // Makes the input text underlined. Equivalent to "<&n><ELEMENT_HERE><&n.end_format>"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "underline", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "underline", (attribute, object) -> {
             return new ElementTag(ChatColor.UNDERLINE + object.asString() + ChatColor.COLOR_CHAR + "[reset=n]");
         });
 
@@ -672,7 +646,7 @@ public class BukkitElementProperties implements Property {
         // Makes the input text struck-through. Equivalent to "<&m><ELEMENT_HERE><&m.end_format>"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "strikethrough", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "strikethrough", (attribute, object) -> {
             return new ElementTag(ChatColor.STRIKETHROUGH + object.asString() + ChatColor.COLOR_CHAR + "[reset=m]");
         });
 
@@ -684,7 +658,7 @@ public class BukkitElementProperties implements Property {
         // Makes the input text obfuscated. Equivalent to "<&k><ELEMENT_HERE><&k.end_format>"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "obfuscate", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "obfuscate", (attribute, object) -> {
             return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
         });
 
@@ -698,7 +672,7 @@ public class BukkitElementProperties implements Property {
         // Default color names are 'base', 'emphasis', 'warning', 'error'.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "custom_color", (attribute, object, name) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "custom_color", (attribute, object, name) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + CustomColorTagBase.getColor(name.asLowerString(), attribute.context) + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
         });
 
@@ -711,7 +685,7 @@ public class BukkitElementProperties implements Property {
         // Color can be a color name, color code, hex, or ColorTag... that is: ".color[gold]", ".color[6]", and ".color[#AABB00]" are all valid.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "color", (attribute, object, colorElement) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "color", (attribute, object, colorElement) -> {
             String colorName = colorElement.asString();
             String colorOut = null;
             if (colorName.length() == 1) {
@@ -757,7 +731,7 @@ public class BukkitElementProperties implements Property {
         // The default font is "minecraft:default".
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, ElementTag.class, "font", (attribute, object, fontName) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "font", (attribute, object, fontName) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + fontName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=font]");
         });
 
@@ -770,7 +744,7 @@ public class BukkitElementProperties implements Property {
         // Optionally, specify a color pattern to follow. By default, this is "4c6e2ab319d5".
         // That is, a repeating color of: Red, Orange, Yellow, Green, Cyan, Blue, Purple.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "rainbow", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "rainbow", (attribute, object) -> {
             String str = object.asString();
             String pattern = "4c6e2ab319d5";
             if (attribute.hasParam()) {
@@ -792,7 +766,7 @@ public class BukkitElementProperties implements Property {
         // Optionally, specify a length (how many characters before the colors repeat). If unspecified, will use the input element length.
         // If the element starts with a hex color code, that will be used as the starting color of the rainbow.
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, "hex_rainbow", (attribute, object) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "hex_rainbow", (attribute, object) -> {
             String str = object.asString();
             int[] HSB = new int[] { 0, 255, 255 };
             if (str.startsWith(ChatColor.COLOR_CHAR + "x") && str.length() > 14) {
@@ -855,14 +829,14 @@ public class BukkitElementProperties implements Property {
         // @example
         // - narrate "<element[what a beautiful rainbow this line is].color_gradient[from=#FF0000;to=#0000FF;style=hsb]>"
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, MapTag.class, "color_gradient", (attribute, object, inputMap) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, MapTag.class, "color_gradient", (attribute, object, inputMap) -> {
             ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
             ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
             ElementTag style = inputMap.getElement("style", "RGB");
             if (fromColor == null || toColor == null) {
                 return null;
             }
-            if (!style.matchesEnum(BukkitElementProperties.GradientStyle.class)) {
+            if (!style.matchesEnum(BukkitElementExtensions.GradientStyle.class)) {
                 attribute.echoError("Invalid gradient style '" + style + "'");
                 return null;
             }
@@ -881,7 +855,7 @@ public class BukkitElementProperties implements Property {
         // @description
         // Deprecated in favor of using <@link tag ElementTag.color_gradient> with "style=hsb"
         // -->
-        PropertyParser.registerStaticTag(BukkitElementProperties.class, ElementTag.class, MapTag.class, "hsb_color_gradient", (attribute, object, inputMap) -> {
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, MapTag.class, "hsb_color_gradient", (attribute, object, inputMap) -> {
             BukkitImplDeprecations.hsbColorGradientTag.warn(attribute.context);
             ColorTag fromColor = inputMap.getRequiredObjectAs("from", ColorTag.class, attribute);
             ColorTag toColor = inputMap.getRequiredObjectAs("to", ColorTag.class, attribute);
@@ -987,23 +961,4 @@ public class BukkitElementProperties implements Property {
     }
 
     public static AsciiMatcher FORMAT_CODES_MATCHER = new AsciiMatcher("klmnoKLMNO");
-
-    public String asString() {
-        return element.asString();
-    }
-
-    @Override
-    public String getPropertyString() {
-        return null;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "BukkitElementProperties";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-        // None
-    }
 }

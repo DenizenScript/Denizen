@@ -3,40 +3,12 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.QueueTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 
-public class BukkitQueueProperties implements Property {
+public class BukkitQueueExtensions {
 
-    public static boolean describes(ObjectTag script) {
-        return script instanceof QueueTag;
-    }
-
-    public static BukkitQueueProperties getFrom(ObjectTag queue) {
-        if (!describes(queue)) {
-            return null;
-        }
-        else {
-            return new BukkitQueueProperties((QueueTag) queue);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "linked_player", "linked_npc"
-    };
-
-    private BukkitQueueProperties(QueueTag queue) {
-        this.queue = queue.getQueue();
-    }
-
-    ScriptQueue queue;
-
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <QueueTag.npc>
@@ -45,7 +17,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the NPCTag linked to a queue.
         // -->
-        PropertyParser.registerTag(BukkitQueueProperties.class, NPCTag.class, "npc", (attribute, object) -> {
+        QueueTag.tagProcessor.registerTag(NPCTag.class, "npc", (attribute, object) -> {
             NPCTag npc = null;
             if (object.queue.getLastEntryExecuted() != null) {
                 npc = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getNPC();
@@ -66,7 +38,7 @@ public class BukkitQueueProperties implements Property {
         // @description
         // Returns the PlayerTag linked to a queue.
         // -->
-        PropertyParser.registerTag(BukkitQueueProperties.class, PlayerTag.class, "player", (attribute, object) -> {
+        QueueTag.tagProcessor.registerTag(PlayerTag.class, "player", (attribute, object) -> {
             PlayerTag player = null;
             if (object.queue.getLastEntryExecuted() != null) {
                 player = ((BukkitScriptEntryData) object.queue.getLastEntryExecuted().entryData).getPlayer();
@@ -79,20 +51,6 @@ public class BukkitQueueProperties implements Property {
             }
             return player;
         });
-    }
-
-    @Override
-    public String getPropertyString() {
-        return null;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "BukkitQueueProperties";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object QueueTag
@@ -103,13 +61,12 @@ public class BukkitQueueProperties implements Property {
         // @tags
         // <QueueTag.player>
         // -->
-        if (mechanism.matches("linked_player") && mechanism.requireObject(PlayerTag.class)) {
-            PlayerTag player = mechanism.valueAsType(PlayerTag.class);
-            for (ScriptEntry entry : queue.getEntries()) {
+        QueueTag.tagProcessor.registerMechanism("linked_player", false, PlayerTag.class, (queue, mechanism, player) -> {
+            for (ScriptEntry entry : queue.queue.getEntries()) {
                 BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
                 data.setPlayer(player);
             }
-        }
+        });
 
         // <--[mechanism]
         // @object QueueTag
@@ -120,12 +77,11 @@ public class BukkitQueueProperties implements Property {
         // @tags
         // <QueueTag.npc>
         // -->
-        if (mechanism.matches("linked_npc") && mechanism.requireObject(NPCTag.class)) {
-            NPCTag npc = mechanism.valueAsType(NPCTag.class);
-            for (ScriptEntry entry : queue.getEntries()) {
+        QueueTag.tagProcessor.registerMechanism("linked_npc", false, NPCTag.class, (queue, mechanism, npc) -> {
+            for (ScriptEntry entry : queue.queue.getEntries()) {
                 BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
                 data.setNPC(npc);
             }
-        }
+        });
     }
 }
