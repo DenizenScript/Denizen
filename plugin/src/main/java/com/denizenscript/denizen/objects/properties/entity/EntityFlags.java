@@ -52,7 +52,7 @@ public class EntityFlags implements Property {
         }
         MapTag flags = new MapTag();
         for (String name : flagNames) {
-            flags.putObject(name, ((DataPersistenceFlagTracker) tracker).getRootMap(name));
+            flags.putObject(name, tracker.getRootMap(name));
         }
         return flags.toString();
     }
@@ -76,6 +76,7 @@ public class EntityFlags implements Property {
         // @input MapTag
         // @description
         // Internal setter for the EntityTag flag map.
+        // Do not use this in scripts.
         // -->
         if (mechanism.matches("flag_map") && mechanism.requireObject(MapTag.class)) {
             MapTagFlagTracker flags = new MapTagFlagTracker(mechanism.valueAsType(MapTag.class));

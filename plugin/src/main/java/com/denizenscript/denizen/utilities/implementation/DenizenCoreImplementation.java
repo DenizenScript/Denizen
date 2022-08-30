@@ -410,7 +410,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public String applyDebugColors(String uncolored) {
-        if (uncolored.indexOf('<') == -1) {
+        if (!CoreUtilities.contains(uncolored, '<')) {
             return uncolored;
         }
         return uncolored

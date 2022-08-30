@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.ColorTag;
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementProperties;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -516,7 +516,7 @@ public class TextTagBase {
             if (fromColor == null || toColor == null) {
                 return null;
             }
-            if (!style.matchesEnum(BukkitElementProperties.GradientStyle.class)) {
+            if (!style.matchesEnum(BukkitElementExtensions.GradientStyle.class)) {
                 attribute.echoError("Invalid gradient style '" + style + "'");
                 return null;
             }

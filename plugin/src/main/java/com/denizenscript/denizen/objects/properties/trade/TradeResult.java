@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.TradeTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -19,10 +18,6 @@ public class TradeResult implements Property {
         }
         return new TradeResult((TradeTag) recipe);
     }
-
-    public static final String[] handledMechs = new String[] {
-            "result"
-    };
 
     private TradeTag recipe;
 
@@ -53,9 +48,6 @@ public class TradeResult implements Property {
         PropertyParser.registerTag(TradeResult.class, ItemTag.class, "result", (attribute, recipe) -> {
             return new ItemTag(recipe.recipe.getRecipe().getResult());
         });
-    }
-
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object TradeTag
@@ -66,8 +58,8 @@ public class TradeResult implements Property {
         // @tags
         // <TradeTag.result>
         // -->
-        if (mechanism.matches("result") && mechanism.requireObject(ItemTag.class)) {
-            recipe.setRecipe(TradeTag.duplicateRecipe(mechanism.valueAsType(ItemTag.class).getItemStack(), recipe.getRecipe()));
-        }
+        PropertyParser.registerMechanism(TradeResult.class, ItemTag.class, "result", (prop, mechanism, item) -> {
+            prop.recipe.setRecipe(TradeTag.duplicateRecipe(item.getItemStack(), prop.recipe.getRecipe()));
+        });
     }
 }
