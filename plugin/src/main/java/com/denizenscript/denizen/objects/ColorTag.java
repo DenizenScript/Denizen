@@ -280,6 +280,30 @@ public class ColorTag implements ObjectTag {
         });
 
         // <--[tag]
+        // @attribute <ColorTag.rgb_integer>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the Red, Green, and Blue values of this ColorTag as an integer number, equivalent to an integer reparse of <@link tag ColorTag.hex>.
+        // Highest order bits are red, then green, then lowest is blue.
+        // This is a rare special case encoding usually avoided by most systems, but may be necessary for some obscure tools.
+        // -->
+        tagProcessor.registerStaticTag(ElementTag.class, "rgb_integer", (attribute, object) -> {
+            return new ElementTag((object.red << 16) | (object.green << 8) | (object.blue));
+        });
+
+        // <--[tag]
+        // @attribute <ColorTag.argb_integer>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the Alpha, Red, Green, and Blue values of this ColorTag as an integer number, equivalent to an integer reparse of <@link tag ColorTag.hex>.
+        // Highest order bits are alpha, then red, then green, then lowest is blue.
+        // This is a rare special case encoding usually avoided by most systems, but may be necessary for some obscure tools.
+        // -->
+        tagProcessor.registerStaticTag(ElementTag.class, "argb_integer", (attribute, object) -> {
+            return new ElementTag(((long) object.alpha << 24L) | ((long) object.red << 16L) | ((long) object.green << 8L) | ((long) object.blue));
+        });
+
+        // <--[tag]
         // @attribute <ColorTag.red>
         // @returns ElementTag(Number)
         // @description
