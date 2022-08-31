@@ -62,17 +62,18 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("message:")) {
-                event.setLeaveMessage(lower.substring("message:".length()));
+                event.setLeaveMessage(determination.substring("message:".length()));
                 return true;
             }
             else if (lower.startsWith("reason:")) {
-                event.setReason(lower.substring("reason:".length()));
+                event.setReason(determination.substring("reason:".length()));
                 return true;
             }
             else if (lower.startsWith("fly_cooldown:")) {
-                DurationTag duration = DurationTag.valueOf(lower.substring("fly_cooldown:".length()), getTagContext(path));
+                DurationTag duration = DurationTag.valueOf(determination.substring("fly_cooldown:".length()), getTagContext(path));
                 if (duration != null) {
                     NMSHandler.playerHelper.setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
                     cancelled = true;
