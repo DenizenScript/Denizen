@@ -238,7 +238,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     if (targets != null) {
                         for (PlayerTag player : targets) {
                             if (player.isValid() && player.isOnline()) {
-                                player.getPlayerEntity().playEffect(location, effect, data.asInt()); // TODO: 1.13
+                                player.getPlayerEntity().playEffect(location, effect, data.asInt());
                             }
                         }
                     }

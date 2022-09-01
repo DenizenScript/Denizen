@@ -74,7 +74,7 @@ public class MaterialAttached implements Property {
         return material.getModernData() instanceof Gate;
     }
 
-    public boolean isLantern() { // TODO: 1.19 - Lantern extends Hangable
+    public boolean isLantern() { // TODO: remove once 1.19 is the minimum - Lantern extends Hangable
         return material.getModernData() instanceof Lantern;
     }
 
@@ -86,7 +86,7 @@ public class MaterialAttached implements Property {
         return (Gate) material.getModernData();
     }
 
-    public Lantern getLantern() { // TODO: 1.19 - Lantern extends Hangable
+    public Lantern getLantern() { // TODO: remove once 1.19 is the minimum - Lantern extends Hangable
         return (Lantern) material.getModernData();
     }
 

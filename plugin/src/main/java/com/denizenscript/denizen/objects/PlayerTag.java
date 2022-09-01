@@ -3702,7 +3702,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (mechanism.hasValue()) {
                 if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
                     category = mechanism.getValue().asEnum(SoundCategory.class);
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) { // TODO: 1.19
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
                         getPlayerEntity().stopSound(category);
                         return;
                     }

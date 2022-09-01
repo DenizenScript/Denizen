@@ -29,9 +29,9 @@ public class RaidScriptEvent<T extends RaidEvent> extends BukkitScriptEvent {
     // heroes: a list of PlayerTags that have participated in the raid
     // raiders: a list of raider EntityTags that remain in the current wave
     // status: the current status of the raid. See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Raid.RaidStatus.html>
-    // ticks: the raid's age in ticks
+    // age: the raid's age (active time) as a DurationTag
     // level: the Bad Omen level that the raid was started with
-    // spawned_groups: the amount of raider groups spawned
+    // spawned_groups: the number of raider groups spawned
     // total_groups: the number of groups planned to spawn or already spawned
     // health: the combined health of all current raiders
     // waves: the number of waves in the raid
@@ -59,7 +59,7 @@ public class RaidScriptEvent<T extends RaidEvent> extends BukkitScriptEvent {
         }
         data.putObject("raiders", raiders);
         data.putObject("status", new ElementTag(raid.getStatus().name(), true));
-        data.putObject("ticks", new DurationTag(raid.getActiveTicks()));
+        data.putObject("age", new DurationTag(raid.getActiveTicks()));
         data.putObject("level", new ElementTag(raid.getBadOmenLevel()));
         data.putObject("total_groups", new ElementTag(raid.getTotalGroups()));
         data.putObject("spawned_groups", new ElementTag(raid.getSpawnedGroups()));
