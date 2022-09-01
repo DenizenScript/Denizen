@@ -114,6 +114,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     public InventoryTag getInventoryFrom(TagContext context) {
         InventoryTag inventory;
         context = fixContext(context);
+        Debug.pushErrorContext(this);
         try {
             InventoryType type = InventoryType.CHEST;
             if (contains("inventory", String.class)) {
@@ -165,7 +166,14 @@ public class InventoryScriptContainer extends ScriptContainer {
                     size = type.getDefaultSize();
                 }
             }
-            String title = contains("title", String.class) ? TagManager.tag(getString("title"), context) : null;
+            String title;
+            Debug.pushErrorContext("While reading 'title' input");
+            try {
+                title = contains("title", String.class) ? TagManager.tag(getString("title"), context) : null;
+            }
+            finally {
+                Debug.popErrorContext();
+            }
             if (type == InventoryType.CHEST) {
                 inventory = new InventoryTag(size, title != null ? title : "Chest");
             }
@@ -184,55 +192,61 @@ public class InventoryScriptContainer extends ScriptContainer {
             inventory.idType = "script";
             inventory.idHolder = new ScriptTag(this);
             boolean[] filledSlots = new boolean[size];
-            if (contains("slots", List.class)) {
-                ItemStack[] finalItems = new ItemStack[size];
-                int itemsAdded = 0;
-                for (String items : getStringList("slots")) {
-                    items = TagManager.tag(items, context).trim();
-                    if (items.isEmpty()) {
-                        continue;
-                    }
-                    if (!items.startsWith("[") || !items.endsWith("]")) {
-                        Debug.echoError(this, "Invalid slots line: [" + items + "]... Ignoring it");
-                        continue;
-                    }
-                    String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[", -1);
-                    for (String item : itemsInLine) {
-                        if (item.isEmpty()) {
-                            finalItems[itemsAdded++] = new ItemStack(Material.AIR);
+            Debug.pushErrorContext("While reading 'slots' input");
+            try {
+                if (contains("slots", List.class)) {
+                    ItemStack[] finalItems = new ItemStack[size];
+                    int itemsAdded = 0;
+                    for (String items : getStringList("slots")) {
+                        items = TagManager.tag(items, context).trim();
+                        if (items.isEmpty()) {
                             continue;
                         }
-                        filledSlots[itemsAdded] = true;
-                        if (contains("definitions." + item, String.class)) {
-                            ItemTag def = ItemTag.valueOf(TagManager.tag(getString("definitions." + item), context), context);
-                            if (def == null) {
-                                Debug.echoError(this, "Invalid definition '" + item + "'... Ignoring it and assuming 'AIR'");
-                                finalItems[itemsAdded] = new ItemStack(Material.AIR);
-                            }
-                            else {
-                                finalItems[itemsAdded] = def.getItemStack();
-                            }
+                        if (!items.startsWith("[") || !items.endsWith("]")) {
+                            Debug.echoError(this, "Invalid slots line: [" + items + "]... Ignoring it");
+                            continue;
                         }
-                        else {
-                            try {
-                                ItemTag itemTag = ItemTag.valueOf(item, context);
-                                if (itemTag == null) {
+                        String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[", -1);
+                        for (String item : itemsInLine) {
+                            if (item.isEmpty()) {
+                                finalItems[itemsAdded++] = new ItemStack(Material.AIR);
+                                continue;
+                            }
+                            filledSlots[itemsAdded] = true;
+                            if (contains("definitions." + item, String.class)) {
+                                ItemTag def = ItemTag.valueOf(TagManager.tag(getString("definitions." + item), context), context);
+                                if (def == null) {
+                                    Debug.echoError(this, "Invalid definition '" + item + "'... Ignoring it and assuming 'AIR'");
                                     finalItems[itemsAdded] = new ItemStack(Material.AIR);
-                                    Debug.echoError(this, "Invalid slot item: [" + item + "]... ignoring it and assuming 'AIR'");
                                 }
                                 else {
-                                    finalItems[itemsAdded] = itemTag.getItemStack();
+                                    finalItems[itemsAdded] = def.getItemStack();
                                 }
                             }
-                            catch (Exception ex) {
-                                Debug.echoError(this, "Invalid slot item: [" + item + "]...");
-                                Debug.echoError(ex);
+                            else {
+                                try {
+                                    ItemTag itemTag = ItemTag.valueOf(item, context);
+                                    if (itemTag == null) {
+                                        finalItems[itemsAdded] = new ItemStack(Material.AIR);
+                                        Debug.echoError(this, "Invalid slot item: [" + item + "]... ignoring it and assuming 'AIR'");
+                                    }
+                                    else {
+                                        finalItems[itemsAdded] = itemTag.getItemStack();
+                                    }
+                                }
+                                catch (Exception ex) {
+                                    Debug.echoError(this, "Invalid slot item: [" + item + "]...");
+                                    Debug.echoError(ex);
+                                }
                             }
+                            itemsAdded++;
                         }
-                        itemsAdded++;
                     }
+                    inventory.setContents(finalItems);
                 }
-                inventory.setContents(finalItems);
+            }
+            finally {
+                Debug.popErrorContext();
             }
             if (containsScriptSection("procedural items")) {
                 List<ScriptEntry> entries = getEntries(context.getScriptEntryData(), "procedural items");
@@ -271,6 +285,9 @@ public class InventoryScriptContainer extends ScriptContainer {
             Debug.echoError(this, "Woah! An exception has been called while building this inventory script!");
             Debug.echoError(e);
             inventory = null;
+        }
+        finally {
+            Debug.popErrorContext();
         }
         if (inventory != null) {
             InventoryTag.trackTemporaryInventory(inventory);

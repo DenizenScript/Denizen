@@ -1888,4 +1888,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     public boolean advancedMatches(String matcher) {
         return isSpawned() && getDenizenEntity().tryAdvancedMatcher(matcher);
     }
+
+    /**
+     * Return an appropriate error-header output for this object, if any.
+     */
+    @Override
+    public String getErrorHeaderContext() {
+        return " with NPC '<A>" + debuggable() + "<LR>'";
+    }
 }

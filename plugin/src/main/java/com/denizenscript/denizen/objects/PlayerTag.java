@@ -3947,4 +3947,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public boolean advancedMatches(String matcher) {
         return isOnline() && getDenizenEntity().tryAdvancedMatcher(matcher);
     }
+
+    /**
+     * Return an appropriate error-header output for this object, if any.
+     */
+    @Override
+    public String getErrorHeaderContext() {
+        return " with player '<A>" + getName() + "<LR>'";
+    }
 }
