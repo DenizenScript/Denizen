@@ -230,6 +230,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerTakesFromFurnaceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerTakesFromLecternScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerThrowsEggScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerTriggersRaidScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerUsesPortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerWalkScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerWalksOverScriptEvent.class);
@@ -270,6 +271,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(LootGenerateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PortalCreateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PotionSplashScriptEvent.class);
+        ScriptEvent.registerScriptEvent(RaidFinishesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(RaidSpawnsWaveScriptEvent.class);
+        ScriptEvent.registerScriptEvent(RaidStopsScriptEvent.class);
         ScriptEvent.registerScriptEvent(SpawnChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(StructureGrowsScriptEvent.class);
         ScriptEvent.registerScriptEvent(ThunderChangesScriptEvent.class);
