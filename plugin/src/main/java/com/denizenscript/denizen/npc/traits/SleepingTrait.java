@@ -2,10 +2,12 @@ package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.type.Bed;
@@ -57,7 +59,12 @@ public class SleepingTrait extends Trait {
                 ((Player) npc.getEntity()).sleep(bedLocation.clone(), true);
             }
             else {
-                NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.SLEEPING);
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                    NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.SLEEPING);
+                }
+                else {
+                    PlayerAnimation.SLEEP.play((Player) npc.getEntity());
+                }
             }
         }
         else {
@@ -123,7 +130,12 @@ public class SleepingTrait extends Trait {
             if (((Player) npc.getEntity()).isSleeping()) {
                 ((Player) npc.getEntity()).wakeup(false);
             }
-            NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.STANDING);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+                NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.STANDING);
+            }
+            else {
+                PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());
+            }
         }
         bedLocation = null;
     }

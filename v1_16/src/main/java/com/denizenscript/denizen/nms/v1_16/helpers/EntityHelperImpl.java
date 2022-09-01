@@ -32,6 +32,7 @@ import java.util.*;
 
 public class EntityHelperImpl extends EntityHelper {
 
+    public static final MethodHandle ENTITY_SETPOSE = ReflectionHelper.getMethodHandle(net.minecraft.server.v1_16_R3.Entity.class, "setPose", EntityPose.class);
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.server.v1_16_R3.Entity.class, "onGround");
 
     @Override
@@ -46,7 +47,12 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setPose(Entity entity, Pose pose) {
-        ((CraftEntity) entity).getHandle().setPose(EntityPose.values()[pose.ordinal()]);
+        try {
+            ENTITY_SETPOSE.invoke(((CraftEntity) entity).getHandle(), EntityPose.values()[pose.ordinal()]);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     @Override

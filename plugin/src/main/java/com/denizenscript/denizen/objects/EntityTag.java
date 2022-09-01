@@ -3731,12 +3731,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the ghast entity should show the attacking face.
         // -->
         if (mechanism.matches("ghast_attacking") && mechanism.requireBoolean()) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) { // TODO: 1.19
-                ((Ghast) getBukkitEntity()).setCharging(mechanism.getValue().asBoolean());
-            }
-            else {
-                NMSHandler.entityHelper.setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
-            }
+            NMSHandler.entityHelper.setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]

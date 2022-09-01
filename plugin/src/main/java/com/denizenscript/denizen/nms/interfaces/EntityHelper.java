@@ -384,8 +384,8 @@ public abstract class EntityHelper {
 
     public abstract void setHeadAngle(Entity entity, float angle);
 
-    public void setGhastAttacking(Entity entity, boolean attacking) { // TODO: 1.19 - Ghast#setCharging
-        throw new UnsupportedOperationException();
+    public void setGhastAttacking(Entity entity, boolean attacking) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+        ((Ghast) entity).setCharging(attacking);
     }
 
     public abstract void setEndermanAngry(Entity entity, boolean angry);
