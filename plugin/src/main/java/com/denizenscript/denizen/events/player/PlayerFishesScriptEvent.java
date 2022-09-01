@@ -1,12 +1,11 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
@@ -157,7 +156,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        Entity hookEntity = NMSHandler.entityHelper.getFishHook(event);
+        Entity hookEntity = event.getHook();
         EntityTag.rememberEntity(hookEntity);
         hook = new EntityTag(hookEntity);
         state = new ElementTag(event.getState().toString());

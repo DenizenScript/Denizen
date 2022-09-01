@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -59,7 +60,7 @@ public class SleepingTrait extends Trait {
             }
             else {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                    NMSHandler.entityHelper.setSleeping(npc.getEntity(), true);
+                    NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.SLEEPING);
                 }
                 else {
                     PlayerAnimation.SLEEP.play((Player) npc.getEntity());
@@ -130,7 +131,7 @@ public class SleepingTrait extends Trait {
                 ((Player) npc.getEntity()).wakeup(false);
             }
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                NMSHandler.entityHelper.setSleeping(npc.getEntity(), false);
+                NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.STANDING);
             }
             else {
                 PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());

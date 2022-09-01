@@ -1,7 +1,12 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
+import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
+import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
@@ -12,7 +17,10 @@ import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.entity.*;
+import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
+import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
+import com.denizenscript.denizen.utilities.entity.FakeEntity;
+import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.DenizenCore;
@@ -20,20 +28,16 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
-import com.denizenscript.denizen.nms.interfaces.FakePlayer;
-import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizencore.objects.core.*;
-import com.denizenscript.denizencore.tags.ObjectTagProcessor;
-import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -43,10 +47,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
-import org.bukkit.potion.*;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -2050,7 +2057,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the living entity's absorption health.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "absorption_health", (attribute, object) -> {
-            return new ElementTag(NMSHandler.entityHelper.getAbsorption(object.getLivingEntity()));
+            return new ElementTag(object.getLivingEntity().getAbsorptionAmount());
         });
 
         // <--[tag]
@@ -3166,7 +3173,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <EntityTag.absorption_health>
         // -->
         if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
-            NMSHandler.entityHelper.setAbsorption(getLivingEntity(), mechanism.getValue().asDouble());
+            getLivingEntity().setAbsorptionAmount(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
