@@ -961,6 +961,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns whether the player is banned.
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_banned", (attribute, object) -> {
+            if (object.getName() == null) {
+                return new ElementTag(false);
+            }
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null) {
                 return new ElementTag(false);
@@ -1067,6 +1070,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Potentially can be null.
         // -->
         tagProcessor.registerTag(TimeTag.class, "ban_expiration_time", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || ban.getExpiration() == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1074,6 +1080,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new TimeTag(ban.getExpiration().getTime());
         });
         tagProcessor.registerTag(DurationTag.class, "ban_expiration", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             BukkitImplDeprecations.playerTimePlayedTags.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || ban.getExpiration() == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
@@ -1089,6 +1098,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the reason for the player's ban, if they are banned.
         // -->
         tagProcessor.registerTag(ElementTag.class, "ban_reason", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1103,6 +1115,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns when the player's ban was created, if they are banned.
         // -->
         tagProcessor.registerTag(TimeTag.class, "ban_created_time", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1110,6 +1125,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new TimeTag(ban.getCreated().getTime());
         });
         tagProcessor.registerTag(DurationTag.class, "ban_created", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             Deprecations.timeTagRewrite.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
@@ -1125,6 +1143,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the source of the player's ban, if they are banned.
         // -->
         tagProcessor.registerTag(ElementTag.class, "ban_source", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
@@ -1133,6 +1154,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         tagProcessor.registerTag(ObjectTag.class, "ban_info", (attribute, object) -> {
+            if (object.getName() == null) {
+                return null;
+            }
             BukkitImplDeprecations.playerBanInfoTags.warn(attribute.context);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(object.getName());
             if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
@@ -3743,7 +3767,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @tags
         // <PlayerTag.name>
         // -->
-        if (mechanism.matches("name")) {
+        if (mechanism.matches("name") && mechanism.hasValue()) {
             String name = mechanism.getValue().asString();
             if (name.length() > 16) {
                 Debug.echoError("Must specify a name with no more than 16 characters.");
@@ -3761,7 +3785,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Changes the skin of the player to the skin of the given player name.
         // See also <@link language Player Entity Skins (Skin Blobs)>.
         // -->
-        if (mechanism.matches("skin")) {
+        if (mechanism.matches("skin") && mechanism.hasValue()) {
             String name = mechanism.getValue().asString();
             if (name.length() > 16) {
                 Debug.echoError("Must specify a name with no more than 16 characters.");
@@ -3782,7 +3806,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @tags
         // <PlayerTag.skin_blob>
         // -->
-        if (mechanism.matches("skin_blob")) {
+        if (mechanism.matches("skin_blob") && mechanism.hasValue()) {
             NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
         }
 

@@ -260,6 +260,12 @@ public class DenizenNetworkManagerImpl extends Connection {
             ClientboundRemoveEntitiesPacket removePacket = (ClientboundRemoveEntitiesPacket) packet;
             doPacketOutput("Packet: ClientboundRemoveEntitiesPacket sent to " + player.getScoreboardName() + " for entities: " + removePacket.getEntityIds().stream().map(Object::toString).collect(Collectors.joining(", ")));
         }
+        else if (packet instanceof ClientboundPlayerInfoPacket) {
+            ClientboundPlayerInfoPacket playerInfoPacket = (ClientboundPlayerInfoPacket) packet;
+            doPacketOutput("Packet: ClientboundPlayerInfoPacket sent to " + player.getScoreboardName() + " of type " + playerInfoPacket.getAction() + " for player profiles: " +
+                    playerInfoPacket.getEntries().stream().map(p -> "mode=" + p.getGameMode() + "/latency=" + p.getLatency() + "/display=" + p.getDisplayName() + "/name=" + p.getProfile().getName() + "/id=" + p.getProfile().getId() + "/"
+                            + p.getProfile().getProperties().asMap().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue().stream().map(v -> v.getValue() + ";" + v.getSignature()).collect(Collectors.joining(";;;"))).collect(Collectors.joining("/"))).collect(Collectors.joining(", ")));
+        }
         else {
             doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
         }

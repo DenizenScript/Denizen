@@ -39,6 +39,9 @@ public abstract class ProfileEditor {
         NetworkInterceptHelper.enable();
         PlayerProfile profile = getFakeProfile(player, true);
         PlayerProfile skinProfile = NMSHandler.instance.fillPlayerProfile(new PlayerProfile(name, null));
+        if (skinProfile == null) {
+            return;
+        }
         if (skinProfile.getTexture() != null) {
             profile.setTexture(skinProfile.getTexture());
             profile.setTextureSignature(skinProfile.getTextureSignature());
