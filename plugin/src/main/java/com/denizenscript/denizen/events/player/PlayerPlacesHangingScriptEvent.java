@@ -59,7 +59,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (path.tryObjectSwitch("item", item)) {
+        if (!path.tryObjectSwitch("item", item)) {
             return false;
         }
         return super.matches(path);
