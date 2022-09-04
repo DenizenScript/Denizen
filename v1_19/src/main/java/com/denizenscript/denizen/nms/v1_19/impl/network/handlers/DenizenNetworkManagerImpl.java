@@ -411,12 +411,12 @@ public class DenizenNetworkManagerImpl extends Connection {
             event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
-            event = (PlayerReceivesActionbarScriptEvent) event.fire();
+            event = (PlayerReceivesActionbarScriptEvent) event.triggerNow();
             if (event.cancelled) {
                 return true;
             }
             if (event.modified) {
-                Component component = Handler.componentToNMS(ComponentSerializer.parse(event.rawJson.asString()));
+                Component component = Handler.componentToNMS(event.altMessageDetermination);
                 ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
@@ -1122,7 +1122,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                         return true;
                     }
                     if (result.modified) {
-                        oldManager.send(new ClientboundSystemChatPacket(ComponentSerializer.parse(result.rawJson.asString()), isActionbar), genericfuturelistener);
+                        oldManager.send(new ClientboundSystemChatPacket(result.altMessageDetermination, isActionbar), genericfuturelistener);
                         return true;
                     }
                 }

@@ -16,14 +16,11 @@ import java.util.Map;
 
 public class PacketOutChatImpl implements PacketOutChat {
 
-    private PacketPlayOutChat internal;
     private String message;
     private String rawJson;
-    private boolean bungee;
     private ChatMessageType position;
 
     public PacketOutChatImpl(PacketPlayOutChat internal) {
-        this.internal = internal;
         try {
             IChatBaseComponent baseComponent = (IChatBaseComponent) MESSAGE.get(internal);
             if (baseComponent != null) {
@@ -35,7 +32,6 @@ public class PacketOutChatImpl implements PacketOutChat {
                     message = FormattedTextHelper.stringify(internal.components, ChatColor.WHITE);
                     rawJson = ComponentSerializer.toString(internal.components);
                 }
-                bungee = true;
             }
             position = (ChatMessageType) POSITION.get(internal);
         }
@@ -62,21 +58,6 @@ public class PacketOutChatImpl implements PacketOutChat {
     @Override
     public String getRawJson() {
         return rawJson;
-    }
-
-    @Override
-    public void setRawJson(String rawJson) {
-        try {
-            if (!bungee) {
-                MESSAGE.set(internal, IChatBaseComponent.ChatSerializer.a(rawJson));
-            }
-            else {
-                internal.components = ComponentSerializer.parse(rawJson);
-            }
-        }
-        catch (Exception e) {
-            Debug.echoError(e);
-        }
     }
 
     private static final Field MESSAGE, POSITION;

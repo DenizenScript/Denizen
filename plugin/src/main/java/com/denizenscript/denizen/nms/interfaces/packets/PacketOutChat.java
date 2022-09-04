@@ -9,6 +9,4 @@ public interface PacketOutChat {
     String getMessage();
 
     String getRawJson();
-
-    void setRawJson(String rawJson);
 }

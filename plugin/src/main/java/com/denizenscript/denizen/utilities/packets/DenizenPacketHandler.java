@@ -130,11 +130,7 @@ public class DenizenPacketHandler {
                 event.rawJson = new ElementTag(chat.getRawJson());
                 event.system = new ElementTag(chat.isSystem());
                 event.player = PlayerTag.mirrorBukkitPlayer(player);
-                PlayerReceivesMessageScriptEvent result = (PlayerReceivesMessageScriptEvent) event.fire();
-                if (result.modified) {
-                    chat.setRawJson(result.rawJson.asString());
-                }
-                return result;
+                return event.triggerNow();
             };
             try {
                 if (DenizenCore.isMainThread()) {

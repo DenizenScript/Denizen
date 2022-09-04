@@ -47,9 +47,4 @@ public class PacketOutChatImpl implements PacketOutChat {
     public String getRawJson() {
         return rawJson;
     }
-
-    @Override
-    public void setRawJson(String rawJson) {
-        this.rawJson = rawJson;
-    }
 }
