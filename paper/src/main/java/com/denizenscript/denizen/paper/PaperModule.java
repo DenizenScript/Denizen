@@ -29,6 +29,7 @@ public class PaperModule {
 
         ScriptEvent.notNameParts.add(0, "PaperImpl");
         // Events
+        ScriptEvent.registerScriptEvent(AnvilDamagedScriptEvent.class);
         ScriptEvent.registerScriptEvent(AreaEnterExitScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
         ScriptEvent.registerScriptEvent(CreeperIgnitesScriptEvent.class);
