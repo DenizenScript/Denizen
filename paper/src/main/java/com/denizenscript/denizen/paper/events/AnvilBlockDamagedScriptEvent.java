@@ -11,11 +11,11 @@ import com.destroystokyo.paper.event.block.AnvilDamagedEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class AnvilDamagedScriptEvent extends BukkitScriptEvent implements Listener {
+public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // anvil damaged|breaks
+    // anvil block damaged|breaks
     //
     // @Group paper
     //
@@ -37,8 +37,8 @@ public class AnvilDamagedScriptEvent extends BukkitScriptEvent implements Listen
     // "BREAK:" + ElementTag(Boolean) to set weather the anvil will break.
     // -->
 
-    public AnvilDamagedScriptEvent() {
-        registerCouldMatcher("anvil damaged|breaks");
+    public AnvilBlockDamagedScriptEvent() {
+        registerCouldMatcher("anvil block damaged|breaks");
         registerSwitches("state");
     }
 
@@ -46,7 +46,7 @@ public class AnvilDamagedScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.eventArgLowerAt(1).equals("breaks") && !event.isBreaking()) {
+        if (path.eventArgLowerAt(2).equals("breaks") && !event.isBreaking()) {
             return false;
         }
         if (!runInCheck(path, event.getInventory().getLocation())) {
