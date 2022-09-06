@@ -1,11 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.SoundHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.entity.Player;
 
 public class SoundHelperImpl implements SoundHelper {
 
@@ -38,48 +34,5 @@ public class SoundHelperImpl implements SoundHelper {
                 return Sound.BLOCK_NOTE_BLOCK_PLING;
         }
         return getDefaultMidiInstrument();
-    }
-
-    @Override
-    public Sound getDefaultMidiInstrument() {
-        return Sound.BLOCK_NOTE_BLOCK_HARP;
-    }
-
-    @Override
-    public void playSound(Player player, Location location, String sound, float volume, float pitch, String category) {
-        SoundCategory categoryEnum = SoundCategory.MASTER;
-        try {
-            if (category != null) {
-                categoryEnum = SoundCategory.valueOf(category);
-            }
-        }
-        catch (Exception ex) {
-            Debug.echoError(ex);
-        }
-        if (player == null) {
-            location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);
-        }
-        else {
-            player.playSound(location, sound, categoryEnum, volume, pitch);
-        }
-    }
-
-    @Override
-    public void playSound(Player player, Location location, Sound sound, float volume, float pitch, String category) {
-        SoundCategory categoryEnum = SoundCategory.MASTER;
-        try {
-            if (category != null) {
-                categoryEnum = SoundCategory.valueOf(category);
-            }
-        }
-        catch (Exception ex) {
-            Debug.echoError(ex);
-        }
-        if (player == null) {
-            location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);
-        }
-        else {
-            player.playSound(location, sound, categoryEnum, volume, pitch);
-        }
     }
 }
