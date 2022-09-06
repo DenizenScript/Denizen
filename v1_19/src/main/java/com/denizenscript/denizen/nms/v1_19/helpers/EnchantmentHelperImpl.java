@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.v1_19.Handler;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.ChatColor;
@@ -40,7 +41,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
         try {
             EquipmentSlot[] slots = new EquipmentSlot[script.script.slots.size()];
             for (int i = 0; i < slots.length; i++) {
-                slots[i] = EquipmentSlot.valueOf(script.script.slots.get(i).toUpperCase());
+                slots[i] = EquipmentSlot.valueOf(CoreUtilities.toUpperCase(script.script.slots.get(i)));
             }
             net.minecraft.world.item.enchantment.Enchantment nmsEnchant = new net.minecraft.world.item.enchantment.Enchantment(net.minecraft.world.item.enchantment.Enchantment.Rarity.valueOf(script.script.rarity), EnchantmentCategory.valueOf(script.script.category), slots) {
                 @Override
@@ -128,7 +129,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                     return script.script.isDiscoverable;
                 }
             };
-            String enchName = script.script.id.toUpperCase();
+            String enchName = CoreUtilities.toUpperCase(script.script.id);
             boolean wasFrozen = REGISTRY_FROZEN.getBoolean(Registry.ENCHANTMENT);
             REGISTRY_FROZEN.setBoolean(Registry.ENCHANTMENT, false);
             Registry.register(Registry.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);

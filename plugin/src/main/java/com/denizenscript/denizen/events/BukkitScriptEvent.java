@@ -595,7 +595,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             String bukkitPriority = path.switches.get("bukkit_priority");
             if (bukkitPriority != null) {
                 try {
-                    EventPriority priority = EventPriority.valueOf(bukkitPriority.toUpperCase());
+                    EventPriority priority = EventPriority.valueOf(CoreUtilities.toUpperCase(bukkitPriority));
                     BukkitScriptEvent handler = priorityHandlers.get(priority);
                     if (handler == null) {
                         handler = (BukkitScriptEvent) clone();

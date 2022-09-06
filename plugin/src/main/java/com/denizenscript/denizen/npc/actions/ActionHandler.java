@@ -3,6 +3,7 @@ package com.denizenscript.denizen.npc.actions;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -34,13 +35,18 @@ public class ActionHandler {
         if (!assignment.containsScriptSection("actions.on " + actionName)) {
             return null;
         }
-        Debug.report(assignment, "Action", ArgumentHelper.debugObj("Type", "On " + actionName), npc, assignment.getAsScriptArg(), player);
+        boolean shouldDebug = Debug.shouldDebug(assignment);
+        if (shouldDebug) {
+            Debug.report(assignment, "Action", ArgumentHelper.debugObj("Type", "On " + actionName), npc, assignment.getAsScriptArg(), player);
+        }
         // Fetch script from Actions
         List<ScriptEntry> script = assignment.getEntries(new BukkitScriptEntryData(player, npc), "actions.on " + actionName);
         if (script.isEmpty()) {
             return null;
         }
-        Debug.echoDebug(assignment, DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
+        if (shouldDebug) {
+            Debug.echoDebug(assignment, DebugElement.Header, "Building action 'On " + CoreUtilities.toUpperCase(actionName) + "' for " + npc.toString());
+        }
         // Add entries and context to the queue
         ScriptQueue queue = new InstantQueue(assignment.getName());
         queue.addEntries(script);

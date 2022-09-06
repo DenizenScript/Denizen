@@ -78,7 +78,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         if (ObjectFetcher.isObjectWithProperties(string)) {
             return ObjectFetcher.getObjectFromWithProperties(MaterialTag.class, string, context);
         }
-        string = string.toUpperCase();
+        string = CoreUtilities.toUpperCase(string);
         if (string.startsWith("M@")) {
             string = string.substring("M@".length());
         }
@@ -750,7 +750,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             }
         }
         if (allowByMaterialName) {
-            Material quickOf = Material.getMaterial(comparedto.toUpperCase());
+            Material quickOf = Material.getMaterial(CoreUtilities.toUpperCase(comparedto));
             if (quickOf != null) {
                 return quickOf == mat;
             }

@@ -511,7 +511,7 @@ public class FormattedTextHelper {
                                 continue;
                             }
                             TextComponent clickableText = new TextComponent();
-                            clickableText.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(innardBase.get(1).toUpperCase()), unescape(innardParts.get(0))));
+                            clickableText.setClickEvent(new ClickEvent(ClickEvent.Action.valueOf(CoreUtilities.toUpperCase(innardBase.get(1))), unescape(innardParts.get(0))));
                             for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
                                 clickableText.addExtra(subComponent);
                             }
@@ -524,7 +524,7 @@ public class FormattedTextHelper {
                                 continue;
                             }
                             TextComponent hoverableText = new TextComponent();
-                            HoverEvent.Action action = HoverEvent.Action.valueOf(innardBase.get(1).toUpperCase());
+                            HoverEvent.Action action = HoverEvent.Action.valueOf(CoreUtilities.toUpperCase(innardBase.get(1)));
                             if (HoverFormatHelper.processHoverInput(action, hoverableText, innardParts.get(0))) {
                                 continue;
                             }

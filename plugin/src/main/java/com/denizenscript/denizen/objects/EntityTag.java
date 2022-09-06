@@ -352,7 +352,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return true;
         }
         // No longer picky about e@.. let's remove it from the arg
-        arg = arg.replace("e@", "").toUpperCase();
+        arg = CoreUtilities.toUpperCase(arg.replace("e@", ""));
         // Allow 'random'
         if (arg.equals("RANDOM")) {
             return true;

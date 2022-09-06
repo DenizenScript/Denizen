@@ -487,7 +487,7 @@ public class TextTagBase {
             }
             if (colorOut == null) {
                 try {
-                    ChatColor color = ChatColor.valueOf(colorName.toUpperCase());
+                    ChatColor color = ChatColor.valueOf(CoreUtilities.toUpperCase(colorName));
                     colorOut = color.toString();
                 }
                 catch (IllegalArgumentException ex) {

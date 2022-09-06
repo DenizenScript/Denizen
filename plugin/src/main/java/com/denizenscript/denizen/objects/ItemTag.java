@@ -149,7 +149,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             }
         }
         try {
-            MaterialTag mat = MaterialTag.valueOf(string.toUpperCase(), context);
+            MaterialTag mat = MaterialTag.valueOf(string, context);
             if (mat != null) {
                 stack = new ItemTag(mat.getMaterial());
             }
@@ -313,7 +313,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
                 if (!thisMeta.hasDisplayName()) {
                     return -1;
                 }
-                if (comparedItemMeta.getDisplayName().toUpperCase().startsWith(thisMeta.getDisplayName().toUpperCase())) {
+                if (CoreUtilities.toLowerCase(comparedItemMeta.getDisplayName()).startsWith(CoreUtilities.toLowerCase(thisMeta.getDisplayName()))) {
                     if (thisMeta.getDisplayName().length() > comparedItemMeta.getDisplayName().length()) {
                         determination++;
                     }

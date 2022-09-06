@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Villager;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public abstract class AnimationHelper {
     public static final Map<String, EntityAnimation> entityAnimations = new HashMap<>();
 
     static {
-        entityAnimations.put("VILLAGER_SHAKE_HEAD", entity -> {
+        entityAnimations.put("villager_shake_head", entity -> {
             if (entity instanceof Villager) {
                 ((Villager) entity).shakeHead();
             }
@@ -19,14 +20,14 @@ public abstract class AnimationHelper {
     }
 
     protected void register(String name, EntityAnimation animation) {
-        entityAnimations.put(name.toUpperCase(), animation);
+        entityAnimations.put(CoreUtilities.toLowerCase(name), animation);
     }
 
     public boolean hasEntityAnimation(String name) {
-        return entityAnimations.containsKey(name.toUpperCase());
+        return entityAnimations.containsKey(CoreUtilities.toLowerCase(name));
     }
 
     public EntityAnimation getEntityAnimation(String name) {
-        return entityAnimations.get(name.toUpperCase());
+        return entityAnimations.get(CoreUtilities.toLowerCase(name));
     }
 }
