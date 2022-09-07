@@ -80,6 +80,7 @@ public class NarrateCommand extends AbstractCommand {
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
                     Debug.echoError("Could not find format script matching '" + formatStr + "'");
+                    return;
                 }
                 scriptEntry.addObject("format", new ScriptTag(format));
             }
