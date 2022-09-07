@@ -3,8 +3,10 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +24,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when an attempt is made to build a block on another block. Not necessarily caused by players.
+    // @Triggers when an attempt is made to build a block on another block. Not necessarily caused by players. Does not normally fire when players place blocks. Prefer <@link event player places block> for that.
     //
     // @Context
     // <context.location> returns the LocationTag of the block the player is trying to build on.
@@ -31,6 +33,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Determine
     // "BUILDABLE" to allow the building.
+    //
+    // @Player when the event is triggered in relation to a player that is causing the block build.
     //
     // -->
 
@@ -69,6 +73,11 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
             }
         }
         return super.applyDetermination(path, determinationObj);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override

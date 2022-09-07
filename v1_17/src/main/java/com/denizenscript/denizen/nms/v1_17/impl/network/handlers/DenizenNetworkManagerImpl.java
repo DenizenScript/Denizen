@@ -35,7 +35,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
