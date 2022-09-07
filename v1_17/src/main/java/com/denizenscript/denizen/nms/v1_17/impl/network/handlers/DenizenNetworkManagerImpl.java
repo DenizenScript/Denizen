@@ -35,6 +35,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -943,7 +944,14 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (packet instanceof ClientboundChatPacket && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
             PacketOutChatImpl packetHelper = new PacketOutChatImpl((ClientboundChatPacket) packet);
             PlayerReceivesMessageScriptEvent result = DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), packetHelper);
-            return result != null && result.cancelled;
+            if (result != null) {
+                if (result.cancelled) {
+                    return true;
+                }
+                if (result.modified) {
+                    packetHelper.setRawJson(ComponentSerializer.toString(result.altMessageDetermination));
+                }
+            }
         }
         else if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));

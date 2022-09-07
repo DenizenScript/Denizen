@@ -32,6 +32,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -822,7 +823,14 @@ public class DenizenNetworkManagerImpl extends NetworkManager {
         if (packet instanceof PacketPlayOutChat && DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
             PacketOutChatImpl packetHelper = new PacketOutChatImpl((PacketPlayOutChat) packet);
             PlayerReceivesMessageScriptEvent result = DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), packetHelper);
-            return result != null && result.cancelled;
+            if (result != null) {
+                if (result.cancelled) {
+                    return true;
+                }
+                if (result.modified) {
+                    packetHelper.setRawJson(ComponentSerializer.toString(result.altMessageDetermination));
+                }
+            }
         }
         else if (packet instanceof PacketPlayOutEntityMetadata && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
             return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((PacketPlayOutEntityMetadata) packet));

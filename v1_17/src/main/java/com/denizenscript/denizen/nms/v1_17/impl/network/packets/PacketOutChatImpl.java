@@ -15,11 +15,14 @@ import java.lang.reflect.Field;
 
 public class PacketOutChatImpl implements PacketOutChat {
 
+    private ClientboundChatPacket internal;
     private String message;
     private String rawJson;
+    private boolean bungee;
     private ChatType position;
 
     public PacketOutChatImpl(ClientboundChatPacket internal) {
+        this.internal = internal;
         try {
             Component baseComponent = (Component) MESSAGE.get(internal);
             if (baseComponent != null) {
@@ -31,6 +34,7 @@ public class PacketOutChatImpl implements PacketOutChat {
                     message = FormattedTextHelper.stringify(internal.components, ChatColor.WHITE);
                     rawJson = ComponentSerializer.toString(internal.components);
                 }
+                bungee = true;
             }
             position = (ChatType) POSITION.get(internal);
         }
@@ -57,6 +61,20 @@ public class PacketOutChatImpl implements PacketOutChat {
     @Override
     public String getRawJson() {
         return rawJson;
+    }
+
+    public void setRawJson(String rawJson) {
+        try {
+            if (!bungee) {
+                MESSAGE.set(internal, Component.Serializer.fromJson(rawJson));
+            }
+            else {
+                internal.components = ComponentSerializer.parse(rawJson);
+            }
+        }
+        catch (Exception e) {
+            Debug.echoError(e);
+        }
     }
 
     private static final Field MESSAGE, POSITION;
