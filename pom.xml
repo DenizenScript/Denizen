@@ -49,6 +49,12 @@
         <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen-For-Bukkit.git</developerConnection>
         <url>https://github.com/DenizenScript/Denizen-For-Bukkit/tree/dev/</url>
     </scm>
+    <distributionManagement>
+        <repository>
+            <id>citizens-repo</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <defaultGoal>clean package install</defaultGoal>
@@ -66,9 +72,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>3.0.0</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
