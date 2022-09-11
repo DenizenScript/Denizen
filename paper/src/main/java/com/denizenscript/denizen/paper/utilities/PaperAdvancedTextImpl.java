@@ -5,7 +5,10 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.RelativeTeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
@@ -202,5 +205,25 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public void setDeathMessage(PlayerDeathEvent event, String message) {
         event.deathMessage(PaperModule.parseFormattedText(message, ChatColor.WHITE));
+    }
+
+    @Override
+    public void setSkin(Player player, String name) {
+        PlayerProfile skinProfile = Bukkit.createProfile(name);
+        Bukkit.getScheduler().runTaskAsynchronously(Denizen.instance, () -> {
+            if (!skinProfile.complete()) {
+                return;
+            }
+            DenizenCore.runOnMainThread(() -> {
+                for (ProfileProperty property : skinProfile.getProperties()) {
+                    if (property.getName().equals("textures")) {
+                        PlayerProfile playerProfile = player.getPlayerProfile();
+                        playerProfile.setProperty(property);
+                        player.setPlayerProfile(playerProfile);
+                        return;
+                    }
+                }
+            });
+        });
     }
 }
