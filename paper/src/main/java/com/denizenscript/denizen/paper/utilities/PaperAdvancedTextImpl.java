@@ -32,9 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.potion.PotionBrewer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
@@ -207,9 +205,15 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
         event.deathMessage(PaperModule.parseFormattedText(message, ChatColor.WHITE));
     }
 
+    public Set<UUID> modifiedTextures = new HashSet<>();
+
     @Override
     public void setSkin(Player player, String name) {
         PlayerProfile skinProfile = Bukkit.createProfile(name);
+        boolean isOwnName = CoreUtilities.equalsIgnoreCase(player.getName(), name);
+        if (isOwnName && modifiedTextures.contains(player.getUniqueId())) {
+            skinProfile.removeProperty("textures");
+        }
         Bukkit.getScheduler().runTaskAsynchronously(Denizen.instance, () -> {
             if (!skinProfile.complete()) {
                 return;
@@ -220,6 +224,12 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
                         PlayerProfile playerProfile = player.getPlayerProfile();
                         playerProfile.setProperty(property);
                         player.setPlayerProfile(playerProfile);
+                        if (isOwnName) {
+                            modifiedTextures.remove(player.getUniqueId());
+                        }
+                        else {
+                            modifiedTextures.add(player.getUniqueId());
+                        }
                         return;
                     }
                 }
