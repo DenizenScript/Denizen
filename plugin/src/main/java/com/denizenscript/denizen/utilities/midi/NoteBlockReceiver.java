@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.utilities.midi;
 
 import com.denizenscript.denizen.Denizen;
-import com.google.common.collect.Maps;
-import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.SoundHelper;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 
@@ -97,7 +97,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         // get pitch and volume from the midi message
         float pitch = (float) ToneUtil.midiToPitch(message);
         float volume = VOLUME_RANGE * (message.getData2() / 127.0f);
-        Sound instrument = patch == null ? NMSHandler.soundHelper.getDefaultMidiInstrument() : NMSHandler.soundHelper.getMidiInstrumentFromPatch(patch);
+        Sound instrument = patch == null ? SoundHelper.defaultMidiInstrument : SoundHelper.getMidiInstrumentFromPatch(patch);
         Runnable actualPlay = () -> {
             if (location != null) {
                 location.getWorld().playSound(location, instrument, volume, pitch);
@@ -107,10 +107,10 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
                     EntityTag entity = entities.get(i);
                     if (entity.isSpawned()) {
                         if (entity.isPlayer()) {
-                            NMSHandler.soundHelper.playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                            SoundHelper.playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
                         }
                         else {
-                            NMSHandler.soundHelper.playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
+                            SoundHelper.playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
                         }
                     }
                     else {

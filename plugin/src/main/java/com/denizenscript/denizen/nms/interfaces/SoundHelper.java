@@ -6,9 +6,9 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 
-public interface SoundHelper {
+public class SoundHelper {
 
-    int[] instruments_1_12 = {
+    private static final int[] instruments_1_12 = {
             0, 0, 0, 0, 0, 0, 0, 5, // 8
             9, 9, 9, 9, 9, 6, 0, 9, // 16
             9, 0, 0, 0, 0, 0, 0, 5, // 24
@@ -27,13 +27,26 @@ public interface SoundHelper {
             1, 1, 1, 6, 1, 2, 4, 7, // 128
     };
 
-    Sound getMidiInstrumentFromPatch(int patch);
-
-    default Sound getDefaultMidiInstrument() {
-        return Sound.BLOCK_NOTE_BLOCK_HARP;
+    public static Sound getMidiInstrumentFromPatch(int patch) {
+        switch (instruments_1_12[patch]) {
+            case 0: return Sound.BLOCK_NOTE_BLOCK_HARP;
+            case 1: return Sound.BLOCK_NOTE_BLOCK_BASS;
+            case 2: return Sound.BLOCK_NOTE_BLOCK_SNARE;
+            case 3: return Sound.BLOCK_NOTE_BLOCK_HAT;
+            case 4: return Sound.BLOCK_NOTE_BLOCK_BASEDRUM;
+            case 5: return Sound.BLOCK_NOTE_BLOCK_GUITAR;
+            case 6: return Sound.BLOCK_NOTE_BLOCK_BELL;
+            case 7: return Sound.BLOCK_NOTE_BLOCK_CHIME;
+            case 8: return Sound.BLOCK_NOTE_BLOCK_FLUTE;
+            case 9: return Sound.BLOCK_NOTE_BLOCK_XYLOPHONE;
+            case 10: return Sound.BLOCK_NOTE_BLOCK_PLING;
+            default: return defaultMidiInstrument;
+        }
     }
 
-    default void playSound(Player player, Location location, String sound, float volume, float pitch, String category) {
+    public static final Sound defaultMidiInstrument = Sound.BLOCK_NOTE_BLOCK_HARP;
+
+    public static void playSound(Player player, Location location, String sound, float volume, float pitch, String category) {
         SoundCategory categoryEnum = category != null ? new ElementTag(category).asEnum(SoundCategory.class) : null;
         if (categoryEnum == null) {
             categoryEnum = SoundCategory.MASTER;
@@ -46,7 +59,7 @@ public interface SoundHelper {
         }
     }
 
-    default void playSound(Player player, Location location, Sound sound, float volume, float pitch, String category) {
+    public static void playSound(Player player, Location location, Sound sound, float volume, float pitch, String category) {
         SoundCategory categoryEnum = category != null ? new ElementTag(category).asEnum(SoundCategory.class) : null;
         if (categoryEnum == null) {
             categoryEnum = SoundCategory.MASTER;

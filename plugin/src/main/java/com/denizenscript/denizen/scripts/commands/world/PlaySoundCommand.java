@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.SoundHelper;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -122,12 +122,12 @@ public class PlaySoundCommand extends AbstractCommand {
             if (players == null) {
                 if (custom) {
                     for (LocationTag location : locations) {
-                        NMSHandler.soundHelper.playSound(null, location, sound, volume, pitch, category);
+                        SoundHelper.playSound(null, location, sound, volume, pitch, category);
                     }
                 }
                 else {
                     for (LocationTag location : locations) {
-                        NMSHandler.soundHelper.playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        SoundHelper.playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                     }
                 }
             }
@@ -135,10 +135,10 @@ public class PlaySoundCommand extends AbstractCommand {
                 for (LocationTag location : locations) {
                     for (PlayerTag player : players) {
                         if (custom) {
-                            NMSHandler.soundHelper.playSound(player.getPlayerEntity(), location, sound, volume, pitch, category);
+                            SoundHelper.playSound(player.getPlayerEntity(), location, sound, volume, pitch, category);
                         }
                         else {
-                            NMSHandler.soundHelper.playSound(player.getPlayerEntity(), location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                            SoundHelper.playSound(player.getPlayerEntity(), location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                         }
                     }
                 }
@@ -146,10 +146,10 @@ public class PlaySoundCommand extends AbstractCommand {
             else {
                 for (PlayerTag player : players) {
                     if (custom) {
-                        NMSHandler.soundHelper.playSound(player.getPlayerEntity(), player.getLocation(), sound, volume, pitch, category);
+                        SoundHelper.playSound(player.getPlayerEntity(), player.getLocation(), sound, volume, pitch, category);
                     }
                     else {
-                        NMSHandler.soundHelper.playSound(player.getPlayerEntity(), player.getLocation(), Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        SoundHelper.playSound(player.getPlayerEntity(), player.getLocation(), Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
                     }
                 }
             }
