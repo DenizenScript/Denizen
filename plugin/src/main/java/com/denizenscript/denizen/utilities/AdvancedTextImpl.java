@@ -126,4 +126,12 @@ public class AdvancedTextImpl {
     public void setDeathMessage(PlayerDeathEvent event, String message) {
         event.setDeathMessage(message);
     }
+
+    public void setSkin(Player player, String name) {
+        NMSHandler.instance.getProfileEditor().setPlayerSkin(player, name);
+    }
+
+    public void setSkinBlob(Player player, String blob) {
+        NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(player, blob);
+    }
 }

@@ -3788,11 +3788,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("skin") && mechanism.hasValue()) {
             String name = mechanism.getValue().asString();
             if (name.length() > 16) {
-                Debug.echoError("Must specify a name with no more than 16 characters.");
+                mechanism.echoError("Must specify a name with no more than 16 characters.");
+                return;
             }
-            else {
-                NMSHandler.instance.getProfileEditor().setPlayerSkin(getPlayerEntity(), mechanism.getValue().asString());
-            }
+            AdvancedTextImpl.instance.setSkin(getPlayerEntity(), name);
         }
 
         // <--[mechanism]
@@ -3807,7 +3806,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.skin_blob>
         // -->
         if (mechanism.matches("skin_blob") && mechanism.hasValue()) {
-            NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
+            AdvancedTextImpl.instance.setSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]

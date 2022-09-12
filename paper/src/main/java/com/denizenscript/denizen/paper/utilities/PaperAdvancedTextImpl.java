@@ -5,7 +5,10 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.RelativeTeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
@@ -29,9 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.potion.PotionBrewer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
@@ -202,5 +203,55 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
     @Override
     public void setDeathMessage(PlayerDeathEvent event, String message) {
         event.deathMessage(PaperModule.parseFormattedText(message, ChatColor.WHITE));
+    }
+
+    public Set<UUID> modifiedTextures = new HashSet<>();
+
+    @Override
+    public void setSkin(Player player, String name) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            NMSHandler.instance.getProfileEditor().setPlayerSkin(player, name);
+            return;
+        }
+        // Note: this API is present on all supported versions, but currently used for 1.19+ only
+        PlayerProfile skinProfile = Bukkit.createProfile(name);
+        boolean isOwnName = CoreUtilities.equalsIgnoreCase(player.getName(), name);
+        if (isOwnName && modifiedTextures.contains(player.getUniqueId())) {
+            skinProfile.removeProperty("textures");
+        }
+        Bukkit.getScheduler().runTaskAsynchronously(Denizen.instance, () -> {
+            if (!skinProfile.complete()) {
+                return;
+            }
+            DenizenCore.runOnMainThread(() -> {
+                for (ProfileProperty property : skinProfile.getProperties()) {
+                    if (property.getName().equals("textures")) {
+                        PlayerProfile playerProfile = player.getPlayerProfile();
+                        playerProfile.setProperty(property);
+                        player.setPlayerProfile(playerProfile);
+                        if (isOwnName) {
+                            modifiedTextures.remove(player.getUniqueId());
+                        }
+                        else {
+                            modifiedTextures.add(player.getUniqueId());
+                        }
+                        return;
+                    }
+                }
+            });
+        });
+    }
+
+    @Override
+    public void setSkinBlob(Player player, String blob) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(player, blob);
+            return;
+        }
+        // Note: this API is present on all supported versions, but currently used for 1.19+ only
+        List<String> split = CoreUtilities.split(blob, ';');
+        PlayerProfile playerProfile = player.getPlayerProfile();
+        playerProfile.setProperty(new ProfileProperty("textures", split.get(0), split.size() > 1 ? split.get(1) : null));
+        player.setPlayerProfile(playerProfile);
     }
 }
