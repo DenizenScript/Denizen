@@ -209,6 +209,11 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
 
     @Override
     public void setSkin(Player player, String name) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            NMSHandler.instance.getProfileEditor().setPlayerSkin(player, name);
+            return;
+        }
+        // Note: this API is present on all supported versions, but currently used for 1.19+ only
         PlayerProfile skinProfile = Bukkit.createProfile(name);
         boolean isOwnName = CoreUtilities.equalsIgnoreCase(player.getName(), name);
         if (isOwnName && modifiedTextures.contains(player.getUniqueId())) {
