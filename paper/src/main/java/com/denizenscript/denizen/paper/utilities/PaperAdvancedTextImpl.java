@@ -241,4 +241,17 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
             });
         });
     }
+
+    @Override
+    public void setSkinBlob(Player player, String blob) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(player, blob);
+            return;
+        }
+        // Note: this API is present on all supported versions, but currently used for 1.19+ only
+        List<String> split = CoreUtilities.split(blob, ';');
+        PlayerProfile playerProfile = player.getPlayerProfile();
+        playerProfile.setProperty(new ProfileProperty("textures", split.get(0), split.size() > 1 ? split.get(1) : null));
+        player.setPlayerProfile(playerProfile);
+    }
 }

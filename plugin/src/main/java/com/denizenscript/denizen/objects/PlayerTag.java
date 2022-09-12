@@ -3806,7 +3806,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.skin_blob>
         // -->
         if (mechanism.matches("skin_blob") && mechanism.hasValue()) {
-            NMSHandler.instance.getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
+            AdvancedTextImpl.instance.setSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
