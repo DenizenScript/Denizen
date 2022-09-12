@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.interfaces;
+package com.denizenscript.denizen.utilities.midi;
 
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Location;
