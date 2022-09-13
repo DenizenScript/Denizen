@@ -13,11 +13,7 @@ import io.papermc.paper.entity.RelativeTeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Nameable;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -25,11 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.*;
 import org.bukkit.potion.PotionBrewer;
 
 import java.util.*;
@@ -224,19 +216,14 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
                 return;
             }
             DenizenCore.runOnMainThread(() -> {
-                for (ProfileProperty property : skinProfile.getProperties()) {
-                    if (property.getName().equals("textures")) {
-                        PlayerProfile playerProfile = player.getPlayerProfile();
-                        playerProfile.setProperty(property);
-                        player.setPlayerProfile(playerProfile);
-                        if (isOwnName) {
-                            modifiedTextures.remove(player.getUniqueId());
-                        }
-                        else {
-                            modifiedTextures.add(player.getUniqueId());
-                        }
-                        return;
-                    }
+                PlayerProfile playerProfile = player.getPlayerProfile();
+                playerProfile.setProperty(getProfileProperty(skinProfile, "textures"));
+                player.setPlayerProfile(playerProfile);
+                if (isOwnName) {
+                    modifiedTextures.remove(player.getUniqueId());
+                }
+                else {
+                    modifiedTextures.add(player.getUniqueId());
                 }
             });
         });
@@ -251,7 +238,22 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
         // Note: this API is present on all supported versions, but currently used for 1.19+ only
         List<String> split = CoreUtilities.split(blob, ';');
         PlayerProfile playerProfile = player.getPlayerProfile();
-        playerProfile.setProperty(new ProfileProperty("textures", split.get(0), split.size() > 1 ? split.get(1) : null));
+        ProfileProperty currentTextures = getProfileProperty(playerProfile, "textures");
+        String value = split.get(0);
+        String signature = split.size() > 1 ? split.get(1) : null;
+        if (!value.equals(currentTextures.getValue()) && (signature == null || !signature.equals(currentTextures.getSignature()))) {
+            modifiedTextures.add(player.getUniqueId());
+        }
+        playerProfile.setProperty(new ProfileProperty("textures", value, signature));
         player.setPlayerProfile(playerProfile);
+    }
+
+    public ProfileProperty getProfileProperty(PlayerProfile profile, String name) {
+        for (ProfileProperty property : profile.getProperties()) {
+            if (property.getName().equals(name)) {
+                return property;
+            }
+        }
+        return null;
     }
 }
