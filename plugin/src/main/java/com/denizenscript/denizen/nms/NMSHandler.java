@@ -1,15 +1,10 @@
 package com.denizenscript.denizen.nms;
 
+import com.denizenscript.denizen.nms.abstracts.*;
 import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
-import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
-import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.abstracts.BlockLight;
-import com.denizenscript.denizen.nms.abstracts.ParticleHelper;
-import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
-import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
@@ -21,7 +16,9 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public abstract class NMSHandler {
 
@@ -92,7 +89,6 @@ public abstract class NMSHandler {
     public static EntityHelper entityHelper;
     public static FishingHelper fishingHelper;
     public static ItemHelper itemHelper;
-    public static SoundHelper soundHelper;
     public static PacketHelper packetHelper;
     public static ParticleHelper particleHelper;
     public static PlayerHelper playerHelper;

@@ -1,16 +1,17 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.midi.SoundHelper;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -133,7 +134,7 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        NMSHandler.soundHelper.playSound(ent, location, Sound.BLOCK_CHEST_OPEN, 1, 1, "BLOCKS");
+                        SoundHelper.playSound(ent, location, Sound.BLOCK_CHEST_OPEN, 1, 1, "BLOCKS");
                     }
                     NMSHandler.packetHelper.showBlockAction(ent, location, 1, 1);
                 }
@@ -142,7 +143,7 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (PlayerTag player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        NMSHandler.soundHelper.playSound(ent, location, Sound.BLOCK_CHEST_CLOSE, 1, 1, "BLOCKS");
+                        SoundHelper.playSound(ent, location, Sound.BLOCK_CHEST_CLOSE, 1, 1, "BLOCKS");
                     }
                     NMSHandler.packetHelper.showBlockAction(ent, location, 1, 0);
                 }
