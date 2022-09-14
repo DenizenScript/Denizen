@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.utilities.midi.SoundHelper;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -12,6 +11,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 
 import java.util.List;
 
@@ -118,16 +118,20 @@ public class PlaySoundCommand extends AbstractCommand {
         float volume = volumeElement.asFloat();
         float pitch = pitchElement.asFloat();
         String category = sound_category.asString().toUpperCase();
+        SoundCategory categoryEnum = category != null ? new ElementTag(category).asEnum(SoundCategory.class) : null;
+        if (categoryEnum == null) {
+            categoryEnum = SoundCategory.MASTER;
+        }
         try {
             if (players == null) {
                 if (custom) {
                     for (LocationTag location : locations) {
-                        SoundHelper.playSound(null, location, sound, volume, pitch, category);
+                        location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);
                     }
                 }
                 else {
                     for (LocationTag location : locations) {
-                        SoundHelper.playSound(null, location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        location.getWorld().playSound(location, Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
                     }
                 }
             }
@@ -135,10 +139,10 @@ public class PlaySoundCommand extends AbstractCommand {
                 for (LocationTag location : locations) {
                     for (PlayerTag player : players) {
                         if (custom) {
-                            SoundHelper.playSound(player.getPlayerEntity(), location, sound, volume, pitch, category);
+                            player.getPlayerEntity().playSound(location, sound, categoryEnum, volume, pitch);
                         }
                         else {
-                            SoundHelper.playSound(player.getPlayerEntity(), location, Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                            player.getPlayerEntity().playSound(location, Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
                         }
                     }
                 }
@@ -146,10 +150,10 @@ public class PlaySoundCommand extends AbstractCommand {
             else {
                 for (PlayerTag player : players) {
                     if (custom) {
-                        SoundHelper.playSound(player.getPlayerEntity(), player.getLocation(), sound, volume, pitch, category);
+                        player.getPlayerEntity().playSound(player.getLocation(), sound, categoryEnum, volume, pitch);
                     }
                     else {
-                        SoundHelper.playSound(player.getPlayerEntity(), player.getLocation(), Sound.valueOf(sound.toUpperCase()), volume, pitch, category);
+                        player.getPlayerEntity().playSound(player.getPlayerEntity(), Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
                     }
                 }
             }

@@ -895,7 +895,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Decimal)
         // @mechanism PlayerTag.health_scale
         // @description
-        // Returns the current scale for the player's health bar
+        // Returns the current scale for the player's health bar.
         // -->
         registerOfflineTag(ElementTag.class, "health_scale", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getHealthScale());
