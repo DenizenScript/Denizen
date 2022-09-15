@@ -64,6 +64,7 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCarryingEgg.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityReputation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
