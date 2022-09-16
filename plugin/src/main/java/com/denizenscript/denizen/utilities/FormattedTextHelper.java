@@ -506,7 +506,7 @@ public class FormattedTextHelper {
                             lastText.addExtra(component);
                         }
                         else if (innardType.equals("click") && innardParts.size() == 1) {
-                            int endIndex = findEndIndexFor(str, "click", i + 5);
+                            int endIndex = findEndIndexFor(str, "click", endBracket);
                             if (endIndex == -1) {
                                 continue;
                             }
@@ -519,7 +519,7 @@ public class FormattedTextHelper {
                             endBracket = endIndex + "&[/click".length();
                         }
                         else if (innardType.equals("hover")) {
-                            int endIndex = findEndIndexFor(str, "hover", i + 5);
+                            int endIndex = findEndIndexFor(str, "hover", endBracket);
                             if (endIndex == -1) {
                                 continue;
                             }
@@ -590,7 +590,7 @@ public class FormattedTextHelper {
                                 Debug.echoError("Text parse issue: cannot interpret color '" + innardBase.get(1) + "'.");
                             }
                             if (color != null) {
-                                int endIndex = findEndIndexFor(str, "[color=", "[reset=color]", i + 1);
+                                int endIndex = findEndIndexFor(str, "[color=", "[reset=color]", endBracket);
                                 if (endIndex == -1) {
                                     nextText.setColor(color);
                                 }
@@ -628,7 +628,7 @@ public class FormattedTextHelper {
                             }
                         }
                         else if (innardType.equals("font")) {
-                            int endIndex = findEndIndexFor(str, "[font=", "[reset=font]", i + 1);
+                            int endIndex = findEndIndexFor(str, "[font=", "[reset=font]", endBracket);
                             if (endIndex == -1) {
                                 nextText.setFont(innardBase.get(1));
                             }
