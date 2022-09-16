@@ -95,8 +95,8 @@ public class FormattedTextHelper {
         return output;
     }
 
-    public static boolean boolNotNull(Boolean bool) {
-        return bool != null && bool;
+    public static boolean needsAppendCode(ChatColor color, Boolean bool, boolean trueBool) {
+        return (bool != null && bool) || (color != null && trueBool);
     }
 
     public static String stringifyRGBSpigot(String hex) {
@@ -123,23 +123,23 @@ public class FormattedTextHelper {
         if (color != null) {
             builder.append(color);
         }
-        if (boolNotNull(component.isBoldRaw())) {
+        if (needsAppendCode(color, component.isBoldRaw(), component.isBold())) {
             builder.append(ChatColor.BOLD);
         }
-        if (boolNotNull(component.isItalicRaw())) {
+        if (needsAppendCode(color, component.isItalicRaw(), component.isItalic())) {
             builder.append(ChatColor.ITALIC);
         }
-        if (boolNotNull(component.isStrikethroughRaw())) {
+        if (needsAppendCode(color, component.isStrikethroughRaw(), component.isStrikethrough())) {
             builder.append(ChatColor.STRIKETHROUGH);
         }
-        if (boolNotNull(component.isUnderlinedRaw())) {
+        if (needsAppendCode(color, component.isUnderlinedRaw(), component.isUnderlined())) {
             builder.append(ChatColor.UNDERLINE);
         }
-        if (boolNotNull(component.isObfuscatedRaw())) {
+        if (needsAppendCode(color, component.isObfuscatedRaw(), component.isObfuscated())) {
             builder.append(ChatColor.MAGIC);
         }
-        if (component.getFontRaw() != null) {
-            builder.append(ChatColor.COLOR_CHAR).append("[font=").append(component.getFontRaw()).append("]");
+        if (component.getFontRaw() != null || (component.getFont() != null && color != null)) {
+            builder.append(ChatColor.COLOR_CHAR).append("[font=").append(component.getFont()).append("]");
         }
         boolean hasInsertion = component.getInsertion() != null;
         if (hasInsertion) {
