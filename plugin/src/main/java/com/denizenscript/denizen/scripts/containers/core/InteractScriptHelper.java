@@ -29,7 +29,7 @@ public class InteractScriptHelper {
         for (AssignmentScriptContainer container : trait.containerCache) {
             if (container != null) {
                 InteractScriptContainer interact = container.getInteract();
-                if (interact != null) {
+                if (interact != null && interact.shouldEnable()) {
                     result.add(interact);
                 }
             }

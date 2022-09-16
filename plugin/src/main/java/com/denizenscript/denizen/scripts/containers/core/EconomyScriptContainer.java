@@ -45,6 +45,8 @@ public class EconomyScriptContainer extends ScriptContainer {
     //
     // ALL SCRIPT KEYS ARE REQUIRED.
     //
+    // Economy scripts can be automatically disabled by adding "enabled: false" as a root key (supports any load-time-parseable tags).
+    //
     // <code>
     // # The script name will be shown to the economy provider as the name of the economy system.
     // Economy_Script_Name:
@@ -389,6 +391,8 @@ public class EconomyScriptContainer extends ScriptContainer {
 
     public EconomyScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
-        providersRegistered.add(register());
+        if (shouldEnable()) {
+            providersRegistered.add(register());
+        }
     }
 }

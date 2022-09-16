@@ -46,6 +46,9 @@ public class CommandScriptContainer extends ScriptContainer {
     // and 'usage:' is for documentation in the '/help' command.
     // These two options should almost always show the same name.
     //
+    //
+    // Command scripts can be automatically disabled by adding "enabled: false" as a root key (supports any load-time-parseable tags).
+    //
     // <code>
     // # The name of the script doesn't matter, and will not affect the command in any way.
     // Command_Script_Name:

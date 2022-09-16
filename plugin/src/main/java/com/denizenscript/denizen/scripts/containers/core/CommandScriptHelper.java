@@ -109,7 +109,9 @@ public class CommandScriptHelper implements Listener {
     @EventHandler
     public void scriptReload(ScriptReloadEvent event) {
         for (CommandScriptContainer script : commandScripts.values()) {
-            registerDenizenCommand(new DenizenCommand(script));
+            if (script.shouldEnable()) {
+                registerDenizenCommand(new DenizenCommand(script));
+            }
         }
         syncDenizenCommands();
     }

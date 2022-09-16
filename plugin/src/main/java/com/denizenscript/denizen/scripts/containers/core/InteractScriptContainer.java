@@ -40,6 +40,8 @@ public class InteractScriptContainer extends ScriptContainer {
     // Note that script commands ran in interact scripts by default have a delay between each command.
     // To override this delay, set 'speed: 0' on the container or change the relevant config setting.
     //
+    // Interact scripts can be automatically disabled by adding "enabled: false" as a root key (supports any load-time-parseable tags).
+    //
     // <code>
     // Interact_Script_Name:
     //

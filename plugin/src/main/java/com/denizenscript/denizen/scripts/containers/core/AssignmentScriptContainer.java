@@ -25,6 +25,9 @@ public class AssignmentScriptContainer extends ScriptContainer {
     // interact scripts can provide more functionality.
     // See also <@link language interact script containers>
     //
+    // Assignments scripts can be automatically disabled by adding "enabled: false" as a root key (supports any load-time-parseable tags).
+    // This will disable any "actions" on the script (but not interact scripts steps - disable the interact for that).
+    //
     // Basic structure of an assignment script:
     // <code>
     // Assignment_Script_Name:

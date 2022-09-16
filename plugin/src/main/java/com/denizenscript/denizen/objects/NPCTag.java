@@ -348,7 +348,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         if (getCitizen() != null) {
             if (getCitizen().hasTrait(AssignmentTrait.class)) {
                 for (AssignmentScriptContainer container : getCitizen().getOrAddTrait(AssignmentTrait.class).containerCache) {
-                    if (container != null) {
+                    if (container != null && container.shouldEnable()) {
                         ListTag singleResult = Denizen.getInstance().npcHelper.getActionHandler().doAction(actionName, this, player, container, context);
                         if (singleResult != null) {
                             result.addAll(singleResult);

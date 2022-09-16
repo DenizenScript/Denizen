@@ -47,6 +47,8 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     //
     // Using these may cause unpredictable compatibility issues with external plugins.
     //
+    // Enchantment scripts can be automatically disabled by adding "enabled: false" as a root key (supports any load-time-parseable tags).
+    //
     // <code>
     // Enchantment_Script_Name:
     //
@@ -197,19 +199,21 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         maxCostTaggable = getString("max_cost", "1");
         damageBonusTaggable = getString("damage_bonus", "0.0");
         damageProtectionTaggable = getString("damage_protection", "0");
-        EnchantmentReference ref = registeredEnchantmentContainers.get(id);
-        boolean isNew = ref == null;
-        if (isNew) {
-            ref = new EnchantmentReference();
-        }
-        EnchantmentScriptContainer old = ref.script;
-        ref.script = this;
-        registeredEnchantmentContainers.put(id, ref);
-        if (isNew) {
-            enchantment = NMSHandler.enchantmentHelper.registerFakeEnchantment(ref);
-        }
-        else {
-            enchantment = old.enchantment;
+        if (shouldEnable()) {
+            EnchantmentReference ref = registeredEnchantmentContainers.get(id);
+            boolean isNew = ref == null;
+            if (isNew) {
+                ref = new EnchantmentReference();
+            }
+            EnchantmentScriptContainer old = ref.script;
+            ref.script = this;
+            registeredEnchantmentContainers.put(id, ref);
+            if (isNew) {
+                enchantment = NMSHandler.enchantmentHelper.registerFakeEnchantment(ref);
+            }
+            else {
+                enchantment = old.enchantment;
+            }
         }
     }
 
