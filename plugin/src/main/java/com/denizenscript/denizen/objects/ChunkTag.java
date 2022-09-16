@@ -131,6 +131,9 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     Chunk cachedChunk;
 
     public Chunk getChunkForTag(Attribute attribute) {
+        if (cachedChunk != null) {
+            return cachedChunk;
+        }
         NMSHandler.chunkHelper.changeChunkServerThread(getBukkitWorld());
         try {
             if (!isLoaded()) {

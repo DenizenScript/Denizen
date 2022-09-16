@@ -2747,6 +2747,66 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.find_tile_entities[(<matcher>)].within[<#.#>]>
+        // @returns ListTag(LocationTag)
+        // @group finding
+        // @description
+        // Returns a list of tile-entity blocks within a radius, with an optional search parameter for the block material.
+        // This can be more efficient that <@link tag LocationTag.find_blocks.within> when only tile-entity blocks are relevant.
+        // Note: current implementation measures the center of nearby block's distance from the exact given location.
+        // Result list is sorted by closeness (1 = closest, 2 = next closest, ... last = farthest).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "find_tile_entities", (attribute, object) -> {
+            String matcher = attribute.hasParam() ? attribute.getParam() : null;
+            if (!attribute.startsWith("within", 2) || !attribute.hasContext(2)) {
+                return null;
+            }
+            attribute.fulfill(1);
+            double radius = attribute.getDoubleParam();
+            ListTag found = new ListTag();
+            int max = Settings.blockTagsMaxBlocks();
+            int index = 0;
+            if (!object.isChunkLoadedSafe()) {
+                attribute.echoError("LocationTag trying to read block, but cannot because the chunk is unloaded. Use the 'chunkload' command to ensure the chunk is loaded.");
+                return null;
+            }
+            double minPossibleX = object.getX() - radius;
+            double minPossibleZ = object.getZ() - radius;
+            double maxPossibleX = object.getX() + radius;
+            double maxPossibleZ = object.getZ() + radius;
+            int minChunkX = (int) Math.floor(minPossibleX / 16);
+            int minChunkZ = (int) Math.floor(minPossibleZ / 16);
+            int maxChunkX = (int) Math.ceil(maxPossibleX / 16);
+            int maxChunkZ = (int) Math.ceil(maxPossibleZ / 16);
+            ChunkTag testChunk = new ChunkTag(object);
+            Location refLoc = object.clone();
+            fullLoop:
+            for (int x = minChunkX; x <= maxChunkX; x++) {
+                testChunk.chunkX = x;
+                for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                    testChunk.chunkZ = z;
+                    testChunk.cachedChunk = null;
+                    if (testChunk.isLoadedSafe()) {
+                        for (BlockState block : testChunk.getChunkForTag(attribute).getTileEntities()) {
+                            if (index++ > max) {
+                                break fullLoop;
+                            }
+                            Location current = block.getLocation(refLoc).add(0.5, 0.5, 0.5);
+                            if (Utilities.checkLocation(object, current, radius)) {
+                                LocationTag actualLoc = new LocationTag(current);
+                                if (matcher == null || actualLoc.tryAdvancedMatcher(matcher)) {
+                                    found.addObject(actualLoc);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            found.objectForms.sort((loc1, loc2) -> object.compare((LocationTag) loc1, (LocationTag) loc2));
+            return found;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.find_spawnable_blocks_within[<#.#>]>
         // @returns ListTag(LocationTag)
         // @group finding
