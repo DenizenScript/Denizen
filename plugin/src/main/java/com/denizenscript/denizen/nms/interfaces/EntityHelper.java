@@ -195,7 +195,7 @@ public abstract class EntityHelper {
         if (from.getWorld() != at.getWorld()) {
             return;
         }
-        if (from instanceof Player) {
+        if (EntityTag.isPlayer(from)) {
             if (internalLook((Player) from, at)) {
                 return;
             }
