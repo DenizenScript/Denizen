@@ -132,30 +132,32 @@ public class DenizenCommandHandler {
      * DENIZEN DEBUG
      */
     @Command(
-            aliases = {"denizen"}, usage = "debug",
+            aliases = {"denizen"}, usage = "debug (--verbose on) (--ultraverbose on)",
             desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
             min = 1, max = 5, permission = "denizen.debug", flags = "scbroevnipfl")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
+        if (args.getFlags().isEmpty() && args.getValueFlags().isEmpty()) {
+            CoreConfiguration.shouldShowDebug = !CoreConfiguration.shouldShowDebug;
+            Messaging.sendInfo(sender, "Denizen debugger is now: " + (CoreConfiguration.shouldShowDebug ? "<a>ENABLED" : "<c>DISABLED") + "<f>.");
+            return;
+        }
+        CoreConfiguration.shouldShowDebug = true;
         if (args.hasFlag('s')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugStackTraces = !CoreConfiguration.debugStackTraces;
             Messaging.sendInfo(sender, (CoreConfiguration.debugStackTraces ? "Denizen debugger is now showing caught " +
                     "exception stack traces." : "Denizen debugger is no longer showing caught stack traces."));
         }
         if (args.hasFlag('c')) {
-            CoreConfiguration.shouldShowDebug = true;
             DebugConsoleSender.showColor = !DebugConsoleSender.showColor;
             Messaging.sendInfo(sender, (DebugConsoleSender.showColor ? "Denizen debugger will now show color."
                     : "Denizen debugger will no longer show color."));
         }
         if (args.hasFlag('o')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugOverride = !CoreConfiguration.debugOverride;
             Messaging.sendInfo(sender, (CoreConfiguration.debugOverride ? "Denizen debugger is now overriding 'debug: false'."
                     : "Denizen debugger will no longer override 'debug: false'."));
         }
         if (args.hasFlag('b')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugScriptBuilder = !CoreConfiguration.debugScriptBuilder;
             Messaging.sendInfo(sender, (CoreConfiguration.debugScriptBuilder ? "Denizen debugger is now logging the " +
                     "ScriptBuilder." : "Denizen debugger is now hiding ScriptBuilder logging."));
@@ -165,44 +167,43 @@ public class DenizenCommandHandler {
                 Messaging.sendError(sender, "Not allowed to record debug currently.");
                 return;
             }
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.shouldRecordDebug = !CoreConfiguration.shouldRecordDebug;
             Debug.debugRecording = new StringBuilder();
             Messaging.sendInfo(sender, (CoreConfiguration.shouldRecordDebug ? "Denizen debugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen debugger recording disabled."));
         }
         if (args.hasFlag('e')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugExtraInfo = !CoreConfiguration.debugExtraInfo;
             Messaging.sendInfo(sender, (CoreConfiguration.debugExtraInfo ? "Denizen debugger is now showing extra internal information." :
                     "Denizen debugger is no longer showing extra internal information."));
         }
-        if (args.hasFlag('v')) {
-            CoreConfiguration.shouldShowDebug = true;
+        if (args.hasFlag('v') || args.hasValueFlag("verbose")) {
             CoreConfiguration.debugVerbose = !CoreConfiguration.debugVerbose;
             Messaging.sendInfo(sender, (CoreConfiguration.debugVerbose ? "Denizen debugger is now verbose." :
                     "Denizen debugger is no longer verbose."));
         }
+        if (args.hasValueFlag("ultraverbose")) {
+            CoreConfiguration.debugUltraVerbose = !CoreConfiguration.debugUltraVerbose;
+            CoreConfiguration.debugVerbose = CoreConfiguration.debugUltraVerbose;
+            Messaging.sendInfo(sender, (CoreConfiguration.debugVerbose ? "Denizen debugger is now ultra-verbose." :
+                    "Denizen debugger is no longer ultra-verbose."));
+        }
         if (args.hasFlag('f')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.futureWarningsEnabled = !CoreConfiguration.futureWarningsEnabled;
             Messaging.sendInfo(sender, (CoreConfiguration.futureWarningsEnabled ? "Denizen debugger is now showing future warnings." :
                     "Denizen debugger will no longer show future warnings."));
         }
         if (args.hasFlag('n')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugShouldTrim = !CoreConfiguration.debugShouldTrim;
             Messaging.sendInfo(sender, (CoreConfiguration.debugShouldTrim ? "Denizen debugger is now trimming long messages."
                     : "Denizen debugger is no longer trimming long messages."));
         }
         if (args.hasFlag('i')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugShowSources = !CoreConfiguration.debugShowSources;
             Messaging.sendInfo(sender, (CoreConfiguration.debugShowSources ? "Denizen debugger is now showing source information."
                     : "Denizen debugger is no longer showing source information."));
         }
         if (args.hasFlag('p')) {
-            CoreConfiguration.shouldShowDebug = true;
             NetworkInterceptHelper.enable();
             NMSHandler.debugPackets = !NMSHandler.debugPackets;
             NMSHandler.debugPacketFilter = "";
@@ -210,7 +211,6 @@ public class DenizenCommandHandler {
                     : "Denizen debugger is no longer showing packet logs."));
         }
         if (args.hasValueFlag("pfilter")) {
-            CoreConfiguration.shouldShowDebug = true;
             NetworkInterceptHelper.enable();
             NMSHandler.debugPackets = true;
             NMSHandler.debugPacketFilter = CoreUtilities.toLowerCase(args.getFlag("pfilter"));
@@ -218,16 +218,10 @@ public class DenizenCommandHandler {
             return;
         }
         if (args.hasFlag('l')) {
-            CoreConfiguration.shouldShowDebug = true;
             CoreConfiguration.debugLoadingInfo = !CoreConfiguration.debugLoadingInfo;
             Messaging.sendInfo(sender, (CoreConfiguration.debugLoadingInfo ? "Denizen debugger is now showing script loading information."
                     : "Denizen debugger is no longer showing script loading information."));
         }
-        if (args.getFlags().isEmpty()) {
-            CoreConfiguration.shouldShowDebug = !CoreConfiguration.shouldShowDebug;
-            Messaging.sendInfo(sender, "Denizen debugger is now: " + (CoreConfiguration.shouldShowDebug ? "<a>ENABLED" : "<c>DISABLED") + "<f>.");
-        }
-
     }
 
     /*

@@ -70,6 +70,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -580,7 +581,14 @@ public class Denizen extends JavaPlugin {
 
         Object[] methodArgs = {sender};
         return commandManager.executeSafe(cmd, args, sender, methodArgs);
+    }
 
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String alias, String[] strings) {
+        if (alias.equals("denizen")) {
+            return commandManager.onTabComplete(commandSender, command, alias, strings);
+        }
+        return null;
     }
 
     private boolean suggestClosestModifier(CommandSender sender, String command, String modifier) {

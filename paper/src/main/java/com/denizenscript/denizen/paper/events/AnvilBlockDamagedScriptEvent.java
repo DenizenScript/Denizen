@@ -17,7 +17,7 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
     // @Events
     // anvil block damaged|breaks
     //
-    // @Group paper
+    // @Group Paper
     //
     // @Location true
     //

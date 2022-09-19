@@ -8,6 +8,7 @@ import com.google.common.collect.ListMultimap;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.lang.annotation.Annotation;
@@ -16,7 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class CommandManager {
+public class CommandManager implements TabCompleter {
 
     private final Map<Class<? extends Annotation>, CommandAnnotationProcessor> annotationProcessors =
             new HashMap<>();
@@ -314,6 +315,47 @@ public class CommandManager {
         return cmd.permission().isEmpty() || hasPermission(sender, cmd.permission()) || hasPermission(sender, "admin");
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command command, String alias, String[] args) {
+        List<String> results = new ArrayList<>();
+        if (args.length <= 1) {
+            String search = args.length == 1 ? args[0] : "";
+            for (String base : commands.keySet()) {
+                String[] parts = base.split(" ");
+                String cmd = parts[0];
+                if (!cmd.equalsIgnoreCase(command.getName()) || parts.length < 2)
+                    continue;
+                String modifier = parts[1];
+                if (modifier.startsWith(search)) {
+                    results.add(modifier);
+                }
+            }
+            return results;
+        }
+        CommandInfo internalCommand = getCommand(command.getName().toLowerCase(), args[0]);
+        if (internalCommand == null) {
+            return results;
+        }
+        String[] newArgs = new String[args.length + 1];
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+        newArgs[0] = command.getName().toLowerCase();
+        CommandContext context = new CommandContext(sender, newArgs); // partial parse
+        String flags = internalCommand.commandAnnotation.flags();
+        for (int i = 0; i < flags.length(); i++) {
+            char c = flags.charAt(i);
+            if (!context.hasFlag(c)) {
+                results.add("-" + c);
+            }
+        }
+        Collection<String> valueFlags = internalCommand.valueFlags();
+        for (String valueFlag : valueFlags) {
+            if (!context.hasValueFlag(valueFlag)) {
+                results.add("--" + valueFlag);
+            }
+        }
+        return results;
+    }
+
     /**
      * Register a class that contains commands (methods annotated with
      * {@link Command}). If no dependency {@link Injector} is specified, then
@@ -444,9 +486,21 @@ public class CommandManager {
 
     public static class CommandInfo {
         private final Command commandAnnotation;
+        private List<String> valueFlags;
 
         public CommandInfo(Command commandAnnotation) {
             this.commandAnnotation = commandAnnotation;
+        }
+
+        private Collection<String> calculateValueFlags() {
+            valueFlags = new ArrayList<>();
+            String[] usage = commandAnnotation.usage().replace("(", "").replace(")", "").split(" ");
+            for (String part : usage) {
+                if (part.startsWith("--")) {
+                    valueFlags.add(part.split("\\|")[0].replace("--", ""));
+                }
+            }
+            return valueFlags;
         }
 
         @Override
@@ -476,6 +530,10 @@ public class CommandManager {
         @Override
         public int hashCode() {
             return 31 + ((commandAnnotation == null) ? 0 : commandAnnotation.hashCode());
+        }
+
+        public Collection<String> valueFlags() {
+            return valueFlags == null ? calculateValueFlags() : valueFlags;
         }
     }
 
