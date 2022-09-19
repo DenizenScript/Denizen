@@ -1936,21 +1936,27 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group attributes
         // @mechanism EntityTag.persistent
         // @description
-        // Returns whether the entity will not be removed completely when far away from players.
-        // In other words: whether the entity should be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
-        // -->
-        // <--[tag]
-        // @attribute <EntityTag.persistent>
-        // @returns ElementTag(Boolean)
-        // @group attributes
-        // @mechanism EntityTag.persistent
-        // @deprecated use 'is_persistent'
-        // @description
-        // Outdated form of <@link tag EntityTag.is_persistent>
+        // Returns whether the mob-entity will not be removed completely when far away from players.
+        // This is Bukkit's "getRemoveWhenFarAway" which is Mojang's "isPersistenceRequired".
+        // In many cases, <@link tag EntityTag.force_no_persist> may be preferred.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_persistent", (attribute, object) -> {
             return new ElementTag(object.isLivingEntity() && !object.getLivingEntity().getRemoveWhenFarAway());
         }, "persistent");
+
+        // <--[tag]
+        // @attribute <EntityTag.force_no_persist>
+        // @returns ElementTag(Boolean)
+        // @group attributes
+        // @mechanism EntityTag.force_no_persist
+        // @description
+        // Returns 'true' if the entity is forced to not save to file when chunks unload.
+        // Returns 'false' if not forced to not-save. May return 'false' even for entities that don't save for other reasons.
+        // This is a custom value added in Bukkit to block saving, which is not the same as Mojang's similar option under <@link tag EntityTag.is_persistent>.
+        // -->
+        registerSpawnedOnlyTag(ElementTag.class, "forced_no_persist", (attribute, object) -> {
+            return new ElementTag(object.getBukkitEntity().isPersistent());
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_collidable>
@@ -3308,14 +3314,32 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @name persistent
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether the entity should be be saved to file when chunks unload (otherwise, the entity is gone entirely if despawned for any reason).
-        // The entity must be living.
+        // Sets whether the mob-entity will not be removed completely when far away from players.
+        // This is Bukkit's "setRemoveWhenFarAway" which is Mojang's "isPersistenceRequired".
+        // In many cases, <@link mechanism EntityTag.force_no_persist> may be preferred.
+        // The entity must be a mob-type entity.
         // @tags
         // <EntityTag.is_persistent>
         // -->
         if (mechanism.matches("persistent") && mechanism.requireBoolean()) {
             getLivingEntity().setRemoveWhenFarAway(!mechanism.getValue().asBoolean());
         }
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name force_no_persist
+        // @input ElementTag(Boolean)
+        // @description
+        // Set 'true' to indicate the entity should be forced to not save to file when chunks unload.
+        // Set 'false' to not force to not-save. Entities will then either save or not save depending on separate conditions.
+        // This is a custom value added in Bukkit to block saving, which is not the same as Mojang's similar option under <@link mechanism EntityTag.persistent>.
+        // @tags
+        // <EntityTag.force_no_persist>
+        // -->
+        if (mechanism.matches("force_no_persist") && mechanism.requireBoolean()) {
+            getLivingEntity().setPersistent(!mechanism.getValue().asBoolean());
+        }
+
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
             BukkitImplDeprecations.entityRemoveWhenFar.warn(mechanism.context);
             getLivingEntity().setRemoveWhenFarAway(mechanism.getValue().asBoolean());
