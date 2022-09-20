@@ -89,7 +89,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
             return new ElementTag(rawArgs);
         }
         else if (name.equals("args")) {
-            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs)));
+            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
         }
         else if (name.equals("server")) {
             return new ElementTag(sourceType.equals("server"));

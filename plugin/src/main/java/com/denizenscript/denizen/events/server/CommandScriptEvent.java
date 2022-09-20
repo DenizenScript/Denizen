@@ -109,7 +109,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
             return new ElementTag(cleanMessageArgs(), true);
         }
         else if (name.equals("args")) {
-            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(cleanMessageArgs())), true);
+            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(cleanMessageArgs(), false)), true);
         }
         else if (name.equals("server")) {
             return new ElementTag(sourceType.equals("server"));

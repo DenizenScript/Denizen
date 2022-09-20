@@ -126,7 +126,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         if (entry.length() > 3 && entry.startsWith("-q ")) {
             entry = entry.substring("-q ".length());
         }
-        String[] args = ArgumentHelper.buildArgs(entry);
+        String[] args = ArgumentHelper.buildArgs(entry, true);
         boolean isNewArg = rawArgs.length == 0 || rawArgs[rawArgs.length - 1].isEmpty();
         boolean isCommandArg = args.length == 0 || (args.length == 1 && !isNewArg) || args[args.length - (isNewArg ? 1 : 2)].equals("-");
         if (isCommandArg) {

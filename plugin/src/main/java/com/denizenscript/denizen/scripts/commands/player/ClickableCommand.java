@@ -157,7 +157,7 @@ public class ClickableCommand extends BracedCommand {
         if (clickable.directEntries != null) {
             ScriptUtilities.createAndStartQueueArbitrary(clickable.queueId, clickable.directEntries, data, clickable.contextSource, configure);
         }
-        else {
+        else if (clickable.script.validate() != null) {
             ScriptUtilities.createAndStartQueue(clickable.script.getContainer(), clickable.path, data, null, configure, null, clickable.queueId, clickable.definitions, clickable.context);
         }
     }
