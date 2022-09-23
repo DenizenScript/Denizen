@@ -83,16 +83,16 @@ public class EntityVisible implements Property {
         PropertyParser.registerMechanism(EntityVisible.class, ElementTag.class, "visible", (object, mechanism, input) -> {
             if (mechanism.requireBoolean()) {
                 if (object.entity.isCitizensNPC()) {
-                    InvisibleTrait.setInvisible(object.entity.getLivingEntity(), object.entity.getDenizenNPC().getCitizen(), !mechanism.getValue().asBoolean());
+                    InvisibleTrait.setInvisible(object.entity.getLivingEntity(), object.entity.getDenizenNPC().getCitizen(), !input.asBoolean());
                 }
                 else if (object.isArmorStand()) {
-                    object.getArmorStand().setVisible(mechanism.getValue().asBoolean());
+                    object.getArmorStand().setVisible(input.asBoolean());
                 }
                 else if (object.isItemFrame()) {
-                    object.getItemFrame().setVisible(mechanism.getValue().asBoolean());
+                    object.getItemFrame().setVisible(input.asBoolean());
                 }
                 else {
-                    object.entity.getLivingEntity().setInvisible(!mechanism.getValue().asBoolean());
+                    object.entity.getLivingEntity().setInvisible(!input.asBoolean());
                 }
             }
         });
