@@ -1,14 +1,11 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.npc.traits.InvisibleTrait;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
-import net.citizensnpcs.api.CitizensAPI;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ItemFrame;
 
@@ -17,7 +14,8 @@ public class EntityVisible implements Property {
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 (((EntityTag) entity).getBukkitEntity() instanceof ArmorStand
-                || ((EntityTag) entity).getBukkitEntity() instanceof ItemFrame);
+                || ((EntityTag) entity).getBukkitEntity() instanceof ItemFrame
+                || ((EntityTag) entity).isLivingEntity());
     }
 
     public static EntityVisible getFrom(ObjectTag entity) {
@@ -29,14 +27,6 @@ public class EntityVisible implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "visible"
-    };
-
-    public static final String[] handledMechs = new String[] {
-            "visible"
-    };
-
     private EntityVisible(EntityTag ent) {
         entity = ent;
     }
@@ -44,20 +34,20 @@ public class EntityVisible implements Property {
     EntityTag entity;
 
     public boolean isVisible() {
-        if (entity.getBukkitEntity() instanceof ArmorStand) {
-            return ((ArmorStand) entity.getBukkitEntity()).isVisible();
+        if (isArmorStand()) {
+            return getArmorStand().isVisible();
+        }
+        else if (isItemFrame()) {
+            return getItemFrame().isVisible();
         }
         else {
-            return ((ItemFrame) entity.getBukkitEntity()).isVisible();
+            return !entity.getLivingEntity().isInvisible();
         }
     }
 
     @Override
     public String getPropertyString() {
-        if (!isVisible()) {
-            return "false";
-        }
-        return null;
+        return isVisible() ? null : "false";
     }
 
     @Override
@@ -65,12 +55,7 @@ public class EntityVisible implements Property {
         return "visible";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.visible>
@@ -78,37 +63,54 @@ public class EntityVisible implements Property {
         // @mechanism EntityTag.visible
         // @group attributes
         // @description
-        // Returns whether the armor stand or item frame is visible.
+        // Returns whether the entity is visible.
+        // Supports armor stands, item frames, and living entities.
         // -->
-        if (attribute.startsWith("visible")) {
-            return new ElementTag(isVisible()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
+        PropertyParser.registerTag(EntityVisible.class, ElementTag.class, "visible", (attribute, object) -> {
+            return new ElementTag(object.isVisible());
+        });
 
         // <--[mechanism]
         // @object EntityTag
         // @name visible
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether the armor stand or item frame is visible.
+        // Sets whether the entity is visible.
+        // Supports armor stands, item frames, and living entities.
         // @tags
         // <EntityTag.visible>
         // -->
-        if (mechanism.matches("visible") && mechanism.requireBoolean()) {
-            if (Depends.citizens != null && entity.isLivingEntity() && CitizensAPI.getNPCRegistry().isNPC(entity.getLivingEntity())) {
-                InvisibleTrait.setInvisible(entity.getLivingEntity(), CitizensAPI.getNPCRegistry().getNPC(entity.getBukkitEntity()), !mechanism.getValue().asBoolean());
+        PropertyParser.registerMechanism(EntityVisible.class, ElementTag.class, "visible", (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                if (object.entity.isCitizensNPC()) {
+                    InvisibleTrait.setInvisible(object.entity.getLivingEntity(), object.entity.getDenizenNPC().getCitizen(), !input.asBoolean());
+                }
+                else if (object.isArmorStand()) {
+                    object.getArmorStand().setVisible(input.asBoolean());
+                }
+                else if (object.isItemFrame()) {
+                    object.getItemFrame().setVisible(input.asBoolean());
+                }
+                else {
+                    object.entity.getLivingEntity().setInvisible(!input.asBoolean());
+                }
             }
-            else if (entity.getBukkitEntity() instanceof ArmorStand) {
-                ((ArmorStand) entity.getBukkitEntity()).setVisible(mechanism.getValue().asBoolean());
-            }
-            else {
-                ((ItemFrame) entity.getBukkitEntity()).setVisible(mechanism.getValue().asBoolean());
-            }
-        }
+        });
+    }
+
+    public boolean isArmorStand() {
+        return entity.getBukkitEntity() instanceof ArmorStand;
+    }
+
+    public boolean isItemFrame() {
+        return entity.getBukkitEntity() instanceof ItemFrame;
+    }
+
+    public ArmorStand getArmorStand() {
+        return (ArmorStand) entity.getBukkitEntity();
+    }
+
+    public ItemFrame getItemFrame() {
+        return (ItemFrame) entity.getBukkitEntity();
     }
 }
