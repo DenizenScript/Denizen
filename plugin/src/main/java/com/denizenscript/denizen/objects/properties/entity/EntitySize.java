@@ -2,11 +2,11 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.Phantom;
+import org.bukkit.entity.PufferFish;
 import org.bukkit.entity.Slime;
 
 public class EntitySize implements Property {
@@ -14,7 +14,8 @@ public class EntitySize implements Property {
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag &&
                 (((EntityTag) entity).getBukkitEntity() instanceof Slime
-                        || ((EntityTag) entity).getBukkitEntity() instanceof Phantom);
+                || ((EntityTag) entity).getBukkitEntity() instanceof Phantom
+                || ((EntityTag) entity).getBukkitEntity() instanceof PufferFish);
     }
 
     public static EntitySize getFrom(ObjectTag entity) {
@@ -26,26 +27,27 @@ public class EntitySize implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "size"
-    };
-
-    public static final String[] handledMechs = new String[] {
-            "size"
-    };
-
     private EntitySize(EntityTag ent) {
         entity = ent;
     }
 
     EntityTag entity;
 
+    public int getSize() {
+        if (isSlime()) {
+            return getSlime().getSize();
+        }
+        else if (isPhantom()) {
+            return getPhantom().getSize();
+        }
+        else {
+            return getPufferFish().getPuffState();
+        }
+    }
+
     @Override
     public String getPropertyString() {
-        if (entity.getBukkitEntity() instanceof Phantom) {
-            return String.valueOf(((Phantom) entity.getBukkitEntity()).getSize());
-        }
-        return String.valueOf(((Slime) entity.getBukkitEntity()).getSize());
+        return String.valueOf(getSize());
     }
 
     @Override
@@ -53,12 +55,7 @@ public class EntitySize implements Property {
         return "size";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <EntityTag.size>
@@ -67,21 +64,12 @@ public class EntitySize implements Property {
         // @group properties
         // @description
         // Returns the size of a slime-type entity or a Phantom (1-120).
+        // If the entity is a PufferFish it returns the puff state (0-3).
         // -->
-        if (attribute.startsWith("size")) {
-            if (entity.getBukkitEntity() instanceof Phantom) {
-                return new ElementTag(((Phantom) entity.getBukkitEntity()).getSize())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
-            return new ElementTag(((Slime) entity.getBukkitEntity()).getSize())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
+        PropertyParser.registerTag(EntitySize.class, ElementTag.class, "size", (attribute, object) -> {
+            return new ElementTag(object.getSize());
+        });
 
-        return null;
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object EntityTag
@@ -89,16 +77,43 @@ public class EntitySize implements Property {
         // @input ElementTag(Number)
         // @description
         // Sets the size of a slime-type entity or a Phantom (1-120).
+        // If the entity is a PufferFish it sets the puff state (0-3).
         // @tags
         // <EntityTag.size>
         // -->
-        if (mechanism.matches("size") && mechanism.requireInteger()) {
-            if (entity.getBukkitEntity() instanceof Phantom) {
-                ((Phantom) entity.getBukkitEntity()).setSize(mechanism.getValue().asInt());
-                return;
+
+        PropertyParser.registerMechanism(EntitySize.class, ElementTag.class, "size", (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                if (object.isSlime()) {
+                    object.getSlime().setSize(input.asInt());
+                }
+                else if (object.isPhantom()) {
+                    object.getPhantom().setSize(input.asInt());
+                }
+                else {
+                    object.getPufferFish().setPuffState(input.asInt());
+                }
             }
-            ((Slime) entity.getBukkitEntity()).setSize(mechanism.getValue().asInt());
-        }
+        });
+    }
+
+    public boolean isSlime() {
+        return entity.getBukkitEntity() instanceof Slime;
+    }
+
+    public boolean isPhantom() {
+        return entity.getBukkitEntity() instanceof Phantom;
+    }
+
+    public Slime getSlime() {
+        return (Slime) entity.getBukkitEntity();
+    }
+
+    public Phantom getPhantom() {
+        return (Phantom) entity.getBukkitEntity();
+    }
+
+    public PufferFish getPufferFish() {
+        return (PufferFish) entity.getBukkitEntity();
     }
 }
-
