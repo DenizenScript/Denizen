@@ -160,7 +160,7 @@ public class PaperAdvancedTextImpl extends AdvancedTextImpl {
             return;
         }
         PotionBrewer brewer = Bukkit.getPotionBrewer();
-        for (NamespacedKey mix : potionMixes.keySet()) {
+        for (NamespacedKey mix : new ArrayList<>(potionMixes.keySet())) {
             brewer.removePotionMix(mix);
             potionMixes.remove(mix);
         }
