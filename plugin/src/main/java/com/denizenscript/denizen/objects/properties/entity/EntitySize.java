@@ -81,7 +81,6 @@ public class EntitySize implements Property {
         // @tags
         // <EntityTag.size>
         // -->
-
         PropertyParser.registerMechanism(EntitySize.class, ElementTag.class, "size", (object, mechanism, input) -> {
             if (mechanism.requireInteger()) {
                 if (object.isSlime()) {

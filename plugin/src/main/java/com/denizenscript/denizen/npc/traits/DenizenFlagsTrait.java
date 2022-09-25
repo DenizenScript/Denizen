@@ -3,6 +3,7 @@ package com.denizenscript.denizen.npc.traits;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import com.google.common.collect.Iterators;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.persistence.PersistenceLoader;
 import net.citizensnpcs.api.persistence.Persister;
@@ -35,6 +36,9 @@ public class DenizenFlagsTrait extends Trait {
 
         @Override
         public void save(SavableMapFlagTracker o, DataKey dataKey) {
+            for (DataKey subkey : Iterators.toArray(dataKey.getSubKeys().iterator(), DataKey.class)) {
+                dataKey.removeKey(subkey.name());
+            }
             for (Map.Entry<StringHolder, SavableMapFlagTracker.SaveOptimizedFlag> flag : o.map.entrySet()) {
                 dataKey.setString(flag.getKey().str, flag.getValue().getString());
             }
