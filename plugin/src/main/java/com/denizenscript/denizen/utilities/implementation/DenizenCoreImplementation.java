@@ -139,9 +139,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public static HashSet<String> invalidPlayerArgCommands = new HashSet<>(Arrays.asList("DEFINE", "FLAG", "YAML"));
 
     @Override
-    public boolean handleCustomArgs(ScriptEntry scriptEntry, Argument arg, boolean if_ignore) {
-        // Fill player/off-line player
-        if (arg.matchesPrefix("player") && !if_ignore) {
+    public boolean handleCustomArgs(ScriptEntry scriptEntry, Argument arg) {
+        if (arg.matchesPrefix("player")) {
             if (invalidPlayerArgCommands.contains(scriptEntry.getCommandName())) {
                 invalidPlayerArg.warn(scriptEntry);
             }
@@ -155,9 +154,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
             ((BukkitTagContext) scriptEntry.context).player = player;
             return true;
         }
-
-        // Fill NPC argument
-        else if (arg.matchesPrefix("npc") && !if_ignore) {
+        else if (arg.matchesPrefix("npc")) {
             if (invalidPlayerArgCommands.contains(scriptEntry.getCommandName())) {
                 invalidNpcArg.warn(scriptEntry);
             }
