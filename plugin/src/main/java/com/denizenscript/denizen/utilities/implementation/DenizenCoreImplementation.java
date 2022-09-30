@@ -361,39 +361,6 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return false;
     }
 
-    public static boolean isPluginLoader, hasProcessedLoader;
-    public static Map<String, Class<?>> classMap;
-
-    public static void initClassLoaderRef() {
-        if (hasProcessedLoader) {
-            return;
-        }
-        hasProcessedLoader = true;
-        try {
-            ClassLoader loader = DenizenCoreImplementation.class.getClassLoader();
-            Class<?> pluginClassLoaderClass = Class.forName("org.bukkit.plugin.java.PluginClassLoader");
-            isPluginLoader = pluginClassLoaderClass.isAssignableFrom(loader.getClass());
-            if (isPluginLoader) {
-                classMap = ReflectionHelper.getFieldValue(pluginClassLoaderClass, "classes", loader);
-            }
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
-    }
-
-    @Override
-    public void saveClassToLoader(Class<?> clazz) {
-        initClassLoaderRef();
-        if (!isPluginLoader) {
-            return;
-        }
-        if (classMap.containsKey(clazz.getName())) {
-            Debug.echoError("Class " + clazz.getName() + " already defined?");
-        }
-        classMap.put(clazz.getName(), clazz);
-    }
-
     @Override
     public void addExtraErrorHeaders(StringBuilder headerBuilder, ScriptEntry source) {
         BukkitScriptEntryData data = Utilities.getEntryData(source);
