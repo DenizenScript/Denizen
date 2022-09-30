@@ -50,9 +50,6 @@ public class AssignmentScriptContainer extends ScriptContainer {
     //     - <interact_script_name>
     // </code>
     //
-    // All part of an assignment script are optional. The three features provided can be
-    // used together, but do not require one another.
-    //
     // Though note that almost always you should include the 'actions:' key, usually with the 'on assignment:' action (if using triggers).
     // Refer to <@link action assignment>.
     //
