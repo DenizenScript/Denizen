@@ -75,7 +75,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
             case "source_type": return sourceType;
             case "command_block_location": return commandBlockLocation;
             case "command_minecart": return commandMinecart;
-            case "world": return new WorldTag(event.getWorld());
+            case "world": return world;
         }
         return super.getContext(name);
     }
@@ -110,6 +110,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
         this.commandMinecart = getCommandMinecart();
         this.commandBlockLocation = getCommandBlock();
         this.sourceType = getSourceType();
+        this.world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
     }
