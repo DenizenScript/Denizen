@@ -45,7 +45,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     // -->
 
     public WorldGameRuleChangeScriptEvent() {
-        registerCouldMatcher("gamerule changed (in <world>)");
+        registerCouldMatcher("gamerule changes (in <world>)");
     }
 
     public WorldGameRuleChangeEvent event;
