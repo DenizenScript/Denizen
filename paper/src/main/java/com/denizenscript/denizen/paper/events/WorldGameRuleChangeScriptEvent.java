@@ -40,6 +40,9 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     // <context.command_block_location> returns the command block's location (if the command was run from one).
     // <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
     //
+    // @Determine
+    // "VALUE:" + ElementTag(Number) or ElementTag(Boolean) to set the value of the GameRule.
+    //
     // @Player when the sender of the command is a player.
     //
     // -->
