@@ -32,11 +32,13 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     //
     // @Triggers when a gamerule changes.
     //
+    // @Switch gamerule:<gamerule> to only process the event if the gamerule matches a specific gamerule.
+    //
     // @Context
-    // <context.gamerule> returns name of the GameRule which was changed.
+    // <context.gamerule> returns the name of the GameRule which was changed. Refer to <@link ur https://jd.papermc.io/paper/1.19/org/bukkit/GameRule.html>.
     // <context.value> returns the new value of the GameRule.
     // <context.world> returns the world where the GameRule is applied.
-    // <context.source_type> returns the sender who changed the GameRule.
+    // <context.source_type> returns type of source. Can be: PLAYER, COMMAND_BLOCK, COMMAND_MINECART, SERVER.
     // <context.command_block_location> returns the command block's location (if the command was run from one).
     // <context.command_minecart> returns the EntityTag of the command minecart (if the command was run from one).
     //
@@ -49,19 +51,20 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
 
     public WorldGameRuleChangeScriptEvent() {
         registerCouldMatcher("gamerule changes (in <world>)");
+        registerSwitches("gamerule");
     }
 
     public WorldGameRuleChangeEvent event;
 
     public WorldTag world;
-    public LocationTag commandBlockLocation;
-    public EntityTag commandMinecart;
-    public ElementTag sourceType;
     public CommandSender source;
 
     @Override
     public boolean matches(ScriptPath path) {
         if (path.eventArgLowerAt(2).equals("in") && !world.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+            return false;
+        }
+        if (!runGenericSwitchCheck(path, "gamerule", event.getGameRule().getName())) {
             return false;
         }
         return super.matches(path);
@@ -72,9 +75,9 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
         switch (name) {
             case "gamerule": return new ElementTag(event.getGameRule().getName());
             case "value": return new ElementTag(event.getValue());
-            case "source_type": return sourceType;
-            case "command_block_location": return commandBlockLocation;
-            case "command_minecart": return commandMinecart;
+            case "source_type": return getSourceType();
+            case "command_block_location": return getCommandBlock();
+            case "command_minecart": return getCommandMinecart();
             case "world": return world;
         }
         return super.getContext(name);
@@ -107,9 +110,6 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     @EventHandler
     public void onGameRuleChanged(WorldGameRuleChangeEvent event) {
         this.source = event.getCommandSender();
-        this.commandMinecart = getCommandMinecart();
-        this.commandBlockLocation = getCommandBlock();
-        this.sourceType = getSourceType();
         this.world = new WorldTag(event.getWorld());
         this.event = event;
         fire(event);
