@@ -55,6 +55,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(ServerResourcesReloadedScriptEvent.class);
         ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WorldGameRuleChangeScriptEvent.class);
 
         // Properties
         PropertyParser.registerProperty(EntityArmsRaised.class, EntityTag.class);
