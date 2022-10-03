@@ -75,6 +75,7 @@ public class DenizenPacketHandler {
         raisableItems.add(Material.SHIELD);
         raisableItems.add(Material.CROSSBOW);
         raisableItems.add(Material.BOW);
+        raisableItems.add(Material.TRIDENT);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
             raisableItems.add(Material.valueOf("SPYGLASS"));
         }

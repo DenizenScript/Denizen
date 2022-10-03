@@ -60,7 +60,7 @@ public class EntityFixed implements Property {
         // @mechanism EntityTag.fixed
         // @group attributes
         // @description
-        // Returns whether the item frame is fixed. (Meaning, it can't be altered by players).
+        // Returns whether the item frame is fixed. (Meaning, it can't be altered by players or broken by block obstructions).
         // -->
         if (attribute.startsWith("fixed")) {
             return new ElementTag(((ItemFrame) entity.getBukkitEntity()).isFixed())
@@ -78,7 +78,7 @@ public class EntityFixed implements Property {
         // @name fixed
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether this item frame is fixed. (Meaning, it can't be altered by players).
+        // Sets whether this item frame is fixed. (Meaning, it can't be altered by players or broken by block obstructions).
         // @tags
         // <EntityTag.fixed>
         // -->

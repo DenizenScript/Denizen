@@ -35,7 +35,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     // @Switch gamerule:<gamerule> to only process the event if the gamerule matches a specific gamerule.
     //
     // @Context
-    // <context.gamerule> returns the name of the GameRule which was changed. Refer to <@link ur https://jd.papermc.io/paper/1.19/org/bukkit/GameRule.html>.
+    // <context.gamerule> returns the name of the GameRule which was changed. Refer to <@link url https://jd.papermc.io/paper/1.19/org/bukkit/GameRule.html>.
     // <context.value> returns the new value of the GameRule.
     // <context.world> returns the world where the GameRule is applied.
     // <context.source_type> returns type of source. Can be: PLAYER, COMMAND_BLOCK, COMMAND_MINECART, SERVER.
