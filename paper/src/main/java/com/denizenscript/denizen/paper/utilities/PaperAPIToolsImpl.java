@@ -4,7 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionBrewer;
 
 import java.util.*;
 
-public class PaperAdvancedTextImpl extends AdvancedTextImpl {
+public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public Inventory createInventory(InventoryHolder holder, int slots, String title) {

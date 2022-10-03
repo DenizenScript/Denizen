@@ -13,7 +13,7 @@ import com.denizenscript.denizen.nms.v1_19.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -184,7 +184,7 @@ public class Handler extends NMSHandler {
                 if (PAPER_INVENTORY_TITLE_GETTER == null) {
                     PAPER_INVENTORY_TITLE_GETTER = ReflectionHelper.getMethodHandle(nms.getClass(), "title");
                 }
-                return AdvancedTextImpl.instance.parseComponent(PAPER_INVENTORY_TITLE_GETTER.invoke(nms), ChatColor.BLACK);
+                return PaperAPITools.instance.parseComponent(PAPER_INVENTORY_TITLE_GETTER.invoke(nms), ChatColor.BLACK);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);

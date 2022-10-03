@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -122,7 +122,7 @@ public class ResourcePackCommand extends AbstractCommand {
                 Debug.echoDebug(scriptEntry, "Player is offline, can't send resource pack to them. Skipping.");
                 continue;
             }
-            AdvancedTextImpl.instance.sendResourcePack(player.getPlayerEntity(), url.asString(), hash.asString(), forced != null && forced.asBoolean(), prompt == null ? null : prompt.asString());
+            PaperAPITools.instance.sendResourcePack(player.getPlayerEntity(), url.asString(), hash.asString(), forced != null && forced.asBoolean(), prompt == null ? null : prompt.asString());
         }
     }
 }

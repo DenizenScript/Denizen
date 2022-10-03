@@ -18,9 +18,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-public class AdvancedTextImpl {
+public class PaperAPITools {
 
-    public static AdvancedTextImpl instance = new AdvancedTextImpl();
+    public static PaperAPITools instance = new PaperAPITools();
 
     public Inventory createInventory(InventoryHolder holder, int slots, String title) {
         return Bukkit.getServer().createInventory(holder, slots, title);

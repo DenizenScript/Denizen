@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -36,7 +36,7 @@ public class EntityCustomName implements Property {
 
     @Override
     public String getPropertyString() {
-        return AdvancedTextImpl.instance.getCustomName(entity.getBukkitEntity());
+        return PaperAPITools.instance.getCustomName(entity.getBukkitEntity());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class EntityCustomName implements Property {
         // Returns the entity's custom name (as set by plugin or name tag item), if any.
         // -->
         PropertyParser.registerTag(EntityCustomName.class, ElementTag.class, "custom_name", (attribute, object) -> {
-            String name = AdvancedTextImpl.instance.getCustomName(object.entity.getBukkitEntity());
+            String name = PaperAPITools.instance.getCustomName(object.entity.getBukkitEntity());
             if (name == null) {
                 return null;
             }
@@ -76,7 +76,7 @@ public class EntityCustomName implements Property {
         // <EntityTag.custom_name>
         // -->
         if (mechanism.matches("custom_name")) {
-            AdvancedTextImpl.instance.setCustomName(entity.getBukkitEntity(), CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
+            PaperAPITools.instance.setCustomName(entity.getBukkitEntity(), CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
         }
 
     }

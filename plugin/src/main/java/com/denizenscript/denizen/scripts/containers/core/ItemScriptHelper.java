@@ -5,7 +5,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
@@ -55,7 +55,7 @@ public class ItemScriptHelper implements Listener {
         recipeCache.clear();
         recipeIdToItemScript.clear();
         NMSHandler.itemHelper.clearDenizenRecipes();
-        AdvancedTextImpl.instance.clearBrewingRecipes();
+        PaperAPITools.instance.clearBrewingRecipes();
     }
 
     public static String getIdFor(ItemScriptContainer container, String type, int id) {
@@ -280,7 +280,7 @@ public class ItemScriptHelper implements Listener {
         if (ingredientItems == null) {
             return;
         }
-        AdvancedTextImpl.instance.registerBrewingRecipe(internalId, item, inputItems, inputExact, ingredientItems, ingredientExact);
+        PaperAPITools.instance.registerBrewingRecipe(internalId, item, inputItems, inputExact, ingredientItems, ingredientExact);
     }
 
     public static void rebuildRecipes() {
@@ -611,7 +611,7 @@ public class ItemScriptHelper implements Listener {
         ItemStack currInput;
         for (int i = 0; i < 3; i++) {
             currInput = event.getContents().getItem(i);
-            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !AdvancedTextImpl.instance.isDenizenMix(currInput, ingredient)) {
+            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !PaperAPITools.instance.isDenizenMix(currInput, ingredient)) {
                 if (!isAllowedToCraftWith(currInput)) {
                     event.setCancelled(true);
                 }

@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.*;
@@ -140,7 +140,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             return true;
         }
         else if (event instanceof PlayerDeathEvent) {
-            AdvancedTextImpl.instance.setDeathMessage((PlayerDeathEvent) event, determination);
+            PaperAPITools.instance.setDeathMessage((PlayerDeathEvent) event, determination);
             return true;
         }
         else {
@@ -159,7 +159,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             case "entity": return entity.getDenizenObject();
             case "projectile": return projectile == null ? null : projectile.getDenizenObject();
             case "damager": return damager == null ? null : damager.getDenizenObject();
-            case "message": return event instanceof PlayerDeathEvent ? new ElementTag(AdvancedTextImpl.instance.getDeathMessage((PlayerDeathEvent) event)) : null;
+            case "message": return event instanceof PlayerDeathEvent ? new ElementTag(PaperAPITools.instance.getDeathMessage((PlayerDeathEvent) event)) : null;
             case "cause": return cause;
             case "xp": return new ElementTag(event.getDroppedExp());
             case "drops":

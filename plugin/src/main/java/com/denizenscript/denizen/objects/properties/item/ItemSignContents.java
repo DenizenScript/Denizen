@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -40,7 +40,7 @@ public class ItemSignContents implements Property {
     };
 
     private ListTag getSignContents() {
-        return new ListTag(Arrays.asList(AdvancedTextImpl.instance.getSignLines((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState())), true);
+        return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState())), true);
     }
 
     private ItemSignContents(ItemTag _item) {
@@ -102,7 +102,7 @@ public class ItemSignContents implements Property {
             BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
             Sign sign = (Sign) bsm.getBlockState();
             for (int i = 0; i < 4; i++) {
-                AdvancedTextImpl.instance.setSignLine(sign, i, "");
+                PaperAPITools.instance.setSignLine(sign, i, "");
             }
             ListTag list = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(list);
@@ -111,7 +111,7 @@ public class ItemSignContents implements Property {
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
-                    AdvancedTextImpl.instance.setSignLine(sign, i, list.get(i));
+                    PaperAPITools.instance.setSignLine(sign, i, list.get(i));
                 }
             }
             bsm.setBlockState(sign);

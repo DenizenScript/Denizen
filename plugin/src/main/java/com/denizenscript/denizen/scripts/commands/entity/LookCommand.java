@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -151,7 +151,7 @@ public class LookCommand extends AbstractCommand {
                         Location playerTeleDest = entity.getLocation().clone();
                         playerTeleDest.setYaw(yawRaw);
                         playerTeleDest.setPitch(pitchRaw);
-                        AdvancedTextImpl.instance.teleportPlayerRelative(entity.getPlayer(), playerTeleDest);
+                        PaperAPITools.instance.teleportPlayerRelative(entity.getPlayer(), playerTeleDest);
                     }
                     else {
                         NMSHandler.entityHelper.rotate(entity.getBukkitEntity(), yawRaw, pitchRaw);

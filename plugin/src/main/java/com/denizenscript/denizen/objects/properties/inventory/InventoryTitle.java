@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -37,7 +37,7 @@ public class InventoryTitle implements Property {
 
     public String getTitle() {
         if (inventory.getInventory() != null) {
-            String title = AdvancedTextImpl.instance.getTitle(inventory.getInventory());
+            String title = PaperAPITools.instance.getTitle(inventory.getInventory());
             if (title != null) {
                 if (!title.startsWith("container.")) {
                     return title;
@@ -100,21 +100,21 @@ public class InventoryTitle implements Property {
                 inventory.customTitle = title;
                 return;
             }
-            if (inventory.getInventory() != null && AdvancedTextImpl.instance.getTitle(inventory.getInventory()).equals(title)) {
+            if (inventory.getInventory() != null && PaperAPITools.instance.getTitle(inventory.getInventory()).equals(title)) {
                 return;
             }
             inventory.uniquifier = null;
             if (inventory.getInventory() == null) {
-                inventory.setInventory(AdvancedTextImpl.instance.createInventory(null, InventoryTag.maxSlots, title));
+                inventory.setInventory(PaperAPITools.instance.createInventory(null, InventoryTag.maxSlots, title));
                 InventoryTag.trackTemporaryInventory(inventory);
                 return;
             }
             ItemStack[] contents = inventory.getContents();
             if (inventory.getInventory().getType() == InventoryType.CHEST) {
-                inventory.setInventory(AdvancedTextImpl.instance.createInventory(null, inventory.getSize(), title));
+                inventory.setInventory(PaperAPITools.instance.createInventory(null, inventory.getSize(), title));
             }
             else {
-                inventory.setInventory(AdvancedTextImpl.instance.createInventory(null, inventory.getInventory().getType(), title));
+                inventory.setInventory(PaperAPITools.instance.createInventory(null, inventory.getInventory().getType(), title));
             }
             inventory.setContents(contents);
             InventoryTag.trackTemporaryInventory(inventory);

@@ -6,7 +6,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
@@ -227,7 +227,7 @@ public class RenameCommand extends AbstractCommand {
             }
             else if (entity instanceof PlayerTag) {
                 if (listNameOnly != null && listNameOnly.asBoolean()) {
-                    AdvancedTextImpl.instance.setPlayerListName(((PlayerTag) entity).getPlayerEntity(), nameString);
+                    PaperAPITools.instance.setPlayerListName(((PlayerTag) entity).getPlayerEntity(), nameString);
                 }
                 else {
                     String limitedName = nameString.length() > 16 ? nameString.substring(0, 16) : nameString;

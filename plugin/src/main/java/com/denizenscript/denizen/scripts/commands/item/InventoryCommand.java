@@ -5,7 +5,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -299,7 +299,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
             }
             InventoryView view;
             if (type == InventoryType.ANVIL) {
-                view = AdvancedTextImpl.instance.openAnvil(player, currentAltLocation);
+                view = PaperAPITools.instance.openAnvil(player, currentAltLocation);
             }
             else if (type == InventoryType.WORKBENCH) {
                 view = player.openWorkbench(currentAltLocation, true);

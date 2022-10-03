@@ -11,7 +11,7 @@ import com.denizenscript.denizen.scripts.commands.player.ExperienceCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.tags.core.PlayerTagBase;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.ScoreboardHelper;
@@ -1397,7 +1397,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the name of the player as shown in the player list.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "list_name", (attribute, object) -> {
-            return new ElementTag(AdvancedTextImpl.instance.getPlayerListName(object.getPlayerEntity()), true);
+            return new ElementTag(PaperAPITools.instance.getPlayerListName(object.getPlayerEntity()), true);
         });
 
         // <--[tag]
@@ -3001,7 +3001,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.list_name>
         // -->
         if (mechanism.matches("player_list_name")) {
-            AdvancedTextImpl.instance.setPlayerListName(getPlayerEntity(), mechanism.getValue().asString());
+            PaperAPITools.instance.setPlayerListName(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -3665,7 +3665,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (LocationTag.matches(split[0]) && split.length > 1) {
                     ListTag lines = ListTag.valueOf(split[1], mechanism.context);
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
-                    AdvancedTextImpl.instance.sendSignUpdate(getPlayerEntity(), location, lines.toArray(new String[4]));
+                    PaperAPITools.instance.sendSignUpdate(getPlayerEntity(), location, lines.toArray(new String[4]));
                 }
                 else {
                     Debug.echoError("Must specify a valid location and at least one sign line!");
@@ -3791,7 +3791,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Must specify a name with no more than 16 characters.");
                 return;
             }
-            AdvancedTextImpl.instance.setSkin(getPlayerEntity(), name);
+            PaperAPITools.instance.setSkin(getPlayerEntity(), name);
         }
 
         // <--[mechanism]
@@ -3806,7 +3806,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.skin_blob>
         // -->
         if (mechanism.matches("skin_blob") && mechanism.hasValue()) {
-            AdvancedTextImpl.instance.setSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
+            PaperAPITools.instance.setSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]

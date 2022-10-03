@@ -10,9 +10,9 @@ import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
-import com.denizenscript.denizen.paper.utilities.PaperAdvancedTextImpl;
+import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -80,7 +80,7 @@ public class PaperModule {
 
         // Other helpers
         Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
-        AdvancedTextImpl.instance = new PaperAdvancedTextImpl();
+        PaperAPITools.instance = new PaperAPIToolsImpl();
     }
 
     public static Component parseFormattedText(String text, ChatColor baseColor) {

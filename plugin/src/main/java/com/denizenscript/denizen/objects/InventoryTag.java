@@ -4,7 +4,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.InventoryTrackerSystem;
@@ -181,16 +181,16 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     public void makeUnique(String id) {
         InventoryTag toNote = new InventoryTag(inventory, idType, idHolder);
         toNote.uniquifier = null;
-        String title = AdvancedTextImpl.instance.getTitle(inventory);
+        String title = PaperAPITools.instance.getTitle(inventory);
         if (title == null || title.startsWith("container.")) {
             title = toNote.inventory.getType().getDefaultTitle();
         }
         ItemStack[] contents = toNote.inventory.getContents();
         if (getInventoryType() == InventoryType.CHEST) {
-            toNote.inventory = AdvancedTextImpl.instance.createInventory(null, toNote.inventory.getSize(), title);
+            toNote.inventory = PaperAPITools.instance.createInventory(null, toNote.inventory.getSize(), title);
         }
         else {
-            toNote.inventory = AdvancedTextImpl.instance.createInventory(null, toNote.inventory.getType(), title);
+            toNote.inventory = PaperAPITools.instance.createInventory(null, toNote.inventory.getType(), title);
         }
         toNote.inventory.setContents(contents);
         InventoryScriptHelper.notedInventories.put(toNote.inventory, toNote);
@@ -538,7 +538,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             Debug.echoError("InventorySize must be multiple of 9, and greater than 0.");
             return;
         }
-        inventory = AdvancedTextImpl.instance.createInventory(null, size, title);
+        inventory = PaperAPITools.instance.createInventory(null, size, title);
         idType = "generic";
         idHolder = new ElementTag("chest");
     }
@@ -550,7 +550,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     }
 
     public InventoryTag(InventoryType type, String title) {
-        inventory = AdvancedTextImpl.instance.createInventory(null, type, title);
+        inventory = PaperAPITools.instance.createInventory(null, type, title);
         idType = "generic";
         idHolder = new ElementTag(CoreUtilities.toLowerCase(type.name()));
     }
@@ -619,12 +619,12 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         else {
             newContents = oldContents;
         }
-        String title = AdvancedTextImpl.instance.getTitle(inventory);
+        String title = PaperAPITools.instance.getTitle(inventory);
         if (title == null) {
             setInventory(Bukkit.getServer().createInventory(null, size));
         }
         else {
-            setInventory(AdvancedTextImpl.instance.createInventory(null, size, title));
+            setInventory(PaperAPITools.instance.createInventory(null, size, title));
         }
         inventory.setContents(newContents);
         trackTemporaryInventory(this);
@@ -1218,7 +1218,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
 
             InventoryType type = object.inventory.getType();
-            InventoryTag dummyInv = new InventoryTag(type == InventoryType.PLAYER ? InventoryType.CHEST : type, AdvancedTextImpl.instance.getTitle(object.inventory));
+            InventoryTag dummyInv = new InventoryTag(type == InventoryType.PLAYER ? InventoryType.CHEST : type, PaperAPITools.instance.getTitle(object.inventory));
             ItemStack[] contents = object.getStorageContents();
             if (dummyInv.getInventoryType() == InventoryType.CHEST) {
                 dummyInv.setSize(contents.length);
@@ -1285,7 +1285,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return null;
             }
             List<ItemTag> items = ListTag.getListFor(attribute.getParamObject(), attribute.context).filter(ItemTag.class, attribute.context);
-            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
+            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), PaperAPITools.instance.getTitle(object.inventory));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
             }
@@ -1329,7 +1329,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return null;
             }
             String matcher = attribute.getParam();
-            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
+            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), PaperAPITools.instance.getTitle(object.inventory));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
             }
@@ -1377,7 +1377,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return null;
             }
             List<ItemTag> items = ListTag.getListFor(attribute.getParamObject(), attribute.context).filter(ItemTag.class, attribute.context);
-            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), AdvancedTextImpl.instance.getTitle(object.inventory));
+            InventoryTag dummyInv = new InventoryTag(object.inventory.getType(), PaperAPITools.instance.getTitle(object.inventory));
             if (object.inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(object.inventory.getSize());
             }

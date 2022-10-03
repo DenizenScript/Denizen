@@ -1333,7 +1333,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof Sign) {
-                return new ListTag(Arrays.asList(AdvancedTextImpl.instance.getSignLines(((Sign) object.getBlockStateForTag(attribute)))));
+                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) object.getBlockStateForTag(attribute)))));
             }
             else {
                 return null;
@@ -4159,7 +4159,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // -->
         tagProcessor.registerTag(ElementTag.class, "custom_name", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof Nameable) {
-                return new ElementTag(AdvancedTextImpl.instance.getCustomName((Nameable) object.getBlockStateForTag(attribute)));
+                return new ElementTag(PaperAPITools.instance.getCustomName((Nameable) object.getBlockStateForTag(attribute)));
             }
             return null;
         });
@@ -4642,7 +4642,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (mechanism.matches("sign_contents") && getBlockState() instanceof Sign) {
             Sign state = (Sign) getBlockState();
             for (int i = 0; i < 4; i++) {
-                AdvancedTextImpl.instance.setSignLine(state, i, "");
+                PaperAPITools.instance.setSignLine(state, i, "");
             }
             ListTag list = mechanism.valueAsType(ListTag.class);
             CoreUtilities.fixNewLinesToListSeparation(list);
@@ -4651,7 +4651,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             else {
                 for (int i = 0; i < list.size(); i++) {
-                    AdvancedTextImpl.instance.setSignLine(state, i, list.get(i));
+                    PaperAPITools.instance.setSignLine(state, i, list.get(i));
                 }
             }
             state.update();
@@ -4802,7 +4802,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                     title = mechanism.getValue().asString();
                 }
                 BlockState state = getBlockState();
-                AdvancedTextImpl.instance.setCustomName((Nameable) state, title);
+                PaperAPITools.instance.setCustomName((Nameable) state, title);
                 state.update(true);
             }
         }

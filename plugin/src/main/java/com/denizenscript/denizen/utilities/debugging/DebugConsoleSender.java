@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.utilities.debugging;
 
-import com.denizenscript.denizen.utilities.AdvancedTextImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +19,7 @@ public class DebugConsoleSender {
         //                                                                       "[HH:mm:ss INFO]: "
         string = CoreConfiguration.debugPrefix + string.replace("<FORCE_ALIGN>", "                 ");
         if (showColor) {
-            AdvancedTextImpl.instance.sendConsoleMessage(commandSender, string);
+            PaperAPITools.instance.sendConsoleMessage(commandSender, string);
         }
         else {
             commandSender.sendMessage(ChatColor.stripColor(string));
