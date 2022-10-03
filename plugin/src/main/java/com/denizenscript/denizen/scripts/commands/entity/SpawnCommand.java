@@ -2,11 +2,15 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgDefaultNull;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgPrefixed;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -23,6 +27,7 @@ public class SpawnCommand extends AbstractCommand {
         setSyntax("spawn [<entity>|...] (<location>) (target:<entity>) (persistent)");
         setRequiredArguments(1, 4);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -66,56 +71,24 @@ public class SpawnCommand extends AbstractCommand {
         TabCompleteHelper.tabCompleteEntityTypes(tab);
     }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(EntityTag.class)) {
-                EntityTag.allowDespawnedNpcs = true;
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
-                EntityTag.allowDespawnedNpcs = false;
-            }
-            else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
-            }
-            else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(EntityTag.class)
-                    && arg.matchesPrefix("target")) {
-                scriptEntry.addObject("target", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("spread")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("spread", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("persistent")
-                    && arg.matches("persistent")) {
-                scriptEntry.addObject("persistent", "");
-            }
-            else {
-                arg.reportUnhandled();
-            }
+    public static void autoExecute(final ScriptEntry scriptEntry,
+                                   @ArgLinear @ArgName("entities") ObjectTag entityListInput,
+                                   @ArgDefaultNull @ArgLinear @ArgName("location") ObjectTag locationInput,
+                                   @ArgDefaultNull @ArgPrefixed @ArgName("target") EntityTag target,
+                                   @ArgDefaultNull @ArgPrefixed @ArgName("spread") ElementTag spread, // TODO: proper native optional int support somehow?
+                                   @ArgName("persistent") boolean persistent) {
+        if (locationInput != null && entityListInput.shouldBeType(LocationTag.class)) {
+            ObjectTag swap = locationInput;
+            locationInput = entityListInput;
+            entityListInput = swap;
         }
-        // Use the NPC or player's locations as the location if one is not specified
-        scriptEntry.defaultObject("location", Utilities.entryDefaultLocation(scriptEntry, false));
-        if (!scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("Must specify entity/entities!");
+        LocationTag location = locationInput == null ? Utilities.entryDefaultLocation(scriptEntry, false) : locationInput.asType(LocationTag.class, scriptEntry.context);
+        if (location == null) {
+            throw new InvalidArgumentsRuntimeException("Must specify a location!");
         }
-        if (!scriptEntry.hasObject("location")) {
-            throw new InvalidArgumentsException("Must specify a location!");
-        }
-    }
-
-    @Override
-    public void execute(final ScriptEntry scriptEntry) {
-        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        LocationTag location = scriptEntry.getObjectTag("location");
-        EntityTag target = scriptEntry.getObjectTag("target");
-        ElementTag spread = scriptEntry.getElement("spread");
-        boolean persistent = scriptEntry.hasObject("persistent");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("entities", entities), location, spread, target, (persistent ? db("persistent", "true") : ""));
-        }
+        EntityTag.allowDespawnedNpcs = true;
+        List<EntityTag> entities = entityListInput.asType(ListTag.class, scriptEntry.context).filter(EntityTag.class, scriptEntry.context);
+        EntityTag.allowDespawnedNpcs = false;
         // Keep a ListTag of entities that can be called using <entry[name].spawned_entities> later in the script queue
         ListTag entityList = new ListTag();
         // Go through all the entities and spawn them or teleport them, then set their targets if applicable
