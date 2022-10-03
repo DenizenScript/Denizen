@@ -18,11 +18,13 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.potion.PotionBrewer;
+import org.bukkit.util.Consumer;
 
 import java.util.*;
 
@@ -255,5 +257,15 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             }
         }
         return null;
+    }
+
+    @Override
+    public <T extends Entity> T spawnEntity(Location location, Class<T> type, Consumer<T> configure, CreatureSpawnEvent.SpawnReason reason) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            return location.getWorld().spawn(location, type, configure, reason);
+        }
+        else {
+            return super.spawnEntity(location, type, configure, reason);
+        }
     }
 }

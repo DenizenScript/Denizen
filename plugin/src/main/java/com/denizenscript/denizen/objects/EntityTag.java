@@ -45,6 +45,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -811,10 +812,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public void spawnAt(Location location) {
-        spawnAt(location, TeleportCause.PLUGIN);
+        spawnAt(location, TeleportCause.PLUGIN, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 
-    public void spawnAt(Location location, TeleportCause cause) {
+    public void spawnAt(Location location, TeleportCause cause, CreatureSpawnEvent.SpawnReason reason) {
         if (location.getWorld() == null) {
             Debug.echoError("Cannot teleport or spawn entity at location '" + new LocationTag(location) + "' because it is missing a world.");
             return;
@@ -868,7 +869,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             entity = location.getWorld().spawnFallingBlock(location, material.getModernData());
         }
         else if (entity_type.getBukkitEntityType() == EntityType.PAINTING) {
-            entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
+            entity = entity_type.spawnNewEntity(location, mechanisms, entityScript, reason);
             location = location.clone();
             Painting painting = (Painting) entity;
             Art art = null;
@@ -904,7 +905,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }
         else {
-            entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
+            entity = entity_type.spawnNewEntity(location, mechanisms, entityScript, reason);
         }
         if (entity == null) {
             if (!new LocationTag(location).isChunkLoaded()) {
