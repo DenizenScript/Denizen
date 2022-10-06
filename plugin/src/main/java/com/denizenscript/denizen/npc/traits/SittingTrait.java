@@ -60,17 +60,23 @@ public class SittingTrait extends Trait implements Listener {
 
     @Override
     public void onSpawn() {
+        if (!sitting) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.instance, () -> {
+                if (!sitting && npc != null) {
+                    npc.removeTrait(SittingTrait.class);
+                }
+            }, 1);
+            return;
+        }
         hasSpawned = true;
-        if (sitting) {
-            if (chairLocation == null) {
-                sit();
-            }
-            else {
-                chairLocation = chairLocation.clone();
-                chairLocation.setYaw(npc.getStoredLocation().getYaw());
-                chairLocation.setPitch(npc.getStoredLocation().getPitch());
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> sit(chairLocation), 1);
-            }
+        if (chairLocation == null) {
+            sit();
+        }
+        else {
+            chairLocation = chairLocation.clone();
+            chairLocation.setYaw(npc.getStoredLocation().getYaw());
+            chairLocation.setPitch(npc.getStoredLocation().getPitch());
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> sit(chairLocation), 1);
         }
     }
 
@@ -182,10 +188,8 @@ public class SittingTrait extends Trait implements Listener {
      */
     public void stand() {
         new NPCTag(npc).action("stand", null);
-
         standInternal();
         standInternal();
-
         chairLocation = null;
     }
 
