@@ -2329,9 +2329,7 @@ public class ServerTagBase {
             }
             ListTag result = new ListTag();
             for (ItemStack item : items) {
-                if (item != null && item.getType() != Material.AIR) {
-                    result.addObject(new ItemTag(item));
-                }
+                result.addObject(new ItemTag(item));
             }
             event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
         }

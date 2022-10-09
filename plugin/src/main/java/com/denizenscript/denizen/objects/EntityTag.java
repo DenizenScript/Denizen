@@ -4079,7 +4079,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <EntityTag.loot_table_id>
         // @Example
         // # Sets the nearest zombie's loot table to a phantom's
-        // - adjust <player.location.find_entities[zombie].within[5].first> loot_table:entities/phantom
+        // - adjust <player.location.find_entities[zombie].within[5].first> loot_table_id:entities/phantom
         // -->
         if (mechanism.matches("loot_table_id")) {
             if (!(getBukkitEntity() instanceof Lootable)) {
