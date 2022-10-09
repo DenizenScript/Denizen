@@ -5,12 +5,14 @@ import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 
 public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerCompletesAdvancementScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
+        Debug.log("Raw json: " + PaperModule.componentToJson(event.message()));
         switch (name) {
             case "message": return new ElementTag(PaperModule.stringifyComponent(event.message()));
         }

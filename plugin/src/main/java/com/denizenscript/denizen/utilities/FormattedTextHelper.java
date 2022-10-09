@@ -92,11 +92,7 @@ public class FormattedTextHelper {
         while (output.startsWith(POSSIBLE_RESET_PREFIX) && output.length() > 4 && colorCodeInvalidator.isMatch(output.charAt(3))) {
             output = output.substring(2);
         }
-        return output;
-    }
-
-    public static boolean needsAppendCode(ChatColor color, Boolean bool, boolean trueBool) {
-        return (bool != null && bool) || (color != null && trueBool);
+        return cleanRedundantCodes(output);
     }
 
     public static String stringifyRGBSpigot(String hex) {
@@ -119,26 +115,26 @@ public class FormattedTextHelper {
             return null;
         }
         StringBuilder builder = new StringBuilder(128);
-        ChatColor color = component.getColorRaw();
+        ChatColor color = component.getColor();
         if (color != null) {
             builder.append(color);
         }
-        if (needsAppendCode(color, component.isBoldRaw(), component.isBold())) {
+        if (component.isBold()) {
             builder.append(ChatColor.BOLD);
         }
-        if (needsAppendCode(color, component.isItalicRaw(), component.isItalic())) {
+        if (component.isItalic()) {
             builder.append(ChatColor.ITALIC);
         }
-        if (needsAppendCode(color, component.isStrikethroughRaw(), component.isStrikethrough())) {
+        if (component.isStrikethrough()) {
             builder.append(ChatColor.STRIKETHROUGH);
         }
-        if (needsAppendCode(color, component.isUnderlinedRaw(), component.isUnderlined())) {
+        if (component.isUnderlined()) {
             builder.append(ChatColor.UNDERLINE);
         }
-        if (needsAppendCode(color, component.isObfuscatedRaw(), component.isObfuscated())) {
+        if (component.isObfuscated()) {
             builder.append(ChatColor.MAGIC);
         }
-        if (component.getFontRaw() != null || (component.getFont() != null && color != null)) {
+        if (component.getFontRaw() != null || (component.getFont() != null && component.getColorRaw() != null)) {
             builder.append(ChatColor.COLOR_CHAR).append("[font=").append(component.getFont()).append("]");
         }
         boolean hasInsertion = component.getInsertion() != null;
