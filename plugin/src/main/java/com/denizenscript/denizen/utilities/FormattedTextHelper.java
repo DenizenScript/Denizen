@@ -42,14 +42,14 @@ public class FormattedTextHelper {
 
     public static String escape(String input) {
         if (needsEscapeMatcher.containsAnyMatch(input)) {
-            input = input.replace("&", "&amp").replace(";", "&sc").replace("[", "&lb").replace("]", "&rb");
+            input = input.replace("&", "&amp").replace(";", "&sc").replace("[", "&lb").replace("]", "&rb").replace("\n", "&nl");
         }
         return input.replace(String.valueOf(ChatColor.COLOR_CHAR), "&ss");
     }
 
     public static String unescape(String input) {
         if (input.indexOf('&') != -1) {
-            return input.replace("&sc", ";").replace("&lb", "[").replace("&rb", "]").replace("&ss", String.valueOf(ChatColor.COLOR_CHAR)).replace("&amp", "&");
+            return input.replace("&sc", ";").replace("&lb", "[").replace("&rb", "]").replace("&nl", "\n").replace("&ss", String.valueOf(ChatColor.COLOR_CHAR)).replace("&amp", "&");
         }
         return input;
     }
