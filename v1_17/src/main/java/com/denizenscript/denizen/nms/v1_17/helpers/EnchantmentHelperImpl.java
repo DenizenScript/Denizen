@@ -175,7 +175,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public String getFullName(Enchantment enchantment, int level) {
-        return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)), ChatColor.GRAY);
+        return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)));
     }
 
     @Override

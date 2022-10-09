@@ -97,7 +97,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             if (lower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
                 altMessageDetermination = null;
-                message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson.asString()), ChatColor.WHITE), true);
+                message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson.asString())), true);
                 modified = true;
                 return true;
             }

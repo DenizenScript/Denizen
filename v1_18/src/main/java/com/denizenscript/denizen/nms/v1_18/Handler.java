@@ -184,7 +184,7 @@ public class Handler extends NMSHandler {
                 if (PAPER_INVENTORY_TITLE_GETTER == null) {
                     PAPER_INVENTORY_TITLE_GETTER = ReflectionHelper.getMethodHandle(nms.getClass(), "title");
                 }
-                return PaperAPITools.instance.parseComponent(PAPER_INVENTORY_TITLE_GETTER.invoke(nms), ChatColor.BLACK);
+                return PaperAPITools.instance.parseComponent(PAPER_INVENTORY_TITLE_GETTER.invoke(nms));
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -293,7 +293,7 @@ public class Handler extends NMSHandler {
         if (contentObject instanceof Text) {
             Object value = ((Text) contentObject).getValue();
             if (value instanceof BaseComponent[]) {
-                return FormattedTextHelper.stringify((BaseComponent[]) value, ChatColor.WHITE);
+                return FormattedTextHelper.stringify((BaseComponent[]) value);
             }
             else {
                 return value.toString();

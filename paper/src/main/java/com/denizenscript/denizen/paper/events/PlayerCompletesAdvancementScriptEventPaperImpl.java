@@ -12,7 +12,7 @@ public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerComple
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "message": return new ElementTag(PaperModule.stringifyComponent(event.message(), ChatColor.WHITE));
+            case "message": return new ElementTag(PaperModule.stringifyComponent(event.message()));
         }
         return super.getContext(name);
     }

@@ -259,7 +259,7 @@ public class ItemHelperImpl extends ItemHelper {
         net.minecraft.server.v1_16_R3.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
         String jsonText = ((NBTTagCompound) nmsItemStack.getTag().get("display")).getString("Name");
         BaseComponent[] nameComponent = ComponentSerializer.parse(jsonText);
-        return FormattedTextHelper.stringify(nameComponent, ChatColor.WHITE);
+        return FormattedTextHelper.stringify(nameComponent);
     }
 
     @Override
@@ -272,7 +272,7 @@ public class ItemHelperImpl extends ItemHelper {
         List<String> outList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             BaseComponent[] lineComponent = ComponentSerializer.parse(list.getString(i));
-            outList.add(FormattedTextHelper.stringify(lineComponent, ChatColor.WHITE));
+            outList.add(FormattedTextHelper.stringify(lineComponent));
         }
         return outList;
     }

@@ -41,14 +41,14 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public String parseComponent(Object input, ChatColor baseColor) {
+    public String parseComponent(Object input) {
         if (input == null) {
             return null;
         }
         if (input instanceof Component) {
-            return PaperModule.stringifyComponent((Component) input, baseColor);
+            return PaperModule.stringifyComponent((Component) input);
         }
-        return super.parseComponent(input, baseColor);
+        return super.parseComponent(input);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String getCustomName(Entity entity) {
-        return PaperModule.stringifyComponent(entity.customName(), ChatColor.WHITE);
+        return PaperModule.stringifyComponent(entity.customName());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String getPlayerListName(Player player) {
-        return PaperModule.stringifyComponent(player.playerListName(), ChatColor.WHITE);
+        return PaperModule.stringifyComponent(player.playerListName());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         String[] output = new String[4];
         int i = 0;
         for (Component component : sign.lines()) {
-            output[i++] = PaperModule.stringifyComponent(component, ChatColor.BLACK);
+            output[i++] = PaperModule.stringifyComponent(component);
         }
         return output;
     }
@@ -113,7 +113,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String getCustomName(Nameable object) {
-        return PaperModule.stringifyComponent(object.customName(), ChatColor.BLACK);
+        return PaperModule.stringifyComponent(object.customName());
     }
 
     @Override
@@ -191,7 +191,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String getDeathMessage(PlayerDeathEvent event) {
-        return PaperModule.stringifyComponent(event.deathMessage(), ChatColor.WHITE);
+        return PaperModule.stringifyComponent(event.deathMessage());
     }
 
     @Override

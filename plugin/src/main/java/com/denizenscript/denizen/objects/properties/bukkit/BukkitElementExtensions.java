@@ -438,7 +438,7 @@ public class BukkitElementExtensions {
         // Inverts <@link tag ElementTag.to_raw_json>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "from_raw_json", (attribute, object) -> {
-            return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString()), ChatColor.WHITE));
+            return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString())));
         });
 
         // <--[tag]

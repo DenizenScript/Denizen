@@ -93,7 +93,7 @@ public class ItemBook implements Property {
             List<BaseComponent[]> pages = object.getBookMeta().spigot().getPages();
             ListTag pageList = new ListTag(pages.size());
             for (BaseComponent[] page : pages) {
-                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page, ChatColor.BLACK), true));
+                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page), true));
             }
             return pageList;
         });
@@ -130,7 +130,7 @@ public class ItemBook implements Property {
             }
             if ((attribute.startsWith("page", 2) || attribute.startsWith("get_page", 2)) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
-                return new ElementTag(FormattedTextHelper.stringify(bookMeta.spigot().getPage(attribute.getIntParam()), ChatColor.BLACK));
+                return new ElementTag(FormattedTextHelper.stringify(bookMeta.spigot().getPage(attribute.getIntParam())));
             }
             if ((attribute.startsWith("raw_page", 2) || attribute.startsWith("get_raw_page", 2)) && attribute.hasContext(2)) {
                 BukkitImplDeprecations.bookItemRawTags.warn(attribute.context);
@@ -141,7 +141,7 @@ public class ItemBook implements Property {
                 attribute.fulfill(1);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                    output.add(FormattedTextHelper.stringify(page, ChatColor.BLACK));
+                    output.add(FormattedTextHelper.stringify(page));
                 }
                 return output;
             }
@@ -333,7 +333,7 @@ public class ItemBook implements Property {
             List<BaseComponent[]> pages = bookMeta.spigot().getPages();
             ListTag pageList = new ListTag(pages.size());
             for (BaseComponent[] page : pages) {
-                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page, ChatColor.BLACK), true));
+                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page), true));
             }
             bookMap.putObject("pages", pageList);
         }
@@ -359,7 +359,7 @@ public class ItemBook implements Property {
         output.append("pages|");
         if (bookMeta.hasPages()) {
             for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                output.append(EscapeTagBase.escape(FormattedTextHelper.stringify(page, ChatColor.BLACK))).append("|");
+                output.append(EscapeTagBase.escape(FormattedTextHelper.stringify(page))).append("|");
             }
         }
         return output.substring(0, output.length() - 1);

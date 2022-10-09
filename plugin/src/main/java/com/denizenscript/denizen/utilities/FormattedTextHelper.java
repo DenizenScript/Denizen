@@ -71,7 +71,7 @@ public class FormattedTextHelper {
         return hasRootFormat(extra.get(0));
     }
 
-    public static String stringify(BaseComponent[] components, ChatColor baseColor) {
+    public static String stringify(BaseComponent[] components) {
         if (components == null) {
             return null;
         }

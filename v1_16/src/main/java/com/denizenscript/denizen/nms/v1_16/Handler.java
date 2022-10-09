@@ -238,7 +238,7 @@ public class Handler extends NMSHandler {
         if (contentObject instanceof Text) {
             Object value = ((Text) contentObject).getValue();
             if (value instanceof BaseComponent[]) {
-                return FormattedTextHelper.stringify((BaseComponent[]) value, ChatColor.WHITE);
+                return FormattedTextHelper.stringify((BaseComponent[]) value);
             }
             else {
                 return value.toString();

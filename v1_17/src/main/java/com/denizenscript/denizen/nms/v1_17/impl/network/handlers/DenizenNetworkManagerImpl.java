@@ -273,7 +273,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
             Component baseComponent = actionbarPacket.getText();
             event.reset();
-            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE));
+            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent)));
             event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());

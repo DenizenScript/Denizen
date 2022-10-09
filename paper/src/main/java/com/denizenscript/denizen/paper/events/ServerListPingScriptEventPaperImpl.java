@@ -107,7 +107,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
     public ObjectTag getContext(String name) {
         switch (name) {
             case "motd":
-                return new ElementTag(PaperModule.stringifyComponent(event.motd(), ChatColor.WHITE));
+                return new ElementTag(PaperModule.stringifyComponent(event.motd()));
             case "protocol_version":
                 return new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
             case "version_name":

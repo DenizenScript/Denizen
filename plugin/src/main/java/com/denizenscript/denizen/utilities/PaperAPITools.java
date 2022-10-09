@@ -32,7 +32,7 @@ public class PaperAPITools {
         return Bukkit.getServer().createInventory(holder, type, title);
     }
 
-    public String parseComponent(Object input, ChatColor baseColor) {
+    public String parseComponent(Object input) {
         if (input == null) {
             return null;
         }
@@ -40,7 +40,7 @@ public class PaperAPITools {
             return (String) input;
         }
         else if (input instanceof BaseComponent[]) {
-            return FormattedTextHelper.stringify((BaseComponent[]) input, baseColor);
+            return FormattedTextHelper.stringify((BaseComponent[]) input);
         }
         else if (input instanceof BaseComponent) {
             return FormattedTextHelper.stringify((BaseComponent) input);

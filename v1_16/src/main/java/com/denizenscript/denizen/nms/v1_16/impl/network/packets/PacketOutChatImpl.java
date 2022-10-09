@@ -27,12 +27,12 @@ public class PacketOutChatImpl implements PacketOutChat {
         try {
             IChatBaseComponent baseComponent = (IChatBaseComponent) MESSAGE.get(internal);
             if (baseComponent != null) {
-                message = FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE);
+                message = FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent));
                 rawJson = IChatBaseComponent.ChatSerializer.a(baseComponent);
             }
             else {
                 if (internal.components != null) {
-                    message = FormattedTextHelper.stringify(internal.components, ChatColor.WHITE);
+                    message = FormattedTextHelper.stringify(internal.components);
                     rawJson = ComponentSerializer.toString(internal.components);
                 }
                 bungee = true;

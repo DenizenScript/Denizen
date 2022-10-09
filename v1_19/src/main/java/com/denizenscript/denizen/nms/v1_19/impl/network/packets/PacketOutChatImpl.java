@@ -18,14 +18,14 @@ public class PacketOutChatImpl implements PacketOutChat {
     public PacketOutChatImpl(ClientboundSystemChatPacket internal) {
         systemPacket = internal;
         rawJson = internal.content();
-        message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson), ChatColor.BLACK);
+        message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson));
         isOverlayActionbar = internal.overlay();
     }
 
     public PacketOutChatImpl(ClientboundPlayerChatPacket internal) {
         playerPacket = internal;
         rawJson = ComponentSerializer.toString(internal.message().signedContent());
-        message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson), ChatColor.BLACK);
+        message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson));
     }
 
     @Override

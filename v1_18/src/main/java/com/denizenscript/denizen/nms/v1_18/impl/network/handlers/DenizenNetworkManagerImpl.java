@@ -353,7 +353,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
                 String modeText = update.getGameMode() == null ? null : update.getGameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), profile.getName(),
-                        update.getDisplayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.getDisplayName()), ChatColor.WHITE), modeText, texture, signature, update.getLatency());
+                        update.getDisplayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.getDisplayName())), modeText, texture, signature, update.getLatency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
@@ -400,7 +400,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
             Component baseComponent = actionbarPacket.getText();
             event.reset();
-            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent), ChatColor.WHITE));
+            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent)));
             event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
