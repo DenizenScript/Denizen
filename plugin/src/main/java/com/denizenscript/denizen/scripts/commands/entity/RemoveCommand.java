@@ -106,11 +106,12 @@ public class RemoveCommand extends AbstractCommand {
                 else if (entity.isCitizensNPC()) {
                     entity.getDenizenNPC().getCitizen().destroy();
                 }
-                else if (entity.isSpawned()) {
-                    entity.remove();
-                }
                 else {
-                    Debug.echoError("Tried to remove already-removed entity.");
+                    if (!entity.isSpawned()) {
+                        Debug.echoError("Tried to remove already-removed entity.");
+                        // Still remove() anyway to compensate for Spigot/NMS bugs
+                    }
+                    entity.remove();
                 }
             }
             else {
