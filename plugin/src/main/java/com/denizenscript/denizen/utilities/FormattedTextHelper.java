@@ -403,6 +403,16 @@ public class FormattedTextHelper {
         if (str == null) {
             return null;
         }
+        try {
+            return parseInternal(str, baseColor, cleanBase);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return new BaseComponent[]{new TextComponent(str)};
+    }
+
+    public static BaseComponent[] parseInternal(String str, ChatColor baseColor, boolean cleanBase) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
         if (firstChar == -1) {
@@ -427,7 +437,7 @@ public class FormattedTextHelper {
                 List<String> innardParts = CoreUtilities.split(translatable, ';');
                 component.setTranslate(unescape(innardParts.get(0)));
                 for (int i = 1; i < innardParts.size(); i++) {
-                    for (BaseComponent subComponent : parse(unescape(innardParts.get(i)), baseColor, false)) {
+                    for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false)) {
                         component.addWith(subComponent);
                     }
                 }
@@ -482,7 +492,7 @@ public class FormattedTextHelper {
                             ScoreComponent component = new ScoreComponent(unescape(innardBase.get(1)), unescape(innardParts.get(0)), unescape(innardParts.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("keybind")) {
+                        else if (innardType.equals("keybind") && Utilities.namespaceMatcher.isOnlyMatches(innardBase.get(1))) {
                             KeybindComponent component = new KeybindComponent();
                             component.setKeybind(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
@@ -491,11 +501,11 @@ public class FormattedTextHelper {
                             SelectorComponent component = new SelectorComponent(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("translate")) {
+                        else if (innardType.equals("translate") && Utilities.namespaceMatcher.isOnlyMatches(innardBase.get(1))) {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
                             for (String extra : innardParts) {
-                                for (BaseComponent subComponent : parse(unescape(extra), baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(unescape(extra), baseColor, false)) {
                                     component.addWith(subComponent);
                                 }
                             }
@@ -509,7 +519,7 @@ public class FormattedTextHelper {
                             TextComponent clickableText = new TextComponent();
                             ClickEvent.Action action = ElementTag.asEnum(ClickEvent.Action.class, innardBase.get(1));
                             clickableText.setClickEvent(new ClickEvent(action == null ? ClickEvent.Action.SUGGEST_COMMAND : action, unescape(innardParts.get(0))));
-                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
                                 clickableText.addExtra(subComponent);
                             }
                             lastText.addExtra(clickableText);
@@ -525,7 +535,7 @@ public class FormattedTextHelper {
                             if (HoverFormatHelper.processHoverInput(action == null ? HoverEvent.Action.SHOW_TEXT : action, hoverableText, innardParts.get(0))) {
                                 continue;
                             }
-                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
                                 hoverableText.addExtra(subComponent);
                             }
                             lastText.addExtra(hoverableText);
@@ -542,7 +552,7 @@ public class FormattedTextHelper {
                             }
                             TextComponent insertableText = new TextComponent();
                             insertableText.setInsertion(unescape(innardBase.get(1)));
-                            for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
                                 insertableText.addExtra(subComponent);
                             }
                             lastText.addExtra(insertableText);
@@ -594,7 +604,7 @@ public class FormattedTextHelper {
                                 else {
                                     TextComponent colorText = new TextComponent();
                                     colorText.setColor(color);
-                                    for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), color, false)) {
+                                    for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), color, false)) {
                                         colorText.addExtra(subComponent);
                                     }
                                     lastText.addExtra(colorText);
@@ -618,13 +628,13 @@ public class FormattedTextHelper {
                                     endIndex = str.length();
                                 }
                                 String gradientText = BukkitElementExtensions.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
-                                for (BaseComponent subComponent : parse(gradientText, baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(gradientText, baseColor, false)) {
                                     lastText.addExtra(subComponent);
                                 }
                                 endBracket = endIndex - 1;
                             }
                         }
-                        else if (innardType.equals("font")) {
+                        else if (innardType.equals("font") && Utilities.namespaceMatcher.isOnlyMatches(innardBase.get(1))) {
                             int endIndex = findEndIndexFor(str, "[font=", "[reset=font]", endBracket);
                             if (endIndex == -1) {
                                 nextText.setFont(innardBase.get(1));
@@ -632,7 +642,7 @@ public class FormattedTextHelper {
                             else {
                                 TextComponent fontText = new TextComponent();
                                 fontText.setFont(innardBase.get(1));
-                                for (BaseComponent subComponent : parse(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
                                     fontText.addExtra(subComponent);
                                 }
                                 lastText.addExtra(fontText);
