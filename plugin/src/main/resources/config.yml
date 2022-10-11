@@ -12,7 +12,7 @@ Debug:
     # The max length of a line of debug output. Shorten this if your console is hard to read.
     Line length: 300
     # The max length of debug output. After this length, all further output will be cut off.
-    Trim length limit: 1024
+    Trim length limit: 4096
     # Whether to permit the "system.redirect_logging" mechanism
     Allow console redirection: false
     # Whether to send basic statistic information to the Denizen central server.
