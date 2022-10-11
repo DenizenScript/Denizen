@@ -749,4 +749,39 @@ public class FormattedTextHelper {
         }
         return new BaseComponent[] { cleanBase ? root : base };
     }
+
+    public static int indexOfLastColorBlockStart(String text) {
+        int result = text.lastIndexOf(ChatColor.COLOR_CHAR + "[");
+        if (result == -1 || text.indexOf(']', result + 2) != -1) {
+            return -1;
+        }
+        return result;
+    }
+
+    /**
+     * Equivalent to DebugInternals.trimMessage, with a special check:
+     * If a message is cut in the middle of a format block like "&[font=x:y]", cut that block entirely out.
+     * (This is needed because a snip in the middle of this will explode with parsing errors).
+     */
+    public static String bukkitSafeDebugTrimming(String message) {
+        int trimSize = CoreConfiguration.debugTrimLength;
+        if (message.length() > trimSize) {
+            int firstCut = (trimSize / 2) - 10, secondCut = message.length() - ((trimSize / 2) - 10);
+            String prePart = message.substring(0, firstCut);
+            String cutPart = message.substring(firstCut, secondCut);
+            String postPart = message.substring(secondCut);
+            int preEarlyCut = indexOfLastColorBlockStart(prePart);
+            if (preEarlyCut != -1) {
+                prePart = message.substring(0, preEarlyCut);
+            }
+            if (indexOfLastColorBlockStart(cutPart) != -1 || (preEarlyCut != -1 && cutPart.indexOf(']') == -1)) {
+                int lateCut = postPart.indexOf(']');
+                if (lateCut != -1) {
+                    postPart = postPart.substring(lateCut + 1);
+                }
+            }
+            message = prePart + "... *snip!*..." + postPart;
+        }
+        return message;
+    }
 }
