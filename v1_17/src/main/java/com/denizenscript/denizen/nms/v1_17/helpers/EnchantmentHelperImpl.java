@@ -6,7 +6,6 @@ import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContai
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
