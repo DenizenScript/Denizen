@@ -43,10 +43,9 @@ public class SidebarCommand extends AbstractCommand {
     // @Group player
     //
     // @Description
-    // This command was created as a simpler replacement for using the Scoreboard command to display
-    // per-player sidebars. By using packets and dummies, it enables you to have non-flickering, fully
-    // functional sidebars without wasting processing speed and memory on creating new Scoreboards for
-    // every single player.
+    // This command was created as a simpler replacement for using the Scoreboard command to display per-player sidebars.
+    // By using packets and dummies, it enables you to have non-flickering, fully functional sidebars,
+    // without wasting processing speed and memory on creating new Scoreboards for  every single player.
     //
     // Using this command, you can add, remove, or set lines on the scoreboard.
     //
@@ -62,10 +61,9 @@ public class SidebarCommand extends AbstractCommand {
     //
     // You can remove by line value text, or by score number.
     //
-    // The per_player argument is also available, and helps to reduce the number of loops required for
-    // updating multiple players' sidebars. When it is specified, all tags in the command will fill based
-    // on each individual player in the players list. So, for example, you could have <player.name> on a
-    // lines and it will show each player specified their name on that line.
+    // The per_player argument is also available, and helps to reduce the number of loops required for updating multiple players' sidebars.
+    // When it is specified, all tags in the command will fill based on each individual player in the players list.
+    // So, for example, you could have <player.name> on a line and it will show each player specified their name on that line.
     //
     // @Tags
     // <PlayerTag.sidebar_lines>

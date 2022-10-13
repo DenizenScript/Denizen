@@ -32,10 +32,10 @@ public class GroupCommand extends AbstractCommand {
     //
     // @Description
     // Controls a player's permission groups, which the ability to add, remove or set a player's groups.
-    // The 'add' argument adds the player to the group and any parent groups, while the remove command does
-    // the opposite, removing the player from the group and any inheriting groups. The set command removes all
-    // existing groups and sets the player's group.
-    // Note: This requires a permissions plugin.
+    // The 'add' argument adds the player to the group and any parent groups,
+    // and the 'remove' command does the opposite, removing the player from the group and any inheriting groups.
+    // The set command removes all existing groups and sets the player's group.
+    // Note: This requires a permissions plugin and Vault.
     //
     // @Tags
     // <PlayerTag.in_group[<group>]>

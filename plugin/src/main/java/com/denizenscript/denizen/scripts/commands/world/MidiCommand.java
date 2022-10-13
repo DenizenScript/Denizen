@@ -37,10 +37,10 @@ public class MidiCommand extends AbstractCommand implements Holdable {
     // @Group world
     //
     // @Description
-    // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file
-    // must be a valid midi file with the extension '.mid'. It will continuously play the song as
-    // noteblock songs at the given location or group of players until the song ends. If no location or
-    // entity is specified, by default this will play for the attached player.
+    // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder.
+    // The file must be a valid midi file with the extension '.mid'.
+    // It will continuously play the song as noteblock songs at the given location or group of players until the song ends.
+    // If no location or entity is specified, by default this will play for the attached player.
     //
     // Also, an example Midi song file has been included: "Denizen" by Black Coyote. He made it just for us!
     // Check out more of his amazing work at: http://www.youtube.com/user/BlaCoyProductions

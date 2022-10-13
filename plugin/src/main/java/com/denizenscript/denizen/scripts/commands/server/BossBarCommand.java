@@ -36,8 +36,8 @@ public class BossBarCommand extends AbstractCommand {
     // @Group server
     //
     // @Description
-    // Displays a boss bar at the top of the screen of the specified player(s). You can also update the
-    // values and remove the bar.
+    // Displays a boss bar at the top of the screen of the specified player(s).
+    // You can also update the values and remove the bar.
     //
     // Requires an ID.
     //

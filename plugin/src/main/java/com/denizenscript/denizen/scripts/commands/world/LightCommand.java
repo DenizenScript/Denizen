@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 public class LightCommand extends AbstractCommand {
 
-    public LightCommand() {
+    public LightCommand() { // TODO: Deprecate? Incompatible with modern paper, and likely not worth the effort of completely remaking.
         setName("light");
         setSyntax("light [<location>] [<#>/reset] (duration:<duration>)");
         setRequiredArguments(2, 3);
@@ -33,13 +33,12 @@ public class LightCommand extends AbstractCommand {
     // @Warning Incompatible with Paper in 1.17+. Use Spigot, or use vanilla Light blocks.
     //
     // @Description
-    // This command can create and reset a light source at a specified location, regardless of the type
-    // of block. It will be shown to all players near the location until it is reset.
+    // This command can create and reset a light source at a specified location, regardless of the type of block.
+    // It will be shown to all players near the location until it is reset.
     // The brightness must be between 0 and 15, inclusive.
     // Optionally, specify the amount of time the light should exist before being removed.
     //
-    // Note that lights do not persist across server restarts, but will still be visible in the world
-    // after a restart until there is a block change near the location (to reset the light).
+    // Note that lights do not persist across server restarts, but will still be visible in the world after a restart until there is a block change near the location (to reset the light).
     //
     // @Tags
     // <LocationTag.light>

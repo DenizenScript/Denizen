@@ -33,9 +33,10 @@ public class MountCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Mounts an entity onto another as though in a vehicle. Can be used to force a player into a vehicle or to
-    // mount an entity onto another entity. e.g. a player onto an npc. If the entity(s) don't exist they will be
-    // spawned. Accepts a location, which the entities will be teleported to on mounting.
+    // Mounts an entity onto another as though in a vehicle.
+    // Can be used to force a player into a vehicle or to mount an entity onto another entity, for example a player onto an NPC.
+    // If the entity(s) don't exist they will be spawned.
+    // Accepts a location, which the entities will be teleported to on mounting.
     //
     // @Tags
     // <EntityTag.vehicle>

@@ -31,10 +31,11 @@ public class PermissionCommand extends AbstractCommand {
     // @Plugin Vault
     //
     // @Description
-    // Adds or removes a permission node from a player or group. Accepts a world for world-based permissions
-    // plugins. By default changes the attached player's permissions. Accepts the 'group:<name>' argument to change
-    // a group's permission nodes rather than a player's.
-    // Note: This requires a permissions plugin.
+    // Adds or removes a permission node from a player or group.
+    // Accepts a world for world-based permissions plugins.
+    // By default changes the attached player's permissions.
+    // Accepts the 'group:<name>' argument to change a group's permission nodes rather than a player's.
+    // Note: This requires a permissions plugin and Vault.
     //
     // @Tags
     // <PlayerTag.has_permission[permission.node]>

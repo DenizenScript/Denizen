@@ -36,9 +36,9 @@ public class MoneyCommand extends AbstractCommand {
     //
     // @Description
     // Give money to, take money from, and set the balance of a player.
-    // If no quantity is specified it defaults to '1'. You can specify a list of
-    // players to give to or take from. If no player(s) are specified defaults to the attached player.
-    // NOTE: This requires an economy plugin. May work for offline players depending on economy plugin.
+    // If no quantity is specified it defaults to '1'.
+    // You can specify a list of players to give to or take from. If no player(s) are specified, defaults to the attached player.
+    // NOTE: This requires an economy plugin or script, and Vault. May work for offline players depending on economy plugin.
     //
     // @Tags
     // <PlayerTag.money>

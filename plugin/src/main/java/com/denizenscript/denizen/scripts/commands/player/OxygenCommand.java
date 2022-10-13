@@ -27,8 +27,9 @@ public class OxygenCommand extends AbstractCommand {
     // @Group player
     //
     // @Description
-    // Used to add to, remove from or set the amount of current oxygen of a player. Also allows for the changing of the
-    // player's maximum oxygen level. Value is in ticks, so 30 equals to 1 bubble.
+    // Used to add to, remove from or set the amount of current oxygen of a player.
+    // Also allows for the changing of the player's maximum oxygen level.
+    // Value is in ticks, so 30 equals 1 bubble.
     //
     // @Tags
     // <PlayerTag.oxygen>
