@@ -429,4 +429,8 @@ public abstract class EntityHelper {
     public void setTrackingRange(Entity entity, int range) {
         throw new UnsupportedOperationException();
     }
+
+    public abstract boolean isAggressive(Mob mob);
+
+    public abstract void setAggressive(Mob mob, boolean aggressive);
 }
