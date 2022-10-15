@@ -173,6 +173,10 @@ public class BukkitImplDeprecations {
     // Added 2022/07/28
     public static Warning internalEventReflectionContext = new SlowWarning("internalEventReflectionContext", "The context.field_<name> and fields special tags for 'internal bukkit event' are deprecated in favor of the 'reflect_event' global context.");
 
+    // Added 2022/10/14
+    public static Warning skeletonSwingArm = new SlowWarning("skeletonSwingArm", "The 'SKELETON_START/STOP_SWING_ARM' animations are deprecated in favor of the 'EntityTag.aggressive' property.");
+    public static Warning entityArmsRaised = new SlowWarning("entityArmsRaised", "The 'EntityTag.arms_raised' property is deprecated in favor of 'EntityTag.aggressive'.");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 
@@ -180,7 +184,7 @@ public class BukkitImplDeprecations {
     public static Warning interactScriptPriority = new VerySlowWarning("interactScriptPriority", "Assignment script 'interact scripts' section should not have numbered priority values, these were removed years ago. Check https://guide.denizenscript.com/guides/troubleshooting/updates-since-videos.html#assignment-script-updates for more info.");
 
     // Added 2021/10/24, bump to normal slow warning by 2023.
-    public static Warning entityArmorPose = new VerySlowWarning("entityArmorPose", "The old EntityTag.armor_pose and armor_pose_list tags are dperecated in favor of armor_pose_map.");
+    public static Warning entityArmorPose = new VerySlowWarning("entityArmorPose", "The old EntityTag.armor_pose and armor_pose_list tags are deprecated in favor of armor_pose_map.");
 
     // Added 2020/06/13, bump to normal slow warning by 2023.
     public static Warning listStyleTags = new VerySlowWarning("listStyleTags", "'list_' tags are deprecated: just remove the 'list_' prefix.");

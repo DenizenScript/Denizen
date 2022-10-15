@@ -614,4 +614,14 @@ public class EntityHelperImpl extends EntityHelper {
             CraftEventFactory.entityDamage = null;
         }
     }
+
+    @Override
+    public boolean isAggressive(org.bukkit.entity.Mob mob) {
+        return ((CraftMob) mob).getHandle().isAggressive();
+    }
+
+    @Override
+    public void setAggressive(org.bukkit.entity.Mob mob, boolean aggressive) {
+        ((CraftMob) mob).getHandle().setAggressive(aggressive);
+    }
 }

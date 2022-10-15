@@ -5,7 +5,6 @@ import net.minecraft.server.v1_16_R3.Entity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftHorse;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPolarBear;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftSkeleton;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.IronGolem;
@@ -13,16 +12,6 @@ import org.bukkit.entity.IronGolem;
 public class AnimationHelperImpl extends AnimationHelper {
 
     public AnimationHelperImpl() {
-        register("SKELETON_START_SWING_ARM", entity -> {
-            if (entity.getType() == EntityType.SKELETON) {
-                ((CraftSkeleton) entity).getHandle().setAggressive(true);
-            }
-        });
-        register("SKELETON_STOP_SWING_ARM", entity -> {
-            if (entity.getType() == EntityType.SKELETON) {
-                ((CraftSkeleton) entity).getHandle().setAggressive(false);
-            }
-        });
         register("POLAR_BEAR_START_STANDING", entity -> {
             if (entity.getType() == EntityType.POLAR_BEAR) {
                 ((CraftPolarBear) entity).getHandle().t(true);
