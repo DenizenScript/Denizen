@@ -98,7 +98,7 @@ public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onEntityExhausts(EntityExhaustionEvent event) {
-        reason = new ElementTag(event.getExhaustionReason().name());
+        reason = new ElementTag(event.getExhaustionReason().name(), true);
         entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
