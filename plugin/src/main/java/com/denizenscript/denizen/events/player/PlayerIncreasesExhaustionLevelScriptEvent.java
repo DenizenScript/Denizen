@@ -49,7 +49,6 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
     public EntityExhaustionEvent event;
 
     public ElementTag reason;
-    public PlayerTag player;
 
     @Override
     public boolean matches(ScriptPath path) {
