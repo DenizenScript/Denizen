@@ -105,6 +105,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityDropsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersPortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersVehicleScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityExhaustsScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExitsPortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExitsVehicleScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExplodesScriptEvent.class);
