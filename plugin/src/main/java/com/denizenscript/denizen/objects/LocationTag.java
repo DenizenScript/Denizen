@@ -3501,7 +3501,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         tagProcessor.registerTag(ElementTag.class, "vector_to_face", (attribute, object) -> {
             BlockFace face = Utilities.faceFor(object.toVector());
             if (face != null) {
-                return new ElementTag(face.name());
+                return new ElementTag(face);
             }
             return null;
         });
@@ -4356,7 +4356,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(((Sign) state).getColor().name());
+            return new ElementTag(((Sign) state).getColor());
         });
 
         // <--[tag]
@@ -4408,13 +4408,13 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             output.putObject("author", new ElementTag(structure.getAuthor()));
             output.putObject("integrity", new ElementTag(structure.getIntegrity()));
             output.putObject("metadata", new ElementTag(structure.getMetadata()));
-            output.putObject("mirror", new ElementTag(structure.getMirror().name()));
+            output.putObject("mirror", new ElementTag(structure.getMirror()));
             output.putObject("box_position", new LocationTag(structure.getRelativePosition()));
-            output.putObject("rotation", new ElementTag(structure.getRotation().name()));
+            output.putObject("rotation", new ElementTag(structure.getRotation()));
             output.putObject("seed", new ElementTag(structure.getSeed()));
             output.putObject("structure_name", new ElementTag(structure.getStructureName()));
             output.putObject("size", new LocationTag(structure.getStructureSize()));
-            output.putObject("mode", new ElementTag(structure.getUsageMode().name()));
+            output.putObject("mode", new ElementTag(structure.getUsageMode()));
             output.putObject("box_visible", new ElementTag(structure.isBoundingBoxVisible()));
             output.putObject("ignore_entities", new ElementTag(structure.isIgnoreEntities()));
             output.putObject("show_invisible", new ElementTag(structure.isShowAir()));

@@ -234,7 +234,7 @@ public class CuboidBlockSet implements BlockSet {
                                 face = rotateFaceOne(face);
                             }
                             offset.add(face.getDirection().multiply(0.1)); // Compensate for hanging locations being very stupid
-                            mechs.add(new Mechanism("rotation", new ElementTag(face.name()), CoreUtilities.noDebugContext));
+                            mechs.add(new Mechanism("rotation", new ElementTag(face), CoreUtilities.noDebugContext));
                         }
                         else {
                             mechs.add(new Mechanism(mech.getName(), mech.value, CoreUtilities.noDebugContext));

@@ -49,7 +49,7 @@ public class MaterialInstrument implements Property {
         // For the instrument that a material *would* produce if below a noteblock <@link tag MaterialTag.produced_instrument>.
         // -->
         PropertyParser.registerStaticTag(MaterialInstrument.class, ElementTag.class, "instrument", (attribute, material) -> {
-            return new ElementTag(material.getNoteBlock().getInstrument().name());
+            return new ElementTag(material.getNoteBlock().getInstrument());
         });
     }
 

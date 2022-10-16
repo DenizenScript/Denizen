@@ -49,7 +49,7 @@ public class MaterialSwitchFace implements Property {
         // Output is "CEILING", "FLOOR", or "WALL".
         // -->
         PropertyParser.registerStaticTag(MaterialSwitchFace.class, ElementTag.class, "switch_face", (attribute, material) -> {
-            return new ElementTag(material.getFaceAttachable().getAttachedFace().name());
+            return new ElementTag(material.getFaceAttachable().getAttachedFace());
         });
     }
 

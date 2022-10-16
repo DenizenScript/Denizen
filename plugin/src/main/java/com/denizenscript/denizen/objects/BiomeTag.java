@@ -182,7 +182,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // This can be RAIN, SNOW, or NONE.
         // -->
         tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
-            return new ElementTag(CoreUtilities.toLowerCase(object.biome.getDownfallType().name()));
+            return new ElementTag(object.biome.getDownfallType());
         });
 
         // <--[tag]

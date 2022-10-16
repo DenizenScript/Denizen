@@ -61,7 +61,7 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "state": return new ElementTag(event.getDamageState().name());
+            case "state": return new ElementTag(event.getDamageState());
             case "inventory": return InventoryTag.mirrorBukkitInventory(event.getInventory());
             case "break": return new ElementTag(event.isBreaking());
         }

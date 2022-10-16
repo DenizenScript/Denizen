@@ -108,7 +108,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     @EventHandler
     public void onHangingBreaks(HangingBreakByEntityEvent event) {
         hanging = new EntityTag(event.getEntity());
-        cause = new ElementTag(event.getCause().name());
+        cause = new ElementTag(event.getCause());
         location = new LocationTag(hanging.getLocation());
         breaker = new EntityTag(event.getRemover());
         this.event = event;

@@ -90,7 +90,7 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
             case "crossbow":
                 return new ItemTag(event.getCrossbow());
             case "hand":
-                return new ElementTag(event.getHand().name());
+                return new ElementTag(event.getHand());
             case "consumes":
                 return new ElementTag(event.shouldConsumeItem());
         }

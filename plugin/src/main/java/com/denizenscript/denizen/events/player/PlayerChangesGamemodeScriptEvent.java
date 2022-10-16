@@ -65,7 +65,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        gamemode = new ElementTag(event.getNewGameMode().name());
+        gamemode = new ElementTag(event.getNewGameMode());
         this.event = event;
         fire(event);
     }

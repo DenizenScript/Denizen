@@ -249,7 +249,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onEntityDamaged(EntityDamageEvent event) {
         entity = new EntityTag(event.getEntity());
-        cause = new ElementTag(CoreUtilities.toLowerCase(event.getCause().name()));
+        cause = new ElementTag(event.getCause());
         damager = null;
         projectile = null;
         held = null;

@@ -47,7 +47,7 @@ public class MaterialHinge implements Property {
         // Output is LEFT or RIGHT.
         // -->
         PropertyParser.registerStaticTag(MaterialHinge.class, ElementTag.class, "hinge", (attribute, material) -> {
-            return new ElementTag(material.getDoor().getHinge().name());
+            return new ElementTag(material.getDoor().getHinge());
         });
     }
 

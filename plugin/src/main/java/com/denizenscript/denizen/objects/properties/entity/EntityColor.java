@@ -127,7 +127,7 @@ public class EntityColor implements Property {
     public static ListTag listForEnum(Enum<?>[] values) {
         ListTag list = new ListTag(values.length);
         for (Enum<?> obj : values) {
-            list.addObject(new ElementTag(obj.name()));
+            list.addObject(new ElementTag(obj));
         }
         return list;
     }

@@ -61,7 +61,7 @@ public class EntityPickupStatus implements Property {
         // If the entity is an arrow or trident, returns the pickup status of the arrow/trident.
         // -->
         if (attribute.startsWith("pickup_status")) {
-            return new ElementTag(((AbstractArrow) dentity.getBukkitEntity()).getPickupStatus().name())
+            return new ElementTag(((AbstractArrow) dentity.getBukkitEntity()).getPickupStatus())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 

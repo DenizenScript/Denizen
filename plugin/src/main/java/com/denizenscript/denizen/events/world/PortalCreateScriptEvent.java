@@ -70,7 +70,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onPortalCreate(PortalCreateEvent event) {
-        reason = new ElementTag(event.getReason().name());
+        reason = new ElementTag(event.getReason());
         this.event = event;
         fire(event);
     }

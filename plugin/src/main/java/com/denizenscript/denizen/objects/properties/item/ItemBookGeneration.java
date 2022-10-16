@@ -58,7 +58,7 @@ public class ItemBookGeneration implements Property {
             if (!meta.hasGeneration()) {
                 return null;
             }
-            return new ElementTag(meta.getGeneration().name()).getObjectAttribute(attribute.fulfill(1));
+            return new ElementTag(meta.getGeneration()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;

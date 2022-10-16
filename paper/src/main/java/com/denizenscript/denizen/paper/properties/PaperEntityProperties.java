@@ -62,7 +62,7 @@ public class PaperEntityProperties implements Property {
         // Valid spawn reasons can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
         // -->
         PropertyParser.registerTag(PaperEntityProperties.class, ElementTag.class, "spawn_reason", (attribute, entity) -> {
-            return new ElementTag(entity.entity.getBukkitEntity().getEntitySpawnReason().name());
+            return new ElementTag(entity.entity.getBukkitEntity().getEntitySpawnReason());
         });
 
         // <--[tag]
@@ -79,7 +79,7 @@ public class PaperEntityProperties implements Property {
                 attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
                 return null;
             }
-            return new ElementTag(((ExperienceOrb) entity.entity.getBukkitEntity()).getSpawnReason().name());
+            return new ElementTag(((ExperienceOrb) entity.entity.getBukkitEntity()).getSpawnReason());
         });
 
         // <--[tag]

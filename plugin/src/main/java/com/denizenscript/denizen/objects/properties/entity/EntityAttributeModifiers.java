@@ -77,7 +77,7 @@ public class EntityAttributeModifiers implements Property {
         MapTag result = new MapTag();
         result.putObject("name", new ElementTag(modifier.getName()));
         result.putObject("amount", new ElementTag(modifier.getAmount()));
-        result.putObject("operation", new ElementTag(modifier.getOperation().name()));
+        result.putObject("operation", new ElementTag(modifier.getOperation()));
         result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
         result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
         return result;

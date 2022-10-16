@@ -49,7 +49,7 @@ public class PaperItemTagProperties implements Property {
         // Returns the rarity of an item, as "common", "uncommon", "rare", or "epic".
         // -->
         PropertyParser.registerTag(PaperItemTagProperties.class, ElementTag.class, "rarity", (attribute, item) -> {
-            return new ElementTag(item.item.getItemStack().getRarity().name());
+            return new ElementTag(item.item.getItemStack().getRarity());
         });
     }
 

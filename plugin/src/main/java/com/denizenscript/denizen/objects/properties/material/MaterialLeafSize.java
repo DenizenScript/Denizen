@@ -47,7 +47,7 @@ public class MaterialLeafSize implements Property {
         // Output is SMALL, LARGE, or NONE.
         // -->
         PropertyParser.registerStaticTag(MaterialLeafSize.class, ElementTag.class, "leaf_size", (attribute, material) -> {
-            return new ElementTag(material.getBamboo().getLeaves().name());
+            return new ElementTag(material.getBamboo().getLeaves());
         });
     }
 

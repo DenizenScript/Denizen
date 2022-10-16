@@ -44,7 +44,7 @@ public class RaidStopsScriptEvent extends RaidScriptEvent<RaidStopEvent> impleme
     public ObjectTag getContext(String name) {
         switch (name) {
             case "reason":
-                return new ElementTag(event.getReason().name(), true);
+                return new ElementTag(event.getReason());
         }
         return super.getContext(name);
     }

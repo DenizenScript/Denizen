@@ -153,7 +153,7 @@ public class SidebarCommand extends AbstractCommand {
         if (action == Action.SET && scriptEntry.hasObject("scores") && !scriptEntry.hasObject("value")) {
             throw new InvalidArgumentsException("Must specify value(s) when setting scores!");
         }
-        scriptEntry.addObject("action", new ElementTag(action.name()));
+        scriptEntry.addObject("action", new ElementTag(action));
         scriptEntry.defaultObject("per_player", new ElementTag(false));
         scriptEntry.defaultObject("players", new ElementTag(Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).identify() : "li@"));
     }

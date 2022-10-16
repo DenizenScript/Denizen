@@ -92,7 +92,7 @@ public class EntityPainting implements Property {
         // See also <@link tag server.art_types>.
         // -->
         if (attribute.startsWith("painting")) {
-            return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().name())
+            return new ElementTag(((Painting) painting.getBukkitEntity()).getArt())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 

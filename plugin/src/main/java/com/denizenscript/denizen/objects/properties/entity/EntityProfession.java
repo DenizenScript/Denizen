@@ -88,7 +88,7 @@ public class EntityProfession implements Property {
         // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // -->
         if (attribute.startsWith("profession")) {
-            return new ElementTag(CoreUtilities.toLowerCase(getProfession().name()))
+            return new ElementTag(getProfession())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 

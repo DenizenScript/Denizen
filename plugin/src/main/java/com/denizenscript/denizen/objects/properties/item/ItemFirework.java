@@ -94,7 +94,7 @@ public class ItemFirework implements Property {
                 MapTag effectMap = new MapTag();
                 effectMap.putObject("trail", new ElementTag(effect.hasTrail()));
                 effectMap.putObject("flicker", new ElementTag(effect.hasFlicker()));
-                effectMap.putObject("type", new ElementTag(effect.getType().name()));
+                effectMap.putObject("type", new ElementTag(effect.getType()));
                 effectMap.putObject("color", new ColorTag(ColOne));
                 effectMap.putObject("fade_color", new ColorTag(ColTwo));
                 list.addObject(effectMap);

@@ -282,7 +282,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // WEAPON, DIGGER, FISHING_ROD, TRIDENT, BREAKABLE, BOW, WEARABLE, CROSSBOW, VANISHABLE
         // -->
         tagProcessor.registerTag(ElementTag.class, "category", (attribute, object) -> {
-            return new ElementTag(object.enchantment.getItemTarget().name());
+            return new ElementTag(object.enchantment.getItemTarget());
         });
 
         // <--[tag]

@@ -1994,9 +1994,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOfflineTag(ElementTag.class, "gamemode", (attribute, object) -> {
             if (object.isOnline()) {
-                return new ElementTag(object.getPlayerEntity().getGameMode().name());
+                return new ElementTag(object.getPlayerEntity().getGameMode());
             }
-            return new ElementTag(object.getNBTEditor().getGameMode().name());
+            return new ElementTag(object.getNBTEditor().getGameMode());
         });
 
         // <--[tag]
@@ -2119,7 +2119,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerOnlineOnlyTag(ElementTag.class, "weather", (attribute, object) -> {
             if (object.getPlayerEntity().getPlayerWeather() != null) {
-                return new ElementTag(object.getPlayerEntity().getPlayerWeather().name());
+                return new ElementTag(object.getPlayerEntity().getPlayerWeather());
             }
             else {
                 return null;

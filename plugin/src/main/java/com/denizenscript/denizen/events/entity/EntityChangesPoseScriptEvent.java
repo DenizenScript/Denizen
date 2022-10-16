@@ -72,9 +72,9 @@ public class EntityChangesPoseScriptEvent extends BukkitScriptEvent implements L
             case "entity":
                 return entity;
             case "old_pose":
-                return new ElementTag(oldPose.name());
+                return new ElementTag(oldPose);
             case "new_pose":
-                return new ElementTag(event.getPose().name());
+                return new ElementTag(event.getPose());
         }
         return super.getContext(name);
     }

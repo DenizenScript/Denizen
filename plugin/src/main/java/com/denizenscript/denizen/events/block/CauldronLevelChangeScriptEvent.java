@@ -81,7 +81,7 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;
-            case "cause": return new ElementTag(event.getReason().name());
+            case "cause": return new ElementTag(event.getReason());
             case "old_level": return new ElementTag(event.getOldLevel());
             case "new_level": return new ElementTag(event.getNewLevel());
             case "entity":

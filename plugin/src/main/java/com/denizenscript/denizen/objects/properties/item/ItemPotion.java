@@ -74,7 +74,7 @@ public class ItemPotion implements Property {
         ListTag result = new ListTag();
         MapTag base = new MapTag();
         PotionMeta meta = getMeta();
-        base.putObject("type", new ElementTag(meta.getBasePotionData().getType().name()));
+        base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
         base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
         base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
         if (meta.hasColor()) {
@@ -219,7 +219,7 @@ public class ItemPotion implements Property {
         // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
         // -->
         PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_base_type", (attribute, object) -> {
-            return new ElementTag(object.getMeta().getBasePotionData().getType().name());
+            return new ElementTag(object.getMeta().getBasePotionData().getType());
         });
 
         // <--[tag]

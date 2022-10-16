@@ -101,7 +101,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onHorseJumps(HorseJumpEvent event) {
         entity = new EntityTag(event.getEntity());
-        color = event.getEntity() instanceof Horse ? new ElementTag(((Horse) event.getEntity()).getColor().name()) : null;
+        color = event.getEntity() instanceof Horse ? new ElementTag(((Horse) event.getEntity()).getColor()) : null;
         this.event = event;
         fire(event);
     }

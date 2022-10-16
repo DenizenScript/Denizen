@@ -37,7 +37,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.entity> returns the EntityTag that was killed.
-    // <context.cause> returns the an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
+    // <context.cause> returns an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
     // <context.damage> returns an ElementTag(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.damager> returns the EntityTag damaging the other entity.
@@ -167,7 +167,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         final_damage = new ElementTag(event.getFinalDamage());
-        cause = new ElementTag(CoreUtilities.toLowerCase(event.getCause().name()));
+        cause = new ElementTag(event.getCause());
         damager = null;
         projectile = null;
         if (event instanceof EntityDamageByEntityEvent) {

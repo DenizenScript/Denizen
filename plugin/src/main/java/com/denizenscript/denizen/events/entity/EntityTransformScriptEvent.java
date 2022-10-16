@@ -81,7 +81,7 @@ public class EntityTransformScriptEvent extends BukkitScriptEvent implements Lis
                 }
                 return output;
             case "cause":
-                return new ElementTag(event.getTransformReason().name());
+                return new ElementTag(event.getTransformReason());
         }
         return super.getContext(name);
     }

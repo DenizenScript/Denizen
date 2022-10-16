@@ -93,7 +93,7 @@ public class EntityRotation implements Property {
         // Value is from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/BlockFace.html>.
         // -->
         if (attribute.startsWith("rotation")) {
-            return new ElementTag(CoreUtilities.toLowerCase(getRotation().name()))
+            return new ElementTag(getRotation())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 

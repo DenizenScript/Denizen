@@ -80,7 +80,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onHangingBreaks(HangingBreakEvent event) {
         hanging = new EntityTag(event.getEntity());
-        cause = new ElementTag(event.getCause().name());
+        cause = new ElementTag(event.getCause());
         if (event instanceof HangingBreakByEntityEvent) {
             entity = new EntityTag(((HangingBreakByEntityEvent) event).getRemover());
         }

@@ -65,7 +65,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
             return location;
         }
         else if (name.equals("reason")) {
-            return new ElementTag(event.getReason().name());
+            return new ElementTag(event.getReason());
         }
         return super.getContext(name);
     }

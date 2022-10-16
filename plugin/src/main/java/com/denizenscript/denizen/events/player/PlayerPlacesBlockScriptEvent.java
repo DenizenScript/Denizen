@@ -107,7 +107,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (EntityTag.isNPC(event.getPlayer())) {
             return;
         }
-        hand = new ElementTag(event.getHand().name());
+        hand = new ElementTag(event.getHand());
         material = new MaterialTag(event.getBlock());
         location = new LocationTag(event.getBlock().getLocation());
         against = new LocationTag(event.getBlockAgainst().getLocation());

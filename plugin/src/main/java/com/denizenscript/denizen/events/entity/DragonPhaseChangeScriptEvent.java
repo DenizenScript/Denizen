@@ -80,7 +80,7 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
             case "old_phase":
                 return new ElementTag(event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name());
             case "new_phase":
-                return new ElementTag(event.getNewPhase().name());
+                return new ElementTag(event.getNewPhase());
         }
         return super.getContext(name);
     }

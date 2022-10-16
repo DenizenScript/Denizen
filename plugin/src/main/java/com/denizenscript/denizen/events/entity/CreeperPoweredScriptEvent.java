@@ -69,7 +69,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     public void onCreeperPowered(CreeperPowerEvent event) {
         lightning = new EntityTag(event.getLightning());
         entity = new EntityTag(event.getEntity());
-        cause = new ElementTag(event.getCause().name());
+        cause = new ElementTag(event.getCause());
         this.event = event;
         fire(event);
     }

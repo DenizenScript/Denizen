@@ -114,10 +114,10 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
             return entity.getDenizenObject();
         }
         else if (name.equals("cause")) {
-            return new ElementTag(event.getCause().name());
+            return new ElementTag(event.getCause());
         }
         else if (name.equals("action")) {
-            return new ElementTag(event.getAction().name());
+            return new ElementTag(event.getAction());
         }
         else if (name.equals("effect_type")) {
             return new ElementTag(event.getModifiedType().getName());

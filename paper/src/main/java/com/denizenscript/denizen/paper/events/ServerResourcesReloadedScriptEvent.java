@@ -51,7 +51,7 @@ public class ServerResourcesReloadedScriptEvent extends BukkitScriptEvent implem
 
     @EventHandler
     public void onServerResourcesReloaded(ServerResourcesReloadedEvent event) {
-        cause = new ElementTag(event.getCause().name());
+        cause = new ElementTag(event.getCause());
         fire(event);
     }
 }

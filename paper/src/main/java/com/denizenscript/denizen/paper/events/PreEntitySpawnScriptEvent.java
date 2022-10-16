@@ -82,7 +82,7 @@ public class PreEntitySpawnScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("reason")) {
-            return new ElementTag(event.getReason().name());
+            return new ElementTag(event.getReason());
         }
         else if (name.equals("spawner_location") && event instanceof PreSpawnerSpawnEvent) {
             return new LocationTag(((PreSpawnerSpawnEvent) event).getSpawnerLocation());

@@ -103,7 +103,7 @@ public class ItemBaseColor implements Property {
         if (attribute.startsWith("base_color")) {
             DyeColor baseColor = getBaseColor();
             if (baseColor != null) {
-                return new ElementTag(baseColor.name()).getObjectAttribute(attribute.fulfill(1));
+                return new ElementTag(baseColor).getObjectAttribute(attribute.fulfill(1));
             }
             return null;
         }

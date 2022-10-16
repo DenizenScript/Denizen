@@ -104,7 +104,7 @@ public class SignCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Must specify sign text!");
         }
-        scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC.name()));
+        scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC));
     }
 
     public void setWallSign(Block sign, BlockFace bf, MaterialTag material) {

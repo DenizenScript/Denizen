@@ -107,7 +107,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
             return new ElementTag(amount);
         }
         else if (name.equals("click_type")) {
-            return new ElementTag(event.getClick().name());
+            return new ElementTag(event.getClick());
         }
         else if (name.equals("recipe")) {
             ListTag recipe = new ListTag();

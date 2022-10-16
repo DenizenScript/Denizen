@@ -91,7 +91,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
             case "location":
                 return new LocationTag(event.getLocation());
             case "structure":
-                return new ElementTag(event.getSpecies().name());
+                return new ElementTag(event.getSpecies());
             case "blocks":
                 ListTag blocks = new ListTag();
                 for (BlockState block : event.getBlocks()) {

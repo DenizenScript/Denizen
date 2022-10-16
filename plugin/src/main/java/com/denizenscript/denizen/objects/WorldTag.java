@@ -563,7 +563,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the name of the difficulty level.
         // -->
         registerTag(ElementTag.class, "difficulty", (attribute, object) -> {
-            return new ElementTag(object.getWorld().getDifficulty().name());
+            return new ElementTag(object.getWorld().getDifficulty());
         });
 
         // <--[tag]
@@ -751,7 +751,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the environment of the world: NORMAL, NETHER, or THE_END.
         // -->
         registerTag(ElementTag.class, "environment", (attribute, object) -> {
-            return new ElementTag(object.getWorld().getEnvironment().name());
+            return new ElementTag(object.getWorld().getEnvironment());
         });
 
         /////////////////////

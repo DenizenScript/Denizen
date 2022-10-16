@@ -1358,7 +1358,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return ScriptTag.valueOf(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"), CoreUtilities.noDebugContext);
             }
             else {
-                return new ElementTag(object.getBukkitEntity().getType().name());
+                return new ElementTag(object.getBukkitEntity().getType());
             }
         });
 
@@ -2026,7 +2026,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (object.getBukkitEntity().getLastDamageCause() == null) {
                     return null;
                 }
-                return new ElementTag(object.getBukkitEntity().getLastDamageCause().getCause().name());
+                return new ElementTag(object.getBukkitEntity().getLastDamageCause().getCause());
             }
             // <--[tag]
             // @attribute <EntityTag.last_damage.duration>
@@ -2292,7 +2292,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // See <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Pose.html>
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "visual_pose", (attribute, object) -> {
-            return new ElementTag(object.getBukkitEntity().getPose().name());
+            return new ElementTag(object.getBukkitEntity().getPose());
         });
 
         // <--[tag]
@@ -2471,7 +2471,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!(object.getBukkitEntity() instanceof EnderDragon)) {
                 return null;
             }
-            return new ElementTag(((EnderDragon) object.getLivingEntity()).getPhase().name());
+            return new ElementTag(((EnderDragon) object.getLivingEntity()).getPhase());
         });
 
         // <--[tag]
@@ -2673,7 +2673,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 attribute.echoError("EntityTag.fish_hook_state is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).getState().name());
+            return new ElementTag(((FishHook) object.getBukkitEntity()).getState());
         });
 
         // <--[tag]

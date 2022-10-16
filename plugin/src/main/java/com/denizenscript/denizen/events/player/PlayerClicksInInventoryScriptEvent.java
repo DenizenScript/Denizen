@@ -205,13 +205,13 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
             return cursor;
         }
         else if (name.equals("click")) {
-            return new ElementTag(event.getClick().name());
+            return new ElementTag(event.getClick());
         }
         else if (name.equals("action")) {
-            return new ElementTag(event.getAction().name());
+            return new ElementTag(event.getAction());
         }
         else if (name.equals("slot_type")) {
-            return new ElementTag(event.getSlotType().name());
+            return new ElementTag(event.getSlotType());
         }
         else if (name.equals("is_shift_click")) {
             return new ElementTag(event.isShiftClick());

@@ -597,7 +597,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // For the current instrument of a note block material refer to <@link tag MaterialTag.instrument>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "produced_instrument", (attribute, object) -> {
-            return new ElementTag(NMSHandler.blockHelper.getInstrumentFor(object.getMaterial()).name());
+            return new ElementTag(NMSHandler.blockHelper.getInstrumentFor(object.getMaterial()));
         });
     }
 

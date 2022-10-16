@@ -74,7 +74,7 @@ public class EntityDisabledSlots implements Property {
         for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
             ListTag actions = new ListTag();
             for (Action action : entry.getValue()) {
-                actions.addObject(new ElementTag(action.name()));
+                actions.addObject(new ElementTag(action));
             }
             mapTag.putObject(entry.getKey().name(), actions);
         }

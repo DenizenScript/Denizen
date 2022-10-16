@@ -90,7 +90,7 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
         if (EntityTag.isNPC(event.getEntity())) {
             return;
         }
-        reason = new ElementTag(event.getExhaustionReason().name(), true);
+        reason = new ElementTag(event.getExhaustionReason());
         this.event = event;
         fire(event);
     }

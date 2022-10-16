@@ -70,7 +70,7 @@ public class PlayerClicksFakeEntityScriptEvent extends BukkitScriptEvent impleme
                 }
                 break;
             case "hand":
-                return new ElementTag(event.getHand().name());
+                return new ElementTag(event.getHand());
             case "click_type":
                 return new ElementTag(event.isAttack() ? "left" : "right");
         }

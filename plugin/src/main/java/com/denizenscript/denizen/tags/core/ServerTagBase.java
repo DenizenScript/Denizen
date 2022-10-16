@@ -415,7 +415,7 @@ public class ServerTagBase {
                     if (objective.getDisplaySlot() == null) {
                         return;
                     }
-                    event.setReplacedObject(new ElementTag(objective.getDisplaySlot().name()).getObjectAttribute(attribute.fulfill(1)));
+                    event.setReplacedObject(new ElementTag(objective.getDisplaySlot()).getObjectAttribute(attribute.fulfill(1)));
                 }
 
                 // <--[tag]
@@ -1096,7 +1096,7 @@ public class ServerTagBase {
                 attribute.echoError("Statistic '" + attribute.getParam() + "' does not exist: " + ex.getMessage());
                 return;
             }
-            event.setReplacedObject(new ElementTag(statistic.getType().name()).getObjectAttribute(attribute.fulfill(1)));
+            event.setReplacedObject(new ElementTag(statistic.getType()).getObjectAttribute(attribute.fulfill(1)));
         }
 
         if (attribute.startsWith("enchantment_max_level") && attribute.hasParam()) {

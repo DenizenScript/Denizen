@@ -750,7 +750,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            return new ElementTag(hologram.getDirection().name());
+            return new ElementTag(hologram.getDirection());
         });
 
         // <--[tag]

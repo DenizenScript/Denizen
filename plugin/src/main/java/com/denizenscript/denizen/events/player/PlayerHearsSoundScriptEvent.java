@@ -90,7 +90,7 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         switch (name) {
             case "sound_key": return new ElementTag(soundName);
-            case "sound_name": return isCustom ? null : new ElementTag(SoundLookup.keyToSound.get(soundName).name());
+            case "sound_name": return isCustom ? null : new ElementTag(SoundLookup.keyToSound.get(soundName));
             case "category": return new ElementTag(category);
             case "is_custom": return new ElementTag(isCustom);
             case "source_entity": return entity == null ? null : new EntityTag(entity);

@@ -104,7 +104,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
             if (creatureReason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
                 return; // Let the SpawnerSpawnEvent happen and handle it instead
             }
-            reason = new ElementTag(creatureReason.name());
+            reason = new ElementTag(creatureReason);
         }
         else if (event instanceof SpawnerSpawnEvent) {
             reason = new ElementTag("SPAWNER");

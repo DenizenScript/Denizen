@@ -97,9 +97,9 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     public ObjectTag getContext(String name) {
         switch (name) {
             case "location": return location;
-            case "instrument": return new ElementTag(event.getInstrument().name());
-            case "sound": return new ElementTag(getSound().name());
-            case "tone": return new ElementTag(event.getNote().getTone().name());
+            case "instrument": return new ElementTag(event.getInstrument());
+            case "sound": return new ElementTag(getSound());
+            case "tone": return new ElementTag(event.getNote().getTone());
             case "octave": return new ElementTag(event.getNote().getOctave());
             case "sharp": return new ElementTag(event.getNote().isSharped());
             case "pitch": return new ElementTag(Math.pow(2.0, (double) (event.getNote().getId() - 12) / 12.0)); // based on minecraft source
