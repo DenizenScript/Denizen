@@ -1,68 +1,62 @@
-package com.denizenscript.denizen.events.entity;
+package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 
-public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // <entity> exhausts
+    // player exhaustion level increases
     //
-    // @Group Entity
+    // @Group Player
     //
     // @Location true
     //
     // @Cancellable true
     //
-    // @Triggers when an entity exhausts.
+    // @Triggers when a player experience exhaustion.
     //
     // @Switch reason:<reason> to only process the event if the reason matches a specific reason.
     //
     // @Context
-    // <context.entity> returns the entity.
-    // <context.exhaustion> returns the amount of exhaustion added to the entity.
+    // <context.exhaustion> returns the amount of exhaustion added to the player.
     // <context.reason> returns the reason of exhaustion. See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityExhaustionEvent.ExhaustionReason.html> for a list of valid reasons.
     //
     // @Determine
     // ElementTag(Decimal) to change the amount of exhaustion.
     //
-    // @Player when the exhausting entity is a player.
-    //
-    // @NPC when the exhausting entity is a npc.
+    // @Player Always.
     //
     // @Warning This event may fire very rapidly.
     //
     // -->
 
-    public EntityExhaustsScriptEvent() {
-        registerCouldMatcher("<entity> exhausts");
+    public PlayerIncreasesExhaustionLevelScriptEvent() {
+        registerCouldMatcher("player exhaustion level increases");
         registerSwitches("reason");
     }
 
     public EntityExhaustionEvent event;
 
     public ElementTag reason;
-    public EntityTag entity;
+    public PlayerTag player;
 
     @Override
     public boolean matches(ScriptPath path) {
-        String entityName = path.eventArgLowerAt(0);
-        if (!entity.tryAdvancedMatcher(entityName)) {
-            return false;
-        }
         if (!runGenericSwitchCheck(path, "reason", reason.asString())) {
             return false;
         }
-        if (!runInCheck(path, entity.getLocation())) {
+        if (!runInCheck(path, player.getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -71,7 +65,6 @@ public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "entity": return entity;
             case "exhaustion": return new ElementTag(event.getExhaustion());
             case "reason": return reason;
         }
@@ -81,8 +74,7 @@ public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            ElementTag value = new ElementTag(lower);
+            ElementTag value = new ElementTag(determinationObj.toString());
             if (value.isFloat()) {
                 event.setExhaustion(value.asFloat());
                 return true;
@@ -93,13 +85,16 @@ public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity);
+        return new BukkitScriptEntryData(player, null);
     }
 
     @EventHandler
-    public void onEntityExhausts(EntityExhaustionEvent event) {
+    public void onPlayerIncreasesExhaustionLevel(EntityExhaustionEvent event) {
+        if (EntityTag.isNPC(event.getEntity())) {
+            return;
+        }
         reason = new ElementTag(event.getExhaustionReason().name(), true);
-        entity = new EntityTag(event.getEntity());
+        player = new PlayerTag((Player) event.getEntity());
         this.event = event;
         fire(event);
     }

@@ -105,7 +105,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityDropsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersPortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersVehicleScriptEvent.class);
-        ScriptEvent.registerScriptEvent(EntityExhaustsScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExitsPortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExitsVehicleScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExplodesScriptEvent.class);
@@ -184,6 +183,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerEditsBookScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEmptiesBucketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEntersBedScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerIncreasesExhaustionLevelScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerFillsBucketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerFishesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerFlyingScriptEvent.class);
