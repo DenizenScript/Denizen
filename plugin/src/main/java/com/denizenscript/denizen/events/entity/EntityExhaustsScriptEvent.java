@@ -29,7 +29,7 @@ public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.entity> returns the entity.
-    // <context.exhaustion> returns the amount of exhaustion.
+    // <context.exhaustion> returns the amount of exhaustion added to the entity.
     // <context.reason> returns the reason of exhaustion. See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityExhaustionEvent.ExhaustionReason.html> for a list of valid reasons.
     //
     // @Determine
