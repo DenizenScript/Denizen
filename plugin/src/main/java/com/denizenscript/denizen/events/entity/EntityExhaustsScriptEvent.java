@@ -39,6 +39,8 @@ public class EntityExhaustsScriptEvent extends BukkitScriptEvent implements List
     //
     // @NPC when the exhausting entity is a npc.
     //
+    // @Warning This event may fire very rapidly.
+    //
     // -->
 
     public EntityExhaustsScriptEvent() {
