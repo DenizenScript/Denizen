@@ -24,7 +24,7 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
     //
     // @Cancellable true
     //
-    // @Triggers when a player experience exhaustion.
+    // @Triggers when a player does an activity that increases their exhaustion level, which increases the rate of hunger.
     //
     // @Switch reason:<reason> to only process the event if the reason matches a specific reason.
     //
