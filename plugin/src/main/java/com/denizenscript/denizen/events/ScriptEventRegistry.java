@@ -183,13 +183,13 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerEditsBookScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEmptiesBucketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEntersBedScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerIncreasesExhaustionLevelScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerFillsBucketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerFishesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerFlyingScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerHearsSoundScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerHoldsItemEvent.class);
         ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerIncreasesExhaustionLevelScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerJoinsScriptEvent.class);
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(PlayerJumpScriptEvent.PlayerJumpsSpigotScriptEventImpl.class);

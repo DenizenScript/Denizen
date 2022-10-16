@@ -33,7 +33,7 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
     // <context.reason> returns the reason of exhaustion. See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityExhaustionEvent.ExhaustionReason.html> for a list of valid reasons.
     //
     // @Determine
-    // ElementTag(Decimal) to change the amount of exhaustion.
+    // ElementTag(Decimal) to change the amount of exhaustion that will be added to the player.
     //
     // @Player Always.
     //
@@ -56,7 +56,7 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
         if (!runGenericSwitchCheck(path, "reason", reason.asString())) {
             return false;
         }
-        if (!runInCheck(path, player.getLocation())) {
+        if (!runInCheck(path, event.getEntity().getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -74,7 +74,7 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
-            ElementTag value = new ElementTag(determinationObj.toString());
+            ElementTag value = determinationObj.asElement();
             if (value.isFloat()) {
                 event.setExhaustion(value.asFloat());
                 return true;
@@ -85,7 +85,7 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(player, null);
+        return new BukkitScriptEntryData(event.getEntity());
     }
 
     @EventHandler
@@ -94,7 +94,6 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
             return;
         }
         reason = new ElementTag(event.getExhaustionReason().name(), true);
-        player = new PlayerTag((Player) event.getEntity());
         this.event = event;
         fire(event);
     }
