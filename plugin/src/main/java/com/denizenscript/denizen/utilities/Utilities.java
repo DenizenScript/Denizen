@@ -50,6 +50,14 @@ public class Utilities {
         }
     }
 
+    public static boolean matchesNamespacedKey(String input) {
+        int colonIndex = input.indexOf(':');
+        if (colonIndex == -1) {
+            return namespaceMatcher.isOnlyMatches(input);
+        }
+        return namespaceMatcher.isOnlyMatches(input.substring(0, colonIndex)) && namespaceMatcher.isOnlyMatches(input.substring(colonIndex + 1));
+    }
+
     public static AsciiMatcher namespaceMatcher = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + ".-_/" + AsciiMatcher.DIGITS);
 
     public static String cleanseNamespaceID(String input) {

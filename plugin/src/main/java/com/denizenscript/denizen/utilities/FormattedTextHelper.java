@@ -492,7 +492,7 @@ public class FormattedTextHelper {
                             ScoreComponent component = new ScoreComponent(unescape(innardBase.get(1)), unescape(innardParts.get(0)), unescape(innardParts.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("keybind") && Utilities.namespaceMatcher.isOnlyMatches(innardBase.get(1))) {
+                        else if (innardType.equals("keybind") && Utilities.matchesNamespacedKey(innardBase.get(1))) {
                             KeybindComponent component = new KeybindComponent();
                             component.setKeybind(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
@@ -501,7 +501,7 @@ public class FormattedTextHelper {
                             SelectorComponent component = new SelectorComponent(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("translate") && Utilities.namespaceMatcher.isOnlyMatches(innardBase.get(1))) {
+                        else if (innardType.equals("translate") && Utilities.matchesNamespacedKey(innardBase.get(1))) {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
                             for (String extra : innardParts) {
@@ -634,7 +634,7 @@ public class FormattedTextHelper {
                                 endBracket = endIndex - 1;
                             }
                         }
-                        else if (innardType.equals("font") && Utilities.namespaceMatcher.isOnlyMatches(innardBase.get(1))) {
+                        else if (innardType.equals("font") && Utilities.matchesNamespacedKey(innardBase.get(1))) {
                             int endIndex = findEndIndexFor(str, "[font=", "[reset=font]", endBracket);
                             if (endIndex == -1) {
                                 nextText.setFont(innardBase.get(1));
