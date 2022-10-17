@@ -260,6 +260,7 @@ public interface AreaContainmentObject extends ObjectTag {
         processor.registerTag(ListTag.class, "shell", (attribute, area) -> {
             return area.getShell();
         });
+
         // <--[tag]
         // @attribute <AreaObject.is_within[<cuboid>]>
         // @returns ElementTag(Boolean)

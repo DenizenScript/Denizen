@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -245,13 +246,65 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return isInside;
     }
 
-    public List<LocationTag> generateFlatBlockShell(double y) {
+    public boolean containsInclusive(Location loc) {
+        if (loc.getWorld() == null) {
+            return false;
+        }
+        if (!loc.getWorld().getName().equals(world.getName())) {
+            return false;
+        }
+        int targetY = loc.getBlockY();
+        if (targetY < Math.floor(yMin) || targetY > Math.floor(yMax)) {
+            return false;
+        }
+        int targetX = loc.getBlockX();
+        int targetZ = loc.getBlockZ();
+        boolean isInside = false;
+        for (int i = 0; i < corners.size(); i++) {
+            Corner start = corners.get(i);
+            Corner end = (i + 1 == corners.size() ? corners.get(0) : corners.get(i + 1));
+            int xStart = (int) Math.floor(start.x);
+            int zStart = (int) Math.floor(start.z);
+            int xEnd = (int) Math.floor(end.x);
+            int zEnd = (int) Math.floor(end.z);
+            if (xEnd == targetX && zEnd == targetZ) {
+                return true; // exactly on corner
+            }
+            int x1, x2, z1, z2;
+            if (xEnd > xStart) {
+                x1 = xStart;
+                x2 = xEnd;
+                z1 = zStart;
+                z2 = zEnd;
+            }
+            else {
+                x1 = xEnd;
+                x2 = xStart;
+                z1 = zEnd;
+                z2 = zStart;
+            }
+            if (x1 <= targetX && targetX <= x2) {
+                long crossProduct = ((long) targetZ - (long) z1) * (long) (x2 - x1) - ((long) z2 - (long) z1) * (long) (targetX - x1);
+                if (crossProduct == 0) {
+                    if ((z1 <= targetZ) == (targetZ <= z2)) {
+                        return true; // exactly along edge
+                    }
+                }
+                else if (crossProduct < 0 && (x1 != targetX)) {
+                    isInside = !isInside;
+                }
+            }
+        }
+        return isInside;
+    }
+
+    public List<LocationTag> generateFlatBlockShell(double y, boolean inclusive) {
         int max = Settings.blockTagsMaxBlocks();
         ArrayList<LocationTag> toOutput = new ArrayList<>();
         for (int x = (int) Math.floor(boxMin.x); x < boxMax.x; x++) {
             for (int z = (int) Math.floor(boxMin.z); z < boxMax.z; z++) {
                 LocationTag possible = new LocationTag(x + 0.5, y, z + 0.5, world.getName());
-                if (doesContainLocation(possible)) {
+                if (inclusive ? containsInclusive(possible) : doesContainLocation(possible)) {
                     toOutput.add(possible);
                 }
                 max--;
@@ -265,9 +318,13 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public ListTag getShell() {
+        return getShellInternal(false);
+    }
+
+    public ListTag getShellInternal(boolean inclusive) {
         int max = Settings.blockTagsMaxBlocks();
         ListTag addTo = new ListTag();
-        List<LocationTag> flatShell = generateFlatBlockShell(yMin);
+        List<LocationTag> flatShell = generateFlatBlockShell(yMin, inclusive);
         for (LocationTag loc : flatShell) {
             addTo.addObject(loc.clone());
         }
@@ -322,9 +379,13 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public ListTag getBlocks(Predicate<Location> test) {
+        return getBlocksInternal(test, false);
+    }
+
+    public ListTag getBlocksInternal(Predicate<Location> test, boolean inclusive) {
         int max = Settings.blockTagsMaxBlocks();
         ListTag addTo = new ListTag();
-        List<LocationTag> flatShell = generateFlatBlockShell(yMin);
+        List<LocationTag> flatShell = generateFlatBlockShell(yMin, inclusive);
         for (double y = yMin; y < yMax; y++) {
             for (LocationTag loc : flatShell) {
                 LocationTag newLoc = loc.clone();
@@ -736,6 +797,51 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             if (object.noteName != null) {
                 NotedAreaTracker.add(object);
             }
+        });
+
+        // <--[tag]
+        // @attribute <PolygonTag.contains_inclusive[<location>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns a boolean indicating whether the specified location is inside this polygon.
+        // Uses block-inclusive containment: contains a wider section of blocks along the edge (this mode is equivalent to WorldEdit's block selection).
+        // -->
+        tagProcessor.registerTag(ElementTag.class, LocationTag.class, "contains_inclusive", (attribute, polygon, loc) -> {
+            return new ElementTag(polygon.containsInclusive(loc));
+        }, "contains_location");
+
+        // <--[tag]
+        // @attribute <PolygonTag.blocks_inclusive[(<matcher>)]>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns each block location within the polygon.
+        // Optionally, specify a material matcher to only return locations with that block type.
+        // Uses block-inclusive containment: contains a wider section of blocks along the edge (this mode is equivalent to WorldEdit's block selection).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "blocks_inclusive", (attribute, polygon) -> {
+            if (attribute.hasParam()) {
+                NMSHandler.chunkHelper.changeChunkServerThread(polygon.getWorld().getWorld());
+                try {
+                    String matcher = attribute.getParam();
+                    Predicate<Location> predicate = (l) -> new LocationTag(l).tryAdvancedMatcher(matcher);
+                    return polygon.getBlocksInternal(predicate, true);
+                }
+                finally {
+                    NMSHandler.chunkHelper.restoreServerThread(polygon.getWorld().getWorld());
+                }
+            }
+            return polygon.getBlocksInternal(null, true);
+        });
+
+        // <--[tag]
+        // @attribute <PolygonTag.shell_inclusive>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns each block location on the 3D outer shell of the polygon.
+        // Uses block-inclusive containment: contains a wider section of blocks along the edge (this mode is equivalent to WorldEdit's block selection).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "shell_inclusive", (attribute, polygon) -> {
+            return polygon.getShellInternal(true);
         });
     }
 
