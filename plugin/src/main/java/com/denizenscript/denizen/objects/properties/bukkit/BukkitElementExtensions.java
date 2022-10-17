@@ -715,6 +715,14 @@ public class BukkitElementExtensions {
                     colorOut = ChatColor.COLOR_CHAR + "[color=" + colorStr + "]";
                 }
                 catch (IllegalArgumentException ex) {
+                    ColorTag color = ColorTag.valueOf(colorName, attribute.context);
+                    if (color != null) {
+                        StringBuilder hex = new StringBuilder(Integer.toHexString(color.getColor().asRGB()));
+                        while (hex.length() < 6) {
+                            hex.insert(0, "0");
+                        }
+                        return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+                    }
                     attribute.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
                     return null;
                 }
