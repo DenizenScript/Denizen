@@ -255,6 +255,8 @@ Tags:
     # The benefit of enabling this is it prevents locking the server thread to download the data from Mojang servers.
     # The risk is that it may interfere with other plugins or systems that expect correct data to be set.
     Nullify skull skin ids: false
+    # If true, polygons default to WorldEdit style block-inclusive logic. If false, use precise 'exclusive' logic.
+    Polygon default inclusive: false
 
 # Java Reflection is the toolkit for accessing raw underlying Java data.
 # Denizen partially exposes this, for example in 'JavaReflectedObjectTag', as some scripts may have use for this.

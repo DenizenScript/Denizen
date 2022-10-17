@@ -73,6 +73,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     public AbstractFlagTracker flagTracker = null;
 
+    public static boolean preferInclusive = false;
+
     public static class Corner {
         public double x, z;
 
@@ -220,6 +222,10 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public boolean doesContainLocation(Location loc) {
+        return preferInclusive ? containsInclusive(loc) : containsPrecise(loc);
+    }
+
+    public boolean containsPrecise(Location loc) {
         if (loc.getWorld() == null) {
             return false;
         }
@@ -304,7 +310,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         for (int x = (int) Math.floor(boxMin.x); x < boxMax.x; x++) {
             for (int z = (int) Math.floor(boxMin.z); z < boxMax.z; z++) {
                 LocationTag possible = new LocationTag(x + 0.5, y, z + 0.5, world.getName());
-                if (inclusive ? containsInclusive(possible) : doesContainLocation(possible)) {
+                if (inclusive ? containsInclusive(possible) : containsPrecise(possible)) {
                     toOutput.add(possible);
                 }
                 max--;
@@ -318,7 +324,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public ListTag getShell() {
-        return getShellInternal(false);
+        return getShellInternal(preferInclusive);
     }
 
     public ListTag getShellInternal(boolean inclusive) {
@@ -379,7 +385,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public ListTag getBlocks(Predicate<Location> test) {
-        return getBlocksInternal(test, false);
+        return getBlocksInternal(test, preferInclusive);
     }
 
     public ListTag getBlocksInternal(Predicate<Location> test, boolean inclusive) {
