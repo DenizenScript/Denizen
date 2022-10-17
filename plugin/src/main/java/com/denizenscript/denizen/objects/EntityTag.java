@@ -3338,7 +3338,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <EntityTag.force_no_persist>
         // -->
         if (mechanism.matches("force_no_persist") && mechanism.requireBoolean()) {
-            getLivingEntity().setPersistent(!mechanism.getValue().asBoolean());
+            getBukkitEntity().setPersistent(!mechanism.getValue().asBoolean());
         }
 
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
