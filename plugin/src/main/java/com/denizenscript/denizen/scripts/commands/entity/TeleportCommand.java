@@ -3,6 +3,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
@@ -20,17 +21,17 @@ public class TeleportCommand extends AbstractCommand {
 
     public TeleportCommand() {
         setName("teleport");
-        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>)");
-        setRequiredArguments(1, 3);
+        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (relative)");
+        setRequiredArguments(1, 4);
         isProcedural = false;
         autoCompile();
     }
 
     // <--[command]
     // @Name Teleport
-    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>)
+    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (relative)
     // @Required 1
-    // @Maximum 3
+    // @Maximum 4
     // @Short Teleports the entity(s) to a new location.
     // @Synonyms tp
     // @Group entity
@@ -41,6 +42,9 @@ public class TeleportCommand extends AbstractCommand {
     // You may optionally specify a teleport cause for player entities, allowing proper teleport event handling. When not specified, this is "PLUGIN". See <@link language teleport cause> for causes.
     //
     // Instead of a valid entity, an unspawned NPC or an offline player may also be used.
+    //
+    // Optionally specify "relative" when teleporting a player to use relative teleporation (Paper only).
+    // Relative teleports are smoother for the client when teleporting over short distances.
     //
     // @Tags
     // <EntityTag.location>
@@ -78,7 +82,8 @@ public class TeleportCommand extends AbstractCommand {
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgLinear @ArgName("entities") ObjectTag entityList,
                                    @ArgLinear @ArgName("location") @ArgDefaultNull ObjectTag locationRaw,
-                                   @ArgPrefixed @ArgName("cause") @ArgDefaultText("PLUGIN") PlayerTeleportEvent.TeleportCause cause) {
+                                   @ArgPrefixed @ArgName("cause") @ArgDefaultText("PLUGIN") PlayerTeleportEvent.TeleportCause cause,
+                                   @ArgName("relative") boolean relative) {
         if (locationRaw == null) { // Compensate for legacy "- teleport <loc>" default fill
             locationRaw = entityList;
             entityList = Utilities.entryDefaultEntity(scriptEntry, true);
@@ -96,9 +101,15 @@ public class TeleportCommand extends AbstractCommand {
         for (ObjectTag entityObj : entities.objectForms) {
             if (entityObj.shouldBeType(PlayerTag.class)) {
                 PlayerTag player = entityObj.asType(PlayerTag.class, scriptEntry.context);
-                if (player != null && !player.isOnline()) {
-                    player.setLocation(location);
-                    continue;
+                if (player != null) {
+                    if (!player.isOnline()) {
+                        player.setLocation(location);
+                        continue;
+                    }
+                    if (relative) {
+                        PaperAPITools.instance.teleportPlayerRelative(player.getPlayerEntity(), location);
+                        continue;
+                    }
                 }
             }
             if (entityObj.shouldBeType(NPCTag.class)) {
