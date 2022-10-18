@@ -111,11 +111,18 @@ public class FormattedTextHelper {
     }
 
     public static String stringify(BaseComponent component) {
+        return stringifySub(component, null);
+    }
+
+    public static String stringifySub(BaseComponent component, ChatColor parentColor) {
         if (component == null) {
             return null;
         }
         StringBuilder builder = new StringBuilder(128);
-        ChatColor color = component.getColor();
+        ChatColor color = component.getColorRaw();
+        if (color == null) {
+            color = parentColor;
+        }
         if (color != null) {
             builder.append(color);
         }
@@ -178,7 +185,7 @@ public class FormattedTextHelper {
         List<BaseComponent> after = component.getExtra();
         if (after != null) {
             for (BaseComponent afterComponent : after) {
-                builder.append(stringify(afterComponent));
+                builder.append(stringifySub(afterComponent, color));
             }
         }
         if (hasClick) {
