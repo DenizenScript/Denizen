@@ -21,6 +21,8 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
     //
     // @Location true
     //
+    // @Plugin Paper
+    //
     // @Cancellable true
     //
     // @Switch state:<state> to only process the event if the anvil's new damage state matches the specified state.
