@@ -45,11 +45,10 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
     public PlayerInventorySlotChangeEvent event;
     public ItemTag oldItem;
     public ItemTag newItem;
-    public int slot;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runGenericSwitchCheck(path, "slot", String.valueOf(slot))) {
+        if (!runGenericSwitchCheck(path, "slot", String.valueOf(event.getSlot() + 1))) {
             return false;
         }
         if (!runWithCheck(path, oldItem, "from")) {
@@ -69,8 +68,8 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
         switch (name) {
             case "new_item": return newItem;
             case "old_item": return oldItem;
-            case "slot": return new ElementTag(slot);
-            case "raw_slot": return new ElementTag(event.getSlot());
+            case "slot": return new ElementTag(event.getSlot() + 1);
+            case "raw_slot": return new ElementTag(event.getRawSlot());
         }
         return super.getContext(name);
     }
@@ -87,7 +86,6 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
         }
         oldItem = new ItemTag(event.getOldItemStack());
         newItem = new ItemTag(event.getNewItemStack());
-        slot = event.getPlayer().getOpenInventory().convertSlot(event.getSlot()) + 1;
         this.event = event;
         fire(event);
     }
