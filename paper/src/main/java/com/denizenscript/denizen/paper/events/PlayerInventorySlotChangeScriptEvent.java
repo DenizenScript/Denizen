@@ -35,6 +35,9 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
     // <context.old_item> returns an ItemTag of the previous item in the slot.
     // <context.slot> returns an ElementTag(Number) of the slot that was changed.
     // <context.raw_slot> returns an ElementTag(Number) of the raw number of the slot that was changed.
+    //
+    // @Player Always.
+    //
     // -->
 
     public PlayerInventorySlotChangeScriptEvent() {
