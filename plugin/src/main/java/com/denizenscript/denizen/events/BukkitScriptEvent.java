@@ -9,6 +9,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -793,6 +794,14 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             return false;
         }
+    }
+
+    public static boolean trySlot(ScriptPath path, String switchName, Entity entity, int slot) {
+        String slotMatch = path.switches.get(switchName);
+        if (slotMatch != null) {
+            return SlotHelper.doesMatch(slotMatch, entity, slot);
+        }
+        return true;
     }
 
     public static boolean runWithCheck(ScriptPath path, ItemTag held) {

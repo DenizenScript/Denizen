@@ -4,7 +4,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -26,7 +25,7 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
     //
     // @Switch from:<item> to only process the event if the previous item in the slot matches the specified item.
     // @Switch to:<item> to only process the event if the new item in the slot matches the specified item.
-    // @Switch slot:<slot> to only process the event if a specific slot was clicked.
+    // @Switch slot:<slot> to only process the event if a specific slot was clicked. For slot input options, see <@link language Slot Inputs>.
     //
     // @Triggers when the item in a slot of a player's inventory changes.
     // Note that this fires for every item in the player's inventory when they join.
@@ -52,11 +51,8 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runGenericSwitchCheck(path, "slot", String.valueOf(event.getSlot() + 1))) {
-            int altIndex = SlotHelper.nameToIndex(path.switches.get("slot"), event.getPlayer());
-            if (event.getSlot() != altIndex) {
-                return false;
-            }
+        if (!trySlot(path, "slot", event.getPlayer(), event.getSlot())) {
+            return false;
         }
         if (!runWithCheck(path, oldItem, "from")) {
             return false;

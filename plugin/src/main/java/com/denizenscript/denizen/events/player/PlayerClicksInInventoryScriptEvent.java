@@ -76,7 +76,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
     // @Switch with:<item> to only process the event if a specified cursor item was used.
     // @Switch in_area:<area> replaces the default 'in:<area>' for this event.
     // @Switch action:<action> to only process the event if a specified action occurred.
-    // @Switch slot:<slot> to only process the event if a specified slot or slot_type was clicked.
+    // @Switch slot:<slot> to only process the event if a specified slot or slot_type was clicked. For slot input options, see <@link language Slot Inputs>.
     //
     // @Location true
     //
@@ -173,7 +173,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
         if (!runGenericSwitchCheck(path, "action", event.getAction().name())) {
             return false;
         }
-        if (!runGenericSwitchCheck(path, "slot", String.valueOf(event.getSlot() + 1)) && !runGenericSwitchCheck(path, "slot", event.getSlotType().name())) {
+        if (!trySlot(path, "slot", event.getWhoClicked(), event.getSlot()) && !runGenericSwitchCheck(path, "slot", event.getSlotType().name())) {
             return false;
         }
         return super.matches(path);

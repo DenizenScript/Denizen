@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities.inventory;
 
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -8,7 +9,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Helper for player inventory slots.
@@ -114,19 +117,32 @@ public class SlotHelper {
     }
 
     public static final HashMap<String, Integer> nameIndexMap = new HashMap<>();
+    public static final List<String>[] indexNameMap = new List[50];
+
+    public static void registerSlotName(String name, int index) {
+        nameIndexMap.put(name, index);
+        nameIndexMap.put(name + "s", index);
+        List<String> list = indexNameMap[index];
+        if (list == null) {
+            list = new ArrayList<>();
+            indexNameMap[index] = list;
+        }
+        list.add(name);
+        list.add(name + "s");
+    }
 
     static {
-        nameIndexMap.put("boot", BOOTS);
-        nameIndexMap.put("feet", BOOTS);
-        nameIndexMap.put("foot", BOOTS);
-        nameIndexMap.put("shoe", BOOTS);
-        nameIndexMap.put("leg", LEGGINGS);
-        nameIndexMap.put("legging", LEGGINGS);
-        nameIndexMap.put("chest", CHESTPLATE);
-        nameIndexMap.put("chestplate", CHESTPLATE);
-        nameIndexMap.put("helmet", HELMET);
-        nameIndexMap.put("head", HELMET);
-        nameIndexMap.put("offhand", OFFHAND);
+        registerSlotName("boot", BOOTS);
+        registerSlotName("feet", BOOTS);
+        registerSlotName("foot", BOOTS);
+        registerSlotName("shoe", BOOTS);
+        registerSlotName("leg", LEGGINGS);
+        registerSlotName("legging", LEGGINGS);
+        registerSlotName("chest", CHESTPLATE);
+        registerSlotName("chestplate", CHESTPLATE);
+        registerSlotName("helmet", HELMET);
+        registerSlotName("head", HELMET);
+        registerSlotName("offhand", OFFHAND);
     }
 
     public static int nameToIndexFor(String name, InventoryHolder holder) {
@@ -139,9 +155,6 @@ public class SlotHelper {
      */
     public static int nameToIndex(String name, Entity entity) {
         name = name.toLowerCase().replace("_", "");
-        if (name.endsWith("s")) {
-            name = name.substring(0, name.length() - 1);
-        }
         if (name.equals("hand")) {
             return entity instanceof Player ? ((Player) entity).getInventory().getHeldItemSlot() : 0;
         }
@@ -153,5 +166,27 @@ public class SlotHelper {
             return Integer.parseInt(name) - 1;
         }
         return -1;
+    }
+
+    public static boolean doesMatch(String text, Entity entity, int slot) {
+        if (slot >= 0 && slot < indexNameMap.length) {
+            List<String> names = indexNameMap[slot];
+            if (names != null) {
+                for (String name : names) {
+                    if (ScriptEvent.runGenericCheck(text, name)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (entity instanceof Player && slot == ((Player) entity).getInventory().getHeldItemSlot()) {
+            if (ScriptEvent.runGenericCheck(text, "hand")) {
+                return true;
+            }
+        }
+        if (ScriptEvent.runGenericCheck(text, String.valueOf(slot + 1))) {
+            return true;
+        }
+        return false;
     }
 }
