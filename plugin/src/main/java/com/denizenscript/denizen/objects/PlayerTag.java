@@ -2514,6 +2514,26 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }, variants);
     }
 
+    public static void registerOnlineOnlyMechanism(String name, Mechanism.GenericMechRunnerInterface<PlayerTag> runnable) {
+        tagProcessor.registerMechanism(name, false, (object, mechanism) -> {
+            if (!object.isOnline()) {
+                mechanism.echoError("Player is not online, but mechanism '" + name + "' requires the player be online, for player: " + object.debuggable());
+                return;
+            }
+            runnable.run(object, mechanism);
+        });
+    }
+
+    public static <P extends ObjectTag> void registerOnlineOnlyMechanism(String name, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<PlayerTag, P> runnable) {
+        tagProcessor.registerMechanism(name, false, paramType, (object, mechanism, input) -> {
+            if (!object.isOnline()) {
+                mechanism.echoError("Player is not online, but mechanism '" + name + "' requires the player be online, for player: " + object.debuggable());
+                return;
+            }
+            runnable.run(object, mechanism, input);
+        });
+    }
+
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
         return tagProcessor.getObjectAttribute(this, attribute);
