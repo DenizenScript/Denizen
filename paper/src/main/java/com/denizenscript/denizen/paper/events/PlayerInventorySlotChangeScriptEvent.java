@@ -27,8 +27,8 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
     // @Switch to:<item> to only process the event if the new item in the slot matches the specified item.
     // @Switch slot:<slot> to only process the event if a specific slot was clicked.
     //
-    // @Triggers When the item in a slot of a player's inventory changes.
-    // Note that this fires for every item in the player's inventory when they join
+    // @Triggers when the item in a slot of a player's inventory changes.
+    // Note that this fires for every item in the player's inventory when they join.
     //
     // @Context
     // <context.new_item> returns an ItemTag of the new item in the slot.
