@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
@@ -13,9 +12,9 @@ import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -72,11 +71,11 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
-        // Paper extension properties
+        // Paper object extensions
         PropertyParser.registerProperty(PaperEntityProperties.class, EntityTag.class);
         PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
         PropertyParser.registerProperty(PaperWorldProperties.class, WorldTag.class);
-        PropertyParser.registerProperty(PaperPlayerProperties.class, PlayerTag.class);
+        PaperPlayerExtensions.register();
 
         // Paper Tags
         new PaperTagBase();
