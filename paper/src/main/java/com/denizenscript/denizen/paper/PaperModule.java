@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
+import com.denizenscript.denizen.paper.tags.PaperElementExtensions;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -76,6 +77,7 @@ public class PaperModule {
         PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
         PropertyParser.registerProperty(PaperWorldProperties.class, WorldTag.class);
         PaperPlayerExtensions.register();
+        PaperElementExtensions.register();
 
         // Paper Tags
         new PaperTagBase();
@@ -86,10 +88,14 @@ public class PaperModule {
     }
 
     public static Component parseFormattedText(String text, ChatColor baseColor) {
+        return parseFormattedText(text, baseColor, true);
+    }
+
+    public static Component parseFormattedText(String text, ChatColor baseColor, boolean cleanBase) {
         if (text == null) {
             return null;
         }
-        return jsonToComponent(ComponentSerializer.toString(FormattedTextHelper.parse(text, baseColor)));
+        return jsonToComponent(ComponentSerializer.toString(FormattedTextHelper.parse(text, baseColor, cleanBase)));
     }
 
     public static String stringifyComponent(Component component) {
