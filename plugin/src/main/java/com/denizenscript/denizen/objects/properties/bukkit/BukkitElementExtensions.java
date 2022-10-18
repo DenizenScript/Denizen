@@ -348,6 +348,8 @@ public class BukkitElementExtensions {
         // @group text manipulation
         // @description
         // Returns the element with all color encoding stripped.
+        // This will remove any/all colors, formats (bold/italic/etc), advanced formats (fonts/clickables/etc), and translate any translatables (&translate, &score, etc).
+        // This will automatically translate translatable sections
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "strip_color", (attribute, object) -> {
             return new ElementTag(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)[0].toPlainText());

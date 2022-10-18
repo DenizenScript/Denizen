@@ -4,6 +4,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -52,7 +53,10 @@ public class PlayerInventorySlotChangeScriptEvent extends BukkitScriptEvent impl
     @Override
     public boolean matches(ScriptPath path) {
         if (!runGenericSwitchCheck(path, "slot", String.valueOf(event.getSlot() + 1))) {
-            return false;
+            int altIndex = SlotHelper.nameToIndex(path.switches.get("slot"), event.getPlayer());
+            if (event.getSlot() != altIndex) {
+                return false;
+            }
         }
         if (!runWithCheck(path, oldItem, "from")) {
             return false;
