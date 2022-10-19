@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -98,9 +99,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
             string = string.substring("cu@".length());
         }
-        Notable noted = NoteManager.getSavedObject(string);
-        if (noted instanceof CuboidTag) {
-            return (CuboidTag) noted;
+        if (!TagManager.isStaticParsing) {
+            Notable noted = NoteManager.getSavedObject(string);
+            if (noted instanceof CuboidTag) {
+                return (CuboidTag) noted;
+            }
         }
         if (CoreUtilities.contains(string, '@')) {
             if (CoreUtilities.contains(string, '|') && string.contains("l@")) {
@@ -126,13 +129,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     LocationTag pos_1 = LocationTag.valueOf(positions.get(i), context);
                     LocationTag pos_2 = LocationTag.valueOf(positions.get(i + 1), context);
                     if (pos_1 == null || pos_2 == null) {
-                        if (context == null || context.showErrors()) {
+                        if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
                             Debug.echoError("valueOf in CuboidTag returning null (null locations): '" + string + "'.");
                         }
                         return null;
                     }
                     if (pos_1.getWorldName() == null || pos_2.getWorldName() == null) {
-                        if (context == null || context.showErrors()) {
+                        if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
                             Debug.echoError("valueOf in CuboidTag returning null (null worlds): '" + string + "'.");
                         }
                         return null;
@@ -147,7 +150,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         else if (CoreUtilities.contains(string, ',')) {
             List<String> subStrs = CoreUtilities.split(string, ',');
             if (subStrs.size() < 7 || (subStrs.size() - 1) % 6 != 0) {
-                if (context == null || context.showErrors()) {
+                if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
                     Debug.echoError("valueOf CuboidTag returning null (Improper number of commas): '" + string + "'.");
                 }
                 return null;
@@ -167,7 +170,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 }
             }
             catch (NumberFormatException ex) {
-                if (context == null || context.showErrors()) {
+                if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
                     Debug.echoError("valueOf CuboidTag returning null (Improper number value inputs): '" + ex.getMessage() + "'.");
                 }
                 return null;
@@ -176,7 +179,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return toReturn;
             }
         }
-        if (context == null || context.showErrors()) {
+        if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
             Debug.echoError("Minor: valueOf CuboidTag returning null: " + string);
         }
         return null;

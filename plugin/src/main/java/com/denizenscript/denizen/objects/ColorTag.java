@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -89,6 +90,9 @@ public class ColorTag implements ObjectTag {
             string = string.substring("co@".length());
         }
         if (string.equals("random")) {
+            if (TagManager.isStaticParsing) {
+                return null;
+            }
             // Get a color using random RGB values
             return new ColorTag(CoreUtilities.getRandom().nextInt(256),
                     CoreUtilities.getRandom().nextInt(256),

@@ -179,6 +179,7 @@ public class DenizenCommandHandler {
         }
         if (args.hasFlag('v') || args.hasValueFlag("verbose")) {
             CoreConfiguration.debugVerbose = !CoreConfiguration.debugVerbose;
+            CoreConfiguration.debugUltraVerbose = false;
             Messaging.sendInfo(sender, (CoreConfiguration.debugVerbose ? "Denizen debugger is now verbose." :
                     "Denizen debugger is no longer verbose."));
         }

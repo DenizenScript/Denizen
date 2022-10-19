@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -76,18 +77,17 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         if (string.contains("@")) {
             return null;
         }
-        Notable noted = NoteManager.getSavedObject(string);
-        if (noted instanceof EllipsoidTag) {
-            return (EllipsoidTag) noted;
+        if (!TagManager.isStaticParsing) {
+            Notable noted = NoteManager.getSavedObject(string);
+            if (noted instanceof EllipsoidTag) {
+                return (EllipsoidTag) noted;
+            }
         }
         List<String> split = CoreUtilities.split(string, ',');
         if (split.size() != 7) {
             return null;
         }
-        WorldTag world = WorldTag.valueOf(split.get(3), false);
-        if (world == null) {
-            return null;
-        }
+        String worldName = split.get(3);
         for (int i = 0; i < 7; i++) {
             if (i != 3 && !ArgumentHelper.matchesDouble(split.get(i))) {
                 if (context == null || context.showErrors()) {
@@ -96,7 +96,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
                 }
             }
         }
-        LocationTag location = new LocationTag(world.getWorld(), Double.parseDouble(split.get(0)), Double.parseDouble(split.get(1)), Double.parseDouble(split.get(2)));
+        LocationTag location = new LocationTag(Double.parseDouble(split.get(0)), Double.parseDouble(split.get(1)), Double.parseDouble(split.get(2)), worldName);
         LocationTag size = new LocationTag(null, Double.parseDouble(split.get(4)), Double.parseDouble(split.get(5)), Double.parseDouble(split.get(6)));
         return new EllipsoidTag(location, size);
     }

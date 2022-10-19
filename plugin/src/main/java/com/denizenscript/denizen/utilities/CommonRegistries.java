@@ -144,8 +144,7 @@ public class CommonRegistries {
         // Returns a color object constructed from the input value.
         // Refer to <@link objecttype ColorTag>.
         // -->
-        // non-static due to 'random' color option
-        TYPE_COLOR = ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor).setAsNOtherCode().generateBaseTag(); // co@
+        TYPE_COLOR = ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // co@
 
         // <--[tag]
         // @attribute <cuboid[<cuboid>]>
@@ -154,8 +153,7 @@ public class CommonRegistries {
         // Returns a cuboid object constructed from the input value.
         // Refer to <@link objecttype CuboidTag>.
         // -->
-        // non-static due to notes
-        TYPE_CUBOID = ObjectFetcher.registerWithObjectFetcher(CuboidTag.class, CuboidTag.tagProcessor).setAsNOtherCode().generateBaseTag(); // cu@
+        TYPE_CUBOID = ObjectFetcher.registerWithObjectFetcher(CuboidTag.class, CuboidTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // cu@
 
         // <--[tag]
         // @attribute <ellipsoid[<ellipsoid>]>
@@ -164,8 +162,7 @@ public class CommonRegistries {
         // Returns an ellipsoid object constructed from the input value.
         // Refer to <@link objecttype EllipsoidTag>.
         // -->
-        // non-static due to notes
-        TYPE_ELLIPSOID = ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class, EllipsoidTag.tagProcessor).setAsNOtherCode().generateBaseTag(); // ellipsoid@
+        TYPE_ELLIPSOID = ObjectFetcher.registerWithObjectFetcher(EllipsoidTag.class, EllipsoidTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // ellipsoid@
 
         // <--[tag]
         // @attribute <enchantment[<enchantment>]>
@@ -265,8 +262,7 @@ public class CommonRegistries {
         // Returns a location object constructed from the input value.
         // Refer to <@link objecttype LocationTag>.
         // -->
-        // non-static due to notes
-        TYPE_LOCATION = ObjectFetcher.registerWithObjectFetcher(LocationTag.class, LocationTag.tagProcessor).setAsNOtherCode().generateBaseTag(); // l@
+        TYPE_LOCATION = ObjectFetcher.registerWithObjectFetcher(LocationTag.class, LocationTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // l@
 
         // <--[tag]
         // @attribute <material[<material>]>
@@ -357,8 +353,7 @@ public class CommonRegistries {
         // Returns a polygon object constructed from the input value.
         // Refer to <@link objecttype PolygonTag>.
         // -->
-        // non-static due to notes
-        TYPE_POLYGON = ObjectFetcher.registerWithObjectFetcher(PolygonTag.class, PolygonTag.tagProcessor).setAsNOtherCode().generateBaseTag(); // polygon@
+        TYPE_POLYGON = ObjectFetcher.registerWithObjectFetcher(PolygonTag.class, PolygonTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // polygon@
 
         // <--[tag]
         // @attribute <trade[<trade>]>

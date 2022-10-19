@@ -9,6 +9,8 @@ import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
+import com.denizenscript.denizen.utilities.world.WorldListChangeTracker;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -94,6 +96,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
      * The world name if a world reference is bad.
      */
     public String backupWorld;
+    public int trackedWorldChange;
 
     public String getWorldName() {
         if (backupWorld != null) {
@@ -101,15 +104,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
         World w = super.getWorld();
         if (w != null) {
-            return w.getName();
+            backupWorld = w.getName();
         }
-        return null;
+        return backupWorld;
     }
 
     @Override
     public World getWorld() {
         World w = super.getWorld();
         if (w != null) {
+            if (trackedWorldChange != WorldListChangeTracker.changes) {
+                trackedWorldChange = WorldListChangeTracker.changes;
+                super.setWorld(Bukkit.getWorld(getWorldName()));
+                return super.getWorld();
+            }
             return w;
         }
         if (backupWorld == null) {
@@ -163,9 +171,11 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         if (string.startsWith("l@")) {
             string = string.substring(2);
         }
-        Notable noted = NoteManager.getSavedObject(string);
-        if (noted instanceof LocationTag) {
-            return (LocationTag) noted;
+        if (!TagManager.isStaticParsing) {
+            Notable noted = NoteManager.getSavedObject(string);
+            if (noted instanceof LocationTag) {
+                return (LocationTag) noted;
+            }
         }
         List<String> split = CoreUtilities.split(string, ',');
         if (split.size() == 2)
@@ -193,7 +203,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (worldName.startsWith("w@")) {
                     worldName = worldName.substring("w@".length());
                 }
-                World world = Bukkit.getWorld(worldName);
+                World world = TagManager.isStaticParsing ? null : Bukkit.getWorld(worldName);
                 if (world != null) {
                     return new LocationTag(world,
                             Double.parseDouble(split.get(0)),
@@ -227,7 +237,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 if (worldName.startsWith("w@")) {
                     worldName = worldName.substring("w@".length());
                 }
-                World world = Bukkit.getWorld(worldName);
+                World world = TagManager.isStaticParsing ? null : Bukkit.getWorld(worldName);
                 if (world != null) {
                     return new LocationTag(world,
                             Double.parseDouble(split.get(0)),
@@ -294,7 +304,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                 return null;
             }
         }
-        if (context == null || context.showErrors()) {
+        if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
             Debug.log("Minor: valueOf LocationTag returning null: " + string);
         }
         return null;

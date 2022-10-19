@@ -322,6 +322,9 @@ public class TextTagBase {
             }
             else if (colorName.startsWith("co@") || colorName.lastIndexOf(',') > colorName.indexOf(',')) {
                 ColorTag color = ColorTag.valueOf(colorName, attribute.context);
+                if (color == null && TagManager.isStaticParsing) {
+                    return null;
+                }
                 String hex = Integer.toHexString(color.getColor().asRGB());
                 colorOut = FormattedTextHelper.stringifyRGBSpigot(hex);
             }

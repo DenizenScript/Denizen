@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
@@ -135,9 +136,11 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         if (string.contains("@")) {
             return null;
         }
-        Notable saved = NoteManager.getSavedObject(string);
-        if (saved instanceof PolygonTag) {
-            return (PolygonTag) saved;
+        if (!TagManager.isStaticParsing) {
+            Notable saved = NoteManager.getSavedObject(string);
+            if (saved instanceof PolygonTag) {
+                return (PolygonTag) saved;
+            }
         }
         List<String> parts = CoreUtilities.split(string, ',');
         if (parts.size() < 3) {

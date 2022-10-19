@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -675,7 +676,11 @@ public class BukkitElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "custom_color", (attribute, object, name) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + CustomColorTagBase.getColor(name.asLowerString(), attribute.context) + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+            String color = CustomColorTagBase.getColor(name.asLowerString(), attribute.context);
+            if (color == null) {
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + color + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
         });
 
         // <--[tag]
@@ -704,6 +709,9 @@ public class BukkitElementExtensions {
             }
             else if (colorName.startsWith("co@")) {
                 ColorTag color = ColorTag.valueOf(colorName, attribute.context);
+                if (color == null && TagManager.isStaticParsing) {
+                    return null;
+                }
                 StringBuilder hex = new StringBuilder(Integer.toHexString(color.getColor().asRGB()));
                 while (hex.length() < 6) {
                     hex.insert(0, "0");
@@ -725,7 +733,9 @@ public class BukkitElementExtensions {
                         }
                         return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
                     }
-                    attribute.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
+                    if (!TagManager.isStaticParsing) {
+                        attribute.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
+                    }
                     return null;
                 }
             }

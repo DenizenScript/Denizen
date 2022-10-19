@@ -28,6 +28,9 @@ public class CustomColorTagBase {
             customColors.put(nameLow, result);
             return result;
         }
+        if (TagManager.isStaticParsing) {
+            return null;
+        }
         if (defaultColor == null) {
             defaultColor = TagManager.tag(defaultColorRaw, context);
         }
@@ -45,7 +48,11 @@ public class CustomColorTagBase {
         // Default color names are 'base', 'emphasis', 'warning', 'error'.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, ElementTag.class, "&", (attribute, name) -> {
-            return new ElementTag(getColor(name.asLowerString(), attribute.context));
+            String color = getColor(name.asLowerString(), attribute.context);
+            if (color == null) {
+                return null;
+            }
+            return new ElementTag(color, true);
         });
     }
 }
