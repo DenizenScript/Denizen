@@ -125,7 +125,6 @@ public class Settings {
         RemoveCommand.alwaysWarnOnMassRemove = config.getBoolean("Commands.Remove.Always warn on mass delete", false);
         ConfigurationSection colorSection = config.getConfigurationSection("Colors");
         if (colorSection != null) {
-            CustomColorTagBase.customColorsRaw.clear();
             CustomColorTagBase.customColors.clear();
             CustomColorTagBase.defaultColor = null;
             for (String key : colorSection.getKeys(false)) {

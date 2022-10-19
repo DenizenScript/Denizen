@@ -29,6 +29,7 @@ import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -2639,6 +2640,32 @@ public class ServerTagBase {
             }
             else {
                 DefaultPermissions.registerPermission(name.toString(), description == null ? null : description.toString(), actualDef, actualParent);
+            }
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name default_colors
+        // @input MapTag
+        // @description
+        // Sets a default value of a custom color, to be used if the config.yml does not specify a value for that color name.
+        // Input must be a map with the keys as custom color names, and the values as the default color.
+        // This mechanism should probably be executed during <@link event scripts loaded>.
+        // @tags
+        // <&>
+        // <ElementTag.custom_color>
+        // @Example
+        // on scripts loaded:
+        // - adjust server default_colors:[mymagenta=<&color[#ff00ff]>;myred=<&c>]
+        // - debug log "The custom red is <&[myred]>"
+        // -->
+        if (mechanism.matches("default_colors") && mechanism.requireObject(MapTag.class)) {
+            MapTag map = mechanism.valueAsType(MapTag.class);
+            for (Map.Entry<StringHolder, ObjectTag> pair : map.map.entrySet()) {
+                String name = pair.getKey().low;
+                if (!CustomColorTagBase.customColors.containsKey(name)) {
+                    CustomColorTagBase.customColors.put(name, pair.getValue().toString().replace("<", "<&lt>"));
+                }
             }
         }
     }
