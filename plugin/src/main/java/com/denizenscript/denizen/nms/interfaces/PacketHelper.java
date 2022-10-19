@@ -68,16 +68,7 @@ public interface PacketHelper {
         player.sendEquipmentChange(entity, equipmentSlot, itemStack);
     }
 
-    default void resetEquipment(Player player, LivingEntity entity) { // TODO: once minimum version is 1.18 or higher, remove from NMS
-        EntityEquipment equipment = entity.getEquipment();
-        ItemStack air = new ItemStack(Material.AIR, 0);
-        player.sendEquipmentChange(entity, EquipmentSlot.HAND, equipment.getItemInMainHand());
-        player.sendEquipmentChange(entity, EquipmentSlot.OFF_HAND, equipment.getItemInOffHand());
-        player.sendEquipmentChange(entity, EquipmentSlot.HEAD, Optional.ofNullable(equipment.getHelmet()).orElse(air));
-        player.sendEquipmentChange(entity, EquipmentSlot.CHEST, Optional.ofNullable(equipment.getChestplate()).orElse(air));
-        player.sendEquipmentChange(entity, EquipmentSlot.LEGS, Optional.ofNullable(equipment.getLeggings()).orElse(air));
-        player.sendEquipmentChange(entity, EquipmentSlot.FEET, Optional.ofNullable(equipment.getBoots()).orElse(air));
-    }
+    void resetEquipment(Player player, LivingEntity entity);
 
     void showHealth(Player player, float health, int food, float saturation);
 
