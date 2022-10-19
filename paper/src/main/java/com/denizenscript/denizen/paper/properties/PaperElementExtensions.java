@@ -20,8 +20,7 @@ public class PaperElementExtensions {
             // @returns ElementTag
             // @Plugin Paper
             // @description
-            // Returns the element with all MiniMessage tags parsed.
-            // See also <@link tag ElementTag.parse_color>
+            // Returns the element with all MiniMessage tags parsed, see <@link url https://docs.adventure.kyori.net/minimessage/format.html> for more information.
             // -->
             ElementTag.tagProcessor.registerTag(ElementTag.class, "parse_minimessage", (attribute, object) -> {
                 return new ElementTag(PaperModule.stringifyComponent(MiniMessage.miniMessage().deserialize(object.asString())));
