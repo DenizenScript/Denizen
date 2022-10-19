@@ -1,24 +1,24 @@
 package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.PacketHelper;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
+import com.denizenscript.denizen.nms.v1_18.Handler;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.SidebarImpl;
+import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.nms.v1_18.Handler;
-import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
-import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
@@ -216,19 +216,6 @@ public class PacketHelperImpl implements PacketHelper {
         if (subtitle != null) {
             send(player, new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
         }
-    }
-
-    @Override
-    public void resetEquipment(Player player, LivingEntity entity) {
-        EntityEquipment equipment = entity.getEquipment();
-        ArrayList<Pair<net.minecraft.world.entity.EquipmentSlot, net.minecraft.world.item.ItemStack>> pairList = new ArrayList<>();
-        pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.MAINHAND, CraftItemStack.asNMSCopy(equipment.getItemInMainHand())));
-        pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.OFFHAND, CraftItemStack.asNMSCopy(equipment.getItemInOffHand())));
-        pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.HEAD, CraftItemStack.asNMSCopy(equipment.getHelmet())));
-        pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.CHEST, CraftItemStack.asNMSCopy(equipment.getChestplate())));
-        pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.LEGS, CraftItemStack.asNMSCopy(equipment.getLeggings())));
-        pairList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.FEET, CraftItemStack.asNMSCopy(equipment.getBoots())));
-        send(player, new ClientboundSetEquipmentPacket(entity.getEntityId(), pairList));
     }
 
     @Override

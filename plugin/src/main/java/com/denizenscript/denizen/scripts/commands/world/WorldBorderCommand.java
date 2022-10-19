@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -13,8 +12,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.WorldBorder;
 
 import java.util.List;
@@ -148,56 +145,36 @@ public class WorldBorderCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) {
         WorldTag world = scriptEntry.getObjectTag("world");
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        LocationTag centerInput = scriptEntry.getObjectTag("center");
-        ElementTag sizeInput = scriptEntry.getElement("size");
-        ElementTag currSizeInput = scriptEntry.getElement("current_size");
-        ElementTag damageInput = scriptEntry.getElement("damage");
-        ElementTag damageBufferInput = scriptEntry.getElement("damagebuffer");
-        DurationTag durationInput = scriptEntry.getObjectTag("duration");
-        ElementTag warningDistanceInput = scriptEntry.getElement("warningdistance");
-        DurationTag warningTimeInput = scriptEntry.getObjectTag("warningtime");
+        LocationTag center = scriptEntry.getObjectTag("center");
+        ElementTag size = scriptEntry.getElement("size");
+        ElementTag currSize = scriptEntry.getElement("current_size");
+        ElementTag damage = scriptEntry.getElement("damage");
+        ElementTag damagebuffer = scriptEntry.getElement("damagebuffer");
+        DurationTag duration = scriptEntry.getObjectTag("duration");
+        ElementTag warningdistance = scriptEntry.getElement("warningdistance");
+        DurationTag warningtime = scriptEntry.getObjectTag("warningtime");
         ElementTag reset = scriptEntry.getObjectTag("reset");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), world, db("players", players), centerInput, sizeInput, currSizeInput, damageInput, damageBufferInput, warningDistanceInput, warningTimeInput, durationInput, reset);
+            Debug.report(scriptEntry, getName(), world, db("players", players), center, size, currSize, damage, damagebuffer, warningdistance, warningtime, duration, reset);
         }
         if (players != null) {
             if (reset.asBoolean()) {
                 for (PlayerTag player : players) {
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                        player.getPlayerEntity().setWorldBorder(null);
-                    }
-                    else {
-                        NMSHandler.packetHelper.resetWorldBorder(player.getPlayerEntity()); // TODO: 1.18 - Player#setWorldBorder(null) resets the player's world border
-                    }
+                    NMSHandler.packetHelper.resetWorldBorder(player.getPlayerEntity());
                 }
                 return;
             }
             WorldBorder wb;
             for (PlayerTag player : players) {
                 wb = player.getWorld().getWorldBorder();
-                Location center = centerInput == null ? wb.getCenter() : centerInput;
-                double size = sizeInput == null ? wb.getSize() : sizeInput.asDouble();
-                double currSize = currSizeInput == null ? wb.getSize() : currSizeInput.asDouble();
-                int warningDistance = warningDistanceInput == null ? wb.getWarningDistance() : warningDistanceInput.asInt();
-                int warningTime = warningTimeInput == null ? wb.getWarningTime() : warningTimeInput.getSecondsAsInt();
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                    WorldBorder border = Bukkit.createWorldBorder();
-                    border.setCenter(center);
-                    int duration = durationInput.getSecondsAsInt();
-                    if (duration > 0) {
-                        border.setSize(currSize);
-                        border.setSize(size, duration);
-                    }
-                    else {
-                        border.setSize(size);
-                    }
-                    border.setWarningDistance(warningDistance);
-                    border.setWarningTime(warningTime);
-                    player.getPlayerEntity().setWorldBorder(border);
-                }
-                else {
-                    NMSHandler.packetHelper.setWorldBorder(player.getPlayerEntity(), center, size, currSize, durationInput.getMillis(), warningDistance, warningTime); // TODO: 1.18 - Player#setWorldBorder
-                }
+                NMSHandler.packetHelper.setWorldBorder(
+                        player.getPlayerEntity(),
+                        (center != null ? center : wb.getCenter()),
+                        (size != null ? size.asDouble() : wb.getSize()),
+                        (currSize != null ? currSize.asDouble() : wb.getSize()),
+                        duration.getMillis(),
+                        (warningdistance != null ? warningdistance.asInt() : wb.getWarningDistance()),
+                        (warningtime != null ? warningtime.getSecondsAsInt() : wb.getWarningTime()));
             }
             return;
         }
@@ -206,26 +183,26 @@ public class WorldBorderCommand extends AbstractCommand {
             worldborder.reset();
             return;
         }
-        if (centerInput != null) {
-            worldborder.setCenter(centerInput);
+        if (center != null) {
+            worldborder.setCenter(center);
         }
-        if (sizeInput != null) {
-            if (currSizeInput != null) {
-                worldborder.setSize(currSizeInput.asDouble());
+        if (size != null) {
+            if (currSize != null) {
+                worldborder.setSize(currSize.asDouble());
             }
-            worldborder.setSize(sizeInput.asDouble(), durationInput.getSecondsAsInt());
+            worldborder.setSize(size.asDouble(), duration.getSecondsAsInt());
         }
-        if (damageInput != null) {
-            worldborder.setDamageAmount(damageInput.asDouble());
+        if (damage != null) {
+            worldborder.setDamageAmount(damage.asDouble());
         }
-        if (damageBufferInput != null) {
-            worldborder.setDamageBuffer(damageBufferInput.asDouble());
+        if (damagebuffer != null) {
+            worldborder.setDamageBuffer(damagebuffer.asDouble());
         }
-        if (warningDistanceInput != null) {
-            worldborder.setWarningDistance(warningDistanceInput.asInt());
+        if (warningdistance != null) {
+            worldborder.setWarningDistance(warningdistance.asInt());
         }
-        if (warningTimeInput != null) {
-            worldborder.setWarningTime(warningTimeInput.getSecondsAsInt());
+        if (warningtime != null) {
+            worldborder.setWarningTime(warningtime.getSecondsAsInt());
         }
     }
 }

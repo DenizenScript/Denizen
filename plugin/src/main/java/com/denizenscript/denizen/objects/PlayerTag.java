@@ -11,11 +11,7 @@ import com.denizenscript.denizen.scripts.commands.player.ExperienceCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.tags.core.PlayerTagBase;
-import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.ScoreboardHelper;
-import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
@@ -53,7 +49,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.util.RayTraceResult;
 
@@ -3451,14 +3446,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                             else if (slot.equals("BOOTS")) {
                                 slot = "FEET";
                             }
-                            LivingEntity livingEntity = new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity();
-                            ItemStack itemStack = new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack();
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                                getPlayerEntity().sendEquipmentChange(livingEntity, EquipmentSlot.valueOf(slot), itemStack);
-                            }
-                            else {
-                                NMSHandler.packetHelper.showEquipment(getPlayerEntity(), livingEntity, EquipmentSlot.valueOf(slot), itemStack); // TODO: 1.18 - Player#sendEquipmentChange
-                            }
+                            NMSHandler.packetHelper.showEquipment(getPlayerEntity(),
+                                    new ElementTag(split[0]).asType(EntityTag.class, mechanism.context).getLivingEntity(),
+                                    EquipmentSlot.valueOf(slot),
+                                    new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack());
                         }
                         else if (split.length > 2) {
                             Debug.echoError("'" + split[2] + "' is not a valid ItemTag!");
@@ -3520,12 +3511,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Shows the player the demo screen.
         // -->
         if (mechanism.matches("show_demo")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                getPlayerEntity().showDemoScreen();
-            }
-            else {
-                NMSHandler.packetHelper.showDemoScreen(getPlayerEntity());
-            }
+            NMSHandler.packetHelper.showDemoScreen(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3574,7 +3560,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's hand without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            getPlayerEntity().openBook(getPlayerEntity().getEquipment().getItemInMainHand());
+            ItemStack book = getPlayerEntity().getEquipment().getItemInMainHand();
+            if (book.getType() == Material.WRITTEN_BOOK) {
+                getPlayerEntity().openBook(book);
+            }
         }
 
         // <--[mechanism]
@@ -3586,7 +3575,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's offhand without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            getPlayerEntity().openBook(getPlayerEntity().getEquipment().getItemInOffHand());
+            ItemStack book = getPlayerEntity().getEquipment().getItemInOffHand();
+            if (book.getType() == Material.WRITTEN_BOOK) {
+                getPlayerEntity().openBook(book);
+            }
         }
 
         // <--[mechanism]
@@ -3600,7 +3592,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("show_book")
                 && mechanism.requireObject(ItemTag.class)) {
             ItemTag book = mechanism.valueAsType(ItemTag.class);
-            if (!(book.getItemMeta() instanceof BookMeta)) {
+            if (book.getBukkitMaterial() != Material.WRITTEN_BOOK) {
                 Debug.echoError("show_book mechanism must have a book as input.");
                 return;
             }
@@ -3717,10 +3709,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0) {
                     String header = split[0];
-                    String footer = "";
-                    if (split.length > 1) {
-                        footer = split[1];
-                    }
+                    String footer = split.length > 1 ? split[1] : "";
                     NMSHandler.packetHelper.showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
@@ -3728,7 +3717,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             else {
-                getPlayerEntity().setPlayerListHeaderFooter("", "");
+                getPlayerEntity().setPlayerListHeaderFooter(null, null);
             }
         }
 
