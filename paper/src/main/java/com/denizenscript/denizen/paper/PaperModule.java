@@ -76,6 +76,7 @@ public class PaperModule {
         PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
         PropertyParser.registerProperty(PaperWorldProperties.class, WorldTag.class);
         PaperPlayerExtensions.register();
+        PaperElementExtensions.register();
 
         // Paper Tags
         new PaperTagBase();

@@ -364,6 +364,7 @@ public class BukkitElementExtensions {
         // Returns the element with all color codes parsed.
         // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.
         // This allows old-style colors like '&b', or Essentials-style hex codes like '&#ff00ff'
+        // See also <@link tag ElementTag.parse_minimessage>
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "parse_color", (attribute, object) -> {
             char prefix = '&';
