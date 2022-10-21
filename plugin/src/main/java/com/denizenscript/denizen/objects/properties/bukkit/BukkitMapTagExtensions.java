@@ -24,7 +24,7 @@ public class BukkitMapTagExtensions {
         // # Stores a player ".dat" file's NBT data
         // # NOTE: replace 'something' with your map data
         // - define playerdata something
-        // - define data <[something].map_to_nbt.gzip_compress>
+        // - define data <[playerdata].map_to_nbt.gzip_compress>
         // - ~filewrite path:data/<player.uuid>.dat data:<[data]>
         // -->
         MapTag.tagProcessor.registerStaticTag(BinaryTag.class, "map_to_nbt", (attribute, object) -> {

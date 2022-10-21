@@ -30,6 +30,8 @@ public class PlayerFlagHandler implements Listener {
 
     public static boolean asyncPreload = false;
 
+    public static boolean saveOnlyWhenWorldSaveOn = false;
+
     public static class CachedPlayerFlag {
 
         public long lastAccessed;
@@ -93,6 +95,9 @@ public class PlayerFlagHandler implements Listener {
     }
 
     public static void saveThenExpire(UUID id, CachedPlayerFlag cache) {
+        if (saveOnlyWhenWorldSaveOn && !Bukkit.getWorlds().get(0).isAutoSave()) {
+            return;
+        }
         BukkitRunnable expireTask = new BukkitRunnable() {
             @Override
             public void run() {

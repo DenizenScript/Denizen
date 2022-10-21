@@ -122,6 +122,7 @@ public class Settings {
         cache_commandScriptAutoInit = config.getBoolean("Scripts.Command.Auto init", false);
         PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
         PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
+        PlayerFlagHandler.saveOnlyWhenWorldSaveOn = config.getBoolean("Saves.Only save if world save is on", false);
         RemoveCommand.alwaysWarnOnMassRemove = config.getBoolean("Commands.Remove.Always warn on mass delete", false);
         ConfigurationSection colorSection = config.getConfigurationSection("Colors");
         if (colorSection != null) {

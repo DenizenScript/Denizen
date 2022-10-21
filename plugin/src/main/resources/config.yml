@@ -294,6 +294,10 @@ Saves:
     Skip flag cleaning: false
     # When set to 'true', skips flag cleaning for ChunkTag and LocationTag flags.
     Skip chunk flag cleaning: false
+    # When set to 'true', player flag autosaving will be delayed whenever world saves are disabled (eg via '/save-off').
+    # Player flags will still save as normal during shutdown, or when world saving is enabled.
+    # This checks based on your default world (server.worlds.first).
+    Only save if world save is on: false
 
 Packets:
     # Whether to allow Denizen to intercept packets from and to player clients.
