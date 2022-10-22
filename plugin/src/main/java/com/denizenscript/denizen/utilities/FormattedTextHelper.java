@@ -438,7 +438,7 @@ public class FormattedTextHelper {
                 return parseSimpleColorsOnly(str);
             }
             // Ensure compat with certain weird vanilla translate strings.
-            if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.endsWith("]") && str.indexOf(']') == str.length() - 1) {
+            if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.indexOf(']') == str.length() - 1) {
                 String translatable = str.substring("&[translate=".length(), str.length() - 1);
                 TranslatableComponent component = new TranslatableComponent();
                 List<String> innardParts = CoreUtilities.split(translatable, ';');
@@ -508,7 +508,7 @@ public class FormattedTextHelper {
                             SelectorComponent component = new SelectorComponent(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("translate") && Utilities.matchesNamespacedKey(innardBase.get(1))) {
+                        else if (innardType.equals("translate")) {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
                             for (String extra : innardParts) {
