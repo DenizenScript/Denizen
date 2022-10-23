@@ -22,14 +22,14 @@ public class BossBarCommand extends AbstractCommand {
 
     public BossBarCommand() {
         setName("bossbar");
-        setSyntax("bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...)");
+        setSyntax("bossbar ({auto}/create/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...)");
         setRequiredArguments(1, 8);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name BossBar
-    // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...)
+    // @Syntax bossbar ({auto}/create/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...)
     // @Required 1
     // @Maximum 8
     // @Short Shows players a boss bar.
@@ -38,6 +38,9 @@ public class BossBarCommand extends AbstractCommand {
     // @Description
     // Displays a boss bar at the top of the screen of the specified player(s).
     // You can also update the values and remove the bar.
+    //
+    // You can CREATE a new bossbar, UPDATE an existing one, or REMOVE an existing one.
+    // The default 'auto' will either 'create' or 'update' depending on whether it already exists.
     //
     // Requires an ID.
     //
@@ -74,7 +77,7 @@ public class BossBarCommand extends AbstractCommand {
     // -->
 
     private enum Action {
-        CREATE, UPDATE, REMOVE
+        AUTO, CREATE, UPDATE, REMOVE
     }
 
     @Override
@@ -156,7 +159,11 @@ public class BossBarCommand extends AbstractCommand {
             Debug.report(scriptEntry, getName(), id, action, players, title, progress, color, style, options);
         }
         String idString = id.asLowerString();
-        switch (Action.valueOf(action.asString().toUpperCase())) {
+        Action a = Action.valueOf(action.asString().toUpperCase());
+        if (a == Action.AUTO) {
+            a = bossBarMap.containsKey(idString) ? Action.UPDATE : Action.CREATE;
+        }
+        switch (a) {
             case CREATE: {
                 if (bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' already exists!");
