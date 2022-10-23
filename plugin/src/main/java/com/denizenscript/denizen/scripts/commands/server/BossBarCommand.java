@@ -140,7 +140,7 @@ public class BossBarCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify valid player(s)!");
             }
         }
-        scriptEntry.defaultObject("action", new ElementTag("CREATE"));
+        scriptEntry.defaultObject("action", new ElementTag("AUTO"));
     }
 
     public final static Map<String, BossBar> bossBarMap = new HashMap<>();
