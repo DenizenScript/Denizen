@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 public class ExperienceCommand extends AbstractCommand {
 
@@ -116,6 +117,21 @@ public class ExperienceCommand extends AbstractCommand {
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
         if (player == null) {
             throw new InvalidArgumentsRuntimeException("The Experience command requires a linked player.");
+        }
+        if (quantity < 0) {
+            switch (type) {
+                case SET:
+                    Debug.echoError("Cannot set negative experience.");
+                    return;
+                case GIVE:
+                    quantity = -quantity;
+                    type = Type.TAKE;
+                    break;
+                case TAKE:
+                    quantity = -quantity;
+                    type = Type.GIVE;
+                    break;
+            }
         }
         switch (type) {
             case SET:
