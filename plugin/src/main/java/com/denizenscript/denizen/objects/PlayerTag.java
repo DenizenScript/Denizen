@@ -524,6 +524,51 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
     }
 
+    public float getExp() {
+        if (isOnline()) {
+            return getPlayerEntity().getExp();
+        }
+        else {
+            return getNBTEditor().getExp();
+        }
+    }
+
+    public void setExp(float xp) {
+        if (isOnline()) {
+            getPlayerEntity().setExp(xp);
+        }
+        else {
+            getNBTEditor().setExp(xp);
+        }
+    }
+
+    public int getTotalExperience() {
+        if (isOnline()) {
+            return getPlayerEntity().getTotalExperience();
+        }
+        else {
+            return getNBTEditor().getTotalExperience();
+        }
+    }
+
+    public void setTotalExperience(int xp) {
+        if (isOnline()) {
+            getPlayerEntity().setTotalExperience(xp);
+        }
+        else {
+            getNBTEditor().setTotalExperience(xp);
+        }
+    }
+
+    public int getLevel() {
+        if (isOnline()) {
+            return getPlayerEntity().getLevel();
+        }
+        else {
+            return getNBTEditor().getLevel();
+        }
+    }
+
     public void setLevel(int level) {
         if (isOnline()) {
             getPlayerEntity().setLevel(level);
@@ -2131,10 +2176,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Number)
         // @description
         // Returns the calculated total amount of XP the player has, based on the amount of experience needed per level, for each level the player has.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "calculate_xp", (attribute, object) -> {
-            int level = object.getPlayerEntity().getLevel();
-            return new ElementTag(ExperienceCommand.TOTAL_XP_FOR_LEVEL(level) + (object.getPlayerEntity().getExp() * ExperienceCommand.XP_FOR_NEXT_LEVEL(level)));
+        registerOfflineTag(ElementTag.class, "calculate_xp", (attribute, object) -> {
+            int level = object.getLevel();
+            return new ElementTag(ExperienceCommand.TOTAL_XP_FOR_LEVEL(level) + (object.getExp() * ExperienceCommand.XP_FOR_NEXT_LEVEL(level)));
         });
 
         // <--[tag]
@@ -2142,9 +2188,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Number)
         // @description
         // Returns the number of XP levels the player has.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "xp_level", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getLevel());
+        registerOfflineTag(ElementTag.class, "xp_level", (attribute, object) -> {
+            return new ElementTag(object.getLevel());
         });
 
         // <--[tag]
@@ -2152,9 +2199,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Number)
         // @description
         // Returns the amount of XP the player needs to get to the next level.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "xp_to_next_level", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getExpToLevel());
+        registerOfflineTag(ElementTag.class, "xp_to_next_level", (attribute, object) -> {
+            return new ElementTag(ExperienceCommand.XP_FOR_NEXT_LEVEL(object.getLevel()));
         });
 
         // <--[tag]
@@ -2164,9 +2212,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the total amount of experience points the player has.
         // This is how much XP the player has ever received, not a current value.
         // To get the current total, use <@link tag PlayerTag.calculate_xp>.
+        // Works with offline players.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "xp_total", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().getTotalExperience());
+        registerOfflineTag(ElementTag.class, "xp_total", (attribute, object) -> {
+            return new ElementTag(object.getTotalExperience());
         });
 
         // <--[tag]
@@ -2175,23 +2224,23 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the percentage of experience points to the next level.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "xp", (attribute, object) -> {
+        registerOfflineTag(ElementTag.class, "xp", (attribute, object) -> {
             if (attribute.startsWith("level", 2)) {
                 BukkitImplDeprecations.playerXpTags.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(object.getPlayerEntity().getLevel());
+                return new ElementTag(object.getLevel());
             }
             if (attribute.startsWith("to_next_level", 2)) {
                 BukkitImplDeprecations.playerXpTags.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(object.getPlayerEntity().getExpToLevel());
+                return new ElementTag(ExperienceCommand.XP_FOR_NEXT_LEVEL(object.getLevel()));
             }
             if (attribute.startsWith("total", 2)) {
                 BukkitImplDeprecations.playerXpTags.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(object.getPlayerEntity().getTotalExperience());
+                return new ElementTag(object.getTotalExperience());
             }
-            return new ElementTag(object.getPlayerEntity().getExp() * 100);
+            return new ElementTag(object.getExp() * 100);
         });
 
         // <--[tag]
