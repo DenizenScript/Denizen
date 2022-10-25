@@ -669,21 +669,16 @@ public class ItemScriptHelper implements Listener {
             for (String retainable : retain) {
                 switch (retainable) {
                     case "display":
-                        if (!originalMeta.hasDisplayName()) {
-                            newMeta.setDisplayName(null);
-                        }
-                        else {
+                        if (originalMeta.hasDisplayName()) {
                             String originalName = NMSHandler.itemHelper.getDisplayName(new ItemTag(inputItem));
-                            NMSHandler.itemHelper.setDisplayName(got, originalName);
+                            ItemScriptContainer origScript = getItemScriptContainer(inputItem);
+                            if (origScript == null || !originalName.equals(NMSHandler.itemHelper.getDisplayName(origScript.getItemFrom()))) {
+                                NMSHandler.itemHelper.setDisplayName(got, originalName);
+                            }
                         }
                         newMeta = got.getItemMeta();
                         break;
                     case "enchantments":
-                        if (newMeta.hasEnchants()) {
-                            for (Enchantment enchant : new ArrayList<>(newMeta.getEnchants().keySet())) {
-                                newMeta.removeEnchant(enchant);
-                            }
-                        }
                         if (originalMeta.hasEnchants()) {
                             for (Map.Entry<Enchantment, Integer> enchant : originalMeta.getEnchants().entrySet()) {
                                 newMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
