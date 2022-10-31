@@ -97,6 +97,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace any blocks in the target location.
     //
     // The "mask" option can be specified to limit what block types the schematic will be pasted over.
+    // When using "create" and "mask", any block that doesn't match the mask will become a structure void.
     //
     // The "fake_to" option can be specified to cause the schematic paste to be a fake (packet-based, see <@link command showfake>)
     // block set, instead of actually modifying the blocks in the world.
@@ -226,6 +227,21 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         }
     }
 
+    public static void parseMask(ScriptEntry scriptEntry, String maskText, HashSet<Material> mask) {
+        if (maskText.startsWith("li@")) { // Back-compat: input used to be a list of materials
+            for (MaterialTag material : ListTag.valueOf(maskText, scriptEntry.getContext()).filter(MaterialTag.class, scriptEntry)) {
+                mask.add(material.getMaterial());
+            }
+        }
+        else {
+            for (Material material : Material.values()) {
+                if (MaterialTag.advancedMatchesInternal(material, maskText, true)) {
+                    mask.add(material);
+                }
+            }
+        }
+    }
+
     @Override
     public void execute(final ScriptEntry scriptEntry) {
         ElementTag angle = scriptEntry.argForPrefixAsElement("angle", null);
@@ -289,9 +305,15 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
+                    HashSet<Material> maskSet = new HashSet<>();
+                    if (mask != null) {
+                        String maskText = mask.asString();
+                        maskSet = new HashSet<>();
+                        parseMask(scriptEntry, maskText, maskSet);
+                    }
                     set = new CuboidBlockSet();
                     if (delayed) {
-                        set.buildDelayed(area, location, () -> {
+                        set.buildDelayed(area, location, maskSet, () -> {
                             if (copyEntities) {
                                 set.buildEntities(area, location);
                             }
@@ -301,7 +323,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        set.buildImmediate(area, location, flags);
+                        set.buildImmediate(area, location, maskSet, flags);
                         if (copyEntities) {
                             set.buildEntities(area, location);
                         }
@@ -481,18 +503,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     if (mask != null) {
                         String maskText = mask.asString();
                         input.mask = new HashSet<>();
-                        if (maskText.startsWith("li@")) { // Back-compat: input used to be a list of materials
-                            for (MaterialTag material : ListTag.valueOf(maskText, scriptEntry.getContext()).filter(MaterialTag.class, scriptEntry)) {
-                                input.mask.add(material.getMaterial());
-                            }
-                        }
-                        else {
-                            for (Material material : Material.values()) {
-                                if (MaterialTag.advancedMatchesInternal(material, maskText, true)) {
-                                    input.mask.add(material);
-                                }
-                            }
-                        }
+                        parseMask(scriptEntry, maskText, input.mask);
                     }
                     set = schematics.get(name.asString().toUpperCase());
                     if (set.isModifying) {

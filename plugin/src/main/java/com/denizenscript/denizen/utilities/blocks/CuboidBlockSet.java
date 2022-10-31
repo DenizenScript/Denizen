@@ -30,7 +30,7 @@ public class CuboidBlockSet implements BlockSet {
     public CuboidBlockSet() {
     }
 
-    public void buildImmediate(AreaContainmentObject area, Location center, boolean copyFlags) {
+    public void buildImmediate(AreaContainmentObject area, Location center, HashSet<Material> mask, boolean copyFlags) {
         hasFlags = copyFlags;
         CuboidTag boundary;
         if (area instanceof CuboidTag && ((CuboidTag) area).pairs.size() == 1) {
@@ -58,13 +58,17 @@ public class CuboidBlockSet implements BlockSet {
                     refLoc.setX(lowX + x);
                     refLoc.setY(lowY + y);
                     refLoc.setZ(lowZ + z);
-                    blocks[index++] = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
+                    FullBlockData block = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
+                    if (block != STRUCTURE_VOID && mask != null && !mask.contains(block.data.getMaterial())) {
+                        block = STRUCTURE_VOID;
+                    }
+                    blocks[index++] = block;
                 }
             }
         }
     }
 
-    public void buildDelayed(AreaContainmentObject area, Location center, Runnable runme, long maxDelayMs, boolean copyFlags) {
+    public void buildDelayed(AreaContainmentObject area, Location center, HashSet<Material> mask, Runnable runme, long maxDelayMs, boolean copyFlags) {
         hasFlags = copyFlags;
         CuboidTag boundary;
         if (area instanceof CuboidTag && ((CuboidTag) area).pairs.size() == 1) {
@@ -98,10 +102,13 @@ public class CuboidBlockSet implements BlockSet {
                     refLoc.setX(lowX + x);
                     refLoc.setY(lowY + y);
                     refLoc.setZ(lowZ + z);
-                    blocks[index] = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
+                    FullBlockData block = (constraint == null || constraint.doesContainLocation(refLoc)) ? new FullBlockData(refLoc.getBlock(), copyFlags) : STRUCTURE_VOID;
+                    if (block != STRUCTURE_VOID && mask != null && !mask.contains(block.data.getMaterial())) {
+                        block = STRUCTURE_VOID;
+                    }
+                    blocks[index] = block;
                     index++;
                     if (CoreUtilities.monotonicMillis() - start > maxDelayMs) {
-                        SchematicCommand.noPhys = false;
                         return;
                     }
                 }
