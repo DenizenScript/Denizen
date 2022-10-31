@@ -2883,7 +2883,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.is_hand_raised>
         // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.attack_cooldown_percent
         // @description
         // Returns whether the player's hand is currently raised. Valid for players and player-type NPCs.
         // A player's hand is raised when they are blocking with a shield, aiming a crossbow, looking through a spyglass, etc.
