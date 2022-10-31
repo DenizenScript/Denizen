@@ -141,7 +141,7 @@ public class FormattedTextHelper {
         if (component.isObfuscated()) {
             builder.append(ChatColor.MAGIC);
         }
-        if (component.getFontRaw() != null || (component.getFont() != null && component.getColorRaw() != null)) {
+        if (component.getFont() != null) {
             builder.append(ChatColor.COLOR_CHAR).append("[font=").append(component.getFont()).append("]");
         }
         boolean hasInsertion = component.getInsertion() != null;
