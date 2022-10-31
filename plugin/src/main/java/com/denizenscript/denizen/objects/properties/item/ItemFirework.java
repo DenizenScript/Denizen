@@ -102,8 +102,8 @@ public class ItemFirework implements Property {
                 effectMap.putObject("trail", new ElementTag(effect.hasTrail()));
                 effectMap.putObject("flicker", new ElementTag(effect.hasFlicker()));
                 effectMap.putObject("type", new ElementTag(effect.getType()));
-                effectMap.putObject("color", colors.size() == 1 ? colors.getObject(1) : colors);
-                effectMap.putObject("fade_color", fadeColors.size() == 1 ? fadeColors.getObject(1) : fadeColors);
+                effectMap.putObject("color", colors.size() == 1 ? colors.getObject(0) : colors);
+                effectMap.putObject("fade_color", fadeColors.size() == 1 ? fadeColors.getObject(0) : fadeColors);
                 list.addObject(effectMap);
             }
         }
