@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -598,6 +599,32 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         tagProcessor.registerTag(ElementTag.class, "produced_instrument", (attribute, object) -> {
             return new ElementTag(NMSHandler.blockHelper.getInstrumentFor(object.getMaterial()));
+        });
+
+        // <--[tag]
+        // @attribute <MaterialTag.block_sound_data>
+        // @returns MapTag
+        // @description
+        // If the material is a block, returns the sound data for that block.
+        // The returned map has the following keys:
+        // volume, pitch: a decimal number
+        // break_sound, step_sound, place_sound, hit_sound, fall_sound: Bukkit name of the sound effect
+        // -->
+        tagProcessor.registerTag(MapTag.class, "block_sound_data", (attribute, object) -> {
+            if (!object.hasModernData()) {
+                attribute.echoError("Not a valid block.");
+                return null;
+            }
+            SoundGroup group = object.getModernData().getSoundGroup();
+            MapTag result = new MapTag();
+            result.putObject("volume", new ElementTag(group.getVolume()));
+            result.putObject("pitch", new ElementTag(group.getPitch()));
+            result.putObject("break_sound", new ElementTag(group.getBreakSound().name()));
+            result.putObject("step_sound", new ElementTag(group.getStepSound().name()));
+            result.putObject("place_sound", new ElementTag(group.getPlaceSound().name()));
+            result.putObject("hit_sound", new ElementTag(group.getHitSound().name()));
+            result.putObject("fall_sound", new ElementTag(group.getFallSound().name()));
+            return result;
         });
     }
 
