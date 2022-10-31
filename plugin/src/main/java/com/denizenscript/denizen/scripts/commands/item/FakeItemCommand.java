@@ -162,19 +162,23 @@ public class FakeItemCommand extends AbstractCommand {
     static int translateSlot(Player player, int slot) {
         // This translates Spigot slot standards to vanilla slots.
         // The slot order is different when a player is viewing an inventory vs not doing so, leading to this chaos.
-        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory && slot > 35) {
-            if (slot < 40) { // Armor equipment
-                return 8 - (slot - 36);
-            }
-            else if (slot == 40) { // Offhand
-                return 45;
-            }
-            else if (slot < 46) { // Recipe (Server slot IDs for this are effectively made up just to be linearly on the end)
-                return slot - 41;
+        int topSize = player.getOpenInventory().getTopInventory().getSize();
+        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory) {
+            topSize = 9;
+            if (slot > 35) {
+                if (slot < 40) { // Armor equipment
+                    return 8 - (slot - 36);
+                }
+                else if (slot == 40) { // Offhand
+                    return 45;
+                }
+                else if (slot < 46) { // Recipe (Server slot IDs for this are effectively made up just to be linearly on the end)
+                    return slot - 41;
+                }
             }
         }
         int result;
-        int total = 36 + player.getOpenInventory().getTopInventory().getSize();
+        int total = 36 + topSize;
         int rowCount = (int) Math.ceil(total / 9.0);
         if (slot < 9) { // First row on server is last row on client
             int row = (int) Math.floor(slot / 9.0);
