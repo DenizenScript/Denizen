@@ -146,16 +146,8 @@
                                     <shadedPattern>com.denizenscript.shaded.org.objectweb</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>redis.clients.jedis</pattern>
-                                    <shadedPattern>com.denizenscript.shaded.redis.clients.jedis</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.apache</pattern>
                                     <shadedPattern>com.denizenscript.shaded.org.apache</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.mongodb</pattern>
-                                    <shadedPattern>com.denizenscript.shaded.org.mongodb</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

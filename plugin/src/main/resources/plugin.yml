@@ -4,7 +4,11 @@ version: ${project.version} (build ${BUILD_NUMBER}-${BUILD_CLASS})
 main: com.denizenscript.denizen.Denizen
 softdepend: [Citizens, Vault]
 
-api-version: '1.13'
+api-version: '1.16'
+
+libraries:
+  - org.mongodb:mongodb-driver-sync:4.7.0
+  - redis.clients:jedis:3.7.0
 
 commands:
   denizen:

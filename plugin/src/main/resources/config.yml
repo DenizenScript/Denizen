@@ -200,7 +200,7 @@ Commands:
         # Whether to allow the SQL command.
         Allow: true
     Mongo:
-        # Whether to allow the mongo command.
+        # Whether to allow the Mongo command.
         Allow: true
     Webget:
         # Whether to allow scripts to read arbitrary data from the web, which can also potentially enable tracking of your private server data.
