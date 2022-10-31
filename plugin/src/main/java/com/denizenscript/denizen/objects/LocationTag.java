@@ -43,9 +43,7 @@ import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.block.structure.UsageMode;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
 import org.bukkit.material.Attachable;
@@ -5274,7 +5272,20 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
                         mechanism.echoError("Cannot add item for index " + (i + 1) + " as the campfire can only hold " + fire.getSize() + " items.");
                         break;
                     }
-                    fire.setItem(i, list.get(i).getItemStack());
+                    ItemStack item = list.get(i).getItemStack();
+                    fire.setCookTime(i, 0);
+                    fire.setCookTimeTotal(i, 0);
+                    Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+                    while (recipeIterator.hasNext()) {
+                        Recipe recipe = recipeIterator.next();
+                        if (recipe instanceof CampfireRecipe) {
+                            if (((CampfireRecipe) recipe).getInputChoice().test(item)) {
+                                fire.setCookTimeTotal(i, ((CampfireRecipe) recipe).getCookingTime());
+                                break;
+                            }
+                        }
+                    }
+                    fire.setItem(i, item);
                 }
                 fire.update();
             }

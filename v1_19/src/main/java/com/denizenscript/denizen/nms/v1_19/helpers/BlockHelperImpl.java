@@ -394,5 +394,4 @@ public class BlockHelperImpl implements BlockHelper {
             PacketHelperImpl.send(player, tagsPacket);
         }
     }
-
 }
