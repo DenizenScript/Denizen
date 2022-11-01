@@ -309,11 +309,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         }
         if (spread != null) {
             Vector base = lastEntity.getVelocity().clone();
-            float sf = spread.asFloat();
+            double spreadDouble = spread.asDouble();
             for (EntityTag entity : entities) {
-                Vector newvel = Velocity.spread(base, (CoreUtilities.getRandom().nextDouble() > 0.5f ? 1 : -1) * Math.toRadians(CoreUtilities.getRandom().nextDouble() * sf),
-                        (CoreUtilities.getRandom().nextDouble() > 0.5f ? 1 : -1) * Math.toRadians(CoreUtilities.getRandom().nextDouble() * sf));
-                entity.setVelocity(newvel);
+                entity.setVelocity(Velocity.randomSpread(base, spreadDouble));
             }
         }
         final LocationTag start = new LocationTag(lastEntity.getLocation());

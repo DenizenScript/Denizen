@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.utilities.entity;
 
+import com.denizenscript.denizen.nms.interfaces.EntityHelper;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -57,15 +59,29 @@ public class Velocity {
         return dx * dx + dz * dz;
     }
 
-    public static Vector spread(Vector from, double yaw, double pitch) {
-        Vector vec = from.clone();
-        float cosyaw = (float) Math.cos(yaw);
-        float cospitch = (float) Math.cos(pitch);
-        float sinyaw = (float) Math.sin(yaw);
-        float sinpitch = (float) Math.sin(pitch);
-        float bX = (float) (vec.getY() * sinpitch + vec.getX() * cospitch);
-        float bY = (float) (vec.getY() * cospitch - vec.getX() * sinpitch);
-        return new Vector(bX * cosyaw - vec.getZ() * sinyaw, bY, bX * sinyaw + vec.getZ() * cosyaw);
+    public static Vector randomSpread(Vector from, double spreadFactor) {
+        double length = from.length();
+        Vector fromNormal = from.clone().multiply(1.0 / length);
+        Location ref = new Location(null, 0, 0, 0).setDirection(fromNormal);
+        // Random point_around_z from origin
+        double rLen = CoreUtilities.getRandom().nextDouble() * spreadFactor * 0.0175; // 0.0175 = the approximate offset length of 1 degree at 1 unit distance forward
+        double randomAngle = CoreUtilities.getRandom().nextDouble() * (Math.PI * 2);
+        double cosR = Math.cos(randomAngle);
+        double sinR = Math.sin(randomAngle);
+        double x = -(rLen * sinR);
+        double y = rLen * cosR;
+        // rotate_around_x[pitch]
+        double cosPitch = Math.cos(Math.toRadians(ref.getPitch()));
+        double sinPitch = Math.sin(Math.toRadians(ref.getPitch()));
+        double y2 = y * cosPitch;
+        double z2 = y * sinPitch;
+        // rotate_around_y[-yaw]
+        double yaw = -EntityHelper.normalizeYaw(ref.getYaw());
+        double cosYaw = Math.cos(Math.toRadians(yaw));
+        double sinYaw = Math.sin(Math.toRadians(yaw));
+        double x3 = (x * cosYaw) + (z2 * sinYaw);
+        double z3 = (x * -sinYaw) + (z2 * cosYaw);
+        return fromNormal.add(new Vector(x3, y2, z3)).normalize().multiply(length);
     }
 
     public static double launchAngle(Location from, Vector to, double v, double elev, double g) {
