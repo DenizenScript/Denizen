@@ -78,7 +78,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":
-                return entity;
+                return entity.getDenizenObject();
             case "reason":
                 return reason;
             case "amount":

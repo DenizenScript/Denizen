@@ -2918,12 +2918,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(returnType, name, (attribute, object) -> {
             if (!object.isSpawnedOrValidForTag()) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("Entity is not spawned, but tag '" + attribute.getAttributeWithoutParam(1) + "' requires the entity be spawned, for entity: " + object.debuggable());
+                    attribute.echoError("Entity is not spawned, but tag '" + name + "' requires the entity be spawned, for entity: " + object.debuggable());
                 }
                 return null;
             }
             return runnable.run(attribute, object);
         }, variants);
+    }
+
+    public static <P extends ObjectTag> void registerSpawnedOnlyMechanism(String name, boolean allowProperty, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<EntityTag, P> runner) {
+        tagProcessor.registerMechanism(name, allowProperty, paramType, (entity, mechanism, param) -> {
+            if (!entity.isSpawned()) {
+                mechanism.echoError("Entity is not spawned, but mechanism '" + name + "' requires the entity be spawned, for entity: " + entity.debuggable());
+                return;
+            }
+            runner.run(entity, mechanism, param);
+        });
     }
 
     @Override
