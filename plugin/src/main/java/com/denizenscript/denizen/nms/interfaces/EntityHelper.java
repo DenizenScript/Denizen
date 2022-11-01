@@ -433,4 +433,8 @@ public abstract class EntityHelper {
     public abstract boolean isAggressive(Mob mob);
 
     public abstract void setAggressive(Mob mob, boolean aggressive);
+
+    public void setUUID(Entity entity, UUID id) {
+        throw new UnsupportedOperationException();
+    }
 }

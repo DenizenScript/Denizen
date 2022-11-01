@@ -39,6 +39,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
@@ -784,5 +785,25 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setAggressive(org.bukkit.entity.Mob mob, boolean aggressive) {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
+    }
+
+    public static final Field ENTITY_REMOVALREASON = ReflectionHelper.getFields(net.minecraft.world.entity.Entity.class).getFirstOfType(net.minecraft.world.entity.Entity.RemovalReason.class);
+
+    @Override
+    public void setUUID(Entity entity, UUID id) {
+        try {
+            net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+            nmsEntity.stopRiding();
+            nmsEntity.getPassengers().forEach(net.minecraft.world.entity.Entity::stopRiding);
+            Level level = nmsEntity.level;
+            //UUID old = nmsEntity.getUUID();
+            nmsEntity.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+            ENTITY_REMOVALREASON.set(nmsEntity, null);
+            nmsEntity.setUUID(id);
+            level.addFreshEntity(nmsEntity);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 }

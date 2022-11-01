@@ -2894,6 +2894,26 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return new ElementTag(((HumanEntity) object.getLivingEntity()).isHandRaised());
         });
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name alter_uuid
+        // @input ElementTag
+        // @description
+        // Alters the entity's UUID, changing it to the new input UUID.
+        // This is very likely to break things and is almost never a good idea.
+        // @tags
+        // <EntityTag.uuid>
+        // -->
+        registerSpawnedOnlyMechanism("alter_uuid", false, ElementTag.class, (object, mechanism, new_id) -> {
+            try {
+                UUID id = UUID.fromString(new_id.asString());
+                NMSHandler.entityHelper.setUUID(object.getBukkitEntity(), id);
+            }
+            catch (IllegalArgumentException ex) {
+                mechanism.echoError("Cannot parse UUID input '" + new_id + "': " + ex.getMessage());
+            }
+        });
     }
 
     public EntityTag describe(TagContext context) {
