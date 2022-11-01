@@ -19,11 +19,13 @@ import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
@@ -47,12 +49,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_19_R1.block.CraftCreatureSpawner;
@@ -788,6 +792,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     public static final Field ENTITY_REMOVALREASON = ReflectionHelper.getFields(net.minecraft.world.entity.Entity.class).getFirstOfType(net.minecraft.world.entity.Entity.RemovalReason.class);
+    public static final MethodHandle PLAYERLIST_REMOVE = ReflectionHelper.getMethodHandle(PlayerList.class, "remove", ServerPlayer.class);
 
     @Override
     public void setUUID(Entity entity, UUID id) {
@@ -796,11 +801,21 @@ public class EntityHelperImpl extends EntityHelper {
             nmsEntity.stopRiding();
             nmsEntity.getPassengers().forEach(net.minecraft.world.entity.Entity::stopRiding);
             Level level = nmsEntity.level;
-            //UUID old = nmsEntity.getUUID();
-            nmsEntity.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+            DedicatedPlayerList playerList = ((CraftServer) Bukkit.getServer()).getHandle();
+            if (nmsEntity instanceof ServerPlayer) {
+                PLAYERLIST_REMOVE.invoke(playerList, nmsEntity);
+            }
+            else {
+                nmsEntity.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+            }
             ENTITY_REMOVALREASON.set(nmsEntity, null);
             nmsEntity.setUUID(id);
-            level.addFreshEntity(nmsEntity);
+            if (nmsEntity instanceof ServerPlayer) {
+                playerList.placeNewPlayer(((ServerPlayer) nmsEntity).connection.connection, (ServerPlayer) nmsEntity);
+            }
+            else {
+                level.addFreshEntity(nmsEntity);
+            }
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

@@ -2902,6 +2902,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Alters the entity's UUID, changing it to the new input UUID.
         // This is very likely to break things and is almost never a good idea.
+        // This sorta-works with players, with significant side effects that will need to be compensated for.
         // @tags
         // <EntityTag.uuid>
         // -->
