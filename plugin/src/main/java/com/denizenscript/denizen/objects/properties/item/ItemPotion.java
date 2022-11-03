@@ -416,21 +416,25 @@ public class ItemPotion implements Property {
         //
         // For potions or tipped arrows (not suspicious stew), the first item in the list must be a MapTag with keys:
         // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>
-        // "upgraded" - boolean, true means level 2 and false means level 1
-        // "extended" - true means longer, false means shorter
-        // "color" - optional, ColorTag
+        // "upgraded" - boolean, true means level 2 and false means level 1 (optional, default false)
+        // "extended" - true means longer, false means shorter (optional, default false)
+        // "color" - ColorTag (optional, default none)
         //
         // For example: [type=SPEED;upgraded=true;extended=false;color=RED]
         // This example produces an item labeled as "Potion of Swiftness - Speed II (1:30)"
         //
         // Each following item in the list are potion effects, which must be a MapTag with keys:
         // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
-        // "amplifier" - number to increase the level by (0 for default level 1)
-        // "duration" - DurationTag, how long it lasts
-        // "ambient", "particles", "icon" - booleans
+        // "amplifier" - number to increase the level by (0 for default level 1) (optional, default 0)
+        // "duration" - DurationTag, how long it lasts (optional, default 0s)
+        // "ambient", "particles", "icon" - booleans (optional, default true, true, false)
         //
         // For example: [type=SPEED;amplifier=2;duration=10s;ambient=false;particles=true;icon=true]
         // This example would be a level 3 swiftness potion that lasts 10 seconds.
+        //
+        // A very short full default potion item would be: potion[potion_effects=[type=regen]
+        // A (relatively) short full potion item would be: potion[potion_effects=<list[[type=regen]|[type=speed;duration=10s]]>]
+        // (Note the list constructor to force data format interpretation, as potion formats can be given multiple ways and the system will get confused without a constructor)
         //
         // @tags
         // <ItemTag.effects_data>
