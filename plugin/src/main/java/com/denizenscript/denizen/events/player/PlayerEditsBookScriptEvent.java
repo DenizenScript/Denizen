@@ -37,6 +37,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     // <context.title> returns the name of the book, if any.
     // <context.pages> returns the number of pages in the book.
     // <context.book> returns the book item being edited, containing the new page contents.
+    // <context.old_book> returns the book item being edited, containing the old page contents.
     // <context.signing> returns whether the book is about to be signed.
     //
     // @Determine
@@ -103,10 +104,16 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             case "signing": return new ElementTag(event.isSigning());
             case "title": return event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
             case "pages": return new ElementTag(event.getNewBookMeta().getPageCount());
-            case "book":
+            case "book": {
                 ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
                 book.setItemMeta(event.getNewBookMeta());
                 return new ItemTag(book);
+            }
+            case "old_book": {
+                ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
+                book.setItemMeta(event.getPreviousBookMeta());
+                return new ItemTag(book);
+            }
         }
         return super.getContext(name);
     }
