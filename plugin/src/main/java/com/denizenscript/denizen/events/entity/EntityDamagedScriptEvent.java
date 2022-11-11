@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -10,11 +11,13 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -41,6 +44,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
     // @Switch type:<entity> to only run if the entity damaged matches the entity input.
+    // @Switch block:<block-matcher> to only run if the damage came from a block that matches the given material or location matcher.
     //
     // @Cancellable true
     //
@@ -49,6 +53,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // @Context
     // <context.entity> returns the EntityTag that was damaged.
     // <context.damager> returns the EntityTag damaging the other entity, if any.
+    // <context.damager_block> returns the LocationTag of a block that damaged the entity, if any.
     // <context.cause> returns an ElementTag of reason the entity was damaged - see <@link language damage cause> for causes.
     // <context.damage> returns an ElementTag(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an ElementTag(Decimal) of the amount of damage dealt, after armor is calculated.
@@ -88,7 +93,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         registerCouldMatcher("<entity> damaged (by <'cause'>)");
         registerCouldMatcher("<entity> damaged by <entity>");
         registerCouldMatcher("<entity> damages <entity>");
-        registerSwitches("with", "type");
+        registerSwitches("with", "type", "blocker");
     }
 
 
@@ -146,6 +151,19 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         }
         if (!runWithCheck(path, held)) {
             return false;
+        }
+        String blockMatcher = path.switches.get("block");
+        if (blockMatcher != null) {
+            if (!(event instanceof EntityDamageByBlockEvent)) {
+                return false;
+            }
+            Block block = ((EntityDamageByBlockEvent) event).getDamager();
+            if (block == null) {
+                return false;
+            }
+            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher)) {
+                return false;
+            }
         }
         return super.matches(path);
     }
@@ -217,6 +235,14 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             case "damager":
                 if (damager != null) {
                     return damager.getDenizenObject();
+                }
+                break;
+            case "damager_block":
+                if (event instanceof EntityDamageByBlockEvent) {
+                    Block block = ((EntityDamageByBlockEvent) event).getDamager();
+                    if (block != null) {
+                        return new LocationTag(block.getLocation());
+                    }
                 }
                 break;
             case "projectile":
