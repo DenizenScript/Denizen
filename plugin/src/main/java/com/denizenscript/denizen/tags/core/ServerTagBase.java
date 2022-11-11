@@ -1677,15 +1677,21 @@ public class ServerTagBase {
         // @returns ListTag(PlayerTag)
         // @description
         // Returns a list of all online players with a specified flag set.
+        // Can use "!<flag_name>" style to only return players *without* the flag.
         // -->
         if ((attribute.startsWith("online_players_flagged") || attribute.startsWith("list_online_players_flagged"))
                 && attribute.hasParam()) {
             listDeprecateWarn(attribute);
             String flag = attribute.getParam();
             ListTag players = new ListTag();
+            boolean want = true;
+            if (flag.startsWith("!")) {
+                want = false;
+                flag = flag.substring(1);
+            }
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerTag plTag = new PlayerTag(player);
-                if (plTag.getFlagTracker().hasFlag(flag)) {
+                if (plTag.getFlagTracker().hasFlag(flag) == want) {
                     players.addObject(plTag);
                 }
             }
@@ -1699,15 +1705,21 @@ public class ServerTagBase {
         // @description
         // Returns a list of all players (online or offline) with a specified flag set.
         // Warning: this will cause the player flag cache to temporarily fill with ALL historical playerdata.
+        // Can use "!<flag_name>" style to only return players *without* the flag.
         // -->
         if ((attribute.startsWith("players_flagged") || attribute.startsWith("list_players_flagged"))
                 && attribute.hasParam()) {
             listDeprecateWarn(attribute);
             String flag = attribute.getParam();
             ListTag players = new ListTag();
+            boolean want = true;
+            if (flag.startsWith("!")) {
+                want = false;
+                flag = flag.substring(1);
+            }
             for (Map.Entry<String, UUID> entry : PlayerTag.getAllPlayers().entrySet()) {
                 PlayerTag plTag = new PlayerTag(entry.getValue());
-                if (plTag.getFlagTracker().hasFlag(flag)) {
+                if (plTag.getFlagTracker().hasFlag(flag) == want) {
                     players.addObject(plTag);
                 }
             }
@@ -1720,15 +1732,21 @@ public class ServerTagBase {
         // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all spawned NPCs with a specified flag set.
+        // Can use "!<flag_name>" style to only return NPCs *without* the flag.
         // -->
         if ((attribute.startsWith("spawned_npcs_flagged") || attribute.startsWith("list_spawned_npcs_flagged")) && Depends.citizens != null
                 && attribute.hasParam()) {
             listDeprecateWarn(attribute);
             String flag = attribute.getParam();
             ListTag npcs = new ListTag();
+            boolean want = true;
+            if (flag.startsWith("!")) {
+                want = false;
+                flag = flag.substring(1);
+            }
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 NPCTag dNpc = new NPCTag(npc);
-                if (dNpc.isSpawned() && dNpc.hasFlag(flag)) {
+                if (dNpc.isSpawned() && dNpc.hasFlag(flag) == want) {
                     npcs.addObject(dNpc);
                 }
             }
@@ -1741,15 +1759,21 @@ public class ServerTagBase {
         // @returns ListTag(NPCTag)
         // @description
         // Returns a list of all NPCs with a specified flag set.
+        // Can use "!<flag_name>" style to only return NPCs *without* the flag.
         // -->
         if ((attribute.startsWith("npcs_flagged") || attribute.startsWith("list_npcs_flagged")) && Depends.citizens != null
                 && attribute.hasParam()) {
             listDeprecateWarn(attribute);
             String flag = attribute.getParam();
             ListTag npcs = new ListTag();
+            boolean want = true;
+            if (flag.startsWith("!")) {
+                want = false;
+                flag = flag.substring(1);
+            }
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 NPCTag dNpc = new NPCTag(npc);
-                if (dNpc.hasFlag(flag)) {
+                if (dNpc.hasFlag(flag) == want) {
                     npcs.addObject(dNpc);
                 }
             }
