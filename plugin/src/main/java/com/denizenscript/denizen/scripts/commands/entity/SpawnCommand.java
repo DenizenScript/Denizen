@@ -49,6 +49,8 @@ public class SpawnCommand extends AbstractCommand {
     // Optionally specify 'reason:<reason>' (Paper only) to specify the reason an entity is spawning for the 'entity spawns' event,
     // using any reason from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //
+    // If the location isn't specified, will use either the linked NPC's location, or the linked player's location.
+    //
     // @Tags
     // <EntityTag.is_spawned>
     // <server.entity_types>

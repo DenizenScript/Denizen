@@ -100,7 +100,6 @@ public class BlockCrackCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-
         List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
         ElementTag progress = scriptEntry.getElement("progress");
         LocationTag location = scriptEntry.getObjectTag("location");

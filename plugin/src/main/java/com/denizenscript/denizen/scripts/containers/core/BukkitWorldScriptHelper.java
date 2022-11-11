@@ -81,12 +81,11 @@ public class BukkitWorldScriptHelper implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        final String message = ChatColor.DARK_GREEN + "CHAT: " + event.getPlayer().getName() + ": " + event.getMessage();
-        Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
+    public void onPlayerChat(final AsyncPlayerChatEvent event) {
+        Bukkit.getScheduler().runTaskLater(Denizen.instance, () -> {
             // If currently recording debug information, add the chat message to debug output
             if (CoreConfiguration.shouldRecordDebug) {
-                Debug.log(message);
+                Debug.log(ChatColor.DARK_GREEN + "CHAT: " + event.getPlayer().getName() + ": " + event.getMessage());
             }
         }, 1);
     }
