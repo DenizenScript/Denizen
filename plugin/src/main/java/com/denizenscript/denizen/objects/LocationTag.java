@@ -5090,7 +5090,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // <LocationTag.has_loot_table>
         // @Example
         // # Sets the chest's loot table to a bonus chest
-        // - adjust <[location]> loot_table:chests/ancient_city
+        // - adjust <[location]> loot_table_id:chests/ancient_city
         // -->
         if (mechanism.matches("loot_table_id")) {
             BlockState state = getBlockState();

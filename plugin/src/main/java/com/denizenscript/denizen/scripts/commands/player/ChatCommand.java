@@ -1,14 +1,15 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechContext;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -21,6 +22,10 @@ public class ChatCommand extends AbstractCommand {
         setSyntax("chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)");
         setRequiredArguments(1, 4);
         isProcedural = false;
+        addRemappedPrefixes("targets", "target", "t");
+        addRemappedPrefixes("talkers", "talker");
+        addRemappedPrefixes("range", "r");
+        autoCompile();
     }
 
     // TODO: Should the chat command be in the NPC group instead?
@@ -49,7 +54,7 @@ public class ChatCommand extends AbstractCommand {
     // </code>
     // The player being chatted to, by default the attached Player to the script queue, will see a message 'Jack says to you, Hello!',
     // however surrounding entities will see something along the lines of 'Jack says to Bob, Hello!'.
-    // The format for this is configurable.
+    // The format for this is configurable via the "Denizen/config.yml" file.
     //
     // If sending messages to the Player without any surrounding entities hearing the message is desirable,
     // it is often times recommended to instead use the 'narrate' command.
@@ -67,66 +72,38 @@ public class ChatCommand extends AbstractCommand {
     // - chat targets:<npc.location.find_players_within[6].filter[has_flag[clan_initiate]]> "Welcome, initiate!"
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        boolean specified_targets = false;
-        boolean specified_talker = false;
-        for (Argument arg : scriptEntry) {
-            if (arg.matchesPrefix("target", "targets", "t")) {
-                if (arg.matchesArgumentList(EntityTag.class)) {
-                    scriptEntry.addObject("targets", arg.asType(ListTag.class));
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("message") @ArgLinear String message,
+                                   @ArgName("talkers") @ArgPrefixed @ArgDefaultNull ListTag talkers,
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull ListTag targets,
+                                   @ArgName("no_target") boolean noTarget,
+                                   @ArgName("range") @ArgPrefixed @ArgDefaultText("-1") double chatRange) {
+        if (targets == null) {
+            targets = new ListTag();
+            if (!noTarget) {
+                PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
+                if (player == null) {
+                    throw new InvalidArgumentsRuntimeException("Missing targets!");
                 }
-                specified_targets = true;
-            }
-            else if (arg.matches("no_target")) {
-                scriptEntry.addObject("targets", new ListTag());
-            }
-            else if (arg.matchesPrefix("talker", "talkers")) {
-                if (arg.matchesArgumentList(EntityTag.class)) {
-                    scriptEntry.addObject("talkers", arg.asType(ListTag.class));
+                if (!player.isOnline()) {
+                    Debug.echoDebug(scriptEntry, "Player is not online, skipping.");
+                    return;
                 }
-                specified_talker = true;
-            }
-            else if (arg.matchesPrefix("range", "r")) {
-                if (arg.matchesFloat()) {
-                    scriptEntry.addObject("range", arg.asElement());
-                }
-            }
-            else if (!scriptEntry.hasObject("message")) {
-                scriptEntry.addObject("message", arg.getRawElement());
-            }
-            else {
-                arg.reportUnhandled();
+                targets.addObject(player);
             }
         }
-        if (!scriptEntry.hasObject("targets") && Utilities.entryHasPlayer(scriptEntry) && !specified_targets) {
-            scriptEntry.defaultObject("targets", new ListTag(Utilities.getEntryPlayer(scriptEntry)));
+        if (talkers == null) {
+            talkers = new ListTag();
+            NPCTag talker = Utilities.getEntryNPC(scriptEntry);
+            if (talker == null) {
+                throw new InvalidArgumentsRuntimeException("Missing talker!");
+            }
+            talkers.addObject(talker);
         }
-        if (!scriptEntry.hasObject("talkers") && Utilities.entryHasNPC(scriptEntry) && !specified_talker) {
-            scriptEntry.defaultObject("talkers", new ListTag(Utilities.getEntryNPC(scriptEntry)));
+        if (chatRange == -1) {
+            chatRange = Settings.chatBystandersRange();
         }
-        if (!scriptEntry.hasObject("targets")) {
-            throw new InvalidArgumentsException("Must specify valid targets!");
-        }
-        if (!scriptEntry.hasObject("talkers")) {
-            throw new InvalidArgumentsException("Must specify valid talkers!");
-        }
-        if (!scriptEntry.hasObject("message")) {
-            throw new InvalidArgumentsException("Must specify a message!");
-        }
-        scriptEntry.defaultObject("range", new ElementTag(Settings.chatBystandersRange()));
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ListTag talkers = scriptEntry.getObjectTag("talkers");
-        ListTag targets = scriptEntry.getObjectTag("targets");
-        ElementTag message = scriptEntry.getElement("message");
-        ElementTag chatRange = scriptEntry.getElement("range");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), talkers, targets, message, chatRange);
-        }
-        DenizenSpeechContext context = new DenizenSpeechContext(message.asString(), scriptEntry, chatRange.asDouble());
+        DenizenSpeechContext context = new DenizenSpeechContext(message, scriptEntry, chatRange);
         if (!targets.isEmpty()) {
             for (EntityTag ent : targets.filter(EntityTag.class, scriptEntry)) {
                 context.addRecipient(ent.getBukkitEntity());
