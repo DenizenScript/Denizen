@@ -63,9 +63,7 @@ public class ReflectionMappingsInfo {
     public static String Biome_climateSettings = "i";
 
     // net.minecraft.world.level.biome.Biome$ClimateSettings
-    public static String BiomeClimateSettings_precipitation = "b";
-    public static String BiomeClimateSettings_temperature = "c";
-    public static String BiomeClimateSettings_downfall = "e";
+    public static String BiomeClimateSettings_temperatureModifier = "d";
 
     // net.minecraft.network.Connection
     public static String Connection_receiving = "k";

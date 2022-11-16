@@ -95,7 +95,7 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public void setAllBiomes(Chunk chunk, BiomeNMS biome) {
-        Holder<Biome> nmsBiome = ((BiomeNMSImpl) biome).biomeBase;
+        Holder<Biome> nmsBiome = ((BiomeNMSImpl) biome).biomeHolder;
         LevelChunk nmsChunk = ((CraftChunk) chunk).getHandle();
         ChunkPos chunkcoordintpair = nmsChunk.getPos();
         int i = QuartPos.fromBlock(chunkcoordintpair.getMinBlockX());
