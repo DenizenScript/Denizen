@@ -180,6 +180,9 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
+        // @Example
+        // # Narrates "RAIN"
+        // - narrate <biome[plains].downfall_type>
         // -->
         tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
             return new ElementTag(object.biome.getDownfallType());
@@ -190,6 +193,8 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ElementTag
         // @description
         // Returns this biome's name.
+        // @Example
+        // - narrate "You are currently in a <player.location.biome.name> biome!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(CoreUtilities.toLowerCase(object.biome.getName()));
@@ -201,20 +206,26 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @mechanism BiomeTag.humidity
         // @description
         // Returns the humidity of this biome.
+        // @Example
+        // - narrate "Humidity is currently <player.location.biome.humidity>! So humid!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "humidity", (attribute, object) -> {
             return new ElementTag(object.biome.getHumidity());
         });
+
         // <--[tag]
         // @attribute <BiomeTag.temperature>
         // @returns ElementTag(Decimal)
         // @mechanism BiomeTag.temperature
         // @description
         // Returns the temperature of this biome.
+        // @Example
+        // - narrate "Stay warm! The temperature is currently <player.location.biome.temperature>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "temperature", (attribute, object) -> {
             return new ElementTag(object.biome.getTemperature());
         });
+
         // <--[tag]
         // @attribute <BiomeTag.spawnable_entities[(<type>)]>
         // @returns ListTag(EntityTag)
@@ -222,7 +233,10 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns all entities that spawn naturally in this biome.
         // Optionally specify a type as: AMBIENT, CREATURES, MONSTERS, WATER, or ALL.
         // (By default, will be "ALL").
-        //
+        // @Example
+        // # Narrates all the entities of type MONSTERS that can spawn in the player's biome.
+        // - foreach <player.location.biome.spawnable_entities[MONSTERS]> as:entity:
+        //     - narrate <[entity]>
         // -->
         tagProcessor.registerTag(ListTag.class, "spawnable_entities", (attribute, object) -> {
             List<EntityType> entityTypes;
