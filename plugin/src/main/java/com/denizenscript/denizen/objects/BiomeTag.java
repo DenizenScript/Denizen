@@ -181,8 +181,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
         // @Example
-        // # Narrates "RAIN"
-        // - narrate <biome[plains].downfall_type>
+        // - narrate "The downfall type in plains biomes is: <biome[plains].downfall_type>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
             return new ElementTag(object.biome.getDownfallType());
