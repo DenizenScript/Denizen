@@ -181,11 +181,8 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
         // @Example
-        // # Narrates "RAIN"
-        // - narrate <biome[plains].downfall_type>
-        // @Example
-        // # Narrates "SNOW"
-        // - narrate <biome[snowy_taiga].downfall_type>
+        // # When in a Plains biome, this fills with 'RAIN'.
+        // - narrate "The downfall type in plains biomes is: <biome[plains].downfall_type>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
             return new ElementTag(object.biome.getDownfallType());
@@ -197,6 +194,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns this biome's name.
         // @Example
+        // # When in a Plains biome, this fills with 'plains'.
         // - narrate "You are currently in a <player.location.biome.name> biome!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
@@ -210,6 +208,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the humidity of this biome.
         // @Example
+        // # When in a Plains biome, this fills with '0.4'.
         // - narrate "Humidity is currently <player.location.biome.humidity>! So humid!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "humidity", (attribute, object) -> {
@@ -223,6 +222,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the temperature of this biome.
         // @Example
+        // # When in a Plains biome, this fills with '0.8'.
         // - narrate "Stay warm! The temperature is currently <player.location.biome.temperature>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "temperature", (attribute, object) -> {
