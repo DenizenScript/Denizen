@@ -268,7 +268,7 @@ public class Handler extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(World world, String name) {
         BiomeNMSImpl impl = new BiomeNMSImpl(((CraftWorld) world).getHandle(), name);
-        if (impl.biomeBase == null) {
+        if (impl.biomeHolder == null) {
             return null;
         }
         return impl;
