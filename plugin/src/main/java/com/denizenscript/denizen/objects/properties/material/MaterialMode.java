@@ -55,7 +55,7 @@ public class MaterialMode implements Property {
 
     public MaterialTag material;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <MaterialTag.mode>

@@ -58,7 +58,7 @@ public class InventorySize implements Property {
         return "size";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <InventoryTag.size>

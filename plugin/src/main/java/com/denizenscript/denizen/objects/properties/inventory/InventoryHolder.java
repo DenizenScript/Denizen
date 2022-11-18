@@ -47,7 +47,7 @@ public class InventoryHolder implements Property {
         return "holder";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <InventoryTag.id_holder>

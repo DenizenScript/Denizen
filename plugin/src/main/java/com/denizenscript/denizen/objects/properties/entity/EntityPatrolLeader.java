@@ -43,7 +43,7 @@ public class EntityPatrolLeader implements Property {
         return "is_patrol_leader";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.is_patrol_leader>

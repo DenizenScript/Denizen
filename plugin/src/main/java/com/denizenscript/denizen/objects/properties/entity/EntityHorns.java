@@ -52,7 +52,7 @@ public class EntityHorns implements Property {
         return result;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.horns>

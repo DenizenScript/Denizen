@@ -248,7 +248,7 @@ public class ItemPotion implements Property {
         return "potion_effects";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.potion_base_type>

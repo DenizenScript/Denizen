@@ -44,7 +44,7 @@ public class EntityInWaterTime implements Property {
         return "in_water_duration";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.in_water_duration>

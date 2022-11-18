@@ -611,7 +611,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         return toReturn;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.registerTags(PolygonTag.class, tagProcessor);

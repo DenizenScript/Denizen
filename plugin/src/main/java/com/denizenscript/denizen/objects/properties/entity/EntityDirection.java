@@ -48,7 +48,7 @@ public class EntityDirection implements Property {
         return (Fireball) entity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.direction>

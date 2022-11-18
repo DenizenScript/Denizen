@@ -48,7 +48,7 @@ public class EntityCanJoinRaid implements Property {
         return (Raider) entity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.can_join_raid>

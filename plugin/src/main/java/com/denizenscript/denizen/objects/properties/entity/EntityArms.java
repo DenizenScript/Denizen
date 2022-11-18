@@ -48,7 +48,7 @@ public class EntityArms implements Property {
         return (ArmorStand) dentity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.arms>

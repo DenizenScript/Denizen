@@ -41,7 +41,7 @@ public class InventoryUniquifier implements Property {
         return "uniquifier";
     }
 
-    public static void registerTags() {
+    public static void register() {
         // Intentionally no tags.
     }
 

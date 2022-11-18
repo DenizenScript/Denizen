@@ -41,7 +41,7 @@ public class TradeVillagerXP implements Property {
         return "villager_xp";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.villager_xp>

@@ -72,7 +72,7 @@ public class EntityArmorPose implements Property {
         return map;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.armor_pose_map>

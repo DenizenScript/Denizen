@@ -283,7 +283,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         return "is the chunk loaded?";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 

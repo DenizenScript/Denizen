@@ -411,7 +411,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         return new EllipsoidTag(loc, size.clone());
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.registerTags(EllipsoidTag.class, tagProcessor);

@@ -266,7 +266,7 @@ public class ColorTag implements ObjectTag {
         return red == otherColor.red && blue == otherColor.blue && green == otherColor.green && alpha == otherColor.alpha;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ColorTag.hex>

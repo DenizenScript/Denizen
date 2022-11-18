@@ -43,7 +43,7 @@ public class EntityAI implements Property {
         return "has_ai";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.has_ai>

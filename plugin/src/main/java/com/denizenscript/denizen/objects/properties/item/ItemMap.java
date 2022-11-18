@@ -41,7 +41,7 @@ public class ItemMap implements Property {
 
     ItemTag item;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.map>

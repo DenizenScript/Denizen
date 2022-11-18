@@ -1174,7 +1174,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         return inventory;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         PropertyParser.registerPropertyTagHandlers(InventoryTag.class, tagProcessor);

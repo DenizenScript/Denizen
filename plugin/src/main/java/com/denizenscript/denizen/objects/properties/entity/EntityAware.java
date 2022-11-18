@@ -48,7 +48,7 @@ public class EntityAware implements Property {
         return (Mob) entity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.is_aware>

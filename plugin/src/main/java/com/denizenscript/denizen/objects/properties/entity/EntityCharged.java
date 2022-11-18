@@ -46,7 +46,7 @@ public class EntityCharged implements Property {
         return "charged";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.charged>

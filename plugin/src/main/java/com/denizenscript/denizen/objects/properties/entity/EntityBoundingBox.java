@@ -70,7 +70,7 @@ public class EntityBoundingBox implements Property {
         return "bounding_box";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.bounding_box>

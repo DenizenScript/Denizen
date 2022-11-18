@@ -41,7 +41,7 @@ public class TradeUses implements Property {
         return "uses";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.uses>

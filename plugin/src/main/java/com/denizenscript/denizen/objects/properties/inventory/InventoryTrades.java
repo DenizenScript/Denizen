@@ -56,7 +56,7 @@ public class InventoryTrades implements Property {
         return "trades";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <InventoryTag.trades>

@@ -71,7 +71,7 @@ public class EntityAnger implements Property {
         return (Bee) entity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.anger>

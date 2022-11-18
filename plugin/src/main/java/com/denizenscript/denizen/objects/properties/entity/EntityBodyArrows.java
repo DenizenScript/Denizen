@@ -52,7 +52,7 @@ public class EntityBodyArrows implements Property {
         return "body_arrows";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.body_arrows>

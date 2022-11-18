@@ -927,7 +927,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return clone();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 

@@ -53,7 +53,7 @@ public class EntityConversionPlayer implements Property {
         return "conversion_player";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.conversion_player>

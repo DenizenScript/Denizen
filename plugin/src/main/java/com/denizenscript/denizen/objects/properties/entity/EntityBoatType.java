@@ -49,7 +49,7 @@ public class EntityBoatType implements Property {
         return (Boat) entity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.boat_type>

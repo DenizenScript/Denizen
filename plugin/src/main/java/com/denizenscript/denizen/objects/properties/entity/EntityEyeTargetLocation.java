@@ -34,7 +34,7 @@ public class EntityEyeTargetLocation implements Property {
 
     EntityTag entity;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.ender_eye_target_location>

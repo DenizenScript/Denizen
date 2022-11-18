@@ -41,7 +41,7 @@ public class TradeDemand implements Property {
         return "demand";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.demand>

@@ -41,7 +41,7 @@ public class TradeMaxUses implements Property {
         return "max_uses";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.max_uses>

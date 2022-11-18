@@ -41,7 +41,7 @@ public class TradeHasXp implements Property {
         return "has_xp";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.has_xp>

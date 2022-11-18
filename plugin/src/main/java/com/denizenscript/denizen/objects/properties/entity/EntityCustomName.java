@@ -44,7 +44,7 @@ public class EntityCustomName implements Property {
         return "custom_name";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.custom_name>

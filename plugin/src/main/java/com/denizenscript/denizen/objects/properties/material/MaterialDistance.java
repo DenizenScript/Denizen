@@ -37,7 +37,7 @@ public class MaterialDistance implements Property {
 
     MaterialTag material;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <MaterialTag.distance>

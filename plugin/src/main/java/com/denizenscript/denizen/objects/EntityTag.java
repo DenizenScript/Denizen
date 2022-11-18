@@ -1238,7 +1238,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return new LocationTag(getBukkitEntity().getLocation());
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         PropertyParser.registerPropertyTagHandlers(EntityTag.class, tagProcessor);

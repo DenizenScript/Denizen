@@ -90,7 +90,7 @@ public class EntityPotionEffects implements Property {
         return "potion_effects";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.list_effects>

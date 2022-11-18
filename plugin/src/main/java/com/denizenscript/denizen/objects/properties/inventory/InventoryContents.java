@@ -110,7 +110,7 @@ public class InventoryContents implements Property {
         return "contents";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <InventoryTag.map_slots>

@@ -50,7 +50,7 @@ public class EntityBeamTarget implements Property {
         return (EnderCrystal) dentity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.beam_target>

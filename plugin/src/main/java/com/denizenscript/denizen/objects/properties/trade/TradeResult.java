@@ -36,7 +36,7 @@ public class TradeResult implements Property {
         return "result";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.result>

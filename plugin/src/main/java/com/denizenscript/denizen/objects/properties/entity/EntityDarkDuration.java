@@ -48,7 +48,7 @@ public class EntityDarkDuration implements Property {
         return (GlowSquid) entity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.dark_duration>

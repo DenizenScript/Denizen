@@ -52,7 +52,7 @@ public class EntityConversionTime implements Property {
         return "conversion_duration";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.conversion_duration>

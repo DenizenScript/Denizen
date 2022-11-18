@@ -79,7 +79,7 @@ public class ItemArmorPose implements Property {
 
     ItemTag item;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.armor_pose>

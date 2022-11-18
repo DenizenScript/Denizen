@@ -55,7 +55,7 @@ public class EntitySize implements Property {
         return "size";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.size>

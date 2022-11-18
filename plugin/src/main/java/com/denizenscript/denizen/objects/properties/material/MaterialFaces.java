@@ -36,7 +36,7 @@ public class MaterialFaces implements Property {
 
     MaterialTag material;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <MaterialTag.valid_faces>

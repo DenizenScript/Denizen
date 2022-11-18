@@ -77,7 +77,7 @@ public class ItemAttributeModifiers implements Property {
         return map;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.attribute_modifiers>

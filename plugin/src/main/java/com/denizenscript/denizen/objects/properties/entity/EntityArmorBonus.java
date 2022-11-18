@@ -50,7 +50,7 @@ public class EntityArmorBonus implements Property {
         return entity.getLivingEntity().getAttribute(Attribute.GENERIC_ARMOR);
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.armor_bonus>

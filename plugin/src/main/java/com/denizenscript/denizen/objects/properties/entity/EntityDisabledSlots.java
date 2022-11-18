@@ -92,7 +92,7 @@ public class EntityDisabledSlots implements Property {
         return "disabled_slots";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.disabled_slots>

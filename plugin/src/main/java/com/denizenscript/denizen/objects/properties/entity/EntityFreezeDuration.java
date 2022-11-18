@@ -40,7 +40,7 @@ public class EntityFreezeDuration implements Property {
         return "freeze_duration";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.max_freeze_duration>

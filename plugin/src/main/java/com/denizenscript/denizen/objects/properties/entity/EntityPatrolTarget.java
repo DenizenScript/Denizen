@@ -48,7 +48,7 @@ public class EntityPatrolTarget implements Property {
         return "patrol_target";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.patrol_target>

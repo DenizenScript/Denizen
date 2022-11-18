@@ -48,7 +48,7 @@ public class EntityArrowDamage implements Property {
         return (Arrow) dentity.getBukkitEntity();
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.damage>

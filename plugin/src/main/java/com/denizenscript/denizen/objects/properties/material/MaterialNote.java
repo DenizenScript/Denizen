@@ -36,7 +36,7 @@ public class MaterialNote implements Property {
 
     MaterialTag material;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <MaterialTag.note_octave>

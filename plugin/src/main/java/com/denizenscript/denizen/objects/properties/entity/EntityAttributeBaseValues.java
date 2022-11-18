@@ -67,7 +67,7 @@ public class EntityAttributeBaseValues implements Property {
         return "attribute_base_values";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.has_attribute[<attribute>]>

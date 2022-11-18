@@ -40,7 +40,7 @@ public class EntityAggressive implements Property {
         this.entity = entity;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.aggressive>

@@ -63,7 +63,7 @@ public class InventoryTitle implements Property {
         return "title";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <InventoryTag.title>

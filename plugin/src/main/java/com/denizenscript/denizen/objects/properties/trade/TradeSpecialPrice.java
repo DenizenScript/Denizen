@@ -41,7 +41,7 @@ public class TradeSpecialPrice implements Property {
         return "special_price";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.special_price>

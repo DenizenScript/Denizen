@@ -660,7 +660,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return getUUID().equals(((PlayerTag) other).getUUID());
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 

@@ -55,7 +55,7 @@ public class EntityVisible implements Property {
         return "visible";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.visible>

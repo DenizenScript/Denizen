@@ -125,7 +125,7 @@ public class EntityItem implements Property {
         return "item";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.item>

@@ -47,7 +47,7 @@ public class EntityStrength implements Property {
         return "strength";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.strength>

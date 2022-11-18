@@ -47,7 +47,7 @@ public class EntityShotAtAngle implements Property {
         return "shot_at_angle";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.shot_at_angle>

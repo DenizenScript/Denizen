@@ -259,7 +259,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         return this;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 

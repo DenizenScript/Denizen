@@ -41,7 +41,7 @@ public class TradePriceMultiplier implements Property {
         return "price_multiplier";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.price_multiplier>

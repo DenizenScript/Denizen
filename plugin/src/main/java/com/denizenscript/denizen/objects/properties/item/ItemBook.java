@@ -53,7 +53,7 @@ public class ItemBook implements Property {
         return "book";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.book_author>

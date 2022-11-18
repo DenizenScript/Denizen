@@ -48,7 +48,7 @@ public class EntityFireworkLifetime implements Property {
         return "firework_lifetime";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.firework_lifetime>

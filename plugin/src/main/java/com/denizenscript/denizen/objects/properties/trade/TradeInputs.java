@@ -49,7 +49,7 @@ public class TradeInputs implements Property {
         return "inputs";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <TradeTag.inputs>

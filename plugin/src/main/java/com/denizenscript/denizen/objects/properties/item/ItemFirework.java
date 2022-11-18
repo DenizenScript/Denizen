@@ -114,7 +114,7 @@ public class ItemFirework implements Property {
         return item.getItemMeta() instanceof FireworkMeta ? ((FireworkMeta) item.getItemMeta()).getPower() : 0;
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.firework>

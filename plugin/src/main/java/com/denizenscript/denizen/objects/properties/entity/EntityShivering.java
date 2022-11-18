@@ -34,7 +34,7 @@ public class EntityShivering implements Property {
 
     EntityTag entity;
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.shivering>

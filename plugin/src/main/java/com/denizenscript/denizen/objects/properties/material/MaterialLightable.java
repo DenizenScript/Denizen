@@ -37,7 +37,7 @@ public class MaterialLightable implements Property {
 
     MaterialTag material;
 
-    public static void registerTags() {
+    public static void register() {
 
         PropertyParser.registerTag(MaterialLightable.class, ElementTag.class, "lit", (attribute, material) -> {
             BukkitImplDeprecations.materialLit.warn(attribute.context);
