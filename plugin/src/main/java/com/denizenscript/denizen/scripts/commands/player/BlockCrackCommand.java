@@ -110,7 +110,6 @@ public class BlockCrackCommand extends AbstractCommand {
         Location loc = location.getBlock().getLocation();
         if (!progressTracker.containsKey(loc)) {
             progressTracker.put(loc, new HashMap<>());
-            lastBase += 10;
         }
         Map<UUID, IntHolder> uuidInt = progressTracker.get(loc);
         boolean stackVal = stack.asBoolean();
@@ -122,6 +121,7 @@ public class BlockCrackCommand extends AbstractCommand {
             Player playerEnt = player.getPlayerEntity();
             UUID uuid = playerEnt.getUniqueId();
             if (!uuidInt.containsKey(uuid)) {
+                lastBase += 10;
                 IntHolder newIntHolder = new IntHolder();
                 newIntHolder.theInt = lastBase;
                 newIntHolder.base = lastBase;
