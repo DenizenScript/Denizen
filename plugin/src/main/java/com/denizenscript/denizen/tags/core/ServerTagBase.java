@@ -629,11 +629,13 @@ public class ServerTagBase {
         }
 
         // <--[tag]
-        // @attribute <server.command_source_plugin[<name>]>
+        // @attribute <server.command_plugin[<name>]>
         // @returns PluginTag
         // @description
         // Returns the plugin that created a command (if known).
-        // For example, <server.command_plugin[ex]> should return a PluginTag of Denizen.
+        // @example
+        // # Should show "Denizen".
+        // - narrate <server.command_plugin[ex].name>
         // -->
         if (attribute.startsWith("command_plugin")) {
             PluginCommand cmd = Bukkit.getPluginCommand(attribute.getParam());

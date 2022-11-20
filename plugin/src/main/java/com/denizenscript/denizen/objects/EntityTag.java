@@ -1009,8 +1009,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (!isSpawned()) {
             return;
         }
-        if (entity instanceof Creature) {
-            NMSHandler.entityHelper.setTarget((Creature) entity, target);
+        if (entity instanceof Mob) {
+            ((Mob) entity).setTarget(target);
         }
         else if (entity instanceof ShulkerBullet) {
             ((ShulkerBullet) entity).setTarget(target);

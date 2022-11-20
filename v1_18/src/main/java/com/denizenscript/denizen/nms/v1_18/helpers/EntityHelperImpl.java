@@ -167,13 +167,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void setTarget(Creature entity, LivingEntity target) {
-        net.minecraft.world.entity.LivingEntity nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
-        ((CraftCreature) entity).getHandle().setTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
-        entity.setTarget(target);
-    }
-
-    @Override
     public CompoundTag getNbtData(Entity entity) {
         net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
         ((CraftEntity) entity).getHandle().saveAsPassenger(compound);

@@ -47,8 +47,6 @@ public abstract class EntityHelper {
 
     public abstract Entity getEntity(World world, UUID uuid);
 
-    public abstract void setTarget(Creature entity, LivingEntity target);
-
     public abstract CompoundTag getNbtData(Entity entity);
 
     public abstract void setNbtData(Entity entity, CompoundTag compoundTag);

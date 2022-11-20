@@ -121,13 +121,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void setTarget(Creature entity, LivingEntity target) {
-        EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
-        ((CraftCreature) entity).getHandle().setGoalTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
-        entity.setTarget(target);
-    }
-
-    @Override
     public CompoundTag getNbtData(Entity entity) {
         NBTTagCompound compound = new NBTTagCompound();
         ((CraftEntity) entity).getHandle().a_(compound);
