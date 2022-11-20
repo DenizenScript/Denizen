@@ -2,10 +2,10 @@ package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -22,16 +22,21 @@ public class BossBarCommand extends AbstractCommand {
 
     public BossBarCommand() {
         setName("bossbar");
-        setSyntax("bossbar ({auto}/create/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...)");
-        setRequiredArguments(1, 8);
+        setSyntax("bossbar ({auto}/create/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...) (uuid:<uuid>)");
+        setRequiredArguments(1, 9);
         isProcedural = false;
+        autoCompile();
+        addRemappedPrefixes("title", "t");
+        addRemappedPrefixes("progress", "health", "p", "h");
+        addRemappedPrefixes("style", "s");
+        addRemappedPrefixes("options", "option", "opt", "o", "flags", "flag", "f");
     }
 
     // <--[command]
     // @Name BossBar
-    // @Syntax bossbar ({auto}/create/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...)
+    // @Syntax bossbar ({auto}/create/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (options:<option>|...) (uuid:<uuid>)
     // @Required 1
-    // @Maximum 8
+    // @Maximum 9
     // @Short Shows players a boss bar.
     // @Group server
     //
@@ -50,10 +55,14 @@ public class BossBarCommand extends AbstractCommand {
     // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
     // Valid options: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
     //
+    // The UUID can optionally be specified, and will be sent to the client. Be careful to not overlap multiple bars with the same UUID.
+    // If not specified, it will be random.
+    //
     // @Tags
     // <server.current_bossbars>
     // <server.bossbar_viewers[<bossbar_id>]>
     // <PlayerTag.bossbar_ids>
+    // <entry[saveName].bar_uuid> returns the bossbar's UUID.
     //
     // @Usage
     // Shows a message to all online players.
@@ -76,113 +85,62 @@ public class BossBarCommand extends AbstractCommand {
     // - bossbar remove MyMessageID
     // -->
 
-    private enum Action {
+    public enum Action {
         AUTO, CREATE, UPDATE, REMOVE
     }
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         tab.addWithPrefix("id:", bossBarMap.keySet());
-    }
-
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("title")
-                    && arg.matchesPrefix("title", "t")) {
-                scriptEntry.addObject("title", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("progress")
-                    && arg.matchesPrefix("progress", "health", "p", "h")
-                    && arg.matchesFloat()) {
-                scriptEntry.addObject("progress", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("color")
-                    && arg.matchesPrefix("color", "c")
-                    && arg.matchesEnum(BarColor.class)) {
-                scriptEntry.addObject("color", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("style")
-                    && arg.matchesPrefix("style", "s")
-                    && arg.matchesEnum(BarStyle.class)) {
-                scriptEntry.addObject("style", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("options")
-                    && arg.matchesPrefix("options", "option", "opt", "o", "flags", "flag", "f")
-                    && arg.matchesEnumList(BarFlag.class)) {
-                scriptEntry.addObject("options", arg.asType(ListTag.class));
-            }
-            else if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.class)) {
-                scriptEntry.addObject("action", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("players")
-                    && arg.matchesPrefix("players")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class));
-            }
-            else if (!scriptEntry.hasObject("id")) {
-                scriptEntry.addObject("id", arg.asElement());
-            }
-            else {
-                arg.reportUnhandled();
-            }
-        }
-        if (!scriptEntry.hasObject("id")) {
-            throw new InvalidArgumentsException("Must specify an ID!");
-        }
-        if ((!scriptEntry.hasObject("action") || scriptEntry.getElement("action").asString().equalsIgnoreCase("CREATE"))
-                && !scriptEntry.hasObject("players")) {
-            if (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
-                scriptEntry.addObject("players", new ListTag(Collections.singleton(Utilities.getEntryPlayer(scriptEntry).identify())));
-            }
-            else {
-                throw new InvalidArgumentsException("Must specify valid player(s)!");
-            }
-        }
-        scriptEntry.defaultObject("action", new ElementTag("AUTO"));
+        tab.addWithPrefix("style:", BarStyle.values());
+        tab.addWithPrefix("color:", BarColor.values());
+        tab.addWithPrefix("options:", BarFlag.values());
     }
 
     public final static Map<String, BossBar> bossBarMap = new HashMap<>();
 
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ElementTag id = scriptEntry.getElement("id");
-        ElementTag action = scriptEntry.getElement("action");
-        ListTag players = scriptEntry.getObjectTag("players");
-        ElementTag title = scriptEntry.getElement("title");
-        ElementTag progress = scriptEntry.getElement("progress");
-        ElementTag color = scriptEntry.getElement("color");
-        ElementTag style = scriptEntry.getElement("style");
-        ListTag options = scriptEntry.getObjectTag("options");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), id, action, players, title, progress, color, style, options);
-        }
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("action") @ArgDefaultText("auto") Action action,
+                                   @ArgName("id") @ArgLinear ElementTag id,
+                                   @ArgName("players") @ArgPrefixed @ArgDefaultNull ListTag players,
+                                   @ArgName("title") @ArgPrefixed @ArgDefaultNull String title,
+                                   @ArgName("progress") @ArgPrefixed @ArgDefaultNull ElementTag progress,
+                                   @ArgName("color") @ArgPrefixed @ArgDefaultText("white") BarColor color,
+                                   @ArgName("style") @ArgPrefixed @ArgDefaultText("solid") BarStyle style,
+                                   @ArgName("options") @ArgPrefixed @ArgDefaultNull ListTag options,
+                                   @ArgName("uuid") @ArgPrefixed @ArgDefaultNull String uuid) {
         String idString = id.asLowerString();
-        Action a = Action.valueOf(action.asString().toUpperCase());
-        if (a == Action.AUTO) {
-            a = bossBarMap.containsKey(idString) ? Action.UPDATE : Action.CREATE;
+        if (action == Action.AUTO) {
+            action = bossBarMap.containsKey(idString) ? Action.UPDATE : Action.CREATE;
         }
-        switch (a) {
+        if (players == null && action == Action.CREATE) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                throw new InvalidArgumentsRuntimeException("Missing player input!");
+            }
+            players = new ListTag();
+            players.addObject(Utilities.getEntryPlayer(scriptEntry));
+        }
+        BossBar bossBar = null;
+        switch (action) {
             case CREATE: {
                 if (bossBarMap.containsKey(idString)) {
                     Debug.echoError("BossBar '" + idString + "' already exists!");
                     return;
                 }
-                String barTitle = title != null ? title.asString() : "";
                 List<PlayerTag> barPlayers = players.filter(PlayerTag.class, scriptEntry);
                 double barProgress = progress != null ? progress.asDouble() : 1D;
-                BarColor barColor = color != null ? BarColor.valueOf(color.asString().toUpperCase()) : BarColor.WHITE;
-                BarStyle barStyle = style != null ? BarStyle.valueOf(style.asString().toUpperCase()) : BarStyle.SOLID;
                 BarFlag[] barFlags = new BarFlag[options != null ? options.size() : 0];
                 if (options != null) {
                     for (int i = 0; i < options.size(); i++) {
                         barFlags[i] = (BarFlag.valueOf(options.get(i).toUpperCase()));
                     }
                 }
-                BossBar bossBar = Bukkit.createBossBar(barTitle, barColor, barStyle, barFlags);
-                NMSHandler.playerHelper.setBossBarTitle(bossBar, barTitle);
+                bossBar = Bukkit.createBossBar(title, color, style, barFlags);
+                NMSHandler.playerHelper.setBossBarTitle(bossBar, title);
                 bossBar.setProgress(barProgress);
+                if (uuid != null) {
+                    NMSHandler.instance.setBossbarUUID(bossBar, UUID.fromString(uuid));
+                }
                 for (PlayerTag player : barPlayers) {
                     if (!player.isOnline()) {
                         Debug.echoError("Player must be online to show a BossBar to them!");
@@ -199,18 +157,18 @@ public class BossBarCommand extends AbstractCommand {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
                 }
-                BossBar bossBar1 = bossBarMap.get(idString);
+                bossBar = bossBarMap.get(idString);
                 if (title != null) {
-                    NMSHandler.playerHelper.setBossBarTitle(bossBar1, title.asString());
+                    NMSHandler.playerHelper.setBossBarTitle(bossBar, title);
                 }
                 if (progress != null) {
-                    bossBar1.setProgress(progress.asDouble());
+                    bossBar.setProgress(progress.asDouble());
                 }
                 if (color != null) {
-                    bossBar1.setColor(BarColor.valueOf(color.asString().toUpperCase()));
+                    bossBar.setColor(color);
                 }
                 if (style != null) {
-                    bossBar1.setStyle(BarStyle.valueOf(style.asString().toUpperCase()));
+                    bossBar.setStyle(style);
                 }
                 if (options != null) {
                     HashSet<BarFlag> oldFlags = new HashSet<>(Arrays.asList(BarFlag.values()));
@@ -221,34 +179,39 @@ public class BossBarCommand extends AbstractCommand {
                         oldFlags.remove(flag);
                     }
                     for (BarFlag flag : oldFlags) {
-                        bossBar1.removeFlag(flag);
+                        bossBar.removeFlag(flag);
                     }
                     for (BarFlag flag : newFlags) {
-                        bossBar1.addFlag(flag);
+                        bossBar.addFlag(flag);
                     }
                 }
                 if (players != null) {
                     for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
-                        bossBar1.addPlayer(player.getPlayerEntity());
+                        bossBar.addPlayer(player.getPlayerEntity());
                     }
                 }
                 break;
             }
             case REMOVE: {
-                if (!bossBarMap.containsKey(idString)) {
+                bossBar = bossBarMap.remove(idString);
+                if (bossBar == null) {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
                 }
                 if (players != null) {
-                    BossBar bar = bossBarMap.get(idString);
                     for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
-                        bar.removePlayer(player.getPlayerEntity());
+                        bossBar.removePlayer(player.getPlayerEntity());
                     }
                     break;
                 }
-                bossBarMap.get(idString).setVisible(false);
-                bossBarMap.remove(idString);
+                bossBar.setVisible(false);
                 break;
+            }
+        }
+        if (bossBar != null) {
+            UUID actualUuid = NMSHandler.instance.getBossbarUUID(bossBar);
+            if (actualUuid != null) {
+                scriptEntry.addObject("bar_uuid", new ElementTag(actualUuid.toString()));
             }
         }
     }

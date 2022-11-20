@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -19,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class NMSHandler {
 
@@ -142,4 +144,11 @@ public abstract class NMSHandler {
     public abstract boolean containerHas(PersistentDataContainer container, String key);
 
     public abstract String containerGetString(PersistentDataContainer container, String key);
+
+    public UUID getBossbarUUID(BossBar bar) {
+        return null;
+    }
+
+    public void setBossbarUUID(BossBar bar, UUID id) {
+    }
 }

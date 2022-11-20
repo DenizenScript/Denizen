@@ -39,7 +39,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
@@ -50,8 +52,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R1.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftInventoryCustom;
@@ -72,6 +76,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Handler extends NMSHandler {
 
@@ -353,6 +358,23 @@ public class Handler extends NMSHandler {
             return new String(((ByteArrayTag) base).getAsByteArray(), StandardCharsets.UTF_8);
         }
         return null;
+    }
+
+    @Override
+    public UUID getBossbarUUID(BossBar bar) {
+        return ((CraftBossBar) bar).getHandle().getId();
+    }
+
+    public static MethodHandle BOSSBAR_ID_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(BossEvent.class, UUID.class);
+
+    @Override
+    public void setBossbarUUID(BossBar bar, UUID id) {
+        try {
+            BOSSBAR_ID_SETTER.invoke(((CraftBossBar) bar).getHandle(), id);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     public static BaseComponent[] componentToSpigot(Component nms) {
