@@ -37,7 +37,7 @@ public class PaperElementExtensions {
             // This may be useful for sending data to external plugins, but should not be used in normal scripts.
             // -->
             ElementTag.tagProcessor.registerTag(ElementTag.class, "to_minimessage", (attribute, object) -> {
-                Component parsed = PaperModule.jsonToComponent(ComponentSerializer.toString(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE, false)));
+                Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE, false)));
                 return new ElementTag(MiniMessage.miniMessage().serialize(parsed));
             });
         }

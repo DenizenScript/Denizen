@@ -135,7 +135,7 @@ public class ItemBook implements Property {
             if ((attribute.startsWith("raw_page", 2) || attribute.startsWith("get_raw_page", 2)) && attribute.hasContext(2)) {
                 BukkitImplDeprecations.bookItemRawTags.warn(attribute.context);
                 attribute.fulfill(1);
-                return new ElementTag(ComponentSerializer.toString(bookMeta.spigot().getPage(attribute.getIntParam())));
+                return new ElementTag(FormattedTextHelper.componentToJson(bookMeta.spigot().getPage(attribute.getIntParam())));
             }
             if (attribute.startsWith("pages", 2)) {
                 attribute.fulfill(1);
@@ -150,7 +150,7 @@ public class ItemBook implements Property {
                 attribute.fulfill(1);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                    output.add(ComponentSerializer.toString(page));
+                    output.add(FormattedTextHelper.componentToJson(page));
                 }
                 return output;
             }

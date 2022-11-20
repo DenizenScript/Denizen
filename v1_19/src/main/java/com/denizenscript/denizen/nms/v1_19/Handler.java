@@ -389,7 +389,7 @@ public class Handler extends NMSHandler {
         if (spigot == null) {
             return null;
         }
-        String json = ComponentSerializer.toString(spigot);
+        String json = FormattedTextHelper.componentToJson(spigot);
         return Component.Serializer.fromJson(json);
     }
 }

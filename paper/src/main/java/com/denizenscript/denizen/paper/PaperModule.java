@@ -90,7 +90,7 @@ public class PaperModule {
         if (text == null) {
             return null;
         }
-        return jsonToComponent(ComponentSerializer.toString(FormattedTextHelper.parse(text, baseColor)));
+        return jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, baseColor)));
     }
 
     public static String stringifyComponent(Component component) {

@@ -8,8 +8,12 @@ import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.*;
+import net.md_5.bungee.chat.*;
 
 import java.util.List;
 
@@ -359,7 +363,7 @@ public class FormattedTextHelper {
                             root.addExtra(nextText);
                         }
                         nextText = getCleanRef();
-                        nextText.setColor(ChatColor.of(color.toString()));
+                        nextText.setColor(ChatColor.of(CoreUtilities.toUpperCase(color.toString())));
                         firstChar += 12;
                         lastStart = firstChar + 2;
                     }
@@ -598,7 +602,7 @@ public class FormattedTextHelper {
                                 color = ChatColor.getByChar(colorChar.charAt(0));
                             }
                             else if (colorChar.length() == 7) {
-                                color = ChatColor.of(colorChar);
+                                color = ChatColor.of(CoreUtilities.toUpperCase(colorChar));
                             }
                             else if (CoreConfiguration.debugVerbose) {
                                 Debug.echoError("Text parse issue: cannot interpret color '" + innardBase.get(1) + "'.");
@@ -708,7 +712,7 @@ public class FormattedTextHelper {
                         base.addExtra(nextText);
                     }
                     nextText = new TextComponent();
-                    nextText.setColor(ChatColor.of(color.toString()));
+                    nextText.setColor(ChatColor.of(CoreUtilities.toUpperCase(color.toString())));
                     i += 13;
                     started = i + 1;
                     continue;
@@ -800,5 +804,27 @@ public class FormattedTextHelper {
             message = prePart + "... *snip!*..." + postPart;
         }
         return message;
+    }
+
+    // Spigot ComponentSerializer
+    public static final Gson vanillaStyleSpigotComponentGSON = new GsonBuilder()
+            .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
+            .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
+            .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
+            .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
+            .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
+            .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
+            .registerTypeAdapter(Entity.class, new EntitySerializer())
+            .registerTypeAdapter(Text.class, new TextSerializer())
+            .registerTypeAdapter(Item.class, new ItemSerializer())
+            .registerTypeAdapter(ItemTag.class, new ItemTag.Serializer())
+            .disableHtmlEscaping() // Mojang
+            .create();
+
+    public static String componentToJson(BaseComponent[] components) {
+        if (components.length == 1) {
+            return vanillaStyleSpigotComponentGSON.toJson(components[0]);
+        }
+        return vanillaStyleSpigotComponentGSON.toJson(new TextComponent(components));
     }
 }

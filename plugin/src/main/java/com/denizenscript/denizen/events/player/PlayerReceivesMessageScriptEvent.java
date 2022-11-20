@@ -117,7 +117,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             case "system_message": return system;
             case "raw_json":
                 if (altMessageDetermination != null) {
-                    return new ElementTag(ComponentSerializer.toString(altMessageDetermination), true);
+                    return new ElementTag(FormattedTextHelper.componentToJson(altMessageDetermination), true);
                 }
                 return rawJson;
         }

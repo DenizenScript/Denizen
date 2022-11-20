@@ -333,7 +333,7 @@ public class ItemHelperImpl extends ItemHelper {
             return;
         }
         BaseComponent[] components = FormattedTextHelper.parse(name, ChatColor.WHITE);
-        display.put("Name", net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(components)));
+        display.put("Name", net.minecraft.nbt.StringTag.valueOf(FormattedTextHelper.componentToJson(components)));
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 
@@ -351,7 +351,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             ListTag tagList = new ListTag();
             for (String line : lore) {
-                tagList.add(net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(FormattedTextHelper.parse(line, ChatColor.WHITE))));
+                tagList.add(net.minecraft.nbt.StringTag.valueOf(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(line, ChatColor.WHITE))));
             }
             display.put("Lore", tagList);
         }
