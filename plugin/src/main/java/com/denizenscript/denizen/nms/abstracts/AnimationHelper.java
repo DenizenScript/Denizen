@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Villager;
 
@@ -32,6 +33,12 @@ public abstract class AnimationHelper {
                 BukkitImplDeprecations.skeletonSwingArm.warn();
                 NMSHandler.entityHelper.setAggressive((Mob) entity, false);
             }
+        });
+        entityAnimations.put("swing_main_hand", entity -> {
+            ((LivingEntity) entity).swingMainHand();
+        });
+        entityAnimations.put("swing_off_hand", entity -> {
+            ((LivingEntity) entity).swingOffHand();
         });
     }
 
