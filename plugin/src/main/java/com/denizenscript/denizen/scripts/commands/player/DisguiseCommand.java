@@ -137,8 +137,12 @@ public class DisguiseCommand extends AbstractCommand {
         }
 
         public void moveFakeNow(Location position) {
+            float yawOff = 0;
+            if (as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
+                yawOff = 180;
+            }
             NMSHandler.entityHelper.snapPositionTo(fakeToSelf.entity.getBukkitEntity(), position.toVector());
-            NMSHandler.entityHelper.look(fakeToSelf.entity.getBukkitEntity(), position.getYaw(), position.getPitch());
+            NMSHandler.entityHelper.look(fakeToSelf.entity.getBukkitEntity(), position.getYaw() + yawOff, position.getPitch());
         }
 
         public void startFake(PlayerTag player) {

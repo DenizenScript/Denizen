@@ -66,6 +66,7 @@ import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -635,6 +636,15 @@ public class DenizenNetworkManagerImpl extends Connection {
             else if (packet instanceof ClientboundAddEntityPacket) {
                 ider = ((ClientboundAddEntityPacket) packet).getId();
             }
+            else if (packet instanceof ClientboundTeleportEntityPacket) {
+                ider = ((ClientboundTeleportEntityPacket) packet).getId();
+            }
+            else if (packet instanceof ClientboundMoveEntityPacket) {
+                Entity e = ((ClientboundMoveEntityPacket) packet).getEntity(player.level);
+                if (e != null) {
+                    ider = e.getId();
+                }
+            }
             if (ider != -1) {
                 Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
@@ -688,7 +698,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     }
                     return false;
                 }
-                if (packet instanceof ClientboundUpdateAttributesPacket) {
+                else if (packet instanceof ClientboundUpdateAttributesPacket) {
                     FakeEntity fake = ider == player.getId() ? disguise.fakeToSelf : disguise.toOthers;
                     if (fake == null) {
                         return false;
@@ -697,6 +707,37 @@ public class DenizenNetworkManagerImpl extends Connection {
                         return false;
                     }
                     return true; // Non-living don't have attributes
+                }
+                else if (packet instanceof ClientboundTeleportEntityPacket) {
+                    if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
+                        ClientboundTeleportEntityPacket pOld = (ClientboundTeleportEntityPacket) packet;
+                        ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(e);
+                        ENTITY_ID_PACKTELENT.setInt(pNew, pOld.getId());
+                        POS_X_PACKTELENT.setDouble(pNew, pOld.getX());
+                        POS_Y_PACKTELENT.setDouble(pNew, pOld.getY());
+                        POS_Z_PACKTELENT.setDouble(pNew, pOld.getZ());
+                        YAW_PACKTELENT.setByte(pNew, EntityAttachmentHelper.adaptedCompressedAngle(pOld.getyRot(), 180));
+                        PITCH_PACKTELENT.setByte(pNew, pOld.getxRot());
+                        oldManager.send(pNew, genericfuturelistener);
+                        return true;
+                    }
+                }
+                else if (packet instanceof ClientboundMoveEntityPacket) {
+                    if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
+                        ClientboundMoveEntityPacket pOld = (ClientboundMoveEntityPacket) packet;
+                        ClientboundMoveEntityPacket pNew = null;
+                        if (packet instanceof ClientboundMoveEntityPacket.Rot) {
+                            pNew = new ClientboundMoveEntityPacket.Rot(ider, EntityAttachmentHelper.adaptedCompressedAngle(pOld.getyRot(), 180), pOld.getxRot(), pOld.isOnGround());
+                        }
+                        else if (packet instanceof ClientboundMoveEntityPacket.PosRot) {
+                            pNew = new ClientboundMoveEntityPacket.PosRot(ider, pOld.getXa(), pOld.getYa(), pOld.getZa(), EntityAttachmentHelper.adaptedCompressedAngle(pOld.getyRot(), 180), pOld.getxRot(), pOld.isOnGround());
+                        }
+                        if (pNew != null) {
+                            oldManager.send(pNew, genericfuturelistener);
+                            return true;
+                        }
+                        return false;
+                    }
                 }
                 antiDuplicate = true;
                 disguise.sendTo(Collections.singletonList(new PlayerTag(player.getBukkitEntity())));
