@@ -305,7 +305,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     return;
                 }
                 try {
-                    HashSet<Material> maskSet = new HashSet<>();
+                    HashSet<Material> maskSet = null;
                     if (mask != null) {
                         String maskText = mask.asString();
                         maskSet = new HashSet<>();
