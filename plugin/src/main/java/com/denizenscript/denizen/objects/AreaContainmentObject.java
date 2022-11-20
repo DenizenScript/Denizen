@@ -96,10 +96,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a cuboid approximately representing the maximal bounding box of the area (anything this cuboid does not contain, is also not contained by the area, but not vice versa).
         // For single-member CuboidTags, this tag returns a copy of the cuboid.
-        // @Example
-        // # Gets the cuboid's bounding box and plays a totem effect at the shell of the cuboid.
-        // - note <cuboid[my_cuboid].bounding_box> as:my_cooler_cuboid
-        // - playeffect effect:TOTEM at:<cuboid[my_cooler_cuboid].shell>
+        // @example
+        // # Narrates the cuboids bounding box, which is just the cuboid.
+        // - narrate <cuboid[my_cuboid].bounding_box>
         // -->
         processor.registerTag(CuboidTag.class, "bounding_box", (attribute, area) -> {
             return area.getCuboidBoundary();
@@ -111,8 +110,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns WorldTag
         // @description
         // Returns the area's world.
-        // @Example
-        // - narrate "The cuboid, 'my_cuboid', is in world: <cuboid[my_cuboid].world>!"
+        // @example
+        // - narrate "The cuboid, 'my_cuboid', is in world: <cuboid[my_cuboid].world.name>!"
         // -->
         processor.registerTag(WorldTag.class, "world", (attribute, area) -> {
             return area.getWorld();
@@ -123,8 +122,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(PlayerTag)
         // @description
         // Gets a list of all players currently within the area.
-        // @Example
+        // @example
         // # Narrates a list of players' names that are within the area separated by a comma and a space.
+        // # For example: "List of players in 'my_cuboid': steve, alex, john, jane"
         // - narrate "List of players in 'my_cuboid': <cuboid[my_cuboid].players.parse[name].separated_by[, ]>"
         // -->
         processor.registerTag(ListTag.class, "players", (attribute, area) -> {
@@ -142,9 +142,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(NPCTag)
         // @description
         // Gets a list of all NPCs currently within the area.
-        // @Example
+        // @example
         // # Narrates a list of NPCs' names that are within the area separated by a comma and a space.
-        // - narrate "List of NPCs in 'my_cuboid': <cuboid[my_cuboid].npcs.parse[name].separated_by[, ]"
+        // # For example: "List of NPCs in 'my_cuboid': steve, alex, john, jane"
+        // - narrate "List of NPCs in 'my_cuboid': <cuboid[my_cuboid].npcs.parse[name].separated_by[, ]>"
         // -->
         if (Depends.citizens != null) {
             processor.registerTag(ListTag.class, "npcs", (attribute, area) -> {
@@ -164,10 +165,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(EntityTag)
         // @description
         // Gets a list of all entities currently within the area, with an optional search parameter for the entity.
-        // @Example
-        // # Narrates all the entities that match 'axolotl' within the area.
+        // @example
+        // # Narrates the locations of the entities that match 'axolotl' within the area.
         // - foreach <cuboid[my_cuboid].entities[axolotl]> as:entity:
-        //     - narrate <[entity]>
+        //     - narrate <[entity].location>
         // -->
         processor.registerTag(ListTag.class, "entities", (attribute, area) -> {
             String matcher = attribute.hasParam() ? attribute.getParam() : null;
@@ -189,7 +190,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all living entities currently within the area.
         // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
-        // @Example
+        // @example
         // # Narrates the name of all the living entities within the area.
         // - foreach <cuboid[my_cuboid].living_entities> as:entity:
         //      - narrate <[entity].name>
@@ -209,9 +210,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ElementTag(Boolean)
         // @description
         // Returns a boolean indicating whether the specified location is inside this area.
-        // @Example
+        // @example
         // # Checks to see if "my_cuboid" contains the player's location.
-        // - if <cuboid[my_cuboid].contains[<player.location>]:
+        // - if <cuboid[my_cuboid].contains[<player.location>]>:
         //      - narrate "It is contained within 'my_cuboid'!"
         // - else:
         //      - narrate "It is not contained within 'my_cuboid'!"
@@ -226,7 +227,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns each block location within the area.
         // Optionally, specify a material matcher to only return locations with that block type.
-        // @Example
+        // @example
         // # Narrates the locations of blocks that match "*planks" within the area.
         // - foreach <cuboid[my_cuboid].blocks[*planks]> as:plank:
         //      - narrate <[plank]>
@@ -253,7 +254,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each LocationTag within the area that is safe for players or similar entities to spawn in.
         // Optionally, specify a material matcher to only return locations with that block type.
         // Uses the same spawnable check as <@link tag LocationTag.is_spawnable>
-        // @Example
+        // @example
         // # Spawns a creeper at a random spawnable block within the area.
         // - define block <cuboid[my_cuboid].spawnable_blocks.random>
         // - spawn creeper <[block]>
@@ -279,10 +280,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all block locations with a specified flag within the area.
         // Searches the internal flag lists, rather than through all possible blocks.
-        // @Example
+        // @example
         // # Narrates the locations of blocks that are flagged "my_flag"
         // - foreach <cuboid[my_cuboid].blocks_flagged[my_flag]> as:block:
-        //      - narrate <[block]>
+        //      - narrate <[block].location>
         // -->
         processor.registerTag(ListTag.class, ElementTag.class, "blocks_flagged", (attribute, area, flagName) -> {
             return area.getBlocksFlagged(CoreUtilities.toLowerCase(flagName.toString()), attribute);
@@ -294,9 +295,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns each block location on the 3D outer shell of the area.
         // This tag is useful for displaying particles or blocks to mark the boundary of the area.
-        // @Example
-        // # Plays the "TOTEM" effect in the shell of the area.
-        // - playeffect effect:TOTEM at:<cuboid[my_cuboid].shell>
+        // @example
+        // # Plays the "TOTEM" effect in the shell of the area to the player.
+        // - playeffect effect:TOTEM at:<cuboid[my_cuboid].shell> offset:0 targets:<player>
         // -->
         processor.registerTag(ListTag.class, "shell", (attribute, area) -> {
             return area.getShell();
@@ -307,7 +308,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether this area is fully inside another cuboid.
-        // @Example
+        // @example
         // # Checks to see if "my_cuboid" is within "my_bigger_cuboid".
         // - if <cuboid[my_cuboid].is_within[<cuboid[my_bigger_cuboid]>]>:
         //      - narrate "It is fully within 'my_bigger_cuboid'!"
@@ -349,7 +350,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns AreaObject
         // @description
         // Returns a copy of the area, with the specified world.
-        // @Example
+        // @example
         // # Notes a copy of "my_cuboid" but with the world "world_the_end".
         // - note my_new_cuboid <cuboid[my_cuboid].with_world[world_the_end]>
         // -->

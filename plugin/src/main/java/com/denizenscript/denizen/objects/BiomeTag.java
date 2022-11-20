@@ -180,8 +180,8 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
-        // @Example
-        // # When in a Plains biome, this fills with 'RAIN'.
+        // @example
+        // # In a plains biome, this fills with 'RAIN'.
         // - narrate "The downfall type in plains biomes is: <biome[plains].downfall_type>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
@@ -193,9 +193,9 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ElementTag
         // @description
         // Returns this biome's name.
-        // @Example
-        // # When in a Plains biome, this fills with 'plains'.
-        // - narrate "You are currently in a <player.location.biome.name> biome!"
+        // @example
+        // # In a plains biome, this fills with 'plains'.
+        // - narrate "You are currently in a <biome[plains].name> biome!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(CoreUtilities.toLowerCase(object.biome.getName()));
@@ -207,9 +207,9 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @mechanism BiomeTag.humidity
         // @description
         // Returns the humidity of this biome.
-        // @Example
-        // # When in a Plains biome, this fills with '0.4'.
-        // - narrate "Humidity is currently <player.location.biome.humidity>! So humid!"
+        // @example
+        // # In a plains biome, this fills with '0.4'.
+        // - narrate "Humidity in a plains biome is <biome[plains].humidity>! So humid!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "humidity", (attribute, object) -> {
             return new ElementTag(object.biome.getHumidity());
@@ -221,9 +221,9 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @mechanism BiomeTag.temperature
         // @description
         // Returns the temperature of this biome.
-        // @Example
-        // # When in a Plains biome, this fills with '0.8'.
-        // - narrate "Stay warm! The temperature is currently <player.location.biome.temperature>!"
+        // @example
+        // # In a plains biome, this fills with '0.8'.
+        // - narrate "Stay warm! In a plains biome, the temperature is <biome[plains].temperature>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "temperature", (attribute, object) -> {
             return new ElementTag(object.biome.getTemperature());
@@ -236,8 +236,9 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns all entities that spawn naturally in this biome.
         // Optionally specify a type as: AMBIENT, CREATURES, MONSTERS, WATER, or ALL.
         // (By default, will be "ALL").
-        // @Example
-        // # Narrates all the entities of type MONSTERS that can spawn in the player's biome.
+        // @example
+        // # Narrates the types of entities of type MONSTERS that can spawn in the player's biome.
+        // # For example, in a plains biome this could contain "SPIDER", "ZOMBIE", "CREEPER", etc.
         // - foreach <player.location.biome.spawnable_entities[MONSTERS]> as:entity:
         //     - narrate <[entity]>
         // -->
@@ -314,9 +315,13 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Sets the humidity for this biome server-wide.
         // If this is greater than 0.85, fire has less chance
-        // to spread in this biome.
+        // to spread in this biome. Resets on server restart.
         // @tags
         // <BiomeTag.humidity>
+        // @example
+        // # Adjusts the humidity of the plains biome on server start.
+        // on server start:
+        // - adjust <biome[plains]> humidity:0.5
         // -->
         if (mechanism.matches("humidity") && mechanism.requireFloat()) {
             biome.setHumidity(mechanism.getValue().asFloat());
@@ -329,8 +334,13 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Sets the temperature for this biome server-wide.
         // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
+        // Resets on server restart.
         // @tags
         // <BiomeTag.temperature>
+        // @example
+        // # Adjusts the temperature of the plains biome on server start.
+        // on server start:
+        // - adjust <biome[plains]> temperature:0.5
         // -->
         if (mechanism.matches("temperature") && mechanism.requireFloat()) {
             biome.setTemperature(mechanism.getValue().asFloat());
@@ -342,9 +352,14 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ElementTag
         // @description
         // Sets the downfall-type for this biome server-wide.
-        // This can be RAIN, SNOW, or NONE.
+        // This can be RAIN, SNOW, or NONE. Resets on server restart.
         // @tags
         // <BiomeTag.temperature>
+        // @example
+        // # Adjusts the downfall type of the plains biome on server start.
+        // on server start:
+        // - adjust <biome[plains]> temperature:-0.2
+        // - adjust <biome[plains]> downfall_type:SNOW
         // -->
         if (mechanism.matches("downfall_type") && mechanism.requireEnum(BiomeNMS.DownfallType.class)) {
             biome.setPrecipitation(BiomeNMS.DownfallType.valueOf(mechanism.getValue().asString().toUpperCase()));
