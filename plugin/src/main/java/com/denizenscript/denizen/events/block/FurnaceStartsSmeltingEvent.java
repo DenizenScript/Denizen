@@ -5,6 +5,8 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
@@ -24,6 +26,8 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     // @Context
     // <context.location> returns the LocationTag of the furnace.
     // <context.item> returns the ItemTag of the item being smelted.
+    // <context.recipe_id> returns the ElementTag of the recipe ID being used.
+    // <context.total_cook_time> returns the DurationTag of the total time it will take to smelt the item.
     //
     // @Determine
     // DurationTag to set the total cook time for the item being smelted.
@@ -44,7 +48,9 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     }
 
     public ItemTag item;
+    public ElementTag recipeID;
     public LocationTag location;
+    public DurationTag totalCookTime;
     public FurnaceStartSmeltEvent event;
 
     @Override
@@ -72,6 +78,8 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
         switch (name) {
             case "location": return location;
             case "item": return item;
+            case "recipe_id": return recipeID;
+            case "total_cook_time": return totalCookTime;
         }
         return super.getContext(name);
     }
@@ -80,6 +88,8 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     public void onFurnaceStartsSmelting(FurnaceStartSmeltEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         item = new ItemTag(event.getSource());
+        recipeID = new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
+        totalCookTime = new DurationTag(event.getTotalCookTime());
         this.event = event;
         fire(event);
     }
