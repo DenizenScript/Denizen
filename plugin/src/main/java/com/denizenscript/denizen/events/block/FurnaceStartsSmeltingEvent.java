@@ -48,9 +48,7 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     }
 
     public ItemTag item;
-    public ElementTag recipeID;
     public LocationTag location;
-    public DurationTag totalCookTime;
     public FurnaceStartSmeltEvent event;
 
     @Override
@@ -78,8 +76,8 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
         switch (name) {
             case "location": return location;
             case "item": return item;
-            case "recipe_id": return recipeID;
-            case "total_cook_time": return totalCookTime;
+            case "recipe_id": return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
+            case "total_cook_time": return new DurationTag(event.getTotalCookTime());
         }
         return super.getContext(name);
     }
@@ -88,8 +86,6 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     public void onFurnaceStartsSmelting(FurnaceStartSmeltEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         item = new ItemTag(event.getSource());
-        recipeID = new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
-        totalCookTime = new DurationTag(event.getTotalCookTime());
         this.event = event;
         fire(event);
     }
