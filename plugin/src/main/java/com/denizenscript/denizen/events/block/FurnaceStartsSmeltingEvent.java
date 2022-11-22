@@ -21,26 +21,31 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     //
     // @Location true
     //
+    // @Cancellable true
+    //
     // @Triggers when a furnace starts smelting an item.
     //
     // @Context
     // <context.location> returns the LocationTag of the furnace.
     // <context.item> returns the ItemTag of the item being smelted.
-    // <context.recipe_id> returns the ElementTag of the recipe ID being used.
-    // <context.total_cook_time> returns the DurationTag of the total time it will take to smelt the item.
+    // <context.recipe_id> returns the recipe ID of the item being smelted.
+    // <context.cook_duration> returns a DurationTag of the time it will take to smelt the item.
+    // <context.experience> returns the experience that will be given when the item is smelted.
     //
     // @Determine
-    // DurationTag to set the total cook time for the item being smelted.
+    // COOK_DURATION: + DurationTag to set the total time it will take to smelt the item. (Default: 200 ticks)
+    // EXPERIENCE: + ElementTag to change the experience that will be given when the item is smelted.
+    //
     //
     // @Example
-    // # Sets the total cook time of the item to be 2 seconds.
+    // # Sets the total cook time for the item being smelted to 30 seconds.
     // on furnace starts smelting item:
-    // - determine 2s
+    // - determine COOK_DURATION:30s
     //
     // @Example
-    // # Sets the total cook time of iron ore to be 2 seconds.
+    // # Removes the experience awarded for smelting iron_ore.
     // on furnace starts smelting iron_ore:
-    // - determine 2s
+    // - determine EXPERIENCE:0
     // -->
 
     public FurnaceStartsSmeltingEvent() {
@@ -64,9 +69,29 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(DurationTag.class)) {
-            event.setTotalCookTime(determinationObj.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
-            return true;
+        if (determinationObj.canBeType(ElementTag.class)) {
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
+            if (lower.startsWith("cook_duration:")) {
+                String duration = determination.substring("cook_duration:".length());
+                if (duration.canBeType(DurationTag.class)) {
+                    event.setCookingTime(duration.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
+                    return true;
+                }
+                else {
+                    Debug.echoError("Invalid value '" + duration + "' provided for cook duration. Must be a valid DurationTag input. See <@link tag DurationTag>");
+                }
+            }
+            else if (lower.startsWith("experience:")) {
+                String experience = determination.substring("experience:".length());
+                if (experience.isInt() || experience.isDouble()) {
+                    event.getRecipe().setExperience(experience.asFloat());
+                    return true;
+                }
+                else {
+                    Debug.echoError("Invalid value '" + experience + "' provided for experience. Value must be an Integer or Double.");
+                }
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }
@@ -76,8 +101,9 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
         switch (name) {
             case "location": return location;
             case "item": return item;
+            case "cook_duration": return new Durationtag(event.getCookingTime());
+            case "experience": return new ElementTag(event.getRecipe().getExperience());
             case "recipe_id": return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
-            case "total_cook_time": return new DurationTag(event.getTotalCookTime());
         }
         return super.getContext(name);
     }
