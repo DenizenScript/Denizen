@@ -54,11 +54,11 @@ public class SlotHelper {
         if (item.equals(inventory.getHelmet())) {
             return HELMET;
         }
-        if (item.equals(inventory.getItemInOffHand())) {
-            return OFFHAND;
-        }
         if (item.equals(inventory.getItemInMainHand())) {
             return inventory.getHeldItemSlot();
+        }
+        if (item.equals(inventory.getItemInOffHand())) {
+            return OFFHAND;
         }
         ItemStack[] contents = inventory.getContents();
         for (int i = 0; i < contents.length; i++) {
