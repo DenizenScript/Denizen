@@ -717,7 +717,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        AreaContainmentObject.registerTags(CuboidTag.class, tagProcessor);
+        AreaContainmentObject.register(CuboidTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <CuboidTag.random>

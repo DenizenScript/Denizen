@@ -614,7 +614,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
-        AreaContainmentObject.registerTags(PolygonTag.class, tagProcessor);
+        AreaContainmentObject.register(PolygonTag.class, tagProcessor);
 
         // <--[tag]
         // @attribute <PolygonTag.max_y>

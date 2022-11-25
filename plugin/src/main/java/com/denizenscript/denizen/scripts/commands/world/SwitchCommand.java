@@ -29,14 +29,14 @@ public class SwitchCommand extends AbstractCommand {
 
     public SwitchCommand() {
         setName("switch");
-        setSyntax("switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>) (no_physics)");
+        setSyntax("switch [<location>|...] (state:{toggle}/on/off) (duration:<value>) (no_physics)");
         setRequiredArguments(1, 4);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Switch
-    // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>) (no_physics)
+    // @Syntax switch [<location>|...] (state:{toggle}/on/off) (duration:<value>) (no_physics)
     // @Required 1
     // @Maximum 4
     // @Short Switches state of the block.

@@ -22,8 +22,6 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Group Vehicle
     //
-    // @Regex ^on [^\s]+ collides with [^\s]+$
-    //
     // @Location true
     //
     // @Switch type:<entity> to only process the event if the colliding entity matches the EntityTag matcher input.
@@ -53,7 +51,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // @Example
     // # This example disambiguates this event from the "projectile collides with entity" event for specific entity types.
     // on vehicle collides with entity type:creeper:
-    // - announce "A <context.centity.entity_type> collided with a creeper!"
+    // - announce "A <context.vehicle.entity_type> collided with a creeper!"
     //
     // -->
 

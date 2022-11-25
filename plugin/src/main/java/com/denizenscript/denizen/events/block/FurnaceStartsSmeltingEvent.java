@@ -24,16 +24,16 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a furnace starts smelting an item.
     //
     // @Context
-    // <context.location> returns the LocationTag of the furnace.
-    // <context.item> returns the ItemTag of the item being smelted.
-    // <context.recipe_id> returns the ElementTag of the recipe ID being used.
-    // <context.total_cook_time> returns the DurationTag of the total time it will take to smelt the item.
+    // <context.location> returns a LocationTag of the furnace.
+    // <context.item> returns an ItemTag of the item being smelted.
+    // <context.recipe_id> returns an ElementTag of the recipe ID being used.
+    // <context.total_cook_time> returns a DurationTag of the total time it will take to smelt the item.
     //
     // @Determine
     // DurationTag to set the total cook time for the item being smelted.
     //
     // @Example
-    // # Sets the total cook time of the item to be 2 seconds.
+    // # Sets the total cook time of every item to always be 2 seconds.
     // on furnace starts smelting item:
     // - determine 2s
     //

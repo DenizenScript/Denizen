@@ -88,7 +88,7 @@ public interface AreaContainmentObject extends ObjectTag {
         return blocks;
     }
 
-    static <T extends AreaContainmentObject> void registerTags(Class<T> type,  ObjectTagProcessor<T> processor) {
+    static <T extends AreaContainmentObject> void register(Class<T> type,  ObjectTagProcessor<T> processor) {
 
         // <--[tag]
         // @attribute <AreaObject.bounding_box>
@@ -97,8 +97,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns a cuboid approximately representing the maximal bounding box of the area (anything this cuboid does not contain, is also not contained by the area, but not vice versa).
         // For single-member CuboidTags, this tag returns a copy of the cuboid.
         // @example
-        // # Narrates the cuboids bounding box, which is just the cuboid.
-        // - narrate <cuboid[my_cuboid].bounding_box>
+        // # Notes the polygon's bounding box to efficiently check when things are near the polygon, even if not exactly inside.
+        // - note <polygon[my_poly].bounding_box> my_bound_box
         // -->
         processor.registerTag(CuboidTag.class, "bounding_box", (attribute, area) -> {
             return area.getCuboidBoundary();
@@ -166,9 +166,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all entities currently within the area, with an optional search parameter for the entity.
         // @example
-        // # Narrates the locations of the entities that match 'axolotl' within the area.
+        // # Spawns a flash particle at the location of every axolotl in the cuboid.
         // - foreach <cuboid[my_cuboid].entities[axolotl]> as:entity:
-        //     - narrate <[entity].location>
+        //     - playeffect effect:flash at:<[entity].location>
         // -->
         processor.registerTag(ListTag.class, "entities", (attribute, area) -> {
             String matcher = attribute.hasParam() ? attribute.getParam() : null;
@@ -213,9 +213,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @example
         // # Checks to see if "my_cuboid" contains the player's location.
         // - if <cuboid[my_cuboid].contains[<player.location>]>:
-        //      - narrate "It is contained within 'my_cuboid'!"
+        //      - narrate "You are within 'my_cuboid'!"
         // - else:
-        //      - narrate "It is not contained within 'my_cuboid'!"
+        //      - narrate "You are NOT within 'my_cuboid'!"
         // -->
         processor.registerTag(ElementTag.class, LocationTag.class, "contains", (attribute, area, loc) -> {
             return new ElementTag(area.doesContainLocation(loc));
@@ -228,9 +228,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each block location within the area.
         // Optionally, specify a material matcher to only return locations with that block type.
         // @example
-        // # Narrates the locations of blocks that match "*planks" within the area.
-        // - foreach <cuboid[my_cuboid].blocks[*planks]> as:plank:
-        //      - narrate <[plank]>
+        // # Spawns a debugblock to highlight every plank-type block in the area.
+        // - debugblock <cuboid[my_cuboid].blocks[*planks]>
         // -->
         processor.registerTag(ListTag.class, "blocks", (attribute, area) -> {
             if (attribute.hasParam()) {
@@ -256,8 +255,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // Uses the same spawnable check as <@link tag LocationTag.is_spawnable>
         // @example
         // # Spawns a creeper at a random spawnable block within the area.
-        // - define block <cuboid[my_cuboid].spawnable_blocks.random>
-        // - spawn creeper <[block]>
+        // - spawn creeper <cuboid[my_cuboid].spawnable_blocks.random>
         // -->
         processor.registerTag(ListTag.class, "spawnable_blocks", (attribute, area) -> {
             NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
@@ -281,9 +279,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // Gets a list of all block locations with a specified flag within the area.
         // Searches the internal flag lists, rather than through all possible blocks.
         // @example
-        // # Narrates the locations of blocks that are flagged "my_flag"
-        // - foreach <cuboid[my_cuboid].blocks_flagged[my_flag]> as:block:
-        //      - narrate <[block].location>
+        // # Spawns a debugblock to highlight every block in the cuboid that has the location flag 'my_flag'.
+        // - debugblock <cuboid[my_cuboid].blocks_flagged[my_flag]>
         // -->
         processor.registerTag(ListTag.class, ElementTag.class, "blocks_flagged", (attribute, area, flagName) -> {
             return area.getBlocksFlagged(CoreUtilities.toLowerCase(flagName.toString()), attribute);
@@ -296,8 +293,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each block location on the 3D outer shell of the area.
         // This tag is useful for displaying particles or blocks to mark the boundary of the area.
         // @example
-        // # Plays the "TOTEM" effect in the shell of the area to the player.
-        // - playeffect effect:TOTEM at:<cuboid[my_cuboid].shell> offset:0 targets:<player>
+        // # Spawns a hollow sphere of fire around the player.
+        // - playeffect effect:flame at:<player.location.to_ellipsoid[5,5,5].shell> offset:0
         // -->
         processor.registerTag(ListTag.class, "shell", (attribute, area) -> {
             return area.getShell();
@@ -351,7 +348,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a copy of the area, with the specified world.
         // @example
-        // # Notes a copy of "my_cuboid" but with the world "world_the_end".
+        // # Notes a copy of "my_cuboid" with the same coordinates transposed from the overworld to the end world.
         // - note my_new_cuboid <cuboid[my_cuboid].with_world[world_the_end]>
         // -->
         processor.registerTag(type, WorldTag.class, "with_world", (attribute, area, world) -> {

@@ -169,7 +169,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Nothing to do.
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
@@ -231,7 +231,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
         // <--[tag]
         // @attribute <BiomeTag.spawnable_entities[(<type>)]>
-        // @returns ListTag(EntityTag)
+        // @returns ListTag
         // @description
         // Returns all entities that spawn naturally in this biome.
         // Optionally specify a type as: AMBIENT, CREATURES, MONSTERS, WATER, or ALL.
@@ -239,8 +239,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @example
         // # Narrates the types of entities of type MONSTERS that can spawn in the player's biome.
         // # For example, in a plains biome this could contain "SPIDER", "ZOMBIE", "CREEPER", etc.
-        // - foreach <player.location.biome.spawnable_entities[MONSTERS]> as:entity:
-        //     - narrate <[entity]>
+        // - narrate <player.location.biome.spawnable_entities[MONSTERS].formatted>
         // -->
         tagProcessor.registerTag(ListTag.class, "spawnable_entities", (attribute, object) -> {
             List<EntityType> entityTypes;
@@ -314,12 +313,12 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ElementTag(Decimal)
         // @description
         // Sets the humidity for this biome server-wide.
-        // If this is greater than 0.85, fire has less chance
-        // to spread in this biome. Resets on server restart.
+        // If this is greater than 0.85, fire has less chance to spread in this biome.
+        // Resets on server restart.
         // @tags
         // <BiomeTag.humidity>
         // @example
-        // # Adjusts the humidity of the plains biome on server start.
+        // # Adjusts the humidity of the plains biome permanently, using a server start event to keep it applied.
         // on server start:
         // - adjust <biome[plains]> humidity:0.5
         // -->
@@ -338,7 +337,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @tags
         // <BiomeTag.temperature>
         // @example
-        // # Adjusts the temperature of the plains biome on server start.
+        // # Adjusts the temperature of the plains biome permanently, using a server start event to keep it applied.
         // on server start:
         // - adjust <biome[plains]> temperature:0.5
         // -->
@@ -352,11 +351,12 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ElementTag
         // @description
         // Sets the downfall-type for this biome server-wide.
-        // This can be RAIN, SNOW, or NONE. Resets on server restart.
+        // This can be RAIN, SNOW, or NONE.
+        // Resets on server restart.
         // @tags
         // <BiomeTag.temperature>
         // @example
-        // # Adjusts the downfall type of the plains biome on server start.
+        // # Adjusts the downfall type of the plains biome permanently, using a server start event to keep it applied.
         // on server start:
         // - adjust <biome[plains]> temperature:-0.2
         // - adjust <biome[plains]> downfall_type:SNOW

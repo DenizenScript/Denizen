@@ -49,9 +49,9 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // on player places cactus against:sand:
     //
     // @Example
-    // # This example process the event only if the player places any block except tnt.
+    // # This example process the event only if the player places any block that isn't tnt.
     // on player places block type:!tnt:
-    // - announce "<player.name> hasn't placed a tnt block. Lucky!"
+    // - announce "<player.name> has placed a block that isn't TNT. Lucky!"
     //
     // -->
 
