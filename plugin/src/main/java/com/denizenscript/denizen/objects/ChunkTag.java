@@ -591,7 +591,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @example
         // # Narrates a list of players excluding the original player in the chunk formatted into a readable format.
         // # For example, this can return: "steve, alex, john, and jane".
-        // - narrate "Wow! Look at all these players in the same chunk as you: <player.location.chunk.players.exclude[<player>].parse[name].formatted>!"
+        // - narrate "Wow! Look at all these players in the same chunk as you: <player.location.chunk.players.exclude[<player>].formatted>!"
         // -->
         tagProcessor.registerTag(ListTag.class, "players", (attribute, object) -> {
             ListTag entities = new ListTag();
@@ -880,7 +880,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @tags
         // <ChunkTag.is_loaded>
         // @example
-        // - adjust <chunk[10,10]> load
+        // - adjust <player.location.chunk.add[100,0]> load
         // -->
         if (mechanism.matches("load")) {
             getChunk().load(true);
