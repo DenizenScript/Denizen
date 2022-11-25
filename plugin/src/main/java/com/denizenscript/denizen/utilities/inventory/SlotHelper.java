@@ -54,6 +54,9 @@ public class SlotHelper {
         if (item.equals(inventory.getHelmet())) {
             return HELMET;
         }
+        if (item.equals(inventory.getItemInOffHand())) {
+            return OFFHAND;
+        }
         if (item.equals(inventory.getItemInMainHand())) {
             return inventory.getHeldItemSlot();
         }
@@ -81,6 +84,7 @@ public class SlotHelper {
     // OFFHAND: equivalent to 41
     //
     // Note that some common alternate spellings may be automatically accepted as well.
+    //
     // -->
     public static EquipmentSlot indexToEquipSlot(int index) {
         switch (index) {

@@ -22,8 +22,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     // player item takes damage
     // player <item> takes damage
     //
-    // @Regex ^on player [^\s]+ takes damage$
-    //
     // @Synonyms item durability changes
     //
     // @Group Player
@@ -46,26 +44,13 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // -->
 
+    public PlayerItemTakesDamageScriptEvent() {
+        registerCouldMatcher("player <item> takes damage");
+    }
+
     PlayerItemDamageEvent event;
     ItemTag item;
     LocationTag location;
-
-    public PlayerItemTakesDamageScriptEvent() {
-    }
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(0).equals("player")) {
-            return false;
-        }
-        if (!path.eventArgsLowEqualStartingAt(2, "takes", "damage")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(1))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -95,12 +80,9 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "item":
-                return item;
-            case "damage":
-                return new ElementTag(event.getDamage());
-            case "slot":
-                return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
+            case "item": return item;
+            case "damage": return new ElementTag(event.getDamage());
+            case "slot": return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
         }
         return super.getContext(name);
     }
