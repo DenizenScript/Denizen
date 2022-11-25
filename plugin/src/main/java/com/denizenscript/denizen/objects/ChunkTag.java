@@ -293,8 +293,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // @example
-        // # Narrates "ch@10,10"
-        // - narrate <chunk[5,5,world].add[5,5]>
+        // # Notes the chunk with 10 added onto the X and Z axes of the chunk, making the coordinates "15,15,world".
+        // - note <chunk[5,5,world].add[10,10].cuboid> as:my_new_chunk_cuboid
         // -->
         tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "add", (attribute, object, addCoords) -> {
             List<String> coords = CoreUtilities.split(addCoords.toString(), ',');
@@ -319,8 +319,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // @example
-        // # Narrates "ch@-5,-5,world"
-        // - narrate <chunk[5,5,world].sub[10,10]>
+        // # Notes the chunk with 5 subtracted onto the X and Z axes of the chunk, making the coordinates "-5,-5,world".
+        // - note <chunk[5,5,world].sub[10,10].cuboid> as:my_new_chunk_cuboid
         // -->
         tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "sub", (attribute, object, subCoords) -> {
             List<String> coords = CoreUtilities.split(subCoords.toString(), ',');
@@ -345,6 +345,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns true if the chunk has already been generated.
         // @example
+        // # One way this can return "false" is if the player has been teleported to a location in the chunk while offline
+        // # to a chunk that has not been interacted or have not had a player nearby to generate it.
         // - if <player.location.chunk.is_generated>:
         //     - narrate "The chunk is generated! Woohoo!"
         // - else:
@@ -360,6 +362,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns true if the chunk is currently loaded into memory.
         // @example
+        // # One way this can return "false" is if the player is offline and no other players are nearby to keep the chunk loaded.
         // - if <player.location.chunk.is_loaded>:
         //     - narrate "The chunk is loaded! Yippee!"
         // - else:
@@ -397,9 +400,9 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns a list of plugins that are keeping this chunk loaded.
         // This is related to the <@link command chunkload> command.
         // @example
-        // # Narrates the list of plugin names keeping the player's chunk loaded separated by a comma and a space.
-        // # Example: "Plugins keeping your chunk loaded: Denizen, Citizens"
-        // - narrate "Plugins keeping your chunk loaded: <player.location.chunk.plugin_tickets.parse[name].separated_by[, ]>"
+        // # Narrates the list of plugin names keeping the player's chunk loaded formatted into readable format.
+        // # Example: "Plugins keeping your chunk loaded: Denizen and Citizens".
+        // - narrate "Plugins keeping your chunk loaded: <player.location.chunk.plugin_tickets.parse[name].formatted>"
         // -->
         tagProcessor.registerTag(ListTag.class, "plugin_tickets", (attribute, object) -> {
             if (!object.isLoadedSafe()) {
@@ -420,7 +423,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the x coordinate of the chunk.
         // @example
         // # Narrates the player's chunk's X coordinate.
-        // # For example, if the player was in <chunk[5,10,world]>, the X coordinate would be "5"
+        // # For example, if the player was in <chunk[5,10,world]>, the X coordinate would be "5".
         // - narrate "Your current X chunk coordinate is: <player.location.chunk.x>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "x", (attribute, object) -> {
@@ -434,7 +437,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the z coordinate of the chunk.
         // @example
         // # Narrates the player's chunk's Z coordinate.
-        // # For example, if the player was in <chunk[5,10,world]>, the Z coordinate would be "10"
+        // # For example, if the player was in <chunk[5,10,world]>, the Z coordinate would be "10".
         // - narrate "Your current Z chunk coordinate is: <player.location.chunk.z>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "z", (attribute, object) -> {
@@ -448,7 +451,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the world associated with the chunk.
         // @example
         // # Narrates the name of the player's chunk's associated world.
-        // # For example, if the player was in <chunk[5,10,world]>, the world the chunk is in would be "world"
+        // # For example, if the player was in <chunk[5,10,world]>, the world the chunk is in would be "world".
         // - narrate "The world your chunk is in is: <player.location.chunk.world.name>!"
         // -->
         tagProcessor.registerTag(WorldTag.class, "world", (attribute, object) -> {
@@ -461,8 +464,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a cuboid of this chunk.
         // @example
-        // # Plays the "TOTEM" effect at the player's chunk as a cuboid outlined along the player's Y coordinate.
-        // - playeffect effect:TOTEM at:<player.location.chunk.cuboid.outline_2d[<player.location.y>]> offset:0.0 targets:<player>
+        // # Plays the "flame" effect at the player's chunk as a cuboid outlined along the player's Y coordinate.
+        // - playeffect effect:flame at:<player.location.chunk.cuboid.outline_2d[<player.location.y>]> offset:0.0
         // -->
         tagProcessor.registerTag(CuboidTag.class, "cuboid", (attribute, object) -> {
             int yMin = 0, yMax = 255;
@@ -483,9 +486,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of tile entity locations in the chunk.
         // @example
-        // # Loops though the tile entities found in the player's chunk and narrates the name and location of it.
-        // - foreach <player.location.chunk.tile_entities> as:tile_entity_location:
-        //     - narrate "Found a <[tile_entity_location].material.name> at <[tile_entity_location].simple>!"
+        // # Spawns a debugblock to highlight every tile entity in the chunk.
+        // - debugblock <player.location.chunk.tile_entities>
         // -->
         tagProcessor.registerTag(ListTag.class, "tile_entities", (attribute, object) -> {
             ListTag tiles = new ListTag();
@@ -587,10 +589,9 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of players in the chunk.
         // @example
-        // # Narrates a list of players excluding the player in the chunk separated by a comma and a space.
-        // # For example, this can return: "steve, alex, john, jane".
-        // - define player_list <player.location.chunk.players.exclude[<player>].parse[name].separated_by[, ]>
-        // - narrate "Wow! Look at all these players in the same chunk as you: <[player_list]>!"
+        // # Narrates a list of players excluding the original player in the chunk formatted into a readable format.
+        // # For example, this can return: "steve, alex, john, and jane".
+        // - narrate "Wow! Look at all these players in the same chunk as you: <player.location.chunk.players.exclude[<player>].parse[name].formatted>!"
         // -->
         tagProcessor.registerTag(ListTag.class, "players", (attribute, object) -> {
             ListTag entities = new ListTag();
@@ -635,7 +636,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the average height of the blocks in the chunk.
         // @example
         // # Narrates the average height of each block in the player's chunk rounded.
-        // - narrate "The average height of blocks in this chunks is <player.location.chunk.average_height.round>!"
+        // - narrate "The average height of blocks in this chunk is <player.location.chunk.average_height.round>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "average_height", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
@@ -659,9 +660,14 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Specifying a number will modify the number criteria for determining if it is flat.
         // @example
         // - if <player.location.chunk.is_flat>:
-        //     - narrate "Wow that is a flat chunk!"
+        //     - narrate "Wow! That is a flat chunk!"
         // - else:
         //     - narrate "Watch out! This chunk has a more rugged terrain!"
+        // @example
+        // - if <player.location.chunk.is_flat[4]>:
+        //     - narrate "Wow! This chunk's blocks are all less than 4 blocks apart in height!"
+        // - else:
+        //     - narrate "This chunk's blocks do not meet the criteria of being flat."
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_flat", (attribute, object) -> {
             Chunk chunk = object.getChunkForTag(attribute);
@@ -714,8 +720,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Gets a list of all block locations with a specified flag within the CuboidTag.
         // Searches the internal flag lists, rather than through all possible blocks.
         // @example
-        // - foreach <player.location.chunk.blocks_flagged[my_flag]> as:block:
-        //     - narrate "Found block flagged 'my_flag' at <[block].simple>!"
+        // # Spawns a debugblock to highlight every block in the chunk flagged "my_flag"
+        // - debugblock <player.location.chunk.blocks_flagged[my_flag]>
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "blocks_flagged", (attribute, object, flagNameInput) -> {
             Chunk chunk = object.getChunkForTag(attribute);
@@ -935,7 +941,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // Sets all biomes in the chunk to the given biome.
         // @example
         // - adjust <player.location.chunk> set_all_biomes:<biome[savanna]>
-        // # Allow players to see biome change:
+        // # Allow players to see the biome change:
         // - adjust <player.location.chunk> refresh_chunk
         // -->
         if (mechanism.matches("set_all_biomes") && mechanism.requireObject(BiomeTag.class)) {
