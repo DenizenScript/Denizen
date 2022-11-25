@@ -274,7 +274,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a hex code formatting of this color, like '#ff00ff'.
         // @example
-        // # Narrates "#ff00ff"
+        // # Narrates "#ff00ff".
         // - narrate <color[fuchsia].hex>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "hex", (attribute, object) -> {
@@ -294,7 +294,7 @@ public class ColorTag implements ObjectTag {
         // Highest order bits are red, then green, then lowest is blue.
         // This is a rare special case encoding usually avoided by most systems, but may be necessary for some obscure tools.
         // @example
-        // # Narrates "16711935"
+        // # Narrates "16711935".
         // - narrate <color[fuchsia].rgb_integer>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "rgb_integer", (attribute, object) -> {
@@ -309,7 +309,7 @@ public class ColorTag implements ObjectTag {
         // Highest order bits are alpha, then red, then green, then lowest is blue.
         // This is a rare special case encoding usually avoided by most systems, but may be necessary for some obscure tools.
         // @example
-        // # Narrates "4294902015"
+        // # Narrates "4294902015".
         // - narrate <color[fuchsia].argb_integer>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "argb_integer", (attribute, object) -> {
@@ -322,7 +322,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the red value of this color (0 to 255).
         // @example
-        // # Narrates "255"
+        // # Narrates "255".
         // - narrate <color[fuchsia].red>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "red", (attribute, object) -> {
@@ -335,7 +335,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the green value of this color (0 to 255).
         // @example
-        // # Narrates "0"
+        // # Narrates "0".
         // - narrate <color[fuchsia].green>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "green", (attribute, object) -> {
@@ -348,7 +348,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the blue value of this color (0 to 255).
         // @example
-        // # Narrates "255"
+        // # Narrates "255".
         // - narrate <color[fuchsia].blue>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "blue", (attribute, object) -> {
@@ -361,7 +361,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the alpha value of this color (0 to 255).
         // @example
-        // # Narrates "255"
+        // # Narrates "255".
         // - narrate <color[fuchsia].alpha>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "alpha", (attribute, object) -> {
@@ -375,7 +375,7 @@ public class ColorTag implements ObjectTag {
         // Returns the RGB value of this color.
         // EG, 255,0,255
         // @example
-        // # Narrates "255,0,255"
+        // # Narrates "255,0,255".
         // - narrate <color[fuchsia].rgb>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "rgb", (attribute, object) -> {
@@ -389,7 +389,7 @@ public class ColorTag implements ObjectTag {
         // Returns the RGBA value of this color.
         // EG, 255,0,255,255
         // @example
-        // # Narrates "255,0,255,255"
+        // # Narrates "255,0,255,255".
         // - narrate <color[fuchsia].rgba>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "rgba", (attribute, object) -> {
@@ -402,7 +402,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the hue value of this color (0 to 255).
         // @example
-        // # Narrates "213"
+        // # Narrates "213".
         // - narrate <color[fuchsia].hue>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "hue", (attribute, object) -> {
@@ -415,7 +415,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the saturation value of this color (0 to 255).
         // @example
-        // # Narrates "255"
+        // # Narrates "255".
         // - narrate <color[fuchsia].saturation>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "saturation", (attribute, object) -> {
@@ -428,7 +428,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the brightness value of this color (0 to 255).
         // @example
-        // # Narrates "255"
+        // # Narrates "255".
         // - narrate <color[fuchsia].brightness>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "brightness", (attribute, object) -> {
@@ -442,7 +442,7 @@ public class ColorTag implements ObjectTag {
         // Returns the HSV value of this color.
         // EG, 100,100,255
         // @example
-        // # Narrates "213,255,255"
+        // # Narrates "213,255,255".
         // - narrate <color[fuchsia].hsv>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "hsv", (attribute, object) -> {
@@ -456,8 +456,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different red value (0 to 255).
         // @example
-        // # Narrates "150,0,255"
-        // - narrate <color[fuchsia].with_red[150].rgb>
+        // # Colors the text with a rgb value of "150,0,255", which is a dark purple.
+        // - narrate "<&color[<color[fuchsia].with_red[150]>]>This is fuchsia with a different red value!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_red", (attribute, object) -> {
             return new ColorTag(attribute.getIntParam(), object.green, object.blue, object.alpha);
@@ -469,8 +469,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different green value (0 to 255).
         // @example
-        // # Narrates "255,150,255"
-        // - narrate <color[fuchsia].with_green[150].rgb>
+        // # Colors the text with a rgb value of "255,150,255", which is a light pink.
+        // - narrate "<&color[<color[fuchsia].with_green[150]>]>This is fuchsia with a different green value!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_green", (attribute, object) -> {
             return new ColorTag(object.red, attribute.getIntParam(), object.blue, object.alpha);
@@ -482,8 +482,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different blue value (0 to 255).
         // @example
-        // # Narrates "255,0,150"
-        // - narrate <color[fuchsia].with_blue[150].rgb>
+        // # Colors the text with a rgb value of "255,0,150", which is a hot pink.
+        // - narrate "<&color[<color[fuchsia].with_blue[150]>]>This is fuchsia with a different blue value!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_blue", (attribute, object) -> {
             return new ColorTag(object.red, object.green, attribute.getIntParam(), object.alpha);
@@ -495,8 +495,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different alpha value (0 to 255).
         // @example
-        // # Narrates "255,0,255,150"
-        // - narrate <color[fuchsia].with_alpha[150].rgba>
+        // # Colors the text with a rgb value of "255,0,255,150", which is fuchsia, but transparency does not show up in chat.
+        // - narrate "<&color[<color[fuchsia].with_alpha[150]>]>This is fuchsia with a different alpha value! It does not show in chat though!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_alpha", (attribute, object) -> {
             return new ColorTag(object.red, object.green, object.alpha, attribute.getIntParam());
@@ -508,8 +508,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different hue value (0 to 255).
         // @example
-        // # Narrates "150,255,255"
-        // - narrate <color[fuchsia].with_hue[150].hsv>
+        // # Colors the text with a rgb value of "0,120,255", which is a dark blue.
+        // - narrate "<&color[<color[fuchsia].with_hue[150]>]>This is fuchsia with a different hue!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_hue", (attribute, object) -> {
             int[] HSB = object.toHSB();
@@ -523,8 +523,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different saturation value (0 to 255).
         // @example
-        // # Narrates "213,150,255"
-        // - narrate <color[fuchsia].with_saturation[150].hsv>
+        // # Colors the text with a rgb value of "255,105,253", which is a light pink.
+        // - narrate "<&color[<color[fuchsia].with_saturation[150]>]>This is fuchsia with a different saturation!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_saturation", (attribute, object) -> {
             int[] HSB = object.toHSB();
@@ -538,8 +538,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different brightness value (0 to 255).
         // @example
-        // # Narrates "213,255,150"
-        // - narrate <color[fuchsia].with_brightness[150].hsv>
+        // # Colors the text with a rgb value of "150,0,148", which is a purple.
+        // - narrate "<&color[<color[fuchsia].with_brightness[150]>]>This is fuchsia with a different brightness!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_brightness", (attribute, object) -> {
             int[] HSB = object.toHSB();
@@ -553,10 +553,10 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the name of this color (or red,green,blue if none).
         // @example
-        // # Narrates "fuchsia"
+        // # Narrates "fuchsia".
         // - narrate <color[fuchsia].name>
         // @example
-        // # Narrates "255,105,184"
+        // # Narrates "255,105,184".
         // - narrate <color[#ff69b8].name>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "name", (attribute, object) -> {
@@ -569,7 +569,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the color that results if you mix this color with another.
         // @example
-        // # Narrates "127,127,255", which is a dark purple.
+        // # Narrates "127,127,255", a mix between fuchsia and aqua which appears as a dark purple.
         // - narrate <color[fuchsia].mix[aqua].rgb>
         // -->
         tagProcessor.registerTag(ColorTag.class, ColorTag.class, "mix", (attribute, object, mixWith) -> { // Temporarily non-static because the input could be 'random'
