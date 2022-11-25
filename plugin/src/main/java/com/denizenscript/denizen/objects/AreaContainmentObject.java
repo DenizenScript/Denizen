@@ -96,6 +96,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns a cuboid approximately representing the maximal bounding box of the area (anything this cuboid does not contain, is also not contained by the area, but not vice versa).
         // For single-member CuboidTags, this tag returns a copy of the cuboid.
+        // @example
+        // # Narrates the cuboids bounding box, which is just the cuboid.
+        // - narrate <cuboid[my_cuboid].bounding_box>
         // -->
         processor.registerTag(CuboidTag.class, "bounding_box", (attribute, area) -> {
             return area.getCuboidBoundary();
@@ -107,6 +110,8 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns WorldTag
         // @description
         // Returns the area's world.
+        // @example
+        // - narrate "The cuboid, 'my_cuboid', is in world: <cuboid[my_cuboid].world.name>!"
         // -->
         processor.registerTag(WorldTag.class, "world", (attribute, area) -> {
             return area.getWorld();
@@ -117,6 +122,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(PlayerTag)
         // @description
         // Gets a list of all players currently within the area.
+        // @example
+        // # Narrates a list of players' names that are within the area separated by a comma and a space.
+        // # For example: "List of players in 'my_cuboid': steve, alex, john, jane"
+        // - narrate "List of players in 'my_cuboid': <cuboid[my_cuboid].players.parse[name].separated_by[, ]>"
         // -->
         processor.registerTag(ListTag.class, "players", (attribute, area) -> {
             ListTag result = new ListTag();
@@ -133,6 +142,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(NPCTag)
         // @description
         // Gets a list of all NPCs currently within the area.
+        // @example
+        // # Narrates a list of NPCs' names that are within the area separated by a comma and a space.
+        // # For example: "List of NPCs in 'my_cuboid': steve, alex, john, jane"
+        // - narrate "List of NPCs in 'my_cuboid': <cuboid[my_cuboid].npcs.parse[name].separated_by[, ]>"
         // -->
         if (Depends.citizens != null) {
             processor.registerTag(ListTag.class, "npcs", (attribute, area) -> {
@@ -152,6 +165,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ListTag(EntityTag)
         // @description
         // Gets a list of all entities currently within the area, with an optional search parameter for the entity.
+        // @example
+        // # Narrates the locations of the entities that match 'axolotl' within the area.
+        // - foreach <cuboid[my_cuboid].entities[axolotl]> as:entity:
+        //     - narrate <[entity].location>
         // -->
         processor.registerTag(ListTag.class, "entities", (attribute, area) -> {
             String matcher = attribute.hasParam() ? attribute.getParam() : null;
@@ -173,6 +190,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all living entities currently within the area.
         // This includes Players, mobs, NPCs, etc., but excludes dropped items, experience orbs, etc.
+        // @example
+        // # Narrates the name of all the living entities within the area.
+        // - foreach <cuboid[my_cuboid].living_entities> as:entity:
+        //      - narrate <[entity].name>
         // -->
         processor.registerTag(ListTag.class, "living_entities", (attribute, area) -> {
             ListTag result = new ListTag();
@@ -189,6 +210,12 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ElementTag(Boolean)
         // @description
         // Returns a boolean indicating whether the specified location is inside this area.
+        // @example
+        // # Checks to see if "my_cuboid" contains the player's location.
+        // - if <cuboid[my_cuboid].contains[<player.location>]>:
+        //      - narrate "It is contained within 'my_cuboid'!"
+        // - else:
+        //      - narrate "It is not contained within 'my_cuboid'!"
         // -->
         processor.registerTag(ElementTag.class, LocationTag.class, "contains", (attribute, area, loc) -> {
             return new ElementTag(area.doesContainLocation(loc));
@@ -200,6 +227,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns each block location within the area.
         // Optionally, specify a material matcher to only return locations with that block type.
+        // @example
+        // # Narrates the locations of blocks that match "*planks" within the area.
+        // - foreach <cuboid[my_cuboid].blocks[*planks]> as:plank:
+        //      - narrate <[plank]>
         // -->
         processor.registerTag(ListTag.class, "blocks", (attribute, area) -> {
             if (attribute.hasParam()) {
@@ -223,20 +254,24 @@ public interface AreaContainmentObject extends ObjectTag {
         // Returns each LocationTag within the area that is safe for players or similar entities to spawn in.
         // Optionally, specify a material matcher to only return locations with that block type.
         // Uses the same spawnable check as <@link tag LocationTag.is_spawnable>
+        // @example
+        // # Spawns a creeper at a random spawnable block within the area.
+        // - define block <cuboid[my_cuboid].spawnable_blocks.random>
+        // - spawn creeper <[block]>
         // -->
         processor.registerTag(ListTag.class, "spawnable_blocks", (attribute, area) -> {
-                NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
-                try {
-                    if (attribute.hasParam()) {
-                        String matcher = attribute.getParam();
-                        Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && new LocationTag(l.getBlock().getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(matcher);
-                        return area.getBlocks(predicate);
-                    }
-                    return area.getBlocks(SpawnableHelper::isSpawnable);
+            NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
+            try {
+                if (attribute.hasParam()) {
+                    String matcher = attribute.getParam();
+                    Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && new LocationTag(l.getBlock().getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(matcher);
+                    return area.getBlocks(predicate);
                 }
-                finally {
-                    NMSHandler.chunkHelper.restoreServerThread(area.getWorld().getWorld());
-                }
+                return area.getBlocks(SpawnableHelper::isSpawnable);
+            }
+            finally {
+                NMSHandler.chunkHelper.restoreServerThread(area.getWorld().getWorld());
+            }
         }, "get_spawnable_blocks");
 
         // <--[tag]
@@ -245,6 +280,10 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all block locations with a specified flag within the area.
         // Searches the internal flag lists, rather than through all possible blocks.
+        // @example
+        // # Narrates the locations of blocks that are flagged "my_flag"
+        // - foreach <cuboid[my_cuboid].blocks_flagged[my_flag]> as:block:
+        //      - narrate <[block].location>
         // -->
         processor.registerTag(ListTag.class, ElementTag.class, "blocks_flagged", (attribute, area, flagName) -> {
             return area.getBlocksFlagged(CoreUtilities.toLowerCase(flagName.toString()), attribute);
@@ -256,6 +295,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Returns each block location on the 3D outer shell of the area.
         // This tag is useful for displaying particles or blocks to mark the boundary of the area.
+        // @example
+        // # Plays the "TOTEM" effect in the shell of the area to the player.
+        // - playeffect effect:TOTEM at:<cuboid[my_cuboid].shell> offset:0 targets:<player>
         // -->
         processor.registerTag(ListTag.class, "shell", (attribute, area) -> {
             return area.getShell();
@@ -266,6 +308,12 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether this area is fully inside another cuboid.
+        // @example
+        // # Checks to see if "my_cuboid" is within "my_bigger_cuboid".
+        // - if <cuboid[my_cuboid].is_within[<cuboid[my_bigger_cuboid]>]>:
+        //      - narrate "It is fully within 'my_bigger_cuboid'!"
+        // - else:
+        //      - narrate "It is not fully within 'my_bigger_cuboid'!"
         // -->
         processor.registerTag(ElementTag.class, CuboidTag.class, "is_within", (attribute, area, cub2) -> {
             CuboidTag cuboid = area instanceof CuboidTag ? (CuboidTag) area : area.getCuboidBoundary();
@@ -302,6 +350,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @returns AreaObject
         // @description
         // Returns a copy of the area, with the specified world.
+        // @example
+        // # Notes a copy of "my_cuboid" but with the world "world_the_end".
+        // - note my_new_cuboid <cuboid[my_cuboid].with_world[world_the_end]>
         // -->
         processor.registerTag(type, WorldTag.class, "with_world", (attribute, area, world) -> {
             return (T) area.withWorld(world);
