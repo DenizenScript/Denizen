@@ -123,9 +123,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all players currently within the area.
         // @example
-        // # Narrates a list of players' names that are within the area separated by a comma and a space.
+        // # Narrates a list of players' names that are within the area.
         // # For example: "List of players in 'my_cuboid': steve, alex, john, jane"
-        // - narrate "List of players in 'my_cuboid': <cuboid[my_cuboid].players.parse[name].separated_by[, ]>"
+        // - narrate "List of players in 'my_cuboid': <cuboid[my_cuboid].players.formatted>"
         // -->
         processor.registerTag(ListTag.class, "players", (attribute, area) -> {
             ListTag result = new ListTag();
@@ -143,9 +143,9 @@ public interface AreaContainmentObject extends ObjectTag {
         // @description
         // Gets a list of all NPCs currently within the area.
         // @example
-        // # Narrates a list of NPCs' names that are within the area separated by a comma and a space.
+        // # Narrates a list of NPCs' names that are within the area.
         // # For example: "List of NPCs in 'my_cuboid': steve, alex, john, jane"
-        // - narrate "List of NPCs in 'my_cuboid': <cuboid[my_cuboid].npcs.parse[name].separated_by[, ]>"
+        // - narrate "List of NPCs in 'my_cuboid': <cuboid[my_cuboid].npcs.formatted>"
         // -->
         if (Depends.citizens != null) {
             processor.registerTag(ListTag.class, "npcs", (attribute, area) -> {

@@ -1,33 +1,35 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HurtCommand extends AbstractCommand {
 
     public HurtCommand() {
         setName("hurt");
-        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>)");
-        setRequiredArguments(0, 5);
+        setSyntax("hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>/<location>)");
+        setRequiredArguments(0, 4);
         isProcedural = false;
+        addRemappedPrefixes("source", "s");
+        autoCompile();
     }
 
     // <--[command]
     // @Name Hurt
-    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>)
+    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>) (source:<entity>/<location>)
     // @Required 0
     // @Maximum 4
     // @Short Hurts the player or a list of entities.
@@ -43,6 +45,7 @@ public class HurtCommand extends AbstractCommand {
     // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage (half a heart).
     //
     // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker.
+    // If using a block-type cause such as "contact", you *must* specify (source:<location>) to set that block location as the attacker. The block can be any block, even just "<player.location>" (as long as the player in inside a world).
     //
     // You may also specify a damage cause to fire a proper damage event with the given cause, only doing the damage if the event wasn't cancelled.
     // Calculates the 'final damage' rather than using the raw damage input number. See <@link language damage cause> for damage causes.
@@ -70,72 +73,45 @@ public class HurtCommand extends AbstractCommand {
     // - hurt <npc.health> <npc> cause:CUSTOM source:<player>
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("amount")
-                    && (arg.matchesFloat()
-                    || arg.matchesInteger())) {
-                scriptEntry.addObject("amount", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("source")
-                    && arg.matchesPrefix("source", "s")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                scriptEntry.addObject("source", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(EntityTag.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("cause")
-                    && arg.matchesEnum(EntityDamageEvent.DamageCause.class)) {
-                scriptEntry.addObject("cause", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("source_once")
-                    && arg.matches("source_once")) {
-                BukkitImplDeprecations.hurtSourceOne.warn(scriptEntry);
-                scriptEntry.addObject("source_once", new ElementTag(true));
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("source") @ArgPrefixed @ArgDefaultNull ObjectTag source,
+                                   @ArgName("cause") @ArgPrefixed @ArgDefaultNull EntityDamageEvent.DamageCause cause,
+                                   @ArgName("amount") @ArgLinear @ArgDefaultText("1") ObjectTag amountObj,
+                                   @ArgName("entities") @ArgLinear @ArgDefaultNull ObjectTag entitiesObj) {
+        if (!amountObj.asElement().isDouble()) { // Compensate for legacy out-of-order args
+            ObjectTag swapEntities = entitiesObj;
+            entitiesObj = amountObj;
+            if (swapEntities != null && swapEntities.asElement().isDouble()) {
+                amountObj = swapEntities;
             }
             else {
-                arg.reportUnhandled();
+                amountObj = new ElementTag(1.0d);
             }
         }
-        if (!scriptEntry.hasObject("amount")) {
-            scriptEntry.addObject("amount", new ElementTag(1.0d));
-        }
-        if (!scriptEntry.hasObject("entities")) {
-            List<EntityTag> entities = new ArrayList<>();
-            if (Utilities.getEntryPlayer(scriptEntry) != null) {
-                entities.add(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
+        List<EntityTag> entities = entitiesObj == null ? null : entitiesObj.asType(ListTag.class, scriptEntry.context).filter(EntityTag.class, scriptEntry.context);
+        if (entities == null) {
+            entities = Utilities.entryDefaultEntityList(scriptEntry, true);
+            if (entities == null) {
+                throw new InvalidArgumentsRuntimeException("No valid target entities found.");
             }
-            else if (Utilities.getEntryNPC(scriptEntry) != null) {
-                entities.add(Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
-            }
-            else {
-                throw new InvalidArgumentsException("No valid target entities found.");
-            }
-            scriptEntry.addObject("entities", entities);
         }
-
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        EntityTag source = scriptEntry.getObjectTag("source");
-        ElementTag amountElement = scriptEntry.getElement("amount");
-        ElementTag cause = scriptEntry.getElement("cause");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), amountElement, db("entities", entities), cause, source);
+        EntityTag sourceEntity = null;
+        LocationTag sourceLocation = null;
+        if (source != null) {
+            if (source.shouldBeType(LocationTag.class)) {
+                sourceLocation = source.asType(LocationTag.class, scriptEntry.context);
+            }
+            if (source.shouldBeType(EntityTag.class)) {
+                sourceEntity = source.asType(EntityTag.class, scriptEntry.context);
+            }
         }
-        double amount = amountElement.asDouble();
+        double amount = amountObj.asElement().asDouble();
         for (EntityTag entity : entities) {
             if (entity.getLivingEntity() == null) {
                 Debug.echoDebug(scriptEntry, entity + " is not a living entity!");
                 continue;
             }
-            EntityDamageEvent.DamageCause causeEnum = cause == null ? null : EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase());
-            NMSHandler.entityHelper.damage(entity.getLivingEntity(), (float) amount, source == null ? null : source.getBukkitEntity(), causeEnum);
+            NMSHandler.entityHelper.damage(entity.getLivingEntity(), (float) amount, sourceEntity, sourceLocation, cause);
         }
     }
 }

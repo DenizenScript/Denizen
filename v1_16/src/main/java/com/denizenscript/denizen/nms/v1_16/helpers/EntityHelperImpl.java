@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -21,7 +22,6 @@ import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -490,13 +490,14 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(LivingEntity target, float amount, EntityTag source, Location sourceLoc, EntityDamageEvent.DamageCause cause) {
         if (target == null) {
             return;
         }
         EntityLiving nmsTarget = ((CraftLivingEntity) target).getHandle();
-        net.minecraft.server.v1_16_R3.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
+        net.minecraft.server.v1_16_R3.Entity nmsSource = source == null ? null : ((CraftEntity) source.getBukkitEntity()).getHandle();
         CraftEventFactory.entityDamage = nmsSource;
+        CraftEventFactory.blockDamage = sourceLoc == null ? null : sourceLoc.getBlock();
         try {
             DamageSource src = DamageSource.GENERIC;
             if (nmsSource != null) {
@@ -594,7 +595,7 @@ public class EntityHelperImpl extends EntityHelper {
                         break;
                     //case SUICIDE:
                     default:
-                        EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
+                        EntityDamageEvent ede = fireFakeDamageEvent(target, source, sourceLoc, cause, amount);
                         if (ede.isCancelled()) {
                             return;
                         }

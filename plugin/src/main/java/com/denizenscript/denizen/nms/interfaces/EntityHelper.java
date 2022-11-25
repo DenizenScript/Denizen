@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.meta.MapMeta;
@@ -388,13 +389,22 @@ public abstract class EntityHelper {
 
     public abstract void setEndermanAngry(Entity entity, boolean angry);
 
-    public static EntityDamageEvent fireFakeDamageEvent(Entity target, Entity source, EntityDamageEvent.DamageCause cause, float amount) {
-        EntityDamageEvent ede = source == null ? new EntityDamageEvent(target, cause, amount) : new EntityDamageByEntityEvent(source, target, cause, amount);
+    public static EntityDamageEvent fireFakeDamageEvent(Entity target, EntityTag source, Location sourceLoc, EntityDamageEvent.DamageCause cause, float amount) {
+        EntityDamageEvent ede;
+        if (source != null) {
+            ede = new EntityDamageByEntityEvent(source.getBukkitEntity(), target, cause, amount);
+        }
+        else if (sourceLoc != null) {
+            ede = new EntityDamageByBlockEvent(sourceLoc.getBlock(), target, cause, amount);
+        }
+        else {
+            ede = new EntityDamageEvent(target, cause, amount);
+        }
         Bukkit.getPluginManager().callEvent(ede);
         return ede;
     }
 
-    public abstract void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause);
+    public abstract void damage(LivingEntity target, float amount, EntityTag source, Location sourceLoc, EntityDamageEvent.DamageCause cause);
 
     public void setLastHurtBy(LivingEntity mob, LivingEntity damager) {
         throw new UnsupportedOperationException();

@@ -141,9 +141,6 @@ public class BukkitImplDeprecations {
     // Added 2020/04/16.
     public static Warning entityStandingOn = new SlowWarning("entityStandingOn", pointlessSubtagPrefix + "entity.location.standing_on is now just entity.standing_on.");
 
-    // Added 2021/05/02.
-    public static Warning hurtSourceOne = new SlowWarning("hurtSourceOne", "The 'hurt' command's 'source_once' argument is deprecated due to being now irrelevant thanks to the new NMS backing for the hurt command.");
-
     // Added 2021/05/05.
     public static Warning materialLit = new SlowWarning("materialLit", "The MaterialTag property 'lit' is deprecated in favor of 'switched'.");
     public static Warning materialCampfire = new SlowWarning("materialCampfire", "The MaterialTag property 'campfire' are deprecated in favor of 'type'.");

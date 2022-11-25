@@ -60,7 +60,6 @@ import org.bukkit.craftbukkit.v1_18_R2.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -672,18 +671,19 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void damage(LivingEntity target, float amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(LivingEntity target, float amount, EntityTag source, Location sourceLoc, EntityDamageEvent.DamageCause cause) {
         if (target == null) {
             return;
         }
         net.minecraft.world.entity.LivingEntity nmsTarget = ((CraftLivingEntity) target).getHandle();
-        net.minecraft.world.entity.Entity nmsSource = source == null ? null : ((CraftEntity) source).getHandle();
+        net.minecraft.world.entity.Entity nmsSource = source == null ? null : ((CraftEntity) source.getBukkitEntity()).getHandle();
         CraftEventFactory.entityDamage = nmsSource;
+        CraftEventFactory.blockDamage = sourceLoc == null ? null : sourceLoc.getBlock();
         try {
             DamageSource src = getSourceFor(nmsSource, cause);
             if (src instanceof FakeDamageSrc) {
                 src = ((FakeDamageSrc) src).real;
-                EntityDamageEvent ede = fireFakeDamageEvent(target, source, cause, amount);
+                EntityDamageEvent ede = fireFakeDamageEvent(target, source, sourceLoc, cause, amount);
                 if (ede.isCancelled()) {
                     return;
                 }
