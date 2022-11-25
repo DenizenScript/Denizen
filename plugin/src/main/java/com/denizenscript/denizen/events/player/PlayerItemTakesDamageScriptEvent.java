@@ -64,6 +64,16 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
+    public ObjectTag getContext(String name) {
+        switch (name) {
+            case "item": return item;
+            case "damage": return new ElementTag(event.getDamage());
+            case "slot": return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
+        }
+        return super.getContext(name);
+    }
+
+    @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
             event.setDamage(((ElementTag) determinationObj).asInt());
@@ -75,16 +85,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     @Override
     public BukkitScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
-    }
-
-    @Override
-    public ObjectTag getContext(String name) {
-        switch (name) {
-            case "item": return item;
-            case "damage": return new ElementTag(event.getDamage());
-            case "slot": return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
-        }
-        return super.getContext(name);
     }
 
     @Override
