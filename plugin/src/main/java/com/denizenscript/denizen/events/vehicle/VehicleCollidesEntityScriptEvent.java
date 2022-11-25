@@ -26,7 +26,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Location true
     //
-    // @Switch type:<entity> to only run if the colliding entity matches the EntityTag matcher input.
+    // @Switch type:<entity> to only process the event if the colliding entity matches the EntityTag matcher input.
     //
     // @Cancellable true
     //
@@ -51,7 +51,9 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // on minecart collides with sheep:
     //
     // @Example
+    // # This example disambiguates this event from the "projectile collides with entity" event for specific entity types.
     // on vehicle collides with entity type:creeper:
+    // - announce "A <context.centity.entity_type> collided with a creeper!"
     //
     // -->
 

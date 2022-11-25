@@ -23,7 +23,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Switch using:<hand_type> to only process the event if the player is using the specified hand type (HAND or OFF_HAND).
     // @Switch against:<location> to only process the event if block that this new block is being placed against matches the specified LocationTag matcher.
-    // @Switch type:<material> to only run if the block placed matches the MaterialTag matcher input.
+    // @Switch type:<material> to only process the event if the block placed matches the MaterialTag matcher input.
     //
     // @Cancellable true
     //
@@ -49,7 +49,9 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // on player places cactus against:sand:
     //
     // @Example
-    // on player places block type:cactus:
+    // # This example process the event only if the player places any block except tnt.
+    // on player places block type:!tnt:
+    // - announce "<player.name> hasn't placed a tnt block. Lucky!"
     //
     // -->
 
