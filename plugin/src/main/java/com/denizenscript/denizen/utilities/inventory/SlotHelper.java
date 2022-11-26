@@ -57,6 +57,9 @@ public class SlotHelper {
         if (item.equals(inventory.getItemInMainHand())) {
             return inventory.getHeldItemSlot();
         }
+        if (item.equals(inventory.getItemInOffHand())) {
+            return OFFHAND;
+        }
         ItemStack[] contents = inventory.getContents();
         for (int i = 0; i < contents.length; i++) {
             if (item.equals(contents[i])) {
@@ -81,6 +84,7 @@ public class SlotHelper {
     // OFFHAND: equivalent to 41
     //
     // Note that some common alternate spellings may be automatically accepted as well.
+    //
     // -->
     public static EquipmentSlot indexToEquipSlot(int index) {
         switch (index) {

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -19,8 +20,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // player mends item
     // player mends <item>
     //
-    // @Regex ^on player mends [^\s]+$
-    //
     // @Group Player
     //
     // @Location true
@@ -33,6 +32,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // <context.item> returns the item that is repaired.
     // <context.repair_amount> returns how much durability the item recovers.
     // <context.xp_orb> returns the XP orb that triggered the event.
+    // <context.slot> returns the slot of the item that has been repaired. This value is a bit of a hack and is not reliable.
     //
     // @Determine
     // ElementTag(Number) to set the amount of durability the item recovers.
@@ -42,22 +42,12 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerMendsItemScriptEvent() {
+        registerCouldMatcher("player mends <item>");
     }
 
-    public ItemTag item;
     public PlayerItemMendEvent event;
+    public ItemTag item;
     public LocationTag location;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player mends")) {
-            return false;
-        }
-        if (!couldMatchItem(path.eventArgLowerAt(2))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -68,6 +58,17 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         return super.matches(path);
+    }
+
+    @Override
+    public ObjectTag getContext(String name) {
+        switch (name) {
+            case "item": return item;
+            case "repair_amount": return new ElementTag(event.getRepairAmount());
+            case "xp_orb": return new EntityTag(event.getExperienceOrb());
+            case "slot": return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
+        }
+        return super.getContext(name);
     }
 
     @Override
@@ -82,19 +83,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
-    }
-
-    @Override
-    public ObjectTag getContext(String name) {
-        switch (name) {
-            case "item":
-                return item;
-            case "repair_amount":
-                return new ElementTag(event.getRepairAmount());
-            case "xp_orb":
-                return new EntityTag(event.getExperienceOrb());
-        }
-        return super.getContext(name);
     }
 
     @EventHandler
