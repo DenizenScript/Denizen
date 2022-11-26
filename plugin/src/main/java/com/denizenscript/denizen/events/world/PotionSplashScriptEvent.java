@@ -49,7 +49,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     // # This example sets the intensity of the first affected entity to 0.6.
     // on potion splashes:
     // - if <context.entities.any>:
-    //      - determine INTENSITY:[entity=<context.entities.first>;intensity:0.6]
+    //      - determine INTENSITY:[entity=<context.entities.first>;intensity=0.6]
     //
     // -->
 
@@ -77,10 +77,22 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity": return new EntityTag(event.getEntity());
-            case "entities": return getEntities();
             case "location": return location;
             case "potion": return potion;
-            case "intensity": return getIntensity();
+            case "entities":
+                ListTag entities = new ListTag();
+                for (Entity e : event.getAffectedEntities()) {
+                    entities.addObject(new EntityTag(e).getDenizenObject());
+                }
+                return entities;
+            case "intensity":
+                ListTag intensity = new ListTag();
+                for (Entity e : event.getAffectedEntities()) {
+                    if (e instanceof LivingEntity) {
+                        intensity.addObject(intensityToMap((LivingEntity) e));
+                    }
+                }
+                return intensity;
         }
         return super.getContext(name);
     }
@@ -121,24 +133,6 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
         location = new LocationTag(event.getEntity().getLocation());
         this.event = event;
         fire(event);
-    }
-
-    public ListTag getEntities() {
-        ListTag entities = new ListTag();
-        for (Entity e : event.getAffectedEntities()) {
-            entities.addObject(new EntityTag(e).getDenizenObject());
-        }
-        return entities;
-    }
-
-    public ListTag getIntensity() {
-        ListTag intensity = new ListTag();
-        for (Entity e : event.getAffectedEntities()) {
-            if (e instanceof LivingEntity) {
-                intensity.addObject(intensityToMap((LivingEntity) e));
-            }
-        }
-        return intensity;
     }
 
     public MapTag intensityToMap(LivingEntity entity) {
