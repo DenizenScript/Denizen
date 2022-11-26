@@ -6,11 +6,14 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import org.bukkit.ChatColor;
 
 import java.util.List;
 
 public class BukkitListExtensions {
+
+    public static AsciiMatcher LETTERS = new AsciiMatcher(AsciiMatcher.LETTERS_UPPER + AsciiMatcher.LETTERS_LOWER);
 
     public static void register() {
 
@@ -66,12 +69,12 @@ public class BukkitListExtensions {
                     }
                 }
                 if (!handled) {
-                    if (object instanceof ElementTag) {
-                        output.append(val.replaceAll("\\w+@", ""));
+                    String raw = ChatColor.stripColor(DenizenCore.implementation.applyDebugColors(object.debuggable()));
+                    int at = raw.indexOf('@');
+                    if (at != -1 && LETTERS.isOnlyMatches(raw.substring(0, at))) {
+                        raw = raw.substring(at + 1);
                     }
-                    else {
-                        output.append(ChatColor.stripColor(DenizenCore.implementation.applyDebugColors(object.debuggable())));
-                    }
+                    output.append(raw);
                 }
                 if (i == list.size() - 2) {
                     output.append(i == 0 ? " and " : ", and ");
