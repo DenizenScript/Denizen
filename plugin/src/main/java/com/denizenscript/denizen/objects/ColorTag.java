@@ -272,7 +272,7 @@ public class ColorTag implements ObjectTag {
         // @attribute <ColorTag.hex>
         // @returns ElementTag
         // @description
-        // Returns a hex code formatting of this color, like '#ff00ff'.
+        // Returns a hex code formatting of this color.
         // @example
         // # Narrates "#ff00ff".
         // - narrate <color[fuchsia].hex>
@@ -293,9 +293,6 @@ public class ColorTag implements ObjectTag {
         // Returns the Red, Green, and Blue values of this ColorTag as an integer number, equivalent to an integer reparse of <@link tag ColorTag.hex>.
         // Highest order bits are red, then green, then lowest is blue.
         // This is a rare special case encoding usually avoided by most systems, but may be necessary for some obscure tools.
-        // @example
-        // # Narrates "16711935".
-        // - narrate <color[fuchsia].rgb_integer>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "rgb_integer", (attribute, object) -> {
             return new ElementTag((object.red << 16) | (object.green << 8) | (object.blue));
@@ -308,9 +305,6 @@ public class ColorTag implements ObjectTag {
         // Returns the Alpha, Red, Green, and Blue values of this ColorTag as an integer number, equivalent to an integer reparse of <@link tag ColorTag.hex>.
         // Highest order bits are alpha, then red, then green, then lowest is blue.
         // This is a rare special case encoding usually avoided by most systems, but may be necessary for some obscure tools.
-        // @example
-        // # Narrates "4294902015".
-        // - narrate <color[fuchsia].argb_integer>
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "argb_integer", (attribute, object) -> {
             return new ElementTag(((long) object.alpha << 24L) | ((long) object.red << 16L) | ((long) object.green << 8L) | ((long) object.blue));
@@ -373,7 +367,6 @@ public class ColorTag implements ObjectTag {
         // @returns ElementTag
         // @description
         // Returns the RGB value of this color.
-        // EG, 255,0,255
         // @example
         // # Narrates "255,0,255".
         // - narrate <color[fuchsia].rgb>
@@ -387,7 +380,6 @@ public class ColorTag implements ObjectTag {
         // @returns ElementTag
         // @description
         // Returns the RGBA value of this color.
-        // EG, 255,0,255,255
         // @example
         // # Narrates "255,0,255,255".
         // - narrate <color[fuchsia].rgba>
@@ -440,7 +432,6 @@ public class ColorTag implements ObjectTag {
         // @returns ElementTag
         // @description
         // Returns the HSV value of this color.
-        // EG, 100,100,255
         // @example
         // # Narrates "213,255,255".
         // - narrate <color[fuchsia].hsv>
@@ -495,8 +486,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different alpha value (0 to 255).
         // @example
-        // # Colors the text with a rgb value of "255,0,255,150", which is fuchsia, but transparency does not show up in chat.
-        // - narrate "<&color[<color[fuchsia].with_alpha[150]>]>This is fuchsia with a different alpha value! It does not show in chat though!"
+        // # Narrates "213,255,255,150".
+        // - narrate <color[fuchsia].with_alpha[150].rgba>
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_alpha", (attribute, object) -> {
             return new ColorTag(object.red, object.green, object.alpha, attribute.getIntParam());
@@ -569,8 +560,8 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns the color that results if you mix this color with another.
         // @example
-        // # Narrates "127,127,255", a mix between fuchsia and aqua which appears as a dark purple.
-        // - narrate <color[fuchsia].mix[aqua].rgb>
+        // # Colors the text with a rgb value of "127,127,255", which is a a dark purple.
+        // - narrate "<&color[<color[fuchsia].mix[aqua]>]>This is fuchsia mixed with aqua!"
         // -->
         tagProcessor.registerTag(ColorTag.class, ColorTag.class, "mix", (attribute, object, mixWith) -> { // Temporarily non-static because the input could be 'random'
             return new ColorTag(object.mixWith(mixWith));

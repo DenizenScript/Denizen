@@ -293,8 +293,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // @example
-        // # Notes the chunk with 10 added onto the X and Z axes of the chunk, making the coordinates "15,15,world".
-        // - note <chunk[5,5,world].add[10,10].cuboid> as:my_new_chunk_cuboid
+        // # Loads the chunk with 10 added onto the X and Z axes of the player's chunk, making the coordinates "15,15,world".
+        // - chunkload <player.location.chunk.add[10,10]>
         // -->
         tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "add", (attribute, object, addCoords) -> {
             List<String> coords = CoreUtilities.split(addCoords.toString(), ',');
@@ -319,8 +319,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // @example
-        // # Notes the chunk with 5 subtracted onto the X and Z axes of the chunk, making the coordinates "-5,-5,world".
-        // - note <chunk[5,5,world].sub[10,10].cuboid> as:my_new_chunk_cuboid
+        // # Loads the chunk with 10 subtracted onto the X and Z axes of the player's chunk, making the coordinates "-5,-5,world".
+        // - chunkload <chunk[5,5,world].sub[10,10]>
         // -->
         tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "sub", (attribute, object, subCoords) -> {
             List<String> coords = CoreUtilities.split(subCoords.toString(), ',');
@@ -345,12 +345,12 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns true if the chunk has already been generated.
         // @example
-        // # One way this can return "false" is if the player has been teleported to a location in the chunk while offline
-        // # to a chunk that has not been interacted or have not had a player nearby to generate it.
-        // - if <player.location.chunk.is_generated>:
-        //     - narrate "The chunk is generated! Woohoo!"
-        // - else:
-        //     - narrate "Hm, the chunk must not have generated yet!"
+        // # Loops though the chunks surrounding the player in a 20x20 radius and loads the chunk if it has not been generated yet.
+        // # Loading the chunk will generate it if it has not been generated already.
+        // - repeat 20 from:-10 as:x:
+        //     - repeat 20 from:-10 as:z:
+        //         - if !<player.location.chunk.add[<[x]>,<[z]>].is_generated>:
+        //             - chunkload <player.location.chunk.add[<[x]>,<[z]>]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_generated", (attribute, object) -> {
             return new ElementTag(object.getBukkitWorld().isChunkGenerated(object.chunkX, object.chunkZ));
@@ -362,11 +362,11 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns true if the chunk is currently loaded into memory.
         // @example
-        // # One way this can return "false" is if the player is offline and no other players are nearby to keep the chunk loaded.
-        // - if <player.location.chunk.is_loaded>:
-        //     - narrate "The chunk is loaded! Yippee!"
-        // - else:
-        //     - narrate "Hm, the chunk is not loaded yet!"
+        // # Loops though the chunks surrounding the player in a 20x20 radius and loads the chunk if it is not already loaded.
+        // - repeat 20 from:-10 as:x:
+        //     - repeat 20 from:-10 as:z:
+        //         - if !<player.location.chunk.add[<[x]>,<[z]>].is_loaded>:
+        //             - chunkload <player.location.chunk.add[<[x]>,<[z]>]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_loaded", (attribute, object) -> {
             return new ElementTag(object.isLoadedSafe());
@@ -402,7 +402,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @example
         // # Narrates the list of plugin names keeping the player's chunk loaded formatted into readable format.
         // # Example: "Plugins keeping your chunk loaded: Denizen and Citizens".
-        // - narrate "Plugins keeping your chunk loaded: <player.location.chunk.plugin_tickets.parse[name].formatted>"
+        // - narrate "Plugins keeping your chunk loaded: <player.location.chunk.plugin_tickets.formatted>"
         // -->
         tagProcessor.registerTag(ListTag.class, "plugin_tickets", (attribute, object) -> {
             if (!object.isLoadedSafe()) {
@@ -695,8 +695,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns a list of the highest non-air surface blocks in the chunk.
         // @example
-        // # Spawns a creeper at a random surface block and adds 2 on the Y axis to prevent the creeper from suffocating.
-        // - spawn creeper <player.location.chunk.surface_blocks.random.add[0,2,0]>
+        // # Spawns a creeper above a random surface block to prevent the creeper from suffocating.
+        // - spawn creeper <player.location.chunk.surface_blocks.random.above>
         // -->
         tagProcessor.registerTag(ListTag.class, "surface_blocks", (attribute, object) -> {
             ListTag surface_blocks = new ListTag();
@@ -815,7 +815,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @tags
         // <ChunkTag.is_loaded>
         // @example
-        // - adjust <player.location.chunk> unload
+        // - adjust <player.location.chunk.add[20,20]> unload
         // -->
         if (mechanism.matches("unload")) {
             getBukkitWorld().unloadChunk(getX(), getZ(), true);
@@ -830,7 +830,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @tags
         // <chunk.is_loaded>
         // @example
-        // - adjust <player.location.chunk> unload_without_saving
+        // - adjust <player.location.chunk.add[20,20]> unload_without_saving
         // -->
         if (mechanism.matches("unload_without_saving")) {
             getBukkitWorld().unloadChunk(getX(), getZ(), false);
