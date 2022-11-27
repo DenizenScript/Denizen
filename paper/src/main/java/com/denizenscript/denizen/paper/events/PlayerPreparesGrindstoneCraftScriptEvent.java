@@ -18,7 +18,6 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     // <--[event]
     // @Events
-    // player prepares grindstone craft item
     // player prepares grindstone craft <item>
     //
     // @Group Player
