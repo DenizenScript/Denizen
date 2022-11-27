@@ -11,7 +11,8 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.GrindstoneInventory;
+import org.bukkit.inventory.Inventory;
 
 public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -46,7 +47,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     public PrepareResultEvent event;
     public ItemTag item;
-    public InventoryTag inventory;
+    public Inventory inventory;
     public PlayerTag player;
 
     @Override
@@ -54,7 +55,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
         if (!item.tryAdvancedMatcher(path.eventArgLowerAt(4))) {
             return false;
         }
-        if (!runInCheck(path, inventory.getInventory().getLocation())) {
+        if (!runInCheck(path, inventory.getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -76,7 +77,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "inventory": return inventory;
+            case "inventory": return InventoryTag.mirrorBukkitInventory(inventory);
             case "result": return new ItemTag(event.getResult());
         }
         return super.getContext(name);
@@ -88,15 +89,15 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     }
 
     @EventHandler
-    public void onPlayerPreparesGrindStoneCraft(PrepareResultEvent event) {
-        inventory = InventoryTag.mirrorBukkitInventory(event.getInventory());
-        if ((inventory.getInventoryType() != InventoryType.GRINDSTONE)) {
+    public void onPlayerPreparesGrindstoneCraft(PrepareResultEvent event) {
+        inventory = event.getInventory();
+        if (!(inventory instanceof GrindstoneInventory)) {
             return;
         }
-        if (event.getInventory().getViewers().isEmpty()) {
+        if (inventory.getViewers().isEmpty()) {
             return;
         }
-        HumanEntity humanEntity = inventory.getInventory().getViewers().get(0);
+        HumanEntity humanEntity = inventory.getViewers().get(0);
         if (EntityTag.isNPC(humanEntity)) {
             return;
         }
