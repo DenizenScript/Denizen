@@ -25,6 +25,8 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     //
     // @Location true
     //
+    // @Plugin Paper
+    //
     // @Triggers when a player prepares to grind an item.
     //
     // @Context
@@ -37,6 +39,11 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     // @Player Always.
     //
     // @Warning The player doing the grinding is estimated and may be inaccurate.
+    //
+    // @Examples
+    // This example removes also the cursed binding_curse enchantment from the item.
+    // on player prepares grindstone craft item:
+    // - determine result:<context.result.with[remove_enchantments=binding_curse]>
     //
     // -->
 
