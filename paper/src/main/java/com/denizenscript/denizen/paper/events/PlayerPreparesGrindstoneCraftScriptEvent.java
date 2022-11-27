@@ -22,6 +22,8 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     //
     // @Group Player
     //
+    // @Location true
+    //
     // @Triggers when a player prepares to grind an item.
     //
     // @Context
@@ -49,7 +51,10 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(4))) {
+            return false;
+        }
+        if (!runInCheck(path, inventory.getInventory().getLocation())) {
             return false;
         }
         return super.matches(path);
