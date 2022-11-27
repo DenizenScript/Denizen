@@ -52,16 +52,14 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     }
 
     public PrepareResultEvent event;
-    public ItemTag item;
-    public Inventory inventory;
     public PlayerTag player;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(4))) {
+        if (!new ItemTag(event.getResult()).tryAdvancedMatcher(path.eventArgLowerAt(4))) {
             return false;
         }
-        if (!runInCheck(path, inventory.getLocation())) {
+        if (!runInCheck(path, event.getInventory().getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -83,7 +81,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "inventory": return InventoryTag.mirrorBukkitInventory(inventory);
+            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getInventory());
             case "result": return new ItemTag(event.getResult());
         }
         return super.getContext(name);
@@ -96,19 +94,17 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     @EventHandler
     public void onPlayerPreparesGrindstoneCraft(PrepareResultEvent event) {
-        inventory = event.getInventory();
-        if (!(inventory instanceof GrindstoneInventory)) {
+        if (!(event.getInventory() instanceof GrindstoneInventory)) {
             return;
         }
-        if (inventory.getViewers().isEmpty()) {
+        if (event.getViewers().isEmpty()) {
             return;
         }
-        HumanEntity humanEntity = inventory.getViewers().get(0);
+        HumanEntity humanEntity = event.getViewers().get(0);
         if (EntityTag.isNPC(humanEntity)) {
             return;
         }
         player = EntityTag.getPlayerFrom(humanEntity);
-        item = new ItemTag(event.getResult());
         this.event = event;
         fire(event);
     }
