@@ -233,7 +233,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public boolean showSignEditor(Player player, Location location) {
+    public void showSignEditor(Player player, Location location) {
         if (location == null) {
             LocationTag fakeSign = new LocationTag(player.getLocation());
             fakeSign.setY(0);
@@ -241,7 +241,7 @@ public class PacketHelperImpl implements PacketHelper {
             BlockPosition pos = new BlockPosition(fakeSign.getX(), 0, fakeSign.getZ());
             ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.fakeSignExpected = pos;
             sendPacket(player, new PacketPlayOutOpenSignEditor(pos));
-            return true;
+            return;
         }
         TileEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPosition(location.getBlockX(),
                 location.getBlockY(), location.getBlockZ()));
@@ -252,10 +252,6 @@ public class PacketHelperImpl implements PacketHelper {
             sign.isEditable = true;
             sign.a((EntityHuman) ((CraftPlayer) player).getHandle());
             sendPacket(player, new PacketPlayOutOpenSignEditor(sign.getPosition()));
-            return true;
-        }
-        else {
-            return false;
         }
     }
 

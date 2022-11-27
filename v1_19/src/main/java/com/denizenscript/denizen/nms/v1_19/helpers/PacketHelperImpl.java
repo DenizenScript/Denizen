@@ -43,9 +43,7 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
@@ -53,7 +51,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
@@ -266,17 +263,13 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public boolean showSignEditor(Player player, Location location) {
-        if (location == null) {
-            LocationTag fakeSign = new LocationTag(player.getLocation());
-            fakeSign.setY(0);
-            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
-            BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
-            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
-            send(player, new ClientboundOpenSignEditorPacket(pos));
-            return true;
-        }
-        return false;
+    public void showSignEditor(Player player, Location location) {
+        LocationTag fakeSign = new LocationTag(player.getLocation());
+        fakeSign.setY(0);
+        FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(Material.OAK_WALL_SIGN), new DurationTag(1), true);
+        BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
+        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
+        send(player, new ClientboundOpenSignEditorPacket(pos));
     }
 
     @Override

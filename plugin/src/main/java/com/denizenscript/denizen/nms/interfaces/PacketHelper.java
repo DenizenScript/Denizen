@@ -3,22 +3,21 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.maps.MapImage;
-import org.bukkit.*;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
+import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.WorldBorder;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface PacketHelper {
@@ -82,7 +81,7 @@ public interface PacketHelper {
 
     void resetHealth(Player player);
 
-    boolean showSignEditor(Player player, Location location); // TODO: once minimum version is 1.18 or higher, rename to "showFakeSignEditor" and remove location param
+    void showSignEditor(Player player, Location location); // TODO: once minimum version is 1.18 or higher, change to "showFakeSignEditor" and remove location param
 
     void forceSpectate(Player player, Entity entity);
 
