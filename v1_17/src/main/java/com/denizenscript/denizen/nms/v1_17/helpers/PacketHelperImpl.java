@@ -42,6 +42,8 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
@@ -149,6 +151,11 @@ public class PacketHelperImpl implements PacketHelper {
             }
         }
         send(player, packet);
+    }
+
+    @Override
+    public void respawn(Player player) {
+        ((CraftPlayer) player).getHandle().connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
     }
 
     @Override
@@ -285,13 +292,29 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showFakeSignEditor(Player player) {
-        LocationTag fakeSign = new LocationTag(player.getLocation());
-        fakeSign.setY(0);
-        FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
-        BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
-        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
-        send(player, new ClientboundOpenSignEditorPacket(pos));
+    public boolean showSignEditor(Player player, Location location) {
+        if (location == null) {
+            LocationTag fakeSign = new LocationTag(player.getLocation());
+            fakeSign.setY(0);
+            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
+            BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
+            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
+            send(player, new ClientboundOpenSignEditorPacket(pos));
+            return true;
+        }
+        BlockEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), true);
+        if (tileEntity instanceof SignBlockEntity) {
+            SignBlockEntity sign = (SignBlockEntity) tileEntity;
+            // Prevent client crashing by sending current state of the sign
+            send(player, sign.getUpdatePacket());
+            sign.isEditable = true;
+            sign.setAllowedPlayerEditor(player.getUniqueId());
+            send(player, new ClientboundOpenSignEditorPacket(sign.getBlockPos()));
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override

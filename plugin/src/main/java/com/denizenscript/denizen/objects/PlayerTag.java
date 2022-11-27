@@ -2659,7 +2659,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Forces the player to respawn if they are on the death screen.
         // -->
         if (mechanism.matches("respawn")) {
-            getPlayerEntity().spigot().respawn();
+            NMSHandler.packetHelper.respawn(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3296,11 +3296,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                 }
                 else {
-                    Debug.echoError("'" + split[0] + "' is not a valid decimal number!");
+                    mechanism.echoError("'" + split[0] + "' is not a valid decimal number!");
                 }
             }
             else {
-                getPlayerEntity().sendExperienceChange(getPlayerEntity().getExp());
+                getPlayerEntity().sendExperienceChange(getPlayerEntity().getExp(), getPlayerEntity().getLevel());
             }
         }
 
@@ -3593,7 +3593,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 && mechanism.requireObject(ItemTag.class)) {
             ItemTag book = mechanism.valueAsType(ItemTag.class);
             if (book.getBukkitMaterial() != Material.WRITTEN_BOOK) {
-                Debug.echoError("show_book mechanism must have a book as input.");
+                mechanism.echoError("show_book mechanism must have a written book as input.");
                 return;
             }
             getPlayerEntity().openBook(book.getItemStack());
@@ -3680,8 +3680,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Give no input to make a fake edit interface.
         // -->
         if (mechanism.matches("edit_sign")) {
-            if (mechanism.hasValue()) {
-                if (!mechanism.requireObject(LocationTag.class)) {
+            if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class));
                     return;
                 }
                 BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
@@ -3692,7 +3693,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 getPlayerEntity().openSign((Sign) state);
             }
             else {
-                NMSHandler.packetHelper.showFakeSignEditor(getPlayerEntity());
+                NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
             }
         }
 
@@ -3713,7 +3714,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     NMSHandler.packetHelper.showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
-                    Debug.echoError("Must specify a header and footer to show!");
+                    mechanism.echoError("Must specify a header and footer to show!");
                 }
             }
             else {

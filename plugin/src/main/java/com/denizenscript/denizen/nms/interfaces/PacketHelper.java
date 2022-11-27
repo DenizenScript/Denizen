@@ -4,6 +4,8 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import org.bukkit.*;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -46,6 +48,8 @@ public interface PacketHelper {
 
     void setFieldOfView(Player player, float fov);
 
+    void respawn(Player player);
+
     void setVision(Player player, EntityType entityType);
 
     default void showDemoScreen(Player player) { // TODO: once minimum version is 1.18 or higher, remove from NMS
@@ -78,7 +82,7 @@ public interface PacketHelper {
 
     void resetHealth(Player player);
 
-    void showFakeSignEditor(Player player);
+    boolean showSignEditor(Player player, Location location); // TODO: once minimum version is 1.18 or higher, rename to "showFakeSignEditor" and remove location param
 
     void forceSpectate(Player player, Entity entity);
 

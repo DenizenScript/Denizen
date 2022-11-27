@@ -108,6 +108,12 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
+    public void respawn(Player player) {
+        ((CraftPlayer) player).getHandle().playerConnection.a(
+                new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN));
+    }
+
+    @Override
     public void setVision(Player player, EntityType entityType) {
         final EntityLiving entity;
         if (entityType == EntityType.CREEPER) {
@@ -227,13 +233,30 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showFakeSignEditor(Player player) {
-        LocationTag fakeSign = new LocationTag(player.getLocation());
-        fakeSign.setY(0);
-        FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
-        BlockPosition pos = new BlockPosition(fakeSign.getX(), 0, fakeSign.getZ());
-        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.fakeSignExpected = pos;
-        sendPacket(player, new PacketPlayOutOpenSignEditor(pos));
+    public boolean showSignEditor(Player player, Location location) {
+        if (location == null) {
+            LocationTag fakeSign = new LocationTag(player.getLocation());
+            fakeSign.setY(0);
+            FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN), new DurationTag(1), true);
+            BlockPosition pos = new BlockPosition(fakeSign.getX(), 0, fakeSign.getZ());
+            ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.fakeSignExpected = pos;
+            sendPacket(player, new PacketPlayOutOpenSignEditor(pos));
+            return true;
+        }
+        TileEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPosition(location.getBlockX(),
+                location.getBlockY(), location.getBlockZ()));
+        if (tileEntity instanceof TileEntitySign) {
+            TileEntitySign sign = (TileEntitySign) tileEntity;
+            // Prevent client crashing by sending current state of the sign
+            sendPacket(player, sign.getUpdatePacket());
+            sign.isEditable = true;
+            sign.a((EntityHuman) ((CraftPlayer) player).getHandle());
+            sendPacket(player, new PacketPlayOutOpenSignEditor(sign.getPosition()));
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override
