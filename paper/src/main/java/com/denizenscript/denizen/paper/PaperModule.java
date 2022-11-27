@@ -51,6 +51,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreparesGrindstoneCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
         ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);
