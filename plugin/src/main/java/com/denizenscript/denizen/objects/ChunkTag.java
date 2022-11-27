@@ -293,7 +293,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates added to it.
         // @example
-        // # Loads the chunk with 10 added onto the X and Z axes of the player's chunk, making the coordinates "15,15,world".
+        // # Adds 10 to the X and Z coordinates of the player's current chunk and loads it.
         // - chunkload <player.location.chunk.add[10,10]>
         // -->
         tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "add", (attribute, object, addCoords) -> {
@@ -319,8 +319,8 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the chunk with the specified coordinates subtracted from it.
         // @example
-        // # Loads the chunk with 10 subtracted onto the X and Z axes of the player's chunk, making the coordinates "-5,-5,world".
-        // - chunkload <chunk[5,5,world].sub[10,10]>
+        // # Subtracts 10 from the X and Z coordinates of the player's current chunk and loads it.
+        // - chunkload <player.location.chunk.sub[10,10]>
         // -->
         tagProcessor.registerTag(ChunkTag.class, ElementTag.class, "sub", (attribute, object, subCoords) -> {
             List<String> coords = CoreUtilities.split(subCoords.toString(), ',');

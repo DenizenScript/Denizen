@@ -529,7 +529,7 @@ public class ColorTag implements ObjectTag {
         // @description
         // Returns a copy of this color object with a different brightness value (0 to 255).
         // @example
-        // # Colors the text with a rgb value of "150,0,148", which is a purple.
+        // # Colors the text with a rgb value of "150,0,148", which is a magenta.
         // - narrate "<&color[<color[fuchsia].with_brightness[150]>]>This is fuchsia with a different brightness!"
         // -->
         tagProcessor.registerStaticTag(ColorTag.class, "with_brightness", (attribute, object) -> {
