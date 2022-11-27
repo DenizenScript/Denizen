@@ -123,6 +123,9 @@ public final class NBTUtils {
         else if (clazz.equals(IntArrayTag.class)) {
             return NBTConstants.TYPE_INT_ARRAY;
         }
+        else if (clazz.equals(LongArrayTag.class)) {
+            return NBTConstants.TYPE_LONG_ARRAY;
+        }
         else {
             throw new IllegalArgumentException("Invalid tag class ("
                     + clazz.getName() + ").");
@@ -162,6 +165,8 @@ public final class NBTUtils {
                 return CompoundTag.class;
             case NBTConstants.TYPE_INT_ARRAY:
                 return IntArrayTag.class;
+            case NBTConstants.TYPE_LONG_ARRAY:
+                return LongArrayTag.class;
             default:
                 throw new IllegalArgumentException("Invalid tag type : " + type
                         + ".");
