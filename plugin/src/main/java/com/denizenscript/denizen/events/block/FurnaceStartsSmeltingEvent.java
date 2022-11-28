@@ -77,7 +77,7 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
             case "location": return location;
             case "item": return item;
             case "recipe_id": return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
-            case "total_cook_time": return new DurationTag(event.getTotalCookTime());
+            case "total_cook_time": return new DurationTag((long) event.getTotalCookTime());
         }
         return super.getContext(name);
     }
