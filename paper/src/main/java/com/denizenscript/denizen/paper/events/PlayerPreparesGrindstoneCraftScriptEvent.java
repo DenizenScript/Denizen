@@ -39,8 +39,8 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     //
     // @Warning The player doing the grinding is estimated and may be inaccurate.
     //
-    // @Examples
-    // This example removes also the cursed binding_curse enchantment from the item.
+    // @Example
+    // This example removes the usually not removable curse of binding enchantment.
     // on player prepares grindstone craft item:
     // - determine result:<context.result.with[remove_enchantments=binding_curse]>
     //
