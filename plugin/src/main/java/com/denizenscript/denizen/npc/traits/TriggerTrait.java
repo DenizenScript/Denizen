@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 public class TriggerTrait extends Trait implements Listener {
 
     @Persist(value = "enabled", collectionType = HashMap.class)
-    private Map<String, Boolean> enabled = new HashMap<>();
+    public Map<String, Boolean> enabled = new HashMap<>();
     @Persist(value = "properly_set", collectionType = HashMap.class)
     public Map<String, Boolean> properly_set = new HashMap<>();
     @Persist(value = "duration", collectionType = HashMap.class)
@@ -91,6 +91,10 @@ public class TriggerTrait extends Trait implements Listener {
         else {
             return triggerName + " trigger not found!";
         }
+    }
+
+    public boolean triggerNameIsValid(String triggerName) {
+        return enabled.containsKey(triggerName.toUpperCase());
     }
 
     public String toggleTrigger(String triggerName) {

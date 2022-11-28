@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -129,16 +130,16 @@ public class TriggerCommand extends AbstractCommand {
             npc.getCitizen().addTrait(TriggerTrait.class);
         }
         TriggerTrait trait = npc.getCitizen().getOrAddTrait(TriggerTrait.class);
+        if (!trait.triggerNameIsValid(trigger.asString())) {
+            throw new InvalidArgumentsRuntimeException("Invalid trigger name '" + trigger + "' - are you sure you spelled it right?");
+        }
         switch (Toggle.valueOf(toggle.asString().toUpperCase())) {
-
             case TOGGLE:
                 trait.toggleTrigger(trigger.asString());
                 break;
-
             case TRUE:
                 trait.toggleTrigger(trigger.asString(), true);
                 break;
-
             case FALSE:
                 trait.toggleTrigger(trigger.asString(), false);
                 break;
