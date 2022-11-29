@@ -45,13 +45,13 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!item.tryAdvancedMatcher(path.eventArgAt(0))) {
+        if (!path.tryArgObject(0, item)) {
             return false;
         }
-        if (!origin.tryAdvancedMatcher(path.eventArgAt(3))) {
+        if (!path.tryArgObject(3, origin)) {
             return false;
         }
-        if (path.eventArgLowerAt(4).equals("to") && !destination.tryAdvancedMatcher(path.eventArgAt(5))) {
+        if (path.eventArgLowerAt(4).equals("to") && !path.tryArgObject(5, destination)) {
             return false;
         }
         if (!runInCheck(path, origin.getLocation())) {

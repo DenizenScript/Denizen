@@ -61,7 +61,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (path.eventArgLowerAt(2).equals("in") && !world.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (path.eventArgLowerAt(2).equals("in") && !path.tryArgObject(3, world)) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "gamerule", event.getGameRule().getName())) {

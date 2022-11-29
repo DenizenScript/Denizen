@@ -42,7 +42,7 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
 
-        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, material)) {
             return false;
         }
         return super.matches(path);

@@ -107,7 +107,7 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
             pTest = path.eventArgLowerAt(0);
         }
         else if (cmd.equals("shoots")) {
-            if (shooter == null || !shooter.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+            if (shooter == null || !path.tryArgObject(0, shooter)) {
                 return false;
             }
             if (path.eventArgLowerAt(3).equals("with")) {
@@ -120,7 +120,7 @@ public class ProjectileHitsBlockScriptEvent extends BukkitScriptEvent implements
         if (!path.tryObjectSwitch("with", projectile)) {
             return false;
         }
-        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, material)) {
             return false;
         }
         if (!runInCheck(path, location)) {

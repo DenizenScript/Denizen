@@ -42,10 +42,10 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, entity)) {
             return false;
         }
-        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!path.tryArgObject(3, material)) {
             return false;
         }
         if (!runInCheck(path, location)) {

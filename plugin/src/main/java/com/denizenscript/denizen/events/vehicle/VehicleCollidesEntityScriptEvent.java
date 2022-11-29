@@ -66,10 +66,10 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!vehicle.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, vehicle)) {
             return false;
         }
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!path.tryArgObject(3, entity)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

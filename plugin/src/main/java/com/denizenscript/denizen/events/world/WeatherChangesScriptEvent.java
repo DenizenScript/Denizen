@@ -40,7 +40,7 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
         if (!cmd.equals("changes") && !cmd.equals(weather.asString())) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("in") && !world.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (path.eventArgLowerAt(2).equals("in") && !path.tryArgObject(3, world)) {
             return false;
         }
         return super.matches(path);

@@ -50,10 +50,10 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, location)) {
             return false;
         }
-        if  (!item.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if  (!path.tryArgObject(2, item)) {
             return false;
         }
-        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, material)) {
             return false;
         }
         return super.matches(path);

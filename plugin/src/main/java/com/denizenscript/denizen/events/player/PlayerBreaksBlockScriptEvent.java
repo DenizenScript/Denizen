@@ -88,7 +88,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         // Deprecated in favor of with: format
         if (path.eventArgLowerAt(3).equals("with")
-                && !new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()).tryAdvancedMatcher(path.eventArgLowerAt(4))) {
+                && !path.tryArgObject(4, new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
             return false;
         }
         return super.matches(path);

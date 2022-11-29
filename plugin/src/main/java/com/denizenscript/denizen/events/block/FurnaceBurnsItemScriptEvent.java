@@ -43,7 +43,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, item)) {
             return false;
         }
         if (!runInCheck(path, location)) {

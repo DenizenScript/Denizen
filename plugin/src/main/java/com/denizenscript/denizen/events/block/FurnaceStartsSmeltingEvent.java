@@ -56,7 +56,7 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!path.tryArgObject(3, item)) {
             return false;
         }
         return super.matches(path);

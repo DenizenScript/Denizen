@@ -55,7 +55,7 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, entity)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

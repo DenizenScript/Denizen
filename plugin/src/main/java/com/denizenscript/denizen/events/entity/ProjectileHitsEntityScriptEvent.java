@@ -70,10 +70,10 @@ public class ProjectileHitsEntityScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!projectile.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, projectile)) {
             return false;
         }
-        if (!hitEntity.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, hitEntity)) {
             return false;
         }
         if (!path.tryObjectSwitch("shooter", shooter)) {

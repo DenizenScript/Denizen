@@ -47,10 +47,10 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
         if (!runInCheck(path, event.getEntity().getLocation())) {
             return false;
         }
-        if (!projectile.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, projectile)) {
             return false;
         }
-        if (!collidedWith.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!path.tryArgObject(3, collidedWith)) {
             return false;
         }
         return super.matches(path);

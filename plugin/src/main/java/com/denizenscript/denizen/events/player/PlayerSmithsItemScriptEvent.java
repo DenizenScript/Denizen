@@ -59,7 +59,7 @@ public class PlayerSmithsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!result.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, result)) {
             return false;
         }
         return super.matches(path);

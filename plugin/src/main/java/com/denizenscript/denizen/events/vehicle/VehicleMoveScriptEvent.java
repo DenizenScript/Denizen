@@ -53,7 +53,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!vehicle.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, vehicle)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

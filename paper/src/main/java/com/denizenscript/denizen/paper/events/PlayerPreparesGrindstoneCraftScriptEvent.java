@@ -12,7 +12,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.GrindstoneInventory;
-import org.bukkit.inventory.Inventory;
 
 public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -56,7 +55,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!new ItemTag(event.getResult()).tryAdvancedMatcher(path.eventArgLowerAt(4))) {
+        if (!path.tryArgObject(4, new ItemTag(event.getResult()))) {
             return false;
         }
         if (!runInCheck(path, event.getInventory().getLocation())) {

@@ -81,7 +81,7 @@ public class PlayerHoldsItemEvent extends BukkitScriptEvent implements Listener 
         if (!runInCheck(path, player.getLocation())) {
             return false;
         }
-        if (!raised.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, raised)) {
             return false;
         }
         return super.matches(path);

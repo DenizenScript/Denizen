@@ -74,7 +74,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (!area.tryAdvancedMatcher(areaName)) {
             return false;
         }
-        if (!currentEntity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, currentEntity)) {
             return false;
         }
         return super.matches(path);

@@ -56,7 +56,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!inventory.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, inventory)) {
             return false;
         }
         LocationTag loc = inventory.getLocation();

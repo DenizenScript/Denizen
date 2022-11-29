@@ -52,7 +52,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         if (!entity.tryAdvancedMatcher(entName)) {
             return false;
         }
-        if (!old_material.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, old_material)) {
             return false;
         }
         if (path.eventArgLowerAt(3).equals("into")) {

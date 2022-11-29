@@ -41,7 +41,7 @@ public class PlayerSpectatesEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!new EntityTag(event.getNewSpectatorTarget()).tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, new EntityTag(event.getNewSpectatorTarget()))) {
             return false;
         }
         if (!runInCheck(path, event.getPlayer().getLocation())) {

@@ -57,7 +57,7 @@ public class PlayerTakesFromLecternScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean matches(ScriptEvent.ScriptPath path) {
-        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(2))) {
+        if (!path.tryArgObject(2, item)) {
             return false;
         }
         if (!runInCheck(path, location)) {

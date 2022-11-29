@@ -49,7 +49,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!location.tryAdvancedMatcher(path.eventArgAt(0))) {
+        if (!path.tryArgObject(0, location)) {
             return false;
         }
         if (!runInCheck(path, location)) {

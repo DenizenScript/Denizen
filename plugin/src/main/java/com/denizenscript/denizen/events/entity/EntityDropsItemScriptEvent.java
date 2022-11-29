@@ -48,7 +48,7 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!dropper.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, dropper)) {
             return false;
         }
         String iCheck = path.eventArgLowerAt(2);

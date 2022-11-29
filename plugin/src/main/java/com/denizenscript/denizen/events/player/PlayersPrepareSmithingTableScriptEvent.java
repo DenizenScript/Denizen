@@ -59,7 +59,7 @@ public class PlayersPrepareSmithingTableScriptEvent extends BukkitScriptEvent im
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!result.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!path.tryArgObject(3, result)) {
             return false;
         }
         return super.matches(path);

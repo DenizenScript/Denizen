@@ -46,7 +46,7 @@ public class EntityChangesPoseScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, entity)) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "old", oldPose.name())) {
