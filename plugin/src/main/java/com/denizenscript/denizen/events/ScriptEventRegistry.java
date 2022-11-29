@@ -78,7 +78,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
