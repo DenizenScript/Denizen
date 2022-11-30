@@ -78,6 +78,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     // @Matchable
     // ItemTag matchers, sometimes identified as "<item>", often seen as "with:<item>":
     // "potion": plaintext: matches if the item is any form of potion item.
+    // "script": plaintext: matches if the item is any form of script item.
     // "item_flagged:<flag>": A Flag Matcher for item flags.
     // "item_enchanted:<enchantment>": matches if the item is enchanted with the given enchantment name. Allows advanced matchers.
     // "raw_exact:<item>": matches based on exact raw item data comparison (almost always a bad idea to use).
@@ -941,6 +942,9 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             }
         }
         if (matcherLow.equals("potion") && CoreUtilities.toLowerCase(getBukkitMaterial().name()).contains("potion")) {
+            return true;
+        }
+        else if (matcherLow.equals("script") && isItemscript()) {
             return true;
         }
         if (matcher.contains("[") && matcher.endsWith("]")) {
