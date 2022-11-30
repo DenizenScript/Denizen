@@ -944,7 +944,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         if (matcherLow.equals("potion") && CoreUtilities.toLowerCase(getBukkitMaterial().name()).contains("potion")) {
             return true;
         }
-        else if (matcherLow.equals("script") && isItemscript()) {
+        boolean isItemScript = isItemscript();
+        if (matcherLow.equals("script") && isItemScript) {
             return true;
         }
         if (matcher.contains("[") && matcher.endsWith("]")) {
@@ -954,7 +955,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             return helper.doesMatch(this);
         }
-        boolean isItemScript = isItemscript();
         if (isItemScript) {
             ScriptEvent.MatchHelper matchHelper = BukkitScriptEvent.createMatcher(matcher);
             if (matchHelper.doesMatch(getScriptName())) {
