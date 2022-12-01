@@ -3681,13 +3681,13 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("edit_sign")) {
             if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
-                if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class));
-                    return;
-                }
                 BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
                 if (!(state instanceof Sign)) {
                     mechanism.echoError("Invalid location specified: must be a sign.");
+                    return;
+                }
+                if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class));
                     return;
                 }
                 getPlayerEntity().openSign((Sign) state);
