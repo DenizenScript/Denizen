@@ -3687,7 +3687,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     return;
                 }
                 if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.valueAsType(LocationTag.class));
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), state.getLocation());
                     return;
                 }
                 getPlayerEntity().openSign((Sign) state);
