@@ -953,6 +953,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // And thus should be fine. One limitation you should note is demonstrated in the second example event:
     // The normal guarantees of the event are no longer present (eg that the entity is still valid) and as such
     // you should validate these expectations remain true after the event (as seen with the 'if is_spawned' check).
+    // (See also <@link language Script Event After vs On>)
     //
     // If you need determine changes to the event, you can instead use 'on' but add a 'wait 1t' after the determine but before other script logic.
     // This allows the risky parts to be after the event and outside the problem area, but still determine changes to the event.

@@ -135,6 +135,9 @@ public class BossBarCommand extends AbstractCommand {
                         barFlags[i] = (BarFlag.valueOf(options.get(i).toUpperCase()));
                     }
                 }
+                if (title == null) {
+                    title = "";
+                }
                 bossBar = Bukkit.createBossBar(title, color, style, barFlags);
                 NMSHandler.playerHelper.setBossBarTitle(bossBar, title);
                 bossBar.setProgress(barProgress);
