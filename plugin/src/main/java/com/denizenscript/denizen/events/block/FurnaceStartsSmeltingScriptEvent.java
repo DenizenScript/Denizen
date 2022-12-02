@@ -6,12 +6,11 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
 
-public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Listener {
+public class FurnaceStartsSmeltingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -24,7 +23,7 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     // @Triggers when a furnace starts smelting an item.
     //
     // @Context
-    // <context.location> returns a LocationTag of the furnace.
+    // <context.location> returns a LocationTag of the furnace's location.
     // <context.item> returns an ItemTag of the item being smelted.
     // <context.recipe_id> returns an ElementTag of the recipe ID being used.
     // <context.total_cook_time> returns a DurationTag of the total time it will take to smelt the item.
@@ -43,7 +42,7 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
     // - determine 2s
     // -->
 
-    public FurnaceStartsSmeltingEvent() {
+    public FurnaceStartsSmeltingScriptEvent() {
         registerCouldMatcher("furnace starts smelting <item>");
     }
 
@@ -76,7 +75,7 @@ public class FurnaceStartsSmeltingEvent extends BukkitScriptEvent implements Lis
         switch (name) {
             case "location": return location;
             case "item": return item;
-            case "recipe_id": return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
+            case "recipe_id": return new ElementTag(event.getRecipe().getKey().toString());
             case "total_cook_time": return new DurationTag((long) event.getTotalCookTime());
         }
         return super.getContext(name);
