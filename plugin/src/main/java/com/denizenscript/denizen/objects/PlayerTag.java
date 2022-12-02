@@ -11,11 +11,7 @@ import com.denizenscript.denizen.scripts.commands.player.ExperienceCommand;
 import com.denizenscript.denizen.scripts.commands.player.SidebarCommand;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.tags.core.PlayerTagBase;
-import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.ScoreboardHelper;
-import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.BossBarHelper;
@@ -45,13 +41,14 @@ import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.util.RayTraceResult;
 
@@ -3292,20 +3289,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0 && new ElementTag(split[0]).isFloat()) {
                     if (split.length > 1 && new ElementTag(split[1]).isInt()) {
-                        NMSHandler.packetHelper.showExperience(getPlayerEntity(),
-                                new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
+                        getPlayerEntity().sendExperienceChange(new ElementTag(split[0]).asFloat(), new ElementTag(split[1]).asInt());
                     }
                     else {
-                        NMSHandler.packetHelper.showExperience(getPlayerEntity(),
-                                new ElementTag(split[0]).asFloat(), getPlayerEntity().getLevel());
+                        getPlayerEntity().sendExperienceChange(new ElementTag(split[0]).asFloat());
                     }
                 }
                 else {
-                    Debug.echoError("'" + split[0] + "' is not a valid decimal number!");
+                    mechanism.echoError("'" + split[0] + "' is not a valid decimal number!");
                 }
             }
             else {
-                NMSHandler.packetHelper.resetExperience(getPlayerEntity());
+                getPlayerEntity().sendExperienceChange(getPlayerEntity().getExp(), getPlayerEntity().getLevel());
             }
         }
 
@@ -3516,12 +3511,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Shows the player the demo screen.
         // -->
         if (mechanism.matches("show_demo")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                getPlayerEntity().showDemoScreen();
-            }
-            else {
-                NMSHandler.packetHelper.showDemoScreen(getPlayerEntity());
-            }
+            NMSHandler.packetHelper.showDemoScreen(getPlayerEntity());
         }
 
         // <--[mechanism]
@@ -3570,7 +3560,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's hand without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.HAND);
+            ItemStack book = getPlayerEntity().getEquipment().getItemInMainHand();
+            if (book.getType() == Material.WRITTEN_BOOK) {
+                getPlayerEntity().openBook(book);
+            }
         }
 
         // <--[mechanism]
@@ -3582,7 +3575,10 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // The book can safely be removed from the player's offhand without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            ItemStack book = getPlayerEntity().getEquipment().getItemInOffHand();
+            if (book.getType() == Material.WRITTEN_BOOK) {
+                getPlayerEntity().openBook(book);
+            }
         }
 
         // <--[mechanism]
@@ -3596,15 +3592,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("show_book")
                 && mechanism.requireObject(ItemTag.class)) {
             ItemTag book = mechanism.valueAsType(ItemTag.class);
-            if (!(book.getItemMeta() instanceof BookMeta)) {
-                Debug.echoError("show_book mechanism must have a book as input.");
+            if (book.getBukkitMaterial() != Material.WRITTEN_BOOK) {
+                mechanism.echoError("show_book mechanism must have a written book as input.");
                 return;
             }
-            NMSHandler.packetHelper.showEquipment(getPlayerEntity(), getPlayerEntity(),
-                    EquipmentSlot.OFF_HAND, book.getItemStack());
-            NMSHandler.packetHelper.openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
-            NMSHandler.packetHelper.showEquipment(getPlayerEntity(), getPlayerEntity(),
-                    EquipmentSlot.OFF_HAND, getPlayerEntity().getEquipment().getItemInOffHand());
+            getPlayerEntity().openBook(book.getItemStack());
         }
 
         // <--[mechanism]
@@ -3688,8 +3680,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Give no input to make a fake edit interface.
         // -->
         if (mechanism.matches("edit_sign")) {
-            if (!NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), mechanism.hasValue() ? mechanism.valueAsType(LocationTag.class) : null)) {
-                Debug.echoError("Can't edit non-sign materials!");
+            if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
+                if (!(state instanceof Sign)) {
+                    mechanism.echoError("Invalid location specified: must be a sign.");
+                    return;
+                }
+                if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), state.getLocation());
+                    return;
+                }
+                getPlayerEntity().openSign((Sign) state);
+            }
+            else {
+                NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
             }
         }
 
@@ -3706,18 +3710,15 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (split.length > 0) {
                     String header = split[0];
-                    String footer = "";
-                    if (split.length > 1) {
-                        footer = split[1];
-                    }
+                    String footer = split.length > 1 ? split[1] : "";
                     NMSHandler.packetHelper.showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
-                    Debug.echoError("Must specify a header and footer to show!");
+                    mechanism.echoError("Must specify a header and footer to show!");
                 }
             }
             else {
-                NMSHandler.packetHelper.resetTabListHeaderFooter(getPlayerEntity());
+                getPlayerEntity().setPlayerListHeaderFooter(null, null);
             }
         }
 

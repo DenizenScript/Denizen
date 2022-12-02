@@ -1,6 +1,9 @@
 package com.denizenscript.denizen.nms.v1_16.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.PacketHelper;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
 import com.denizenscript.denizen.nms.v1_16.Handler;
 import com.denizenscript.denizen.nms.v1_16.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_16.impl.jnbt.CompoundTagImpl;
@@ -8,15 +11,12 @@ import com.denizenscript.denizen.nms.v1_16.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import net.md_5.bungee.api.ChatColor;
@@ -191,11 +191,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void resetTabListHeaderFooter(Player player) {
-        showTabListHeaderFooter(player, "", "");
-    }
-
-    @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         sendPacket(player, new PacketPlayOutTitle(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
@@ -228,11 +223,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void openBook(Player player, EquipmentSlot hand) {
-        sendPacket(player, new PacketPlayOutOpenBook(hand == EquipmentSlot.OFF_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND));
-    }
-
-    @Override
     public void showHealth(Player player, float health, int food, float saturation) {
         sendPacket(player, new PacketPlayOutUpdateHealth(health, food, saturation));
     }
@@ -243,17 +233,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showExperience(Player player, float experience, int level) {
-        sendPacket(player, new PacketPlayOutExperience(experience, 0, level));
-    }
-
-    @Override
-    public void resetExperience(Player player) {
-        showExperience(player, player.getExp(), player.getLevel());
-    }
-
-    @Override
-    public boolean showSignEditor(Player player, Location location) {
+    public void showSignEditor(Player player, Location location) {
         if (location == null) {
             LocationTag fakeSign = new LocationTag(player.getLocation());
             fakeSign.setY(0);
@@ -261,7 +241,7 @@ public class PacketHelperImpl implements PacketHelper {
             BlockPosition pos = new BlockPosition(fakeSign.getX(), 0, fakeSign.getZ());
             ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().playerConnection.networkManager).packetListener.fakeSignExpected = pos;
             sendPacket(player, new PacketPlayOutOpenSignEditor(pos));
-            return true;
+            return;
         }
         TileEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPosition(location.getBlockX(),
                 location.getBlockY(), location.getBlockZ()));
@@ -272,10 +252,6 @@ public class PacketHelperImpl implements PacketHelper {
             sign.isEditable = true;
             sign.a((EntityHuman) ((CraftPlayer) player).getHandle());
             sendPacket(player, new PacketPlayOutOpenSignEditor(sign.getPosition()));
-            return true;
-        }
-        else {
-            return false;
         }
     }
 

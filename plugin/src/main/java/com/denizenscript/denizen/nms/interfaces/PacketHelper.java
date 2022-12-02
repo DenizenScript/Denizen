@@ -3,8 +3,10 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.maps.MapImage;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.WorldBorder;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -22,9 +24,24 @@ public interface PacketHelper {
 
     void setFakeAbsorption(Player player, float value);
 
-    void resetWorldBorder(Player player);
+    default void resetWorldBorder(Player player) { // TODO: once minimum version is 1.18 or higher, remove from NMS
+        player.setWorldBorder(null);
+    }
 
-    void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime);
+    default void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime) { // TODO: once minimum version is 1.18 or higher, remove from NMS
+        WorldBorder border = Bukkit.createWorldBorder();
+        border.setCenter(center);
+        if (time > 0) {
+            border.setSize(currSize);
+            border.setSize(size, time / 1000);
+        }
+        else {
+            border.setSize(size);
+        }
+        border.setWarningDistance(warningDistance);
+        border.setWarningTime(warningTime);
+        player.setWorldBorder(border);
+    }
 
     void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly);
 
@@ -34,8 +51,8 @@ public interface PacketHelper {
 
     void setVision(Player player, EntityType entityType);
 
-    default void showDemoScreen(Player player) {
-        throw new UnsupportedOperationException();
+    default void showDemoScreen(Player player) { // TODO: once minimum version is 1.18 or higher, remove from NMS
+        player.showDemoScreen();
     }
 
     void showBlockAction(Player player, Location location, int action, int state);
@@ -48,15 +65,13 @@ public interface PacketHelper {
 
     void showTabListHeaderFooter(Player player, String header, String footer);
 
-    void resetTabListHeaderFooter(Player player);
-
     void showTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
-    void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack);
+    default void showEquipment(Player player, LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack itemStack) { // TODO: once minimum version is 1.18 or higher, remove from NMS
+        player.sendEquipmentChange(entity, equipmentSlot, itemStack);
+    }
 
     void resetEquipment(Player player, LivingEntity entity);
-
-    void openBook(Player player, EquipmentSlot hand);
 
     void showHealth(Player player, float health, int food, float saturation);
 
@@ -66,11 +81,7 @@ public interface PacketHelper {
 
     void resetHealth(Player player);
 
-    void showExperience(Player player, float experience, int level);
-
-    void resetExperience(Player player);
-
-    boolean showSignEditor(Player player, Location location);
+    void showSignEditor(Player player, Location location); // TODO: once minimum version is 1.18 or higher, change to "showFakeSignEditor" and remove location param
 
     void forceSpectate(Player player, Entity entity);
 
