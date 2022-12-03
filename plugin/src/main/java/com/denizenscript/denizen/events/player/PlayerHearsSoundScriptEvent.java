@@ -29,6 +29,8 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Location true
     //
+    // @Switch key:<sound_key> to only process the event if the sound matches the modern Minecraft sound key.
+    //
     // @Context
     // <context.sound_key> returns an ElementTag of the modern Minecraft sound key.
     // <context.sound_name> returns an ElementTag of the sound's Bukkit name.
@@ -46,6 +48,7 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     public PlayerHearsSoundScriptEvent() {
         instance = this;
         registerCouldMatcher("player hears sound");
+        registerSwitches("key");
     }
 
     public static PlayerHearsSoundScriptEvent instance;
@@ -62,6 +65,9 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, location)) {
+            return false;
+        }
+        if (!runGenericSwitchCheck(path, "key", soundName)) {
             return false;
         }
         return super.matches(path);
