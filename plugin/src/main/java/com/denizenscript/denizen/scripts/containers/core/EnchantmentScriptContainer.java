@@ -297,7 +297,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         src.contexts.put("level", new ElementTag(level));
         src.contexts.put("cause", new ElementTag(causeName));
         if (attacker != null) {
-            src.contexts.put("attacker", new EntityTag(attacker));
+            src.contexts.put("attacker", new EntityTag(attacker).getDenizenObject());
         }
         return Integer.parseInt(autoTag(damageProtectionTaggable, src));
     }
@@ -321,10 +321,10 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         ContextSource.SimpleMap src = new ContextSource.SimpleMap();
         src.contexts = new HashMap<>();
         if (attacker != null) {
-            src.contexts.put("attacker", new EntityTag(attacker));
+            src.contexts.put("attacker", new EntityTag(attacker).getDenizenObject());
         }
         if (victim != null) {
-            src.contexts.put("victim", new EntityTag(victim));
+            src.contexts.put("victim", new EntityTag(victim).getDenizenObject());
         }
         src.contexts.put("level", new ElementTag(level));
         queue.contextSource = src;

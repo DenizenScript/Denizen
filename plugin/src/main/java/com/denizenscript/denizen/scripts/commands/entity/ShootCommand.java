@@ -358,7 +358,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                             EntityTag hit = arrows.get(entity.getUUID());
                             arrows.remove(entity.getUUID());
                             if (hit != null) {
-                                hitEntities.addObject(hit);
+                                hitEntities.addObject(hit.getDenizenObject());
                             }
                         }
                     }
