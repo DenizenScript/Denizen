@@ -49,6 +49,7 @@ public class PaperModule {
         }
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesGrindstoneCraftScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
