@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.core.EscapeTagBase;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemDisplayname implements Property {
@@ -88,7 +89,11 @@ public class ItemDisplayname implements Property {
     @Override
     public String getPropertyString() {
         if (hasDisplayName()) {
-            return NMSHandler.itemHelper.getDisplayName(item);
+            String res = NMSHandler.itemHelper.getDisplayName(item);
+            if (res.isEmpty()) { // Special case: persist empty strings as a single empty color code so it's not ignored
+                return ChatColor.WHITE.toString();
+            }
+            return res;
         }
         else {
             return null;
