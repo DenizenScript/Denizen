@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
 
 public class PaperElementExtensions {
 

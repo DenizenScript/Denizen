@@ -46,7 +46,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ChunkMap;
@@ -330,25 +329,27 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
             ClientboundPlayerInfoUpdatePacket infoPacket = (ClientboundPlayerInfoUpdatePacket) packet;
-            String mode;
-            switch (infoPacket.actions()) {
-                case ADD_PLAYER:
-                    mode = "add";
-                    break;
-                case REMOVE_PLAYER:
-                    mode = "remove";
-                    break;
-                case UPDATE_LATENCY:
-                    mode = "update_latency";
-                    break;
-                case UPDATE_GAME_MODE:
-                    mode = "update_gamemode";
-                    break;
-                case UPDATE_DISPLAY_NAME:
-                    mode = "update_display";
-                    break;
-                default:
-                    return false;
+            String mode = "";
+            for (ClientboundPlayerInfoUpdatePacket.Action action : infoPacket.actions()) {
+                switch (action) {
+                    case ADD_PLAYER:
+                        mode = "add";
+                        break;
+                    case UPDATE_LATENCY:
+                        mode = mode.isEmpty() ? "update_latency" : mode + "|update_latency";
+                        break;
+                    case UPDATE_GAME_MODE:
+                        mode = mode.isEmpty() ? "update_gamemode" : mode + "|update_gamemode";
+                        break;
+                    case UPDATE_DISPLAY_NAME:
+                        mode = mode.isEmpty() ? "update_display" : mode + "|update_display";
+                        break;
+                    case UPDATE_LISTED:
+                        mode = mode.isEmpty() ? "update_listed" : mode + "|update_listed";
+                        break;
+                    default:
+                        return false;
+                }
             }
             boolean isOverriding = false;
             for (ClientboundPlayerInfoUpdatePacket.Entry update : infoPacket.entries()) {
@@ -360,41 +361,51 @@ public class DenizenNetworkManagerImpl extends Connection {
                     signature = property.getSignature();
                 }
                 String modeText = update.gameMode() == null ? null : update.gameMode().name();
-                PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), profile.getName(),
+                PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), update.listed(), profile.getName(),
                         update.displayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.displayName())), modeText, texture, signature, update.latency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
                         isOverriding = true;
-                        ClientboundPlayerInfoUpdatePacket priorsPacket = new ClientboundPlayerInfoUpdatePacket(infoPacket.actions());
                         for (ClientboundPlayerInfoUpdatePacket.Entry priorUpdate : infoPacket.entries()) {
                             if (priorUpdate == update) {
                                 break;
                             }
-                            priorsPacket.entries().add(priorUpdate);
-                        }
-                        if (!priorsPacket.entries().isEmpty()) {
-                            oldManager.send(priorsPacket, genericfuturelistener);
+                            oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(priorUpdate)));
                         }
                     }
                     if (!data.cancelled) {
-                        ClientboundPlayerInfoUpdatePacket newPacket = new ClientboundPlayerInfoUpdatePacket(infoPacket.actions());
                         GameProfile newProfile = new GameProfile(data.id, data.name);
                         if (data.texture != null) {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
-                        newPacket.entries().add(new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
-                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.chatSession()));
-                        oldManager.send(newPacket, genericfuturelistener);
+                        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
+                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.chatSession());
+                        oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)), genericfuturelistener);
                     }
                 }
                 else if (isOverriding) {
-                    ClientboundPlayerInfoUpdatePacket newPacket = new ClientboundPlayerInfoUpdatePacket(infoPacket.actions());
-                    newPacket.entries().add(update);
-                    oldManager.send(newPacket, genericfuturelistener);
+                    oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(update)), genericfuturelistener);
                 }
             }
             return isOverriding;
+        }
+        else if (packet instanceof ClientboundPlayerInfoRemovePacket) {
+            ClientboundPlayerInfoRemovePacket removePacket = (ClientboundPlayerInfoRemovePacket) packet;
+            boolean modified = false;
+            List<UUID> altIds = new ArrayList<>(((ClientboundPlayerInfoRemovePacket) packet).profileIds());
+            for (UUID id : ((ClientboundPlayerInfoRemovePacket) packet).profileIds()) {
+                PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData("remove", id, false, null, null, null, null, null, 0);
+                PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
+                if (data.modified && data.cancelled) {
+                    modified = true;
+                    altIds.remove(id);
+                }
+            }
+            if (modified) {
+                oldManager.send(new ClientboundPlayerInfoRemovePacket(altIds), genericfuturelistener);
+                return true;
+            }
         }
         return false;
     }
@@ -1127,7 +1138,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     public boolean processMirrorForPacket(Packet<?> packet) {
         if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
             ClientboundPlayerInfoUpdatePacket playerInfo = (ClientboundPlayerInfoUpdatePacket) packet;
-            ProfileEditorImpl.updatePlayerProfiles(playerInfo);
             if (!ProfileEditorImpl.handleAlteredProfiles(playerInfo, this)) {
                 return true;
             }

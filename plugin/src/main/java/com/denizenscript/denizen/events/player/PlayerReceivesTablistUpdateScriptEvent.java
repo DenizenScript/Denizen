@@ -29,7 +29,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
     // @Cancellable true
     //
     // @Context
-    // <context.mode> returns the update mode: 'add', 'remove', 'update_gamemode', 'update_latency', or 'update_display'.
+    // <context.mode> returns the update mode: 'add', 'remove', 'update_gamemode', 'update_latency', 'update_listed', or 'update_display'. As of 1.19.3, you can also receive update combos like "update_gamemode|update_latency".
     // <context.uuid> returns the packet's associated UUID.
     // <context.name> returns the packet's associated name (if any).
     // <context.display> returns the packet's associated display name (if any).
@@ -58,7 +58,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
 
     public static class TabPacketData {
 
-        public TabPacketData(String mode, UUID id, String name, String display, String gamemode, String texture, String signature, int latency) {
+        public TabPacketData(String mode, UUID id, boolean isListed, String name, String display, String gamemode, String texture, String signature, int latency) {
             this.mode = mode;
             this.id = id;
             this.name = name;
@@ -67,6 +67,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
             this.texture = texture;
             this.signature = signature;
             this.latency = latency;
+            this.isListed = isListed;
         }
 
         public UUID id;
@@ -74,6 +75,8 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
         public String mode, name, display, gamemode, texture, signature;
 
         public int latency;
+
+        public boolean isListed;
 
         public boolean cancelled = false;
 
