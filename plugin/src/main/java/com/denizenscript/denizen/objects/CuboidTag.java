@@ -725,6 +725,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a random block location within the cuboid.
         // (Note: random selection will not be fairly weighted for multi-member cuboids).
+        // @example
+        // # Spawns a debugblock at a random block in the cuboid "my_cuboid".
+        // - debugblock <cuboid[my_cuboid].random>
         // -->
         tagProcessor.registerTag(LocationTag.class, "random", (attribute, cuboid) -> {
             LocationPair pair = cuboid.pairs.get(CoreUtilities.getRandom().nextInt(cuboid.pairs.size()));
@@ -742,6 +745,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ElementTag(Number)
         // @description
         // Returns the number of cuboids defined in the CuboidTag.
+        // @example
+        // # Narrates the amount of cuboids are defined in "my_cuboid".
+        // # For example, if there are 3 cuboids defined in "my_cuboid", this will return "3".
+        // - narrate "The cuboid, 'my_cuboid', has <cuboid[my_cuboid].members_size> members!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "members_size", (attribute, cuboid) -> {
             return new ElementTag(cuboid.pairs.size());
@@ -752,6 +759,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(LocationTag)
         // @description
         // Returns each block location on the outline of the CuboidTag.
+        // @example
+        // # Plays the "flame" effect at the outline of the cuboid.
+        // - playeffect effect:flame at:<cuboid[my_cuboid].outline> offset:0.0
         // -->
         tagProcessor.registerTag(ListTag.class, "outline", (attribute, cuboid) -> {
             return cuboid.getOutline();
@@ -762,6 +772,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(LocationTag)
         // @description
         // Returns a list of block locations along the 2D outline of this CuboidTag, at the specified Y level.
+        // # Plays the "flame" effect at the 2D outline of the cuboid on the player's Y level.
+        // - playeffect effect:flame at:<cuboid[my_cuboid].outline_2d[<player.location.y>]> offset:0.0
         // -->
         tagProcessor.registerTag(ListTag.class, "outline_2d", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -777,6 +789,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether this cuboid and another intersect.
+        // @example
+        // # Checks if the cuboid, "my_cuboid", intersects "my_second_cuboid".
+        // - if <cuboid[my_cuboid].intersects[my_second_cuboid]>:
+        //     - narrate "Both cuboids intersect each other!"
+        // - else:
+        //     - narrate "These cuboids do NOT intersect each other!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "intersects", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -813,6 +831,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(CuboidTag)
         // @description
         // Returns a list of all sub-cuboids in this CuboidTag (for cuboids that contain multiple sub-cuboids).
+        // @example
+        // # Loops through the members of the cuboid and plays a "flame" effect at their outlines.
+        // - foreach <cuboid[my_cuboid].list_members> as:member:
+        //     - playeffect effect:flame at:<[member].outline> offset:0.0
         // -->
         tagProcessor.registerTag(ListTag.class, "list_members", (attribute, cuboid) -> {
             List<LocationPair> pairs = cuboid.pairs;
@@ -828,6 +850,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns CuboidTag
         // @description
         // Returns a cuboid representing the one component of this cuboid (for cuboids that contain multiple sub-cuboids).
+        // @example
+        // # Displays a debugblock at the corners of the second member of "my_cuboid".
+        // - debugblock <cuboid[my_cuboid].get[2].corners>
         // -->
         tagProcessor.registerTag(CuboidTag.class, "get", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -890,6 +915,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @mechanism CuboidTag.add_member
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid(s) added at the end.
+        // @example
+        // # Adds "my_second_cuboid" as a member of "my_cuboid".
+        // # If "my_cuboid" has two members, then "my_second_cuboid" will become the third member.
+        // # You can also use the "add_member" mechanism.
+        // - note <cuboid[my_cuboid].add_member[my_second_cuboid]> as:my_third_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "add_member", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -906,6 +936,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             // @mechanism CuboidTag.add_member
             // @description
             // Returns a modified copy of this cuboid, with the input cuboid(s) added at the specified index.
+            // @example
+            // # Adds "my_second_cuboid" as a member of "my_cuboid" at an index of 3.
+            // # You can also use the "add_member" mechanism.
+            // - note <cuboid[my_cuboid].add_member[my_second_cuboid].at[3]> as:my_third_cuboid
             // -->
             if (attribute.startsWith("at", 2)) {
                 if (!attribute.hasContext(2)) {
@@ -942,6 +976,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @mechanism CuboidTag.remove_member
         // @description
         // Returns a modified copy of this cuboid, with member at the input index removed.
+        // @example
+        // # Removes the third member in the cuboid "my_cuboid" and notes it as "my_new_cuboid".
+        // # You can also use the "remove_member" mechanism.
+        // - note <cuboid[my_cuboid].remove_member[3]> as:my_new_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "remove_member", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -969,6 +1007,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the location of the exact center of the cuboid.
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # Displays a debugblock at the center of the cuboid.
+        // - debugblock <cuboid[my_cuboid].center>
         // -->
         tagProcessor.registerTag(LocationTag.class, "center", (attribute, cuboid) -> {
             LocationPair pair;
@@ -999,6 +1040,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns the volume of the cuboid.
         // Effectively equivalent to: (size.x * size.y * size.z).
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # For example, a cuboid with a size of "6,7,8" will have a volume of "336". 6 * 7 * 8 = 336.
+        // - narrate "The volume of the cuboid 'my_cuboid' is: <cuboid[my_cuboid].volume>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "volume", (attribute, cuboid) -> {
             LocationPair pair = cuboid.pairs.get(0);
@@ -1013,6 +1057,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Returns the size of the cuboid.
         // Effectively equivalent to: (max - min) + (1,1,1)
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # For example, this can return "6,7,8", meaning the cuboid is 6 blocks wide, 7 blocks high, and 8 blocks deep.
+        // - narrate "The size of the cuboid 'my_cuboid' is: <cuboid[my_cuboid].volume.xyz>!"
         // -->
         tagProcessor.registerTag(LocationTag.class, "size", (attribute, cuboid) -> {
             LocationPair pair;
@@ -1039,6 +1086,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the highest-numbered (maximum) corner location.
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # Displays a glowstone "block_marker" effect at maximum corner location of the cuboid.
+        // - playeffect effect:block_marker special_data:glowstone at:<cuboid[my_cuboid].max> offset:0.0
         // -->
         tagProcessor.registerTag(LocationTag.class, "max", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1062,6 +1112,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the lowest-numbered (minimum) corner location.
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # Displays a glowstone "block_marker" effect at minimum corner location of the cuboid.
+        // - playeffect effect:block_marker special_data:glowstone at:<cuboid[my_cuboid].min> offset:0.0
         // -->
         tagProcessor.registerTag(LocationTag.class, "min", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1087,6 +1140,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // The 4 low corners, then the 4 high corners.
         // In order X-Z-, X+Z-, X-Z+, X+Z+
         // If the object is a multi-member cuboid, returns corners for all members in sequence.
+        // @example
+        // # Displays a glowstone block marker effect at each corner of the cuboid.
+        // - playeffect effect:block_marker special_data:glowstone at:<cuboid[my_cuboid].corners> offset:0.0
         // -->
         tagProcessor.registerTag(ListTag.class, "corners", (attribute, cuboid) -> {
             ListTag output = new ListTag();
@@ -1109,6 +1165,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a copy of this cuboid, with all members shifted by the given vector LocationTag.
         // For example, a cuboid from 5,5,5 to 10,10,10, shifted 100,0,100, would return a cuboid from 105,5,105 to 110,10,110.
+        // @example
+        // # Notes the cuboid "my_cuboid" as "my_shifted_cuboid" but shifted over by 25,25,25.
+        // - note <cuboid[my_cuboid].shift[25,25,25]> as:my_shifted_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "shift", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1127,6 +1186,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns CuboidTag
         // @description
         // Expands the first member of the CuboidTag to contain the given location (or entire cuboid), and returns the expanded cuboid.
+        // @example
+        // # Expands the cuboid to contain the player's location and notes it as "my_new_cuboid".
+        // - note <cuboid[my_cuboid].include[<player.location>]> as:my_new_cuboid
+        // @example
+        // # Expands the cuboid to contain the cuboid "my_second_cuboid" and notes it as "my_new_cuboid".
+        // - note <cuboid[my_cuboid].include[my_second_cuboid]> as:my_new_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1149,6 +1214,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns CuboidTag
         // @description
         // Expands the first member of the CuboidTag to contain the given X value, and returns the expanded cuboid.
+        // @example
+        // # Expands the cuboid to include a block with an X location of 25 and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].include_x[25]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include_x", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
@@ -1171,6 +1239,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns CuboidTag
         // @description
         // Expands the first member of the CuboidTag to contain the given Y value, and returns the expanded cuboid.
+        // @example
+        // # Expands the cuboid to include a block with a Y location of 25 and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].include_y[25]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include_y", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
@@ -1193,6 +1264,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns CuboidTag
         // @description
         // Expands the first member of the CuboidTag to contain the given Z value, and returns the expanded cuboid.
+        // @example
+        // # Expands the cuboid to include a block with a Z location of 25 and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].include_z[25]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "include_z", (attribute, cuboid) -> {
             cuboid = cuboid.clone();
@@ -1219,6 +1293,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // and the output min will contain the old max values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids max value.
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # Notes a new cuboid with the player's location as the new minimum location of the cuboid.
+        // # For example: if "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min) and the player had a location of -5,5,-5,
+        // # then "my_new_cuboid" will have a minimum location of -5,5,-5.
+        // - note <cuboid[my_cuboid].with_min[<player.location>]> as:my_new_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_min", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1238,6 +1317,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // and the output max will contain the old min values.
         // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids min value.
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # Notes a new cuboid with the player's location as the new maximum location of the cuboid.
+        // # For example: if "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min) and the player had a location of 15,10,15,
+        // # then "my_new_cuboid" will have a minimum location of 15,10,15.
+        // - note <cuboid[my_cuboid].with_max[<player.location>]> as:my_new_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_max", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1257,6 +1341,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Supplying a negative input will therefore contract the cuboid.
         // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # If "my_cuboid" spans from 10,10,10 to 5,5,5 and gets expanded by 15 (15,15,15),
+        // # "my_expanded_cuboid" will span -10,-10,-10 to 25,25,25
+        // - note <cuboid[my_cuboid].expand[15]> as:my_expanded_cuboid
+        // @example
+        // # If "my_cuboid" spans from 10,10,10 to 5,5,5 and gets expanded by 15,15,15,
+        // # "my_expanded_cuboid" will span -10,-10,-10 to 25,25,25
+        // - note <cuboid[my_cuboid].expand[15,15,15]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "expand", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1284,6 +1376,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Note that you can also specify a single number to expand all coordinates by the same amount (equivalent to specifying a location that is that value on X, Y, and Z).
         // Inverted by <@link tag CuboidTag.shrink_one_side>
         // Not valid for multi-member CuboidTags.
+        // @example
+        // # Expands the high value of the cuboid "my_cuboid" by 15 (15,15,15) on one side and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].expand_one_side[15]> as:my_expanded_cuboid
+        // @example
+        // # Expands the low value of the cuboid "my_cuboid" by -15 (-15,-15,-15) on one side and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].expand_one_side[-15]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "expand_one_side", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1332,6 +1430,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Inverted by <@link tag CuboidTag.expand_one_side>
         // Not valid for multi-member CuboidTags.
         // If you shrink past the limits of the cuboid's size, the cuboid will flip and start expanding the opposite direction.
+        // @example
+        // # Shrinks the high value of the cuboid "my_cuboid" by 15 (15,15,15) on one side and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].expand_one_side[15]> as:my_expanded_cuboid
+        // @example
+        // # Shrinks the low value of the cuboid "my_cuboid" by -15 (-15,-15,-15) on one side and notes it as "my_expanded_cuboid".
+        // - note <cuboid[my_cuboid].expand_one_side[-15]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "shrink_one_side", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1375,6 +1479,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(ChunkTag)
         // @description
         // Gets a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
+        // @example
+        // # Loads the chunks that are fully within the cuboid "my_cuboid".
+        // - chunkload <cuboid[my_cuboid].chunks>
         // -->
         tagProcessor.registerTag(ListTag.class, "chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
@@ -1408,6 +1515,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(ChunkTag)
         // @description
         // Gets a list of all chunks partially or entirely within the CuboidTag.
+        // @example
+        // # Loads the chunks that are within the cuboid "my_cuboid", even if they are partially within the cuboid.
+        // - chunkload <cuboid[my_cuboid].partial_chunks>
         // -->
         tagProcessor.registerTag(ListTag.class, "partial_chunks", (attribute, cuboid) -> {
             ListTag chunks = new ListTag();
@@ -1547,6 +1657,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <CuboidTag.get>
         // <CuboidTag.add_member[<cuboid>]>
         // <CuboidTag.add_member[<cuboid>].at[<#>]>
+        // @example
+        // # Adds "my_second_cuboid" as a member to "my_cuboid".
+        // - adjust <cuboid[my_cuboid]> add_member:my_second_cuboid
+        // @example
+        // # Adds "my_second_cuboid" as a member to "my_cuboid" at an index of 2.
+        // - adjust <cuboid[my_cuboid]> add_member:2,my_second_cuboid
         // -->
         if (mechanism.matches("add_member")) {
             if (noteName != null) {
@@ -1581,6 +1697,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Remove a sub-member from the cuboid at the specified index.
         // @tags
         // <CuboidTag.remove_member[<#>]>
+        // @example
+        // # Removes the second member from the cuboid "my_cuboid".
+        // - adjust <cuboid[my_cuboid]> remove_member:2
         // -->
         if (mechanism.matches("remove_member") && mechanism.requireInteger()) {
             if (pairs.size() == 1) {
