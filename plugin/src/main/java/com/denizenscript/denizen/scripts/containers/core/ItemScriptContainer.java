@@ -153,6 +153,9 @@ public class ItemScriptContainer extends ScriptContainer {
     //        3:
     //            # Shapeless recipes take a list of input items.
     //            type: shapeless
+    //            # Optionally specify the shapeless category for shapeless recipes, as "building", "redstone", "equipment", or "misc". Defaults to "misc" if unspecified.
+    //            # | Only some recipes should have this key.
+    //            category: misc
     //            input: ItemTag|...
     //        4:
     //            # Stonecutting recipes take exactly one input item.
@@ -164,6 +167,9 @@ public class ItemScriptContainer extends ScriptContainer {
     //            # Optionally specify the cook time as a duration (default 2s).
     //            # | Only some recipes should have this key.
     //            cook_time: 1s
+    //            # Optionally specify the cooking category for cooking recipes, as "food", "blocks", or "misc". Defaults to "misc" if unspecified.
+    //            # | Only some recipes should have this key.
+    //            category: misc
     //            # Optionally specify experience reward amount (default 0).
     //            # | Only some recipes should have this key.
     //            experience: 5

@@ -188,7 +188,7 @@ public class ItemScriptHelper implements Listener {
         Bukkit.addRecipe(recipe);
     }
 
-    public static void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group) {
+    public static void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group, String category) {
         TagContext context = new BukkitTagContext(container);
         List<ItemStack[]> ingredients = new ArrayList<>();
         List<Boolean> exacts = new ArrayList<>();
@@ -209,10 +209,10 @@ public class ItemScriptHelper implements Listener {
         for (int i = 0; i < exacts.size(); i++) {
             bools[i] = exacts.get(i);
         }
-        NMSHandler.itemHelper.registerShapelessRecipe(internalId, group, item, ingredients, bools);
+        NMSHandler.itemHelper.registerShapelessRecipe(internalId, group, item, ingredients, bools, category);
     }
 
-    public static void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group) {
+    public static void registerFurnaceRecipe(ItemScriptContainer container, ItemStack item, String furnaceItemString, float exp, int time, String type, String internalId, String group, String category) {
         boolean exact = true;
         if (furnaceItemString.startsWith("material:")) {
             exact = false;
@@ -222,7 +222,7 @@ public class ItemScriptHelper implements Listener {
         if (items == null) {
             return;
         }
-        NMSHandler.itemHelper.registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact);
+        NMSHandler.itemHelper.registerFurnaceRecipe(internalId, group, item, items, exp, time, type, exact, category);
     }
 
     public static void registerStonecuttingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String internalId, String group) {
@@ -313,7 +313,7 @@ public class ItemScriptHelper implements Listener {
                                 registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group); // tagged in register code
                                 break;
                             case "shapeless":
-                                registerShapelessRecipe(container, item, getString.apply("input"), internalId, group);
+                                registerShapelessRecipe(container, item, getString.apply("input"), internalId, group, subSection.getString("category"));
                                 break;
                             case "stonecutting":
                                 registerStonecuttingRecipe(container, item, getString.apply("input"), internalId, group);
@@ -330,7 +330,7 @@ public class ItemScriptHelper implements Listener {
                                 if (subSection.contains("cook_time")) {
                                     cookTime = DurationTag.valueOf(getString.apply("cook_time"), context).getTicksAsInt();
                                 }
-                                registerFurnaceRecipe(container, item, getString.apply("input"), exp, cookTime, type, internalId, group);
+                                registerFurnaceRecipe(container, item, getString.apply("input"), exp, cookTime, type, internalId, group, subSection.getString("category"));
                                 break;
                             case "smithing":
                                 String retain = null;
@@ -352,11 +352,11 @@ public class ItemScriptHelper implements Listener {
                 }
                 if (container.contains("SHAPELESS_RECIPE", String.class)) {
                     BukkitImplDeprecations.oldRecipeScript.warn(container);
-                    registerShapelessRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom");
+                    registerShapelessRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("SHAPELESS_RECIPE"), getIdFor(container, "old_shapeless", 0), "custom", null);
                 }
                 if (container.contains("FURNACE_RECIPE", String.class)) {
                     BukkitImplDeprecations.oldRecipeScript.warn(container);
-                    registerFurnaceRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom");
+                    registerFurnaceRecipe(container, container.getCleanReference().getItemStack().clone(), container.getString("FURNACE_RECIPE"), 0, 40, "furnace", getIdFor(container, "old_furnace", 0), "custom", null);
                 }
             }
             catch (Exception ex) {

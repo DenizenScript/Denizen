@@ -107,7 +107,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact) {
+    public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact, String category) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         RecipeItemStack itemRecipe = itemArrayToRecipe(ingredient, exact);
         RecipeCooking recipe;
@@ -144,7 +144,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact) {
+    public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact, String category) {
         MinecraftKey key = new MinecraftKey("denizen", keyName);
         ArrayList<RecipeItemStack> ingredientList = new ArrayList<>();
         for (int i = 0; i < ingredients.size(); i++) {
