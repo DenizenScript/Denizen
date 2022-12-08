@@ -637,9 +637,9 @@ public class EntityHelperImpl extends EntityHelper {
             case DROWNING:
                 return DamageSource.DROWN;
             case BLOCK_EXPLOSION:
-                return DamageSource.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null);
+                return DamageSource.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null, null);
             case ENTITY_EXPLOSION:
-                return DamageSource.explosion(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
+                return DamageSource.explosion(nmsSource, null);
             case VOID:
                 return DamageSource.OUT_OF_WORLD;
             case LIGHTNING:
@@ -653,7 +653,7 @@ public class EntityHelperImpl extends EntityHelper {
             case WITHER:
                 return DamageSource.WITHER;
             case FALLING_BLOCK:
-                return DamageSource.FALLING_BLOCK;
+                return DamageSource.fallingBlock(nmsSource);
             case THORNS:
                 return DamageSource.thorns(nmsSource);
             case DRAGON_BREATH:
@@ -721,7 +721,8 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner) {
         SpawnerBlockEntity nmsSpawner = BlockHelperImpl.getTE((CraftCreatureSpawner) spawner);
-        net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(((CraftWorld) spawner.getWorld()).getHandle());
+        ServerLevel level = ((CraftWorld) spawner.getWorld()).getHandle();
+        net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, level.random, nmsSpawner.getBlockPos());
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 

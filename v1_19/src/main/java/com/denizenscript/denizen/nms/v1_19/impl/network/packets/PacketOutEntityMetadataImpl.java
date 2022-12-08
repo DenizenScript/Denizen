@@ -14,13 +14,13 @@ public class PacketOutEntityMetadataImpl implements PacketOutEntityMetadata {
 
     @Override
     public int getEntityId() {
-        return internal.getId();
+        return internal.id();
     }
 
     @Override
     public boolean checkForGlow() {
-        for (SynchedEntityData.DataItem<?> data : internal.getUnpackedData()) {
-            if (data.getAccessor().getId() == 0) {
+        for (SynchedEntityData.DataValue<?> data : internal.packedItems()) {
+            if (data.id() == 0) {
                 // TODO: strip out the 0x40 "Glowing" metadata rather than cancelling entirely?
                 return true;
             }

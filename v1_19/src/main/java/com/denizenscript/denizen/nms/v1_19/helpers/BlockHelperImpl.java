@@ -16,6 +16,8 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -259,7 +261,8 @@ public class BlockHelperImpl implements BlockHelper {
     @Override
     public Instrument getInstrumentFor(Material mat) {
         net.minecraft.world.level.block.Block blockType = getMaterialBlock(mat);
-        NoteBlockInstrument nmsInstrument = NoteBlockInstrument.byState(blockType.defaultBlockState());
+        Optional<NoteBlockInstrument> aboveInstrument = NoteBlockInstrument.byStateAbove(blockType.defaultBlockState());
+        NoteBlockInstrument nmsInstrument = aboveInstrument.orElse(NoteBlockInstrument.byStateBelow(blockType.defaultBlockState()));
         return Instrument.values()[(nmsInstrument.ordinal())];
     }
 
@@ -354,7 +357,7 @@ public class BlockHelperImpl implements BlockHelper {
     public void setVanillaTags(Material material, Set<String> tags) {
         Holder<net.minecraft.world.level.block.Block> nmsHolder = getMaterialBlock(material).builtInRegistryHolder();
         nmsHolder.tags().forEach(nmsTag -> {
-            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getTag(nmsTag).orElse(null);
+            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.getTag(nmsTag).orElse(null);
             if (nmsHolderSet == null) {
                 return;
             }
@@ -366,12 +369,12 @@ public class BlockHelperImpl implements BlockHelper {
             catch (Throwable ex) {
                 Debug.echoError(ex);
             }
-            VanillaTagHelper.updateMaterialTag(new CraftBlockTag(Registry.BLOCK, nmsTag));
+            VanillaTagHelper.updateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, nmsTag));
         });
         List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
         for (String tag : tags) {
-            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(tag));
-            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getOrCreateTag(newNmsTag);
+            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(BuiltInRegistries.BLOCK.key(), new ResourceLocation(tag));
+            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.getOrCreateTag(newNmsTag);
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.add(nmsHolder);
             try {
@@ -381,7 +384,7 @@ public class BlockHelperImpl implements BlockHelper {
                 Debug.echoError(ex);
             }
             newNmsTags.add(newNmsTag);
-            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(Registry.BLOCK, newNmsTag));
+            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, newNmsTag));
         }
         try {
             Holder_Reference_bindTags.invoke(nmsHolder, newNmsTags);
@@ -389,7 +392,7 @@ public class BlockHelperImpl implements BlockHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-        ClientboundUpdateTagsPacket tagsPacket = new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registryAccess()));
+        ClientboundUpdateTagsPacket tagsPacket = new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries()));
         for (Player player : Bukkit.getOnlinePlayers()) {
             PacketHelperImpl.send(player, tagsPacket);
         }

@@ -18,7 +18,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 public class EntityFakePlayerImpl extends ServerPlayer {
 
     public EntityFakePlayerImpl(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile, boolean doAdd) {
-        super(minecraftserver, worldserver, gameprofile, null);
+        super(minecraftserver, worldserver, gameprofile);
         try {
             Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayerImpl((CraftServer) Bukkit.getServer(), this));
         }

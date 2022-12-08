@@ -23,7 +23,7 @@ public class PacketOutChatImpl implements PacketOutChat {
 
     public PacketOutChatImpl(ClientboundPlayerChatPacket internal) {
         playerPacket = internal;
-        rawJson = ComponentSerializer.toString(internal.message().signedContent());
+        rawJson = ComponentSerializer.toString(internal.body().content());
         message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson));
     }
 

@@ -31,6 +31,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
@@ -113,7 +114,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("69c84c88aeb92ce9fa9525438b93f4fe");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("1afe2ffe8a9d7fc510442a168b3d4338");
     }
 
     @Override
@@ -264,7 +265,7 @@ public class Handler extends NMSHandler {
     public List<BiomeNMS> getBiomes(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
         ArrayList<BiomeNMS> output = new ArrayList<>();
-        for (Map.Entry<ResourceKey<Biome>, Biome> pair : level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).entrySet()) {
+        for (Map.Entry<ResourceKey<Biome>, Biome> pair : level.registryAccess().registryOrThrow(Registries.BIOME).entrySet()) {
             output.add(new BiomeNMSImpl(level, pair.getKey().location().toString()));
         }
         return output;
@@ -284,7 +285,7 @@ public class Handler extends NMSHandler {
         // Based on CraftWorld source
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
         Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
-        ResourceLocation key = level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome.value());
+        ResourceLocation key = level.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome.value());
         String keyText = key.getNamespace().equals("minecraft") ? key.getPath() : key.toString();
         return new BiomeNMSImpl(level, keyText);
     }

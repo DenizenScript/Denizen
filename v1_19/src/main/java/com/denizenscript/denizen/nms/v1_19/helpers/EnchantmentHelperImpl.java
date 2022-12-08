@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -82,7 +83,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 protected boolean checkCompatibility(net.minecraft.world.item.enchantment.Enchantment nmsEnchantment) {
-                    ResourceLocation nmsKey = Registry.ENCHANTMENT.getKey(nmsEnchantment);
+                    ResourceLocation nmsKey = BuiltInRegistries.ENCHANTMENT.getKey(nmsEnchantment);
                     NamespacedKey bukkitKey = CraftNamespacedKey.fromMinecraft(nmsKey);
                     org.bukkit.enchantments.Enchantment bukkitEnchant = CraftEnchantment.getByKey(bukkitKey);
                     return script.script.isCompatible(bukkitEnchant);
@@ -129,9 +130,9 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
             };
             String enchName = CoreUtilities.toUpperCase(script.script.id);
-            boolean wasFrozen = REGISTRY_FROZEN.getBoolean(Registry.ENCHANTMENT);
-            REGISTRY_FROZEN.setBoolean(Registry.ENCHANTMENT, false);
-            Registry.register(Registry.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);
+            boolean wasFrozen = REGISTRY_FROZEN.getBoolean(BuiltInRegistries.ENCHANTMENT);
+            REGISTRY_FROZEN.setBoolean(BuiltInRegistries.ENCHANTMENT, false);
+            Registry.register(BuiltInRegistries.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);
             CraftEnchantment ench = new CraftEnchantment(nmsEnchant) {
                 @Override
                 public String getName() {
@@ -139,7 +140,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
             };
             if (wasFrozen) {
-                ((MappedRegistry) Registry.ENCHANTMENT).freeze();
+                ((MappedRegistry) BuiltInRegistries.ENCHANTMENT).freeze();
             }
             ENCHANTMENTS_BY_KEY.put(ench.getKey(), ench);
             ENCHANTMENTS_BY_NAME.put(enchName, ench);

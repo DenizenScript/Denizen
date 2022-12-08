@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -35,7 +36,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     public BiomeNMSImpl(ServerLevel world, String name) {
         super(world.getWorld(), name);
         this.world = world;
-        biomeHolder = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getHolder(ResourceKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(name))).orElse(null);
+        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, new ResourceLocation(name))).orElse(null);
     }
 
     @Override

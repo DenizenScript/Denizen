@@ -28,6 +28,8 @@ import com.mojang.authlib.properties.Property;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceKey;
@@ -419,7 +421,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         IntList intList = tags.get(BlockTags.CLIMBABLE.location());
         intList.clear();
         for (Material material : materials) {
-            intList.add(Registry.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
+            intList.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
         }
         PacketHelperImpl.send(player, new ClientboundUpdateTagsPacket(packetInput));
     }

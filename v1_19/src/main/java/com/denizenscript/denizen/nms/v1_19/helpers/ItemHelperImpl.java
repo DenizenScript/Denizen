@@ -19,6 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -71,7 +73,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            ReflectionHelper.getFinalSetter(Item.class, ReflectionMappingsInfo.Item_maxStackSize).invoke(Registry.ITEM.get(CraftNamespacedKey.toMinecraft(material.getKey())), size);
+            ReflectionHelper.getFinalSetter(Item.class, ReflectionMappingsInfo.Item_maxStackSize).invoke(BuiltInRegistries.ITEM.get(CraftNamespacedKey.toMinecraft(material.getKey())), size);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -155,16 +157,17 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         AbstractCookingRecipe recipe;
         if (type.equalsIgnoreCase("smoker")) {
-            recipe = new SmokingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            // TODO: 1.19.3: Add support for choosing a CookingBookCategory
+            recipe = new SmokingRecipe(key, group, CookingBookCategory.MISC, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("blast")) {
-            recipe = new BlastingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new BlastingRecipe(key, group, CookingBookCategory.MISC, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("campfire")) {
-            recipe = new CampfireCookingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new CampfireCookingRecipe(key, group, CookingBookCategory.MISC, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else {
-            recipe = new SmeltingRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmeltingRecipe(key, group, CookingBookCategory.MISC, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
@@ -193,7 +196,8 @@ public class ItemHelperImpl extends ItemHelper {
         for (int i = 0; i < ingredients.size(); i++) {
             ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));
         }
-        ShapelessRecipe recipe = new ShapelessRecipe(key, group, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
+        // TODO: 1.19.3: Add support for choosing a CraftingBookCategory
+        ShapelessRecipe recipe = new ShapelessRecipe(key, group, CraftingBookCategory.MISC, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 
@@ -400,8 +404,8 @@ public class ItemHelperImpl extends ItemHelper {
     public static void renderFullMap(MapItemSavedData worldmap, int xMin, int zMin, int xMax, int zMax) {
         Level world = ((CraftWorld) worldmap.mapView.getWorld()).getHandle();
         int scale = 1 << worldmap.scale;
-        int mapX = worldmap.x;
-        int mapZ = worldmap.z;
+        int mapX = worldmap.centerX;
+        int mapZ = worldmap.centerZ;
         for (int x = xMin; x < xMax; x++) {
             double d0 = 0.0D;
             for (int z = zMin; z < zMax; z++) {
@@ -501,7 +505,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public BlockData getPlacedBlock(Material material) {
-        Item nmsItem = Registry.ITEM.getOptional(CraftNamespacedKey.toMinecraft(material.getKey())).orElse(null);
+        Item nmsItem = BuiltInRegistries.ITEM.getOptional(CraftNamespacedKey.toMinecraft(material.getKey())).orElse(null);
         if (nmsItem instanceof BlockItem) {
             Block block = ((BlockItem) nmsItem).getBlock();
             return CraftBlockData.fromData(block.defaultBlockState());

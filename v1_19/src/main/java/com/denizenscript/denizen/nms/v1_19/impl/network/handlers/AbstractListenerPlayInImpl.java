@@ -7,9 +7,9 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketSendListener;
+import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
-import net.minecraft.network.chat.SignedMessageChain;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
@@ -165,12 +165,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
             }
         }
         return false;
-    }
-
-    @Override
-    public void handleChatPreview(ServerboundChatPreviewPacket packet) {
-        if (handlePacketIn(packet)) { return; }
-        oldListener.handleChatPreview(packet);
     }
 
     @Override
@@ -376,13 +370,18 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public SignedMessageChain.Decoder signedMessageDecoder() {
-        return oldListener.signedMessageDecoder();
+    public void addPendingMessage(PlayerChatMessage playerchatmessage) {
+        oldListener.addPendingMessage(playerchatmessage);
     }
 
     @Override
-    public void addPendingMessage(PlayerChatMessage playerchatmessage) {
-        oldListener.addPendingMessage(playerchatmessage);
+    public void sendPlayerChatMessage(PlayerChatMessage playerchatmessage, ChatType.Bound chatmessagetype_a) {
+        oldListener.sendPlayerChatMessage(playerchatmessage, chatmessagetype_a);
+    }
+
+    @Override
+    public void sendDisguisedChatMessage(Component ichatbasecomponent, ChatType.Bound chatmessagetype_a) {
+        oldListener.sendDisguisedChatMessage(ichatbasecomponent, chatmessagetype_a);
     }
 
     @Override
@@ -467,6 +466,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleLockDifficulty(ServerboundLockDifficultyPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleLockDifficulty(packet);
+    }
+
+    @Override
+    public void handleChatSessionUpdate(ServerboundChatSessionUpdatePacket serverboundchatsessionupdatepacket) {
+        oldListener.handleChatSessionUpdate(serverboundchatsessionupdatepacket);
     }
 
     @Override

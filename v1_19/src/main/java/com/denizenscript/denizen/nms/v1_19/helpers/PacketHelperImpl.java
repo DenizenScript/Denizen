@@ -107,7 +107,7 @@ public class PacketHelperImpl implements PacketHelper {
     public void setFakeAbsorption(Player player, float value) {
         SynchedEntityData dw = new SynchedEntityData(null);
         dw.define(ENTITY_HUMAN_DATA_WATCHER_ABSORPTION, value);
-        send(player, new ClientboundSetEntityDataPacket(player.getEntityId(), dw, true));
+        send(player, new ClientboundSetEntityDataPacket(player.getEntityId(), dw.packDirty()));
     }
 
     @Override
@@ -299,7 +299,7 @@ public class PacketHelperImpl implements PacketHelper {
         try {
             if (entity.getType() == EntityType.PLAYER) {
                 if (listMode) {
-                    send(player, new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, ((CraftPlayer) player).getHandle()));
+                    send(player, new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, ((CraftPlayer) player).getHandle()));
                 }
                 else {
                     // For player entities, force a respawn packet and let the dynamic intercept correct the details
@@ -308,7 +308,7 @@ public class PacketHelperImpl implements PacketHelper {
                 return;
             }
             SynchedEntityData fakeData = new SynchedEntityData(((CraftEntity) entity).getHandle());
-            ClientboundSetEntityDataPacket packet = new ClientboundSetEntityDataPacket(entity.getEntityId(), fakeData, false);
+            ClientboundSetEntityDataPacket packet = new ClientboundSetEntityDataPacket(entity.getEntityId(), fakeData.packDirty());
             List<SynchedEntityData.DataItem<?>> list = new ArrayList<>();
             list.add(new SynchedEntityData.DataItem<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
             list.add(new SynchedEntityData.DataItem<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
@@ -356,7 +356,7 @@ public class PacketHelperImpl implements PacketHelper {
     public void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
         SynchedEntityData dw = new SynchedEntityData(null);
         dw.define(ENTITY_DATA_WATCHER_FLAGS, ((CraftEntity) entity).getHandle().getEntityData().get(ENTITY_DATA_WATCHER_FLAGS));
-        send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), dw, true));
+        send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), dw.packDirty()));
     }
 
     @Override
