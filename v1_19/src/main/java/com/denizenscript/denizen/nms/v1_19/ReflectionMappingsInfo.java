@@ -15,7 +15,7 @@ public class ReflectionMappingsInfo {
     public static String RecipeBook_known = "a";
 
     // net.minecraft.core.MappedRegistry
-    public static String MappedRegistry_frozen = "ca";
+    public static String MappedRegistry_frozen = "l";
 
     // net.minecraft.world.item.crafting.RecipeManager
     public static String RecipeManager_byName = "d";
@@ -36,13 +36,13 @@ public class ReflectionMappingsInfo {
     public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bO";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnForced = "cU";
+    public static String ServerPlayer_respawnForced = "cT";
 
     // net.minecraft.world.entity.monster.EnderMan
     public static String EnderMan_DATA_CREEPY = "bZ";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "cg";
+    public static String Zombie_inWaterTime = "ch";
 
     // net.minecraft.world.item.Item
     public static String Item_maxStackSize = "d";
@@ -69,17 +69,17 @@ public class ReflectionMappingsInfo {
     public static String Connection_receiving = "k";
 
     // net.minecraft.server.network.ServerGamePacketListenerImpl
-    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "G";
-    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "I";
+    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "H";
+    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "J";
     public static String ServerGamePacketListenerImpl_connection = "b";
-    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "C";
-    public static String ServerGamePacketListenerImpl_awaitingTeleport = "D";
+    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "D";
+    public static String ServerGamePacketListenerImpl_awaitingTeleport = "E";
 
     // net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
     public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "j";
 
     // net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
-    public static String ClientboundSetEntityDataPacket_packedItems = "b";
+    public static String ClientboundSetEntityDataPacket_packedItems = "c";
 
     // net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket
     public static String ClientboundSectionBlocksUpdatePacket_sectionPos = "b";
@@ -114,7 +114,7 @@ public class ReflectionMappingsInfo {
     public static String FishingHook_timeUntilHooked = "at";
 
     // net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase
-    public static String BlockBehaviourBlockStateBase_getFluidState_method = "p";
+    public static String BlockBehaviourBlockStateBase_getFluidState_method = "q";
 
     // net.minecraft.world.level.material.FluidState
     public static String FluidState_isRandomlyTicking_method = "f";
@@ -132,5 +132,5 @@ public class ReflectionMappingsInfo {
     public static String HolderReference_bindTags_method = "a";
 
     // net.minecraft.server.level.ServerLevel
-    public static String ServerLevel_sleepStatus = "Q";
+    public static String ServerLevel_sleepStatus = "R";
 }
