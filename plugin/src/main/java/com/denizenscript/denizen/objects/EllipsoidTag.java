@@ -422,6 +422,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @description
         // Returns a random decimal location within the ellipsoid.
         // Note that distribution of results will not be completely even.
+        // @example
+        // # Displays a debugblock at a random location within the ellipsoid "my_ellipsoid".
+        // - debugblock <ellipsoid[my_ellipsoid].random>
         // -->
         tagProcessor.registerTag(LocationTag.class, "random", (attribute, object) -> {
             // This is an awkward hack to try to weight towards the center a bit (to counteract the weight-away-from-center that would otherwise happen).
@@ -444,6 +447,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns LocationTag
         // @description
         // Returns the center location of the ellipsoid.
+        // @example
+        // # Displays a debugblock at center location of the ellipsoid "my_ellipsoid".
+        // - debugblock <ellipsoid[my_ellipsoid].location>
         // -->
         tagProcessor.registerTag(LocationTag.class, "location", (attribute, object) -> {
             return object.center;
@@ -454,6 +460,8 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns LocationTag
         // @description
         // Returns the size of the ellipsoid.
+        // @example
+        // - narrate "The size of the ellipsoid 'my_ellipsoid' is: <ellipsoid[my_ellipsoid].size.xyz>!"
         // -->
         tagProcessor.registerTag(LocationTag.class, "size", (attribute, object) -> {
             return object.size;
@@ -464,6 +472,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns EllipsoidTag
         // @description
         // Returns a copy of this ellipsoid, shifted by the input location.
+        // @example
+        // # Shifts the ellipsoid by 10,10,10 and notes it as "my_shifted_ellipsoid".
+        // - note <ellipsoid[my_ellipsoid].add[10,10,10]> as:my_shifted_ellipsoid
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "add", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -478,6 +489,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns EllipsoidTag
         // @description
         // Returns a copy of this ellipsoid, with the size value adapted to include the specified world location.
+        // @example
+        // # Expands "my_ellipsoid" to include the player's location and notes it as "my_new_ellipsoid".
+        // - note <ellipsoid[my_ellipsoid].include[<player.location>]> as:my_new_ellipsoid
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "include", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -528,6 +542,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns EllipsoidTag
         // @description
         // Returns a copy of this ellipsoid, set to the specified location.
+        // @example
+        // # Sets the location of "my_ellipsoid" to be the player's location.
+        // - note <ellipsoid[my_ellipsoid].with_location[<player.location>]> as:my_new_ellipsoid
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "with_location", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -542,6 +559,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns EllipsoidTag
         // @description
         // Returns a copy of this ellipsoid, set to the specified size.
+        // @example
+        // # Changes the size of "my_ellipsoid" to be 20,20,20 and notes it as "my_new_ellipsoid".
+        // - note <ellipsoid[my_ellipsoid].with_size[20,20,20]> as:my_new_ellipsoid
         // -->
         tagProcessor.registerTag(EllipsoidTag.class, "with_size", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -556,6 +576,9 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns ListTag(ChunkTag)
         // @description
         // Returns a list of all chunks that this ellipsoid touches at all (note that no valid ellipsoid tag can ever totally contain a chunk, due to vertical limits and roundness).
+        // @example
+        // # Loads the chunks that are fully within the ellipsoid "my_ellipsoid".
+        // - chunkload <ellipsoid[my_ellipsoid].chunks>
         // -->
         tagProcessor.registerTag(ListTag.class, "chunks", (attribute, object) -> {
             ListTag chunks = new ListTag();
