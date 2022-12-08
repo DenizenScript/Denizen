@@ -81,8 +81,6 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(ClientboundPlayerAbilitiesPacket.class, ReflectionMappingsInfo.ClientboundPlayerAbilitiesPacket_walkingSpeed);
 
-    public static MethodHandle ENTITY_METADATA_LIST_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundSetEntityDataPacket.class, List.class); // packedItems
-
     public static Field ENTITY_TRACKER_ENTRY_GETTER = ReflectionHelper.getFields(ChunkMap.TrackedEntity.class).getFirstOfType(ServerEntity.class);
 
     public static MethodHandle CANVAS_GET_BUFFER = ReflectionHelper.getMethodHandle(CraftMapCanvas.class, "getBuffer");
@@ -90,18 +88,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static MethodHandle BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundBlockEntityDataPacket.class, BlockPos.class, BlockEntityType.class, net.minecraft.nbt.CompoundTag.class);
 
-    public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA;
-    public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA;
-
-    static {
-        try {
-            ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME, null);
-            ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME_VISIBLE, null);
-        }
-        catch (Throwable ex) {
-            ex.printStackTrace();
-        }
-    }
+    public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME, null);
+    public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME_VISIBLE, null);
 
     @Override
     public void setFakeAbsorption(Player player, float value) {
@@ -308,12 +296,10 @@ public class PacketHelperImpl implements PacketHelper {
                 return;
             }
             SynchedEntityData fakeData = new SynchedEntityData(((CraftEntity) entity).getHandle());
-            ClientboundSetEntityDataPacket packet = new ClientboundSetEntityDataPacket(entity.getEntityId(), fakeData.packDirty());
-            List<SynchedEntityData.DataItem<?>> list = new ArrayList<>();
-            list.add(new SynchedEntityData.DataItem<>(ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
-            list.add(new SynchedEntityData.DataItem<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
-            ENTITY_METADATA_LIST_SETTER.invoke(packet, list);
-            send(player, packet);
+            List<SynchedEntityData.DataValue<?>> list = new ArrayList<>();
+            list.add(new SynchedEntityData.DataValue<>(ENTITY_CUSTOM_NAME_METADATA.getId(), ENTITY_CUSTOM_NAME_METADATA.getSerializer(), Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
+            list.add(new SynchedEntityData.DataValue<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA.getId(), ENTITY_CUSTOM_NAME_VISIBLE_METADATA.getSerializer(), true));
+            send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), list));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
