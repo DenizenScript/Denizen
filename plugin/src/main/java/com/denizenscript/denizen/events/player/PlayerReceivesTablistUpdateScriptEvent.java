@@ -36,6 +36,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
     // <context.latency> returns the packet's associated latency (if any).
     // <context.gamemode> returns the packet's associated gamemode (if any).
     // <context.skin_blob> returns the packet's associated skin blob (if any).
+    // <context.listed> returns true if the entry should be listed in the tab list, or false if not.
     //
     // @Determine
     // "LATENCY:" + ElementTag(Number) to change the latency.
@@ -43,6 +44,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
     // "DISPLAY:" + ElementTag to change the display name. 'name', 'display' and 'cancelled' determinations require 'Allow restricted actions' in Denizen/config.yml
     // "GAMEMODE:" + ElementTag to change the gamemode.
     // "SKIN_BLOB:" + ElementTag to change the skin blob.
+    // "LISTED:" + ElementTag(Boolean) to change whether the entry is listed.
     //
     // @Player Always.
     //
@@ -166,6 +168,11 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
                 data.signature = blob.substring(semicolon + 1);
                 return true;
             }
+            else if (determinationLow.startsWith("listed:")) {
+                data.modified = true;
+                data.isListed = new ElementTag(determination.substring("listed:".length())).asBoolean();
+                return true;
+            }
         }
         return super.applyDetermination(path, determinationObj);
     }
@@ -185,6 +192,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
             case "gamemode": return new ElementTag(data.gamemode);
             case "skin_blob": return new ElementTag(data.texture + ";" + data.signature);
             case "latency": return new ElementTag(data.latency);
+            case "listed": return new ElementTag(data.isListed);
         }
         return super.getContext(name);
     }
