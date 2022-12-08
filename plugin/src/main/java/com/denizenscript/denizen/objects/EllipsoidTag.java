@@ -608,6 +608,10 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
         // @returns ElementTag
         // @description
         // Gets the name of a noted EllipsoidTag. If the ellipsoid isn't noted, this is null.
+        // @example
+        // # For example, this might return something like:
+        // # "The ellipsoid you are currently in is noted as: my_ellipsoid!"
+        // - narrate "The ellipsoid you are currently in is noted as: <player.location.areas[ellipsoid].first.note_name.if_null[null! You aren't in an ellipsoid]>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "note_name", (attribute, ellipsoid) -> {
             String noteName = NoteManager.getSavedId(ellipsoid);

@@ -1538,6 +1538,10 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ElementTag
         // @description
         // Gets the name of a noted CuboidTag. If the cuboid isn't noted, this is null.
+        // @example
+        // # For example, this might return something like:
+        // # "The cuboid you are currently in is noted as: my_cuboid!"
+        // - narrate "The cuboid you are currently in is noted as: <player.location.areas[cuboid].first.note_name.if_null[null! You aren't in a cuboid]>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "note_name", (attribute, cuboid) -> {
             String noteName = NoteManager.getSavedId(cuboid);
