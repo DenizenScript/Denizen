@@ -42,7 +42,7 @@ public class EntityCanTick implements Property {
         return "can_tick";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.can_tick>

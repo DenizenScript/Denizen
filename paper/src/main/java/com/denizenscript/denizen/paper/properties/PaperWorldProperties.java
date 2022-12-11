@@ -42,7 +42,7 @@ public class PaperWorldProperties implements Property {
         return "PaperWorldProperties";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <WorldTag.no_tick_view_distance>

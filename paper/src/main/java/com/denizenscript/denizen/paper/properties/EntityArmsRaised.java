@@ -41,7 +41,7 @@ public class EntityArmsRaised implements Property {
         return "arms_raised";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.arms_raised>

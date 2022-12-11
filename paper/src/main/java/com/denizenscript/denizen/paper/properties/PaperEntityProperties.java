@@ -50,7 +50,7 @@ public class PaperEntityProperties implements Property {
         return "EntityPaperProperties";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.spawn_reason>

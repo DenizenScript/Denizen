@@ -62,7 +62,7 @@ public class ItemArmorStand implements Property {
         return "armor_stand_data";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.armor_stand_data>

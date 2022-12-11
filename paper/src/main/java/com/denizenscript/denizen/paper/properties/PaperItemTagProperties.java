@@ -38,7 +38,7 @@ public class PaperItemTagProperties implements Property {
         return "PaperItemTagProperties";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <ItemTag.rarity>

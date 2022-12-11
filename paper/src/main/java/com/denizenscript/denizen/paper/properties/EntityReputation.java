@@ -46,7 +46,7 @@ public class EntityReputation implements Property {
         return "reputation";
     }
 
-    public static void registerTags() {
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.reputation>
