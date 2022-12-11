@@ -897,7 +897,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return null;
             }
             cuboid = cuboid.clone();
-            int member = cuboid.pairs.size() + 1;
+            int member = cuboid.pairs.size();
             ObjectTag param = attribute.getParamObject();
 
             // <--[tag]
@@ -912,26 +912,26 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                     attribute.echoError("The tag CuboidTag.add_member[...].at[...] must have an 'at' value.");
                     return null;
                 }
-                member = attribute.getIntContext(2);
+                member = attribute.getIntContext(2) - 1;
                 attribute.fulfill(1);
             }
-            if (member < 1) {
-                member = 1;
+            if (member < 0) {
+                member = 0;
             }
-            if (member > cuboid.pairs.size() + 1) {
-                member = cuboid.pairs.size() + 1;
+            if (member > cuboid.pairs.size()) {
+                member = cuboid.pairs.size();
             }
             if (!(param instanceof CuboidTag) && param.toString().startsWith("li@")) { // Old cuboid identity used '|' symbol, so require 'li@' to be a list
                 for (CuboidTag subCuboid : param.asType(ListTag.class, attribute.context).filter(CuboidTag.class, attribute.context)) {
                     LocationPair pair = subCuboid.pairs.get(0);
-                    cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
+                    cuboid.pairs.add(member, new LocationPair(pair.low.clone(), pair.high.clone()));
                     member++;
                 }
             }
             else {
                 CuboidTag subCuboid = param.asType(CuboidTag.class, attribute.context);
                 LocationPair pair = subCuboid.pairs.get(0);
-                cuboid.pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
+                cuboid.pairs.add(member, new LocationPair(pair.low.clone(), pair.high.clone()));
             }
             return cuboid;
         });
@@ -1554,20 +1554,20 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
             String value = mechanism.getValue().asString();
             int comma = value.indexOf(',');
-            int member = pairs.size() + 1;
+            int member = pairs.size();
             if (comma > 0 && !value.startsWith("cu@")) {
-                member = new ElementTag(value.substring(0, comma)).asInt();
+                member = new ElementTag(value.substring(0, comma)).asInt() - 1;
                 value = value.substring(comma + 1);
             }
             CuboidTag subCuboid = CuboidTag.valueOf(value, mechanism.context);
-            if (member < 1) {
-                member = 1;
+            if (member < 0) {
+                member = 0;
             }
             if (member > pairs.size()) {
                 member = pairs.size();
             }
             LocationPair pair = subCuboid.pairs.get(0);
-            pairs.add(member - 1, new LocationPair(pair.low.clone(), pair.high.clone()));
+            pairs.add(member, new LocationPair(pair.low.clone(), pair.high.clone()));
             if (noteName != null) {
                 NotedAreaTracker.add(this);
             }
