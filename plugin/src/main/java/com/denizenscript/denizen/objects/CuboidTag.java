@@ -916,8 +916,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid(s) added at the end.
         // @example
-        // # Adds "my_second_cuboid" as a member of "my_cuboid".
-        // # If "my_cuboid" has two members, then "my_second_cuboid" will become the third member.
+        // # Creates a new cuboid named "my_third_cuboid" and adds "my_cuboid" and "my_second_cuboid" as members.
         // # You can also use the "add_member" mechanism.
         // - note <cuboid[my_cuboid].add_member[my_second_cuboid]> as:my_third_cuboid
         // -->
@@ -1320,7 +1319,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @example
         // # Notes a new cuboid with the player's location as the new maximum location of the cuboid.
         // # For example: if "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min) and the player had a location of 15,10,15,
-        // # then "my_new_cuboid" will have a minimum location of 15,10,15.
+        // # then "my_new_cuboid" will span from 15,10,15 (max) to 5,5,5 (min).
         // - note <cuboid[my_cuboid].with_max[<player.location>]> as:my_new_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "with_max", (attribute, cuboid) -> {
@@ -1343,12 +1342,12 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Not valid for multi-member CuboidTags.
         // @example
         // # If "my_cuboid" spans from 10,10,10 to 5,5,5 and gets expanded by 15 (15,15,15),
-        // # "my_expanded_cuboid" will span -10,-10,-10 to 25,25,25
+        // # then "my_expanded_cuboid" will span -10,-10,-10 (min) to 25,25,25 (max).
         // - note <cuboid[my_cuboid].expand[15]> as:my_expanded_cuboid
         // @example
-        // # If "my_cuboid" spans from 10,10,10 to 5,5,5 and gets expanded by 15,15,15,
-        // # "my_expanded_cuboid" will span -10,-10,-10 to 25,25,25
-        // - note <cuboid[my_cuboid].expand[15,15,15]> as:my_expanded_cuboid
+        // # If "my_cuboid" spans from 10,10,10 to 5,5,5 and gets expanded by 15,20,25,
+        // # then "my_expanded_cuboid" will span -10,-15,-20 (min) to 25,30,35 (max).
+        // - note <cuboid[my_cuboid].expand[15,20,25]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "expand", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1377,10 +1376,14 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Inverted by <@link tag CuboidTag.shrink_one_side>
         // Not valid for multi-member CuboidTags.
         // @example
-        // # Expands the high value of the cuboid "my_cuboid" by 15 (15,15,15) on one side and notes it as "my_expanded_cuboid".
-        // - note <cuboid[my_cuboid].expand_one_side[15]> as:my_expanded_cuboid
+        // # Expands the high value of the cuboid "my_cuboid" by 15,16,17 on one side and notes it as "my_expanded_cuboid".
+        // # If "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min), then expanding it by 15,16,17 will make "my_expanded_cuboid"
+        // # span from 25,26,27 (max) to 5,5,5 (min).
+        // - note <cuboid[my_cuboid].expand_one_side[15,16,17]> as:my_expanded_cuboid
         // @example
         // # Expands the low value of the cuboid "my_cuboid" by -15 (-15,-15,-15) on one side and notes it as "my_expanded_cuboid".
+        // # If "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min), then shrinking it by -15 will make "my_expanded_cuboid"
+        // # span from 10,10,10 (max) to -10,-10,-10 (min).
         // - note <cuboid[my_cuboid].expand_one_side[-15]> as:my_expanded_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "expand_one_side", (attribute, cuboid) -> {
@@ -1431,11 +1434,15 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Not valid for multi-member CuboidTags.
         // If you shrink past the limits of the cuboid's size, the cuboid will flip and start expanding the opposite direction.
         // @example
-        // # Shrinks the high value of the cuboid "my_cuboid" by 15 (15,15,15) on one side and notes it as "my_expanded_cuboid".
-        // - note <cuboid[my_cuboid].expand_one_side[15]> as:my_expanded_cuboid
+        // # Shrinks the high value of the cuboid "my_cuboid" by 15,16,17 on one side and notes it as "my_smaller_cuboid".
+        // # If "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min), then shrinking it by 15,16,17 will make "my_smaller_cuboid"
+        // # span from 5,5,5 (max) to -5,-6,-7 (min).
+        // - note <cuboid[my_cuboid].shrink_one_side[15,16,17]> as:my_smaller_cuboid
         // @example
-        // # Shrinks the low value of the cuboid "my_cuboid" by -15 (-15,-15,-15) on one side and notes it as "my_expanded_cuboid".
-        // - note <cuboid[my_cuboid].expand_one_side[-15]> as:my_expanded_cuboid
+        // # Shrinks the low value of the cuboid "my_cuboid" by -15 (-15,-15,-15) on one side and notes it as "my_smaller_cuboid".
+        // # If "my_cuboid" spans from 10,10,10 (max) to 5,5,5 (min), then shrinking it by -15 will make "my_smaller_cuboid"
+        // # span from 20,20,20 (max) to 10,10,10 (min).
+        // - note <cuboid[my_cuboid].shrink_one_side[-15]> as:my_smaller_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "shrink_one_side", (attribute, cuboid) -> {
             if (!attribute.hasParam()) {
@@ -1481,6 +1488,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Gets a list of all chunks entirely within the CuboidTag (ignoring the Y axis).
         // @example
         // # Loads the chunks that are fully within the cuboid "my_cuboid".
+        // # If "my_cuboid" spans from "15,50,15" (max) to "7,64,5" (min), then this will return an empty list and not load any chunks
+        // # because no chunks are fully enclosed within it. But, for example, if it spans from "21,70,21" (max) to "-10,64,-9" (min),
+        // # then this will return a list with chunk 0,0 and load it because the cuboid surrounds that chunk.
         // - chunkload <cuboid[my_cuboid].chunks>
         // -->
         tagProcessor.registerTag(ListTag.class, "chunks", (attribute, cuboid) -> {
@@ -1517,6 +1527,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Gets a list of all chunks partially or entirely within the CuboidTag.
         // @example
         // # Loads the chunks that are within the cuboid "my_cuboid", even if they are partially within the cuboid.
+        // # If "my_cuboid" spans from "15,50,15" (max) to "7,64,5" (min), then this will return a list with chunk 0,0
+        // # in it, because the chunk is partially contained by the cuboid.
         // - chunkload <cuboid[my_cuboid].partial_chunks>
         // -->
         tagProcessor.registerTag(ListTag.class, "partial_chunks", (attribute, cuboid) -> {
@@ -1662,10 +1674,13 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // <CuboidTag.add_member[<cuboid>]>
         // <CuboidTag.add_member[<cuboid>].at[<#>]>
         // @example
-        // # Adds "my_second_cuboid" as a member to "my_cuboid".
+        // # Adds "my_second_cuboid" as a member to "my_cuboid" and narrates a formatted list of members.
+        // # For example, if "my_cuboid" is "world,5,5,5,10,10,10" and "my_second_cuboid" is "world,12,12,12,22,22,22",
+        // # then this will narrate "world,5,5,5,10,10,10 and world,12,12,12,22,22,22".
         // - adjust <cuboid[my_cuboid]> add_member:my_second_cuboid
+        // - narrate <cuboid[my_cuboid].list_members.formatted>
         // @example
-        // # Adds "my_second_cuboid" as a member to "my_cuboid" at an index of 2.
+        // # Adds "my_second_cuboid" as a member to "my_cuboid" at the second index.
         // - adjust <cuboid[my_cuboid]> add_member:2,my_second_cuboid
         // -->
         if (mechanism.matches("add_member")) {
@@ -1702,8 +1717,11 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @tags
         // <CuboidTag.remove_member[<#>]>
         // @example
-        // # Removes the second member from the cuboid "my_cuboid".
+        // # Removes the second member from "my_cuboid" and narrates a formatted list of members.
+        // # For example, if "my_cuboid" is "world,5,5,5,10,10,10" and it's second member is "world,12,12,12,22,22,22",
+        // # after the member is removed then this will narrate "world,5,5,5,10,10,10".
         // - adjust <cuboid[my_cuboid]> remove_member:2
+        // - narrate <cuboid[my_cuboid].list_members.formatted>
         // -->
         if (mechanism.matches("remove_member") && mechanism.requireInteger()) {
             if (pairs.size() == 1) {
