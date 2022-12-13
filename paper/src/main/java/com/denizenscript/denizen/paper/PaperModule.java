@@ -39,6 +39,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(ExperienceOrbMergeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAbsorbsExperienceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChoosesArrowScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEventPaperImpl.class);
