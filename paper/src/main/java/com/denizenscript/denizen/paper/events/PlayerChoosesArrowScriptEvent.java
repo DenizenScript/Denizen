@@ -38,11 +38,9 @@ public class PlayerChoosesArrowScriptEvent extends BukkitScriptEvent implements 
     // @Player Always.
     //
     // @Example
-    // # This example prevents to use any arrow but spectral_arrows.
-    // on player chooses arrow:
-    // - if !<context.arrow.advanced_matches[spectral_arrow]>:
-    //     - determine cancelled
-    //
+    // # This example prevents using any arrow but spectral_arrows.
+    // on player chooses arrow arrow:!spectral_arrow:
+    // - determine cancelled
     // -->
 
     public PlayerChoosesArrowScriptEvent() {
