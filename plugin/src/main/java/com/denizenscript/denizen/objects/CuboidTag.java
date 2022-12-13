@@ -784,28 +784,42 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 return null;
             }
             CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
-            if (cub2 != null) {
-                boolean intersects = false;
-                whole_loop:
-                for (LocationPair pair : cuboid.pairs) {
-                    for (LocationPair pair2 : cub2.pairs) {
-                        if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
-                            return new ElementTag("false");
-                        }
-                        if (pair2.low.getX() <= pair.high.getX()
-                                && pair2.low.getY() <= pair.high.getY()
-                                && pair2.low.getZ() <= pair.high.getZ()
-                                && pair2.high.getX() >= pair.low.getX()
-                                && pair2.high.getY() >= pair.low.getY()
-                                && pair2.high.getZ() >= pair.low.getZ()) {
-                            intersects = true;
-                            break whole_loop;
-                        }
-                    }
-                }
-                return new ElementTag(intersects);
+            if (cub2 == null) {
+                return null;
             }
-            return null;
+            return new ElementTag(cuboid.intersects(cub2));
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.intersection[<cuboid>]>
+        // @returns CuboidTag
+        // @description
+        // Returns the intersection of two intersecting cuboids. Returns null if the cuboids do not intersect.
+        // -->
+        tagProcessor.registerTag(CuboidTag.class, "intersection", (attribute, cuboid) -> {
+            if (!attribute.hasParam()) {
+                attribute.echoError("The tag CuboidTag.intersection[...] must have a value.");
+                return null;
+            }
+            CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
+            if (cub2 == null) {
+                return null;
+            }
+            if (!cuboid.intersects(cub2)) {
+                Debug.echoError("Cannot return intersection: The cuboids do not intersect.");
+                return null;
+            }
+            LocationPair pair = cuboid.pairs.get(0);
+            LocationPair pair2 = cub2.pairs.get(0);
+            int xHigh = Math.min(pair.high.getBlockX(), pair2.high.getBlockX());
+            int yHigh = Math.min(pair.high.getBlockY(), pair2.high.getBlockY());
+            int zHigh = Math.min(pair.high.getBlockZ(), pair2.high.getBlockZ());
+            int xLow = Math.max(pair.low.getBlockX(), pair2.low.getBlockX());
+            int yLow = Math.max(pair.low.getBlockY(), pair2.low.getBlockY());
+            int zLow = Math.max(pair.low.getBlockZ(), pair2.low.getBlockZ());
+            LocationTag locationMin = new LocationTag(xLow, yLow, zLow, pair.low.getWorldName());
+            LocationTag locationMax = new LocationTag(xHigh, yHigh, zHigh, pair.low.getWorldName());
+            return new CuboidTag(locationMin, locationMax);
         });
 
         // <--[tag]
@@ -1441,6 +1455,26 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             BukkitImplDeprecations.cuboidFullTag.warn(attribute.context);
             return new ElementTag(cuboid.identifyFull());
         });
+    }
+
+    public boolean intersects(CuboidTag cub2) {
+        CuboidTag cuboid = clone();
+        for (LocationPair pair : cuboid.pairs) {
+            for (LocationPair pair2 : cub2.pairs) {
+                if (!pair.low.getWorldName().equalsIgnoreCase(pair2.low.getWorldName())) {
+                    return false;
+                }
+                if (pair2.low.getX() <= pair.high.getX()
+                        && pair2.low.getY() <= pair.high.getY()
+                        && pair2.low.getZ() <= pair.high.getZ()
+                        && pair2.high.getX() >= pair.low.getX()
+                        && pair2.high.getY() >= pair.low.getY()
+                        && pair2.high.getZ() >= pair.low.getZ()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public CuboidTag shifted(LocationTag vec) {
