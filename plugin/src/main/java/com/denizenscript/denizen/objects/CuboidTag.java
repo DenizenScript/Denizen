@@ -795,18 +795,16 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns CuboidTag
         // @description
         // Returns the intersection of two intersecting cuboids. Returns null if the cuboids do not intersect.
+        // @example
+        // # Notes the intersection as "intersecting_area".
+        // - note <cuboid[my_cuboid].intersection[my_second_cuboid]> as:intersecting_area
+        // @example
+        // # Highlights the outline of the intersecting_area.
+        // - debugblock <cuboid[intersecting_area].outline>
         // -->
-        tagProcessor.registerTag(CuboidTag.class, "intersection", (attribute, cuboid) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("The tag CuboidTag.intersection[...] must have a value.");
-                return null;
-            }
-            CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
-            if (cub2 == null) {
-                return null;
-            }
+        tagProcessor.registerTag(CuboidTag.class, CuboidTag.class, "intersection", (attribute, cuboid, cub2) -> {
             if (!cuboid.intersects(cub2)) {
-                Debug.echoError("Cannot return intersection: The cuboids do not intersect.");
+                attribute.echoError("Cannot return intersection: The cuboids do not intersect.");
                 return null;
             }
             LocationPair pair = cuboid.pairs.get(0);
@@ -1458,8 +1456,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
     }
 
     public boolean intersects(CuboidTag cub2) {
-        CuboidTag cuboid = clone();
-        for (LocationPair pair : cuboid.pairs) {
+        for (LocationPair pair : pairs) {
             for (LocationPair pair2 : cub2.pairs) {
                 if (!pair.low.getWorldName().equalsIgnoreCase(pair2.low.getWorldName())) {
                     return false;
