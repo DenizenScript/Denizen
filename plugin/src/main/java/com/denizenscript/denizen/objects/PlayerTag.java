@@ -2529,6 +2529,36 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return result;
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <PlayerTag.last_death_location>
+            // @returns LocationTag
+            // @mechanism PlayerTag.last_death_location
+            // @description
+            // Returns the player's last death location, if any.
+            // Works with offline players.
+            // -->
+            tagProcessor.registerTag(LocationTag.class, "last_death_location", (attribute, object) -> {
+                Location deathLoc = object.getOfflinePlayer().getLastDeathLocation();
+                return deathLoc != null ? new LocationTag(deathLoc) : null;
+            });
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name last_death_location
+            // @input LocationTag
+            // @description
+            // Sets the player's last death location.
+            // Note that this only updates clientside when the player respawns.
+            // @tags
+            // <PlayerTag.last_death_location>
+            // -->
+            registerOnlineOnlyMechanism("last_death_location", LocationTag.class, (object, mechanism, input) -> {
+                object.getPlayerEntity().setLastDeathLocation(input);
+            });
+        }
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
