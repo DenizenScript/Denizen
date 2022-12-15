@@ -812,7 +812,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @attribute <CuboidTag.intersection[<cuboid>]>
         // @returns CuboidTag
         // @description
-        // Returns the intersection of two intersecting cuboids. Returns null if the cuboids do not intersect.
+        // Returns the intersection of two intersecting cuboids - in other words, returns a cuboid of just the overlap between the two cuboids.
+        // Returns null if the cuboids do not intersect.
         // @example
         // # Notes the intersection as "intersecting_area".
         // - note <cuboid[my_cuboid].intersection[my_second_cuboid]> as:intersecting_area
