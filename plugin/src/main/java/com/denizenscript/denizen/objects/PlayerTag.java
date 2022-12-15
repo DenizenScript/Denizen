@@ -2529,6 +2529,41 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return result;
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <PlayerTag.last_death_location>
+            // @returns LocationTag
+            // @mechanism PlayerTag.last_death_location
+            // @description
+            // Returns the location where the player last died, if any.
+            // Works with offline players.
+            // -->
+            registerOfflineTag(LocationTag.class, "last_death_location", (attribute, object) -> {
+                Location deathLoc = object.getOfflinePlayer().getLastDeathLocation();
+                return deathLoc != null ? new LocationTag(deathLoc) : null;
+            });
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name last_death_location
+            // @input LocationTag
+            // @description
+            // Sets the player's last death location, note that this only updates clientside when the player respawns.
+            // Works with offline players.
+            // @tags
+            // <PlayerTag.last_death_location>
+            // -->
+            registerOfflineMechanism("last_death_location", LocationTag.class, (object, mechanism, input) -> {
+                if (object.isOnline()) {
+                    object.getPlayerEntity().setLastDeathLocation(input);
+                }
+                else {
+                    object.getNBTEditor().setLastDeathLocation(input);
+                }
+            });
+        }
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -2568,6 +2603,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             runnable.run(object, mechanism);
         });
+    }
+
+    public static <P extends ObjectTag> void registerOfflineMechanism(String name, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<PlayerTag, P> runnable, String... deprecatedVariants) {
+        tagProcessor.registerMechanism(name, false, paramType, (object, mechanism, input) -> {
+            if (!object.isValid()) {
+                mechanism.echoError("Player is not considered valid in mechanism '" + name + "' for player: " + object.debuggable());
+                return;
+            }
+            runnable.run(object, mechanism, input);
+        }, deprecatedVariants);
     }
 
     public static <P extends ObjectTag> void registerOnlineOnlyMechanism(String name, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<PlayerTag, P> runnable) {
