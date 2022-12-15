@@ -419,8 +419,7 @@ public abstract class ImprovedOfflinePlayer {
         CompoundTag compoundTag = (CompoundTag) this.compound.getValue().get("LastDeathLocation");
         compoundTag = compoundTag.createBuilder()
                 .putIntArray("pos", new int[] {deathLoc.getBlockX(), deathLoc.getBlockY(), deathLoc.getBlockZ()})
-                .putString("dimension", deathLoc.getWorld().getKey().toString())
-                .build();
+                .putString("dimension", deathLoc.getWorld().getKey().toString()).build();
         this.compound = compound.createBuilder().put("LastDeathLocation", compoundTag).build();
         if (this.autosave) {
             savePlayerData();
