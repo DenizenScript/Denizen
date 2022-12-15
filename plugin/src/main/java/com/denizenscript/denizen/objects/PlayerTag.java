@@ -2609,6 +2609,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerMechanism(name, false, paramType, (object, mechanism, input) -> {
             if (!object.isValid()) {
                 mechanism.echoError("Player is not considered valid in mechanism '" + name + "' for player: " + object.debuggable());
+                return;
             }
             runnable.run(object, mechanism, input);
         }, deprecatedVariants);
