@@ -2537,7 +2537,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @returns LocationTag
             // @mechanism PlayerTag.last_death_location
             // @description
-            // Returns the player's last death location, if any.
+            // Returns the location where the player last died, if any.
             // Works with offline players.
             // -->
             registerOfflineTag(LocationTag.class, "last_death_location", (attribute, object) -> {
@@ -2550,8 +2550,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @name last_death_location
             // @input LocationTag
             // @description
-            // Sets the player's last death location.
-            // Note that this only updates clientside when the player respawns.
+            // Sets the player's last death location, note that this only updates clientside when the player respawns.
             // Works with offline players.
             // @tags
             // <PlayerTag.last_death_location>
