@@ -212,7 +212,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos, SectionPos.class);
     public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions, short[].class);
     public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states, BlockState[].class);
-    public static Field ENTITY_METADATA_LIST = ReflectionHelper.getFields(ClientboundSetEntityDataPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityDataPacket_packedItems, List.class);
 
     @Override
     public void send(Packet<?> packet) {
@@ -696,13 +695,12 @@ public class DenizenNetworkManagerImpl extends Connection {
                         for (SynchedEntityData.DataValue item : data) {
                             EntityDataSerializer<?> watcherObject = item.serializer();
                             if (item.id() == 0) { // Entity flags
-                                ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(copyPacket(metadataPacket));
                                 data = new ArrayList<>(data);
-                                ENTITY_METADATA_LIST.set(altPacket, data);
                                 data.remove(item);
                                 byte flags = (byte) item.value();
                                 flags |= 0x20; // Invisible flag
                                 data.add(new SynchedEntityData.DataValue(item.id(), watcherObject, flags));
+                                ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
                                 ClientboundSetEntityDataPacket updatedPacket = getModifiedMetadataFor(altPacket);
                                 oldManager.send(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
                                 return true;
@@ -825,8 +823,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             if (!any) {
                 return null;
             }
-            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(copyPacket(metadataPacket));
-            ENTITY_METADATA_LIST.set(altPacket, data);
+            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
             return altPacket;
         }
         catch (Throwable ex) {
