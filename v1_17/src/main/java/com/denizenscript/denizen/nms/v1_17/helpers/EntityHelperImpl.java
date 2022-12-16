@@ -539,7 +539,7 @@ public class EntityHelperImpl extends EntityHelper {
                 }
                 return src;
             case PROJECTILE:
-                return DamageSource.thrown(nmsSource, nmsSource.getBukkitEntity() instanceof Projectile
+                return DamageSource.thrown(nmsSource, nmsSource != null && nmsSource.getBukkitEntity() instanceof Projectile
                         && ((Projectile) nmsSource.getBukkitEntity()).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) nmsSource.getBukkitEntity()).getShooter()).getHandle() : null);
             case SUFFOCATION:
                 return DamageSource.IN_WALL;
