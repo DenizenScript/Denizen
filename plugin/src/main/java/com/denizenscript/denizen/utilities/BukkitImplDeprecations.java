@@ -174,7 +174,7 @@ public class BukkitImplDeprecations {
     public static Warning skeletonSwingArm = new SlowWarning("skeletonSwingArm", "The 'SKELETON_START/STOP_SWING_ARM' animations are deprecated in favor of the 'EntityTag.aggressive' property.");
     public static Warning entityArmsRaised = new SlowWarning("entityArmsRaised", "The 'EntityTag.arms_raised' property is deprecated in favor of 'EntityTag.aggressive'.");
 
-    // Added 2022/12/15
+    // Added 2022/12/16
     public static Warning entitySkeletonArmsRaised = new SlowWarning("entitySkeletonArmsRaised", "The 'EntityTag.skeleton_arms_raised' mechanism is deprecated in favor of 'EntityTag.aggressive'.");
 
     // ==================== VERY SLOW deprecations ====================
