@@ -3757,12 +3757,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @object EntityTag
         // @name skeleton_arms_raised
         // @input ElementTag(Boolean)
+        // @deprecated use 'EntityTag.aggressive'.
         // @description
-        // Sets whether the skeleton entity should raise its arms.
+        // Deprecated in favor of <@link mechanism EntityTag.aggressive>.
         // -->
         if (mechanism.matches("skeleton_arms_raised") && mechanism.requireBoolean()) {
-            EntityAnimation entityAnimation = NMSHandler.animationHelper.getEntityAnimation(mechanism.getValue().asBoolean() ? "SKELETON_START_SWING_ARM" : "SKELETON_STOP_SWING_ARM");
-            entityAnimation.play(entity);
+            BukkitImplDeprecations.entitySkeletonArmsRaised.warn(mechanism.context);
+            if (getBukkitEntityType() == EntityType.SKELETON) {
+                NMSHandler.entityHelper.setAggressive((Mob) getBukkitEntity(), mechanism.getValue().asBoolean());
+            }
         }
 
         // <--[mechanism]
