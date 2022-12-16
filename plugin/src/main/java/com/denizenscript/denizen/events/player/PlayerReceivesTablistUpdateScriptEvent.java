@@ -29,7 +29,7 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
     // @Cancellable true
     //
     // @Context
-    // <context.mode> returns the update mode: 'add', 'remove', 'update_gamemode', 'update_latency', 'update_listed', or 'update_display'. As of 1.19.3, you can also receive update combos like "update_gamemode|update_latency".
+    // <context.mode> returns the update mode: 'add', 'remove', 'initialize_chat', 'update_gamemode', 'update_latency', 'update_listed', or 'update_display'. As of 1.19.3, you can also receive update combos like "update_gamemode|update_latency".
     // <context.uuid> returns the packet's associated UUID.
     // <context.name> returns the packet's associated name (if any).
     // <context.display> returns the packet's associated display name (if any).

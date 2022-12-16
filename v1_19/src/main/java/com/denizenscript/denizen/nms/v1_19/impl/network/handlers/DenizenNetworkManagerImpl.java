@@ -28,6 +28,7 @@ import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.google.common.base.Joiner;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
@@ -323,6 +324,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         oldManager.send(packet, genericfuturelistener);
     }
 
+    public static boolean tablistBreakOnlyOnce = false;
+
     public boolean processTablistPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
             return false;
@@ -347,9 +350,18 @@ public class DenizenNetworkManagerImpl extends Connection {
                     case UPDATE_LISTED:
                         mode = mode.isEmpty() ? "update_listed" : mode + "|update_listed";
                         break;
+                    case INITIALIZE_CHAT:
+                        mode = mode.isEmpty() ? "initialize_chat" : mode + "|initialize_chat";
                     default:
-                        return false;
+                        break;
                 }
+            }
+            if (mode.isEmpty()) {
+                if (!tablistBreakOnlyOnce) {
+                    tablistBreakOnlyOnce = true;
+                    Debug.echoError("Tablist packet processing failed: unknown action " + Joiner.on(", ").join(infoPacket.actions()));
+                }
+                return false;
             }
             boolean isOverriding = false;
             for (ClientboundPlayerInfoUpdatePacket.Entry update : infoPacket.entries()) {
