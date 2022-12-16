@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
@@ -153,7 +155,12 @@ public class PlaySoundCommand extends AbstractCommand {
                         player.getPlayerEntity().playSound(player.getLocation(), sound, categoryEnum, volume, pitch);
                     }
                     else {
-                        player.getPlayerEntity().playSound(player.getPlayerEntity(), Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                            player.getPlayerEntity().playSound(player.getPlayerEntity(), Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                        }
+                        else {
+                            player.getPlayerEntity().playSound(player.getLocation(), Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                        }
                     }
                 }
             }
