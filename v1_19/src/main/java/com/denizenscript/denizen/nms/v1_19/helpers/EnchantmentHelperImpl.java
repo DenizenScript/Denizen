@@ -210,7 +210,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public int getDamageProtection(Enchantment enchantment, int level, EntityDamageEvent.DamageCause type, org.bukkit.entity.Entity attacker) {
-        DamageSource src = EntityHelperImpl.getSourceFor(((CraftEntity) attacker).getHandle(), type);
+        DamageSource src = EntityHelperImpl.getSourceFor(attacker == null ? null : ((CraftEntity) attacker).getHandle(), type);
         if (src instanceof EntityHelperImpl.FakeDamageSrc) {
             src = ((EntityHelperImpl.FakeDamageSrc) src).real;
         }
