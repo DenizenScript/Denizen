@@ -200,7 +200,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For vanilla enchantments, uses language translation keys.
         // @example
         // # Narrates "You don your Thorns III armor."
-        // # Note, that vanilla enchantments have a color applied to them, such as grey or red.
+        // # Note: vanilla enchantments have a color applied to them, such as grey or red.
         // - narrate "You don your <enchantment[thorns].full_name[3]><reset> armor."
         // -->
         tagProcessor.registerTag(ElementTag.class, "full_name", (attribute, object) -> {
