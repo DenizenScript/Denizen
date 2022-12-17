@@ -433,8 +433,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns the damage bonus this enchantment applies against the given monster type.
         // The input is a MapTag with a level value and a monster type specified, where the type can be any of: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
         // @example
-        // # Narrates "With Bane of Arthropods 2, you get a damage bonus of 5!"
-        // - narrate "With Bane of Arthropods 2, you get a damage bonus of <enchantment[bane_of_arthropods].damage_bonus[level=2;type=arthropod]>!"
+        // # Narrates "With Bane of Arthropods 2, you get a damage bonus of 5 on arthropods!"
+        // - narrate "With Bane of Arthropods 2, you get a damage bonus of <enchantment[bane_of_arthropods].damage_bonus[level=2;type=arthropod]> on arthropods!"
         // -->
         tagProcessor.registerTag(ElementTag.class, MapTag.class, "damage_bonus", (attribute, object, map) -> {
             ElementTag level = map.getElement("level");
@@ -454,8 +454,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // The input is a MapTag with a level value and a damage type specified, where the damage type must be from <@link language Damage Cause>.
         // For entity damage causes, optionally specify the entity attacker.
         // @example
-        // # Narrates "With the Protection 3 enchantment, there is a damage protection of 3!"
-        // - narrate "With the Protection 3 enchantment, there is a damage protection of <enchantment[protection].damage_protection[level=3;type=fall]>!"
+        // # Narrates "With the Protection 3 enchantment, there is fall damage protection of 3!"
+        // - narrate "With the Protection 3 enchantment, there is fall damage protection of <enchantment[protection].damage_protection[level=3;type=fall]>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, MapTag.class, "damage_protection", (attribute, object, map) -> {
             ElementTag level = map.getRequiredObjectAs("level", ElementTag.class, attribute);
