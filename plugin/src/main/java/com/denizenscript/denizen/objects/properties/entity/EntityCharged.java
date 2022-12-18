@@ -1,20 +1,27 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.WitherSkull;
 
 public class EntityCharged implements Property {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag
-                && (((EntityTag) entity).getBukkitEntity() instanceof WitherSkull
-                || ((EntityTag) entity).getBukkitEntity() instanceof Vex);
+    public static boolean describes(ObjectTag object) {
+        if (!(object instanceof EntityTag)) {
+            return false;
+        }
+        Entity entity = ((EntityTag) object).getBukkitEntity();
+        return entity instanceof WitherSkull
+                || entity instanceof Vex
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && entity instanceof Guardian);
     }
 
     public static EntityCharged getFrom(ObjectTag entity) {
@@ -26,10 +33,6 @@ public class EntityCharged implements Property {
         }
     }
 
-    public static final String[] handledMechs = new String[] {
-            "charged"
-    };
-
     private EntityCharged(EntityTag entity) {
         this.entity = entity;
     }
@@ -38,7 +41,10 @@ public class EntityCharged implements Property {
 
     @Override
     public String getPropertyString() {
-        return isCharged() ? "true" : "false";
+        if (isGuardian()) {
+            return getGuardian().hasLaser() ? "true" : null;
+        }
+        return String.valueOf(isCharged());
     }
 
     @Override
@@ -56,9 +62,39 @@ public class EntityCharged implements Property {
         // @description
         // If the entity is wither_skull, returns whether the skull is charged. Charged skulls are blue.
         // If the entity is a vex, returns whether the vex is charging. Charging vexes have red lines.
+        // If the entity is a guardian, returns whether the guardian's laser is active.
         // -->
         PropertyParser.registerTag(EntityCharged.class, ElementTag.class, "charged", (attribute, object) -> {
             return new ElementTag(object.isCharged());
+        });
+
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name charged
+        // @input ElementTag(Boolean)
+        // @description
+        // If the entity is wither_skull, changes whether the skull is charged. Charged skulls are blue.
+        // If the entity is a vex, changes whether the vex is charging. Charging vexes have red lines.
+        // This is a visual effect, and does not cause the vex to actually charge at anyone.
+        // If the entity is a guardian, returns whether the guardian's laser is active.
+        // Note that guardians require a target to use their laser, see <@link command attack>.
+        // @tags
+        // <EntityTag.charged>
+        // -->
+        PropertyParser.registerMechanism(EntityCharged.class, ElementTag.class, "charged", (object, mechanism, input) -> {
+            if (!mechanism.requireBoolean()) {
+                return;
+            }
+            if (object.isWitherSkull()) {
+                object.getWitherSkull().setCharged(input.asBoolean());
+            }
+            else if (object.isVex()) {
+                object.getVex().setCharging(input.asBoolean());
+            }
+            else if (object.isGuardian()) {
+                object.getGuardian().setLaser(input.asBoolean());
+            }
         });
     }
 
@@ -70,12 +106,20 @@ public class EntityCharged implements Property {
         return entity.getBukkitEntity() instanceof Vex;
     }
 
+    public boolean isGuardian() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && entity.getBukkitEntity() instanceof Guardian;
+    }
+
     public WitherSkull getWitherSkull() {
         return (WitherSkull) entity.getBukkitEntity();
     }
 
     public Vex getVex() {
         return (Vex) entity.getBukkitEntity();
+    }
+
+    public Guardian getGuardian() {
+        return (Guardian) entity.getBukkitEntity();
     }
 
     public boolean isCharged() {
@@ -85,29 +129,9 @@ public class EntityCharged implements Property {
         else if (isVex()) {
             return getVex().isCharging();
         }
-        return false;
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name charged
-        // @input ElementTag(Boolean)
-        // @description
-        // If the entity is wither_skull, changes whether the skull is charged. Charged skulls are blue.
-        // If the entity is a vex, changes whether the vex is charging. Charging vexes have red lines. This is a visual effect, and does not cause the vex to actually charge at anyone.
-        // @tags
-        // <EntityTag.charged>
-        // -->
-        if (mechanism.matches("charged") && mechanism.requireBoolean()) {
-            if (isWitherSkull()) {
-                getWitherSkull().setCharged(mechanism.getValue().asBoolean());
-            }
-            else if (isVex()) {
-                getVex().setCharging(mechanism.getValue().asBoolean());
-            }
+        else if (isGuardian()) {
+            return getGuardian().hasLaser();
         }
+        return false;
     }
 }
