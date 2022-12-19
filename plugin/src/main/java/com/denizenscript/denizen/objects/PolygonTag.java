@@ -715,7 +715,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with the specified corner added to the end of the corner list.
         // @example
-        // # Notes a new polygon with a new corner added. If the new corner has a location of "10,66,-2", and "my_polygon" has corners "0.0,0.0", "7.0,7.0", and "-5.0,6.0", then "my_new_polygon" will have corners  "0.0,0.0", "7.0,7.0", "-5.0,6.0", and "10.0,-2.0".
+        // # Notes a new polygon with a new corner added. If the new corner has a location of "10,66,-2", and "my_polygon" has corners "0.0,0.0", "7.0,7.0", and "-5.0,6.0",
+        // # then "my_new_polygon" will have corners  "0.0,0.0", "7.0,7.0", "-5.0,6.0", and "10.0,-2.0".
         // - note <polygon[my_polygon].with_corner[10,66,-2]> as:my_new_polygon
         // -->
         tagProcessor.registerTag(PolygonTag.class, "with_corner", (attribute, polygon) -> {
@@ -778,7 +779,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // Returns a copy of the polygon, with the specified Y value included as part of the Y range (expanding the Y-min or Y-max as needed).
         // @example
         // # Notes "my_polygon" as "my_new_polygon" but with the player's Y location included in the Y range.
-        // # For example, if "my_polygon" has a maximum-Y of 80 and a minimum-Y of 60 and the player's Y location was 95, then "my_new_polygon" will have a maximum-Y of 95 and a minimum-Y of 60.
+        // # For example, if "my_polygon" has a maximum-Y of 80 and a minimum-Y of 60,
+        // # and the player's Y location was 95, then "my_new_polygon" will have a maximum-Y of 95 and a minimum-Y of 60.
         // # However, if the player's Y location was 50, then the maximum-Y value would stay the same and the minimum-Y value would change to 50 instead.
         // - note <polygon[my_polygon].include_y[<player.location.y>]> as:my_new_polygon
         // -->
@@ -837,7 +839,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // <PolygonTag.with_corner[<location>]>
         // @example
         // # Adjusts the polygon to have a new corner added.
-        // # If the new corner has a location of "10,66,-2", and "my_polygon" has corners "0.0,0.0", "7.0,7.0", and "-5.0,6.0", then "my_new_polygon" will have corners  "0.0,0.0", "7.0,7.0", "-5.0,6.0", and "10.0,-2.0".
+        // # If the new corner has a location of "10,66,-2", and "my_polygon" has corners "0.0,0.0", "7.0,7.0", and "-5.0,6.0",
+        // # then "my_new_polygon" will have corners  "0.0,0.0", "7.0,7.0", "-5.0,6.0", and "10.0,-2.0".
         // - adjust <polygon[my_polygon]> add_corner:10,66,-2
         // -->
         tagProcessor.registerMechanism("add_corner", false, LocationTag.class, (object, mechanism, location) -> {
