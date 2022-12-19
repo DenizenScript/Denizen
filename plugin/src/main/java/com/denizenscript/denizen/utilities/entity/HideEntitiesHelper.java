@@ -88,7 +88,7 @@ public class HideEntitiesHelper {
     public static boolean playerShouldHide(UUID player, Entity ent) {
         PlayerHideMap map = playerHides.get(player);
         if (map == null) {
-            return defaultHidden.contains(ent.getUniqueId());
+            return defaultHidden.contains(ent.getUniqueId()) && !player.equals(ent.getUniqueId());
         }
         return map.shouldHide(ent);
     }
