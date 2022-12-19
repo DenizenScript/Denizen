@@ -168,8 +168,9 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For Denizen custom enchantments, returns the 'id' specified in the script.
         // For any other enchantments, returns the full key.
         // @example
-        // # Narrates "Wow, you have the protection enchantment!"
-        // - narrate "Wow, you have the <enchantment[protection].name> enchantment!"
+        // # This can narrate something like this:
+        // # "The item in your hand's first enchantment is sharpness!"
+        // - narrate "The item in your hand's first enchantment is <player.item_in_hand.enchantment_types.get[1].name||nothing>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(object.getCleanName());
@@ -181,8 +182,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the full key for this enchantment, like "minecraft:sharpness".
         // @example
-        // # Narrates "The key for the protection enchantment is: minecraft:flame!"
-        // - narrate "The key for the protection enchantment is: <enchantment[flame].key>!"
+        // # Narrates "The key for the flame enchantment is: minecraft:flame!"
+        // - narrate "The key for the flame enchantment is: <enchantment[flame].key>!"
         // @example
         // # This example uses a custom Denizen enchantment.
         // # Narrates "The key for the my_enchantment enchantment is: denizen:my_enchantment!"
@@ -315,9 +316,9 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only considered to be a curse. Curses are removed at grindstones, and spread from crafting table repairs.
         // @example
-        // # In the case of the "loyalty" enchantment, this will narrate:
-        // # "Phew, this enchantment is not a curse!"
-        // - if <enchantment[loyalty].is_curse>:
+        // # In the case of the "vanishing_curse" enchantment, this will narrate:
+        // # "Watch out! This enchantment is a curse!"
+        // - if <enchantment[vanishing_curse].is_curse>:
         //     - narrate "Watch out! This enchantment is a curse!"
         // - else:
         //     - narrate "Phew, this enchantment is not a curse!"
