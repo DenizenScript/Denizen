@@ -340,8 +340,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
-        byte flags = ((CraftEntity) entity).getHandle().getEntityData().get(ENTITY_DATA_WATCHER_FLAGS);
         List<SynchedEntityData.DataValue<?>> data = new ArrayList<>();
+        byte flags = ((CraftEntity) entity).getHandle().getEntityData().get(ENTITY_DATA_WATCHER_FLAGS);
         data.add(SynchedEntityData.DataValue.create(ENTITY_DATA_WATCHER_FLAGS, flags));
         send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), data));
     }
