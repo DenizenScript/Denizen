@@ -771,7 +771,6 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
         if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
-            Debug.log("No modifications set, returning");
             return null;
         }
         int eid = metadataPacket.id();
@@ -787,7 +786,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (nameToApply == null && !shouldModifyFlags) {
             return null;
         }
-        List<SynchedEntityData.DataValue<?>> data = new ArrayList<>();
+        List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems().size());
         Byte currentFlags = null;
         for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
             if (dataValue.id() == 0 && shouldModifyFlags) {
@@ -820,64 +819,13 @@ public class DenizenNetworkManagerImpl extends Connection {
             data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_WATCHER_FLAGS, flags));
         }
         if (nameToApply != null) {
+            Debug.log("Setting custom name");
             data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
             data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
         }
-        return new ClientboundSetEntityDataPacket(eid, data);
-        //        try {
-//            boolean any = false;
-//            for (int i = 0; i < data.size(); i++) {
-//                SynchedEntityData.DataValue<?> item = data.get(i);
-//                EntityDataSerializer<?> watcherObject = item.serializer();
-//                if (item.id() == 0 && (forceSneak != null || isInvisible != null)) { // 0: Entity flags
-//                    Debug.log("Processing entity flags (0):");
-//                    byte val = (Byte) item.value();
-//                    if (forceSneak != null) {
-//                        Debug.log("Setting force sneak");
-//                        if (forceSneak) {
-//                            val |= 0x02; // 8: Crouching
-//                        }
-//                        else {
-//                            val &= ~0x02;
-//                        }
-//                    }
-//                    if (isInvisible != null) {
-//                        Debug.log("Setting invisibility");
-//                        if (isInvisible) {
-//                            val |= 0x20;
-//                        }
-//                        else {
-//                            val &= ~0x20;
-//                        }
-//                    }
-//                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, val));
-//                    any = true;
-//                    Debug.log("Done, new value set");
-//                }
-//                else if (item.id() == 2 && nameToApply != null) { // 2: Custom name metadata
-//                    Debug.log("Processing custom name (2)");
-//                    Optional<Component> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
-//                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, name));
-//                    any = true;
-//                }
-//                else if (item.id() == 3 && nameToApply != null) { // 3: custom name visible metadata
-//                    Debug.log("Processing custom name visible (3)");
-//                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, true));
-//                    any = true;
-//                }
-//            }
-//            if (!any) {
-//                Debug.log("No changes, returning");
-//                return null;
-//            }
-//            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
-//            Debug.log("Changes applied, returning modified packet");
-//            return altPacket;
-//        }
-//        catch (Throwable ex) {
-//            Debug.echoError(ex);
-//            return null;
-//        }
+        ClientboundSetEntityDataPacket packet = new ClientboundSetEntityDataPacket(eid, data);
+        debugOutputPacket(packet);
+        return packet;
     }
 
     public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
