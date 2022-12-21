@@ -4,6 +4,7 @@ import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_19.Handler;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_19.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_19.impl.blocks.BlockLightImpl;
@@ -770,66 +771,113 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
         if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
+            Debug.log("No modifications set, returning");
             return null;
         }
-        try {
-            int eid = metadataPacket.id();
-            Entity ent = player.level.getEntity(eid);
-            if (ent == null) {
-                return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
-            }
-            String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
-            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUUID(), player.getUUID());
-            Boolean isInvisible = InvisibleCommand.isInvisible(ent.getBukkitEntity(), player.getUUID(), true);
-            if (nameToApply == null && forceSneak == null && isInvisible == null) {
-                return null;
-            }
-            List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems());
-            boolean any = false;
-            for (int i = 0; i < data.size(); i++) {
-                SynchedEntityData.DataValue<?> item = data.get(i);
-                EntityDataSerializer<?> watcherObject = item.serializer();
-                if (item.id() == 0 && (forceSneak != null || isInvisible != null)) { // 0: Entity flags
-                    byte val = (Byte) item.value();
-                    if (forceSneak != null) {
-                        if (forceSneak) {
-                            val |= 0x02; // 8: Crouching
-                        }
-                        else {
-                            val &= ~0x02;
-                        }
-                    }
-                    if (isInvisible != null) {
-                        if (isInvisible) {
-                            val |= 0x20;
-                        }
-                        else {
-                            val &= ~0x20;
-                        }
-                    }
-                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, val));
-                    any = true;
-                }
-                else if (item.id() == 2 && nameToApply != null) { // 2: Custom name metadata
-                    Optional<Component> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
-                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, name));
-                    any = true;
-                }
-                else if (item.id() == 3 && nameToApply != null) { // 3: custom name visible metadata
-                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, true));
-                    any = true;
-                }
-            }
-            if (!any) {
-                return null;
-            }
-            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
-            return altPacket;
+        int eid = metadataPacket.id();
+        Entity ent = player.level.getEntity(eid);
+        if (ent == null) {
+            Debug.log("Entity doesn't exist, returning");
+            return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
         }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
+        String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
+        Boolean forceSneak = SneakCommand.shouldSneak(ent.getUUID(), player.getUUID());
+        Boolean isInvisible = InvisibleCommand.isInvisible(ent.getBukkitEntity(), player.getUUID(), true);
+        boolean shouldModifyFlags = isInvisible != null || forceSneak != null;
+        if (nameToApply == null && !shouldModifyFlags) {
             return null;
         }
+        List<SynchedEntityData.DataValue<?>> data = new ArrayList<>();
+        Byte currentFlags = null;
+        for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
+            if (dataValue.id() == 0 && shouldModifyFlags) {
+                currentFlags = (Byte) dataValue.value();
+            }
+            else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) {
+                data.add(dataValue);
+            }
+        }
+        if (shouldModifyFlags) {
+            byte flags = currentFlags == null ? ent.getEntityData().get(PacketHelperImpl.ENTITY_DATA_WATCHER_FLAGS) : currentFlags;
+            if (forceSneak != null) {
+                Debug.log("Setting force sneak");
+                if (forceSneak) {
+                    flags |= 0x02; // 8: Crouching
+                }
+                else {
+                    flags &= ~0x02;
+                }
+            }
+            if (isInvisible != null) {
+                Debug.log("Setting invisibility");
+                if (isInvisible) {
+                    flags |= 0x20;
+                }
+                else {
+                    flags &= ~0x20;
+                }
+            }
+            data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_WATCHER_FLAGS, flags));
+        }
+        if (nameToApply != null) {
+            data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_CUSTOM_NAME_METADATA, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
+            data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_CUSTOM_NAME_VISIBLE_METADATA, true));
+        }
+        return new ClientboundSetEntityDataPacket(eid, data);
+        //        try {
+//            boolean any = false;
+//            for (int i = 0; i < data.size(); i++) {
+//                SynchedEntityData.DataValue<?> item = data.get(i);
+//                EntityDataSerializer<?> watcherObject = item.serializer();
+//                if (item.id() == 0 && (forceSneak != null || isInvisible != null)) { // 0: Entity flags
+//                    Debug.log("Processing entity flags (0):");
+//                    byte val = (Byte) item.value();
+//                    if (forceSneak != null) {
+//                        Debug.log("Setting force sneak");
+//                        if (forceSneak) {
+//                            val |= 0x02; // 8: Crouching
+//                        }
+//                        else {
+//                            val &= ~0x02;
+//                        }
+//                    }
+//                    if (isInvisible != null) {
+//                        Debug.log("Setting invisibility");
+//                        if (isInvisible) {
+//                            val |= 0x20;
+//                        }
+//                        else {
+//                            val &= ~0x20;
+//                        }
+//                    }
+//                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, val));
+//                    any = true;
+//                    Debug.log("Done, new value set");
+//                }
+//                else if (item.id() == 2 && nameToApply != null) { // 2: Custom name metadata
+//                    Debug.log("Processing custom name (2)");
+//                    Optional<Component> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
+//                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, name));
+//                    any = true;
+//                }
+//                else if (item.id() == 3 && nameToApply != null) { // 3: custom name visible metadata
+//                    Debug.log("Processing custom name visible (3)");
+//                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, true));
+//                    any = true;
+//                }
+//            }
+//            if (!any) {
+//                Debug.log("No changes, returning");
+//                return null;
+//            }
+//            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
+//            Debug.log("Changes applied, returning modified packet");
+//            return altPacket;
+//        }
+//        catch (Throwable ex) {
+//            Debug.echoError(ex);
+//            return null;
+//        }
     }
 
     public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
