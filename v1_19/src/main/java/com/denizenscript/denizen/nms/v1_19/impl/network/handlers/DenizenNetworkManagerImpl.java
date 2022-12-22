@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.v1_19.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_19.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
@@ -773,10 +774,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
             return null;
         }
-        int eid = metadataPacket.id();
-        Entity entity = player.level.getEntity(eid);
+        Entity entity = player.level.getEntity(metadataPacket.id());
         if (entity == null) {
-            Debug.log("Entity doesn't exist, returning");
             return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
         }
         String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), player.getBukkitEntity(), false);
@@ -791,7 +790,6 @@ public class DenizenNetworkManagerImpl extends Connection {
         for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
             if (dataValue.id() == 0 && shouldModifyFlags) {
                 currentFlags = (Byte) dataValue.value();
-                Debug.log("Found existing flags");
             }
             else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) {
                 data.add(dataValue);
@@ -800,16 +798,14 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (shouldModifyFlags) {
             byte flags = currentFlags == null ? entity.getEntityData().get(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS) : currentFlags;
             if (forceSneak != null) {
-                Debug.log("Setting force sneak");
                 if (forceSneak) {
-                    flags |= 0x02; // 8: Crouching
+                    flags |= 0x02;
                 }
                 else {
                     flags &= ~0x02;
                 }
             }
             if (isInvisible != null) {
-                Debug.log("Setting invisibility");
                 if (isInvisible) {
                     flags |= 0x20;
                 }
@@ -820,14 +816,10 @@ public class DenizenNetworkManagerImpl extends Connection {
             data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
         }
         if (nameToApply != null) {
-            Debug.log("Setting custom name");
             data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
             data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE, true));
         }
-        ClientboundSetEntityDataPacket packet = new ClientboundSetEntityDataPacket(eid, data);
-        debugOutputPacket(packet);
-        Debug.log("Returning modified packet");
-        return packet;
+        return new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
     }
 
     public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
