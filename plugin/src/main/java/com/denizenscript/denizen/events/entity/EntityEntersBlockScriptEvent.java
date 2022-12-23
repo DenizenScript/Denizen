@@ -15,8 +15,7 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // <entity> enters block
-    // <entity> enters <material>
+    // <entity> enters <block>
     //
     // @Group Entity
     //
