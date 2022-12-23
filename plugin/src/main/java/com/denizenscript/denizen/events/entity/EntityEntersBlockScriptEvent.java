@@ -23,7 +23,8 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Cancellable true
     //
-    // @Triggers when an entity enters, and is stored in a block. Does not fire when a silverfish "enters" a stone block. Prefer <@link event <entity> changes <block> (into <block>)> for that.
+    // @Triggers when an entity enters, and is stored in a block (EG a bee enters a bee nest)
+    // Does not fire when a silverfish "enters" a stone block. Prefer <@link event <entity> changes <block> (into <block>)> for that.
     //
     // @Context
     // <context.entity> returns the EntityTag.
