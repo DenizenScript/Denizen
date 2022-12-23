@@ -75,9 +75,9 @@ import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
 
-    public static final EntityDataAccessor<Float> ENTITY_HUMAN_DATA_WATCHER_ABSORPTION = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_ABSORPTION_ID, null);
+    public static final EntityDataAccessor<Float> PLAYER_DATA_ACCESSOR_ABSORPTION = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_ABSORPTION_ID, null);
 
-    public static final EntityDataAccessor<Byte> ENTITY_DATA_WATCHER_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_SHARED_FLAGS_ID, null);
+    public static final EntityDataAccessor<Byte> ENTITY_DATA_ACCESSOR_FLAGS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_SHARED_FLAGS_ID, null);
 
     public static final MethodHandle ABILITIES_PACKET_FOV_SETTER = ReflectionHelper.getFinalSetter(ClientboundPlayerAbilitiesPacket.class, ReflectionMappingsInfo.ClientboundPlayerAbilitiesPacket_walkingSpeed);
 
@@ -88,13 +88,13 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static MethodHandle BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundBlockEntityDataPacket.class, BlockPos.class, BlockEntityType.class, net.minecraft.nbt.CompoundTag.class);
 
-    public static EntityDataAccessor<Optional<Component>> ENTITY_CUSTOM_NAME_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME, null);
-    public static EntityDataAccessor<Boolean> ENTITY_CUSTOM_NAME_VISIBLE_METADATA = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME_VISIBLE, null);
+    public static EntityDataAccessor<Optional<Component>> ENTITY_DATA_ACCESSOR_CUSTOM_NAME = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME, null);
+    public static EntityDataAccessor<Boolean> ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE = ReflectionHelper.getFieldValue(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_DATA_CUSTOM_NAME_VISIBLE, null);
 
     @Override
     public void setFakeAbsorption(Player player, float value) {
         SynchedEntityData dw = new SynchedEntityData(null);
-        dw.define(ENTITY_HUMAN_DATA_WATCHER_ABSORPTION, value);
+        dw.define(PLAYER_DATA_ACCESSOR_ABSORPTION, value);
         send(player, new ClientboundSetEntityDataPacket(player.getEntityId(), dw.packDirty()));
     }
 
@@ -297,8 +297,8 @@ public class PacketHelperImpl implements PacketHelper {
             }
             SynchedEntityData fakeData = new SynchedEntityData(((CraftEntity) entity).getHandle());
             List<SynchedEntityData.DataValue<?>> list = new ArrayList<>();
-            list.add(new SynchedEntityData.DataValue<>(ENTITY_CUSTOM_NAME_METADATA.getId(), ENTITY_CUSTOM_NAME_METADATA.getSerializer(), Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
-            list.add(new SynchedEntityData.DataValue<>(ENTITY_CUSTOM_NAME_VISIBLE_METADATA.getId(), ENTITY_CUSTOM_NAME_VISIBLE_METADATA.getSerializer(), true));
+            list.add(new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getSerializer(), Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
+            list.add(new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE.getSerializer(), true));
             send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), list));
         }
         catch (Throwable ex) {
@@ -341,8 +341,8 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
         List<SynchedEntityData.DataValue<?>> data = new ArrayList<>();
-        byte flags = ((CraftEntity) entity).getHandle().getEntityData().get(ENTITY_DATA_WATCHER_FLAGS);
-        data.add(SynchedEntityData.DataValue.create(ENTITY_DATA_WATCHER_FLAGS, flags));
+        byte flags = ((CraftEntity) entity).getHandle().getEntityData().get(ENTITY_DATA_ACCESSOR_FLAGS);
+        data.add(SynchedEntityData.DataValue.create(ENTITY_DATA_ACCESSOR_FLAGS, flags));
         send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), data));
     }
 
