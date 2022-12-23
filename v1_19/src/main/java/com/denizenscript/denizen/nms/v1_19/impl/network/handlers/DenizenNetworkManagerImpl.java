@@ -789,10 +789,10 @@ public class DenizenNetworkManagerImpl extends Connection {
             List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems().size());
             Byte currentFlags = null;
             for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
-                if (dataValue.id() == 0 && shouldModifyFlags) {
+                if (dataValue.id() == 0 && shouldModifyFlags) { // 0: Entity Flags
                     currentFlags = (Byte) dataValue.value();
                 }
-                else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) {
+                else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) { // 2 and 3: Custom name and custom name visible
                     data.add(dataValue);
                 }
             }
