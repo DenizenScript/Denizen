@@ -774,52 +774,58 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
             return null;
         }
-        Entity entity = player.level.getEntity(metadataPacket.id());
-        if (entity == null) {
-            return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
+        try {
+            Entity entity = player.level.getEntity(metadataPacket.id());
+            if (entity == null) {
+                return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
+            }
+            String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), player.getBukkitEntity(), false);
+            Boolean forceSneak = SneakCommand.shouldSneak(entity.getUUID(), player.getUUID());
+            Boolean isInvisible = InvisibleCommand.isInvisible(entity.getBukkitEntity(), player.getUUID(), true);
+            boolean shouldModifyFlags = isInvisible != null || forceSneak != null;
+            if (nameToApply == null && !shouldModifyFlags) {
+                return null;
+            }
+            List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems().size());
+            Byte currentFlags = null;
+            for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
+                if (dataValue.id() == 0 && shouldModifyFlags) {
+                    currentFlags = (Byte) dataValue.value();
+                }
+                else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) {
+                    data.add(dataValue);
+                }
+            }
+            if (shouldModifyFlags) {
+                byte flags = currentFlags == null ? entity.getEntityData().get(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS) : currentFlags;
+                if (forceSneak != null) {
+                    if (forceSneak) {
+                        flags |= 0x02;
+                    }
+                    else {
+                        flags &= ~0x02;
+                    }
+                }
+                if (isInvisible != null) {
+                    if (isInvisible) {
+                        flags |= 0x20;
+                    }
+                    else {
+                        flags &= ~0x20;
+                    }
+                }
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
+            }
+            if (nameToApply != null) {
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE, true));
+            }
+            return new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
         }
-        String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), player.getBukkitEntity(), false);
-        Boolean forceSneak = SneakCommand.shouldSneak(entity.getUUID(), player.getUUID());
-        Boolean isInvisible = InvisibleCommand.isInvisible(entity.getBukkitEntity(), player.getUUID(), true);
-        boolean shouldModifyFlags = isInvisible != null || forceSneak != null;
-        if (nameToApply == null && !shouldModifyFlags) {
+        catch (Throwable ex) {
+            Debug.echoError(ex);
             return null;
         }
-        List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems().size());
-        Byte currentFlags = null;
-        for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
-            if (dataValue.id() == 0 && shouldModifyFlags) {
-                currentFlags = (Byte) dataValue.value();
-            }
-            else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) {
-                data.add(dataValue);
-            }
-        }
-        if (shouldModifyFlags) {
-            byte flags = currentFlags == null ? entity.getEntityData().get(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS) : currentFlags;
-            if (forceSneak != null) {
-                if (forceSneak) {
-                    flags |= 0x02;
-                }
-                else {
-                    flags &= ~0x02;
-                }
-            }
-            if (isInvisible != null) {
-                if (isInvisible) {
-                    flags |= 0x20;
-                }
-                else {
-                    flags &= ~0x20;
-                }
-            }
-            data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
-        }
-        if (nameToApply != null) {
-            data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
-            data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE, true));
-        }
-        return new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
     }
 
     public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
