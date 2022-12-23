@@ -68,14 +68,10 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("material")) {
-            return material;
+        switch (name) {
+            case "entity": return entity;
+            case "location": return location;
+            case "material": return material;
         }
         return super.getContext(name);
     }
