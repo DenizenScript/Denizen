@@ -1,13 +1,16 @@
 package com.denizenscript.denizen.nms.v1_19.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.*;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_19.Handler;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_19.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_19.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_19.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_19.impl.network.packets.PacketOutChatImpl;
+import com.denizenscript.denizen.nms.v1_19.impl.network.packets.PacketOutEntityMetadataImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
@@ -28,15 +31,14 @@ import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Joiner;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -773,58 +775,52 @@ public class DenizenNetworkManagerImpl extends Connection {
             return null;
         }
         try {
-            int eid = metadataPacket.id();
-            Entity ent = player.level.getEntity(eid);
-            if (ent == null) {
+            Entity entity = player.level.getEntity(metadataPacket.id());
+            if (entity == null) {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
-            String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
-            Boolean forceSneak = SneakCommand.shouldSneak(ent.getUUID(), player.getUUID());
-            Boolean isInvisible = InvisibleCommand.isInvisible(ent.getBukkitEntity(), player.getUUID(), true);
-            if (nameToApply == null && forceSneak == null && isInvisible == null) {
+            String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), player.getBukkitEntity(), false);
+            Boolean forceSneak = SneakCommand.shouldSneak(entity.getUUID(), player.getUUID());
+            Boolean isInvisible = InvisibleCommand.isInvisible(entity.getBukkitEntity(), player.getUUID(), true);
+            boolean shouldModifyFlags = isInvisible != null || forceSneak != null;
+            if (nameToApply == null && !shouldModifyFlags) {
                 return null;
             }
-            List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems());
-            boolean any = false;
-            for (int i = 0; i < data.size(); i++) {
-                SynchedEntityData.DataValue<?> item = data.get(i);
-                EntityDataSerializer<?> watcherObject = item.serializer();
-                if (item.id() == 0 && (forceSneak != null || isInvisible != null)) { // 0: Entity flags
-                    byte val = (Byte) item.value();
-                    if (forceSneak != null) {
-                        if (forceSneak) {
-                            val |= 0x02; // 8: Crouching
-                        }
-                        else {
-                            val &= ~0x02;
-                        }
-                    }
-                    if (isInvisible != null) {
-                        if (isInvisible) {
-                            val |= 0x20;
-                        }
-                        else {
-                            val &= ~0x20;
-                        }
-                    }
-                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, val));
-                    any = true;
+            List<SynchedEntityData.DataValue<?>> data = new ArrayList<>(metadataPacket.packedItems().size());
+            Byte currentFlags = null;
+            for (SynchedEntityData.DataValue<?> dataValue : metadataPacket.packedItems()) {
+                if (dataValue.id() == 0 && shouldModifyFlags) { // 0: Entity Flags
+                    currentFlags = (Byte) dataValue.value();
                 }
-                else if (item.id() == 2 && nameToApply != null) { // 2: Custom name metadata
-                    Optional<Component> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
-                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, name));
-                    any = true;
-                }
-                else if (item.id() == 3 && nameToApply != null) { // 3: custom name visible metadata
-                    data.set(i, new SynchedEntityData.DataValue(item.id(), watcherObject, true));
-                    any = true;
+                else if (nameToApply == null || (dataValue.id() != 2 && dataValue.id() != 3)) { // 2 and 3: Custom name and custom name visible
+                    data.add(dataValue);
                 }
             }
-            if (!any) {
-                return null;
+            if (shouldModifyFlags) {
+                byte flags = currentFlags == null ? entity.getEntityData().get(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS) : currentFlags;
+                if (forceSneak != null) {
+                    if (forceSneak) {
+                        flags |= 0x02;
+                    }
+                    else {
+                        flags &= ~0x02;
+                    }
+                }
+                if (isInvisible != null) {
+                    if (isInvisible) {
+                        flags |= 0x20;
+                    }
+                    else {
+                        flags &= ~0x20;
+                    }
+                }
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
             }
-            ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
-            return altPacket;
+            if (nameToApply != null) {
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE, true));
+            }
+            return new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

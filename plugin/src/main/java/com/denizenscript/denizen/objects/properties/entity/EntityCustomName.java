@@ -2,9 +2,8 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -23,10 +22,6 @@ public class EntityCustomName implements Property {
             return new EntityCustomName((EntityTag) entity);
         }
     }
-
-    public static final String[] handledMechs = new String[] {
-            "custom_name"
-    };
 
     private EntityCustomName(EntityTag ent) {
         entity = ent;
@@ -61,10 +56,6 @@ public class EntityCustomName implements Property {
             }
             return new ElementTag(name, true);
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object EntityTag
@@ -72,12 +63,12 @@ public class EntityCustomName implements Property {
         // @input ElementTag
         // @description
         // Sets the custom name (equivalent to a name tag item) of the entity.
+        // Provide no input to remove the custom name.
         // @tags
         // <EntityTag.custom_name>
         // -->
-        if (mechanism.matches("custom_name")) {
-            PaperAPITools.instance.setCustomName(entity.getBukkitEntity(), CoreUtilities.clearNBSPs(mechanism.getValue().asString()));
-        }
-
+        PropertyParser.registerMechanism(EntityCustomName.class, "custom_name", (object, mechanism) -> {
+            PaperAPITools.instance.setCustomName(object.entity.getBukkitEntity(), mechanism.value != null ? CoreUtilities.clearNBSPs(mechanism.getValue().asString()) : null);
+        });
     }
 }
