@@ -15,7 +15,7 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // <entity> enters <block>
+    // <entity> goes into <block>
     //
     // @Group Entity
     //
@@ -38,7 +38,7 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public EntityEntersBlockScriptEvent() {
-        registerCouldMatcher("<entity> enters <block>");
+        registerCouldMatcher("<entity> goes into <block>");
     }
 
     public EntityTag entity;
