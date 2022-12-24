@@ -34,7 +34,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     //
     // @Context
     // <context.damage> returns the amount of damage the item has taken.
-    // <context.original_damage> returns the original amount of damage the item would have taken, before any modifications (such as the unbreaking enchantment).
+    // <context.original_damage> returns the original amount of damage the item would have taken, before any modifications such as the unbreaking enchantment (only on Paper).
     // <context.item> returns the item that has taken damage.
     // <context.slot> returns the slot of the item that has taken damage. This value is a bit of a hack and is not reliable.
     //
