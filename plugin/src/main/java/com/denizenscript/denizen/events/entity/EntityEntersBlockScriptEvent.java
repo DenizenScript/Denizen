@@ -52,7 +52,7 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
         if (!entity.tryAdvancedMatcher(target)) {
             return false;
         }
-        if (!path.tryArgObject(2, material)) {
+        if (!path.tryArgObject(3, material)) {
             return false;
         }
         if (!runInCheck(path, location)) {
