@@ -192,7 +192,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerHearsSoundScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerHoldsItemEvent.class);
         ScriptEvent.registerScriptEvent(PlayerIncreasesExhaustionLevelScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEvent.class);
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerJoinsScriptEvent.class);
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(PlayerJumpScriptEvent.PlayerJumpsSpigotScriptEventImpl.class);

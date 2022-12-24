@@ -48,6 +48,7 @@ public class PaperModule {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(PlayerInventorySlotChangeScriptEvent.class);
         }
+        ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesGrindstoneCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
