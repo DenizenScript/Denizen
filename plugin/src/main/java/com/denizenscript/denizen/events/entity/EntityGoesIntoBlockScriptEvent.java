@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityEnterBlockEvent;
 
-public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements Listener {
+public class EntityGoesIntoBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -23,7 +23,7 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
     //
     // @Cancellable true
     //
-    // @Triggers when an entity enters, and is stored in a block (EG a bee enters a bee nest)
+    // @Triggers when an entity enters, and is stored in a block (eg a bee enters a bee nest).
     // Does not fire when a silverfish "enters" a stone block. Prefer <@link event entity changes block (into block)> for that.
     //
     // @Context
@@ -31,13 +31,9 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.location> returns the LocationTag of the block entered by the entity.
     // <context.material> returns the MaterialTag of the block entered by the entity.
     //
-    // @Player when the entity that entered the block is a player
-    //
-    // @NPC when the entity that entered the block is an NPC.
-    //
     // -->
 
-    public EntityEntersBlockScriptEvent() {
+    public EntityGoesIntoBlockScriptEvent() {
         registerCouldMatcher("<entity> goes into <block>");
     }
 
@@ -48,8 +44,7 @@ public class EntityEntersBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        String target = path.eventArgLowerAt(0);
-        if (!entity.tryAdvancedMatcher(target)) {
+        if (!path.tryArgObject(0, entity)) {
             return false;
         }
         if (!path.tryArgObject(3, material)) {

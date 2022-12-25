@@ -106,7 +106,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityDeathScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityDespawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityDropsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(EntityEntersBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersPortalScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersVehicleScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExitsPortalScriptEvent.class);
@@ -116,6 +115,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityFoodLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityFormsBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityGlideScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityGoesIntoBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityHealsScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityInteractScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityKilledScriptEvent.class);

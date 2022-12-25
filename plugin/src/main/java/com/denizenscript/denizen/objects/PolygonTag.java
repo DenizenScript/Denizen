@@ -715,7 +715,8 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // @description
         // Returns a copy of the polygon, with the specified corner added to the end of the corner list.
         // @example
-        // # Notes a new polygon with a new corner added. If the new corner has a location of "10,66,-2", and "my_polygon" has corners "0.0,0.0", "7.0,7.0", and "-5.0,6.0",
+        // # Notes a new polygon with a new corner added.
+        // # If the new corner has a location of "10,66,-2", and "my_polygon" has corners "0.0,0.0", "7.0,7.0", and "-5.0,6.0",
         // # then "my_new_polygon" will have corners  "0.0,0.0", "7.0,7.0", "-5.0,6.0", and "10.0,-2.0".
         // - note <polygon[my_polygon].with_corner[10,66,-2]> as:my_new_polygon
         // -->
