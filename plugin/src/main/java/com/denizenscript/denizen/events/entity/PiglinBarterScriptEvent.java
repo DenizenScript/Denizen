@@ -29,12 +29,13 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
     // @Context
     // <context.entity> returns the EntityTag of the piglin.
     // <context.input> returns the ItemTag of the input item.
-    // <context.outcome> returns a ListTag(ItemTag) of outcome itemes.
+    // <context.outcome> returns a ListTag(ItemTag) of outcome items.
     //
     // -->
 
     public PiglinBarterScriptEvent() {
         registerCouldMatcher("piglin barter");
+        registerSwitches("input");
     }
 
     public EntityTag entity;
@@ -43,6 +44,9 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, entity.getLocation())) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("input", new ItemTag(event.getInput()))) {
             return false;
         }
         return super.matches(path);
