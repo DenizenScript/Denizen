@@ -603,13 +603,16 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return;
         }
         else if (inventory == null) {
+            uniquifier = null;
             inventory = Bukkit.getServer().createInventory(null, size, "Chest");
+            trackTemporaryInventory(this);
             return;
         }
         int oldSize = inventory.getSize();
         if (oldSize == size) {
             return;
         }
+        uniquifier = null;
         ItemStack[] oldContents = inventory.getContents();
         ItemStack[] newContents = new ItemStack[size];
         if (oldSize > size) {
