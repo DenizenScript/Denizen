@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
@@ -12,6 +11,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -716,7 +716,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
-                for (Map.Entry<NamespacedKey, ItemHelper.BrewingRecipe> entry : NMSHandler.itemHelper.getCustomBrewingRecipes().entrySet()) {
+                for (Map.Entry<NamespacedKey, BrewingRecipe> entry : NMSHandler.itemHelper.getCustomBrewingRecipes().entrySet()) {
                     ItemStack result = entry.getValue().result;
                     if (object.getBukkitMaterial() == result.getType() && (object.getItemStack().getDurability() == -1 || object.getItemStack().getDurability() == result.getDurability())) {
                         addRecipe.accept(entry.getKey());

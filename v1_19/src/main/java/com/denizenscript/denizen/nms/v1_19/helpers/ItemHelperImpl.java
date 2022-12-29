@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;

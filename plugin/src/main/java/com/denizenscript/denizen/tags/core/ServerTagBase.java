@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
@@ -12,6 +11,7 @@ import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContain
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -246,7 +246,7 @@ public class ServerTagBase {
         if (attribute.startsWith("recipe_items") && attribute.hasParam()) {
             NamespacedKey recipeKey = Utilities.parseNamespacedKey(attribute.getParam());
             Recipe recipe = Bukkit.getRecipe(recipeKey);
-            ItemHelper.BrewingRecipe brewingRecipe = Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) ? NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey) : null;
+            BrewingRecipe brewingRecipe = Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) ? NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey) : null;
             if (recipe == null && brewingRecipe == null) {
                 return;
             }
@@ -334,7 +334,7 @@ public class ServerTagBase {
             Recipe recipe = Bukkit.getRecipe(recipeKey);
             if (recipe == null) {
                 if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                    ItemHelper.BrewingRecipe brewingRecipe = NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey);
+                    BrewingRecipe brewingRecipe = NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey);
                     if (brewingRecipe != null) {
                         event.setReplacedObject(new ItemTag(brewingRecipe.result).getObjectAttribute(attribute.fulfill(1)));
                     }
