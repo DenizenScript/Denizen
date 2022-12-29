@@ -1,34 +1,38 @@
 package com.denizenscript.denizen.tags.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.interfaces.ItemHelper;
+import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.utilities.*;
-import com.denizenscript.denizencore.objects.notable.NoteManager;
-import com.denizenscript.denizencore.tags.core.UtilTagBase;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.Deprecations;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
-import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.npc.traits.AssignmentTrait;
-import com.denizenscript.denizencore.objects.core.*;
-import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.objects.notable.Notable;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.tags.core.UtilTagBase;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.citizensnpcs.Citizens;
@@ -203,7 +207,7 @@ public class ServerTagBase {
         // @description
         // Returns a list of all recipe IDs on the server.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
-        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING)
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, BREWING)
         // to limit to just recipes of that type.
         // Note: this will produce an error if all recipes of any one type have been removed from the server, due to an error in Spigot.
         // -->
@@ -211,11 +215,18 @@ public class ServerTagBase {
             listDeprecateWarn(attribute);
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
             ListTag list = new ListTag();
-            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            while (recipeIterator.hasNext()) {
-                Recipe recipe = recipeIterator.next();
-                if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed) {
-                    list.add(((Keyed) recipe).getKey().toString());
+            if (type == null || !type.equals("brewing")) {
+                Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+                while (recipeIterator.hasNext()) {
+                    Recipe recipe = recipeIterator.next();
+                    if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed) {
+                        list.add(((Keyed) recipe).getKey().toString());
+                    }
+                }
+            }
+            if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
+                for (NamespacedKey recipe : NMSHandler.itemHelper.getCustomBrewingRecipeIDs()) {
+                    list.add(recipe.toString());
                 }
             }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));
@@ -233,8 +244,10 @@ public class ServerTagBase {
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // -->
         if (attribute.startsWith("recipe_items") && attribute.hasParam()) {
-            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
-            if (recipe == null) {
+            NamespacedKey recipeKey = Utilities.parseNamespacedKey(attribute.getParam());
+            Recipe recipe = Bukkit.getRecipe(recipeKey);
+            ItemHelper.BrewingRecipe brewingRecipe = Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) ? NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey) : null;
+            if (recipe == null && brewingRecipe == null) {
                 return;
             }
             ListTag result = new ListTag();
@@ -266,6 +279,10 @@ public class ServerTagBase {
             else if (recipe instanceof CookingRecipe<?>) {
                 addChoice.accept(((CookingRecipe) recipe).getInputChoice());
             }
+            else if (brewingRecipe != null) {
+                addChoice.accept(brewingRecipe.ingredient);
+                addChoice.accept(brewingRecipe.input);
+            }
             event.setReplacedObject(result.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
@@ -291,11 +308,15 @@ public class ServerTagBase {
         // @returns ElementTag
         // @description
         // Returns the type of recipe that the given recipe ID is.
-        // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, SMITHING.
+        // Will be one of FURNACE, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, SMITHING, BREWING.
         // -->
         if (attribute.startsWith("recipe_type") && attribute.hasParam()) {
-            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
+            NamespacedKey recipeKey = Utilities.parseNamespacedKey(attribute.getParam());
+            Recipe recipe = Bukkit.getRecipe(recipeKey);
             if (recipe == null) {
+                if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && NMSHandler.itemHelper.getCustomBrewingRecipeIDs().contains(recipeKey)) {
+                    event.setReplacedObject(new ElementTag("brewing").getObjectAttribute(attribute.fulfill(1)));
+                }
                 return;
             }
             event.setReplacedObject(new ElementTag(Utilities.getRecipeType(recipe)).getObjectAttribute(attribute.fulfill(1)));
@@ -309,8 +330,15 @@ public class ServerTagBase {
         // Returns the item that a recipe will create when crafted.
         // -->
         if (attribute.startsWith("recipe_result") && attribute.hasParam()) {
-            Recipe recipe = Bukkit.getRecipe(Utilities.parseNamespacedKey(attribute.getParam()));
+            NamespacedKey recipeKey = Utilities.parseNamespacedKey(attribute.getParam());
+            Recipe recipe = Bukkit.getRecipe(recipeKey);
             if (recipe == null) {
+                if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                    ItemHelper.BrewingRecipe brewingRecipe = NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey);
+                    if (brewingRecipe != null) {
+                        event.setReplacedObject(new ItemTag(brewingRecipe.result).getObjectAttribute(attribute.fulfill(1)));
+                    }
+                }
                 return;
             }
             event.setReplacedObject(new ItemTag(recipe.getResult()).getObjectAttribute(attribute.fulfill(1)));

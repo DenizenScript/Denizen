@@ -1,18 +1,24 @@
 package com.denizenscript.denizen.nms.v1_19.helpers;
 
+import com.denizenscript.denizen.nms.interfaces.ItemHelper;
+import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
+import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.nms.util.jnbt.*;
-import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.google.common.collect.*;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultiset;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.denizenscript.denizen.nms.interfaces.ItemHelper;
-import com.denizenscript.denizen.nms.util.PlayerProfile;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -25,6 +31,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -39,19 +46,19 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftRecipe;
 import org.bukkit.craftbukkit.v1_19_R2.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -518,5 +525,44 @@ public class ItemHelperImpl extends ItemHelper {
         net.minecraft.world.item.ItemStack nmsInput = CraftItemStack.asNMSCopy(input);
         net.minecraft.world.item.ItemStack nmsIngredient = CraftItemStack.asNMSCopy(ingredient);
         return net.minecraft.world.item.alchemy.PotionBrewing.hasMix(nmsInput, nmsIngredient);
+    }
+
+    public static Class<?> PaperPotionMix_CLASS = null;
+
+    @Override
+    public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
+        Map<NamespacedKey, ?> nmsCustomRecipes = getNMSCustomBrewingRecipes();
+        Map<NamespacedKey, BrewingRecipe> brewingRecipes = new HashMap<>(nmsCustomRecipes.size());
+        for (Map.Entry<NamespacedKey, ?> entry : nmsCustomRecipes.entrySet()) {
+            brewingRecipes.put(entry.getKey(), paperMixToRecipe(entry.getValue()));
+        }
+        return brewingRecipes;
+    }
+
+    @Override
+    public Set<NamespacedKey> getCustomBrewingRecipeIDs() {
+        return getNMSCustomBrewingRecipes().keySet();
+    }
+
+    @Override
+    public BrewingRecipe getCustomBrewingRecipe(NamespacedKey recipeKey) {
+        return paperMixToRecipe(getNMSCustomBrewingRecipes().get(recipeKey));
+    }
+
+    public Map<NamespacedKey, ?> getNMSCustomBrewingRecipes() {
+        return ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null);
+    }
+
+    public BrewingRecipe paperMixToRecipe(Object paperMix) {
+        if (paperMix == null) {
+            return null;
+        }
+        if (PaperPotionMix_CLASS == null) {
+            PaperPotionMix_CLASS = paperMix.getClass();
+        }
+        RecipeChoice ingredient = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
+        RecipeChoice input = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
+        ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
+        return new BrewingRecipe(ingredient, input, result);
     }
 }
