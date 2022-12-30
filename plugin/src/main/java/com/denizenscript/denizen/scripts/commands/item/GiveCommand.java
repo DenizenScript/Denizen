@@ -33,11 +33,11 @@ public class GiveCommand extends AbstractCommand {
     // @Syntax give [xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
     // @Required 1
     // @Maximum 5
-    // @Short Gives the player an item, xp, or money.
+    // @Short Gives the player an item or xp.
     // @Group item
     //
     // @Description
-    // Gives the linked player or inventory items, xp.
+    // Gives the linked player inventory items or xp.
     //
     // Optionally specify a slot to put the items into. If the slot is already filled, the next available slot will be used.
     // If the inventory is full, the items will be dropped on the ground at the inventory's location.
@@ -195,6 +195,10 @@ public class GiveCommand extends AbstractCommand {
                     if (!leftovers.isEmpty()) {
                         Debug.echoDebug(scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");
                         for (ItemStack leftoverItem : leftovers) {
+                            if (inventory.getLocation() == null) {
+                                Debug.echoError("Cannot drop extras from failed give command - no inventory location.");
+                                return;
+                            }
                             inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
                         }
                     }
