@@ -868,24 +868,31 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
     }
 
-    public int firstPartial(int startSlot, ItemStack item) {
+    private boolean isSlotAllowed(String allowedSlots, int slot) {
+        if (allowedSlots == null) {
+            return true;
+        }
+        return SlotHelper.doesMatch(allowedSlots, idHolder instanceof EntityFormObject ? ((EntityFormObject) idHolder).getDenizenEntity().getBukkitEntity() : null, slot);
+    }
+
+    public int firstPartial(int startSlot, ItemStack item, String allowedSlots) {
         ItemStack[] inventory = getContents();
         if (item == null) {
             return -1;
         }
         for (int i = startSlot; i < inventory.length; i++) {
             ItemStack item1 = inventory[i];
-            if (item1 != null && item1.getAmount() < item.getMaxStackSize() && item1.isSimilar(item)) {
+            if (item1 != null && item1.getAmount() < item.getMaxStackSize() && item1.isSimilar(item) && isSlotAllowed(allowedSlots, i)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public int firstEmpty(int startSlot) {
+    public int firstEmpty(int startSlot, String allowedSlots) {
         ItemStack[] inventory = getStorageContents();
         for (int i = startSlot; i < inventory.length; i++) {
-            if (inventory[i] == null) {
+            if (inventory[i] == null && isSlotAllowed(allowedSlots, i)) {
                 return i;
             }
         }
@@ -906,11 +913,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             int max = item.getMaxStackSize();
             while (true) {
                 // Do we already have a stack of it?
-                int firstPartial = firstPartial(slot, item);
+                int firstPartial = firstPartial(slot, item, null);
                 // Drat! no partial stack
                 if (firstPartial == -1) {
                     // Find a free spot!
-                    int firstFree = firstEmpty(slot);
+                    int firstFree = firstEmpty(slot, null);
                     if (firstFree == -1) {
                         // No space at all!
                         break;
@@ -949,7 +956,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         return this;
     }
 
-    public List<ItemStack> addWithLeftovers(int slot, boolean keepMaxStackSize, ItemStack... items) {
+    public List<ItemStack> addWithLeftovers(int slot, String allowedSlots, boolean keepMaxStackSize, ItemStack... items) {
         if (inventory == null || items == null) {
             return null;
         }
@@ -969,12 +976,11 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             while (true) {
                 // Do we already have a stack of it?
-                int firstPartial = firstPartial(slot, item);
+                int firstPartial = firstPartial(slot, item, allowedSlots);
                 // Drat! no partial stack
                 if (firstPartial == -1) {
                     // Find a free spot!
-                    int firstFree = firstEmpty(slot);
-
+                    int firstFree = firstEmpty(slot, allowedSlots);
                     if (firstFree == -1) {
                         // No space at all!
                         leftovers.add(item);
@@ -1241,7 +1247,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 ItemStack toAdd = items.get(0).getItemStack().clone();
                 int totalCount = 64 * 64 * 4; // Technically nothing stops us from ridiculous numbers in an ItemStack amount.
                 toAdd.setAmount(totalCount);
-                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, toAdd);
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, null, true, toAdd);
                 int result = 0;
                 if (leftovers.size() > 0) {
                     result += leftovers.get(0).getAmount();
@@ -1269,7 +1275,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
             // NOTE: Could just also convert items to an array and pass it all in at once...
             for (ItemTag itm : items) {
-                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack().clone());
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, null, true, itm.getItemStack().clone());
                 if (!leftovers.isEmpty()) {
                     return new ElementTag(false);
                 }
@@ -1849,7 +1855,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // Returns -1 if the inventory is full.
         // -->
         tagProcessor.registerTag(ElementTag.class, "first_empty", (attribute, object) -> {
-            int val = object.firstEmpty(0);
+            int val = object.firstEmpty(0, null);
             return new ElementTag(val >= 0 ? (val + 1) : -1);
         });
 
