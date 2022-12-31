@@ -525,7 +525,7 @@ public class ItemHelperImpl extends ItemHelper {
     public boolean isValidMix(ItemStack input, ItemStack ingredient) {
         net.minecraft.world.item.ItemStack nmsInput = CraftItemStack.asNMSCopy(input);
         net.minecraft.world.item.ItemStack nmsIngredient = CraftItemStack.asNMSCopy(ingredient);
-        return net.minecraft.world.item.alchemy.PotionBrewing.hasMix(nmsInput, nmsIngredient);
+        return PotionBrewing.hasMix(nmsInput, nmsIngredient);
     }
 
     public static Class<?> PaperPotionMix_CLASS = null;
@@ -550,11 +550,11 @@ public class ItemHelperImpl extends ItemHelper {
         return paperMixToRecipe(getNMSCustomBrewingRecipes().get(recipeKey));
     }
 
-    public Map<NamespacedKey, ?> getNMSCustomBrewingRecipes() {
+    public static Map<NamespacedKey, ?> getNMSCustomBrewingRecipes() {
         return ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null);
     }
 
-    public BrewingRecipe paperMixToRecipe(Object paperMix) {
+    public static BrewingRecipe paperMixToRecipe(Object paperMix) {
         if (paperMix == null) {
             return null;
         }
