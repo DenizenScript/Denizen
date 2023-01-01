@@ -97,7 +97,7 @@ public class TakeCommand extends AbstractCommand {
     // - take item:emerald quantity:5
     // -->
 
-    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED, RAWEXACT, MATCHER}
+    private enum Type {MONEY, XP, ITEMINHAND, CURSORITEM, ITEM, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT, MATERIAL, FLAGGED, RAWEXACT, MATCHER}
 
     public static HashSet<Type> requiresPlayerTypes = new HashSet<>(Arrays.asList(Type.XP, Type.MONEY, Type.ITEMINHAND, Type.CURSORITEM));
 
@@ -217,16 +217,6 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matchesArgumentType(InventoryTag.class)) {
                 scriptEntry.addObject("inventory", arg.asType(InventoryTag.class));
             }
-            else if (!scriptEntry.hasObject("type")
-                    && arg.matches("inventory")) {
-                BukkitImplDeprecations.takeCommandInventory.warn(scriptEntry);
-                scriptEntry.addObject("type", Type.INVENTORY);
-            }
-            else if (!scriptEntry.hasObject("inventory")
-                    && arg.matches("npc")) {
-                BukkitImplDeprecations.takeCommandInventory.warn(scriptEntry);
-                scriptEntry.addObject("inventory", Utilities.getEntryNPC(scriptEntry).getDenizenEntity().getInventory());
-            }
             else {
                 arg.reportUnhandled();
             }
@@ -264,10 +254,6 @@ public class TakeCommand extends AbstractCommand {
                     db("Items", items), slotList, nbtKey, flagList, matcherText, db("material",  materialList), titleAuthor);
         }
         switch (type) {
-            case INVENTORY: {
-                inventory.clear();
-                break;
-            }
             case ITEMINHAND: {
                 Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
                 int inHandAmt = player.getEquipment().getItemInMainHand().getAmount();

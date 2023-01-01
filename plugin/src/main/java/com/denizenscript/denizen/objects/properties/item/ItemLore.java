@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 
 import java.util.List;
@@ -126,7 +126,7 @@ public class ItemLore implements Property {
             for (int i = 0; i < lore.size(); i++) {
                 String loreLine = lore.get(i);
                 if (lore.wasLegacy) {
-                    loreLine = EscapeTagBase.unEscape(loreLine);
+                    loreLine = EscapeTagUtil.unEscape(loreLine);
                 }
                 lore.set(i, CoreUtilities.clearNBSPs(loreLine));
             }

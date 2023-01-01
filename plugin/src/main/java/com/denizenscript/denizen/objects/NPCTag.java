@@ -1274,11 +1274,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
             return result;
         });
-
-        tagProcessor.registerTag(NPCTag.class, "navigator", (attribute, object) -> {
-            BukkitImplDeprecations.oldNPCNavigator.warn(attribute.context);
-            return object;
-        });
     }
 
     public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();

@@ -19,7 +19,6 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
 import org.bukkit.Bukkit;
@@ -161,7 +160,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
     // - inventory flag slot:hand my_target:<player.cursor_on> expire:1d
     // -->
 
-    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
+    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST, FLAG}
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
@@ -392,24 +391,6 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     InventoryTag temp = new InventoryTag(destination.getInventory().getContents());
                     replace(origin, destination);
                     replace(temp, origin);
-                    break;
-                // Add origin's contents to destination
-                case ADD:
-                    BukkitImplDeprecations.oldInventoryCommands.warn(scriptEntry);
-                    if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
-                    }
-                    destination.add(slotId, origin.getContents());
-                    break;
-                // Remove origin's contents from destination
-                case REMOVE:
-                    BukkitImplDeprecations.oldInventoryCommands.warn(scriptEntry);
-                    if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
-                    }
-                    remove(destination.getInventory(), origin.getContents());
                     break;
                 // Set items by slot
                 case SET:

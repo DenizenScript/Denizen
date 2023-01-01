@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -71,7 +71,7 @@ public class CommandScriptEvent extends BukkitScriptEvent implements Listener {
         if (!runInCheck(path, playerEvent == null ? null : playerEvent.getPlayer().getLocation())) {
             return false;
         }
-        if (!path.eventArgLowerAt(0).equals("command") && !runGenericCheck(path.eventArgLowerAt(0), EscapeTagBase.escape(commandName))) {
+        if (!path.eventArgLowerAt(0).equals("command") && !runGenericCheck(path.eventArgLowerAt(0), EscapeTagUtil.escape(commandName))) {
             return false;
         }
         return super.matches(path);

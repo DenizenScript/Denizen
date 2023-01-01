@@ -8,7 +8,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -66,7 +66,7 @@ public class ItemAttributeNBT implements Property {
         ListTag list = new ListTag();
         if (nbtKeys != null) {
             for (CustomNBT.AttributeReturn atr : nbtKeys) {
-                list.add(EscapeTagBase.escape(atr.attr) + "/" + EscapeTagBase.escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
+                list.add(EscapeTagUtil.escape(atr.attr) + "/" + EscapeTagUtil.escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
             }
         }
         return list;
@@ -100,8 +100,8 @@ public class ItemAttributeNBT implements Property {
                     mechanism.echoError("Invalid nbt_attributes input: must have 4 values per attribute.");
                     continue;
                 }
-                String attribute = EscapeTagBase.unEscape(split[0]);
-                String slot = EscapeTagBase.unEscape(split[1]);
+                String attribute = EscapeTagUtil.unEscape(split[0]);
+                String slot = EscapeTagUtil.unEscape(split[1]);
                 int op = new ElementTag(split[2]).asInt();
                 double amt = new ElementTag(split[3]).asDouble();
                 itemStack = CustomNBT.addAttribute(itemStack, attribute, slot, op, amt);

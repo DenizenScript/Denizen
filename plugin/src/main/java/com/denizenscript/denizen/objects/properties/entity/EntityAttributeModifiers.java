@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
@@ -52,7 +52,7 @@ public class EntityAttributeModifiers implements Property {
 
     @Deprecated
     public static String stringify(AttributeModifier modifier) {
-        return EscapeTagBase.escape(modifier.getName()) + "/" + modifier.getAmount() + "/" + modifier.getOperation().name()
+        return EscapeTagUtil.escape(modifier.getName()) + "/" + modifier.getAmount() + "/" + modifier.getOperation().name()
                 + "/" + (modifier.getSlot() == null ? "any" : modifier.getSlot().name());
     }
 
@@ -68,7 +68,7 @@ public class EntityAttributeModifiers implements Property {
             for (AttributeModifier modifier : instance.getModifiers()) {
                 modifiers.append("/").append(stringify(modifier));
             }
-            list.add(EscapeTagBase.escape(attribute.name()) + "/" + instance.getBaseValue() + modifiers);
+            list.add(EscapeTagUtil.escape(attribute.name()) + "/" + instance.getBaseValue() + modifiers);
         }
         return list;
     }
@@ -368,7 +368,7 @@ public class EntityAttributeModifiers implements Property {
             ListTag list = mechanism.valueAsType(ListTag.class);
             for (String str : list) {
                 List<String> subList = CoreUtilities.split(str, '/');
-                Attribute attr = Attribute.valueOf(EscapeTagBase.unEscape(subList.get(0)).toUpperCase());
+                Attribute attr = Attribute.valueOf(EscapeTagUtil.unEscape(subList.get(0)).toUpperCase());
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {
                     mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
@@ -380,7 +380,7 @@ public class EntityAttributeModifiers implements Property {
                 }
                 for (int x = 2; x < subList.size(); x += 4) {
                     String slot = subList.get(x + 3).toUpperCase();
-                    AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), EscapeTagBase.unEscape(subList.get(x)),
+                    AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), EscapeTagUtil.unEscape(subList.get(x)),
                             Double.parseDouble(subList.get(x + 1)), AttributeModifier.Operation.valueOf(subList.get(x + 2).toUpperCase()),
                                     slot.equals("ANY") ? null : EquipmentSlot.valueOf(slot));
                     instance.addModifier(modifier);

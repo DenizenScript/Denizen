@@ -3701,11 +3701,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the biome at the location.
         // -->
         tagProcessor.registerTag(ObjectTag.class, "biome", (attribute, object) -> {
-            if (attribute.startsWith("formatted", 2)) {
-                BukkitImplDeprecations.locationBiomeFormattedTag.warn(attribute.context);
-                attribute.fulfill(1);
-                return new ElementTag(CoreUtilities.toLowerCase(object.getBiomeForTag(attribute).getName()).replace('_', ' '));
-            }
             return new BiomeTag(object.getBiomeForTag(attribute));
         });
 

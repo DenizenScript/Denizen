@@ -118,8 +118,6 @@ public class BukkitCommandRegistry {
         registerCommand(GiveCommand.class);
         registerCommand(InventoryCommand.class);
         registerCommand(MapCommand.class);
-        registerCommand(NBTCommand.class);
-        registerCommand(ScribeCommand.class);
         registerCommand(TakeCommand.class);
         // player
         registerCommand(ActionBarCommand.class);

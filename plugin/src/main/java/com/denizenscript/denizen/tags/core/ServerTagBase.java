@@ -773,15 +773,6 @@ public class ServerTagBase {
             event.setReplacedObject(allBiomes.getObjectAttribute(attribute.fulfill(1)));
         }
 
-        if (attribute.startsWith("list_biomes")) {
-            BukkitImplDeprecations.serverListBiomeNames.warn(attribute.context);
-            ListTag allBiomes = new ListTag();
-            for (Biome biome : Biome.values()) {
-                allBiomes.add(biome.name());
-            }
-            event.setReplacedObject(allBiomes.getObjectAttribute(attribute.fulfill(1)));
-        }
-
         // <--[tag]
         // @attribute <server.enchantments>
         // @returns ListTag(EnchantmentTag)
@@ -851,15 +842,6 @@ public class ServerTagBase {
             ListTag allMats = new ListTag();
             for (Material mat : Material.values()) {
                 allMats.addObject(new MaterialTag(mat));
-            }
-            event.setReplacedObject(allMats.getObjectAttribute(attribute.fulfill(1)));
-        }
-
-        if (attribute.startsWith("list_materials")) {
-            BukkitImplDeprecations.serverListMaterialNames.warn(attribute.context);
-            ListTag allMats = new ListTag();
-            for (Material mat : Material.values()) {
-                allMats.add(mat.name());
             }
             event.setReplacedObject(allMats.getObjectAttribute(attribute.fulfill(1)));
         }
@@ -1560,16 +1542,6 @@ public class ServerTagBase {
             }
             listDeprecateWarn(attribute);
             event.setReplacedObject(new ListTag(Arrays.asList(Depends.permissions.getGroups())).getObjectAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        if (attribute.startsWith("list_plugin_names")) {
-            BukkitImplDeprecations.serverPluginNamesTag.warn(attribute.context);
-            ListTag plugins = new ListTag();
-            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
-                plugins.add(plugin.getName());
-            }
-            event.setReplacedObject(plugins.getObjectAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -2474,20 +2446,6 @@ public class ServerTagBase {
             }
             catch (Exception e) {
                 Debug.echoError("Failed to delete file: " + e.getMessage());
-            }
-        }
-
-        if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
-            BukkitImplDeprecations.serverRedirectLogging.warn(mechanism.context);
-            if (!CoreConfiguration.allowConsoleRedirection) {
-                Debug.echoError("Console redirection disabled by administrator.");
-                return;
-            }
-            if (mechanism.getValue().asBoolean()) {
-                DenizenCore.logInterceptor.redirectOutput();
-            }
-            else {
-                DenizenCore.logInterceptor.standardOutput();
             }
         }
 

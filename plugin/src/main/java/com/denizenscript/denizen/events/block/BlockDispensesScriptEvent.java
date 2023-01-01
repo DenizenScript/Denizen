@@ -4,9 +4,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
@@ -75,11 +73,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
                 event.setItem(item.getItemStack());
                 return true;
             }
-        }
-        if (ArgumentHelper.matchesDouble(determinationObj.toString())) {
-            BukkitImplDeprecations.blockDispensesItemDetermination.warn();
-            event.setVelocity(event.getVelocity().multiply(Double.parseDouble(determinationObj.toString())));
-            return true;
         }
         return super.applyDetermination(path, determinationObj);
     }

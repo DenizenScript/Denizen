@@ -36,8 +36,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.NPCSelector;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -3855,11 +3853,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);
-        }
-
-        if (mechanism.matches("action_bar")) {
-            BukkitImplDeprecations.playerActionBarMech.warn(mechanism.context);
-            getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(mechanism.getValue().asString(), ChatColor.WHITE));
         }
 
         // <--[mechanism]

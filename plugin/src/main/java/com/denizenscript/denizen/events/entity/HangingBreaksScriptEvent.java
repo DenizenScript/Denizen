@@ -6,7 +6,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -70,9 +69,6 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
                 return entity;
             case "hanging":
                 return hanging;
-            case "location":
-                BukkitImplDeprecations.hangingBreaksEventContext.warn();
-                return hanging.getLocation();
         }
         return super.getContext(name);
     }

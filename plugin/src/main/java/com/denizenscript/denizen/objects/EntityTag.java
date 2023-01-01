@@ -21,7 +21,6 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
-import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -1351,16 +1350,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
-
-        registerSpawnedOnlyTag(ObjectTag.class, "custom_id", (attribute, object) -> {
-            BukkitImplDeprecations.entityCustomIdTag.warn(attribute.context);
-            if (CustomNBT.hasCustomNBT(object.getLivingEntity(), "denizen-script-id")) {
-                return ScriptTag.valueOf(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"), CoreUtilities.noDebugContext);
-            }
-            else {
-                return new ElementTag(object.getBukkitEntity().getType());
-            }
-        });
 
         // <--[tag]
         // @attribute <EntityTag.name>
@@ -3225,11 +3214,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("oxygen") && mechanism.requireObject(DurationTag.class)) {
             getLivingEntity().setRemainingAir(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
-        }
-
-        if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
-            BukkitImplDeprecations.entityRemainingAir.warn(mechanism.context);
-            getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]

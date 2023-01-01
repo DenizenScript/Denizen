@@ -81,7 +81,6 @@ public class CommonRegistries {
         new CustomColorTagBase();
         new ServerTagBase();
         new TextTagBase();
-        new ParseTagBase();
     }
 
     public static void registerMainObjects() {
