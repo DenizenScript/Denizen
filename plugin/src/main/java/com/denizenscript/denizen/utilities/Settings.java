@@ -140,7 +140,7 @@ public class Settings {
 
     public static boolean nullifySkullSkinIds = false;
 
-    public static boolean cache_overrideHelp, cache_useDefaultScriptPath,
+    public static boolean cache_overrideHelp,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
             cache_healthTraitRespawnEnabled, cache_allowDelete,
@@ -151,7 +151,10 @@ public class Settings {
             cache_packetInterception, cache_createWorldSymbols, cache_createWorldWeirdPaths,
             cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets;
 
-    public static String cache_getAlternateScriptPath, cache_healthTraitRespawnDelay,
+    public static volatile boolean cache_useDefaultScriptPath;
+    public static volatile String cache_getAlternateScriptPath;
+
+    public static String cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
             cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath;

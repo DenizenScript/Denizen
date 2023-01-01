@@ -367,7 +367,7 @@ public class Denizen extends JavaPlugin {
         exsCommand.enableFor(getCommand("exs"));
         FullBlockData.init();
         // Load script files without processing.
-        DenizenCore.preloadScripts();
+        DenizenCore.preloadScripts(false, null);
         // Load the saves.yml into memory
         reloadSaves();
         try {
@@ -447,7 +447,7 @@ public class Denizen extends JavaPlugin {
                 if (!StrongWarning.recentWarnings.isEmpty()) {
                     StringBuilder warnText = new StringBuilder();
                     warnText.append(ChatColor.YELLOW).append("[Denizen] ").append(ChatColor.RED).append("Recent strong system warnings, scripters need to address ASAP (check earlier console logs for details):");
-                    for (StrongWarning warning : StrongWarning.recentWarnings) {
+                    for (StrongWarning warning : StrongWarning.recentWarnings.keySet()) {
                         warnText.append("\n- ").append(warning.message);
                     }
                     StrongWarning.recentWarnings.clear();

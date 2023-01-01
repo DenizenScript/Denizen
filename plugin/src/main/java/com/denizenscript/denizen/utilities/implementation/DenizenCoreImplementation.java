@@ -8,6 +8,7 @@ import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.DebugConsoleSender;
+import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -37,7 +38,7 @@ import java.util.HashSet;
 public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
-    public File getScriptFolder() {
+    public File getScriptFolder() { // Note: can be called async
         File file;
         // Get the script directory
         if (Settings.useDefaultScriptPath()) {
@@ -396,5 +397,16 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public String stripColor(String text) {
         return ChatColor.stripColor(text);
+    }
+
+    @Override
+    public void reloadConfig() {
+        Denizen.getInstance().reloadConfig();
+    }
+
+    @Override
+    public void reloadSaves() {
+        Denizen.getInstance().reloadSaves();
+        PlayerFlagHandler.reloadAllFlagsNow();
     }
 }
