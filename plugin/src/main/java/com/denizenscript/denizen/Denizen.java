@@ -134,19 +134,19 @@ public class Denizen extends JavaPlugin {
         DebugInternals.alternateTrimLogic = FormattedTextHelper::bukkitSafeDebugTrimming;
         String javaVersion = System.getProperty("java.version");
         Debug.log("Running on java version: " + javaVersion);
-        if (javaVersion.startsWith("8") || javaVersion.startsWith("1.8")) {
-            Debug.log("Running on fully supported Java 8. Updating to Java 17+ is recommended.");
-        }
-        else if (javaVersion.startsWith("9") || javaVersion.startsWith("1.9") || javaVersion.startsWith("10") || javaVersion.startsWith("1.10")
-                || javaVersion.startsWith("11")
+        if (javaVersion.startsWith("8") || javaVersion.startsWith("1.8") || javaVersion.startsWith("9") || javaVersion.startsWith("1.9")
+                || javaVersion.startsWith("10") || javaVersion.startsWith("1.10") || javaVersion.startsWith("11")
                 || javaVersion.startsWith("12") || javaVersion.startsWith("13") || javaVersion.startsWith("14") || javaVersion.startsWith("15")) {
-            getLogger().warning("Running unreliable Java version. Old Minecraft is built for Java 8, modern Minecraft is built for Java 17. Other Java versions are not guaranteed to function properly.");
+            Debug.log("Running on outdated Java version somehow. Denizen requires Java 16+ or newer to function.");
         }
         else if (javaVersion.startsWith("16")) {
             Debug.log("Running on fully supported Java 16.");
         }
         else if (javaVersion.startsWith("17")) {
             Debug.log("Running on fully supported Java 17.");
+        }
+        else if (javaVersion.startsWith("18") || javaVersion.startsWith("19")) {
+            getLogger().warning("Running unreliable future Java version. modern Minecraft versions are built for Java 17. Other Java versions are not guaranteed to function properly.");
         }
         else {
             Debug.log("Running on unrecognized (future?) Java version. May or may not work.");
