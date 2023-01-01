@@ -800,7 +800,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // See <@link command vulnerable>
         // -->
         tagProcessor.registerTag(ElementTag.class, "invulnerable", (attribute, object) -> {
-            return new ElementTag(object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
+            return new ElementTag(object.getCitizen().data().get(NPC.Metadata.DEFAULT_PROTECTED, true));
         }, "vulnerable");
 
         // <--[tag]
@@ -980,7 +980,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is targetable.
         // -->
         tagProcessor.registerTag(ElementTag.class, "targetable", (attribute, object) -> {
-            boolean targetable = object.getCitizen().data().get(NPC.TARGETABLE_METADATA, object.getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true));
+            boolean targetable = object.getCitizen().data().get(NPC.Metadata.TARGETABLE, object.getCitizen().data().get(NPC.Metadata.DEFAULT_PROTECTED, true));
             return new ElementTag(targetable);
         });
 
@@ -1577,8 +1577,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                     ((ItemFrame) getEntity()).getItem().setType(mat);
                     break;
                 case FALLING_BLOCK:
-                    getCitizen().data().setPersistent(NPC.ITEM_ID_METADATA, mat.name());
-                    getCitizen().data().setPersistent(NPC.ITEM_DATA_METADATA, 0);
+                    getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
+                    getCitizen().data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
                     break;
                 default:
                     Debug.echoError("NPC is the not an item type!");
@@ -1715,7 +1715,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.targetable>
         // -->
         if (mechanism.matches("targetable") && mechanism.requireBoolean()) {
-            getCitizen().data().setPersistent(NPC.TARGETABLE_METADATA, mechanism.getValue().asBoolean());
+            getCitizen().data().setPersistent(NPC.Metadata.TARGETABLE, mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1807,7 +1807,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // TODO
         // -->
         if (mechanism.matches("name_visible")) {
-            getCitizen().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, mechanism.getValue().asString());
+            getCitizen().data().setPersistent(NPC.Metadata.NAMEPLATE_VISIBLE, mechanism.getValue().asString());
         }
 
         // <--[mechanism]

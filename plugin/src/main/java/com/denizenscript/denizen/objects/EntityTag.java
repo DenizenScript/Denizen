@@ -1959,7 +1959,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_collidable", (attribute, object) -> {
             if (object.isCitizensNPC()) {
-                return new ElementTag(object.getDenizenNPC().getCitizen().data().get(NPC.COLLIDABLE_METADATA, true));
+                return new ElementTag(object.getDenizenNPC().getCitizen().data().get(NPC.Metadata.COLLIDABLE, true));
             }
             return new ElementTag(object.getLivingEntity().isCollidable());
         });
@@ -3387,7 +3387,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("collidable") && mechanism.requireBoolean()) {
             if (isCitizensNPC()) {
-                getDenizenNPC().getCitizen().data().setPersistent(NPC.COLLIDABLE_METADATA, mechanism.getValue().asBoolean());
+                getDenizenNPC().getCitizen().data().setPersistent(NPC.Metadata.COLLIDABLE, mechanism.getValue().asBoolean());
             }
             else {
                 getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
@@ -3547,7 +3547,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getBukkitEntity().setGlowing(mechanism.getValue().asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
-                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, mechanism.getValue().asBoolean());
+                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.Metadata.GLOWING, mechanism.getValue().asBoolean());
             }
         }
 

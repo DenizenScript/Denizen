@@ -258,8 +258,8 @@ public class SittingTrait extends Trait implements Listener {
         trait.setSmall(true);
         trait.setMarker(true);
         trait.setVisible(false);
-        holder.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
-        holder.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
+        holder.data().set(NPC.Metadata.NAMEPLATE_VISIBLE, false);
+        holder.data().set(NPC.Metadata.DEFAULT_PROTECTED, true);
         boolean spawned = holder.spawn(location);
         if (!spawned || !holder.isSpawned()) {
             if (retryCount >= 4) {
