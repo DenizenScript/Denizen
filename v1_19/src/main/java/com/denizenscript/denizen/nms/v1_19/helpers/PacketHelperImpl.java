@@ -440,6 +440,12 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, packet);
     }
 
+    @Override
+    public void sendRelativeLookPacket(Player player, float yaw, float pitch) {
+        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(0, 0, 0, yaw, pitch, ClientboundPlayerPositionPacket.RelativeArgument.ALL, 0, false);
+        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).oldManager.channel.writeAndFlush(packet);
+    }
+
     public static void send(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
     }

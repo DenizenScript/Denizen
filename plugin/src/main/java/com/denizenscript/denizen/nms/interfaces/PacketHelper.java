@@ -141,4 +141,8 @@ public interface PacketHelper {
     default void sendCollectItemEntity(Player player, Entity taker, Entity item, int amount) {
         throw new UnsupportedOperationException();
     }
+
+    default void sendRelativeLookPacket(Player player, float yaw, float pitch) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -82,6 +83,7 @@ public class HurtCommand extends AbstractCommand {
             ObjectTag swapEntities = entitiesObj;
             entitiesObj = amountObj;
             if (swapEntities != null && swapEntities.asElement().isDouble()) {
+                Deprecations.outOfOrderArgs.warn(scriptEntry);
                 amountObj = swapEntities;
             }
             else {
